@@ -1,4 +1,4 @@
-package ca.bc.gov.mal.farm.api;
+package ca.bc.gov.farms.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

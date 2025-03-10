@@ -1,4 +1,4 @@
-package ca.bc.gov.mal.farm.api;
+package ca.bc.gov.farms.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
