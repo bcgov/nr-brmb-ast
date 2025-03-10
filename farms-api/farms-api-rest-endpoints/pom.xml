@@ -16,6 +16,15 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>ca.bc.gov.farms</groupId>
+            <artifactId>farms-service-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
+            <artifactId>wfone-common-checkhealth</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
