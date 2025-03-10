@@ -20,20 +20,18 @@
         <dollar>$</dollar>
     </properties>
     <modules>
+        <module>farms-service-api</module>
         <module>farms-api-rest-endpoints</module>
         <module>farms-persistence</module>
     </modules>
-
     <dependencyManagement>
         <dependencies>
-
             <!-- Wildfire OrgUnit -->
             <dependency>
                 <groupId>ca.bc.gov.nrs.wforg</groupId>
                 <artifactId>wforg-org-unit-api-rest-common</artifactId>
                 <version>1.0.0</version>
             </dependency>
-
             <dependency>
                 <groupId>ca.bc.gov.nrs.wfone.common</groupId>
                 <artifactId>wfone-common-model</artifactId>
@@ -94,7 +92,6 @@
                 <artifactId>wfone-common-checkhealth</artifactId>
                 <version>1.4.1-SNAPSHOT</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 </project>
