@@ -21,6 +21,7 @@
     </properties>
     <modules>
         <module>farm-api-rest-endpoints</module>
+        <module>farm-persistence</module>
     </modules>
 
     <dependencyManagement>
