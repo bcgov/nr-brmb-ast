@@ -1,4 +1,4 @@
-package ca.bc.gov.mal.farm.api;
+package ca.bc.gov.farms.api;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
