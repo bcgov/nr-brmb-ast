@@ -9,8 +9,8 @@
         <version>2.7.14</version>
     </parent>
     <groupId>ca.bc.gov.farms</groupId>
-    <artifactId>farm-api-parent</artifactId>
-    <name>farm-api-parent</name>
+    <artifactId>farms-api-parent</artifactId>
+    <name>farms-api-parent</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
@@ -20,8 +20,8 @@
         <dollar>$</dollar>
     </properties>
     <modules>
-        <module>farm-api-rest-endpoints</module>
-        <module>farm-persistence</module>
+        <module>farms-api-rest-endpoints</module>
+        <module>farms-persistence</module>
     </modules>
 
     <dependencyManagement>
