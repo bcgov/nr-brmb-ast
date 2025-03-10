@@ -7,12 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import ca.bc.gov.nrs.wfone.common.checkhealth.CheckHealthValidator;
 import ca.bc.gov.nrs.wfone.common.checkhealth.CompositeValidator;
 import ca.bc.gov.nrs.wfone.common.utils.ApplicationContextProvider;
 
 @Configuration
+@Import({
+    PropertiesSpringConfig.class
+})
 public class EndpointsSpringConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(EndpointsSpringConfig.class);
