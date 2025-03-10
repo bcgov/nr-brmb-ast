@@ -15,7 +15,8 @@ import ca.bc.gov.nrs.wfone.common.utils.ApplicationContextProvider;
 
 @Configuration
 @Import({
-    PropertiesSpringConfig.class
+    PropertiesSpringConfig.class,
+    WebConfig.class
 })
 public class EndpointsSpringConfig {
 
