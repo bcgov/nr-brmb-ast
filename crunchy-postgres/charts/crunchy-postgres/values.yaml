@@ -1,0 +1,117 @@
+fullnameOverride: crunchy-postgres-#{ENV}#
+
+crunchyImage: # it's not necessary to specify an image as the images specified in the Crunchy Postgres Operator will be pulled by default
+#crunchyImage: artifacts.developer.gov.bc.ca/bcgov-docker-local/crunchy-postgres-gis:ubi8-15.2-3.3-0 # use this image for POSTGIS
+postgresVersion: 15
+#postGISVersion: '3.3' # use this version of POSTGIS. both crunchyImage and this property needs to have valid values for POSTGIS to be enabled.
+imagePullPolicy: IfNotPresent
+
+instances:
+  name: ha # high availability
+  replicas: #{DB_REPLICAS}#
+  dataVolumeClaimSpec:
+    storage: #{DB_STORAGE}#
+    storageClassName: netapp-block-standard
+  # Note: using New York time zone to match existing deployment - otherwise, would use either local time or PST
+  env:
+    - name: PGTZ
+      value: America/New_York
+    - name: TZ
+      value: America/New_York
+  requests:
+    cpu: 1m
+    memory: 19Mi
+  limits:
+    cpu: #{DB_MAX_CPU}#
+    memory: #{DB_MAX_MEMORY}#
+  replicaCertCopy:
+    requests:
+      cpu: 1m
+      memory: 32Mi
+    limits:
+      cpu: 50m
+      memory: 64Mi
+
+pgBackRest:
+  image: # it's not necessary to specify an image as the images specified in the Crunchy Postgres Operator will be pulled by default
+  retentionFull: "12" # Ideally a larger number such as 30 backups/days
+  retentionDifferential: "30"
+
+  # If retention-full-type set to 'count' then the oldest backups will expire when the number of backups reach the number defined in retention
+  # If retention-full-type set to 'time' then the number defined in retention will take that many days worth of full backups before expiration
+  retentionFullType: count
+
+  #How many backups worth of WAL files to keep, and what type of backup to count for expiring WAL files
+  retentionArchiveType: diff
+  retentionArchiveCount: "7"
+  timeout: "600"
+  s3UriStyle: path
+
+  repos:
+    schedules:
+      full: 0 0 * * 0
+      differential: 0 0 * * 1-6
+      incremental: 0 4,8,12,16,20 * * *
+    schedulesOffset:
+      full: 0 2 * * 0
+      differential: 0 2 * * 1-6
+      incremental: 0 6,10,14,18,22 * * *
+    volume:
+      accessModes: "ReadWriteOnce"
+      storageClassName: netapp-file-backup
+      storage: #{DB_BACKUP_VOLUME_SIZE}#
+    configuration:
+      secretName: "#{ENV}#-postgres-s3-secret"
+    s3:
+      bucket: "pit#{ENV}#"
+      endpoint: "nrs.objectstore.gov.bc.ca"
+      region: "ca-central-1"
+      directoryName: pituw#{ENV}#
+
+  repoHost:
+    requests:
+      cpu: 1m
+      memory: 64Mi
+    limits:
+      cpu: 50m
+      memory: 128Mi
+  sidecars:
+    requests:
+      cpu: 1m
+      memory: 64Mi
+    limits:
+      cpu: 50m
+      memory: 128Mi
+
+patroni:
+  postgresql:
+    pg_hba: "host all all 0.0.0.0/0 md5"
+    parameters:
+      shared_buffers: 16MB # default is 128MB; a good tuned default for shared_buffers is 25% of the memory allocated to the pod
+      wal_buffers: "64kB" # this can be set to -1 to automatically set as 1/32 of shared_buffers or 64kB, whichever is larger
+      min_wal_size: 32MB
+      max_wal_size: 64MB # default is 1GB
+      max_slot_wal_keep_size: 128MB # default is -1, allowing unlimited wal growth when replicas fall behind
+
+proxy:
+  pgBouncer:
+    image: # it's not necessary to specify an image as the images specified in the Crunchy Postgres Operator will be pulled by default
+    replicas: #{BOUNCER_REPLICAS}#
+    requests:
+      cpu: 1m
+      memory: 64Mi
+    limits:
+      cpu: 50m
+      memory: 128Mi
+
+# Postgres Cluster resource values:
+pgmonitor:
+  enabled: false
+  exporter:
+    image: # it's not necessary to specify an image as the images specified in the Crunchy Postgres Operator will be pulled by default
+    requests:
+      cpu: 1m
+      memory: 64Mi
+    limits:
+      cpu: 50m
+      memory: 128Mi

@@ -1,0 +1,5 @@
+.bin
+.github
+*.tar
+*.tar.gz
+charts/tools
