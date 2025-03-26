@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: 'farms-liquibase-db-access-#{ENV}#'
+  namespace: '#{NAMESPACE}#'
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: crunchy-postgres-#{ENV}#
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels: 
+            app: "farms-liquibase-#{ENV}#"

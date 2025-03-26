@@ -1,0 +1,17 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: farms-liquibase-config-#{ENV}#
+  namespace: '#{NAMESPACE}#'
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: v1
+      time: '2025-03-26T14:00:00Z'
+      fieldsType: FieldsV1
+  labels:
+    app: farms-api-#{ENV}#
+    project: farms-#{ENV}#
+immutable: false
+data:
+  LIQUIBASE_COMMAND_URL: jdbc:postgresql://crunchy-postgres-#{ENV}#-pgbouncer.#{NAMESPACE}#.svc.cluster.local/farms#{ENV}#

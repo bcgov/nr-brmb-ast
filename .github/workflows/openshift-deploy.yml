@@ -1,0 +1,156 @@
+name: openshift deploy
+run-name: Deploy ${{ inputs.MICROSERVICE_NAME }} to ${{ inputs.ENVIRONMENT_NAME}}
+
+on:
+  workflow_dispatch:
+    inputs:
+      MICROSERVICE_NAME:
+        required: true
+        type: choice
+        options: 
+          - farms-api
+      ENVIRONMENT_NAME:
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - dlvr
+          - test
+          - prod
+      NAMESPACE:
+        required: true
+        type: choice
+        options: 
+          - e980f4-dev
+          - e980f4-test
+          - e980f4-prod
+      TAG:
+        required: false
+        type: string
+        default: latest
+  workflow_call:
+    inputs:
+      MICROSERVICE_NAME:
+        required: true
+        type: string
+      ENVIRONMENT_NAME:
+        required: true
+        type: string
+      NAMESPACE:
+        required: true
+        type: string
+      TAG:
+        required: true
+        type: string
+        default: latest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT_NAME }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy openshift yaml files
+        run: mkdir staging && cp openshift/${{ inputs.MICROSERVICE_NAME }}*.yaml staging/
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ vars.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: update IMAGE NAME variable if needed
+        id: updateImageName
+        run: |
+          export IMAGE_NAME='farms-api'
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_OUTPUT
+
+      - name: Get digest of docker image
+        id: getDigest
+        run: |
+          export IMAGE='ghcr.io/${{github.repository_owner}}/${{ steps.updateImageName.outputs.IMAGE_NAME}}:${{ inputs.TAG }}'
+          docker pull $IMAGE
+          echo "IMAGE_BY_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' $IMAGE)" >> $GITHUB_OUTPUT
+
+      - name: Fill yaml files
+        uses: cschleiden/replace-tokens@v1.2
+        with:
+          files: staging/**.yaml
+        env:
+          #Common variables
+          LICENSE_PLATE: 'e980f4'
+          #Vault path is different for prod than all other environments
+          VAULT_RESOURCE: ${{ inputs.NAMESPACE == 'e980f4-prod' && 'prod' || 'nonprod'  }}
+          ENV: ${{ inputs.ENVIRONMENT_NAME }}
+          NAMESPACE: ${{ inputs.NAMESPACE }}
+          TAG: ${{ inputs.TAG }}
+          IMAGE_BY_DIGEST: ${{ steps.getDigest.outputs.IMAGE_BY_DIGEST }}
+          SID: ${{ github.run_id }}
+          LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+          CONNECTION_TIMEOUT: ${{ vars.CONNECTION_TIMEOUT }}
+
+          POSTGRES_USERNAME: ${{ vars.POSTGRES_USERNAME}}
+
+
+          #API variables
+          API_CPU_REQUEST: ${{ vars.API_CPU_REQUEST }}
+          API_CPU_LIMIT: ${{ vars.API_CPU_LIMIT }}
+          API_MEMORY_REQUEST: ${{ vars.API_MEMORY_REQUEST }}
+          API_MEMORY_LIMIT: ${{ vars.API_MEMORY_LIMIT }}
+          MAX_API_COUNT: ${{ vars.MAX_APP_COUNT }}
+
+          POSTGRES_RESOURCE_NAME: ${{ vars.POSTGRES_RESOURCE_NAME }}
+
+          TOMCAT_MAX_THREADS: ${{ vars.TOMCAT_MAX_THREADS }}
+          TOMCAT_PORT: ${{ vars.TOMCAT_PORT }}
+          TIME_ZONE: ${{ vars.TIME_ZONE }}
+
+
+          #DB/Liquibase variables:
+          POSTGRES_MAXACTIVE: '10'
+          CHANGELOG_FILE: changelog.json
+
+          
+          #Frontend variables
+          MAX_UI_COUNT: ${{ vars.MAX_UI_COUNT }}
+          FARMS_REST_URI: https://farms-api-route-${{ inputs.ENVIRONMENT_NAME }}-${{inputs.NAMESPACE}}.apps.silver.devops.gov.bc.ca/farms-api/v1
+
+          ACTIVE_PORT: ${{ vars.TOMCAT_PORT }}
+          LOCAL_CHECKTOKEN_ENDPOINT: ${{ vars.LOCAL_CHECKTOKEN_ENDPOINT }}
+
+          WEB_PATH: ${{ vars.WEB_PATH }}
+
+      #Explicit install of oc cli tool
+      - name: Install oc
+        uses: redhat-actions/oc-installer@v1
+      
+      - name: Authenticate and set context
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
+          openshift_token: ${{secrets.OPENSHIFT_TOKEN}}
+          namespace: ${{ inputs.NAMESPACE }}
+
+      - name: Apply .yaml files to openshift
+        run: |
+          for file in staging/*
+          do
+            oc apply -f "$file"
+          done
+      
+
+
+
+      
+
+
+      

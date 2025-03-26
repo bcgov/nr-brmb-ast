@@ -1,0 +1,85 @@
+name: Liquibase DDL application
+run-name: Deploy Liquibase to ${{ inputs.ENVIRONMENT_NAME }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT_NAME:
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - dlvr
+          - test
+          - prod
+      NAMESPACE:
+        required: true
+        type: choice
+        options: 
+          - e980f4-dev
+          - e980f4-test
+          - e980f4-prod
+      TAG:
+        required: false
+        type: string
+        default: latest
+
+jobs:
+
+  ddl_dockerbuild:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT_NAME }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ vars.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta_pr
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ vars.REGISTRY}}/${{ github.repository_owner }}/farms-liquibase
+          tags: |
+            type=schedule
+            type=raw,value=${{ github.base_ref }}
+            type=ref,event=tag
+            type=raw,value=${{ inputs.TAG }}
+            ${{ toJson(github.event.pull_request.number) == '{}' && format( 'type=raw,value=pr-{0}', github.event.pull_request.number) || '' }} 
+
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./farms-liquibase
+          push: true
+          tags: ${{ steps.meta_pr.outputs.tags }}
+          labels: ${{ steps.meta_pr.outputs.labels }}
+  
+
+  ddl_deploy:
+    needs: ddl_dockerbuild 
+    uses: ./.github/workflows/openshift-deploy.yml
+    secrets: inherit
+    with:
+      MICROSERVICE_NAME: farms-liquibase
+      ENVIRONMENT_NAME: ${{ inputs.ENVIRONMENT_NAME }}
+      NAMESPACE: ${{ inputs.NAMESPACE }}
+      TAG: ${{ inputs.TAG }}
+      

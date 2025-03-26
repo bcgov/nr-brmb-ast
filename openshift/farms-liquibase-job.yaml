@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: farms-liquibase-#{ENV}#-#{SID}#
+  labels:
+    app: farms-liquibase-#{ENV}#
+    project: farms-#{ENV}#
+spec:
+  parallelism: 1    
+  completions: 1    
+  activeDeadlineSeconds: 1800 
+  backoffLimit: 6   
+  template:         
+    metadata:
+      name: farms-liquibase-#{ENV}#-#{SID}#
+      annotations:
+        # 1. Vault injector configuration goes here, inside the template.
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-inject-token: 'false' # set to 'true' if you are going to connect and query vault from your application
+        vault.hashicorp.com/agent-pre-populate-only: 'true' # this makes sure the secret vault will only change during pod restart
+        vault.hashicorp.com/auth-path: auth/k8s-silver  # Must match cluster. Use one of: k8s-silver, k8s-gold, k8s-golddr, k8s-emerald
+        vault.hashicorp.com/namespace: platform-services
+        vault.hashicorp.com/role: #{LICENSE_PLATE}#-#{VAULT_RESOURCE}#  # licenseplate-nonprod or licenseplate-prod are your options
+        # Configure how to retrieve and populate the secrets from Vault:
+        # - The name of the secret is any unique string after vault.hashicorp.com/agent-inject-secret-<name>
+        # - The value is the path in Vault where the secret is located.
+        vault.hashicorp.com/agent-inject-secret-env: #{LICENSE_PLATE}#-#{VAULT_RESOURCE}#/data/#{ENV}#/secrets
+        # - The template Vault Agent should use for rendering a secret:
+        vault.hashicorp.com/agent-inject-template-env: |
+          {{- with secret "#{LICENSE_PLATE}#-#{VAULT_RESOURCE}#/data/#{ENV}#/secrets" }}
+            export LIQUIBASE_COMMAND_PASSWORD="{{ .Data.data.POSTGRES_ADMIN_PASSWORD }}"
+            export POSTGRES_ADMIN_PASSWORD="{{ .Data.data.POSTGRES_ADMIN_PASSWORD }}"
+            export LIQUIBASE_COMMAND_USERNAME="{{ .Data.data.POSTGRES_ADMIN_USERNAME }}"
+            export POSTGRES_PROXY_USER_PASSWORD="{{ .Data.data.POSTGRES_PASSWORD }}"
+            export POSTGRES_READONLY_PASSWORD="{{ .Data.data.POSTGRES_READ_ONLY_PASSWORD }}"
+            export POSTGRES_READ_ONLY_PASSWORD="{{ .Data.data.POSTGRES_READ_ONLY_PASSWORD }}"
+          {{- end }}          
+    spec:
+      serviceAccountName: #{LICENSE_PLATE}#-vault
+      containers:
+      - name: farms-liquibase-#{ENV}#
+        image: 'ghcr.io/bcgov/farms-liquibase:#{TAG}#'
+        command:
+          ['sh', '-c']
+        args:
+          ['. /vault/secrets/env && liquibase update --changelog-file=#{CHANGELOG_FILE}#']
+        imagePullPolicy: Always
+        resources:
+            requests:
+              cpu: 50m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 200Mi
+        env:
+          - name: LIQUIBASE_COMMAND_URL
+            valueFrom:
+              configMapKeyRef:
+                key: LIQUIBASE_COMMAND_URL
+                name: farms-liquibase-config-#{ENV}#
+      restartPolicy: Never
