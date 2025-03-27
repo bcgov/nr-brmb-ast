@@ -9,15 +9,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import ca.bc.gov.nrs.wfone.common.checkhealth.CheckHealthValidator;
 import ca.bc.gov.nrs.wfone.common.checkhealth.CompositeValidator;
 import ca.bc.gov.nrs.wfone.common.utils.ApplicationContextProvider;
 
 @Configuration
 @Import({
-    PropertiesSpringConfig.class,
-    WebConfig.class,
-    CorsFilter.class
+        PropertiesSpringConfig.class,
+        ServiceApiSpringConfig.class,
+        WebConfig.class,
+        CorsFilter.class
 })
 public class EndpointsSpringConfig {
 
