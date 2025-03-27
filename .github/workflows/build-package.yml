@@ -1,0 +1,104 @@
+name: build package
+
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      MICROSERVICE_NAME:
+        required: true
+        type: string
+      TOMCAT_PORT:
+        required: false
+        type: string
+        default: "8443"
+      TOMCAT_MAX_THREADS:
+        required: false
+        type: string
+        default: "150"
+      JAVA_VERSION:
+        required: false
+        type: string
+        default: "8"
+      TAG:
+        required: true
+        type: string
+
+env:
+  DIRECTORY_SUFFIX: ${{ contains(inputs.MICROSERVICE_NAME, '-api') && '-rest-endpoints' || '' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version number
+        id: getVersion
+        run: echo "VERSION_NUMBER=$(grep -Po -m 1 '(?<=<version>)[0-9\.]+(-SNAPSHOT)?'  ${{ inputs.MICROSERVICE_NAME }}/pom.xml )" >> $GITHUB_OUTPUT
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.JAVA_VERSION }}
+          distribution: 'adopt'
+          
+      - name: Build with Maven and push to artifactory
+        run: |
+          export MAVEN_OPTS="-Xmx3072m -XX:MaxMetaspaceSize=512m"
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          export RELEASE_URL=${{ vars.RELEASE_URL }}
+          export SNAPSHOT_URL=${{ vars.SNAPSHOT_URL }}
+          mvn --settings=settings.xml --batch-mode --update-snapshots -f ${{ inputs.MICROSERVICE_NAME }}/pom.xml -Drepo.login=${{ secrets.IDIR_AS_EMAIL }} -Drepo.password=${{ secrets.IDIR_PASSWORD }}  -DopenshiftRepo.login=${{ secrets.OPENSHIFT_ACCOUNT }} -DopenshiftRepo.password=${{ secrets.OPENSHIFT_PASSWORD }} deploy
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: staging
+          key: ${{ runner.os }}-maven-${{ hashFiles('**war.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ vars.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta_pr
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ vars.REGISTRY}}/${{ github.repository_owner }}/${{ inputs.MICROSERVICE_NAME }}
+          tags: |
+            type=schedule
+            type=raw,value=${{ github.base_ref }}
+            type=raw,value=latest
+            type=ref,event=tag
+            type=raw,value=${{ steps.getVersion.outputs.VERSION_NUMBER }}
+            type=raw,value=${{ inputs.TAG }}
+            ${{ toJson(github.event.pull_request.number) == '{}' && format( 'type=raw,value=pr-{0}', github.event.pull_request.number) || '' }} 
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ inputs.MICROSERVICE_NAME }}
+          push: true
+          tags: ${{ steps.meta_pr.outputs.tags }}
+          labels: ${{ steps.meta_pr.outputs.labels }}
+
+      # NOTE: We store built images in ghcr.io, but use artifactory as a pull-through repository - artifacts.developer.gov.bc.ca/github-docker-remote/bcgov
