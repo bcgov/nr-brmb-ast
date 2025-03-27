@@ -6,7 +6,7 @@ CREATE TABLE structure_group_code(
     revision_count          numeric(5, 0)    NOT NULL,
     create_user             varchar(30)      NOT NULL,
     create_date             timestamp(6)     NOT NULL,
-    update_user             timestamp(6),
+    update_user             varchar(30),
     update_date             timestamp(6)
 ) TABLESPACE pg_default
 ;
