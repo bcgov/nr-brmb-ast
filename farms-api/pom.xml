@@ -24,6 +24,16 @@
         <module>farms-api-rest-endpoints</module>
         <module>farms-persistence</module>
     </modules>
+    <distributionManagement>
+        <repository>
+            <id>openshift-releases</id>
+            <url>${RELEASE_URL}</url>
+        </repository>
+        <snapshotRepository>
+            <id>openshift-snapshots</id>
+            <url>${SNAPSHOT_URL}</url>
+        </snapshotRepository>
+    </distributionManagement>
     <dependencyManagement>
         <dependencies>
             <!-- Wildfire OrgUnit -->
