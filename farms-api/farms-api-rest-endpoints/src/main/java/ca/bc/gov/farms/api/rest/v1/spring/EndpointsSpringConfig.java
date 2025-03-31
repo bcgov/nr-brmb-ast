@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
@@ -57,6 +58,16 @@ public class EndpointsSpringConfig {
         DataSource result;
 
         result = farmsDataSource();
+
+        return result;
+    }
+
+    @Bean
+    public ResourceBundleMessageSource messageSource() {
+        ResourceBundleMessageSource result;
+
+        result = new ResourceBundleMessageSource();
+        result.setBasename("messages");
 
         return result;
     }
