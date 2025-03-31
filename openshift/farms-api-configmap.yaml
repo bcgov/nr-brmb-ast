@@ -10,7 +10,7 @@ data:
   CONNECTION_TIMEOUT: '#{CONNECTION_TIMEOUT}#'
   POSTGRES_MAXACTIVE: '#{POSTGRES_MAXACTIVE}#'
   POSTGRES_URL: >-
-    jdbc:postgresql://crunchy-postgres-#{ENV}#-pgbouncer.#{NAMESPACE}#.svc.cluster.local/pituw#{ENV}#
+    jdbc:postgresql://crunchy-postgres-#{ENV}#-pgbouncer.#{NAMESPACE}#.svc.cluster.local/farms#{ENV}#
   POSTGRES_RESOURCE_NAME: '#{POSTGRES_RESOURCE_NAME}#'
   POSTGRES_USERNAME: '#{POSTGRES_USERNAME}#'
   TIME_ZONE: '#{TIME_ZONE}#'

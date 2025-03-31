@@ -13,7 +13,7 @@ spec:
     metadata:
       labels:
         app: farms-api-#{ENV}#
-        project: brmb-pim-#{ENV}#
+        project: farms-#{ENV}#
       annotations:
         # 1. Vault injector configuration goes here, inside the template.
         vault.hashicorp.com/agent-inject: 'true'
