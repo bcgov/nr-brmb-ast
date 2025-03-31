@@ -18,6 +18,7 @@ import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import ca.bc.gov.nrs.wfone.common.api.rest.code.endpoints.spring.CodeEndpointsSpringConfig;
 import ca.bc.gov.nrs.wfone.common.checkhealth.CheckHealthValidator;
 import ca.bc.gov.nrs.wfone.common.checkhealth.CompositeValidator;
+import ca.bc.gov.nrs.wfone.common.checkhealth.DatabaseCheckHealthValidator;
 import ca.bc.gov.nrs.wfone.common.utils.ApplicationContextProvider;
 
 @Configuration
@@ -90,6 +91,21 @@ public class EndpointsSpringConfig {
     public List<CheckHealthValidator> healthCheckValidators() {
         List<CheckHealthValidator> result = new ArrayList<>();
 
+        result.add(databaseCheckHealthValidator());
+
         return result;
     }
+
+    @Bean(initMethod = "init")
+    public DatabaseCheckHealthValidator databaseCheckHealthValidator() {
+        DatabaseCheckHealthValidator result;
+
+        result = new DatabaseCheckHealthValidator();
+        result.setUsername("proxy_farms_rest");
+        result.setDescription("java:comp/env/jdbc/farms_rest");
+        result.setDataSource(farmsDataSource());
+
+        return result;
+    }
+
 }
