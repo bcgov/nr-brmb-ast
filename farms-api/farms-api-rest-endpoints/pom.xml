@@ -3,9 +3,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-	<artifactId>farms-api-rest-endpoints</artifactId>
-	<name>farms-api-rest-endpoints</name>
-	<packaging>war</packaging>
+    <artifactId>farms-api-rest-endpoints</artifactId>
+    <name>farms-api-rest-endpoints</name>
+    <packaging>war</packaging>
     <parent>
         <groupId>ca.bc.gov.farms</groupId>
         <artifactId>farms-api-parent</artifactId>
@@ -19,6 +19,10 @@
             <groupId>ca.bc.gov.farms</groupId>
             <artifactId>farms-service-api</artifactId>
             <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
+            <artifactId>wfone-common-code-endpoints</artifactId>
         </dependency>
         <dependency>
             <groupId>ca.bc.gov.nrs.wfone.common</groupId>
