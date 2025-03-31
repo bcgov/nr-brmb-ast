@@ -1,0 +1,24 @@
+<Context allowCasualMultipartParsing='false'>
+    <Resource auth="Container" 
+        factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+        name="jdbc/${POSTGRES_RESOURCE_NAME}" 
+        type="javax.sql.DataSource"
+        driverClassName="org.postgresql.Driver" 
+        url="${POSTGRES_URL}" 
+        username="${POSTGRES_USERNAME}" 
+        password="${POSTGRES_PASSWORD}"
+        maxActive="${POSTGRES_MAXACTIVE}" 
+        maxIdle="${POSTGRES_MAXACTIVE}"
+        minIdle="1"
+        initialSize="3"
+        maxWait="-1"
+        testOnBorrow="false"
+        testWhileIdle="true"
+        validationQuery="SELECT sysdate from dual"
+        timeBetweenEvictionRunsMillis="5000"
+        removeAbandoned="false"
+        removeAbandonedTimeout="60"
+        accessToUnderlyingConnectionAllowed="false"
+    />
+
+</Context>
