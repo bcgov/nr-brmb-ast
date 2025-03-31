@@ -79,16 +79,6 @@
             </dependency>
             <dependency>
                 <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-webade</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-webade-oauth2-test</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
                 <artifactId>wfone-common-rest-endpoints</artifactId>
                 <version>1.4.1-SNAPSHOT</version>
             </dependency>

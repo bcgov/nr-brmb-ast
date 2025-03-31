@@ -1,0 +1,17 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: farms-api-config-#{ENV}#
+  namespace: '#{NAMESPACE}#'
+immutable: false
+data:
+  TOMCAT_PORT: '#{TOMCAT_PORT}#'
+  TOMCAT_MAX_THREADS: '#{TOMCAT_MAX_THREADS}#'
+  CONNECTION_TIMEOUT: '#{CONNECTION_TIMEOUT}#'
+  POSTGRES_MAXACTIVE: '#{POSTGRES_MAXACTIVE}#'
+  POSTGRES_URL: >-
+    jdbc:postgresql://crunchy-postgres-#{ENV}#-pgbouncer.#{NAMESPACE}#.svc.cluster.local/pituw#{ENV}#
+  POSTGRES_RESOURCE_NAME: '#{POSTGRES_RESOURCE_NAME}#'
+  POSTGRES_USERNAME: '#{POSTGRES_USERNAME}#'
+  TIME_ZONE: '#{TIME_ZONE}#'
+  LOG_LEVEL: '#{LOG_LEVEL}#'

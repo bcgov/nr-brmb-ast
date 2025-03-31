@@ -1,0 +1,40 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  namespace: '#{NAMESPACE}#'
+  name: farms-api-autoscaler-#{ENV}#
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: farms-api-deployment-#{ENV}#
+  minReplicas: 1
+  maxReplicas: #{MAX_API_COUNT}#
+  metrics:
+    # These define triggers based on % request value, not % limit value
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          averageUtilization: 30
+          type: Utilization
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          averageUtilization: 150
+          type: Utilization
+  behaviour:
+    #scale down only if consistently below value, but scale up if briefly above value
+    scaleDown:
+      policies:
+        - type: pods
+          value: 1
+          periodSeconds: 120
+      stabilizationWindow: 15
+    scaleUp:
+      policies:
+        - type: pods
+          value: 1
+          periodSeconds: 15
+      stabilizationWindow: 15

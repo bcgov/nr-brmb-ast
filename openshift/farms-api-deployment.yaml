@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: '#{NAMESPACE}#'
+  name: farms-api-deployment-#{ENV}#
+  annotations: {}
+spec:
+  selector:
+    matchLabels:
+      app: farms-api-#{ENV}#
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: farms-api-#{ENV}#
+        project: brmb-pim-#{ENV}#
+      annotations:
+        # 1. Vault injector configuration goes here, inside the template.
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-inject-token: 'false' # set to 'true' if you are going to connect and query vault from your application
+        vault.hashicorp.com/agent-pre-populate-only: 'true' # this makes sure the secret vault will only change during pod restart
+        vault.hashicorp.com/auth-path: auth/k8s-silver  # Must match cluster. Use one of: k8s-silver, k8s-gold, k8s-golddr, k8s-emerald
+        vault.hashicorp.com/namespace: platform-services
+        vault.hashicorp.com/role: #{LICENSE_PLATE}#-#{VAULT_RESOURCE}#  # licenseplate-nonprod or licenseplate-prod are your options
+        # Configure how to retrieve and populate the secrets from Vault:
+        # - The name of the secret is any unique string after vault.hashicorp.com/agent-inject-secret-<name>
+        # - The value is the path in Vault where the secret is located.
+        vault.hashicorp.com/agent-inject-secret-env: #{LICENSE_PLATE}#-#{VAULT_RESOURCE}#/data/#{ENV}#/secrets
+        # - The template Vault Agent should use for rendering a secret:
+        vault.hashicorp.com/agent-inject-template-env: |
+          {{- with secret "#{LICENSE_PLATE}#-#{VAULT_RESOURCE}#/data/#{ENV}#/secrets" }}
+            export POSTGRES_PASSWORD="{{ .Data.data.POSTGRES_PASSWORD }}"
+          {{- end }}          
+    spec:
+      serviceAccountName: #{LICENSE_PLATE}#-vault
+      containers:
+        - name: container
+          image: '#{IMAGE_BY_DIGEST}#'
+          command:
+            ['sh', '-c']
+          args:
+            ['. /vault/secrets/env && catalina.sh run']
+          imagePullPolicy: Always
+          ports:
+            - containerPort: #{TOMCAT_PORT}#
+              protocol: TCP
+          env:
+            - name: TOMCAT_PORT
+              valueFrom: 
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: TOMCAT_PORT
+            - name: TOMCAT_MAX_THREADS
+              valueFrom: 
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: TOMCAT_MAX_THREADS
+            - name: CONNECTION_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: CONNECTION_TIMEOUT
+
+            - name: POSTGRES_RESOURCE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: POSTGRES_RESOURCE_NAME
+            - name: POSTGRES_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: POSTGRES_URL
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: POSTGRES_USERNAME
+            - name: POSTGRES_MAXACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: POSTGRES_MAXACTIVE
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: TIME_ZONE
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: LOG_LEVEL
+          livenessProbe:
+            httpGet:
+              path: /farms-api/v1/checkHealth?callstack=test
+              port: #{TOMCAT_PORT}#
+              scheme: HTTP
+            initialDelaySeconds: 200
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 2
+          resources:
+            requests:
+              cpu: #{API_CPU_REQUEST}#
+              memory: #{API_MEMORY_REQUEST}#
+            limits:
+              cpu: #{API_CPU_LIMIT}#
+              memory: #{API_MEMORY_LIMIT}#
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  paused: false
