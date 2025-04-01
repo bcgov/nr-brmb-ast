@@ -10,9 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import ca.bc.gov.farms.api.rest.v1.jersey.JerseyApplication;
 import ca.bc.gov.farms.api.rest.v1.spring.CorsFilter;
+import ca.bc.gov.farms.api.rest.v1.spring.EndpointsSpringConfig;
 import ca.bc.gov.nrs.wfone.common.rest.endpoints.filters.RequestMetricsFilter;
 import ca.bc.gov.nrs.wfone.common.rest.endpoints.filters.VersionForwardingFilter;
 
@@ -28,15 +31,10 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
-		super.onStartup(servletContext);
-
 		logger.info("<onStartup");
 
 		// Disable Jersey Spring Context Loader
 		servletContext.setInitParameter(PAR_NAME_CTX_CONFIG_LOCATION, "java configuration");
-
-		// Configure Jersey with Spring
-		JerseyApplication.configureJerseyWithSpring(servletContext);
 
 		ServletRegistration.Dynamic restServlet = servletContext.addServlet("Rest Servlet", ServletContainer.class);
 		restServlet.setInitParameter("javax.ws.rs.Application", JerseyApplication.class.getName());
@@ -57,6 +55,10 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 		FilterRegistration.Dynamic corsFilter = servletContext.addFilter("CORS Filter", CorsFilter.class);
 		corsFilter.addMappingForUrlPatterns(null, false, "/*");
+
+		AnnotationConfigWebApplicationContext rootAppContext = new AnnotationConfigWebApplicationContext();
+		rootAppContext.register(EndpointsSpringConfig.class);
+		servletContext.addListener(new ContextLoaderListener(rootAppContext));
 
 		logger.info(">onStartup");
 
