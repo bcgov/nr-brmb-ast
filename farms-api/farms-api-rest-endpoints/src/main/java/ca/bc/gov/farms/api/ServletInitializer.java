@@ -35,6 +35,9 @@ public class ServletInitializer extends SpringBootServletInitializer {
 		// Disable Jersey Spring Context Loader
 		servletContext.setInitParameter(PAR_NAME_CTX_CONFIG_LOCATION, "java configuration");
 
+		// Configure Jersey with Spring
+		JerseyApplication.configureJerseyWithSpring(servletContext);
+
 		ServletRegistration.Dynamic restServlet = servletContext.addServlet("Rest Servlet", ServletContainer.class);
 		restServlet.setInitParameter("javax.ws.rs.Application", JerseyApplication.class.getName());
 		restServlet.setLoadOnStartup(1);
