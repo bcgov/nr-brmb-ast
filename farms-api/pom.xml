@@ -21,6 +21,7 @@
     </properties>
     <modules>
         <module>farms-service-api</module>
+        <module>farms-api-rest-common</module>
         <module>farms-api-rest-endpoints</module>
         <module>farms-persistence</module>
     </modules>
