@@ -67,6 +67,13 @@
     </dependencies>
 
     <build>
+        <!-- Configure the resources to be filtered for property replacement -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
