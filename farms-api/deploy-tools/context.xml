@@ -14,7 +14,7 @@
         maxWait="-1"
         testOnBorrow="false"
         testWhileIdle="true"
-        validationQuery="SELECT sysdate from dual"
+        validationQuery="SELECT CURRENT_DATE"
         timeBetweenEvictionRunsMillis="5000"
         removeAbandoned="false"
         removeAbandonedTimeout="60"
