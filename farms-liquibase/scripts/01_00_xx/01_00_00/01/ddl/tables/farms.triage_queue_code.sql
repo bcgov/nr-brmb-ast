@@ -7,7 +7,7 @@ CREATE TABLE triage_queue_code(
     create_user          varchar(30)      NOT NULL,
     create_date          timestamp(6)     NOT NULL,
     update_user          varchar(30),
-    "update date"        timestamp(6)
+    update_date          timestamp(6)
 ) TABLESPACE pg_default
 ;
 

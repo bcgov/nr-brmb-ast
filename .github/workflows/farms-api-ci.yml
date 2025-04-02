@@ -1,0 +1,26 @@
+name: farms-api CI build
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    paths:
+      - farms-api/**
+
+jobs:
+  build-underwriting-api:
+    uses: ./.github/workflows/build-package.yml
+    secrets: inherit
+    with:
+      ENVIRONMENT: DEV
+      MICROSERVICE_NAME: farms-api
+
+  openshift-deploy:
+    uses: ./.github/workflows/openshift-deploy.yml
+    secrets: inherit
+    with:
+      MICROSERVICE_NAME: farms-api
+      NAMESPACE: ${{ vars.NAMESPACE }}
+      ENVIRONMENT_NAME: dev
+
+

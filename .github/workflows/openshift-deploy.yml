@@ -74,12 +74,12 @@ jobs:
           export IMAGE_NAME='farms-api'
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
-      #- name: Get digest of docker image
-      #  id: getDigest
-      #  run: |
-      #    export IMAGE='ghcr.io/${{github.repository_owner}}/${{ steps.updateImageName.outputs.IMAGE_NAME}}:${{ inputs.TAG }}'
-      #    docker pull $IMAGE
-      #    echo "IMAGE_BY_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' $IMAGE)" >> $GITHUB_OUTPUT
+      - name: Get digest of docker image
+        id: getDigest
+        run: |
+          export IMAGE='ghcr.io/${{github.repository_owner}}/${{ steps.updateImageName.outputs.IMAGE_NAME}}:${{ inputs.TAG }}'
+          docker pull $IMAGE
+          echo "IMAGE_BY_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' $IMAGE)" >> $GITHUB_OUTPUT
 
       - name: Fill yaml files
         uses: cschleiden/replace-tokens@v1.2

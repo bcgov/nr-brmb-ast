@@ -12,6 +12,7 @@ import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
 
 @Configuration
 @Import({
+        CodeHierarchySpringConfig.class, // can't remove this because some wfone stuff depends on it
         CodeTableSpringConfig.class
 })
 public class ServiceApiSpringConfig {
