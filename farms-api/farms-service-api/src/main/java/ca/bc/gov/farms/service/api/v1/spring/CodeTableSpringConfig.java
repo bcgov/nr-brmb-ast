@@ -52,7 +52,7 @@ public class CodeTableSpringConfig {
         result.add(configurationParameterTypeCodeConfig());
         result.add(crmEntityTypeCodeConfig());
         result.add(cropUnitCodeConfig());
-        result.add(enrollmentCalculationTypeCodeConfig());
+        result.add(enrolmentCalculationTypeCodeConfig());
         result.add(farmTypeCodeConfig());
         result.add(federalAccountingCodeConfig());
         result.add(federalStatusCodeConfig());
@@ -109,8 +109,8 @@ public class CodeTableSpringConfig {
         return createCodeTableConfig("crop_unit_code", "DESCRIPTION");
     }
 
-    private CodeTableConfig enrollmentCalculationTypeCodeConfig() {
-        return createCodeTableConfig("enrollment_calculation_type_code", "DESCRIPTION");
+    private CodeTableConfig enrolmentCalculationTypeCodeConfig() {
+        return createCodeTableConfig("enrolment_calculation_type_code", "DESCRIPTION");
     }
 
     private CodeTableConfig farmTypeCodeConfig() {

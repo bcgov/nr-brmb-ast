@@ -4,7 +4,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON farms.commodity_type_code TO "app_farms_
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.configuration_parameter_type_code TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.crm_entity_type_code TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.crop_unit_code TO "app_farms_rest_proxy";
-GRANT SELECT, INSERT, UPDATE, DELETE ON farms.enrollment_calculation_type_code TO "app_farms_rest_proxy";
+GRANT SELECT, INSERT, UPDATE, DELETE ON farms.enrolment_calculation_type_code TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_type_code TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.federal_accounting_code TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.federal_status_code TO "app_farms_rest_proxy";
