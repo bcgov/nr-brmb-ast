@@ -15,7 +15,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
-        http.authorizeRequests(
+        http.csrf(csrf -> csrf.disable()).authorizeRequests(
                 (requests) -> requests.antMatchers("/checkHealth").permitAll().anyRequest().authenticated());
     }
 }
