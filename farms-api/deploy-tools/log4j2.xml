@@ -18,6 +18,10 @@
     </Console>
   </Appenders>
   <Loggers>
+    <Logger name="org.glassfish.jersey" level="DEBUG" additivity="false">
+      <AppenderRef ref="file" />
+      <AppenderRef ref="Console" />
+    </Logger>
     <Logger name="ca.bc.gov.nrs.wfone.common.rest.endpoints" level="WARN" additivity="false">
       <AppenderRef ref="file" />
       <AppenderRef ref="Console" />
