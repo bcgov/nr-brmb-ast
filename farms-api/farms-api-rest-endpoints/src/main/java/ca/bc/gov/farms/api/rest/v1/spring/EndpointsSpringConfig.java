@@ -15,7 +15,6 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.endpoints.spring.CodeEndpointsSpringConfig;
 import ca.bc.gov.nrs.wfone.common.checkhealth.CheckHealthValidator;
 import ca.bc.gov.nrs.wfone.common.checkhealth.CompositeValidator;
 import ca.bc.gov.nrs.wfone.common.utils.ApplicationContextProvider;
