@@ -99,11 +99,6 @@
                 <version>1.4.1-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.azure.spring</groupId>
-                <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
-                <version>4.19.0</version>
-            </dependency>
-            <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>42.2.5</version>
