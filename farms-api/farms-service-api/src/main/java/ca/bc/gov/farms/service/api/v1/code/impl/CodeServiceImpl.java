@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.farms.service.api.v1.code.CodeService;
+import ca.bc.gov.farms.service.api.v1.model.factory.CodeFactory;
 import ca.bc.gov.nrs.wfone.common.model.Code;
 import ca.bc.gov.nrs.wfone.common.model.CodeHierarchy;
 import ca.bc.gov.nrs.wfone.common.model.CodeHierarchyList;
@@ -44,6 +45,8 @@ public class CodeServiceImpl implements CodeService {
     private CodeHierarchyDao codeHierarchyDao;
 
     private CodeTableFactory codeTableFactory;
+
+    private CodeFactory codeFactory;
 
     private CodeHierarchyFactory codeHierarchyFactory;
 
@@ -522,6 +525,10 @@ public class CodeServiceImpl implements CodeService {
         this.codeTableFactory = codeTableFactory;
     }
 
+    public void setCodeFactory(CodeFactory codeFactory) {
+        this.codeFactory = codeFactory;
+    }
+
     public void setCodeHierarchyFactory(CodeHierarchyFactory codeHierarchyFactory) {
         this.codeHierarchyFactory = codeHierarchyFactory;
     }
@@ -542,7 +549,64 @@ public class CodeServiceImpl implements CodeService {
     @Override
     public Code getCode(String codeTableName, String codeName, FactoryContext factoryContext)
             throws ServiceException, NotFoundException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCode'");
+        logger.debug("<getCode");
+
+        Code result = null;
+
+        if (codeTableConfigs == null || codeTableConfigs.isEmpty()) {
+            logger.warn("No codeTables have been configured.");
+        }
+
+        try {
+
+            CodeTableConfig codeTableConfig = null;
+            for (CodeTableConfig tmp : this.codeTableConfigs) {
+                if (tmp.getCodeTableName().equalsIgnoreCase(codeTableName)) {
+                    codeTableConfig = tmp;
+                    break;
+                }
+            }
+
+            if (codeTableConfig == null) {
+                throw new NotFoundException("Did not find the CodeTable: " + codeTableName);
+            }
+
+            CodeTableDao dao = codeTableConfig.getCodeTableDao();
+
+            if (dao == null) {
+                dao = this.codeTableDao;
+            }
+
+            if (dao == null) {
+                logger.error("No codeTableDao has been configured for " + codeTableConfig.getCodeTableName() + ".");
+            }
+
+            CodeTableDto codeTableDto = dao.fetch(codeTableConfig, null);
+
+            if (codeTableDto == null) {
+                throw new NotFoundException("Did not find the CodeTable: " + codeTableName);
+            }
+
+            CodeDto codeDto = null;
+            for (CodeDto tmp : codeTableDto.getCodes()) {
+                if (tmp.getCode().equalsIgnoreCase(codeName)) {
+                    codeDto = tmp;
+                    break;
+                }
+            }
+
+            if (codeDto == null) {
+                throw new NotFoundException("Did not find the Code: " + codeName);
+            }
+
+            result = this.codeFactory.getCode(codeTableDto, codeDto, factoryContext);
+
+        } catch (DaoException e) {
+
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">getCode " + result.getCode());
+        return result;
     }
 }
