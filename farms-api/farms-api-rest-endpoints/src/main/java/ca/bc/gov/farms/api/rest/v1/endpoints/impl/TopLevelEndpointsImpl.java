@@ -17,7 +17,6 @@ import ca.bc.gov.farms.api.rest.v1.resource.EndpointsRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.types.ResourceTypes;
 import ca.bc.gov.nrs.common.wfone.rest.resource.RelLink;
 import ca.bc.gov.nrs.wfone.common.api.rest.code.resource.factory.CodeTableResourceFactory;
-import ca.bc.gov.nrs.wfone.common.rest.endpoints.BaseEndpointsImpl;
 
 public class TopLevelEndpointsImpl extends BaseEndpointsImpl implements TopLevelEndpoints {
     /** Logger. */

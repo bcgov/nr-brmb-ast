@@ -13,12 +13,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
-
 import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.endpoints.spring.CodeEndpointsSpringConfig;
 import ca.bc.gov.nrs.wfone.common.checkhealth.CheckHealthValidator;
 import ca.bc.gov.nrs.wfone.common.checkhealth.CompositeValidator;
-import ca.bc.gov.nrs.wfone.common.checkhealth.DatabaseCheckHealthValidator;
 import ca.bc.gov.nrs.wfone.common.utils.ApplicationContextProvider;
 
 @Configuration
@@ -26,6 +23,7 @@ import ca.bc.gov.nrs.wfone.common.utils.ApplicationContextProvider;
         PropertiesSpringConfig.class,
         ServiceApiSpringConfig.class,
         CodeEndpointsSpringConfig.class,
+        SecurityConfig.class,
         WebConfig.class,
         CorsFilter.class
 })
@@ -97,10 +95,10 @@ public class EndpointsSpringConfig {
     }
 
     @Bean(initMethod = "init")
-    public DatabaseCheckHealthValidator databaseCheckHealthValidator() {
-        DatabaseCheckHealthValidator result;
+    public FarmsDatabaseCheckHealthValidator databaseCheckHealthValidator() {
+        FarmsDatabaseCheckHealthValidator result;
 
-        result = new DatabaseCheckHealthValidator();
+        result = new FarmsDatabaseCheckHealthValidator();
         result.setUsername("proxy_farms_rest");
         result.setDescription("java:comp/env/jdbc/farms_rest");
         result.setDataSource(farmsDataSource());

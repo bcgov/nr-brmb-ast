@@ -75,6 +75,11 @@
             </dependency>
             <dependency>
                 <groupId>ca.bc.gov.nrs.wfone.common</groupId>
+                <artifactId>wfone-common-code-service-api</artifactId>
+                <version>1.4.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
                 <artifactId>wfone-common-code-persistence</artifactId>
                 <version>1.4.1-SNAPSHOT</version>
             </dependency>

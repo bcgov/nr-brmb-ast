@@ -29,7 +29,7 @@ COMMENT ON COLUMN triage_queue_code.create_date IS 'CREATE DATE indicates when t
 ;
 COMMENT ON COLUMN triage_queue_code.update_user IS 'UPDATE USER indicates the user that updated the physical record in the database.'
 ;
-COMMENT ON COLUMN triage_queue_code."update date" IS 'UPDATE DATE indicates when the physical record was updated in the database.'
+COMMENT ON COLUMN triage_queue_code.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
 COMMENT ON TABLE triage_queue_code IS 'TRIAGE QUEUE CODE indicates which task queue an agristability client should be sent to for verification. Examples of codes and descriptions are DA_ZPP - Data Assessment: Zero Payment - Pass, DA_AZF - Data Assessment: Abbotsford - Zero - Fail.'
 ;

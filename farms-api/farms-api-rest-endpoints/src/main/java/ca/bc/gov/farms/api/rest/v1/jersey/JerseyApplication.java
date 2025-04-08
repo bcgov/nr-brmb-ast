@@ -6,9 +6,9 @@ import javax.ws.rs.core.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.CodeTableEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.CodeTableListEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.TopLevelEndpointsImpl;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.endpoints.impl.CodeTableEndpointsImpl;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.endpoints.impl.CodeTableListEndpointsImpl;
 import ca.bc.gov.nrs.wfone.common.rest.endpoints.jersey.JerseyResourceConfig;
 
 public class JerseyApplication extends JerseyResourceConfig {

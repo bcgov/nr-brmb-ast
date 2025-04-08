@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>ca.bc.gov.nrs.wfone.common</groupId>
+            <artifactId>wfone-common-code-service-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
             <artifactId>wfone-common-code-persistence</artifactId>
         </dependency>
         <dependency>

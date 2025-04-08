@@ -44,7 +44,7 @@
                     {
                         "sqlFile": {
                             "relativeToChangelogFile": "true",
-                            "path": "ddl/tables/farms.enrollment_calculation_type_code.sql"
+                            "path": "ddl/tables/farms.enrolment_calculation_type_code.sql"
                         }
                     },
                     {
