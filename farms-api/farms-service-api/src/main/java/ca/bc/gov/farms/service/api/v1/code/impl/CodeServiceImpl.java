@@ -538,4 +538,11 @@ public class CodeServiceImpl implements CodeService {
             List<CodeHierarchyConfig> codeHierarchyConfigs) {
         this.codeHierarchyConfigs = codeHierarchyConfigs;
     }
+
+    @Override
+    public Code getCode(String codeTableName, String codeName, FactoryContext factoryContext)
+            throws ServiceException, NotFoundException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCode'");
+    }
 }

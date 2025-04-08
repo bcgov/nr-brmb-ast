@@ -19,6 +19,13 @@ import ca.bc.gov.nrs.wfone.common.service.api.model.factory.FactoryContext;
 public interface CodeService {
 
     @Transactional(transactionManager = "transactionManager", readOnly = true, rollbackFor = Exception.class)
+    public Code getCode(
+            String codeTableName,
+            String codeName,
+            FactoryContext factoryContext)
+            throws ServiceException, NotFoundException;
+
+    @Transactional(transactionManager = "transactionManager", readOnly = true, rollbackFor = Exception.class)
     public CodeTableList<? extends CodeTable<? extends Code>> getCodeTableList(
             LocalDate effectiveAsOfDate,
             String codeTableName,
