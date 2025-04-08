@@ -12,10 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import ca.bc.gov.farms.api.rest.v1.endpoints.CodeTableEndpoints;
 import ca.bc.gov.farms.service.api.v1.code.CodeService;
 import ca.bc.gov.nrs.common.wfone.rest.resource.CodeTableRsrc;
 import ca.bc.gov.nrs.common.wfone.rest.resource.MessageListRsrc;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.endpoints.CodeTableEndpoints;
 import ca.bc.gov.nrs.wfone.common.api.rest.code.parameters.EffectiveAsOfParameter;
 import ca.bc.gov.nrs.wfone.common.api.rest.code.parameters.validation.CodeParameterValidator;
 import ca.bc.gov.nrs.wfone.common.model.Message;
