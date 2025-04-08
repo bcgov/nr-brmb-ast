@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import ca.bc.gov.farms.api.rest.v1.resource.factory.CodeResourceFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.CodeFactory;
 import ca.bc.gov.nrs.wfone.common.api.rest.code.parameters.validation.CodeParameterValidator;
 import ca.bc.gov.nrs.wfone.common.api.rest.code.resource.factory.CodeHierarchyResourceFactory;
 import ca.bc.gov.nrs.wfone.common.api.rest.code.resource.factory.CodeTableResourceFactory;
@@ -37,6 +39,15 @@ public class CodeEndpointsSpringConfig {
         CodeTableResourceFactory result;
 
         result = new CodeTableResourceFactory();
+
+        return result;
+    }
+
+    @Bean
+    public CodeFactory codeFactory() {
+        CodeResourceFactory result;
+
+        result = new CodeResourceFactory();
 
         return result;
     }
