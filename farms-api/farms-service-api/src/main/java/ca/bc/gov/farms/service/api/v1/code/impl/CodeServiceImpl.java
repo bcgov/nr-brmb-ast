@@ -2,6 +2,7 @@ package ca.bc.gov.farms.service.api.v1.code.impl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -609,4 +610,75 @@ public class CodeServiceImpl implements CodeService {
         logger.debug(">getCode " + result.getCode());
         return result;
     }
+
+    @Override
+    public Code createCode(String codeTableName, String optimisticLock, Code code, FactoryContext factoryContext)
+            throws ServiceException, NotFoundException, ConflictException {
+        logger.debug("<createCode");
+
+        Code result = null;
+
+        if (codeTableConfigs == null || codeTableConfigs.isEmpty()) {
+            logger.warn("No codeTables have been configured.");
+        }
+
+        try {
+
+            CodeTableConfig codeTableConfig = null;
+            for (CodeTableConfig tmp : this.codeTableConfigs) {
+                if (tmp.getCodeTableName().equalsIgnoreCase(codeTableName)) {
+                    codeTableConfig = tmp;
+                    break;
+                }
+            }
+
+            if (codeTableConfig == null) {
+                throw new NotFoundException("Did not find the CodeTable: " + codeTableName);
+            }
+
+            CodeTableDao dao = codeTableConfig.getCodeTableDao();
+
+            if (dao == null) {
+                dao = this.codeTableDao;
+            }
+
+            if (dao == null) {
+                logger.error("No codeTableDao has been configured for " + codeTableConfig.getCodeTableName() + ".");
+            }
+
+            CodeTableDto codeTableDto = dao.fetch(codeTableConfig, null);
+
+            if (codeTableDto == null) {
+                throw new NotFoundException("Did not find the CodeTable: " + codeTableName);
+            }
+
+            Iterator<CodeDto> codeIterator = codeTableDto.getCodes().iterator();
+            while (codeIterator.hasNext()) {
+                CodeDto tmp = codeIterator.next();
+                if (tmp.getCode().equalsIgnoreCase(code.getCode())) {
+                    throw new ServiceException("Code already exists: " + code.getCode());
+                }
+            }
+
+            CodeDto codeDto = new CodeDto();
+            codeDto.setCode(code.getCode());
+            codeDto.setDescription(code.getDescription());
+            codeDto.setDisplayOrder(code.getDisplayOrder());
+            codeDto.setEffectiveDate(code.getEffectiveDate());
+            codeDto.setExpiryDate(code.getExpiryDate());
+            codeTableDto.getCodes().add(codeDto);
+            dao.update(codeTableConfig, codeTableDto, optimisticLock, "UserId");
+
+            result = this.codeFactory.getCode(codeTableDto, codeDto, factoryContext);
+
+        } catch (OptimisticLockingFailureDaoException e) {
+            throw new ConflictException(e.getMessage());
+        } catch (DaoException e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">createCode " + result.getCode());
+        return result;
+    }
+
 }
