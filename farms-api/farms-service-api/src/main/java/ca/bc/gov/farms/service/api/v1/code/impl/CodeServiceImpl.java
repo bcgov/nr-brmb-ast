@@ -681,4 +681,66 @@ public class CodeServiceImpl implements CodeService {
         return result;
     }
 
+    @Override
+    public void deleteCode(String codeTableName, String optimisticLock, String codeName, FactoryContext factoryContext)
+            throws ServiceException, NotFoundException {
+        logger.debug("<deleteCode");
+
+        if (codeTableConfigs == null || codeTableConfigs.isEmpty()) {
+            logger.warn("No codeTables have been configured.");
+        }
+
+        try {
+
+            CodeTableConfig codeTableConfig = null;
+            for (CodeTableConfig tmp : this.codeTableConfigs) {
+                if (tmp.getCodeTableName().equalsIgnoreCase(codeTableName)) {
+                    codeTableConfig = tmp;
+                    break;
+                }
+            }
+
+            if (codeTableConfig == null) {
+                throw new NotFoundException("Did not find the CodeTable: " + codeTableName);
+            }
+
+            CodeTableDao dao = codeTableConfig.getCodeTableDao();
+
+            if (dao == null) {
+                dao = this.codeTableDao;
+            }
+
+            if (dao == null) {
+                logger.error("No codeTableDao has been configured for " + codeTableConfig.getCodeTableName() + ".");
+            }
+
+            CodeTableDto codeTableDto = dao.fetch(codeTableConfig, null);
+
+            if (codeTableDto == null) {
+                throw new NotFoundException("Did not find the CodeTable: " + codeTableName);
+            }
+
+            boolean found = false;
+            Iterator<CodeDto> codeIterator = codeTableDto.getCodes().iterator();
+            while (codeIterator.hasNext()) {
+                CodeDto tmp = codeIterator.next();
+                if (tmp.getCode().equalsIgnoreCase(codeName)) {
+                    found = true;
+                    codeIterator.remove();
+                }
+            }
+
+            if (!found) {
+                throw new NotFoundException("Did not find the Code: " + codeName);
+            }
+
+            dao.update(codeTableConfig, codeTableDto, optimisticLock, "UserId");
+
+        } catch (DaoException e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">deleteCode");
+    }
+
 }

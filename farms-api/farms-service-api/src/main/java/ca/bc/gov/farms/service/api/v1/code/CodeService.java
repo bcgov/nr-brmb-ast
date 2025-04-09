@@ -34,6 +34,14 @@ public interface CodeService {
             throws ServiceException, NotFoundException, ConflictException;
 
     @Transactional(transactionManager = "transactionManager", readOnly = true, rollbackFor = Exception.class)
+    public void deleteCode(
+            String codeTableName,
+            String optimisticLock,
+            String codeName,
+            FactoryContext factoryContext)
+            throws ServiceException, NotFoundException;
+
+    @Transactional(transactionManager = "transactionManager", readOnly = true, rollbackFor = Exception.class)
     public CodeTableList<? extends CodeTable<? extends Code>> getCodeTableList(
             LocalDate effectiveAsOfDate,
             String codeTableName,
