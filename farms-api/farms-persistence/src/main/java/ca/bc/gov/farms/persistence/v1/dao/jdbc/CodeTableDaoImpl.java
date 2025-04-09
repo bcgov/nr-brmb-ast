@@ -248,7 +248,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
                             ? "REVISION_COUNT = REVISION_COUNT + 1, "
                             : "")
                     + "UPDATE_USER = ?, "
-                    + "UPDATE_TIMESTAMP = CURRENT_DATE "
+                    + "UPDATE_DATE = CURRENT_TIMESTAMP "
                     + "WHERE " + codeTableConfig.getCodeTableName() + " = ?";
 
         }
@@ -291,7 +291,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
                     + (Boolean.TRUE.equals(codeTableConfig.getUseRevisionCount())
                             ? "REVISION_COUNT = REVISION_COUNT + 1, "
                             : "")
-                    + "UPDATE_USER = ?, UPDATE_TIMESTAMP = CURRENT_DATE WHERE " + codeTableConfig.getCodeTableName()
+                    + "UPDATE_USER = ?, UPDATE_DATE = CURRENT_TIMESTAMP WHERE " + codeTableConfig.getCodeTableName()
                     + " = ?";
 
         }
