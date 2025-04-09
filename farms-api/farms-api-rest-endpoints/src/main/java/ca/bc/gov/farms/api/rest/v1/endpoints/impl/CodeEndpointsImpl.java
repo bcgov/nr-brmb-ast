@@ -43,4 +43,32 @@ public class CodeEndpointsImpl extends BaseEndpointsImpl implements CodeEndpoint
         logger.debug(">getCode " + response);
         return response;
     }
+
+    @Override
+    public Response createCode(String codeTableName, CodeRsrc codeRsrc) {
+        logger.debug("<createCode");
+
+        Response response = null;
+
+        logRequest();
+
+        try {
+
+            String optimisticLock = getIfMatchHeader();
+
+            CodeRsrc result = (CodeRsrc) service.createCode(codeTableName, optimisticLock, codeRsrc,
+                    getFactoryContext());
+
+            response = Response.status(Status.CREATED).entity(result).tag(result.getUnquotedETag()).build();
+        } catch (NotFoundException e) {
+            response = Response.status(Status.NOT_FOUND).build();
+        } catch (Throwable t) {
+            response = getInternalServerErrorResponse(t);
+        }
+
+        logResponse(response);
+
+        logger.debug(">createCode " + response.getStatus());
+        return response;
+    }
 }
