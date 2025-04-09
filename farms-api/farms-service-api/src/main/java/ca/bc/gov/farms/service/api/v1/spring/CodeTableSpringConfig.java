@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Import;
 
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.nrs.wfone.common.persistence.code.dao.CodeTableConfig;
-import ca.bc.gov.nrs.wfone.common.persistence.code.spring.CodePersistenceSpringConfig;
 
 @Configuration
 @Import({
@@ -229,11 +228,12 @@ public class CodeTableSpringConfig {
         CodeTableConfig result = new CodeTableConfig();
 
         String fetchSql = String.format(
-                "SELECT T.%s CODE, T.DESCRIPTION, NULL DISPLAY_ORDER, T.ESTABLISHED_DATE EFFECTIVE_DATE, T.EXPIRY_DATE, T.REVISION_COUNT, T.CREATE_USER, T.CREATE_DATE, T.UPDATE_USER, T.UPDATE_DATE FROM %s T ORDER BY T."
+                "SELECT T.%s CODE, T.DESCRIPTION, NULL DISPLAY_ORDER, T.ESTABLISHED_DATE, T.EXPIRY_DATE, T.REVISION_COUNT, T.CREATE_USER, T.CREATE_DATE, T.UPDATE_USER, T.UPDATE_DATE FROM %s T ORDER BY T."
                         + sortColumn,
                 tableName, tableName);
 
         result.setUseRevisionCount(Boolean.TRUE);
+        result.setUseDisplayOrder(Boolean.FALSE);
         result.setCodeTableDao(codePersistenceSpringConfig.codeTableDao());
         result.setCodeTableName(tableName);
         result.setFetchSql(fetchSql);
