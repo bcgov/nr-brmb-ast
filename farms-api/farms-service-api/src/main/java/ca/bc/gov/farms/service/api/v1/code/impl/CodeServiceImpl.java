@@ -683,7 +683,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     public void deleteCode(String codeTableName, String optimisticLock, String codeName, FactoryContext factoryContext)
-            throws ServiceException, NotFoundException {
+            throws ServiceException, NotFoundException, ConflictException {
         logger.debug("<deleteCode");
 
         if (codeTableConfigs == null || codeTableConfigs.isEmpty()) {
@@ -736,6 +736,8 @@ public class CodeServiceImpl implements CodeService {
 
             dao.update(codeTableConfig, codeTableDto, optimisticLock, "UserId");
 
+        } catch (OptimisticLockingFailureDaoException e) {
+            throw new ConflictException(e.getMessage());
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
         }

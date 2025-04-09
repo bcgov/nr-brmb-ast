@@ -39,7 +39,7 @@ public interface CodeService {
             String optimisticLock,
             String codeName,
             FactoryContext factoryContext)
-            throws ServiceException, NotFoundException;
+            throws ServiceException, NotFoundException, ConflictException;
 
     @Transactional(transactionManager = "transactionManager", readOnly = true, rollbackFor = Exception.class)
     public CodeTableList<? extends CodeTable<? extends Code>> getCodeTableList(

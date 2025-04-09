@@ -71,4 +71,31 @@ public class CodeEndpointsImpl extends BaseEndpointsImpl implements CodeEndpoint
         logger.debug(">createCode " + response.getStatus());
         return response;
     }
+
+    @Override
+    public Response deleteCode(String codeTableName, String codeName) {
+        logger.debug("<deleteCode");
+
+        Response response = null;
+
+        logRequest();
+
+        try {
+
+            String optimisticLock = getIfMatchHeader();
+
+            service.deleteCode(codeTableName, optimisticLock, codeName, getFactoryContext());
+
+            response = Response.status(Status.NO_CONTENT).build();
+        } catch (NotFoundException e) {
+            response = Response.status(Status.NOT_FOUND).build();
+        } catch (Throwable t) {
+            response = getInternalServerErrorResponse(t);
+        }
+
+        logResponse(response);
+
+        logger.debug(">deleteCode " + response.getStatus());
+        return response;
+    }
 }
