@@ -804,6 +804,8 @@ public class CodeServiceImpl implements CodeService {
             codeDto.setExpiryDate(code.getExpiryDate());
             dao.update(codeTableConfig, codeTableDto, optimisticLock, "UserId");
 
+            result = this.codeFactory.getCode(codeTableDto, codeDto, factoryContext);
+
         } catch (OptimisticLockingFailureDaoException e) {
             throw new ConflictException(e.getMessage());
         } catch (DaoException e) {
