@@ -42,7 +42,7 @@ public interface CodeService {
             throws ServiceException, NotFoundException, ConflictException;
 
     @Transactional(transactionManager = "transactionManager", readOnly = true, rollbackFor = Exception.class)
-    public void updateCode(
+    public Code updateCode(
             String codeTableName,
             String optimisticLock,
             Code code,

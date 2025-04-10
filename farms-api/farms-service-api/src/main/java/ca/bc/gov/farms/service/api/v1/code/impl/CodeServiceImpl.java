@@ -746,7 +746,7 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    public void updateCode(String codeTableName, String optimisticLock, Code code, FactoryContext factoryContext)
+    public Code updateCode(String codeTableName, String optimisticLock, Code code, FactoryContext factoryContext)
             throws ServiceException, NotFoundException, ConflictException {
         logger.debug("<updateCode");
 
@@ -810,7 +810,8 @@ public class CodeServiceImpl implements CodeService {
             throw new ServiceException("DAO threw an exception", e);
         }
 
-        logger.debug(">updateCode");
+        logger.debug(">updateCode " + result.getCode());
+        return result;
     }
 
 }
