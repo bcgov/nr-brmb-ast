@@ -42,19 +42,19 @@ public class CodeResourceFactory extends BaseResourceFactory implements CodeFact
         String result = UriBuilder
                 .fromUri(baseUri)
                 .path(CodeEndpoints.class)
-                .build(codeTableName, resource.getCode()).toString();
+                .build(codeTableName).toString();
         resource.getLinks().add(
                 new RelLink(UPDATE_CODE,
-                        result, "GET"));
+                        result + "/" + resource.getCode(), "GET"));
     }
 
     public static String getCodeSelfUri(String codeTableName, String codeName, URI baseUri) {
 
         String result = UriBuilder.fromUri(baseUri)
                 .path(CodeEndpoints.class)
-                .build(codeTableName, codeName).toString();
+                .build(codeTableName).toString();
 
-        return result;
+        return result + "/" + codeName;
     }
 
     public static void setSelfLink(CodeRsrc resource, String codeTableName, URI baseUri) {
