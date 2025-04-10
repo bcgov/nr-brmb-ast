@@ -745,4 +745,72 @@ public class CodeServiceImpl implements CodeService {
         logger.debug(">deleteCode");
     }
 
+    @Override
+    public void updateCode(String codeTableName, String optimisticLock, Code code, FactoryContext factoryContext)
+            throws ServiceException, NotFoundException, ConflictException {
+        logger.debug("<updateCode");
+
+        Code result = null;
+
+        if (codeTableConfigs == null || codeTableConfigs.isEmpty()) {
+            logger.warn("No codeTables have been configured.");
+        }
+
+        try {
+
+            CodeTableConfig codeTableConfig = null;
+            for (CodeTableConfig tmp : this.codeTableConfigs) {
+                if (tmp.getCodeTableName().equalsIgnoreCase(codeTableName)) {
+                    codeTableConfig = tmp;
+                    break;
+                }
+            }
+
+            if (codeTableConfig == null) {
+                throw new NotFoundException("Did not find the CodeTable: " + codeTableName);
+            }
+
+            CodeTableDao dao = codeTableConfig.getCodeTableDao();
+
+            if (dao == null) {
+                dao = this.codeTableDao;
+            }
+
+            if (dao == null) {
+                logger.error("No codeTableDao has been configured for " + codeTableConfig.getCodeTableName() + ".");
+            }
+
+            CodeTableDto codeTableDto = dao.fetch(codeTableConfig, null);
+
+            if (codeTableDto == null) {
+                throw new NotFoundException("Did not find the CodeTable: " + codeTableName);
+            }
+
+            CodeDto codeDto = null;
+            for (CodeDto tmp : codeTableDto.getCodes()) {
+                if (tmp.getCode().equalsIgnoreCase(code.getCode())) {
+                    codeDto = tmp;
+                    break;
+                }
+            }
+
+            if (codeDto == null) {
+                throw new NotFoundException("Did not find the Code: " + code.getCode());
+            }
+
+            codeDto.setDescription(code.getDescription());
+            codeDto.setDisplayOrder(code.getDisplayOrder());
+            codeDto.setEffectiveDate(code.getEffectiveDate());
+            codeDto.setExpiryDate(code.getExpiryDate());
+            dao.update(codeTableConfig, codeTableDto, optimisticLock, "UserId");
+
+        } catch (OptimisticLockingFailureDaoException e) {
+            throw new ConflictException(e.getMessage());
+        } catch (DaoException e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">updateCode");
+    }
+
 }
