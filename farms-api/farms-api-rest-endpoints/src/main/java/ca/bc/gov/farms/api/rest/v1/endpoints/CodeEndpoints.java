@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-@Path("/codeTables/{codeTableName}")
+@Path("/codeTables/{codeTableName}/codes")
 @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public interface CodeEndpoints {
 
@@ -41,7 +41,7 @@ public interface CodeEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
-    @Path("/codes/{codeName}")
+    @Path("/{codeName}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getCode(
             @Parameter(description = "The identifier of the CodeTable resource.") @PathParam("codeTableName") String codeTableName,
@@ -84,7 +84,7 @@ public interface CodeEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @DELETE
-    @Path("/codes/{codeName}")
+    @Path("/{codeName}")
     public Response deleteCode(
             @Parameter(description = "The identifier of the CodeTable resource.") @PathParam("codeTableName") String codeTableName,
             @Parameter(description = "The identifier of the Code resource.") @PathParam("codeName") String codeName);
@@ -104,7 +104,6 @@ public interface CodeEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @PUT
-    @Path("/codes/{codeName}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response updateCode(
