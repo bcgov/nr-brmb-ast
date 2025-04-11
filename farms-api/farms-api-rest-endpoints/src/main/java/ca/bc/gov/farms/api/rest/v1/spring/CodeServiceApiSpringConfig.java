@@ -3,6 +3,7 @@ package ca.bc.gov.farms.api.rest.v1.spring;
 import java.util.List;
 
 import ca.bc.gov.farms.service.api.v1.code.impl.CodeServiceImpl;
+import ca.bc.gov.farms.service.api.v1.model.factory.CodeFactory;
 import ca.bc.gov.nrs.wfone.common.persistence.code.dao.CodeHierarchyConfig;
 import ca.bc.gov.nrs.wfone.common.service.api.code.model.factory.CodeHierarchyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class CodeServiceApiSpringConfig {
     private ResourceBundleMessageSource messageSource;
     @Autowired
     private CodeTableFactory codeTableFactory;
+    @Autowired
+    private CodeFactory codeFactory;
     @Autowired
     private CodeHierarchyFactory codeHierarchyFactory;
 
@@ -50,6 +53,7 @@ public class CodeServiceApiSpringConfig {
         result = new CodeServiceImpl();
         result.setCodeValidator(codeValidator());
         result.setCodeTableFactory(codeTableFactory);
+        result.setCodeFactory(codeFactory);
         result.setCodeTableConfigs(codeTableConfigs);
         result.setCodeHierarchyFactory(codeHierarchyFactory);
         result.setCodeHierarchyConfigs(codeHierarchyConfigs);

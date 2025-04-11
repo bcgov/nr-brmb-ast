@@ -1,7 +1,6 @@
 package ca.bc.gov.farms.service.api.v1.spring;
 
 import ca.bc.gov.nrs.wfone.common.persistence.code.dao.CodeHierarchyConfig;
-import ca.bc.gov.nrs.wfone.common.persistence.code.spring.CodePersistenceSpringConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
