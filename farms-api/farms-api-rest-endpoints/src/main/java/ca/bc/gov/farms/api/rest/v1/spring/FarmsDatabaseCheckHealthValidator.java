@@ -9,8 +9,8 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.bc.gov.nrs.common.wfone.rest.resource.HealthCheckResponseRsrc;
-import ca.bc.gov.nrs.wfone.common.checkhealth.DatabaseCheckHealthValidator;
+import ca.bc.gov.brmb.common.rest.resource.HealthCheckResponseRsrc;
+import ca.bc.gov.brmb.common.checkhealth.DatabaseCheckHealthValidator;
 
 public class FarmsDatabaseCheckHealthValidator extends DatabaseCheckHealthValidator {
 

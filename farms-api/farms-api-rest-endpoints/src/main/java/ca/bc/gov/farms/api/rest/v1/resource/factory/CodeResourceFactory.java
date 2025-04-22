@@ -7,14 +7,14 @@ import javax.ws.rs.core.UriBuilder;
 import ca.bc.gov.farms.api.rest.v1.endpoints.CodeEndpoints;
 import ca.bc.gov.farms.api.rest.v1.resource.CodeRsrc;
 import ca.bc.gov.farms.service.api.v1.model.factory.CodeFactory;
-import ca.bc.gov.nrs.common.wfone.rest.resource.RelLink;
-import ca.bc.gov.nrs.common.wfone.rest.resource.types.BaseResourceTypes;
-import ca.bc.gov.nrs.wfone.common.model.Code;
-import ca.bc.gov.nrs.wfone.common.persistence.code.dto.CodeDto;
-import ca.bc.gov.nrs.wfone.common.persistence.code.dto.CodeTableDto;
-import ca.bc.gov.nrs.wfone.common.rest.endpoints.resource.factory.BaseResourceFactory;
-import ca.bc.gov.nrs.wfone.common.service.api.model.factory.FactoryContext;
-import ca.bc.gov.nrs.wfone.common.service.api.model.factory.FactoryException;
+import ca.bc.gov.brmb.common.rest.resource.RelLink;
+import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
+import ca.bc.gov.brmb.common.model.Code;
+import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
+import ca.bc.gov.brmb.common.persistence.code.dto.CodeTableDto;
+import ca.bc.gov.brmb.common.rest.endpoints.resource.factory.BaseResourceFactory;
+import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
+import ca.bc.gov.brmb.common.service.api.model.factory.FactoryException;
 
 public class CodeResourceFactory extends BaseResourceFactory implements CodeFactory {
 

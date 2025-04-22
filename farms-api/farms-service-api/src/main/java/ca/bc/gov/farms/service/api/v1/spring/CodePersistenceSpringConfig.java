@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ca.bc.gov.farms.persistence.v1.dao.jdbc.CodeTableDaoImpl;
-import ca.bc.gov.nrs.wfone.common.persistence.code.dao.CodeHierarchyDao;
-import ca.bc.gov.nrs.wfone.common.persistence.code.dao.CodeTableDao;
-import ca.bc.gov.nrs.wfone.common.persistence.code.dao.jdbc.CodeHierarchyDaoImpl;
+import ca.bc.gov.brmb.common.persistence.code.dao.CodeHierarchyDao;
+import ca.bc.gov.brmb.common.persistence.code.dao.CodeTableDao;
+import ca.bc.gov.brmb.common.persistence.code.dao.jdbc.CodeHierarchyDaoImpl;
 
 @Configuration
 public class CodePersistenceSpringConfig {

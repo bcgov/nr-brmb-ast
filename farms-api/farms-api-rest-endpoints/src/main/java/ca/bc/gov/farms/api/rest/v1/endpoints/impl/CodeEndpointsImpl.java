@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ca.bc.gov.farms.api.rest.v1.endpoints.CodeEndpoints;
 import ca.bc.gov.farms.api.rest.v1.resource.CodeRsrc;
 import ca.bc.gov.farms.service.api.v1.code.CodeService;
-import ca.bc.gov.nrs.wfone.common.service.api.NotFoundException;
+import ca.bc.gov.brmb.common.service.api.NotFoundException;
 
 public class CodeEndpointsImpl extends BaseEndpointsImpl implements CodeEndpoints {
 

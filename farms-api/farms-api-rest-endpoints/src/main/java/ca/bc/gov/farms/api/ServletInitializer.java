@@ -12,8 +12,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import ca.bc.gov.farms.api.rest.v1.jersey.JerseyApplication;
 import ca.bc.gov.farms.api.rest.v1.spring.CorsFilter;
-import ca.bc.gov.nrs.wfone.common.rest.endpoints.filters.RequestMetricsFilter;
-import ca.bc.gov.nrs.wfone.common.rest.endpoints.filters.VersionForwardingFilter;
+import ca.bc.gov.brmb.common.rest.endpoints.filters.RequestMetricsFilter;
+import ca.bc.gov.brmb.common.rest.endpoints.filters.VersionForwardingFilter;
 
 public class ServletInitializer extends SpringBootServletInitializer {
 

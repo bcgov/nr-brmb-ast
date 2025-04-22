@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import ca.bc.gov.farms.api.rest.v1.resource.types.ResourceTypes;
-import ca.bc.gov.nrs.common.wfone.rest.resource.BaseResource;
+import ca.bc.gov.brmb.common.rest.resource.BaseResource;
 
 @XmlRootElement(namespace = ResourceTypes.NAMESPACE, name = ResourceTypes.ENDPOINTS_NAME)
 @JsonSubTypes({ @Type(value = EndpointsRsrc.class, name = ResourceTypes.ENDPOINTS) })

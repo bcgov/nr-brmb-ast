@@ -1,10 +1,10 @@
 package ca.bc.gov.farms.service.api.v1.model.factory;
 
-import ca.bc.gov.nrs.wfone.common.model.Code;
-import ca.bc.gov.nrs.wfone.common.persistence.code.dto.CodeDto;
-import ca.bc.gov.nrs.wfone.common.persistence.code.dto.CodeTableDto;
-import ca.bc.gov.nrs.wfone.common.service.api.model.factory.FactoryContext;
-import ca.bc.gov.nrs.wfone.common.service.api.model.factory.FactoryException;
+import ca.bc.gov.brmb.common.model.Code;
+import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
+import ca.bc.gov.brmb.common.persistence.code.dto.CodeTableDto;
+import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
+import ca.bc.gov.brmb.common.service.api.model.factory.FactoryException;
 
 public interface CodeFactory {
 

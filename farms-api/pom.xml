@@ -44,59 +44,59 @@
                 <version>1.0.0</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-model</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-model</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-rest-common</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-rest-common</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-rest-client</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-rest-client</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-persistence</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-persistence</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-utils</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-utils</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-service-api</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-service-api</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-code-service-api</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-code-service-api</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-code-persistence</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-code-persistence</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-rest-endpoints</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-rest-endpoints</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-code-endpoints</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-code-endpoints</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-                <artifactId>wfone-common-checkhealth</artifactId>
-                <version>1.4.1-SNAPSHOT</version>
+                <groupId>ca.bc.gov.brmb.common</groupId>
+                <artifactId>brmb-common-checkhealth</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>

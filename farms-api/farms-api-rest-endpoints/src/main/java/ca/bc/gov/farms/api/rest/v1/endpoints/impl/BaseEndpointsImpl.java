@@ -36,17 +36,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import ca.bc.gov.nrs.common.wfone.rest.resource.HeaderConstants;
-import ca.bc.gov.nrs.common.wfone.rest.resource.MessageListRsrc;
-import ca.bc.gov.nrs.common.wfone.rest.resource.Redirect;
-import ca.bc.gov.nrs.common.wfone.rest.resource.RelLink;
-import ca.bc.gov.nrs.common.wfone.rest.resource.types.BaseResourceTypes;
-import ca.bc.gov.nrs.wfone.common.model.Message;
-import ca.bc.gov.nrs.wfone.common.rest.endpoints.BaseEndpoints;
-import ca.bc.gov.nrs.wfone.common.rest.endpoints.resource.factory.ResourceFactoryContext;
-import ca.bc.gov.nrs.wfone.common.service.api.model.factory.FactoryContext;
-import ca.bc.gov.nrs.wfone.common.utils.ByteUtils;
-import ca.bc.gov.nrs.wfone.common.utils.HttpServletRequestHolder;
+import ca.bc.gov.brmb.common.rest.resource.HeaderConstants;
+import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
+import ca.bc.gov.brmb.common.rest.resource.Redirect;
+import ca.bc.gov.brmb.common.rest.resource.RelLink;
+import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
+import ca.bc.gov.brmb.common.model.Message;
+import ca.bc.gov.brmb.common.rest.endpoints.BaseEndpoints;
+import ca.bc.gov.brmb.common.rest.endpoints.resource.factory.ResourceFactoryContext;
+import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
+import ca.bc.gov.brmb.common.utils.ByteUtils;
+import ca.bc.gov.brmb.common.utils.HttpServletRequestHolder;
 
 public abstract class BaseEndpointsImpl implements BaseEndpoints {
 

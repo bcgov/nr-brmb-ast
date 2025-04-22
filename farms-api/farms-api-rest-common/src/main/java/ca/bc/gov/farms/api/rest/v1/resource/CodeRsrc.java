@@ -11,12 +11,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import ca.bc.gov.nrs.common.wfone.rest.resource.BaseResource;
-import ca.bc.gov.nrs.common.wfone.rest.resource.transformers.LocalDateJAXBAdapter;
-import ca.bc.gov.nrs.common.wfone.rest.resource.transformers.LocalDateJacksonDeserializer;
-import ca.bc.gov.nrs.common.wfone.rest.resource.transformers.LocalDateJacksonSerializer;
-import ca.bc.gov.nrs.common.wfone.rest.resource.types.BaseResourceTypes;
-import ca.bc.gov.nrs.wfone.common.model.Code;
+import ca.bc.gov.brmb.common.rest.resource.BaseResource;
+import ca.bc.gov.brmb.common.rest.resource.transformers.LocalDateJAXBAdapter;
+import ca.bc.gov.brmb.common.rest.resource.transformers.LocalDateJacksonDeserializer;
+import ca.bc.gov.brmb.common.rest.resource.transformers.LocalDateJacksonSerializer;
+import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
+import ca.bc.gov.brmb.common.model.Code;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @XmlRootElement(namespace = BaseResourceTypes.COMMON_NAMESPACE, name = BaseResourceTypes.CODE_NAME)

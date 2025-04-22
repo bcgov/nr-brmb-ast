@@ -8,11 +8,11 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 import ca.bc.gov.farms.api.rest.v1.resource.factory.CodeResourceFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.CodeFactory;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.parameters.validation.CodeParameterValidator;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.resource.factory.CodeHierarchyResourceFactory;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.resource.factory.CodeTableResourceFactory;
-import ca.bc.gov.nrs.wfone.common.service.api.code.model.factory.CodeHierarchyFactory;
-import ca.bc.gov.nrs.wfone.common.service.api.code.model.factory.CodeTableFactory;
+import ca.bc.gov.brmb.common.api.rest.code.parameters.validation.CodeParameterValidator;
+import ca.bc.gov.brmb.common.api.rest.code.resource.factory.CodeHierarchyResourceFactory;
+import ca.bc.gov.brmb.common.api.rest.code.resource.factory.CodeTableResourceFactory;
+import ca.bc.gov.brmb.common.service.api.code.model.factory.CodeHierarchyFactory;
+import ca.bc.gov.brmb.common.service.api.code.model.factory.CodeTableFactory;
 
 @Configuration
 @Import({

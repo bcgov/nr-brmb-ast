@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
-import ca.bc.gov.nrs.wfone.common.persistence.code.dao.CodeTableConfig;
+import ca.bc.gov.brmb.common.persistence.code.dao.CodeTableConfig;
 
 @Configuration
 @Import({

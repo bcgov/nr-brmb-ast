@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
-import ca.bc.gov.nrs.wfone.common.model.Message;
-import ca.bc.gov.nrs.wfone.common.persistence.code.dto.CodeDto;
-import ca.bc.gov.nrs.wfone.common.persistence.dao.DaoException;
-import ca.bc.gov.nrs.wfone.common.service.api.validation.BaseValidator;
-import ca.bc.gov.nrs.wfone.common.utils.MessageBuilder;
+import ca.bc.gov.brmb.common.model.Message;
+import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
+import ca.bc.gov.brmb.common.persistence.dao.DaoException;
+import ca.bc.gov.brmb.common.service.api.validation.BaseValidator;
+import ca.bc.gov.brmb.common.utils.MessageBuilder;
 
 public class ModelValidator extends BaseValidator {
 

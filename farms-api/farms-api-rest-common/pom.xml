@@ -15,8 +15,8 @@
 
         <!-- NRS Common -->
         <dependency>
-            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-            <artifactId>wfone-common-rest-common</artifactId>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-rest-common</artifactId>
         </dependency>
     </dependencies>
 
