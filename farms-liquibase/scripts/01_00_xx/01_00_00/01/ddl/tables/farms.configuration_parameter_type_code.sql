@@ -1,7 +1,7 @@
 CREATE TABLE configuration_parameter_type_code(
     configuration_parameter_type_code    varchar(10)      NOT NULL,
     description                          varchar(256)     NOT NULL,
-    established_date                     date             NOT NULL,
+    effective_date                       date             NOT NULL,
     expiry_date                          date             NOT NULL,
     revision_count                       numeric(5, 0)    NOT NULL,
     create_user                          varchar(30)      NOT NULL,
@@ -17,7 +17,7 @@ COMMENT ON COLUMN configuration_parameter_type_code.configuration_parameter_type
 ;
 COMMENT ON COLUMN configuration_parameter_type_code.description IS 'DESCRIPTION is a textual description of the code value.'
 ;
-COMMENT ON COLUMN configuration_parameter_type_code.established_date IS 'ESTABLISHED DATE identifies the effective date of the record.'
+COMMENT ON COLUMN configuration_parameter_type_code.effective_date IS 'EFFECTIVE DATE identifies the effective date of the record.'
 ;
 COMMENT ON COLUMN configuration_parameter_type_code.expiry_date IS 'EXPIRY DATE identifies the date this record is no longer valid.'
 ;
