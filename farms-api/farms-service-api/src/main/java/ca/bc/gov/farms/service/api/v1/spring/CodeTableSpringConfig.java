@@ -12,10 +12,12 @@ import org.springframework.context.annotation.Import;
 
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.brmb.common.persistence.code.dao.CodeTableConfig;
+import ca.bc.gov.brmb.common.persistence.code.spring.CodeHierarchySpringConfig;
 import ca.bc.gov.brmb.common.persistence.code.spring.CodePersistenceSpringConfig;
 
 @Configuration
 @Import({
+        CodeHierarchySpringConfig.class, // can't remove this because some brmb stuff depends on it
         CodePersistenceSpringConfig.class
 })
 public class CodeTableSpringConfig {
