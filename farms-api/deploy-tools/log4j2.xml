@@ -18,10 +18,6 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="ca.bc.gov.nrs.wfone.common.rest.endpoints" level="WARN" additivity="false">
-      <AppenderRef ref="file" />
-      <AppenderRef ref="Console" />
-    </Logger>
     <Root level="${env:LOG_LEVEL}">
       <AppenderRef ref="file" />
       <AppenderRef ref="Console" />

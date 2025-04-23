@@ -15,16 +15,16 @@
 
         <!-- NRS Common -->
         <dependency>
-            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-            <artifactId>wfone-common-persistence</artifactId>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-persistence</artifactId>
         </dependency>
         <dependency>
-            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-            <artifactId>wfone-common-code-persistence</artifactId>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-code-persistence</artifactId>
         </dependency>
         <dependency>
-            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-            <artifactId>wfone-common-utils</artifactId>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-utils</artifactId>
         </dependency>
 
         <dependency>

@@ -26,16 +26,16 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-            <artifactId>wfone-common-rest-endpoints</artifactId>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-rest-endpoints</artifactId>
         </dependency>
         <dependency>
-            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-            <artifactId>wfone-common-code-endpoints</artifactId>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-code-endpoints</artifactId>
         </dependency>
         <dependency>
-            <groupId>ca.bc.gov.nrs.wfone.common</groupId>
-            <artifactId>wfone-common-checkhealth</artifactId>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-checkhealth</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -81,6 +81,36 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-persistence</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-utils</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-service-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-code-service-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-code-persistence</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-rest-common</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

@@ -13,17 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ca.bc.gov.farms.api.rest.v1.endpoints.CodeTableEndpoints;
-import ca.bc.gov.farms.service.api.v1.code.CodeService;
-import ca.bc.gov.nrs.common.wfone.rest.resource.CodeTableRsrc;
-import ca.bc.gov.nrs.common.wfone.rest.resource.MessageListRsrc;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.parameters.EffectiveAsOfParameter;
-import ca.bc.gov.nrs.wfone.common.api.rest.code.parameters.validation.CodeParameterValidator;
-import ca.bc.gov.nrs.wfone.common.model.Message;
-import ca.bc.gov.nrs.wfone.common.service.api.ConflictException;
-import ca.bc.gov.nrs.wfone.common.service.api.ForbiddenException;
-import ca.bc.gov.nrs.wfone.common.service.api.NotFoundException;
-import ca.bc.gov.nrs.wfone.common.service.api.ValidationFailureException;
-import ca.bc.gov.nrs.wfone.common.utils.DateUtils;
+import ca.bc.gov.brmb.common.rest.resource.CodeTableRsrc;
+import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
+import ca.bc.gov.brmb.common.api.rest.code.parameters.EffectiveAsOfParameter;
+import ca.bc.gov.brmb.common.api.rest.code.parameters.validation.CodeParameterValidator;
+import ca.bc.gov.brmb.common.model.Message;
+import ca.bc.gov.brmb.common.service.api.ConflictException;
+import ca.bc.gov.brmb.common.service.api.ForbiddenException;
+import ca.bc.gov.brmb.common.service.api.NotFoundException;
+import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
+import ca.bc.gov.brmb.common.service.api.code.CodeService;
+import ca.bc.gov.brmb.common.utils.DateUtils;
 
 public class CodeTableEndpointsImpl extends BaseEndpointsImpl implements
         CodeTableEndpoints {
