@@ -45,14 +45,14 @@
      <enabled>false</enabled>
    </snapshots>
    <id>openshift-releases</id>
-   <name>na12-pim-libs-release</name>
-   <url>https://artifacts.developer.gov.bc.ca:443/artifactory/na12-pim-libs-release</url>
+   <name>ne98-farms-libs-release</name>
+   <url>https://artifacts.developer.gov.bc.ca:443/artifactory/ne98-farms-libs-release</url>
  </repository>
  <repository>
    <snapshots />
    <id>openshift-snapshots</id>
-   <name>na12-pim-libs-snapshot</name>
-   <url>https://artifacts.developer.gov.bc.ca:443/artifactory/na12-pim-libs-snapshot</url>
+   <name>ne98-farms-libs-snapshot</name>
+   <url>https://artifacts.developer.gov.bc.ca:443/artifactory/ne98-farms-libs-snapshot</url>
  </repository>
 </repositories>
 <pluginRepositories>

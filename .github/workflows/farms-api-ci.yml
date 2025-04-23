@@ -8,7 +8,7 @@ on:
       - farms-api/**
 
 jobs:
-  build-underwriting-api:
+  build-farms-api:
     uses: ./.github/workflows/build-package.yml
     secrets: inherit
     with:
