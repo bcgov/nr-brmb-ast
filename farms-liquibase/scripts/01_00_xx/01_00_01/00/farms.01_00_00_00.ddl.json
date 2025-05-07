@@ -1,0 +1,1122 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "3",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.agristabilty_commodity_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.benchmark_per_unit.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.benchmark_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.benefit_calculation_document.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.benefit_calculation_margin.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.benefit_calculation_total.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.chef_submission.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.chef_submission_crm_entity.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.client_subscription.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.configuration_parameter.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.crop_unit_conversion_factor.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.crop_unit_default.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.document_template.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.expected_production.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.fair_market_value.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.farming_operatin_partner.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.farming_operation.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.fruit_vegetable_type_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.import_log.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.import_version.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.inventory_item_attribute.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.inventory_item_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.market_rate_premium.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.negative_margin.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.office_municipality_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.person.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.production_insurance.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.productive_unit_capacity.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.program_enrolment.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.program_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.program_year_version.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_benefit_risk_productive_units_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_forage_consumer.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_production_forage_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_production_fruit_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_production_fruit_vegetables_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_production_grain_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_result_message.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_fruit_vegetables_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_fruit_vegetables_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_grain_forage_seed_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_grain_forage_seed_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_hog_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_hog_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_nursery_income.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_nursery_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_nursery_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_poultry_broilers_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_revenue_poultry_egg_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reasonability_test_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reference_scenario.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reported_income_expenses.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.reported_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.scenario_bpu_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.scenario_configuration_parameter.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.scenario_enrolment.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.scenario_log.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.scenario_state_audit.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.sector_detail_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.sector_detail_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.structure_group_attribute.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_benchmark_expense.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_benchmark_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_farm_type_1_lookup.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_farm_type_2_lookup.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_farm_type_3_lookup.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_income_range.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_report_document.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_report_expense.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.tip_report_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.user.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.whole_farm_participant.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.year_configuration_parameter.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z01_participant_information.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z02_participant_farm_information.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z03_statement_information.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z04_income_expenses_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z05_partner_information.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z21_participant_supplementary.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z22_production_insurance.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z23_livestock_production_capacity.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z28_production_insurance_reference.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z29_inventory_code_reference.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z40_participant_reference_supplemental_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z42_participant_reference_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z50_participant_benefit_calculation.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z51_participant_contribution.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.z99_extract_file.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.zaarm_margin.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.zbpu_benchmark_per_unit.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.zfmv_fair_market_value.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.zivpr_iv_premium_rate.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.zprogram_enrolment.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.aarm_margin.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.agristability_claim.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.agristability_client.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.agristability_representative.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farms.agristability_scenario.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path": "ddl/grants/farms.ddl.apply_grants.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.agristability_claim.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.agristability_client.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.agristability_scenario.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.agristabilty_commodity_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.benchmark_per_unit.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.benchmark_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.benefit_calculation_document.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.benefit_calculation_margin.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.benefit_calculation_total.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.chef_submission.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.chef_submission_crm_entity.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.client_subscription.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.configuration_parameter.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.crop_unit_conversion_factor.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.crop_unit_default.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.expected_production.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.fair_market_value.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.farming_operatin_partner.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.farming_operation.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.fruit_vegetable_type_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.import_log.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.import_version.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.inventory_item_attribute.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.inventory_item_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.negative_margin.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.office_municipality_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.production_insurance.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.productive_unit_capacity.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.program_enrolment.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.program_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.program_year_version.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_benefit_risk_productive_units_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_forage_consumer.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_production_forage_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_production_fruit_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_production_fruit_vegetables_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_production_grain_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_result_message.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_fruit_vegetables_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_fruit_vegetables_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_grain_forage_seed_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_grain_forage_seed_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_hog_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_hog_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_nursery_income.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_nursery_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_nursery_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_poultry_broilers_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_revenue_poultry_egg_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reasonability_test_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reference_scenario.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reported_income_expenses.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.reported_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.scenario_bpu_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.scenario_configuration_parameter.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.scenario_enrolment.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.scenario_log.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.scenario_state_audit.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.sector_detail_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.sector_detail_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.structure_group_attribute.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.tip_benchmark_expense.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.tip_benchmark_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.tip_farm_type_1_lookup.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.tip_farm_type_2_lookup.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.tip_income_range.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.tip_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.tip_report_document.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.tip_report_expense.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.tip_report_result.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.whole_farm_participant.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.year_configuration_parameter.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z02_participant_farm_information.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z03_statement_information.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z04_income_expenses_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z05_partner_information.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z21_participant_supplementary.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z22_production_insurance.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z23_livestock_production_capacity.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z40_participant_reference_supplemental_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z42_participant_reference_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z50_participant_benefit_calculation.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path:": "ddl/references/farms.z51_participant_contribution.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
