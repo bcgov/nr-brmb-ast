@@ -33,6 +33,8 @@ COMMENT ON TABLE structure_group_attribute IS 'STRUCTURE GROUP ATTRIBUTE is addi
 
 
 CREATE INDEX ix_sga_rsgc ON structure_group_attribute(rollup_structure_group_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_sga_sgc ON structure_group_attribute(structure_group_code)
+ TABLESPACE pg_default
 ;

@@ -51,14 +51,20 @@ COMMENT ON TABLE productive_unit_capacity IS 'PRODUCTIVE UNIT CAPACITY is a meas
 
 
 CREATE INDEX ix_puc_asi ON productive_unit_capacity(agristability_scenario_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_puc_foi ON productive_unit_capacity(farming_operation_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_puc_iic ON productive_unit_capacity(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_puc_pdsc ON productive_unit_capacity(participant_data_source_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_puc_cpuci ON productive_unit_capacity(cra_productive_unit_capacity_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_puc_sgc ON productive_unit_capacity(structure_group_code)
+ TABLESPACE pg_default
 ;

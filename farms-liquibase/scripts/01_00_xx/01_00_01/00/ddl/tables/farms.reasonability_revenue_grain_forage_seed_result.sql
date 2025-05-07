@@ -43,6 +43,8 @@ COMMENT ON TABLE reasonability_revenue_grain_forage_seed_result IS 'REASONABILIT
 
 
 CREATE INDEX ix_rrgfsr_rtri ON reasonability_revenue_grain_forage_seed_result(reasonability_test_result_id)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_rrgfsr_rtri_li ON reasonability_revenue_grain_forage_seed_result(reasonability_test_result_id, line_item)
+ TABLESPACE pg_default
 ;

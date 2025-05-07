@@ -57,8 +57,11 @@ COMMENT ON TABLE reasonability_revenue_grain_forage_seed_inventory IS 'REASONABI
 
 
 CREATE INDEX ix_rrgfsi_cuc ON reasonability_revenue_grain_forage_seed_inventory(crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rrgfsi_iic ON reasonability_revenue_grain_forage_seed_inventory(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_rrgfsi_rtri_iic ON reasonability_revenue_grain_forage_seed_inventory(reasonability_test_result_id, inventory_item_code)
+ TABLESPACE pg_default
 ;

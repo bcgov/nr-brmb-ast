@@ -69,6 +69,8 @@ COMMENT ON TABLE import_version IS 'IMPORT VERSION defines the number used to id
 
 
 CREATE INDEX ix_iv_icc ON import_version(import_class_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_iv_isc ON import_version(import_state_code)
+ TABLESPACE pg_default
 ;

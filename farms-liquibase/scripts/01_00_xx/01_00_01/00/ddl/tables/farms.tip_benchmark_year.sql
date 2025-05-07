@@ -198,8 +198,11 @@ COMMENT ON TABLE tip_benchmark_year IS 'TIP BENCHMARK YEAR contains the results 
 
 
 CREATE INDEX ix_tby_py_ft3n ON tip_benchmark_year(program_year, farm_type_3_name)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_tby_py_ry_ft3n_ft2n_ft1n_irh ON tip_benchmark_year(program_year, reference_year, farm_type_3_name, farm_type_2_name, farm_type_1_name, income_range_high)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_tby_py_ry_ft3n_ft2n_ft1n_irl ON tip_benchmark_year(program_year, reference_year, farm_type_3_name, farm_type_2_name, farm_type_1_name, income_range_low)
+ TABLESPACE pg_default
 ;

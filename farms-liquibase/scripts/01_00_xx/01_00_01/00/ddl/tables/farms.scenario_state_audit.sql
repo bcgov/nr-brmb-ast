@@ -36,6 +36,8 @@ COMMENT ON TABLE scenario_state_audit IS 'SCENARIO STATE AUDIT tracks changes to
 
 
 CREATE INDEX ix_ssa_asi ON scenario_state_audit(agristability_scenario_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_ssa_ssc ON scenario_state_audit(scenario_state_code)
+ TABLESPACE pg_default
 ;

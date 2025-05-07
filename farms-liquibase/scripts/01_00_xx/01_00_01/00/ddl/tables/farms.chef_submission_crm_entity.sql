@@ -34,8 +34,11 @@ COMMENT ON TABLE chef_submission_crm_entity IS 'CHEF SUBMISSION CRM ENTITIES is 
 
 
 CREATE INDEX ix_csce_cetc ON chef_submission_crm_entity(crm_entity_type_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_csce_csi ON chef_submission_crm_entity(chef_submission_id)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_csce_csi_ceg ON chef_submission_crm_entity(chef_submission_id, crm_entity_guid)
+ TABLESPACE pg_default
 ;

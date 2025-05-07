@@ -78,28 +78,41 @@ COMMENT ON TABLE line_item IS 'LINE ITEM describes valid incomes and expensed us
 
 
 CREATE INDEX ix_li_py_efrci ON line_item(program_year, exclude_from_revenue_calculation_indicator)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_py_efryi ON line_item(program_year, eligibility_for_reference_years_indicator)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_py_ei ON line_item(program_year, eligibility_indicator)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_ed ON line_item(expiry_date)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_ctc ON line_item(commodity_type_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_fvtc ON line_item(fruit_vegetable_type_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_py_iaei ON line_item(program_year, industry_average_expense_indicator)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_py_cwi ON line_item(program_year, contract_work_indicator)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_py_li ON line_item(program_year, line_item)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_py_mei ON line_item(program_year, manual_expense_indicator)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_py_ppi ON line_item(program_year, program_payment_indicator)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_py_smci ON line_item(program_year, supply_managed_commodity_indicator)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_li_py_yi ON line_item(program_year, yardage_indicator)
+ TABLESPACE pg_default
 ;

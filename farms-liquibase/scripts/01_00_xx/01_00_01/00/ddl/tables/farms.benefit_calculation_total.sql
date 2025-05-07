@@ -138,4 +138,5 @@ COMMENT ON TABLE benefit_calculation_total IS 'BENEFIT CALCULATION TOTAL Is the 
 
 
 CREATE UNIQUE INDEX uk_bct_asi ON benefit_calculation_total(agristability_scenario_id)
+ TABLESPACE pg_default
 ;

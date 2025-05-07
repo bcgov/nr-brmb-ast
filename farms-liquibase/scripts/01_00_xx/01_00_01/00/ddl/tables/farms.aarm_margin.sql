@@ -61,6 +61,8 @@ COMMENT ON COLUMN aarm_margin.update_date IS 'UPDATE DATE indicates when the phy
 
 
 CREATE INDEX ix_am_pp_py_on ON aarm_margin(participant_pin, program_year, operation_number)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_am_pp_py_on_itc_ic ON aarm_margin(participant_pin, program_year, operation_number, inventory_type_code, inventory_code)
+ TABLESPACE pg_default
 ;

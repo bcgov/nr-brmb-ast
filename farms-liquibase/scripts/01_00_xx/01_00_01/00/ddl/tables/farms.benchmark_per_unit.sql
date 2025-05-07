@@ -45,12 +45,17 @@ COMMENT ON TABLE benchmark_per_unit IS 'BENCHMARK PER UNIT is the cost for growi
 
 
 CREATE INDEX ix_bpu_iic ON benchmark_per_unit(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_bpu_mc ON benchmark_per_unit(municipality_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_bpu_sgc ON benchmark_per_unit(structure_group_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_bpu_py_iic_mc ON benchmark_per_unit(program_year, inventory_item_code, municipality_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_bpu_py ON benchmark_per_unit(program_year)
+ TABLESPACE pg_default
 ;

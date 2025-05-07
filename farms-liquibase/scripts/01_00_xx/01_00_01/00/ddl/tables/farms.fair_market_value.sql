@@ -51,12 +51,17 @@ COMMENT ON TABLE fair_market_value IS 'FAIR MARKET VALUE is the market price for
 
 
 CREATE INDEX ix_fmv_cuc ON fair_market_value(crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_fmv_iic ON fair_market_value(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_fmv_mc ON fair_market_value(municipality_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_fmv_py_p_iic_mc_cuc ON fair_market_value(program_year, period, inventory_item_code, municipality_code, crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_fmv_py ON fair_market_value(program_year)
+ TABLESPACE pg_default
 ;

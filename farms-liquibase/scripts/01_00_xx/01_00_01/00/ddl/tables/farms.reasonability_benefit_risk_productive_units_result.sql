@@ -51,8 +51,11 @@ COMMENT ON TABLE reasonability_benefit_risk_productive_units_result IS 'REASONAB
 
 
 CREATE INDEX ix_rbrpur_iic ON reasonability_benefit_risk_productive_units_result(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rbrpur_sgc ON reasonability_benefit_risk_productive_units_result(structure_group_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_rbrpur_rtri_iic_sgc ON reasonability_benefit_risk_productive_units_result(reasonability_test_result_id, inventory_item_code, structure_group_code)
+ TABLESPACE pg_default
 ;

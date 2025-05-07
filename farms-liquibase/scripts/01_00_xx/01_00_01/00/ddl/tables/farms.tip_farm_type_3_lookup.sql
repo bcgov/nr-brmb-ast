@@ -30,4 +30,5 @@ COMMENT ON TABLE tip_farm_type_3_lookup IS 'TIP FARM TYPE 3 LOOKUP indicates how
 
 
 CREATE UNIQUE INDEX uk_tft3l_ft3n ON tip_farm_type_3_lookup(farm_type_3_name)
+ TABLESPACE pg_default
 ;

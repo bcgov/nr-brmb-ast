@@ -96,4 +96,5 @@ COMMENT ON TABLE reasonability_revenue_poultry_egg_result IS 'REASONABILITY REVE
 
 
 CREATE UNIQUE INDEX uk_rrper_rtri ON reasonability_revenue_poultry_egg_result(reasonability_test_result_id)
+ TABLESPACE pg_default
 ;

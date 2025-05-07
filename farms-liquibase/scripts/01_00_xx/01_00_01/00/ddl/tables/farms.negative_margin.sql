@@ -78,8 +78,11 @@ COMMENT ON TABLE negative_margin IS 'NEGATIVE MARGINS is the negative margins fo
 
 
 CREATE INDEX ix_nm_foi ON negative_margin(farming_operation_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_nm_iic ON negative_margin(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_nm_asi_foi_iic ON negative_margin(agristability_scenario_id, farming_operation_id, inventory_item_code)
+ TABLESPACE pg_default
 ;

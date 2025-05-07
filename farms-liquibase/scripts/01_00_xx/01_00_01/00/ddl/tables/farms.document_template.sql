@@ -33,4 +33,5 @@ COMMENT ON TABLE document_template IS 'DOCUMENT TEMPLATE contains text content u
 
 
 CREATE UNIQUE INDEX uk_dt_tn ON document_template(template_name)
+ TABLESPACE pg_default
 ;

@@ -21,8 +21,11 @@ COMMENT ON TABLE import_log IS 'IMPORT LOG lists all the audit messages generate
 
 
 CREATE INDEX ix_il_ivi ON import_log(import_version_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_il_pyvi ON import_log(program_year_version_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_il_ivi_pyvi ON import_log(import_version_id, program_year_version_id)
+ TABLESPACE pg_default
 ;

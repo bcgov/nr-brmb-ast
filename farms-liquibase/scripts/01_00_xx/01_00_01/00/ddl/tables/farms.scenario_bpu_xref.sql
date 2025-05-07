@@ -36,8 +36,11 @@ COMMENT ON TABLE scenario_bpu_xref IS 'SCENARIO BPU XREF is the benchmark data t
 
 
 CREATE INDEX ix_sbx_asi ON scenario_bpu_xref(agristability_scenario_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_sbx_bpui ON scenario_bpu_xref(benchmark_per_unit_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_sbx_sbpc ON scenario_bpu_xref(scenario_bpu_purpose_code)
+ TABLESPACE pg_default
 ;

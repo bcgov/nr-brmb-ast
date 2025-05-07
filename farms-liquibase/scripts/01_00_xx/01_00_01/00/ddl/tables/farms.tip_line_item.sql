@@ -54,6 +54,8 @@ COMMENT ON TABLE tip_line_item IS 'TIP LINE ITEM maps a LINE ITEM to a TIP FARM 
 
 
 CREATE INDEX ix_tli_tft1li ON tip_line_item(tip_farm_type_1_lookup_id)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_tli_li ON tip_line_item(line_item)
+ TABLESPACE pg_default
 ;

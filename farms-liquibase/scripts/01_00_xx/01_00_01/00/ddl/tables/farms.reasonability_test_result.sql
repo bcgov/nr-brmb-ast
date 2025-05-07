@@ -222,4 +222,5 @@ COMMENT ON TABLE reasonability_test_result IS 'REASONABILITY TEST RESULT contain
 
 
 CREATE UNIQUE INDEX uk_rtr_asi ON reasonability_test_result(agristability_scenario_id)
+ TABLESPACE pg_default
 ;

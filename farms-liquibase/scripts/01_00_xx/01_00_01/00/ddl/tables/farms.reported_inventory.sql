@@ -84,12 +84,17 @@ COMMENT ON TABLE reported_inventory IS 'REPORTED INVENTORY information contains 
 
 
 CREATE INDEX ix_ri_acxi ON reported_inventory(agristabilty_commodity_xref_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_ri_asi ON reported_inventory(agristability_scenario_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_ri_cuc ON reported_inventory(crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_ri_foi ON reported_inventory(farming_operation_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_ri_crii ON reported_inventory(cra_reported_inventory_id)
+ TABLESPACE pg_default
 ;

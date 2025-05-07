@@ -39,10 +39,14 @@ COMMENT ON TABLE agristabilty_commodity_xref IS 'AGRISTABILTY COMMODITY XREF is 
 
 
 CREATE INDEX ix_acx_icc ON agristabilty_commodity_xref(inventory_class_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_acx_iic ON agristabilty_commodity_xref(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_acx_igc ON agristabilty_commodity_xref(inventory_group_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_acx_icc_iic ON agristabilty_commodity_xref(inventory_class_code, inventory_item_code)
+ TABLESPACE pg_default
 ;

@@ -51,4 +51,5 @@ COMMENT ON TABLE tip_benchmark_expense IS 'TIP BENCHMARK EXPENSE contains the be
 
 
 CREATE UNIQUE INDEX uk_tbe_tbyi_li ON tip_benchmark_expense(tip_benchmark_year_id, line_item)
+ TABLESPACE pg_default
 ;

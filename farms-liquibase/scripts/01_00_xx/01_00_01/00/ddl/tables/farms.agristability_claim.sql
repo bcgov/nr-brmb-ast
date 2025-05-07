@@ -222,8 +222,11 @@ COMMENT ON TABLE agristability_claim IS 'AGRISTABILITY CLAIM is the calculated p
 
 
 CREATE INDEX ix_ac_escc ON agristability_claim(expense_structural_change_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_ac_scc ON agristability_claim(structural_change_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_ac_asi ON agristability_claim(agristability_scenario_id)
+ TABLESPACE pg_default
 ;

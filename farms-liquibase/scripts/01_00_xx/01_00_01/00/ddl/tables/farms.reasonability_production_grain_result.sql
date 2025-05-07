@@ -54,10 +54,14 @@ COMMENT ON TABLE reasonability_production_grain_result IS 'REASONABILITY PRODUCT
 
 
 CREATE INDEX ix_rpgr_qpcuc ON reasonability_production_grain_result(quantity_produced_crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rpgr_iic ON reasonability_production_grain_result(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rpgr_rtri ON reasonability_production_grain_result(reasonability_test_result_id)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_rpgr_rtri_iic ON reasonability_production_grain_result(reasonability_test_result_id, inventory_item_code)
+ TABLESPACE pg_default
 ;

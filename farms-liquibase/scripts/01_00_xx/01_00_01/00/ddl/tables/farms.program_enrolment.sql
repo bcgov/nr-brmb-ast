@@ -93,10 +93,14 @@ COMMENT ON TABLE program_enrolment IS 'PROGRAM ENROLMENT is used to store inform
 
 
 CREATE INDEX ix_pe_aci ON program_enrolment(agristability_client_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_pe_asi ON program_enrolment(agristability_scenario_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_pe_ey ON program_enrolment(enrolment_year)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_pe_ey_aci ON program_enrolment(enrolment_year, agristability_client_id)
+ TABLESPACE pg_default
 ;

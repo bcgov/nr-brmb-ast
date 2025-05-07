@@ -31,4 +31,5 @@ COMMENT ON COLUMN scenario_log.update_date IS 'UPDATE DATE indicates when the ph
 
 
 CREATE INDEX ix_sl_asi ON scenario_log(agristability_scenario_id)
+ TABLESPACE pg_default
 ;

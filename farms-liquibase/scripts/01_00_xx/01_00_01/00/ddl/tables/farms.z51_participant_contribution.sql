@@ -45,4 +45,5 @@ COMMENT ON TABLE z51_participant_contribution IS 'Z51 PARTICIPANT CONTRIBUTION i
 
 
 CREATE INDEX ix_zpc_pp_py ON z51_participant_contribution(participant_pin, program_year)
+ TABLESPACE pg_default
 ;

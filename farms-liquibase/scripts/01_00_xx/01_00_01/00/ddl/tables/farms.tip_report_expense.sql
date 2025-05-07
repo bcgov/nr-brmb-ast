@@ -57,6 +57,8 @@ COMMENT ON TABLE tip_report_expense IS 'TIP REPORT EXPENSE contains the results 
 
 
 CREATE INDEX ix_tre_trc ON tip_report_expense(tip_rating_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_tre_trri_li ON tip_report_expense(tip_report_result_id, line_item)
+ TABLESPACE pg_default
 ;

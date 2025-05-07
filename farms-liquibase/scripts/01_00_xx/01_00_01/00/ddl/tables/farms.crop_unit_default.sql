@@ -33,6 +33,8 @@ COMMENT ON TABLE crop_unit_default IS 'CROP UNIT DEFAULT is the base unit used w
 
 
 CREATE INDEX ix_cud_cuc ON crop_unit_default(crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_cud_iic ON crop_unit_default(inventory_item_code)
+ TABLESPACE pg_default
 ;

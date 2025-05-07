@@ -33,6 +33,8 @@ COMMENT ON TABLE tip_farm_type_1_lookup IS 'TIP FARM TYPE 1 LOOKUP indicates how
 
 
 CREATE INDEX ix_tft1l_tft2li ON tip_farm_type_1_lookup(tip_farm_type_2_lookup_id)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_tft1l_ft1n ON tip_farm_type_1_lookup(farm_type_1_name)
+ TABLESPACE pg_default
 ;

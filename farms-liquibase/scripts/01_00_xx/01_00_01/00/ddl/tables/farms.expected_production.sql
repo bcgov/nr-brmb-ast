@@ -36,6 +36,8 @@ COMMENT ON TABLE expected_production IS 'EXPECTED PRODUCTION is the amount of a 
 
 
 CREATE INDEX ix_ep_cuc ON expected_production(crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_ep_iic ON expected_production(inventory_item_code)
+ TABLESPACE pg_default
 ;

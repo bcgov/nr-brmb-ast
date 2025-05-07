@@ -102,8 +102,11 @@ COMMENT ON TABLE benefit_calculation_margin IS 'BENEFIT CALCULATION MARGIN refer
 
 
 CREATE INDEX ix_bcm_asi ON benefit_calculation_margin(agristability_scenario_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_bcm_foi ON benefit_calculation_margin(farming_operation_id)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_bcm_asi_foi ON benefit_calculation_margin(agristability_scenario_id, farming_operation_id)
+ TABLESPACE pg_default
 ;

@@ -63,6 +63,8 @@ COMMENT ON TABLE z21_participant_supplementary IS 'Z21 PARTICIPANT SUPPLEMENTARY
 
 
 CREATE INDEX ix_zps_pp_py_on ON z21_participant_supplementary(participant_pin, program_year, operation_number)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_zps_ic_itc ON z21_participant_supplementary(inventory_code, inventory_type_code)
+ TABLESPACE pg_default
 ;

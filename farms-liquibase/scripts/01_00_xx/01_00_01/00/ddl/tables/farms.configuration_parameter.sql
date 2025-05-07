@@ -39,6 +39,8 @@ COMMENT ON TABLE configuration_parameter IS 'CONFIGURATION PARAMETER contains pa
 
 
 CREATE INDEX ix_cp_cptc ON configuration_parameter(configuration_parameter_type_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_cp_pn ON configuration_parameter(parameter_name)
+ TABLESPACE pg_default
 ;

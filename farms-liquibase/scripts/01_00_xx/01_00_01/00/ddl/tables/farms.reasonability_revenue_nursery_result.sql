@@ -45,4 +45,5 @@ COMMENT ON TABLE reasonability_revenue_nursery_result IS 'REASONABILITY REVENUE 
 
 
 CREATE UNIQUE INDEX uk_rrnr_rtri ON reasonability_revenue_nursery_result(reasonability_test_result_id)
+ TABLESPACE pg_default
 ;

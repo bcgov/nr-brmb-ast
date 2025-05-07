@@ -33,6 +33,8 @@ COMMENT ON TABLE agristability_representative IS 'AGRISTABILITY REPRESENTATIVE i
 
 
 CREATE UNIQUE INDEX uk_ar_ug ON agristability_representative(user_guid)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_ar_u ON agristability_representative(userid)
+ TABLESPACE pg_default
 ;

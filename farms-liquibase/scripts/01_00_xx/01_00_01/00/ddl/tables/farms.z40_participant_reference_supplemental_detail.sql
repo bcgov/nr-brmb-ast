@@ -75,8 +75,11 @@ COMMENT ON TABLE z40_participant_reference_supplemental_detail IS 'Z40 PARTICIPA
 
 
 CREATE INDEX ix_zprsd_pp_py_on ON z40_participant_reference_supplemental_detail(participant_pin, program_year, operation_number)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_zprsd_pu ON z40_participant_reference_supplemental_detail(production_unit)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_zprsd_ic_itc ON z40_participant_reference_supplemental_detail(inventory_code, inventory_type_code)
+ TABLESPACE pg_default
 ;

@@ -57,10 +57,14 @@ COMMENT ON TABLE reasonability_revenue_fruit_vegetables_result IS 'REASONABILITY
 
 
 CREATE INDEX ix_rrfvr_cuc ON reasonability_revenue_fruit_vegetables_result(crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rrfvr_fvtc ON reasonability_revenue_fruit_vegetables_result(fruit_vegetable_type_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rrfvr_rtri ON reasonability_revenue_fruit_vegetables_result(reasonability_test_result_id)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_rrfvr_rtri_fvtc ON reasonability_revenue_fruit_vegetables_result(reasonability_test_result_id, fruit_vegetable_type_code)
+ TABLESPACE pg_default
 ;

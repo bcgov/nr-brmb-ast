@@ -51,8 +51,11 @@ COMMENT ON TABLE client_subscription IS 'CLIENT SUBSCRIPTION relates many instan
 
 
 CREATE INDEX ix_cs1_aci ON client_subscription(agristability_client_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_cs1_ari ON client_subscription(agristability_representative_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_cs1_ssc ON client_subscription(subscription_status_code)
+ TABLESPACE pg_default
 ;

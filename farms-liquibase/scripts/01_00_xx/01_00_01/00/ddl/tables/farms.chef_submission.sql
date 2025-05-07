@@ -45,8 +45,11 @@ COMMENT ON TABLE chef_submission IS 'CHEF SUBMISSION is the submission of a form
 
 
 CREATE INDEX ix_cs_cssc ON chef_submission(chef_submission_status_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_cs_cftc ON chef_submission(chef_form_type_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_cs_csg ON chef_submission(chef_submission_guid)
+ TABLESPACE pg_default
 ;

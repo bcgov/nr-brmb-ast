@@ -69,10 +69,14 @@ COMMENT ON TABLE program_year IS 'PROGRAM YEAR is the taxation year for the give
 
 
 CREATE INDEX ix_py_aci ON program_year(agristability_client_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_py_ftc ON program_year(farm_type_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_py_y ON program_year(year)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_py_aci_y ON program_year(agristability_client_id, year)
+ TABLESPACE pg_default
 ;

@@ -33,6 +33,8 @@ COMMENT ON TABLE office_municipality_xref IS 'OFFICE MUNICIPALITY XREF is a mapp
 
 
 CREATE INDEX ix_omx_mc ON office_municipality_xref(municipality_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_omx_roc ON office_municipality_xref(regional_office_code)
+ TABLESPACE pg_default
 ;

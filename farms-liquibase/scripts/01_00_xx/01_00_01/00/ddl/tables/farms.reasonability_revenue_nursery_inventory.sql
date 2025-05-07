@@ -54,8 +54,11 @@ COMMENT ON TABLE reasonability_revenue_nursery_inventory IS 'REASONABILITY REVEN
 
 
 CREATE INDEX ix_rrni1_cuc ON reasonability_revenue_nursery_inventory(crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rrni1_iic ON reasonability_revenue_nursery_inventory(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rrni1_rrnri ON reasonability_revenue_nursery_inventory(reasonability_revenue_nursery_result_id)
+ TABLESPACE pg_default
 ;

@@ -48,6 +48,8 @@ COMMENT ON TABLE z04_income_expenses_detail IS 'Z04 INCOME EXPENSES LIST identif
 
 
 CREATE INDEX ix_zied_pp_py_on ON z04_income_expenses_detail(participant_pin, program_year, operation_number)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_zied_pycb_lc ON z04_income_expenses_detail(program_year_codified_by, line_code)
+ TABLESPACE pg_default
 ;

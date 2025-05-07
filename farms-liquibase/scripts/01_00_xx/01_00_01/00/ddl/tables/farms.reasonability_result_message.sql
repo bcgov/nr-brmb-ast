@@ -39,6 +39,8 @@ COMMENT ON TABLE reasonability_result_message IS 'REASONABILITY RESULT MESSAGE c
 
 
 CREATE INDEX ix_rrm_mtc ON reasonability_result_message(message_type_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rrm_rtri ON reasonability_result_message(reasonability_test_result_id)
+ TABLESPACE pg_default
 ;

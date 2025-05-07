@@ -117,16 +117,23 @@ COMMENT ON TABLE program_year_version IS 'PROGRAM YEAR VERSION is an instance of
 
 
 CREATE INDEX ix_pyv_fsc ON program_year_version(federal_status_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_pyv_ivi ON program_year_version(import_version_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_pyv_mc ON program_year_version(municipality_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_pyv_ppc ON program_year_version(participant_profile_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_pyv_pyi ON program_year_version(program_year_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_pyv_pyi_mc ON program_year_version(program_year_id, municipality_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_pyv_mc_pyi ON program_year_version(municipality_code, program_year_id)
+ TABLESPACE pg_default
 ;

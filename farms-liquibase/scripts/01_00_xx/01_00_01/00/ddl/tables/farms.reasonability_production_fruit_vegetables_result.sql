@@ -51,8 +51,11 @@ COMMENT ON TABLE reasonability_production_fruit_vegetables_result IS 'REASONABIL
 
 
 CREATE INDEX ix_rpfvr_qpcuc ON reasonability_production_fruit_vegetables_result(quantity_produced_crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rpfvr_fvtc ON reasonability_production_fruit_vegetables_result(fruit_vegetable_type_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX ix_rpfvr_rtri_fvtc ON reasonability_production_fruit_vegetables_result(reasonability_test_result_id, fruit_vegetable_type_code)
+ TABLESPACE pg_default
 ;

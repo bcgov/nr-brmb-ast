@@ -69,6 +69,8 @@ COMMENT ON TABLE person IS 'PERSON contains address and contact information for 
 
 
 CREATE INDEX ix_p_c ON person(city)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_p_pc ON person(postal_code)
+ TABLESPACE pg_default
 ;

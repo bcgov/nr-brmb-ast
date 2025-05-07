@@ -66,12 +66,17 @@ COMMENT ON TABLE agristability_client IS 'AGRISTABILITY CLIENT is the taxable le
 
 
 CREATE INDEX ix_ac1_pcc ON agristability_client(participant_class_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_ac1_piccb ON agristability_client(person_id_client_contacted_by)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_ac1_plc ON agristability_client(participant_language_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_ac1_pi ON agristability_client(person_id)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_ac1_pp ON agristability_client(participant_pin)
+ TABLESPACE pg_default
 ;

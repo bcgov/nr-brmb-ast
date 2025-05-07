@@ -90,4 +90,5 @@ COMMENT ON TABLE z03_statement_information IS 'Z03 STATEMENT INFO identifies the
 
 
 CREATE INDEX ix_zsi_pp_py ON z03_statement_information(participant_pin, program_year)
+ TABLESPACE pg_default
 ;

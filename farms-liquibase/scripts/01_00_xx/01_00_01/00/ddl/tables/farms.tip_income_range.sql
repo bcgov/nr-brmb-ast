@@ -45,6 +45,8 @@ COMMENT ON TABLE tip_income_range IS 'TIP INCOME RANGE contains the low and high
 
 
 CREATE UNIQUE INDEX uk_tir_tft3l_tft2l_tft1l_rh ON tip_income_range(tip_farm_type_3_lookup_id, tip_farm_type_2_lookup_id, tip_farm_type_1_lookup_id, range_high)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_tir_tft3l_tft2l_tft1l_rl ON tip_income_range(tip_farm_type_3_lookup_id, tip_farm_type_2_lookup_id, tip_farm_type_1_lookup_id, range_low)
+ TABLESPACE pg_default
 ;

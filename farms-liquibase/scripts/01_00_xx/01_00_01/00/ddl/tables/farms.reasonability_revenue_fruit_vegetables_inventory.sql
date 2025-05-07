@@ -45,8 +45,11 @@ COMMENT ON TABLE reasonability_revenue_fruit_vegetables_inventory IS 'REASONABIL
 
 
 CREATE INDEX ix_rrfvi_cuc ON reasonability_revenue_fruit_vegetables_inventory(crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rrfvi_iic ON reasonability_revenue_fruit_vegetables_inventory(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_rrfvi_rtri_iic ON reasonability_revenue_fruit_vegetables_inventory(reasonability_test_result_id, inventory_item_code)
+ TABLESPACE pg_default
 ;

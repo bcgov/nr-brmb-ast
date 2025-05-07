@@ -34,8 +34,11 @@ COMMENT ON COLUMN sector_detail_line_item.update_date IS 'UPDATE DATE indicates 
 
 
 CREATE INDEX ix_sdli_sdc ON sector_detail_line_item(sector_detail_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_sdli_py ON sector_detail_line_item(program_year)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_sdli_li_py_sdc ON sector_detail_line_item(line_item, program_year, sector_detail_code)
+ TABLESPACE pg_default
 ;

@@ -34,4 +34,5 @@ COMMENT ON COLUMN benefit_calculation_document.update_date IS 'UPDATE DATE indic
 
 
 CREATE UNIQUE INDEX ix_bcd_asi ON benefit_calculation_document(agristability_scenario_id)
+ TABLESPACE pg_default
 ;

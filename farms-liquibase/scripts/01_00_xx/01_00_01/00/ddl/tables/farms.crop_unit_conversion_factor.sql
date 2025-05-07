@@ -36,8 +36,11 @@ COMMENT ON TABLE crop_unit_conversion_factor IS 'CROP UNIT CONVERSION FACTOR is 
 
 
 CREATE INDEX ix_cucf_tcuc ON crop_unit_conversion_factor(target_crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_cucf_iic ON crop_unit_conversion_factor(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_cucf_iic_tcuc ON crop_unit_conversion_factor(inventory_item_code, target_crop_unit_code)
+ TABLESPACE pg_default
 ;

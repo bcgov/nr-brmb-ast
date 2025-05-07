@@ -39,6 +39,8 @@ COMMENT ON TABLE reference_scenario IS 'REFERENCE SCENARIO records the previous 
 
 
 CREATE INDEX ix_rs_fasi ON reference_scenario(for_agristability_scenario_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rs_asi ON reference_scenario(agristability_scenario_id)
+ TABLESPACE pg_default
 ;

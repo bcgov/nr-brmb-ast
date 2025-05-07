@@ -31,6 +31,8 @@ COMMENT ON COLUMN sector_detail_xref.update_date IS 'UPDATE DATE indicates when 
 
 
 CREATE INDEX ix_sdx_sc ON sector_detail_xref(sector_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_sdx_sdc ON sector_detail_xref(sector_detail_code)
+ TABLESPACE pg_default
 ;

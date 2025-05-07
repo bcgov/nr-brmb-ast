@@ -36,6 +36,8 @@ COMMENT ON TABLE scenario_configuration_parameter IS 'SCENARIO CONFIGURATION PAR
 
 
 CREATE INDEX ix_scp_pn ON scenario_configuration_parameter(parameter_name)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_scp_asi_pn ON scenario_configuration_parameter(agristability_scenario_id, parameter_name)
+ TABLESPACE pg_default
 ;

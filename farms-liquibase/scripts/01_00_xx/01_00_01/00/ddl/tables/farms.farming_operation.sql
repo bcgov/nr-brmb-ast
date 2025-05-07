@@ -99,12 +99,17 @@ COMMENT ON TABLE farming_operation IS 'FARMING OPERATION refers to revenue and e
 
 
 CREATE INDEX ix_fo_fac ON farming_operation(federal_accounting_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_fo_pyvi ON farming_operation(program_year_version_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_fo_foi_pyvi ON farming_operation(farming_operation_id, program_year_version_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_fo_foi_on_pyvi ON farming_operation(farming_operation_id, operation_number, program_year_version_id)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_fo_pyvi_on ON farming_operation(program_year_version_id, operation_number)
+ TABLESPACE pg_default
 ;

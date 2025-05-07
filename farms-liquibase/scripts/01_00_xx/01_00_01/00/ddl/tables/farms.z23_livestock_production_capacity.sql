@@ -42,6 +42,8 @@ COMMENT ON TABLE z23_livestock_production_capacity IS 'Z23 LIVESTOCK PRODUCTION 
 
 
 CREATE INDEX ix_zlpc_pp_py_on ON z23_livestock_production_capacity(participant_pin, program_year, operation_number)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_zlpc_pp_py ON z23_livestock_production_capacity(participant_pin, program_year)
+ TABLESPACE pg_default
 ;

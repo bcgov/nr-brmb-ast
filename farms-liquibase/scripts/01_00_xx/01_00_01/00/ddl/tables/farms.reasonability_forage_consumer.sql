@@ -42,6 +42,8 @@ COMMENT ON TABLE reasonability_forage_consumer IS 'REASONABILITY FORAGE CONSUMER
 
 
 CREATE INDEX ix_rfc_sgc ON reasonability_forage_consumer(structure_group_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_rfc_rtri_sgc ON reasonability_forage_consumer(reasonability_test_result_id, structure_group_code)
+ TABLESPACE pg_default
 ;

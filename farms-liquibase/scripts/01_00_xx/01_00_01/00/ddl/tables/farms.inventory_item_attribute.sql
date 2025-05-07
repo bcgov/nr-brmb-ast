@@ -33,6 +33,8 @@ COMMENT ON TABLE inventory_item_attribute IS 'INVENTORY ITEM ATTRIBUTE is additi
 
 
 CREATE INDEX ix_iia_riic ON inventory_item_attribute(rollup_inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_iia_iic ON inventory_item_attribute(inventory_item_code)
+ TABLESPACE pg_default
 ;

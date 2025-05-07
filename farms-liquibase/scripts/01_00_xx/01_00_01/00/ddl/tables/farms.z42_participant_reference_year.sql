@@ -45,4 +45,5 @@ COMMENT ON TABLE z42_participant_reference_year IS 'Z42 PARTICIPANT REFERENCE YE
 
 
 CREATE INDEX ix_zpry ON z42_participant_reference_year(participant_pin, program_year, operation_number)
+ TABLESPACE pg_default
 ;

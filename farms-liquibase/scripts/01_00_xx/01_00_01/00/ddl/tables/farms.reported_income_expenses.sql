@@ -48,10 +48,14 @@ COMMENT ON TABLE reported_income_expenses IS 'REPORTED INCOME EXPENSE data refer
 
 
 CREATE INDEX ix_rie_asi ON reported_income_expenses(agristability_scenario_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rie_foi ON reported_income_expenses(farming_operation_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rie_criei ON reported_income_expenses(cra_reported_income_expense_id)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rie_li ON reported_income_expenses(line_item)
+ TABLESPACE pg_default
 ;

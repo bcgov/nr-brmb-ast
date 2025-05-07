@@ -36,4 +36,5 @@ COMMENT ON TABLE production_insurance IS 'PRODUCTION INSURANCE provides the prod
 
 
 CREATE INDEX ix_pi_foi ON production_insurance(farming_operation_id)
+ TABLESPACE pg_default
 ;

@@ -48,8 +48,11 @@ COMMENT ON TABLE reasonability_production_fruit_inventory IS 'REASONABILITY PROD
 
 
 CREATE INDEX ix_rpfi_qpcuc ON reasonability_production_fruit_inventory(quantity_produced_crop_unit_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_rpfi_iic ON reasonability_production_fruit_inventory(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_rpfi_rtri_iic ON reasonability_production_fruit_inventory(reasonability_test_result_id, inventory_item_code)
+ TABLESPACE pg_default
 ;

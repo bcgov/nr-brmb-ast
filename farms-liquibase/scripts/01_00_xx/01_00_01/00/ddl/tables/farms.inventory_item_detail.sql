@@ -54,16 +54,23 @@ COMMENT ON TABLE inventory_item_detail IS 'INVENTORY ITEM DETAIL is additional i
 
 
 CREATE INDEX ix_iid_py_ei ON inventory_item_detail(program_year, eligibility_indicator)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_iid_ctc ON inventory_item_detail(commodity_type_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_iid_fvtc ON inventory_item_detail(fruit_vegetable_type_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_iid_iic ON inventory_item_detail(inventory_item_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_iid_mscc ON inventory_item_detail(multplei_stage_commodity_code)
+ TABLESPACE pg_default
 ;
 CREATE INDEX ix_iid_py_li ON inventory_item_detail(program_year, line_item)
+ TABLESPACE pg_default
 ;
 CREATE UNIQUE INDEX uk_iid_py_iic ON inventory_item_detail(program_year, inventory_item_code)
+ TABLESPACE pg_default
 ;

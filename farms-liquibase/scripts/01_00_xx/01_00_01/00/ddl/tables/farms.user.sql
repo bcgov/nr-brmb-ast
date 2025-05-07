@@ -45,4 +45,5 @@ COMMENT ON TABLE user IS 'USER is a user who has access to the FARM application.
 
 
 CREATE UNIQUE INDEX uk_u_ug ON user(user_guid)
+ TABLESPACE pg_default
 ;
