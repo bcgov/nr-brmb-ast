@@ -41,3 +41,7 @@ CREATE INDEX ix_ssa_asi ON scenario_state_audit(agristability_scenario_id)
 CREATE INDEX ix_ssa_ssc ON scenario_state_audit(scenario_state_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE scenario_state_audit ADD 
+    CONSTRAINT pk_ssa PRIMARY KEY (scenario_state_audit_id) USING INDEX TABLESPACE pg_default 
+;

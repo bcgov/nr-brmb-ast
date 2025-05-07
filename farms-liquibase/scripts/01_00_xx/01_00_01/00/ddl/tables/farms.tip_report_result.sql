@@ -386,3 +386,7 @@ CREATE UNIQUE INDEX uk_trr_foi_ptrri ON tip_report_result(farming_operation_id, 
 CREATE UNIQUE INDEX uk_trr_pyi_ak_ptrri ON tip_report_result(program_year_id, alignment_key, parent_tip_report_result_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE tip_report_result ADD 
+    CONSTRAINT pk_trr PRIMARY KEY (tip_report_result_id) USING INDEX TABLESPACE pg_default 
+;

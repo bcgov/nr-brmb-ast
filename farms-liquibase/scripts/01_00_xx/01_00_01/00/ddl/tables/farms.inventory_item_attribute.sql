@@ -38,3 +38,7 @@ CREATE INDEX ix_iia_riic ON inventory_item_attribute(rollup_inventory_item_code)
 CREATE UNIQUE INDEX uk_iia_iic ON inventory_item_attribute(inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE inventory_item_attribute ADD 
+    CONSTRAINT pk_iia PRIMARY KEY (inventory_item_attribute_id) USING INDEX TABLESPACE pg_default 
+;

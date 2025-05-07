@@ -74,3 +74,7 @@ CREATE INDEX ix_p_c ON person(city)
 CREATE INDEX ix_p_pc ON person(postal_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE person ADD 
+    CONSTRAINT pk_p PRIMARY KEY (person_id) USING INDEX TABLESPACE pg_default 
+;

@@ -59,3 +59,7 @@ CREATE INDEX ix_cs1_ari ON client_subscription(agristability_representative_id)
 CREATE INDEX ix_cs1_ssc ON client_subscription(subscription_status_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE client_subscription ADD 
+    CONSTRAINT pk_cs1 PRIMARY KEY (client_subscription_id) USING INDEX TABLESPACE pg_default 
+;

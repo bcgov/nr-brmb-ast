@@ -59,3 +59,7 @@ COMMENT ON TABLE z05_partner_information IS 'Z05 PARTNER INFORMATION identifies 
 CREATE INDEX ix_zpi1_pp_py_on ON z05_partner_information(participant_pin, program_year, operation_number)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE z05_partner_information ADD 
+    CONSTRAINT pk_zpi1 PRIMARY KEY (partner_information_key) USING INDEX TABLESPACE pg_default 
+;

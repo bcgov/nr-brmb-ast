@@ -53,3 +53,7 @@ CREATE INDEX ix_rrfvi_iic ON reasonability_revenue_fruit_vegetables_inventory(in
 CREATE UNIQUE INDEX uk_rrfvi_rtri_iic ON reasonability_revenue_fruit_vegetables_inventory(reasonability_test_result_id, inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_revenue_fruit_vegetables_inventory ADD 
+    CONSTRAINT pk_rrfvi PRIMARY KEY (reasonability_revenue_fruit_vegetables_inventory_id) USING INDEX TABLESPACE pg_default 
+;

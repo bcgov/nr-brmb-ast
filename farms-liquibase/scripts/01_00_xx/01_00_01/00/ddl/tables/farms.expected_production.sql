@@ -41,3 +41,7 @@ CREATE INDEX ix_ep_cuc ON expected_production(crop_unit_code)
 CREATE UNIQUE INDEX uk_ep_iic ON expected_production(inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE expected_production ADD 
+    CONSTRAINT pk_ep PRIMARY KEY (expected_production_id) USING INDEX TABLESPACE pg_default 
+;

@@ -29,3 +29,7 @@ CREATE INDEX ix_il_pyvi ON import_log(program_year_version_id)
 CREATE INDEX ix_il_ivi_pyvi ON import_log(import_version_id, program_year_version_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE import_log ADD 
+    CONSTRAINT pk_il PRIMARY KEY (import_log_id) USING INDEX TABLESPACE pg_default 
+;

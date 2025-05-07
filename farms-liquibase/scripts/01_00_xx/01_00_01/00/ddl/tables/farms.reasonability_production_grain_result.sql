@@ -65,3 +65,7 @@ CREATE INDEX ix_rpgr_rtri ON reasonability_production_grain_result(reasonability
 CREATE UNIQUE INDEX uk_rpgr_rtri_iic ON reasonability_production_grain_result(reasonability_test_result_id, inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_production_grain_result ADD 
+    CONSTRAINT pk_rpgr PRIMARY KEY (reasonability_production_grain_result_id) USING INDEX TABLESPACE pg_default 
+;

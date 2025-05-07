@@ -98,3 +98,7 @@ CREATE INDEX ix_ri_foi ON reported_inventory(farming_operation_id)
 CREATE INDEX ix_ri_crii ON reported_inventory(cra_reported_inventory_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reported_inventory ADD 
+    CONSTRAINT pk_ri PRIMARY KEY (reported_inventory_id) USING INDEX TABLESPACE pg_default 
+;

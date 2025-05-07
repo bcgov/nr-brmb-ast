@@ -62,3 +62,7 @@ CREATE INDEX ix_rrni1_iic ON reasonability_revenue_nursery_inventory(inventory_i
 CREATE INDEX ix_rrni1_rrnri ON reasonability_revenue_nursery_inventory(reasonability_revenue_nursery_result_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_revenue_nursery_inventory ADD 
+    CONSTRAINT pk_rrni1 PRIMARY KEY (reasonability_revenue_nursery_inventory_id) USING INDEX TABLESPACE pg_default 
+;

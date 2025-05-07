@@ -41,3 +41,7 @@ COMMENT ON TABLE whole_farm_participant IS 'WHOLE FARM PARTICIPANT describes the
 CREATE INDEX ix_wfp_pyvi ON whole_farm_participant(program_year_version_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE whole_farm_participant ADD 
+    CONSTRAINT pk_wfp PRIMARY KEY (whole_farm_participant_id) USING INDEX TABLESPACE pg_default 
+;

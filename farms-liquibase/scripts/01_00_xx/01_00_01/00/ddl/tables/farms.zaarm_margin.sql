@@ -66,3 +66,7 @@ CREATE INDEX ix_zm_arp1p_arp2p ON zaarm_margin(aarm_reference_p1_price, aarm_ref
 CREATE INDEX ix_zm_pp_py_on_itc_ic ON zaarm_margin(participant_pin, program_year, operation_number, inventory_type_code, inventory_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE zaarm_margin ADD 
+    CONSTRAINT pk_zm PRIMARY KEY (zaarm_margin_id) USING INDEX TABLESPACE pg_default 
+;

@@ -74,3 +74,7 @@ CREATE INDEX ix_iid_py_li ON inventory_item_detail(program_year, line_item)
 CREATE UNIQUE INDEX uk_iid_py_iic ON inventory_item_detail(program_year, inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE inventory_item_detail ADD 
+    CONSTRAINT pk_iid PRIMARY KEY (inventory_item_detail_id) USING INDEX TABLESPACE pg_default 
+;

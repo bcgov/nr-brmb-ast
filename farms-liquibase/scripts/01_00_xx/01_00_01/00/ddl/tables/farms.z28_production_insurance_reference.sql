@@ -28,3 +28,7 @@ COMMENT ON COLUMN z28_production_insurance_reference.update_date IS 'UPDATE DATE
 COMMENT ON TABLE z28_production_insurance_reference IS 'Z28 PRODUCTION INSURANCE REFERENCE identifies the reference file containing a list of the units of measure, and associated descriptions. This file is created by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+ALTER TABLE z28_production_insurance_reference ADD 
+    CONSTRAINT pk_zpir PRIMARY KEY (production_unit) USING INDEX TABLESPACE pg_default 
+;

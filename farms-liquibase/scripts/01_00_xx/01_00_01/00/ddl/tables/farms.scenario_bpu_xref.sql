@@ -44,3 +44,7 @@ CREATE INDEX ix_sbx_bpui ON scenario_bpu_xref(benchmark_per_unit_id)
 CREATE INDEX ix_sbx_sbpc ON scenario_bpu_xref(scenario_bpu_purpose_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE scenario_bpu_xref ADD 
+    CONSTRAINT pk_sbx PRIMARY KEY (scenario_bpu_xref_id) USING INDEX TABLESPACE pg_default 
+;

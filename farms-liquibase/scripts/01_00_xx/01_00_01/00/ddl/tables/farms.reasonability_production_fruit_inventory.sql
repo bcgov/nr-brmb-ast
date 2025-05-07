@@ -56,3 +56,7 @@ CREATE INDEX ix_rpfi_iic ON reasonability_production_fruit_inventory(inventory_i
 CREATE UNIQUE INDEX uk_rpfi_rtri_iic ON reasonability_production_fruit_inventory(reasonability_test_result_id, inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_production_fruit_inventory ADD 
+    CONSTRAINT pk_rpfi PRIMARY KEY (reasonability_production_fruit_inventory_id) USING INDEX TABLESPACE pg_default 
+;

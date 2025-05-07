@@ -59,3 +59,7 @@ CREATE INDEX ix_bpu_py_iic_mc ON benchmark_per_unit(program_year, inventory_item
 CREATE INDEX ix_bpu_py ON benchmark_per_unit(program_year)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE benchmark_per_unit ADD 
+    CONSTRAINT pk_bpu PRIMARY KEY (benchmark_per_unit_id) USING INDEX TABLESPACE pg_default 
+;

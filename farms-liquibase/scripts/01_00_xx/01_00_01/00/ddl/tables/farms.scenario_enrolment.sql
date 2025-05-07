@@ -158,3 +158,7 @@ COMMENT ON TABLE scenario_enrolment IS 'SCENARIO ENROLMENT contains information 
 CREATE UNIQUE INDEX uk_se_asi ON scenario_enrolment(agristability_scenario_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE scenario_enrolment ADD 
+    CONSTRAINT pk_se PRIMARY KEY (scenario_enrolment_id) USING INDEX TABLESPACE pg_default 
+;

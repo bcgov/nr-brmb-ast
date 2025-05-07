@@ -47,3 +47,7 @@ CREATE UNIQUE INDEX uk_trd_foi ON tip_report_document(farming_operation_id)
 CREATE UNIQUE INDEX uk_trd_pyi_ak ON tip_report_document(program_year_id, alignment_key)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE tip_report_document ADD 
+    CONSTRAINT pk_trd PRIMARY KEY (tip_report_document_id) USING INDEX TABLESPACE pg_default 
+;

@@ -137,3 +137,7 @@ CREATE INDEX ix_pyv_pyi_mc ON program_year_version(program_year_id, municipality
 CREATE INDEX ix_pyv_mc_pyi ON program_year_version(municipality_code, program_year_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE program_year_version ADD 
+    CONSTRAINT pk_pyv PRIMARY KEY (program_year_version_id) USING INDEX TABLESPACE pg_default 
+;

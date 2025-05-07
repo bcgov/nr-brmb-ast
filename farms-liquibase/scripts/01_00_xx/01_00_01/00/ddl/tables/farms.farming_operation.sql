@@ -113,3 +113,7 @@ CREATE INDEX ix_fo_foi_on_pyvi ON farming_operation(farming_operation_id, operat
 CREATE UNIQUE INDEX uk_fo_pyvi_on ON farming_operation(program_year_version_id, operation_number)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE farming_operation ADD 
+    CONSTRAINT pk_fo PRIMARY KEY (farming_operation_id) USING INDEX TABLESPACE pg_default 
+;

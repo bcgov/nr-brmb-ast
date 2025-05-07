@@ -104,3 +104,7 @@ CREATE INDEX ix_pe_ey ON program_enrolment(enrolment_year)
 CREATE UNIQUE INDEX uk_pe_ey_aci ON program_enrolment(enrolment_year, agristability_client_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE program_enrolment ADD 
+    CONSTRAINT pk_pe PRIMARY KEY (program_enrolment_id) USING INDEX TABLESPACE pg_default 
+;

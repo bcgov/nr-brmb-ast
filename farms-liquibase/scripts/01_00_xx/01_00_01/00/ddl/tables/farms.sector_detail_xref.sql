@@ -36,3 +36,7 @@ CREATE INDEX ix_sdx_sc ON sector_detail_xref(sector_code)
 CREATE UNIQUE INDEX uk_sdx_sdc ON sector_detail_xref(sector_detail_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE sector_detail_xref ADD 
+    CONSTRAINT pk_sdx PRIMARY KEY (sector_detail_xref_id) USING INDEX TABLESPACE pg_default 
+;

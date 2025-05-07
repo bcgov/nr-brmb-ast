@@ -33,3 +33,7 @@ COMMENT ON COLUMN scenario_log.update_date IS 'UPDATE DATE indicates when the ph
 CREATE INDEX ix_sl_asi ON scenario_log(agristability_scenario_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE scenario_log ADD 
+    CONSTRAINT pk_sl PRIMARY KEY (scenario_log_id) USING INDEX TABLESPACE pg_default 
+;

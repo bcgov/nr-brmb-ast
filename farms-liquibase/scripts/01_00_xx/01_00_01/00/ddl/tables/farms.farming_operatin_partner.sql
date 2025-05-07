@@ -50,3 +50,7 @@ COMMENT ON TABLE farming_operatin_partner IS 'FARMING OPERATION PARTNER lists al
 CREATE INDEX ix_fop_foi ON farming_operatin_partner(farming_operation_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE farming_operatin_partner ADD 
+    CONSTRAINT pk_fop PRIMARY KEY (farming_operation_partner_id) USING INDEX TABLESPACE pg_default 
+;

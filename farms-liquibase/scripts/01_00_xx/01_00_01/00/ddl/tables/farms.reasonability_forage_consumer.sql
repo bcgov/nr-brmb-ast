@@ -47,3 +47,7 @@ CREATE INDEX ix_rfc_sgc ON reasonability_forage_consumer(structure_group_code)
 CREATE UNIQUE INDEX uk_rfc_rtri_sgc ON reasonability_forage_consumer(reasonability_test_result_id, structure_group_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_forage_consumer ADD 
+    CONSTRAINT pk_rfc PRIMARY KEY (reasonability_forage_consumer_id) USING INDEX TABLESPACE pg_default 
+;

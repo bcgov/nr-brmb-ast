@@ -53,3 +53,7 @@ CREATE INDEX ix_cs_cftc ON chef_submission(chef_form_type_code)
 CREATE UNIQUE INDEX uk_cs_csg ON chef_submission(chef_submission_guid)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE chef_submission ADD 
+    CONSTRAINT pk_cs PRIMARY KEY (chef_submission_id) USING INDEX TABLESPACE pg_default 
+;

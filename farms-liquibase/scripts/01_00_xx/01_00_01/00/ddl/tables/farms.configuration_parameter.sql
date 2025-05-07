@@ -44,3 +44,7 @@ CREATE INDEX ix_cp_cptc ON configuration_parameter(configuration_parameter_type_
 CREATE UNIQUE INDEX uk_cp_pn ON configuration_parameter(parameter_name)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE configuration_parameter ADD 
+    CONSTRAINT pk_cp PRIMARY KEY (configuration_parameter_id) USING INDEX TABLESPACE pg_default 
+;

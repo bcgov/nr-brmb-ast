@@ -59,3 +59,7 @@ CREATE INDEX ix_tli_tft1li ON tip_line_item(tip_farm_type_1_lookup_id)
 CREATE UNIQUE INDEX uk_tli_li ON tip_line_item(line_item)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE tip_line_item ADD 
+    CONSTRAINT pk_tli PRIMARY KEY (tip_line_item_id) USING INDEX TABLESPACE pg_default 
+;

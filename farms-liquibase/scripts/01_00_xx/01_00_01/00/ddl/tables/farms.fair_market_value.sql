@@ -65,3 +65,7 @@ CREATE INDEX ix_fmv_py_p_iic_mc_cuc ON fair_market_value(program_year, period, i
 CREATE INDEX ix_fmv_py ON fair_market_value(program_year)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE fair_market_value ADD 
+    CONSTRAINT pk_fmv PRIMARY KEY (fair_market_value_id) USING INDEX TABLESPACE pg_default 
+;

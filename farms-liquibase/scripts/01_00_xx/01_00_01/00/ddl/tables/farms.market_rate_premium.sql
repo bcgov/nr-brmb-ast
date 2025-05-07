@@ -40,3 +40,7 @@ COMMENT ON COLUMN market_rate_premium.update_date IS 'UPDATE DATE indicates when
 COMMENT ON TABLE market_rate_premium IS 'MARKET RATE PREMIUM is the premium rate for the market rate premium.'
 ;
 
+
+ALTER TABLE market_rate_premium ADD 
+    CONSTRAINT pk_mrp PRIMARY KEY (market_rate_premium_id) USING INDEX TABLESPACE pg_default 
+;

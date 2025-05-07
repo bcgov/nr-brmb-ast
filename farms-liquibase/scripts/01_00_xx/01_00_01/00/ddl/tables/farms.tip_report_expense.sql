@@ -62,3 +62,7 @@ CREATE INDEX ix_tre_trc ON tip_report_expense(tip_rating_code)
 CREATE UNIQUE INDEX uk_tre_trri_li ON tip_report_expense(tip_report_result_id, line_item)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE tip_report_expense ADD 
+    CONSTRAINT pk_tre PRIMARY KEY (tip_report_expense_id) USING INDEX TABLESPACE pg_default 
+;

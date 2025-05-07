@@ -59,3 +59,7 @@ CREATE INDEX ix_rpfvr_fvtc ON reasonability_production_fruit_vegetables_result(f
 CREATE UNIQUE INDEX ix_rpfvr_rtri_fvtc ON reasonability_production_fruit_vegetables_result(reasonability_test_result_id, fruit_vegetable_type_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_production_fruit_vegetables_result ADD 
+    CONSTRAINT pk_rpfvr PRIMARY KEY (reasonability_production_fruit_vegetables_result_id) USING INDEX TABLESPACE pg_default 
+;

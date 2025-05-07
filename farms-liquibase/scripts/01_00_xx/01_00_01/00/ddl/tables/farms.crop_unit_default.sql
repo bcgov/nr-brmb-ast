@@ -38,3 +38,7 @@ CREATE INDEX ix_cud_cuc ON crop_unit_default(crop_unit_code)
 CREATE UNIQUE INDEX uk_cud_iic ON crop_unit_default(inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE crop_unit_default ADD 
+    CONSTRAINT pk_cud PRIMARY KEY (crop_unit_default_id) USING INDEX TABLESPACE pg_default 
+;

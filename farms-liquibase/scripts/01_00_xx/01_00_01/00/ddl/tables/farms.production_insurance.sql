@@ -38,3 +38,7 @@ COMMENT ON TABLE production_insurance IS 'PRODUCTION INSURANCE provides the prod
 CREATE INDEX ix_pi_foi ON production_insurance(farming_operation_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE production_insurance ADD 
+    CONSTRAINT pk_pi PRIMARY KEY (production_insurance_id) USING INDEX TABLESPACE pg_default 
+;

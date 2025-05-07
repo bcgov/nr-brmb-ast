@@ -36,3 +36,7 @@ COMMENT ON COLUMN benefit_calculation_document.update_date IS 'UPDATE DATE indic
 CREATE UNIQUE INDEX ix_bcd_asi ON benefit_calculation_document(agristability_scenario_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE benefit_calculation_document ADD 
+    CONSTRAINT pk_bcd PRIMARY KEY (benefit_calculation_document_id) USING INDEX TABLESPACE pg_default 
+;

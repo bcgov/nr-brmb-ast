@@ -35,3 +35,7 @@ COMMENT ON TABLE document_template IS 'DOCUMENT TEMPLATE contains text content u
 CREATE UNIQUE INDEX uk_dt_tn ON document_template(template_name)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE document_template ADD 
+    CONSTRAINT pk_dt PRIMARY KEY (document_template_id) USING INDEX TABLESPACE pg_default 
+;

@@ -68,3 +68,7 @@ CREATE INDEX ix_zps_pp_py_on ON z21_participant_supplementary(participant_pin, p
 CREATE INDEX ix_zps_ic_itc ON z21_participant_supplementary(inventory_code, inventory_type_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE z21_participant_supplementary ADD 
+    CONSTRAINT pk_zps PRIMARY KEY (inventory_key, participant_pin, program_year, operation_number) USING INDEX TABLESPACE pg_default 
+;

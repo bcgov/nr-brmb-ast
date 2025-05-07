@@ -112,3 +112,7 @@ COMMENT ON COLUMN z02_participant_farm_information.update_date IS 'UPDATE DATE i
 COMMENT ON TABLE z02_participant_farm_information IS 'Z02 PARTICIPANT FARM INFORMATION lists AgriStablity Participant Farming information, from page 1/Section 1 of the Harmonized t1273 form. This file is sent to the provinces by FIPD.  This is a staging object used to load temporary data set before being merged into the operational data'
 ;
 
+
+ALTER TABLE z02_participant_farm_information ADD 
+    CONSTRAINT pk_zpfi PRIMARY KEY (participant_pin, program_year) USING INDEX TABLESPACE pg_default 
+;

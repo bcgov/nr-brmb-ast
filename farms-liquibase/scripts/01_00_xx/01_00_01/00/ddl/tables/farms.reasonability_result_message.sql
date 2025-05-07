@@ -44,3 +44,7 @@ CREATE INDEX ix_rrm_mtc ON reasonability_result_message(message_type_code)
 CREATE INDEX ix_rrm_rtri ON reasonability_result_message(reasonability_test_result_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_result_message ADD 
+    CONSTRAINT pk_rrm PRIMARY KEY (reasonability_result_message_id) USING INDEX TABLESPACE pg_default 
+;

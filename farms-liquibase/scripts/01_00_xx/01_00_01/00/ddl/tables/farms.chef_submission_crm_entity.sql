@@ -42,3 +42,7 @@ CREATE INDEX ix_csce_csi ON chef_submission_crm_entity(chef_submission_id)
 CREATE UNIQUE INDEX uk_csce_csi_ceg ON chef_submission_crm_entity(chef_submission_id, crm_entity_guid)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE chef_submission_crm_entity ADD 
+    CONSTRAINT pk_csce PRIMARY KEY (crm_entity_guid) USING INDEX TABLESPACE pg_default 
+;

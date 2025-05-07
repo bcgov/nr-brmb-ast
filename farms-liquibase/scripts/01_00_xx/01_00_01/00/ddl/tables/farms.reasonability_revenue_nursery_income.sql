@@ -38,3 +38,7 @@ COMMENT ON TABLE reasonability_revenue_nursery_income IS 'REASONABILITY REVENUE 
 CREATE UNIQUE INDEX uk_rrni_rrnri_li ON reasonability_revenue_nursery_income(reasonability_revenue_nursery_result_id, line_item)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_revenue_nursery_income ADD 
+    CONSTRAINT pk_rrni PRIMARY KEY (reasonability_revenue_nursery_income_id) USING INDEX TABLESPACE pg_default 
+;

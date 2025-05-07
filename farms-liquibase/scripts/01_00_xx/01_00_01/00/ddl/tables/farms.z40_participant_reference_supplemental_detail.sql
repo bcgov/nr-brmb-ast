@@ -83,3 +83,7 @@ CREATE INDEX ix_zprsd_pu ON z40_participant_reference_supplemental_detail(produc
 CREATE INDEX ix_zprsd_ic_itc ON z40_participant_reference_supplemental_detail(inventory_code, inventory_type_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE z40_participant_reference_supplemental_detail ADD 
+    CONSTRAINT pk_zprsd PRIMARY KEY (prior_year_supplemental_key) USING INDEX TABLESPACE pg_default 
+;

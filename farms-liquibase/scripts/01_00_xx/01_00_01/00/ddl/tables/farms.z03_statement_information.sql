@@ -92,3 +92,7 @@ COMMENT ON TABLE z03_statement_information IS 'Z03 STATEMENT INFO identifies the
 CREATE INDEX ix_zsi_pp_py ON z03_statement_information(participant_pin, program_year)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE z03_statement_information ADD 
+    CONSTRAINT pk_zsi PRIMARY KEY (operation_number, participant_pin, program_year) USING INDEX TABLESPACE pg_default 
+;

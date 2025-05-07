@@ -124,3 +124,7 @@ COMMENT ON COLUMN z01_participant_information.update_date IS 'UPDATE DATE indica
 COMMENT ON TABLE z01_participant_information IS 'Z01 PARTICIPANT INFO lists AgriStablity Participant information, from Tax return and page 1 of the Harmonized t1273 form. There will be 1 row in this file per participant. This is a staging object used to load temporary data set before being merged into the operational data'
 ;
 
+
+ALTER TABLE z01_participant_information ADD 
+    CONSTRAINT pk_zpi PRIMARY KEY (participant_pin) USING INDEX TABLESPACE pg_default 
+;

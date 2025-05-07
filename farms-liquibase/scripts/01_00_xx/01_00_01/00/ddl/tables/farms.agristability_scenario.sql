@@ -110,3 +110,7 @@ CREATE INDEX ix_as_vui ON agristability_scenario(verifier_user_id)
 CREATE UNIQUE INDEX uk_as_pyvi ON agristability_scenario(program_year_version_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE agristability_scenario ADD 
+    CONSTRAINT pk_as PRIMARY KEY (agristability_scenario_id) USING INDEX TABLESPACE pg_default 
+;

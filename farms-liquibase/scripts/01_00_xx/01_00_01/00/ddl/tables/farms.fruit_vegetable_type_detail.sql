@@ -35,3 +35,7 @@ COMMENT ON TABLE fruit_vegetable_type_detail IS 'FRUIT VEGETABLE TYPE DETAIL def
 CREATE UNIQUE INDEX uk_fvtd_fvtc ON fruit_vegetable_type_detail(fruit_vegetable_type_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE fruit_vegetable_type_detail ADD 
+    CONSTRAINT pk_fvtd PRIMARY KEY (fruit_vegetable_type_detail_id) USING INDEX TABLESPACE pg_default 
+;

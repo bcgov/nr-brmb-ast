@@ -38,3 +38,7 @@ COMMENT ON TABLE benchmark_year IS 'BENCHMARK YEAR is the income minus expenses 
 CREATE INDEX iix_by_bpui ON benchmark_year(benchmark_per_unit_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE benchmark_year ADD 
+    CONSTRAINT pk_by PRIMARY KEY (benchmark_year, benchmark_per_unit_id) USING INDEX TABLESPACE pg_default 
+;

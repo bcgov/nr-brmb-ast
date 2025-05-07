@@ -230,3 +230,7 @@ CREATE INDEX ix_ac_scc ON agristability_claim(structural_change_code)
 CREATE UNIQUE INDEX uk_ac_asi ON agristability_claim(agristability_scenario_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE agristability_claim ADD 
+    CONSTRAINT pk_ac PRIMARY KEY (agristability_claim_id) USING INDEX TABLESPACE pg_default 
+;

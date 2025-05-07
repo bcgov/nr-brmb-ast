@@ -59,3 +59,7 @@ CREATE INDEX ix_rie_criei ON reported_income_expenses(cra_reported_income_expens
 CREATE INDEX ix_rie_li ON reported_income_expenses(line_item)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reported_income_expenses ADD 
+    CONSTRAINT pk_rie PRIMARY KEY (reported_income_expense_id) USING INDEX TABLESPACE pg_default 
+;

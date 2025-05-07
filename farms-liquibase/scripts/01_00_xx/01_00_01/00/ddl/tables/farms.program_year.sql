@@ -80,3 +80,7 @@ CREATE INDEX ix_py_y ON program_year(year)
 CREATE UNIQUE INDEX uk_py_aci_y ON program_year(agristability_client_id, year)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE program_year ADD 
+    CONSTRAINT pk_py PRIMARY KEY (program_year_id) USING INDEX TABLESPACE pg_default 
+;

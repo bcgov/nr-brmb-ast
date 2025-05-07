@@ -41,3 +41,7 @@ COMMENT ON TABLE z22_production_insurance IS 'Z22 PRODUCTION INSURANCE identifie
 CREATE INDEX ix_zpi2_pp_py_on ON z22_production_insurance(participant_pin, program_year, operation_number)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE z22_production_insurance ADD 
+    CONSTRAINT pk_zpi2 PRIMARY KEY (production_insurance_key) USING INDEX TABLESPACE pg_default 
+;

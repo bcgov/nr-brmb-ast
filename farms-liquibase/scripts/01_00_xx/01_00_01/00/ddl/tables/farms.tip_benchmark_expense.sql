@@ -53,3 +53,7 @@ COMMENT ON TABLE tip_benchmark_expense IS 'TIP BENCHMARK EXPENSE contains the be
 CREATE UNIQUE INDEX uk_tbe_tbyi_li ON tip_benchmark_expense(tip_benchmark_year_id, line_item)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE tip_benchmark_expense ADD 
+    CONSTRAINT pk_tbe PRIMARY KEY (tip_benchmark_expense_id) USING INDEX TABLESPACE pg_default 
+;

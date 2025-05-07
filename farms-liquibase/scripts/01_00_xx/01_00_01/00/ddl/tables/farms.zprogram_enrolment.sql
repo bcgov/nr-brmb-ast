@@ -91,3 +91,7 @@ COMMENT ON COLUMN zprogram_enrolment.update_date IS 'UPDATE DATE indicates when 
 COMMENT ON TABLE zprogram_enrolment IS 'ZPROGRAM ENROLMENT is used to temporarily store information pertaining to an AGRISTABILITY CLIENT''''s enrolment in the AgriStaibility program, until it is ready to be copied to the operational table: PROGRAM ENROLMENT.'
 ;
 
+
+ALTER TABLE zprogram_enrolment ADD 
+    CONSTRAINT pk_ze PRIMARY KEY (participant_pin) USING INDEX TABLESPACE pg_default 
+;

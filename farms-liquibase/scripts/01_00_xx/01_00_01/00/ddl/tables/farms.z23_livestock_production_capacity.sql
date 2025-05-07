@@ -47,3 +47,7 @@ CREATE INDEX ix_zlpc_pp_py_on ON z23_livestock_production_capacity(participant_p
 CREATE INDEX ix_zlpc_pp_py ON z23_livestock_production_capacity(participant_pin, program_year)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE z23_livestock_production_capacity ADD 
+    CONSTRAINT pk_zlpc PRIMARY KEY (productive_capacity_key) USING INDEX TABLESPACE pg_default 
+;

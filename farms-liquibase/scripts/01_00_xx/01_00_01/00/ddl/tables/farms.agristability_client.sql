@@ -80,3 +80,7 @@ CREATE INDEX ix_ac1_pi ON agristability_client(person_id)
 CREATE UNIQUE INDEX uk_ac1_pp ON agristability_client(participant_pin)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE agristability_client ADD 
+    CONSTRAINT pk_ac1 PRIMARY KEY (agristability_client_id) USING INDEX TABLESPACE pg_default 
+;

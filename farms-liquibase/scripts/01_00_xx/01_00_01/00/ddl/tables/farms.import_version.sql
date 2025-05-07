@@ -74,3 +74,7 @@ CREATE INDEX ix_iv_icc ON import_version(import_class_code)
 CREATE INDEX ix_iv_isc ON import_version(import_state_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE import_version ADD 
+    CONSTRAINT pk_iv PRIMARY KEY (import_version_id) USING INDEX TABLESPACE pg_default 
+;

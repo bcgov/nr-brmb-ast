@@ -86,3 +86,7 @@ CREATE INDEX ix_nm_iic ON negative_margin(inventory_item_code)
 CREATE UNIQUE INDEX uk_nm_asi_foi_iic ON negative_margin(agristability_scenario_id, farming_operation_id, inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE negative_margin ADD 
+    CONSTRAINT pk_nm PRIMARY KEY (negative_margin_id) USING INDEX TABLESPACE pg_default 
+;

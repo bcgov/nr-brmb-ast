@@ -68,3 +68,7 @@ CREATE INDEX ix_puc_cpuci ON productive_unit_capacity(cra_productive_unit_capaci
 CREATE INDEX ix_puc_sgc ON productive_unit_capacity(structure_group_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE productive_unit_capacity ADD 
+    CONSTRAINT pk_puc PRIMARY KEY (productve_unit_capacity_id) USING INDEX TABLESPACE pg_default 
+;

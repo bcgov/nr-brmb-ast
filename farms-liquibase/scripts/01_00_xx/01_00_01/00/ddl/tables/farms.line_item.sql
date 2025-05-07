@@ -116,3 +116,7 @@ CREATE INDEX ix_li_py_smci ON line_item(program_year, supply_managed_commodity_i
 CREATE INDEX ix_li_py_yi ON line_item(program_year, yardage_indicator)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE line_item ADD 
+    CONSTRAINT pk_li PRIMARY KEY (line_item_id) USING INDEX TABLESPACE pg_default 
+;

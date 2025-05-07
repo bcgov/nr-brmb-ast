@@ -44,3 +44,7 @@ CREATE INDEX ix_cucf_iic ON crop_unit_conversion_factor(inventory_item_code)
 CREATE UNIQUE INDEX uk_cucf_iic_tcuc ON crop_unit_conversion_factor(inventory_item_code, target_crop_unit_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE crop_unit_conversion_factor ADD 
+    CONSTRAINT pk_cucf PRIMARY KEY (crop_unit_conversion_factor_id) USING INDEX TABLESPACE pg_default 
+;

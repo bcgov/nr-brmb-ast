@@ -47,3 +47,7 @@ CREATE INDEX ix_rrhi_iic ON reasonability_revenue_hog_inventory(inventory_item_c
 CREATE UNIQUE INDEX uk_rrhi_rrhri_iic ON reasonability_revenue_hog_inventory(reasonability_revenue_hog_result_id, inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_revenue_hog_inventory ADD 
+    CONSTRAINT pk_rrhi PRIMARY KEY (reasonability_revenue_hog_inventory_id) USING INDEX TABLESPACE pg_default 
+;

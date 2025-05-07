@@ -38,3 +38,7 @@ CREATE UNIQUE INDEX uk_ar_ug ON agristability_representative(user_guid)
 CREATE UNIQUE INDEX uk_ar_u ON agristability_representative(userid)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE agristability_representative ADD 
+    CONSTRAINT pk_ar PRIMARY KEY (agristability_representative_id) USING INDEX TABLESPACE pg_default 
+;

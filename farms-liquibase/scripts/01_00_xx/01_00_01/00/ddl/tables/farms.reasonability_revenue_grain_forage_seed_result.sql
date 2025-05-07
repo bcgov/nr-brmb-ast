@@ -48,3 +48,7 @@ CREATE INDEX ix_rrgfsr_rtri ON reasonability_revenue_grain_forage_seed_result(re
 CREATE UNIQUE INDEX uk_rrgfsr_rtri_li ON reasonability_revenue_grain_forage_seed_result(reasonability_test_result_id, line_item)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_revenue_grain_forage_seed_result ADD 
+    CONSTRAINT pk_rrgfsr PRIMARY KEY (reasonability_revenue_grain_forage_seed_result_id) USING INDEX TABLESPACE pg_default 
+;

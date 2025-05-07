@@ -38,3 +38,7 @@ CREATE INDEX ix_tft2l_tft3li ON tip_farm_type_2_lookup(tip_farm_type_3_lookup_id
 CREATE UNIQUE INDEX uk_tft2l_ft2n ON tip_farm_type_2_lookup(farm_type_2_name)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE tip_farm_type_2_lookup ADD 
+    CONSTRAINT pk_tft2l PRIMARY KEY (tip_farm_type_2_lookup_id) USING INDEX TABLESPACE pg_default 
+;

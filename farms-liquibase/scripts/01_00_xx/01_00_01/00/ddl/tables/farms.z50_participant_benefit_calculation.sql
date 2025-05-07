@@ -56,3 +56,7 @@ COMMENT ON TABLE z50_participant_benefit_calculation IS 'Z50 PARTICIPANT BENEFIT
 CREATE INDEX ix_zpbc_pp_py ON z50_participant_benefit_calculation(participant_pin, program_year)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE z50_participant_benefit_calculation ADD 
+    CONSTRAINT pk_zpbc PRIMARY KEY (benefit_calculation_key) USING INDEX TABLESPACE pg_default 
+;

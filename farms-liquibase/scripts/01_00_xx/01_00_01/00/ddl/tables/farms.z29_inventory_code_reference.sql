@@ -43,3 +43,7 @@ COMMENT ON COLUMN z29_inventory_code_reference.update_date IS 'UPDATE DATE indic
 COMMENT ON TABLE z29_inventory_code_reference IS 'Z29 INVENTORY REFERENCE identifies a list of inventory (commodity) codes, and their associated descriptions used by FIPD. This file is created by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+ALTER TABLE z29_inventory_code_reference ADD 
+    CONSTRAINT pk_zicr PRIMARY KEY (inventory_code, inventory_type_code) USING INDEX TABLESPACE pg_default 
+;

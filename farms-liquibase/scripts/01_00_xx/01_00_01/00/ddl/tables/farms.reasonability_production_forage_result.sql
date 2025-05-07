@@ -65,3 +65,7 @@ CREATE INDEX ix_rpfr_rtri ON reasonability_production_forage_result(reasonabilit
 CREATE UNIQUE INDEX uk_rpfr_rtri_iic ON reasonability_production_forage_result(reasonability_test_result_id, inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_production_forage_result ADD 
+    CONSTRAINT pk_rpfr PRIMARY KEY (reasonability_production_forage_result_id) USING INDEX TABLESPACE pg_default 
+;

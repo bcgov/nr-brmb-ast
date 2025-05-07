@@ -65,3 +65,7 @@ CREATE INDEX ix_rrgfsi_iic ON reasonability_revenue_grain_forage_seed_inventory(
 CREATE UNIQUE INDEX uk_rrgfsi_rtri_iic ON reasonability_revenue_grain_forage_seed_inventory(reasonability_test_result_id, inventory_item_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_revenue_grain_forage_seed_inventory ADD 
+    CONSTRAINT pk_rrgfsi PRIMARY KEY (reasonability_revenue_grain_forage_seed_inventory_id) USING INDEX TABLESPACE pg_default 
+;

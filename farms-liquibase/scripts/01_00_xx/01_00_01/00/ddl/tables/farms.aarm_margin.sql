@@ -66,3 +66,7 @@ CREATE INDEX ix_am_pp_py_on ON aarm_margin(participant_pin, program_year, operat
 CREATE INDEX ix_am_pp_py_on_itc_ic ON aarm_margin(participant_pin, program_year, operation_number, inventory_type_code, inventory_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE aarm_margin ADD 
+    CONSTRAINT pk_am PRIMARY KEY (aarm_margin_id) USING INDEX TABLESPACE pg_default 
+;

@@ -38,3 +38,7 @@ CREATE INDEX ix_sga_rsgc ON structure_group_attribute(rollup_structure_group_cod
 CREATE UNIQUE INDEX uk_sga_sgc ON structure_group_attribute(structure_group_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE structure_group_attribute ADD 
+    CONSTRAINT pk_sga PRIMARY KEY (structure_group_attribute_id) USING INDEX TABLESPACE pg_default 
+;

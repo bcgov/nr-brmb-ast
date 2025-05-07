@@ -53,3 +53,7 @@ CREATE INDEX ix_zied_pp_py_on ON z04_income_expenses_detail(participant_pin, pro
 CREATE INDEX ix_zied_pycb_lc ON z04_income_expenses_detail(program_year_codified_by, line_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE z04_income_expenses_detail ADD 
+    CONSTRAINT pk_zied PRIMARY KEY (income_expense_key) USING INDEX TABLESPACE pg_default 
+;

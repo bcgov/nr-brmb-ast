@@ -44,3 +44,7 @@ CREATE INDEX ix_rs_fasi ON reference_scenario(for_agristability_scenario_id)
 CREATE INDEX ix_rs_asi ON reference_scenario(agristability_scenario_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reference_scenario ADD 
+    CONSTRAINT pk_rs PRIMARY KEY (reference_scenario_id) USING INDEX TABLESPACE pg_default 
+;

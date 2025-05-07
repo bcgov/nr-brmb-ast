@@ -59,3 +59,7 @@ CREATE INDEX ix_rbrpur_sgc ON reasonability_benefit_risk_productive_units_result
 CREATE UNIQUE INDEX uk_rbrpur_rtri_iic_sgc ON reasonability_benefit_risk_productive_units_result(reasonability_test_result_id, inventory_item_code, structure_group_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_benefit_risk_productive_units_result ADD 
+    CONSTRAINT pk_rbrpur PRIMARY KEY (rsn_benefit_risk_productive_unit_result_id) USING INDEX TABLESPACE pg_default 
+;

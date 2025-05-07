@@ -224,3 +224,7 @@ COMMENT ON TABLE reasonability_test_result IS 'REASONABILITY TEST RESULT contain
 CREATE UNIQUE INDEX uk_rtr_asi ON reasonability_test_result(agristability_scenario_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_test_result ADD 
+    CONSTRAINT pk_rtr PRIMARY KEY (reasonability_test_result_id) USING INDEX TABLESPACE pg_default 
+;

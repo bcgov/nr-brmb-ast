@@ -38,3 +38,7 @@ CREATE INDEX ix_omx_mc ON office_municipality_xref(municipality_code)
 CREATE INDEX ix_omx_roc ON office_municipality_xref(regional_office_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE office_municipality_xref ADD 
+    CONSTRAINT pk_omx PRIMARY KEY (office_municipality_xref_id) USING INDEX TABLESPACE pg_default 
+;

@@ -42,3 +42,7 @@ CREATE INDEX ix_sdli_py ON sector_detail_line_item(program_year)
 CREATE UNIQUE INDEX uk_sdli_li_py_sdc ON sector_detail_line_item(line_item, program_year, sector_detail_code)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE sector_detail_line_item ADD 
+    CONSTRAINT pk_sdli PRIMARY KEY (sector_detail_line_item_id) USING INDEX TABLESPACE pg_default 
+;

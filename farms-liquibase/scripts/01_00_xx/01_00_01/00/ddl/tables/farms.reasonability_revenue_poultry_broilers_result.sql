@@ -98,3 +98,7 @@ COMMENT ON TABLE reasonability_revenue_poultry_broilers_result IS 'REASONABILITY
 CREATE UNIQUE INDEX uk_rrpbr_rtri ON reasonability_revenue_poultry_broilers_result(reasonability_test_result_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_revenue_poultry_broilers_result ADD 
+    CONSTRAINT pk_rrpbr PRIMARY KEY (reasonability_revenue_poultry_broilers_result_id) USING INDEX TABLESPACE pg_default 
+;

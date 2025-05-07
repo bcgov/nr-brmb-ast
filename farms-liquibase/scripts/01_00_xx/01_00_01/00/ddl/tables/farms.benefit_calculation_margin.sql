@@ -110,3 +110,7 @@ CREATE INDEX ix_bcm_foi ON benefit_calculation_margin(farming_operation_id)
 CREATE UNIQUE INDEX uk_bcm_asi_foi ON benefit_calculation_margin(agristability_scenario_id, farming_operation_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE benefit_calculation_margin ADD 
+    CONSTRAINT pk_bcm PRIMARY KEY (benefit_calculation_margin_id) USING INDEX TABLESPACE pg_default 
+;

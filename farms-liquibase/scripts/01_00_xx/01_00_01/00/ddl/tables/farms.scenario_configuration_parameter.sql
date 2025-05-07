@@ -41,3 +41,7 @@ CREATE INDEX ix_scp_pn ON scenario_configuration_parameter(parameter_name)
 CREATE UNIQUE INDEX uk_scp_asi_pn ON scenario_configuration_parameter(agristability_scenario_id, parameter_name)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE scenario_configuration_parameter ADD 
+    CONSTRAINT pk_scp PRIMARY KEY (scenario_configuration_parameter_id) USING INDEX TABLESPACE pg_default 
+;

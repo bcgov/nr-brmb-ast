@@ -44,3 +44,7 @@ CREATE INDEX ix_ycp_cptc ON year_configuration_parameter(configuration_parameter
 CREATE UNIQUE INDEX uk_ycp_py_pn ON year_configuration_parameter(program_year, parameter_name)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE year_configuration_parameter ADD 
+    CONSTRAINT pk_ycp PRIMARY KEY (year_configuration_parameter_id) USING INDEX TABLESPACE pg_default 
+;

@@ -125,3 +125,7 @@ COMMENT ON TABLE reasonability_revenue_hog_result IS 'REASONABILITY REVENUE HOG 
 CREATE UNIQUE INDEX uk_rrhr_rtri ON reasonability_revenue_hog_result(reasonability_test_result_id)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE reasonability_revenue_hog_result ADD 
+    CONSTRAINT pk_rrhr PRIMARY KEY (reasonability_revenue_hog_result_id) USING INDEX TABLESPACE pg_default 
+;

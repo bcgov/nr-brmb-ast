@@ -206,3 +206,7 @@ CREATE UNIQUE INDEX uk_tby_py_ry_ft3n_ft2n_ft1n_irh ON tip_benchmark_year(progra
 CREATE UNIQUE INDEX uk_tby_py_ry_ft3n_ft2n_ft1n_irl ON tip_benchmark_year(program_year, reference_year, farm_type_3_name, farm_type_2_name, farm_type_1_name, income_range_low)
  TABLESPACE pg_default
 ;
+
+ALTER TABLE tip_benchmark_year ADD 
+    CONSTRAINT pk_tby PRIMARY KEY (tip_benchmark_year_id) USING INDEX TABLESPACE pg_default 
+;
