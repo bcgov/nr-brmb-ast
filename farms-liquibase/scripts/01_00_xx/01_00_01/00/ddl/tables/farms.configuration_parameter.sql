@@ -37,3 +37,8 @@ COMMENT ON COLUMN configuration_parameter.update_date IS 'UPDATE DATE indicates 
 COMMENT ON TABLE configuration_parameter IS 'CONFIGURATION PARAMETER contains parameters that change the behaviour of the FARM application.'
 ;
 
+
+CREATE INDEX ix_cp_cptc ON configuration_parameter(configuration_parameter_type_code)
+;
+CREATE UNIQUE INDEX uk_cp_pn ON configuration_parameter(parameter_name)
+;

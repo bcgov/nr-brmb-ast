@@ -31,3 +31,8 @@ COMMENT ON COLUMN structure_group_attribute.update_date IS 'UPDATE DATE indicate
 COMMENT ON TABLE structure_group_attribute IS 'STRUCTURE GROUP ATTRIBUTE is additional information about an INVENTORY ITEM CODE.'
 ;
 
+
+CREATE INDEX ix_sga_rsgc ON structure_group_attribute(rollup_structure_group_code)
+;
+CREATE UNIQUE INDEX uk_sga_sgc ON structure_group_attribute(structure_group_code)
+;

@@ -32,3 +32,10 @@ COMMENT ON COLUMN chef_submission_crm_entity.update_date IS 'UPDATE DATE indicat
 COMMENT ON TABLE chef_submission_crm_entity IS 'CHEF SUBMISSION CRM ENTITIES is a cross reference to link CHEF Form Submissions to CRM entities.'
 ;
 
+
+CREATE INDEX ix_csce_cetc ON chef_submission_crm_entity(crm_entity_type_code)
+;
+CREATE INDEX ix_csce_csi ON chef_submission_crm_entity(chef_submission_id)
+;
+CREATE UNIQUE INDEX uk_csce_csi_ceg ON chef_submission_crm_entity(chef_submission_id, crm_entity_guid)
+;

@@ -43,3 +43,14 @@ COMMENT ON COLUMN benchmark_per_unit.update_date IS 'UPDATE DATE indicates when 
 COMMENT ON TABLE benchmark_per_unit IS 'BENCHMARK PER UNIT is the cost for growing a certain amount of a certain crop on a model farm.  The price can have regional differences, for example growing 1 acre of field tomatoes on a farm in the far north might have extra heating and transportation costs compared to a lower-mainland tomato farm.'
 ;
 
+
+CREATE INDEX ix_bpu_iic ON benchmark_per_unit(inventory_item_code)
+;
+CREATE INDEX ix_bpu_mc ON benchmark_per_unit(municipality_code)
+;
+CREATE INDEX ix_bpu_sgc ON benchmark_per_unit(structure_group_code)
+;
+CREATE INDEX ix_bpu_py_iic_mc ON benchmark_per_unit(program_year, inventory_item_code, municipality_code)
+;
+CREATE INDEX ix_bpu_py ON benchmark_per_unit(program_year)
+;

@@ -46,3 +46,8 @@ COMMENT ON COLUMN z04_income_expenses_detail.update_date IS 'UPDATE DATE indicat
 COMMENT ON TABLE z04_income_expenses_detail IS 'Z04 INCOME EXPENSES LIST identifies all the income(sales) and expense(purchases) listed by the producer on each statement A/B form. There can be multiple rows for a single income or expense code, if this is how the producer filled out the form. This file is sent to the provinces by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zied_pp_py_on ON z04_income_expenses_detail(participant_pin, program_year, operation_number)
+;
+CREATE INDEX ix_zied_pycb_lc ON z04_income_expenses_detail(program_year_codified_by, line_code)
+;

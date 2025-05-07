@@ -67,3 +67,8 @@ COMMENT ON COLUMN import_version.update_date IS 'UPDATE DATE indicates when the 
 COMMENT ON TABLE import_version IS 'IMPORT VERSION defines the number used to identify the batch in which one or more PROGRAM YEAR VERSIONs were processed.'
 ;
 
+
+CREATE INDEX ix_iv_icc ON import_version(import_class_code)
+;
+CREATE INDEX ix_iv_isc ON import_version(import_state_code)
+;

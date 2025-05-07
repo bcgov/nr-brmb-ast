@@ -49,3 +49,16 @@ COMMENT ON COLUMN productive_unit_capacity.update_date IS 'UPDATE DATE indicates
 COMMENT ON TABLE productive_unit_capacity IS 'PRODUCTIVE UNIT CAPACITY is a measure of the productive capacity for a given AGRASTABILITY COMMODITY. A PRODUCTIVE UNIT CAPACITY associates with a specific AGRASTABILITY COMMODITY. A PRODUCTIVE UNIT CAPACITY may have more than one PRODUCTIVE UNIT CAPACITY ADJUSTMENT. A PRODUCTIVE UNIT CAPACITY is received via federal imports and through provincial data imports.'
 ;
 
+
+CREATE INDEX ix_puc_asi ON productive_unit_capacity(agristability_scenario_id)
+;
+CREATE INDEX ix_puc_foi ON productive_unit_capacity(farming_operation_id)
+;
+CREATE INDEX ix_puc_iic ON productive_unit_capacity(inventory_item_code)
+;
+CREATE INDEX ix_puc_pdsc ON productive_unit_capacity(participant_data_source_code)
+;
+CREATE INDEX ix_puc_cpuci ON productive_unit_capacity(cra_productive_unit_capacity_id)
+;
+CREATE INDEX ix_puc_sgc ON productive_unit_capacity(structure_group_code)
+;

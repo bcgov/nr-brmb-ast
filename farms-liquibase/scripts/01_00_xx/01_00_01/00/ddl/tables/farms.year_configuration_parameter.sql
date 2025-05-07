@@ -37,3 +37,8 @@ COMMENT ON COLUMN year_configuration_parameter.update_date IS 'UPDATE DATE indic
 COMMENT ON TABLE year_configuration_parameter IS 'YEAR CONFIGURATION PARAMETER contains parameters that change the behaviour of the FARM application.'
 ;
 
+
+CREATE INDEX ix_ycp_cptc ON year_configuration_parameter(configuration_parameter_type_code)
+;
+CREATE UNIQUE INDEX uk_ycp_py_pn ON year_configuration_parameter(program_year, parameter_name)
+;

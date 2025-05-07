@@ -76,3 +76,26 @@ COMMENT ON COLUMN agristability_scenario.update_date IS 'UPDATE DATE indicates w
 COMMENT ON TABLE agristability_scenario IS 'AGRISTABILITY SCENARIO refers to a unique instance of the associated data. AGRISTABILITY SCENARIO will be enforced on Operation, Margin, Claim and all Adjustments data according to specific business rules (i.e. tied to State changes). Many instances of an AGRISTABILITY SCENARIO may exist for the above listed entities.'
 ;
 
+
+CREATE INDEX ix_as_cfn ON agristability_scenario(combined_farm_number)
+;
+CREATE INDEX ix_as_di ON agristability_scenario(default_indicator)
+;
+CREATE INDEX ix_as_csi ON agristability_scenario(chef_submission_id)
+;
+CREATE INDEX ix_as_pdsc ON agristability_scenario(participant_data_source_code)
+;
+CREATE INDEX ix_as_pyvi ON agristability_scenario(program_year_version_id)
+;
+CREATE INDEX ix_as_scc ON agristability_scenario(scenario_category_code)
+;
+CREATE INDEX ix_as_ssc ON agristability_scenario(scenario_state_code)
+;
+CREATE INDEX ix_as_scc1 ON agristability_scenario(scenario_class_code)
+;
+CREATE INDEX ix_as_tqc ON agristability_scenario(triage_queue_code)
+;
+CREATE INDEX ix_as_vui ON agristability_scenario(verifier_user_id)
+;
+CREATE UNIQUE INDEX uk_as_pyvi ON agristability_scenario(program_year_version_id)
+;

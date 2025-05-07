@@ -31,3 +31,8 @@ COMMENT ON COLUMN inventory_item_attribute.update_date IS 'UPDATE DATE indicates
 COMMENT ON TABLE inventory_item_attribute IS 'INVENTORY ITEM ATTRIBUTE is additional information about an INVENTORY ITEM CODE.'
 ;
 
+
+CREATE INDEX ix_iia_riic ON inventory_item_attribute(rollup_inventory_item_code)
+;
+CREATE UNIQUE INDEX uk_iia_iic ON inventory_item_attribute(inventory_item_code)
+;

@@ -43,3 +43,6 @@ COMMENT ON COLUMN z51_participant_contribution.update_date IS 'UPDATE DATE indic
 COMMENT ON TABLE z51_participant_contribution IS 'Z51 PARTICIPANT CONTRIBUTION identifies contributions by the participant for the program year, broken out by type. This data can only be provided for years FIPD has processed. This file is created by FIPD.  This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zpc_pp_py ON z51_participant_contribution(participant_pin, program_year)
+;

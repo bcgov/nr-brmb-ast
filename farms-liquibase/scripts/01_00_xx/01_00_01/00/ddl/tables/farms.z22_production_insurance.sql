@@ -37,3 +37,6 @@ COMMENT ON COLUMN z22_production_insurance.update_date IS 'UPDATE DATE indicates
 COMMENT ON TABLE z22_production_insurance IS 'Z22 PRODUCTION INSURANCE identifies the Insurance contract numbers provided by the participant on the supplemental page of the AgriStability application. This file will have 0 to 4 rows per participant and farming operation, for the current year. This file is created by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zpi2_pp_py_on ON z22_production_insurance(participant_pin, program_year, operation_number)
+;

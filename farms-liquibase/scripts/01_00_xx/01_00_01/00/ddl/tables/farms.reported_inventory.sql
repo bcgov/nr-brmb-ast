@@ -82,3 +82,14 @@ COMMENT ON COLUMN reported_inventory.update_date IS 'UPDATE DATE indicates when 
 COMMENT ON TABLE reported_inventory IS 'REPORTED INVENTORY information contains production details for agricultural commodities, including Production Unit (i.e. quantity and values of livestock and crops) as well as accrual data. REPORTED INVENTORY data originates from the federal data imports (collected via "harmonized forms"). REPORTED INVENTORY is associated with each FARMING OPERATION however REPORTED INCOME EXPENSE data must also exist for each FARMING OPERATION (see Requirements). REPORTED INVENTORY data may have associated Form Data Adjustments.'
 ;
 
+
+CREATE INDEX ix_ri_acxi ON reported_inventory(agristabilty_commodity_xref_id)
+;
+CREATE INDEX ix_ri_asi ON reported_inventory(agristability_scenario_id)
+;
+CREATE INDEX ix_ri_cuc ON reported_inventory(crop_unit_code)
+;
+CREATE INDEX ix_ri_foi ON reported_inventory(farming_operation_id)
+;
+CREATE INDEX ix_ri_crii ON reported_inventory(cra_reported_inventory_id)
+;

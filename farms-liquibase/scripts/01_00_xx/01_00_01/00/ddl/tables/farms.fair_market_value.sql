@@ -49,3 +49,14 @@ COMMENT ON COLUMN fair_market_value.update_date IS 'UPDATE DATE indicates when t
 COMMENT ON TABLE fair_market_value IS 'FAIR MARKET VALUE is the market price for selling a certain amount of a crop. The price varies between municipalities and between months of the year. Within a month the price can vary by a certain percentage. The FAIR MARKET VALUE is used as a basis for comparison with a producer''s reported income and expenses.'
 ;
 
+
+CREATE INDEX ix_fmv_cuc ON fair_market_value(crop_unit_code)
+;
+CREATE INDEX ix_fmv_iic ON fair_market_value(inventory_item_code)
+;
+CREATE INDEX ix_fmv_mc ON fair_market_value(municipality_code)
+;
+CREATE INDEX ix_fmv_py_p_iic_mc_cuc ON fair_market_value(program_year, period, inventory_item_code, municipality_code, crop_unit_code)
+;
+CREATE INDEX ix_fmv_py ON fair_market_value(program_year)
+;

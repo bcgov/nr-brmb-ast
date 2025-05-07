@@ -355,3 +355,24 @@ COMMENT ON COLUMN tip_report_result.update_date IS 'UPDATE DATE indicates when t
 COMMENT ON TABLE tip_report_result IS 'TIP REPORT RESULT contains the results of a TIP Report run against a FARMING OPERATION. The TIP Report compares income and expenses of an operation to an industry benchmark.'
 ;
 
+
+CREATE INDEX ix_trr_cpr1r ON tip_report_result(commodity_purchases_repay_100_rating)
+;
+CREATE INDEX ix_trr_derr ON tip_report_result(direct_expenses_ratio_rating)
+;
+CREATE INDEX ix_trr_lberr ON tip_report_result(land_build_expenses_ratio_rating)
+;
+CREATE INDEX ix_trr_merr ON tip_report_result(machinery_expenses_ratio_rating)
+;
+CREATE INDEX ix_trr_ocrr ON tip_report_result(operating_cost_ratio_rating)
+;
+CREATE INDEX ix_trr_oerr ON tip_report_result(overhead_expenses_ratio_rating)
+;
+CREATE INDEX ix_trr_pmrr ON tip_report_result(production_margin_ratio_rating)
+;
+CREATE INDEX ix_trr_ptrri ON tip_report_result(parent_tip_report_result_id)
+;
+CREATE UNIQUE INDEX uk_trr_foi_ptrri ON tip_report_result(farming_operation_id, parent_tip_report_result_id)
+;
+CREATE UNIQUE INDEX uk_trr_pyi_ak_ptrri ON tip_report_result(program_year_id, alignment_key, parent_tip_report_result_id)
+;

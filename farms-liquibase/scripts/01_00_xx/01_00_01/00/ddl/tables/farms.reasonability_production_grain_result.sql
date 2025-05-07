@@ -52,3 +52,12 @@ COMMENT ON COLUMN reasonability_production_grain_result.update_date IS 'UPDATE D
 COMMENT ON TABLE reasonability_production_grain_result IS 'REASONABILITY PRODUCTION GRAIN RESULT contains the calculated amounts for the Reasonability Test: Grains Production Test run against the scenario, by GRAIN TYPE CODE.'
 ;
 
+
+CREATE INDEX ix_rpgr_qpcuc ON reasonability_production_grain_result(quantity_produced_crop_unit_code)
+;
+CREATE INDEX ix_rpgr_iic ON reasonability_production_grain_result(inventory_item_code)
+;
+CREATE INDEX ix_rpgr_rtri ON reasonability_production_grain_result(reasonability_test_result_id)
+;
+CREATE UNIQUE INDEX uk_rpgr_rtri_iic ON reasonability_production_grain_result(reasonability_test_result_id, inventory_item_code)
+;

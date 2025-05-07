@@ -31,3 +31,8 @@ COMMENT ON COLUMN office_municipality_xref.update_date IS 'UPDATE DATE indicates
 COMMENT ON TABLE office_municipality_xref IS 'OFFICE MUNICIPALITY XREF is a mapping between a MUNICIPALITY CODE and a REGIONAL OFFICE CODE. A municipality can only mapped to one office.'
 ;
 
+
+CREATE INDEX ix_omx_mc ON office_municipality_xref(municipality_code)
+;
+CREATE INDEX ix_omx_roc ON office_municipality_xref(regional_office_code)
+;

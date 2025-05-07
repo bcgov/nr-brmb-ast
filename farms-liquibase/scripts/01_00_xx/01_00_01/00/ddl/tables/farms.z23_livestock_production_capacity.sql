@@ -40,3 +40,8 @@ COMMENT ON COLUMN z23_livestock_production_capacity.update_date IS 'UPDATE DATE 
 COMMENT ON TABLE z23_livestock_production_capacity IS 'Z23 LIVESTOCK PRODUCTION CAPACITY identifies the Livestock production capacity information provided by the participant in section 9 of the supplemental page of the AgriStability application. This file will have 0 to many rows per participant and farming operation.This file is created by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zlpc_pp_py_on ON z23_livestock_production_capacity(participant_pin, program_year, operation_number)
+;
+CREATE INDEX ix_zlpc_pp_py ON z23_livestock_production_capacity(participant_pin, program_year)
+;

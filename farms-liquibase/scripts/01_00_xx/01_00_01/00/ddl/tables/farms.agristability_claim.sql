@@ -220,3 +220,10 @@ COMMENT ON COLUMN agristability_claim.update_date IS 'UPDATE DATE indicates when
 COMMENT ON TABLE agristability_claim IS 'AGRISTABILITY CLAIM is the calculated program benefit for an AgriStabilityClient.  AGRISTABILITY CLAIM data will originate from provincial calculations (note that historical data will come from federal sources). AGRISTABILITY CLAIM is associated with a unique AGRISTABILITY CLIENT for a given Program Year. An AGRISTABILITY CLAIM includes the monies paid, broken down by various funding sources, specifically:'
 ;
 
+
+CREATE INDEX ix_ac_escc ON agristability_claim(expense_structural_change_code)
+;
+CREATE INDEX ix_ac_scc ON agristability_claim(structural_change_code)
+;
+CREATE UNIQUE INDEX uk_ac_asi ON agristability_claim(agristability_scenario_id)
+;

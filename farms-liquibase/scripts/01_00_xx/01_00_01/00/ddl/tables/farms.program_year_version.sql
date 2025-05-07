@@ -115,3 +115,18 @@ COMMENT ON COLUMN program_year_version.update_date IS 'UPDATE DATE indicates whe
 COMMENT ON TABLE program_year_version IS 'PROGRAM YEAR VERSION is an instance of a tax form submission made for a given FARMING OPERATION''s PROGRAM YEAR. A PROGRAM YEAR VERSION may have associated PROGRAM FEE and CLAIM SETTLEMENT PAYMENT data.'
 ;
 
+
+CREATE INDEX ix_pyv_fsc ON program_year_version(federal_status_code)
+;
+CREATE INDEX ix_pyv_ivi ON program_year_version(import_version_id)
+;
+CREATE INDEX ix_pyv_mc ON program_year_version(municipality_code)
+;
+CREATE INDEX ix_pyv_ppc ON program_year_version(participant_profile_code)
+;
+CREATE INDEX ix_pyv_pyi ON program_year_version(program_year_id)
+;
+CREATE INDEX ix_pyv_pyi_mc ON program_year_version(program_year_id, municipality_code)
+;
+CREATE INDEX ix_pyv_mc_pyi ON program_year_version(municipality_code, program_year_id)
+;

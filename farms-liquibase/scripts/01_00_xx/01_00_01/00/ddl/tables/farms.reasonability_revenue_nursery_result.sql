@@ -43,3 +43,6 @@ COMMENT ON COLUMN reasonability_revenue_nursery_result.update_date IS 'UPDATE DA
 COMMENT ON TABLE reasonability_revenue_nursery_result IS 'REASONABILITY REVENUE NURSERY RESULT contains the results of the Revenue Risk - Nursery Subtest of the scenario.'
 ;
 
+
+CREATE UNIQUE INDEX uk_rrnr_rtri ON reasonability_revenue_nursery_result(reasonability_test_result_id)
+;

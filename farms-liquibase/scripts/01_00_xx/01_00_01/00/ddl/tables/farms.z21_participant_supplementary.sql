@@ -61,3 +61,8 @@ COMMENT ON COLUMN z21_participant_supplementary.update_date IS 'UPDATE DATE indi
 COMMENT ON TABLE z21_participant_supplementary IS 'Z21 PARTICIPANT SUPPLEMENTARY identifies Inventory information from parts 7, 8, 10, 11, 12 of the AgriStability Supplementary Form. Totals are not included, but can be calculated. The Inventory Type code describes which part of the form each row came from. This file will have multiple rows per participant and farming operation, for the current (latest) program year. This file is created by FIPD.  This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zps_pp_py_on ON z21_participant_supplementary(participant_pin, program_year, operation_number)
+;
+CREATE INDEX ix_zps_ic_itc ON z21_participant_supplementary(inventory_code, inventory_type_code)
+;

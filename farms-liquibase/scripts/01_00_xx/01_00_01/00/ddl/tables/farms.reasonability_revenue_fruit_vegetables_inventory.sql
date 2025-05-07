@@ -43,3 +43,10 @@ COMMENT ON COLUMN reasonability_revenue_fruit_vegetables_inventory.update_date I
 COMMENT ON TABLE reasonability_revenue_fruit_vegetables_inventory IS 'REASONABILITY REVENUE FRUIT VEGETABLES INVENTORY contains the calculated inventory results for the Reasonability Test: Fruits and Vegetables Revenue Test run against the scenario, by INVENTORY ITEM CODE.'
 ;
 
+
+CREATE INDEX ix_rrfvi_cuc ON reasonability_revenue_fruit_vegetables_inventory(crop_unit_code)
+;
+CREATE INDEX ix_rrfvi_iic ON reasonability_revenue_fruit_vegetables_inventory(inventory_item_code)
+;
+CREATE UNIQUE INDEX uk_rrfvi_rtri_iic ON reasonability_revenue_fruit_vegetables_inventory(reasonability_test_result_id, inventory_item_code)
+;

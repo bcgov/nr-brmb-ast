@@ -41,3 +41,8 @@ COMMENT ON COLUMN reasonability_revenue_grain_forage_seed_result.update_date IS 
 COMMENT ON TABLE reasonability_revenue_grain_forage_seed_result IS 'REASONABILITY REVENUE GRAIN FORAGE SEED RESULT contains the calculated amounts for the Reasonability Test: Grains, Forage, and Forage Seed Revenue Test run against the scenario, by LINE ITEM.'
 ;
 
+
+CREATE INDEX ix_rrgfsr_rtri ON reasonability_revenue_grain_forage_seed_result(reasonability_test_result_id)
+;
+CREATE UNIQUE INDEX uk_rrgfsr_rtri_li ON reasonability_revenue_grain_forage_seed_result(reasonability_test_result_id, line_item)
+;

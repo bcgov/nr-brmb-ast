@@ -64,3 +64,14 @@ COMMENT ON COLUMN agristability_client.update_date IS 'UPDATE DATE indicates whe
 COMMENT ON TABLE agristability_client IS 'AGRISTABILITY CLIENT is the taxable legal-entity (e.g. individuals, companies, etc.) registered with the AgriStability program. This object refers to identification and validation information, including program PIN.  AGRISTABILITY CLIENT data will originate from and be updated via federal data imports - specifically tax return data. An AGRISTABILITY CLIENT will always be associated with one or more PROGRAM YEARs. An AGRISTABILITY CLIENT may have associated PERSONS. AGRISTABILITY CLIENT may be associated with an  AGRISTABILITY REPRESENTATIVE. AGRISTABILITY CLIENT information may be updated by Provincial AgriStability Staff.'
 ;
 
+
+CREATE INDEX ix_ac1_pcc ON agristability_client(participant_class_code)
+;
+CREATE INDEX ix_ac1_piccb ON agristability_client(person_id_client_contacted_by)
+;
+CREATE INDEX ix_ac1_plc ON agristability_client(participant_language_code)
+;
+CREATE INDEX ix_ac1_pi ON agristability_client(person_id)
+;
+CREATE UNIQUE INDEX uk_ac1_pp ON agristability_client(participant_pin)
+;

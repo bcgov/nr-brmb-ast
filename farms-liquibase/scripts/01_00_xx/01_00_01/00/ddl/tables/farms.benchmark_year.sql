@@ -34,3 +34,6 @@ COMMENT ON COLUMN benchmark_year.update_date IS 'UPDATE DATE indicates when the 
 COMMENT ON TABLE benchmark_year IS 'BENCHMARK YEAR is the income minus expenses for growing a certain crop on a model farm for a specific year.'
 ;
 
+
+CREATE INDEX iix_by_bpui ON benchmark_year(benchmark_per_unit_id)
+;

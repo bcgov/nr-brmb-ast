@@ -76,3 +76,10 @@ COMMENT ON COLUMN negative_margin.update_date IS 'UPDATE DATE indicates when the
 COMMENT ON TABLE negative_margin IS 'NEGATIVE MARGINS is the negative margins for the farming operation.'
 ;
 
+
+CREATE INDEX ix_nm_foi ON negative_margin(farming_operation_id)
+;
+CREATE INDEX ix_nm_iic ON negative_margin(inventory_item_code)
+;
+CREATE UNIQUE INDEX uk_nm_asi_foi_iic ON negative_margin(agristability_scenario_id, farming_operation_id, inventory_item_code)
+;

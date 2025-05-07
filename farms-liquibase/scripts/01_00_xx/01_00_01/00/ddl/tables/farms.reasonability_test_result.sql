@@ -220,3 +220,6 @@ COMMENT ON COLUMN reasonability_test_result.update_date IS 'UPDATE DATE indicate
 COMMENT ON TABLE reasonability_test_result IS 'REASONABILITY TEST RESULT contains the results of reasonability tests run against the scenario. Reasonability tests are a set of automated tests that will flag a benefit if it falls outside expected boundaries.'
 ;
 
+
+CREATE UNIQUE INDEX uk_rtr_asi ON reasonability_test_result(agristability_scenario_id)
+;

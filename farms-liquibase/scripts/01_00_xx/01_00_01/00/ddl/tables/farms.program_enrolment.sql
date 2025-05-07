@@ -91,3 +91,12 @@ COMMENT ON COLUMN program_enrolment.update_date IS 'UPDATE DATE indicates when t
 COMMENT ON TABLE program_enrolment IS 'PROGRAM ENROLMENT is used to store information pertaining to an AGRISTABILITY CLIENT''s enrolment in the AgriStaibility program.'
 ;
 
+
+CREATE INDEX ix_pe_aci ON program_enrolment(agristability_client_id)
+;
+CREATE INDEX ix_pe_asi ON program_enrolment(agristability_scenario_id)
+;
+CREATE INDEX ix_pe_ey ON program_enrolment(enrolment_year)
+;
+CREATE UNIQUE INDEX uk_pe_ey_aci ON program_enrolment(enrolment_year, agristability_client_id)
+;

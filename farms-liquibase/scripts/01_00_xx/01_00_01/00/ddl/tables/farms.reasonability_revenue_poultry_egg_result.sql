@@ -94,3 +94,6 @@ COMMENT ON COLUMN reasonability_revenue_poultry_egg_result.update_date IS 'UPDAT
 COMMENT ON TABLE reasonability_revenue_poultry_egg_result IS 'REASONABILITY REVENUE POULTRY EGG RESULT contains the results of the Revenue Risk - Poultry - Eggs Subtest of the scenario.'
 ;
 
+
+CREATE UNIQUE INDEX uk_rrper_rtri ON reasonability_revenue_poultry_egg_result(reasonability_test_result_id)
+;

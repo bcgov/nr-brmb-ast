@@ -88,3 +88,6 @@ COMMENT ON COLUMN z03_statement_information.update_date IS 'UPDATE DATE indicate
 COMMENT ON TABLE z03_statement_information IS 'Z03 STATEMENT INFO identifies the data from section 3 of the Statement A. Also included are the amounts from Section 6 - Summary of Income and Expense. There will be 1 row in this file per participant, per statement A/B filled out. This file is sent to the provinces by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zsi_pp_py ON z03_statement_information(participant_pin, program_year)
+;

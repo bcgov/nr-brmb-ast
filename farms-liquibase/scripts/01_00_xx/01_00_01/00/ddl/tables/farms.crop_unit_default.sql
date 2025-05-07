@@ -31,3 +31,8 @@ COMMENT ON COLUMN crop_unit_default.update_date IS 'UPDATE DATE indicates when t
 COMMENT ON TABLE crop_unit_default IS 'CROP UNIT DEFAULT is the base unit used when importing FAIR MARKET VALUE records. It will then be used with CROP UNIT CONVERSION FACTOR to calculate and create FAIR MARKET VALUE records for other units. FAIR MARKET VALUE records may only be imported for the CROP UNIT DEFAULTs.'
 ;
 
+
+CREATE INDEX ix_cud_cuc ON crop_unit_default(crop_unit_code)
+;
+CREATE UNIQUE INDEX uk_cud_iic ON crop_unit_default(inventory_item_code)
+;

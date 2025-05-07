@@ -67,3 +67,12 @@ COMMENT ON COLUMN program_year.update_date IS 'UPDATE DATE indicates when the ph
 COMMENT ON TABLE program_year IS 'PROGRAM YEAR is the taxation year for the given FARMING OPERATION. PROGRAM YEAR will have at least one FARMING OPERATION  associated with it. PROGRAM YEAR will have at least one PROGRAM STATE associated with it.'
 ;
 
+
+CREATE INDEX ix_py_aci ON program_year(agristability_client_id)
+;
+CREATE INDEX ix_py_ftc ON program_year(farm_type_code)
+;
+CREATE INDEX ix_py_y ON program_year(year)
+;
+CREATE UNIQUE INDEX uk_py_aci_y ON program_year(agristability_client_id, year)
+;

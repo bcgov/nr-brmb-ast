@@ -67,3 +67,8 @@ COMMENT ON COLUMN person.update_date IS 'UPDATE DATE indicates when the physical
 COMMENT ON TABLE person IS 'PERSON contains address and contact information for an AGRISTABILITY CLIENT or AGRISTABILITY REPRESENTATIVE.'
 ;
 
+
+CREATE INDEX ix_p_c ON person(city)
+;
+CREATE INDEX ix_p_pc ON person(postal_code)
+;

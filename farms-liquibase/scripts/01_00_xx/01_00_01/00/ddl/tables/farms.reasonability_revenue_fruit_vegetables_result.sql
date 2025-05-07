@@ -55,3 +55,12 @@ COMMENT ON COLUMN reasonability_revenue_fruit_vegetables_result.update_date IS '
 COMMENT ON TABLE reasonability_revenue_fruit_vegetables_result IS 'REASONABILITY REVENUE FRUIT VEGETABLES RESULT contains the calculated results for the Reasonability Test: Fruits and Vegetables Revenue Test run against the scenario, by FRUIT VEGETABLE TYPE CODE.'
 ;
 
+
+CREATE INDEX ix_rrfvr_cuc ON reasonability_revenue_fruit_vegetables_result(crop_unit_code)
+;
+CREATE INDEX ix_rrfvr_fvtc ON reasonability_revenue_fruit_vegetables_result(fruit_vegetable_type_code)
+;
+CREATE INDEX ix_rrfvr_rtri ON reasonability_revenue_fruit_vegetables_result(reasonability_test_result_id)
+;
+CREATE UNIQUE INDEX uk_rrfvr_rtri_fvtc ON reasonability_revenue_fruit_vegetables_result(reasonability_test_result_id, fruit_vegetable_type_code)
+;

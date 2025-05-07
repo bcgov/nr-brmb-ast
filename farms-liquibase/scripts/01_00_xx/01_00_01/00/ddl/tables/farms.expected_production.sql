@@ -34,3 +34,8 @@ COMMENT ON COLUMN expected_production.update_date IS 'WHEN UPDATED indicates whe
 COMMENT ON TABLE expected_production IS 'EXPECTED PRODUCTION is the amount of a particular crop that a farm can typically produce. The amount varies between municipalities. The EXPECTED PRODUCTION is used in a reasonability test as a basis for comparison with a producer''s reported quantity produced in REPORTED INVENTORY.'
 ;
 
+
+CREATE INDEX ix_ep_cuc ON expected_production(crop_unit_code)
+;
+CREATE UNIQUE INDEX uk_ep_iic ON expected_production(inventory_item_code)
+;

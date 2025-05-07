@@ -52,3 +52,8 @@ COMMENT ON COLUMN tip_line_item.update_date IS 'UPDATE DATE indicates when the p
 COMMENT ON TABLE tip_line_item IS 'TIP LINE ITEM maps a LINE ITEM to a TIP FARM TYPE 1 LOOKUP for the purposes of generating a TIP (Towards Increased Profits) report for each client.'
 ;
 
+
+CREATE INDEX ix_tli_tft1li ON tip_line_item(tip_farm_type_1_lookup_id)
+;
+CREATE UNIQUE INDEX uk_tli_li ON tip_line_item(line_item)
+;

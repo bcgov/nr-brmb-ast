@@ -37,3 +37,6 @@ COMMENT ON COLUMN whole_farm_participant.update_date IS 'UPDATE DATE indicates w
 COMMENT ON TABLE whole_farm_participant IS 'WHOLE FARM PARTICIPANT describes the combined PINS used by the FARMING OPERATION for a given PROGRAM YEAR VERSION.'
 ;
 
+
+CREATE INDEX ix_wfp_pyvi ON whole_farm_participant(program_year_version_id)
+;

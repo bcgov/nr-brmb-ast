@@ -49,3 +49,6 @@ COMMENT ON COLUMN tip_benchmark_expense.update_date IS 'UPDATE DATE indicates wh
 COMMENT ON TABLE tip_benchmark_expense IS 'TIP BENCHMARK EXPENSE contains the benchmark values for a group of farming operations within a farm type and income range, for a specific expense.'
 ;
 
+
+CREATE UNIQUE INDEX uk_tbe_tbyi_li ON tip_benchmark_expense(tip_benchmark_year_id, line_item)
+;

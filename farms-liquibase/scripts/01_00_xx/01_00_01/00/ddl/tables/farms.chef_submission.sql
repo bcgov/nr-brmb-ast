@@ -43,3 +43,10 @@ COMMENT ON COLUMN chef_submission.update_date IS 'UPDATE DATE indicates when the
 COMMENT ON TABLE chef_submission IS 'CHEF SUBMISSION is the submission of a form by a user.'
 ;
 
+
+CREATE INDEX ix_cs_cssc ON chef_submission(chef_submission_status_code)
+;
+CREATE INDEX ix_cs_cftc ON chef_submission(chef_form_type_code)
+;
+CREATE UNIQUE INDEX uk_cs_csg ON chef_submission(chef_submission_guid)
+;

@@ -31,3 +31,8 @@ COMMENT ON COLUMN tip_farm_type_1_lookup.update_date IS 'UPDATE DATE indicates w
 COMMENT ON TABLE tip_farm_type_1_lookup IS 'TIP FARM TYPE 1 LOOKUP indicates how a farm gets the majority of its income. There are three levels of farm type. This is the lowest. The top level is TIP FARM TYPE CODE. The third level is TIP FARM SUB TYPE B. A farm''''s type is determined by summing up its REPORTED INCOME EXPENSE items and mapping the income LINE ITEM number to a TIP FARM TYPE 1 LOOKUP.'
 ;
 
+
+CREATE INDEX ix_tft1l_tft2li ON tip_farm_type_1_lookup(tip_farm_type_2_lookup_id)
+;
+CREATE UNIQUE INDEX uk_tft1l_ft1n ON tip_farm_type_1_lookup(farm_type_1_name)
+;

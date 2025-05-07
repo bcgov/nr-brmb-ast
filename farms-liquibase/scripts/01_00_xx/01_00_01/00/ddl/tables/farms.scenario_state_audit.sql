@@ -34,3 +34,8 @@ COMMENT ON COLUMN scenario_state_audit.update_date IS 'UPDATE DATE indicates whe
 COMMENT ON TABLE scenario_state_audit IS 'SCENARIO STATE AUDIT tracks changes to the state of the AGRISTABILITY SCENARIO.'
 ;
 
+
+CREATE INDEX ix_ssa_asi ON scenario_state_audit(agristability_scenario_id)
+;
+CREATE INDEX ix_ssa_ssc ON scenario_state_audit(scenario_state_code)
+;

@@ -121,3 +121,6 @@ COMMENT ON COLUMN reasonability_revenue_hog_result.update_date IS 'UPDATE DATE i
 COMMENT ON TABLE reasonability_revenue_hog_result IS 'REASONABILITY REVENUE HOG RESULT contains the results of the Revenue Risk - Hogs Subtest of the scenario.'
 ;
 
+
+CREATE UNIQUE INDEX uk_rrhr_rtri ON reasonability_revenue_hog_result(reasonability_test_result_id)
+;

@@ -97,3 +97,14 @@ COMMENT ON COLUMN farming_operation.update_date IS 'UPDATE DATE indicates when t
 COMMENT ON TABLE farming_operation IS 'FARMING OPERATION refers to revenue and expense information for an AGRISTABILITY CLIENT- i.e. corresponding to tax return statements. An AGRISTABILITY CLIENT can have multiple instances of a FARMING OPERATION in a given Program Year. FARMING OPERATION data will originate from federal data imports. Updates to FARMING OPERATION data may be received for past years. FARMING OPERATION data will only exist from 2003 forward (i.e. the origin of the CAIS/AgriStability program).'
 ;
 
+
+CREATE INDEX ix_fo_fac ON farming_operation(federal_accounting_code)
+;
+CREATE INDEX ix_fo_pyvi ON farming_operation(program_year_version_id)
+;
+CREATE INDEX ix_fo_foi_pyvi ON farming_operation(farming_operation_id, program_year_version_id)
+;
+CREATE INDEX ix_fo_foi_on_pyvi ON farming_operation(farming_operation_id, operation_number, program_year_version_id)
+;
+CREATE UNIQUE INDEX uk_fo_pyvi_on ON farming_operation(program_year_version_id, operation_number)
+;

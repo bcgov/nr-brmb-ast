@@ -49,3 +49,10 @@ COMMENT ON COLUMN reasonability_production_fruit_vegetables_result.update_date I
 COMMENT ON TABLE reasonability_production_fruit_vegetables_result IS 'REASONABILITY PRODUCTION FRUIT VEGETABLES RESULT contains the calculated amounts for the Reasonability Test: Perishables Production Test run against the scenario, by FRUIT VEGETABLE TYPE CODE.'
 ;
 
+
+CREATE INDEX ix_rpfvr_qpcuc ON reasonability_production_fruit_vegetables_result(quantity_produced_crop_unit_code)
+;
+CREATE INDEX ix_rpfvr_fvtc ON reasonability_production_fruit_vegetables_result(fruit_vegetable_type_code)
+;
+CREATE UNIQUE INDEX ix_rpfvr_rtri_fvtc ON reasonability_production_fruit_vegetables_result(reasonability_test_result_id, fruit_vegetable_type_code)
+;

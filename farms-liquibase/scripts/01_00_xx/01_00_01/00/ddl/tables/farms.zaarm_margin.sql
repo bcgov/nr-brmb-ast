@@ -59,3 +59,8 @@ COMMENT ON COLUMN zaarm_margin.update_user IS 'UPDATE USER indicates the user th
 COMMENT ON COLUMN zaarm_margin.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
 
+
+CREATE INDEX ix_zm_arp1p_arp2p ON zaarm_margin(aarm_reference_p1_price, aarm_reference_p2_price)
+;
+CREATE INDEX ix_zm_pp_py_on_itc_ic ON zaarm_margin(participant_pin, program_year, operation_number, inventory_type_code, inventory_code)
+;

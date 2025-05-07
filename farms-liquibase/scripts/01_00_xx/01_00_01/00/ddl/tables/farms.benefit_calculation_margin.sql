@@ -100,3 +100,10 @@ COMMENT ON COLUMN benefit_calculation_margin.update_date IS 'UPDATE DATE indicat
 COMMENT ON TABLE benefit_calculation_margin IS 'BENEFIT CALCULATION MARGIN refer to the difference between revenues and expenses. BENEFIT CALCULATION MARGIN is used for calculating claims - note that claim values will not be calculated within the system, rather they will imported via the federal data imports. There may be many BENEFIT CALCULATION MARGIN associated with a client. There are several types of BENEFIT CALCULATION MARGIN including.'
 ;
 
+
+CREATE INDEX ix_bcm_asi ON benefit_calculation_margin(agristability_scenario_id)
+;
+CREATE INDEX ix_bcm_foi ON benefit_calculation_margin(farming_operation_id)
+;
+CREATE UNIQUE INDEX uk_bcm_asi_foi ON benefit_calculation_margin(agristability_scenario_id, farming_operation_id)
+;

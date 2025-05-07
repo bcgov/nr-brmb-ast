@@ -37,3 +37,8 @@ COMMENT ON COLUMN reference_scenario.update_date IS 'UPDATE DATE indicates when 
 COMMENT ON TABLE reference_scenario IS 'REFERENCE SCENARIO records the previous five years of claims used for calculating a given year''s claim.'
 ;
 
+
+CREATE INDEX ix_rs_fasi ON reference_scenario(for_agristability_scenario_id)
+;
+CREATE INDEX ix_rs_asi ON reference_scenario(agristability_scenario_id)
+;

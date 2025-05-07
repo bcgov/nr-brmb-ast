@@ -40,3 +40,8 @@ COMMENT ON COLUMN tip_report_document.update_date IS 'UPDATE DATE indicates when
 COMMENT ON TABLE tip_report_document IS 'TIP REPORT DOCUMENT is the TIP Report that will be provided to a farming business.'
 ;
 
+
+CREATE UNIQUE INDEX uk_trd_foi ON tip_report_document(farming_operation_id)
+;
+CREATE UNIQUE INDEX uk_trd_pyi_ak ON tip_report_document(program_year_id, alignment_key)
+;

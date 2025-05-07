@@ -52,3 +52,6 @@ COMMENT ON COLUMN z50_participant_benefit_calculation.update_date IS 'UPDATE DAT
 COMMENT ON TABLE z50_participant_benefit_calculation IS 'Z50 PARTICIPANT BENEFIT CALCULATION identifies benefit calculations used to determine the participants CAIS Benefits, including adjusted and unadjusted Margins, and calculation type indicators. This data can only be provided for years FIPD has processed. This file is created by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zpbc_pp_py ON z50_participant_benefit_calculation(participant_pin, program_year)
+;

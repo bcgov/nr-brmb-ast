@@ -52,3 +52,12 @@ COMMENT ON COLUMN reasonability_production_forage_result.update_date IS 'UPDATE 
 COMMENT ON TABLE reasonability_production_forage_result IS 'REASONABILITY PRODUCTION FORAGE RESULT contains the calculated amounts for the Reasonability Test: Forage and Forage Seed Production Test run against the scenario, by INVENTORY ITEM CODE.'
 ;
 
+
+CREATE INDEX ix_rpfr_qpcuc ON reasonability_production_forage_result(quantity_produced_crop_unit_code)
+;
+CREATE INDEX ix_rpfr_iic ON reasonability_production_forage_result(inventory_item_code)
+;
+CREATE INDEX ix_rpfr_rtri ON reasonability_production_forage_result(reasonability_test_result_id)
+;
+CREATE UNIQUE INDEX uk_rpfr_rtri_iic ON reasonability_production_forage_result(reasonability_test_result_id, inventory_item_code)
+;

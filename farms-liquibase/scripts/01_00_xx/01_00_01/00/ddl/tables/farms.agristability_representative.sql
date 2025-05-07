@@ -31,3 +31,8 @@ COMMENT ON COLUMN agristability_representative.update_date IS 'UPDATE DATE indic
 COMMENT ON TABLE agristability_representative IS 'AGRISTABILITY REPRESENTATIVE is a type of user who can access AgriStability information data on behalf of specified clients . An AGRISTABILITY REPRESENTATIVE can be associated with one or more clients. An AGRISTABILITY REPRESENTATIVE may have an associated PERSON. An AGRISTABILITY REPRESENTATIVE will be identified from federal tax return data or could be supplied by BC staff.'
 ;
 
+
+CREATE UNIQUE INDEX uk_ar_ug ON agristability_representative(user_guid)
+;
+CREATE UNIQUE INDEX uk_ar_u ON agristability_representative(userid)
+;

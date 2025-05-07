@@ -37,3 +37,12 @@ COMMENT ON COLUMN agristabilty_commodity_xref.update_date IS 'UPDATE DATE indica
 COMMENT ON TABLE agristabilty_commodity_xref IS 'AGRISTABILTY COMMODITY XREF is the unique production units of livestock and crops. AGRISTABILTY COMMODITY XREF is the unit by which supplementary data is described. This object refers to codified data describing the unique types of an AGRISTABILTY COMMODITY XREF.  An AGRISTABILTY COMMODITY XREF dataset originates from provincial data imports, although it will be compiled from various sources, including federal.'
 ;
 
+
+CREATE INDEX ix_acx_icc ON agristabilty_commodity_xref(inventory_class_code)
+;
+CREATE INDEX ix_acx_iic ON agristabilty_commodity_xref(inventory_item_code)
+;
+CREATE INDEX ix_acx_igc ON agristabilty_commodity_xref(inventory_group_code)
+;
+CREATE UNIQUE INDEX uk_acx_icc_iic ON agristabilty_commodity_xref(inventory_class_code, inventory_item_code)
+;

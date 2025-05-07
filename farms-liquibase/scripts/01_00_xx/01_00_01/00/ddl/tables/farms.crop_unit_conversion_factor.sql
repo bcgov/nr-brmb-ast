@@ -34,3 +34,10 @@ COMMENT ON COLUMN crop_unit_conversion_factor.update_date IS 'UPDATE DATE indica
 COMMENT ON TABLE crop_unit_conversion_factor IS 'CROP UNIT CONVERSION FACTOR is the ratio used to convert FAIR MARKET VALUE for the CROP UNIT DEFAULT to the FAIR MARKET VALUE for other CROP UNIT CODEs. FAIR MARKET VALUE records may only be imported for the CROP UNIT DEFAULTs. The conversion occurs on import. FAIR MARKET VALUE records are created from this conversion.'
 ;
 
+
+CREATE INDEX ix_cucf_tcuc ON crop_unit_conversion_factor(target_crop_unit_code)
+;
+CREATE INDEX ix_cucf_iic ON crop_unit_conversion_factor(inventory_item_code)
+;
+CREATE UNIQUE INDEX uk_cucf_iic_tcuc ON crop_unit_conversion_factor(inventory_item_code, target_crop_unit_code)
+;

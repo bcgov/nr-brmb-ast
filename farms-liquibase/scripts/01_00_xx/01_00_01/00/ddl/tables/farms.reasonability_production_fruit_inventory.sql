@@ -46,3 +46,10 @@ COMMENT ON COLUMN reasonability_production_fruit_inventory.update_date IS 'UPDAT
 COMMENT ON TABLE reasonability_production_fruit_inventory IS 'REASONABILITY PRODUCTION FRUIT INVENTORY contains the calculated amounts for the Reasonability Test: Fruit and Vegetable Production Test run against the scenario, by INVENTORY ITEM CODE.'
 ;
 
+
+CREATE INDEX ix_rpfi_qpcuc ON reasonability_production_fruit_inventory(quantity_produced_crop_unit_code)
+;
+CREATE INDEX ix_rpfi_iic ON reasonability_production_fruit_inventory(inventory_item_code)
+;
+CREATE UNIQUE INDEX uk_rpfi_rtri_iic ON reasonability_production_fruit_inventory(reasonability_test_result_id, inventory_item_code)
+;

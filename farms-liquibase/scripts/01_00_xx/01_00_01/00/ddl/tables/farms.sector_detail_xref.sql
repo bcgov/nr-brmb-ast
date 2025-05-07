@@ -29,3 +29,8 @@ COMMENT ON COLUMN sector_detail_xref.update_user IS 'UPDATE USER indicates the u
 COMMENT ON COLUMN sector_detail_xref.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
 
+
+CREATE INDEX ix_sdx_sc ON sector_detail_xref(sector_code)
+;
+CREATE UNIQUE INDEX uk_sdx_sdc ON sector_detail_xref(sector_detail_code)
+;

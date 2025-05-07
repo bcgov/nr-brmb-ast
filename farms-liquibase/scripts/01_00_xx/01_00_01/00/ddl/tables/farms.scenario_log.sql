@@ -29,3 +29,6 @@ COMMENT ON COLUMN scenario_log.update_user IS 'UPDATE USER indicates the user th
 COMMENT ON COLUMN scenario_log.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
 
+
+CREATE INDEX ix_sl_asi ON scenario_log(agristability_scenario_id)
+;

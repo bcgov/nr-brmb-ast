@@ -55,3 +55,10 @@ COMMENT ON COLUMN reasonability_revenue_grain_forage_seed_inventory.update_date 
 COMMENT ON TABLE reasonability_revenue_grain_forage_seed_inventory IS 'REASONABILITY REVENUE GRAIN FORAGE SEED INVENTORY contains the calculated amounts for the Reasonability Test: Grains, Forage, and Forage Seed Revenue Test run against the scenario, by INVENTORY ITEM CODE.'
 ;
 
+
+CREATE INDEX ix_rrgfsi_cuc ON reasonability_revenue_grain_forage_seed_inventory(crop_unit_code)
+;
+CREATE INDEX ix_rrgfsi_iic ON reasonability_revenue_grain_forage_seed_inventory(inventory_item_code)
+;
+CREATE UNIQUE INDEX uk_rrgfsi_rtri_iic ON reasonability_revenue_grain_forage_seed_inventory(reasonability_test_result_id, inventory_item_code)
+;

@@ -34,3 +34,6 @@ COMMENT ON COLUMN production_insurance.update_date IS 'UPDATE DATE indicates whe
 COMMENT ON TABLE production_insurance IS 'PRODUCTION INSURANCE provides the production Insurance contract numbers provided by the participant on the supplemental page of the AgriStability application.'
 ;
 
+
+CREATE INDEX ix_pi_foi ON production_insurance(farming_operation_id)
+;

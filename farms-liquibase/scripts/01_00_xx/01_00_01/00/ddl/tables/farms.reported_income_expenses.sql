@@ -46,3 +46,12 @@ COMMENT ON COLUMN reported_income_expenses.update_date IS 'UPDATE DATE indicates
 COMMENT ON TABLE reported_income_expenses IS 'REPORTED INCOME EXPENSE data refers to data submitted on a client''s tax return (statement). REPORTED INCOME EXPENSE  data will originate from the federal imports. There may be many REPORTED INCOME EXPENSE  records for a given FARMING OPERATION- i.e. multiple income and expense line items on a tax return. REPORTED INCOME EXPENSE  items may have many instances of an INCOME EXPENSE ADJUSTMENT.'
 ;
 
+
+CREATE INDEX ix_rie_asi ON reported_income_expenses(agristability_scenario_id)
+;
+CREATE INDEX ix_rie_foi ON reported_income_expenses(farming_operation_id)
+;
+CREATE INDEX ix_rie_criei ON reported_income_expenses(cra_reported_income_expense_id)
+;
+CREATE INDEX ix_rie_li ON reported_income_expenses(line_item)
+;

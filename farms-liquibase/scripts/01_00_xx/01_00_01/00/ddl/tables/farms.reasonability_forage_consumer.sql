@@ -40,3 +40,8 @@ COMMENT ON COLUMN reasonability_forage_consumer.update_date IS 'UPDATE DATE indi
 COMMENT ON TABLE reasonability_forage_consumer IS 'REASONABILITY FORAGE CONSUMER contains the calculated amounts of forage inventory consumed by (fed out to) cattle for the Reasonability Test: Grains, Forage, and Forage Seed Revenue Test run against the scenario, by STRUCTURE GROUP CODE (the type of cattle).'
 ;
 
+
+CREATE INDEX ix_rfc_sgc ON reasonability_forage_consumer(structure_group_code)
+;
+CREATE UNIQUE INDEX uk_rfc_rtri_sgc ON reasonability_forage_consumer(reasonability_test_result_id, structure_group_code)
+;

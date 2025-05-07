@@ -49,3 +49,10 @@ COMMENT ON COLUMN reasonability_benefit_risk_productive_units_result.update_date
 COMMENT ON TABLE reasonability_benefit_risk_productive_units_result IS 'REASONABILITY BENEFIT RISK PRODUCTIVE UNITS RESULTS contains the calculated amounts for productive units for the Benefit Risk Assessment reasonability test run against the scenario.'
 ;
 
+
+CREATE INDEX ix_rbrpur_iic ON reasonability_benefit_risk_productive_units_result(inventory_item_code)
+;
+CREATE INDEX ix_rbrpur_sgc ON reasonability_benefit_risk_productive_units_result(structure_group_code)
+;
+CREATE UNIQUE INDEX uk_rbrpur_rtri_iic_sgc ON reasonability_benefit_risk_productive_units_result(reasonability_test_result_id, inventory_item_code, structure_group_code)
+;

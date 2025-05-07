@@ -43,3 +43,6 @@ COMMENT ON COLUMN user.update_date IS 'UPDATE DATE indicates when the physical r
 COMMENT ON TABLE user IS 'USER is a user who has access to the FARM application. Users data is pulled from the BCeID WebService using the WebADE Java API.'
 ;
 
+
+CREATE UNIQUE INDEX uk_u_ug ON user(user_guid)
+;

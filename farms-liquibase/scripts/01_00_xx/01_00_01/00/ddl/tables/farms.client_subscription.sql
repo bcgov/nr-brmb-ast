@@ -49,3 +49,10 @@ COMMENT ON COLUMN client_subscription.update_date IS 'UPDATE DATE indicates when
 COMMENT ON TABLE client_subscription IS 'CLIENT SUBSCRIPTION relates many instances of an AGRISTABILITY CLIENT to many instances of an AGRISTABILITY REPRESENTATIVE. A subscription allows a person to represent a client. A client can represent themself. A subscription has a limited time during which it can be activated.'
 ;
 
+
+CREATE INDEX ix_cs1_aci ON client_subscription(agristability_client_id)
+;
+CREATE INDEX ix_cs1_ari ON client_subscription(agristability_representative_id)
+;
+CREATE INDEX ix_cs1_ssc ON client_subscription(subscription_status_code)
+;

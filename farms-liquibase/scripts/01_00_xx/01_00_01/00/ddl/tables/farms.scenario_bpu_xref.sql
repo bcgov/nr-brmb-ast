@@ -34,3 +34,10 @@ COMMENT ON COLUMN scenario_bpu_xref.update_date IS 'UPDATE DATE indicates when t
 COMMENT ON TABLE scenario_bpu_xref IS 'SCENARIO BPU XREF is the benchmark data that was used to determine that the REPORTED INCOME EXPENSEs for a FARMING OPERATION are resonable.'
 ;
 
+
+CREATE INDEX ix_sbx_asi ON scenario_bpu_xref(agristability_scenario_id)
+;
+CREATE INDEX ix_sbx_bpui ON scenario_bpu_xref(benchmark_per_unit_id)
+;
+CREATE INDEX ix_sbx_sbpc ON scenario_bpu_xref(scenario_bpu_purpose_code)
+;

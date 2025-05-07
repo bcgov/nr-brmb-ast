@@ -73,3 +73,10 @@ COMMENT ON COLUMN z40_participant_reference_supplemental_detail.update_date IS '
 COMMENT ON TABLE z40_participant_reference_supplemental_detail IS 'Z40 PARTICIPANT REFERENCE SUPPLEMENTAL DETAIL identifies reference year crop and livestock inventory data, after it has been adjusted. Includes AARM price over-rides used during 2007 processing. Reference year Purchased Inputs, Deferred Income & Receivables, and Accounts Payable The Inventory Type code describes which part of the form each row came from. This file will have multiple rows per participant and farming operation. This file is created by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zprsd_pp_py_on ON z40_participant_reference_supplemental_detail(participant_pin, program_year, operation_number)
+;
+CREATE INDEX ix_zprsd_pu ON z40_participant_reference_supplemental_detail(production_unit)
+;
+CREATE INDEX ix_zprsd_ic_itc ON z40_participant_reference_supplemental_detail(inventory_code, inventory_type_code)
+;

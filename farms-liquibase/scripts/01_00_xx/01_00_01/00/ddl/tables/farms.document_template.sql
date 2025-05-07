@@ -31,3 +31,6 @@ COMMENT ON COLUMN document_template.update_date IS 'UPDATE DATE indicates when t
 COMMENT ON TABLE document_template IS 'DOCUMENT TEMPLATE contains text content used as templates to create documents such as Verification Notes.'
 ;
 
+
+CREATE UNIQUE INDEX uk_dt_tn ON document_template(template_name)
+;

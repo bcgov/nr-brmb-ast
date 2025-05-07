@@ -43,3 +43,6 @@ COMMENT ON COLUMN z42_participant_reference_year.update_date IS 'UPDATE DATE ind
 COMMENT ON TABLE z42_participant_reference_year IS 'Z42 PARTICIPANT REFERENCE YEAR identifies reference year data by for productive units by both inventory codes and structure groups.  The productive capacity for each code (inventory or structure group) is displayed in column 7. This file will have multiple rows per participant and farming operation.This file is created by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zpry ON z42_participant_reference_year(participant_pin, program_year, operation_number)
+;

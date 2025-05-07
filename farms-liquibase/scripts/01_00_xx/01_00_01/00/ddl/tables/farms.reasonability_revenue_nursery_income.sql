@@ -34,3 +34,6 @@ COMMENT ON COLUMN reasonability_revenue_nursery_income.update_date IS 'UPDATE DA
 COMMENT ON TABLE reasonability_revenue_nursery_income IS 'REASONABILITY REVENUE NURSERY INCOME contains the calculated amounts for the Reasonability Test: Grains, Forage, and Forage Seed Revenue Test run against the scenario, by LINE ITEM.'
 ;
 
+
+CREATE UNIQUE INDEX uk_rrni_rrnri_li ON reasonability_revenue_nursery_income(reasonability_revenue_nursery_result_id, line_item)
+;

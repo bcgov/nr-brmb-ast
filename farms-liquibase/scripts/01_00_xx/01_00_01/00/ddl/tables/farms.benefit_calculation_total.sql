@@ -136,3 +136,6 @@ COMMENT ON COLUMN benefit_calculation_total.update_date IS 'UPDATE DATE indicate
 COMMENT ON TABLE benefit_calculation_total IS 'BENEFIT CALCULATION TOTAL Is the summation of the BENEFIT CALCULATION MARGINs for an AGRISTABILITY SCENARIO.'
 ;
 
+
+CREATE UNIQUE INDEX uk_bct_asi ON benefit_calculation_total(agristability_scenario_id)
+;

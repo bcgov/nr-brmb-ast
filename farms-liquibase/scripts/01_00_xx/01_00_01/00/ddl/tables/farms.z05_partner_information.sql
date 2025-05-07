@@ -55,3 +55,6 @@ COMMENT ON COLUMN z05_partner_information.update_date IS 'UPDATE DATE indicates 
 COMMENT ON TABLE z05_partner_information IS 'Z05 PARTNER INFORMATION identifies all the partners the producer has entered in section 6 of the Harmonized form. This should not include the participant. Even if the participant is in a partnership, there is no requirement to submit a list of participants, so this file may not have any data for that statement. This file is sent to the provinces by FIPD. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+CREATE INDEX ix_zpi1_pp_py_on ON z05_partner_information(participant_pin, program_year, operation_number)
+;

@@ -46,3 +46,6 @@ COMMENT ON COLUMN farming_operatin_partner.update_date IS 'UPDATE DATE indicates
 COMMENT ON TABLE farming_operatin_partner IS 'FARMING OPERATION PARTNER lists all the farming partners the producer has entered in section 6 of the Harmonized form. This should not include the participant. Even if the participant is in a partnership, there is no requirement to submit a list of participants, so this file may not have any data for that statement. This file will be sent to the provinces by FIPD.'
 ;
 
+
+CREATE INDEX ix_fop_foi ON farming_operatin_partner(farming_operation_id)
+;

@@ -55,3 +55,8 @@ COMMENT ON COLUMN tip_report_expense.update_date IS 'UPDATE DATE indicates when 
 COMMENT ON TABLE tip_report_expense IS 'TIP REPORT EXPENSE contains the results of a TIP Report run against a FARMING OPERATION, for a specific expense.'
 ;
 
+
+CREATE INDEX ix_tre_trc ON tip_report_expense(tip_rating_code)
+;
+CREATE UNIQUE INDEX uk_tre_trri_li ON tip_report_expense(tip_report_result_id, line_item)
+;

@@ -19,3 +19,10 @@ COMMENT ON COLUMN import_log.program_year_version_id IS 'PROGRAM YEAR VERSION ID
 COMMENT ON TABLE import_log IS 'IMPORT LOG lists all the audit messages generated during an import. It is used to minimize a CLOB append performance problem. Every time an import is done all the IMPORT LOGs will be deleted.'
 ;
 
+
+CREATE INDEX ix_il_ivi ON import_log(import_version_id)
+;
+CREATE INDEX ix_il_pyvi ON import_log(program_year_version_id)
+;
+CREATE INDEX ix_il_ivi_pyvi ON import_log(import_version_id, program_year_version_id)
+;

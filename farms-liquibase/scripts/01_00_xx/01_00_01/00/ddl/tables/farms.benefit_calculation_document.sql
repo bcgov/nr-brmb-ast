@@ -32,3 +32,6 @@ COMMENT ON COLUMN benefit_calculation_document.update_user IS 'UPDATE USER indic
 COMMENT ON COLUMN benefit_calculation_document.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
 
+
+CREATE UNIQUE INDEX ix_bcd_asi ON benefit_calculation_document(agristability_scenario_id)
+;

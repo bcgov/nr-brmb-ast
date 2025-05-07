@@ -52,3 +52,10 @@ COMMENT ON COLUMN reasonability_revenue_nursery_inventory.update_date IS 'UPDATE
 COMMENT ON TABLE reasonability_revenue_nursery_inventory IS 'REASONABILITY REVENUE NURSERY INVENTORY contains the calculated inventory amounts for the Revenue Risk - Nursery Subtest run against the scenario, by INVENTORY ITEM CODE.'
 ;
 
+
+CREATE INDEX ix_rrni1_cuc ON reasonability_revenue_nursery_inventory(crop_unit_code)
+;
+CREATE INDEX ix_rrni1_iic ON reasonability_revenue_nursery_inventory(inventory_item_code)
+;
+CREATE INDEX ix_rrni1_rrnri ON reasonability_revenue_nursery_inventory(reasonability_revenue_nursery_result_id)
+;

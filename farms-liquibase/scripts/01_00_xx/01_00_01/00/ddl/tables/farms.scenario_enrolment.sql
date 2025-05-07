@@ -154,3 +154,6 @@ COMMENT ON COLUMN scenario_enrolment.update_date IS 'UPDATE DATE indicates when 
 COMMENT ON TABLE scenario_enrolment IS 'SCENARIO ENROLMENT contains information pertaining to an AGRISTABILITY CLIENT''''s enrolment in the AgriStaibility program. The calculation uses the associated AGRISTABILITY SCENARIO to calculate the enrolment fee. Only for scenarios with SCENARIO CATEGORY CODE "ENW".'
 ;
 
+
+CREATE UNIQUE INDEX uk_se_asi ON scenario_enrolment(agristability_scenario_id)
+;

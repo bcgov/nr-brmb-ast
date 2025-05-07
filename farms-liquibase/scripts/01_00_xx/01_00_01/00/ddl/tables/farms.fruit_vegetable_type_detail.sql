@@ -31,3 +31,6 @@ COMMENT ON COLUMN fruit_vegetable_type_detail.update_date IS 'UPDATE DATE indica
 COMMENT ON TABLE fruit_vegetable_type_detail IS 'FRUIT VEGETABLE TYPE DETAIL defines details of a FRUIT VEGETABLE TYPE CODE for use with the Reasonability Test: Fruits and Vegetables Revenue Test.'
 ;
 
+
+CREATE UNIQUE INDEX uk_fvtd_fvtc ON fruit_vegetable_type_detail(fruit_vegetable_type_code)
+;
