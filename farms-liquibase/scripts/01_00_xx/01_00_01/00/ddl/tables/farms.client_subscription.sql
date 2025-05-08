@@ -1,7 +1,7 @@
 CREATE TABLE client_subscription(
     client_subscription_id             numeric(10, 0)    NOT NULL,
     subscription_number                varchar(32)       NOT NULL,
-    generated_date                     date              DEFAULT systimestamp NOT NULL,
+    generated_date                     date              DEFAULT CURRENT_TIMESTAMP NOT NULL,
     generated_by_userid                varchar(30)       NOT NULL,
     activated_date                     date,
     activation_expiry_date             date              NOT NULL,
@@ -10,9 +10,9 @@ CREATE TABLE client_subscription(
     subscription_status_code           varchar(10)       NOT NULL,
     revision_count                     numeric(5, 0)     DEFAULT 1 NOT NULL,
     create_user                        varchar(30)       NOT NULL,
-    create_date                        timestamp(6)      DEFAULT systimestamp NOT NULL,
+    create_date                        timestamp(6)      DEFAULT CURRENT_TIMESTAMP NOT NULL,
     update_user                        varchar(30),
-    update_date                        timestamp(6)      DEFAULT systimestamp
+    update_date                        timestamp(6)      DEFAULT CURRENT_TIMESTAMP
 ) TABLESPACE pg_default
 ;
 

@@ -4,9 +4,9 @@ CREATE TABLE z99_extract_file(
     row_count              numeric(9, 0)    NOT NULL,
     revision_count         numeric(5, 0)    DEFAULT 1 NOT NULL,
     create_user            varchar(30)      NOT NULL,
-    create_date            timestamp(6)     DEFAULT systimestamp NOT NULL,
+    create_date            timestamp(6)     DEFAULT CURRENT_TIMESTAMP NOT NULL,
     update_user            varchar(30),
-    update_date            timestamp(6)     DEFAULT systimestamp
+    update_date            timestamp(6)     DEFAULT CURRENT_TIMESTAMP
 ) TABLESPACE pg_default
 ;
 

@@ -14,9 +14,9 @@ CREATE TABLE z21_participant_supplementary(
     crop_unseedable_acres     numeric(13, 3),
     revision_count            numeric(5, 0)     DEFAULT 1 NOT NULL,
     create_user               varchar(30)       NOT NULL,
-    create_date               timestamp(6)      DEFAULT systimestamp NOT NULL,
+    create_date               timestamp(6)      DEFAULT CURRENT_TIMESTAMP NOT NULL,
     update_user               varchar(30),
-    update_date               timestamp(6)      DEFAULT systimestamp
+    update_date               timestamp(6)      DEFAULT CURRENT_TIMESTAMP
 ) TABLESPACE pg_default
 ;
 
