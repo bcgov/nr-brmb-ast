@@ -14,6 +14,6 @@ ALTER TABLE inventory_item_detail ADD CONSTRAINT fk_iid_iic
 ;
 
 ALTER TABLE inventory_item_detail ADD CONSTRAINT fk_iid_mscc 
-    FOREIGN KEY (multplei_stage_commodity_code)
-    REFERENCES multiple_stage_commodity_code(multplei_stage_commodity_code)
+    FOREIGN KEY (multiple_stage_commodity_code)
+    REFERENCES multiple_stage_commodity_code(multiple_stage_commodity_code)
 ;

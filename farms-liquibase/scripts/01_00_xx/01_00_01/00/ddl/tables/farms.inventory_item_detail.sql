@@ -8,7 +8,7 @@ CREATE TABLE inventory_item_detail(
     inventory_item_code              varchar(10),
     commodity_type_code              varchar(10),
     fruit_vegetable_type_code        varchar(10),
-    multplei_stage_commodity_code    varchar(10),
+    multiple_stage_commodity_code    varchar(10),
     revision_count                   numeric(5, 0)     DEFAULT 1 NOT NULL,
     create_user                      varchar(30)       NOT NULL,
     create_date                      timestamp(6)      DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -37,7 +37,7 @@ COMMENT ON COLUMN inventory_item_detail.commodity_type_code IS 'COMMODITY TYPE C
 ;
 COMMENT ON COLUMN inventory_item_detail.fruit_vegetable_type_code IS 'FRUIT VEGETABLE TYPE CODE is a unique code for the object FRUIT VEGETABLE TYPE CODE. Examples of codes and descriptions are APPLE - Apples, BEAN - Beans,  POTATO - Potatoes.'
 ;
-COMMENT ON COLUMN inventory_item_detail.multplei_stage_commodity_code IS 'MULTIPLE STAGE COMMODITY CODE is a unique code for the object MULTIPLE STAGE COMMODITY CODE. Examples of codes and descriptions are APPLE - Apples, GRAPE - Grapes, CRANBERRY - Cranberries.'
+COMMENT ON COLUMN inventory_item_detail.multiple_stage_commodity_code IS 'MULTIPLE STAGE COMMODITY CODE is a unique code for the object MULTIPLE STAGE COMMODITY CODE. Examples of codes and descriptions are APPLE - Apples, GRAPE - Grapes, CRANBERRY - Cranberries.'
 ;
 COMMENT ON COLUMN inventory_item_detail.revision_count IS 'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.'
 ;
@@ -65,7 +65,7 @@ CREATE INDEX ix_iid_fvtc ON inventory_item_detail(fruit_vegetable_type_code)
 CREATE INDEX ix_iid_iic ON inventory_item_detail(inventory_item_code)
  TABLESPACE pg_default
 ;
-CREATE INDEX ix_iid_mscc ON inventory_item_detail(multplei_stage_commodity_code)
+CREATE INDEX ix_iid_mscc ON inventory_item_detail(multiple_stage_commodity_code)
  TABLESPACE pg_default
 ;
 CREATE INDEX ix_iid_py_li ON inventory_item_detail(program_year, line_item)
