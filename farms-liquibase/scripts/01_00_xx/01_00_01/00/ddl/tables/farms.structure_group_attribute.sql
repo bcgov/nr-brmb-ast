@@ -1,4 +1,4 @@
-CREATE TABLE structure_group_attribute(
+CREATE TABLE farms.structure_group_attribute(
     structure_group_attribute_id    numeric(10, 0)    NOT NULL,
     structure_group_code            varchar(10)       NOT NULL,
     rollup_structure_group_code     varchar(10),
@@ -12,33 +12,33 @@ CREATE TABLE structure_group_attribute(
 
 
 
-COMMENT ON COLUMN structure_group_attribute.structure_group_attribute_id IS 'STRUCTURE GROUP ATTRIBUTE ID is a surrogate unique identifier for STRUCTURE GROUP ATTRIBUTEs.'
+COMMENT ON COLUMN farms.structure_group_attribute.structure_group_attribute_id IS 'STRUCTURE GROUP ATTRIBUTE ID is a surrogate unique identifier for STRUCTURE GROUP ATTRIBUTEs.'
 ;
-COMMENT ON COLUMN structure_group_attribute.structure_group_code IS 'STRUCTURE GROUP CODE identifies the type of structure group.'
+COMMENT ON COLUMN farms.structure_group_attribute.structure_group_code IS 'STRUCTURE GROUP CODE identifies the type of structure group.'
 ;
-COMMENT ON COLUMN structure_group_attribute.rollup_structure_group_code IS 'STRUCTURE GROUP CODE identifies the type of structure group.'
+COMMENT ON COLUMN farms.structure_group_attribute.rollup_structure_group_code IS 'STRUCTURE GROUP CODE identifies the type of structure group.'
 ;
-COMMENT ON COLUMN structure_group_attribute.revision_count IS 'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.'
+COMMENT ON COLUMN farms.structure_group_attribute.revision_count IS 'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.'
 ;
-COMMENT ON COLUMN structure_group_attribute.create_user IS 'CREATE USER indicates the user that created the physical record in the database.'
+COMMENT ON COLUMN farms.structure_group_attribute.create_user IS 'CREATE USER indicates the user that created the physical record in the database.'
 ;
-COMMENT ON COLUMN structure_group_attribute.create_date IS 'CREATE DATE indicates when the physical record was created in the database.'
+COMMENT ON COLUMN farms.structure_group_attribute.create_date IS 'CREATE DATE indicates when the physical record was created in the database.'
 ;
-COMMENT ON COLUMN structure_group_attribute.update_user IS 'UPDATE USER indicates the user that updated the physical record in the database.'
+COMMENT ON COLUMN farms.structure_group_attribute.update_user IS 'UPDATE USER indicates the user that updated the physical record in the database.'
 ;
-COMMENT ON COLUMN structure_group_attribute.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
+COMMENT ON COLUMN farms.structure_group_attribute.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
-COMMENT ON TABLE structure_group_attribute IS 'STRUCTURE GROUP ATTRIBUTE is additional information about an INVENTORY ITEM CODE.'
+COMMENT ON TABLE farms.structure_group_attribute IS 'STRUCTURE GROUP ATTRIBUTE is additional information about an INVENTORY ITEM CODE.'
 ;
 
 
-CREATE INDEX ix_sga_rsgc ON structure_group_attribute(rollup_structure_group_code)
+CREATE INDEX ix_sga_rsgc ON farms.structure_group_attribute(rollup_structure_group_code)
  TABLESPACE pg_default
 ;
-CREATE UNIQUE INDEX uk_sga_sgc ON structure_group_attribute(structure_group_code)
+CREATE UNIQUE INDEX uk_sga_sgc ON farms.structure_group_attribute(structure_group_code)
  TABLESPACE pg_default
 ;
 
-ALTER TABLE structure_group_attribute ADD 
+ALTER TABLE farms.structure_group_attribute ADD 
     CONSTRAINT pk_sga PRIMARY KEY (structure_group_attribute_id) USING INDEX TABLESPACE pg_default 
 ;
