@@ -35,5 +35,5 @@ ALTER TABLE farms.agristability_scenario ADD CONSTRAINT fk_as_tqc
 
 ALTER TABLE farms.agristability_scenario ADD CONSTRAINT fk_as_u 
     FOREIGN KEY (verifier_user_id)
-    REFERENCES farms."user"(user_id)
+    REFERENCES farms.usr(user_id)
 ;
