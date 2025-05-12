@@ -8,11 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
 
 @Configuration
 @Import({
-        CodeTableSpringConfig.class
+        CodeTableSpringConfig.class,
+        PersistenceSpringConfig.class
 })
 public class ServiceApiSpringConfig {
 
