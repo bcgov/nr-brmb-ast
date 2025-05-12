@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.BenchmarkPerUnitMapper">
+
+    <resultMap id="BenchmarkPerUnitDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.BenchmarkPerUnitDto">
+        <id property="benchmarkPerUnitId" column="benchmark_per_unit_id" javaType="java.lang.Long" jdbcType="NUMERIC" />
+
+        <result property="programYear" column="program_year" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="unitComment" column="unit_comment" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="expiryDate" column="expiry_date" javaType="java.util.Date" jdbcType="DATE" />
+        <result property="municipalityCode" column="municipality_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryItemCode" column="inventory_item_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="structureGroupCode" column="structure_group_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="create_user" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="create_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="update_user" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="update_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select bpu.benchmark_per_unit_id,
+               bpu.program_year,
+               bpu.unit_comment,
+               bpu.expiry_date,
+               bpu.municipality_code,
+               bpu.inventory_item_code,
+               bpu.structure_group_code,
+               bpu.revision_count,
+               bpu.create_user,
+               bpu.create_date,
+               bpu.update_user,
+               bpu.update_date
+    </sql>
+
+    <select id="fetch" resultMap="BenchmarkPerUnitDtoMap">
+        <include refid="selectColumns"/>
+        from benchmark_per_unit bpu
+        where bpu.benchmark_per_unit_id = #{benchmarkPerUnitId}
+    </select>
+
+    <insert id="insert">
+        <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
+            select coalesce(max(bpu.benchmark_per_unit_id), 0) + 1
+            from benchmark_per_unit bpu
+        </selectKey>
+
+        insert into benchmark_per_unit (
+            benchmark_per_unit_id,
+            program_year,
+            unit_comment,
+            expiry_date,
+            municipality_code,
+            inventory_item_code,
+            structure_group_code,
+            revision_count,
+            create_user,
+            create_date,
+            update_user,
+            update_date
+        ) values (
+            #{benchmarkPerUnitId},
+            #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
+            #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.structureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="update">
+        update benchmark_per_unit
+        set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            unit_comment = #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            expiry_date = #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
+            municipality_code = #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            structure_group_code = #{dto.structureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            revision_count = revision_count + 1,
+            update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            update_date = now()
+        where benchmark_per_unit_id = #{dto.benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+    </update>
+
+    <delete id="delete">
+        delete from benchmark_per_unit
+        where benchmark_per_unit_id = #{benchmarkPerUnitId}
+    </delete>
+</mapper>

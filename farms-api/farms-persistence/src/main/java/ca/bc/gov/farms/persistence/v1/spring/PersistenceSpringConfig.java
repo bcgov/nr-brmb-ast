@@ -26,6 +26,8 @@ import ca.bc.gov.brmb.common.persistence.dao.mybatis.LocalDateTimeTypeHandler;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.LocalDateTypeHandler;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.LocalTimeTypeHandler;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.ResetDirtyInterceptor;
+import ca.bc.gov.farms.persistence.v1.dao.BenchmarkPerUnitDao;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.BenchmarkPerUnitDaoImpl;
 
 @Configuration
 @EnableTransactionManagement
@@ -76,5 +78,10 @@ public class PersistenceSpringConfig {
         configurer.setBasePackage("ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper");
         configurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
         return configurer;
+    }
+
+    @Bean
+    public BenchmarkPerUnitDao benchmarkPerUnitDao() {
+        return new BenchmarkPerUnitDaoImpl();
     }
 }
