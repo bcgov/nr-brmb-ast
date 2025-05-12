@@ -71,7 +71,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON farms.tip_line_item TO "app_farms_rest_p
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.tip_report_document TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.tip_report_expense TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.tip_report_result TO "app_farms_rest_proxy";
-GRANT SELECT, INSERT, UPDATE, DELETE ON farms.user TO "app_farms_rest_proxy";
+GRANT SELECT, INSERT, UPDATE, DELETE ON farms.usr TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.whole_farm_participant TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.year_configuration_parameter TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.z01_participant_information TO "app_farms_rest_proxy";
