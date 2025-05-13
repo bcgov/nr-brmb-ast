@@ -23,6 +23,7 @@ import ca.bc.gov.brmb.common.utils.ApplicationContextProvider;
 @Import({
         PropertiesSpringConfig.class,
         ServiceApiSpringConfig.class,
+        ResourceFactorySpringConfig.class,
         CodeEndpointsSpringConfig.class,
         SecurityConfig.class,
         WebConfig.class,
