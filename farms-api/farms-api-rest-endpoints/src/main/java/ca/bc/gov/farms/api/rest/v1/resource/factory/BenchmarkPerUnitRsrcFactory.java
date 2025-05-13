@@ -31,4 +31,15 @@ public class BenchmarkPerUnitRsrcFactory extends BaseResourceFactory implements 
         resource.setInventoryItemCode(dto.getInventoryItemCode());
         resource.setStructureGroupCode(dto.getStructureGroupCode());
     }
+
+    @Override
+    public void updateBenchmarkPerUnit(BenchmarkPerUnitDto dto, BenchmarkPerUnit model) {
+        dto.setBenchmarkPerUnitId(model.getBenchmarkPerUnitId());
+        dto.setProgramYear(model.getProgramYear());
+        dto.setUnitComment(model.getUnitComment());
+        dto.setExpiryDate(model.getExpiryDate());
+        dto.setMunicipalityCode(model.getMunicipalityCode());
+        dto.setInventoryItemCode(model.getInventoryItemCode());
+        dto.setStructureGroupCode(model.getStructureGroupCode());
+    }
 }

@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -43,6 +44,23 @@ public class BenchmarkPerUnitDaoImpl extends BaseDao implements BenchmarkPerUnit
 
         logger.debug(">fetch " + result);
         return result;
+    }
+
+    @Override
+    public List<BenchmarkPerUnitDto> fetchAll() throws DaoException {
+        logger.debug("<fetchAll");
+
+        List<BenchmarkPerUnitDto> dtos = null;
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            dtos = this.mapper.fetchAll(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">fetchAll " + dtos);
+        return dtos;
     }
 
     @Override

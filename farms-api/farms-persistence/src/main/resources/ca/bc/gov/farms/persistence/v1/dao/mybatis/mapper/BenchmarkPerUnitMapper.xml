@@ -41,6 +41,12 @@
         where bpu.benchmark_per_unit_id = #{benchmarkPerUnitId}
     </select>
 
+    <select id="fetchAll" resultMap="BenchmarkPerUnitDtoMap">
+        <include refid="selectColumns"/>
+        from benchmark_per_unit bpu
+        order by bpu.program_year, bpu.unit_comment
+    </select>
+
     <insert id="insert">
         <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
             select coalesce(max(bpu.benchmark_per_unit_id), 0) + 1

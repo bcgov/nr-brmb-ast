@@ -7,4 +7,6 @@ import ca.bc.gov.farms.persistence.v1.dto.BenchmarkPerUnitDto;
 public interface BenchmarkPerUnitFactory {
 
     BenchmarkPerUnit getBenchmarkPerUnit(BenchmarkPerUnitDto dto, FactoryContext context);
+
+    void updateBenchmarkPerUnit(BenchmarkPerUnitDto dto, BenchmarkPerUnit model);
 }
