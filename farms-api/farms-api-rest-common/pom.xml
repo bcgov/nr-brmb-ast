@@ -13,6 +13,12 @@
     </parent>
     <dependencies>
 
+        <dependency>
+            <groupId>ca.bc.gov.farms</groupId>
+            <artifactId>farms-model</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
         <!-- NRS Common -->
         <dependency>
             <groupId>ca.bc.gov.brmb.common</groupId>

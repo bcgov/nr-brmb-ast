@@ -1,5 +1,8 @@
 package ca.bc.gov.farms.model.v1;
 
+import java.io.Serializable;
+import java.util.Date;
+
 public interface BenchmarkPerUnit extends Serializable {
 
     public Long getBenchmarkPerUnitId();
