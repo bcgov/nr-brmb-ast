@@ -24,7 +24,7 @@ public interface BenchmarkPerUnitService {
             throws ServiceException, ValidationFailureException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    BenchmarkPerUnit updateBenchmarkPerUnit(BenchmarkPerUnit benchmarkPerUnit, FactoryContext factoryContext)
+    BenchmarkPerUnit updateBenchmarkPerUnit(Long benchmarkPerUnitId, BenchmarkPerUnit benchmarkPerUnit, FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException, NotFoundException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)

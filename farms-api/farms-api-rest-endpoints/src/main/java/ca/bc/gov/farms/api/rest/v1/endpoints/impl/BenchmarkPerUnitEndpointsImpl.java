@@ -120,7 +120,7 @@ public class BenchmarkPerUnitEndpointsImpl extends BaseEndpointsImpl implements 
 
         try {
             BenchmarkPerUnitRsrc result = (BenchmarkPerUnitRsrc) service
-                    .updateBenchmarkPerUnit(benchmarkPerUnitRsrc, getFactoryContext());
+                    .updateBenchmarkPerUnit(benchmarkPerUnitId, benchmarkPerUnitRsrc, getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (NotFoundException e) {
             response = Response.status(Response.Status.NOT_FOUND).build();

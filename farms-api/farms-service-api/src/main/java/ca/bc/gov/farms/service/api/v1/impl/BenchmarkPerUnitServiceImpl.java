@@ -123,7 +123,8 @@ public class BenchmarkPerUnitServiceImpl implements BenchmarkPerUnitService {
     }
 
     @Override
-    public BenchmarkPerUnit updateBenchmarkPerUnit(BenchmarkPerUnit benchmarkPerUnit, FactoryContext factoryContext)
+    public BenchmarkPerUnit updateBenchmarkPerUnit(Long benchmarkPerUnitId, BenchmarkPerUnit benchmarkPerUnit,
+            FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException, NotFoundException {
         logger.debug("<updateBenchmarkPerUnit");
 
@@ -137,11 +138,11 @@ public class BenchmarkPerUnitServiceImpl implements BenchmarkPerUnitService {
                 throw new ValidationFailureException(errors);
             }
 
-            BenchmarkPerUnitDto dto = benchmarkPerUnitDao.fetch(benchmarkPerUnit.getBenchmarkPerUnitId());
+            BenchmarkPerUnitDto dto = benchmarkPerUnitDao.fetch(benchmarkPerUnitId);
 
             if (dto == null) {
                 throw new NotFoundException("Did not find the benchmark per unit: "
-                        + benchmarkPerUnit.getBenchmarkPerUnitId());
+                        + benchmarkPerUnitId);
             }
 
             benchmarkPerUnitFactory.updateBenchmarkPerUnit(dto, benchmarkPerUnit);
