@@ -19,15 +19,15 @@ public interface BenchmarkPerUnitService {
     BenchmarkPerUnit getBenchmarkPerUnit(Long benchmarkPerUnitId, FactoryContext factoryContext)
             throws ServiceException, NotFoundException;
 
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = false, rollbackFor = Exception.class)
     BenchmarkPerUnit createBenchmarkPerUnit(BenchmarkPerUnit benchmarkPerUnit, FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException;
 
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = false, rollbackFor = Exception.class)
     BenchmarkPerUnit updateBenchmarkPerUnit(BenchmarkPerUnit benchmarkPerUnit, FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException, NotFoundException;
 
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = false, rollbackFor = Exception.class)
     void deleteBenchmarkPerUnit(Long benchmarkPerUnitId)
             throws ServiceException, NotFoundException;
 }
