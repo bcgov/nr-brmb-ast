@@ -11,4 +11,5 @@ public class ResourceTypes extends BaseResourceTypes {
 
 	// Benchmark Per Unit
 	public static final String BENCHMARK_PER_UNIT_NAME = "benchmarkPerUnit";
+	public static final String BENCHMARK_PER_UNIT_LIST_NAME = "benchmarkPerUnits";
 }

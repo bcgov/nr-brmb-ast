@@ -14,6 +14,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.BenchmarkPerUnit;
+import ca.bc.gov.farms.model.v1.BenchmarkPerUnitList;
 import ca.bc.gov.farms.persistence.v1.dao.BenchmarkPerUnitDao;
 import ca.bc.gov.farms.persistence.v1.dto.BenchmarkPerUnitDto;
 import ca.bc.gov.farms.service.api.v1.BenchmarkPerUnitService;
@@ -51,6 +52,25 @@ public class BenchmarkPerUnitServiceImpl implements BenchmarkPerUnitService {
     }
 
     @Override
+    public BenchmarkPerUnitList<? extends BenchmarkPerUnit> getBenchmarkPerUnitList(FactoryContext factoryContext)
+            throws ServiceException {
+        logger.debug("<getBenchmarkPerUnitList");
+
+        BenchmarkPerUnitList<? extends BenchmarkPerUnit> result = null;
+
+        try {
+            List<BenchmarkPerUnitDto> dtos = benchmarkPerUnitDao.fetchAll();
+
+            result = benchmarkPerUnitFactory.getBenchmarkPerUnitList(dtos, factoryContext);
+        } catch (DaoException e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">getBenchmarkPerUnitList");
+        return result;
+    }
+
+    @Override
     public BenchmarkPerUnit getBenchmarkPerUnit(Long benchmarkPerUnitId, FactoryContext factoryContext)
             throws ServiceException, NotFoundException {
         logger.debug("<getBenchmarkPerUnit");
@@ -71,28 +91,6 @@ public class BenchmarkPerUnitServiceImpl implements BenchmarkPerUnitService {
         }
 
         logger.debug(">getBenchmarkPerUnit");
-        return result;
-    }
-
-    @Override
-    public List<BenchmarkPerUnit> getAllBenchmarkPerUnits(FactoryContext factoryContext)
-            throws ServiceException {
-        logger.debug("<getAllBenchmarkPerUnits");
-
-        List<BenchmarkPerUnit> result = new ArrayList<>();
-
-        try {
-            List<BenchmarkPerUnitDto> dtos = benchmarkPerUnitDao.fetchAll();
-
-            for (BenchmarkPerUnitDto dto : dtos) {
-                BenchmarkPerUnit benchmarkPerUnit = benchmarkPerUnitFactory.getBenchmarkPerUnit(dto, factoryContext);
-                result.add(benchmarkPerUnit);
-            }
-        } catch (DaoException e) {
-            throw new ServiceException("DAO threw an exception", e);
-        }
-
-        logger.debug(">getAllBenchmarkPerUnits");
         return result;
     }
 
