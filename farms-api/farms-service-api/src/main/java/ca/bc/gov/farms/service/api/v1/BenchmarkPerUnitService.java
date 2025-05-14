@@ -12,7 +12,7 @@ import ca.bc.gov.farms.model.v1.BenchmarkPerUnitList;
 public interface BenchmarkPerUnitService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    BenchmarkPerUnitList<? extends BenchmarkPerUnit> getBenchmarkPerUnitList(FactoryContext factoryContext)
+    BenchmarkPerUnitList<? extends BenchmarkPerUnit> getBenchmarkPerUnitsByProgramYear(Integer programYear, FactoryContext factoryContext)
             throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

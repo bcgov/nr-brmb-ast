@@ -9,7 +9,7 @@ public interface BenchmarkPerUnitMapper {
 
     BenchmarkPerUnitDto fetch(Map<String, Object> parameters);
 
-    List<BenchmarkPerUnitDto> fetchAll(Map<String, Object> parameters);
+    List<BenchmarkPerUnitDto> fetchBy(Map<String, Object> parameters);
 
     int insert(Map<String, Object> parameters);
 

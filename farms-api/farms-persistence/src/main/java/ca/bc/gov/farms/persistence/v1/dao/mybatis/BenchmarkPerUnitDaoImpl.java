@@ -47,19 +47,20 @@ public class BenchmarkPerUnitDaoImpl extends BaseDao implements BenchmarkPerUnit
     }
 
     @Override
-    public List<BenchmarkPerUnitDto> fetchAll() throws DaoException {
-        logger.debug("<fetchAll");
+    public List<BenchmarkPerUnitDto> fetchByProgramYear(Integer programYear) throws DaoException {
+        logger.debug("<fetchByProgramYear");
 
         List<BenchmarkPerUnitDto> dtos = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
-            dtos = this.mapper.fetchAll(parameters);
+            parameters.put("programYear", programYear);
+            dtos = this.mapper.fetchBy(parameters);
         } catch (RuntimeException e) {
             handleException(e);
         }
 
-        logger.debug(">fetchAll " + dtos);
+        logger.debug(">fetchByProgramYear " + dtos);
         return dtos;
     }
 

@@ -21,6 +21,28 @@ public class BenchmarkPerUnitEndpointsImpl extends BaseEndpointsImpl implements 
     private BenchmarkPerUnitService service;
 
     @Override
+    public Response getBenchmarkPerUnitsByProgramYear(Integer programYear) {
+        logger.debug("<getBenchmarkPerUnitsByProgramYear");
+
+        Response response = null;
+
+        logRequest();
+
+        try {
+            BenchmarkPerUnitListRsrc result = (BenchmarkPerUnitListRsrc) service
+                    .getBenchmarkPerUnitsByProgramYear(programYear, getFactoryContext());
+            response = Response.ok(result).tag(result.getUnquotedETag()).build();
+        } catch (Throwable t) {
+            response = getInternalServerErrorResponse(t);
+        }
+
+        logResponse(response);
+
+        logger.debug(">getBenchmarkPerUnitsByProgramYear " + response);
+        return response;
+    }
+
+    @Override
     public Response getBenchmarkPerUnit(Long benchmarkPerUnitId) {
         logger.debug("<getBenchmarkPerUnit");
         Response response = null;
@@ -28,15 +50,9 @@ public class BenchmarkPerUnitEndpointsImpl extends BaseEndpointsImpl implements 
         logRequest();
 
         try {
-            if (benchmarkPerUnitId == null) {
-                BenchmarkPerUnitListRsrc result = (BenchmarkPerUnitListRsrc) service
-                        .getBenchmarkPerUnitList(getFactoryContext());
-                response = Response.ok(result).tag(result.getUnquotedETag()).build();
-            } else {
-                BenchmarkPerUnitRsrc result = (BenchmarkPerUnitRsrc) service.getBenchmarkPerUnit(benchmarkPerUnitId,
-                        getFactoryContext());
-                response = Response.ok(result).tag(result.getUnquotedETag()).build();
-            }
+            BenchmarkPerUnitRsrc result = (BenchmarkPerUnitRsrc) service.getBenchmarkPerUnit(benchmarkPerUnitId,
+                    getFactoryContext());
+            response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (NotFoundException e) {
             response = Response.status(Response.Status.NOT_FOUND).build();
         } catch (Throwable t) {

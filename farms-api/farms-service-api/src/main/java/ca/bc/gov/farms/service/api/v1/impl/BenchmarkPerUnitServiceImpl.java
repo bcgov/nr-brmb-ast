@@ -1,6 +1,5 @@
 package ca.bc.gov.farms.service.api.v1.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -52,21 +51,21 @@ public class BenchmarkPerUnitServiceImpl implements BenchmarkPerUnitService {
     }
 
     @Override
-    public BenchmarkPerUnitList<? extends BenchmarkPerUnit> getBenchmarkPerUnitList(FactoryContext factoryContext)
-            throws ServiceException {
-        logger.debug("<getBenchmarkPerUnitList");
+    public BenchmarkPerUnitList<? extends BenchmarkPerUnit> getBenchmarkPerUnitsByProgramYear(Integer programYear,
+            FactoryContext factoryContext) throws ServiceException {
+        logger.debug("<getBenchmarkPerUnitsByProgramYear");
 
         BenchmarkPerUnitList<? extends BenchmarkPerUnit> result = null;
 
         try {
-            List<BenchmarkPerUnitDto> dtos = benchmarkPerUnitDao.fetchAll();
+            List<BenchmarkPerUnitDto> dtos = benchmarkPerUnitDao.fetchByProgramYear(programYear);
 
             result = benchmarkPerUnitFactory.getBenchmarkPerUnitList(dtos, factoryContext);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
         }
 
-        logger.debug(">getBenchmarkPerUnitList");
+        logger.debug(">getBenchmarkPerUnitsByProgramYear");
         return result;
     }
 

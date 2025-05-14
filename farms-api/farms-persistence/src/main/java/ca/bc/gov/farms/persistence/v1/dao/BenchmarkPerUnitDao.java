@@ -11,7 +11,7 @@ public interface BenchmarkPerUnitDao extends Serializable {
 
     BenchmarkPerUnitDto fetch(Long benchmarkPerUnitId) throws DaoException;
 
-    List<BenchmarkPerUnitDto> fetchAll() throws DaoException;
+    List<BenchmarkPerUnitDto> fetchByProgramYear(Integer programYear) throws DaoException;
 
     void insert(BenchmarkPerUnitDto dto, String userId) throws DaoException;
 

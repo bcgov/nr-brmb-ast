@@ -41,10 +41,11 @@
         where bpu.benchmark_per_unit_id = #{benchmarkPerUnitId}
     </select>
 
-    <select id="fetchAll" resultMap="BenchmarkPerUnitDtoMap">
+    <select id="fetchBy" resultMap="BenchmarkPerUnitDtoMap">
         <include refid="selectColumns"/>
         from benchmark_per_unit bpu
-        order by bpu.program_year, bpu.unit_comment
+        where bpu.program_year = #{programYear}
+        order by bpu.unit_comment
     </select>
 
     <insert id="insert">
