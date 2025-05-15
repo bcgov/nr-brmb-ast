@@ -1,0 +1,10 @@
+CREATE SEQUENCE farms.seq_zpbc
+    AS bigint
+    START WITH 100000000
+    INCREMENT BY 1
+    MINVALUE 1
+    MAXVALUE 9999999999
+    NO CYCLE
+    CACHE 20
+
+;

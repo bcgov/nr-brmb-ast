@@ -14,6 +14,11 @@
             "include": {
                 "file": "scripts/01_00_xx/01_00_01/00/farms.01_00_01_00.ddl.json"
             }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_01/01/farms.01_00_01_01.ddl.json"
+            }
         }
     ]
 }
