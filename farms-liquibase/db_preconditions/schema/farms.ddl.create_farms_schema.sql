@@ -2,6 +2,8 @@
 
 -- DROP SCHEMA "farms" ;
 
+\connect "farms${ENV}"
+
 CREATE SCHEMA "farms"
     AUTHORIZATION postgres;
 
