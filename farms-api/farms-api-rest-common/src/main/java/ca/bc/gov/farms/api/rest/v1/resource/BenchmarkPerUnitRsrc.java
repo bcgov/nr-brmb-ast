@@ -29,6 +29,8 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
     private String inventoryItemDesc;
     private String structureGroupCode;
     private String structureGroupDesc;
+    private String inventoryCode;
+    private String inventoryDesc;
     private BigDecimal yearMinus6Margin;
     private BigDecimal yearMinus5Margin;
     private BigDecimal yearMinus4Margin;
@@ -140,6 +142,26 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
     @Override
     public void setStructureGroupDesc(String structureGroupDesc) {
         this.structureGroupDesc = structureGroupDesc;
+    }
+
+    @Override
+    public String getInventoryCode() {
+        return inventoryCode;
+    }
+
+    @Override
+    public void setInventoryCode(String inventoryCode) {
+        this.inventoryCode = inventoryCode;
+    }
+
+    @Override
+    public String getInventoryDesc() {
+        return inventoryDesc;
+    }
+
+    @Override
+    public void setInventoryDesc(String inventoryDesc) {
+        this.inventoryDesc = inventoryDesc;
     }
 
     @Override

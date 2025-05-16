@@ -25,6 +25,8 @@ public class BenchmarkPerUnitDto extends BaseDto<BenchmarkPerUnitDto> {
     private String inventoryItemDesc;
     private String structureGroupCode;
     private String structureGroupDesc;
+    private String inventoryCode;
+    private String inventoryDesc;
     private BigDecimal yearMinus6Margin;
     private BigDecimal yearMinus5Margin;
     private BigDecimal yearMinus4Margin;
@@ -58,6 +60,20 @@ public class BenchmarkPerUnitDto extends BaseDto<BenchmarkPerUnitDto> {
         this.inventoryItemDesc = dto.inventoryItemDesc;
         this.structureGroupCode = dto.structureGroupCode;
         this.structureGroupDesc = dto.structureGroupDesc;
+        this.inventoryCode = dto.inventoryCode;
+        this.inventoryDesc = dto.inventoryDesc;
+        this.yearMinus6Margin = dto.yearMinus6Margin;
+        this.yearMinus5Margin = dto.yearMinus5Margin;
+        this.yearMinus4Margin = dto.yearMinus4Margin;
+        this.yearMinus3Margin = dto.yearMinus3Margin;
+        this.yearMinus2Margin = dto.yearMinus2Margin;
+        this.yearMinus1Margin = dto.yearMinus1Margin;
+        this.yearMinus6Expense = dto.yearMinus6Expense;
+        this.yearMinus5Expense = dto.yearMinus5Expense;
+        this.yearMinus4Expense = dto.yearMinus4Expense;
+        this.yearMinus3Expense = dto.yearMinus3Expense;
+        this.yearMinus2Expense = dto.yearMinus2Expense;
+        this.yearMinus1Expense = dto.yearMinus1Expense;
 
         this.revisionCount = dto.revisionCount;
         this.createUser = dto.createUser;
@@ -181,6 +197,22 @@ public class BenchmarkPerUnitDto extends BaseDto<BenchmarkPerUnitDto> {
 
     public void setStructureGroupDesc(String structureGroupDesc) {
         this.structureGroupDesc = structureGroupDesc;
+    }
+
+    public String getInventoryCode() {
+        return inventoryCode;
+    }
+
+    public void setInventoryCode(String inventoryCode) {
+        this.inventoryCode = inventoryCode;
+    }
+
+    public String getInventoryDesc() {
+        return inventoryDesc;
+    }
+
+    public void setInventoryDesc(String inventoryDesc) {
+        this.inventoryDesc = inventoryDesc;
     }
 
     public BigDecimal getYearMinus6Margin() {

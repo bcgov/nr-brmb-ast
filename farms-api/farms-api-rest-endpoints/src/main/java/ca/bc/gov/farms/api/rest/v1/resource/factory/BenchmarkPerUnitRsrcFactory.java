@@ -48,6 +48,8 @@ public class BenchmarkPerUnitRsrcFactory extends BaseResourceFactory implements 
         resource.setInventoryItemDesc(dto.getInventoryItemDesc());
         resource.setStructureGroupCode(dto.getStructureGroupCode());
         resource.setStructureGroupDesc(dto.getStructureGroupDesc());
+        resource.setInventoryCode(dto.getInventoryCode());
+        resource.setInventoryDesc(dto.getInventoryDesc());
         resource.setYearMinus6Margin(dto.getYearMinus6Margin());
         resource.setYearMinus5Margin(dto.getYearMinus5Margin());
         resource.setYearMinus4Margin(dto.getYearMinus4Margin());
@@ -103,6 +105,8 @@ public class BenchmarkPerUnitRsrcFactory extends BaseResourceFactory implements 
         result.setInventoryItemDesc(dto.getInventoryItemDesc());
         result.setStructureGroupCode(dto.getStructureGroupCode());
         result.setStructureGroupDesc(dto.getStructureGroupDesc());
+        result.setInventoryCode(dto.getInventoryCode());
+        result.setInventoryDesc(dto.getInventoryDesc());
         result.setYearMinus6Margin(dto.getYearMinus6Margin());
         result.setYearMinus5Margin(dto.getYearMinus5Margin());
         result.setYearMinus4Margin(dto.getYearMinus4Margin());
@@ -153,6 +157,7 @@ public class BenchmarkPerUnitRsrcFactory extends BaseResourceFactory implements 
         dto.setMunicipalityCode(model.getMunicipalityCode());
         dto.setInventoryItemCode(model.getInventoryItemCode());
         dto.setStructureGroupCode(model.getStructureGroupCode());
+        dto.setInventoryCode(model.getInventoryCode());
         dto.setYearMinus6Margin(model.getYearMinus6Margin());
         dto.setYearMinus5Margin(model.getYearMinus5Margin());
         dto.setYearMinus4Margin(model.getYearMinus4Margin());

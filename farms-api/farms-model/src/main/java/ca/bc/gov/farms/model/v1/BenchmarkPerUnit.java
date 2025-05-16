@@ -36,6 +36,12 @@ public interface BenchmarkPerUnit extends Serializable {
     public String getStructureGroupDesc();
     public void setStructureGroupDesc(String structureGroupDesc);
 
+    public String getInventoryCode();
+    public void setInventoryCode(String inventoryCode);
+
+    public String getInventoryDesc();
+    public void setInventoryDesc(String inventoryDesc);
+
     public BigDecimal getYearMinus6Margin();
     public void setYearMinus6Margin(BigDecimal yearMinus6Margin);
 

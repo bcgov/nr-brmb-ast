@@ -15,6 +15,8 @@
         <result property="inventoryItemDesc" column="inventory_item_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
         <result property="structureGroupCode" column="structure_group_code" javaType="java.lang.String" jdbcType="VARCHAR" />
         <result property="structureGroupDesc" column="structure_group_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryCode" column="inventory_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryDesc" column="inventory_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
         <result property="yearMinus6Margin" column="year_minus_6_margin" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
         <result property="yearMinus5Margin" column="year_minus_5_margin" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
         <result property="yearMinus4Margin" column="year_minus_4_margin" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
@@ -36,11 +38,18 @@
     </resultMap>
 
     <sql id="selectColumns">
-        select bpu.program_year,
+        select bpu.benchmark_per_unit_id,
+               bpu.program_year,
+               bpu.unit_comment,
+               bpu.expiry_date,
 	           mc.municipality_code,
 	           mc.description AS municipality_desc,
-	           coalesce(iic.inventory_item_code, sgc.structure_group_code) as inventory_code,
-	           coalesce(iic.description, sgc.description) as inventory_desc,
+	           iic.inventory_item_code,
+               iic.description as inventory_item_desc,
+               sgc.structure_group_code,
+               sgc.description as structure_group_desc,
+               coalesce(iic.inventory_item_code, sgc.structure_group_code) as inventory_code,
+               coalesce(iic.description, sgc.description) as inventory_desc,
 	           mt.year_minus_6_margin,
 	           mt.year_minus_5_margin,
 	           mt.year_minus_4_margin,
