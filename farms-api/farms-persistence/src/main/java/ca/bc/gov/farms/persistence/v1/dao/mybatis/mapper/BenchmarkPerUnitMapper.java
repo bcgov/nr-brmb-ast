@@ -16,5 +16,6 @@ public interface BenchmarkPerUnitMapper {
 
     int update(Map<String, Object> parameters);
 
-    int delete(Map<String, Object> parameters);
+    int deleteBenchmarkYear(Map<String, Object> parameters);
+    int deleteBenchmarkPerUnit(Map<String, Object> parameters);
 }

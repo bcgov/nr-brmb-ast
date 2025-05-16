@@ -140,7 +140,13 @@ public class BenchmarkPerUnitDaoImpl extends BaseDao implements BenchmarkPerUnit
         try {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("benchmarkPerUnitId", benchmarkPerUnitId);
-            int count = this.mapper.delete(parameters);
+            int count = this.mapper.deleteBenchmarkYear(parameters);
+
+            if (count == 0) {
+                throw new NotFoundDaoException("Record not deleted: " + count);
+            }
+
+            count = this.mapper.deleteBenchmarkPerUnit(parameters);
 
             if (count == 0) {
                 throw new NotFoundDaoException("Record not deleted: " + count);

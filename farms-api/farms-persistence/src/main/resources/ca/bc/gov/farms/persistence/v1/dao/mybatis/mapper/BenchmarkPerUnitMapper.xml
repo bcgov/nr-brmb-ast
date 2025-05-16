@@ -134,7 +134,7 @@
         <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
             select nextval('seq_bpu')
         </selectKey>
-        insert into benchmark_per_unit (
+        insert into farms.benchmark_per_unit (
             benchmark_per_unit_id,
             program_year,
             unit_comment,
@@ -172,7 +172,7 @@
     </insert>
 
     <insert id="insertBenchmarkYear">
-        insert into benchmark_year (
+        insert into farms.benchmark_year (
             benchmark_per_unit_id,
             benchmark_year,
             average_margin,
@@ -196,7 +196,7 @@
     </insert>
 
     <update id="update">
-        update benchmark_per_unit
+        update farms.benchmark_per_unit
         set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             unit_comment = #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             expiry_date = #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
@@ -209,8 +209,13 @@
         where benchmark_per_unit_id = #{dto.benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
     </update>
 
-    <delete id="delete">
-        delete from benchmark_per_unit
+    <delete id="deleteBenchmarkYear">
+        delete from farms.benchmark_year
+        where benchmark_per_unit_id = #{benchmarkPerUnitId}
+    </delete>
+
+    <delete id="deleteBenchmarkPerUnit">
+        delete from farms.benchmark_per_unit
         where benchmark_per_unit_id = #{benchmarkPerUnitId}
     </delete>
 </mapper>
