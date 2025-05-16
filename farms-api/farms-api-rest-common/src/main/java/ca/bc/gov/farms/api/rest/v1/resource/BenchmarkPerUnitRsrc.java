@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.api.rest.v1.resource;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -23,8 +24,23 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
     private String unitComment;
     private Date expiryDate;
     private String municipalityCode;
+    private String municipalityDesc;
     private String inventoryItemCode;
+    private String inventoryItemDesc;
     private String structureGroupCode;
+    private String structureGroupDesc;
+    private BigDecimal yearMinus6Margin;
+    private BigDecimal yearMinus5Margin;
+    private BigDecimal yearMinus4Margin;
+    private BigDecimal yearMinus3Margin;
+    private BigDecimal yearMinus2Margin;
+    private BigDecimal yearMinus1Margin;
+    private BigDecimal yearMinus6Expense;
+    private BigDecimal yearMinus5Expense;
+    private BigDecimal yearMinus4Expense;
+    private BigDecimal yearMinus3Expense;
+    private BigDecimal yearMinus2Expense;
+    private BigDecimal yearMinus1Expense;
 
     @Override
     public Long getBenchmarkPerUnitId() {
@@ -77,6 +93,16 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
     }
 
     @Override
+    public String getMunicipalityDesc() {
+        return municipalityDesc;
+    }
+
+    @Override
+    public void setMunicipalityDesc(String municipalityDesc) {
+        this.municipalityDesc = municipalityDesc;
+    }
+
+    @Override
     public String getInventoryItemCode() {
         return inventoryItemCode;
     }
@@ -87,6 +113,16 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
     }
 
     @Override
+    public String getInventoryItemDesc() {
+        return inventoryItemDesc;
+    }
+
+    @Override
+    public void setInventoryItemDesc(String inventoryItemDesc) {
+        this.inventoryItemDesc = inventoryItemDesc;
+    }
+
+    @Override
     public String getStructureGroupCode() {
         return structureGroupCode;
     }
@@ -94,6 +130,136 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
     @Override
     public void setStructureGroupCode(String structureGroupCode) {
         this.structureGroupCode = structureGroupCode;
+    }
+
+    @Override
+    public String getStructureGroupDesc() {
+        return structureGroupDesc;
+    }
+
+    @Override
+    public void setStructureGroupDesc(String structureGroupDesc) {
+        this.structureGroupDesc = structureGroupDesc;
+    }
+
+    @Override
+    public BigDecimal getYearMinus6Margin() {
+        return yearMinus6Margin;
+    }
+
+    @Override
+    public void setYearMinus6Margin(BigDecimal yearMinus6Margin) {
+        this.yearMinus6Margin = yearMinus6Margin;
+    }
+
+    @Override
+    public BigDecimal getYearMinus5Margin() {
+        return yearMinus5Margin;
+    }
+
+    @Override
+    public void setYearMinus5Margin(BigDecimal yearMinus5Margin) {
+        this.yearMinus5Margin = yearMinus5Margin;
+    }
+
+    @Override
+    public BigDecimal getYearMinus4Margin() {
+        return yearMinus4Margin;
+    }
+
+    @Override
+    public void setYearMinus4Margin(BigDecimal yearMinus4Margin) {
+        this.yearMinus4Margin = yearMinus4Margin;
+    }
+
+    @Override
+    public BigDecimal getYearMinus3Margin() {
+        return yearMinus3Margin;
+    }
+
+    @Override
+    public void setYearMinus3Margin(BigDecimal yearMinus3Margin) {
+        this.yearMinus3Margin = yearMinus3Margin;
+    }
+
+    @Override
+    public BigDecimal getYearMinus2Margin() {
+        return yearMinus2Margin;
+    }
+
+    @Override
+    public void setYearMinus2Margin(BigDecimal yearMinus2Margin) {
+        this.yearMinus2Margin = yearMinus2Margin;
+    }
+
+    @Override
+    public BigDecimal getYearMinus1Margin() {
+        return yearMinus1Margin;
+    }
+
+    @Override
+    public void setYearMinus1Margin(BigDecimal yearMinus1Margin) {
+        this.yearMinus1Margin = yearMinus1Margin;
+    }
+
+    @Override
+    public BigDecimal getYearMinus6Expense() {
+        return yearMinus6Expense;
+    }
+
+    @Override
+    public void setYearMinus6Expense(BigDecimal yearMinus6Expense) {
+        this.yearMinus6Expense = yearMinus6Expense;
+    }
+
+    @Override
+    public BigDecimal getYearMinus5Expense() {
+        return yearMinus5Expense;
+    }
+
+    @Override
+    public void setYearMinus5Expense(BigDecimal yearMinus5Expense) {
+        this.yearMinus5Expense = yearMinus5Expense;
+    }
+
+    @Override
+    public BigDecimal getYearMinus4Expense() {
+        return yearMinus4Expense;
+    }
+
+    @Override
+    public void setYearMinus4Expense(BigDecimal yearMinus4Expense) {
+        this.yearMinus4Expense = yearMinus4Expense;
+    }
+
+    @Override
+    public BigDecimal getYearMinus3Expense() {
+        return yearMinus3Expense;
+    }
+
+    @Override
+    public void setYearMinus3Expense(BigDecimal yearMinus3Expense) {
+        this.yearMinus3Expense = yearMinus3Expense;
+    }
+
+    @Override
+    public BigDecimal getYearMinus2Expense() {
+        return yearMinus2Expense;
+    }
+
+    @Override
+    public void setYearMinus2Expense(BigDecimal yearMinus2Expense) {
+        this.yearMinus2Expense = yearMinus2Expense;
+    }
+
+    @Override
+    public BigDecimal getYearMinus1Expense() {
+        return yearMinus1Expense;
+    }
+
+    @Override
+    public void setYearMinus1Expense(BigDecimal yearMinus1Expense) {
+        this.yearMinus1Expense = yearMinus1Expense;
     }
 
 }

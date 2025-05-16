@@ -1,5 +1,8 @@
 package ca.bc.gov.farms.service.api.v1.validation.constraints;
 
+import java.math.BigDecimal;
+
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,4 +26,41 @@ public interface BenchmarkPerUnitRsrcConstraints {
 
     @Size(min = 0, max = 10, message = Errors.STRUCTURE_GROUP_CODE_SIZE, groups = BenchmarkPerUnitRsrcConstraints.class)
     public String getStructureGroupCode();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_6_MARGIN_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus6Margin();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_5_MARGIN_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus5Margin();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_4_MARGIN_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus4Margin();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_3_MARGIN_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus3Margin();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_2_MARGIN_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus2Margin();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_1_MARGIN_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus1Margin();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_6_EXPENSE_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus6Expense();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_5_EXPENSE_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus5Expense();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_4_EXPENSE_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus4Expense();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_3_EXPENSE_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus3Expense();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_2_EXPENSE_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus2Expense();
+
+    @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_1_EXPENSE_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public BigDecimal getYearMinus1Expense();
+
 }
