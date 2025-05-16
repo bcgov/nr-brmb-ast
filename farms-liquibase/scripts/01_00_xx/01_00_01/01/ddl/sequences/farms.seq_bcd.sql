@@ -5,6 +5,6 @@ CREATE SEQUENCE farms.seq_bcd
     MINVALUE 1
     MAXVALUE 9999999999
     NO CYCLE
-    CACHE 20
+    CACHE 1
 
 ;
