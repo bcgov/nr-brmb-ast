@@ -9,6 +9,8 @@ public class Errors {
     public static final String MUNICIPALITY_CODE_SIZE = "error.municipality.code.size";
     public static final String INVENTORY_ITEM_CODE_SIZE = "error.inventory.item.code.size";
     public static final String STRUCTURE_GROUP_CODE_SIZE = "error.structure.group.code.size";
+    public static final String INVENTORY_CODE_SIZE = "error.inventory.code.size";
+    public static final String INVENTORY_DESC_SIZE = "error.inventory.desc.size";
     public static final String YEAR_MINUS_6_MARGIN_DIGITS = "error.year.minus.6.margin.digits";
     public static final String YEAR_MINUS_5_MARGIN_DIGITS = "error.year.minus.5.margin.digits";
     public static final String YEAR_MINUS_4_MARGIN_DIGITS = "error.year.minus.4.margin.digits";

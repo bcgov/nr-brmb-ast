@@ -27,6 +27,12 @@ public interface BenchmarkPerUnitRsrcConstraints {
     @Size(min = 0, max = 10, message = Errors.STRUCTURE_GROUP_CODE_SIZE, groups = BenchmarkPerUnitRsrcConstraints.class)
     public String getStructureGroupCode();
 
+    @Size(min = 0, max = 10, message = Errors.INVENTORY_CODE_SIZE, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public String getInventoryCode();
+
+    @Size(min = 0, max = 256, message = Errors.INVENTORY_DESC_SIZE, groups = BenchmarkPerUnitRsrcConstraints.class)
+    public String getInventoryDesc();
+
     @Digits(integer = 11, fraction = 2, message = Errors.YEAR_MINUS_6_MARGIN_DIGITS, groups = BenchmarkPerUnitRsrcConstraints.class)
     public BigDecimal getYearMinus6Margin();
 
