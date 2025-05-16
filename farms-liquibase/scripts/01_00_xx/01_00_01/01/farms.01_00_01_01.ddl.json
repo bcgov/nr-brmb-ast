@@ -562,6 +562,12 @@
                             "relativeToChangeLogFile": "true",
                             "path": "ddl/sequences/farms.seq_zsi.sql"
                         }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangelogFile": "true",
+                            "path": "ddl/grants/farms.ddl.apply_grants.sql"
+                        }
                     }
                 ]
             }
