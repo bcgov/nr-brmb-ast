@@ -131,6 +131,9 @@
     </select>
 
     <insert id="insertBenchmarkPerUnit">
+        <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('seq_bpu')
+        </selectKey>
         insert into benchmark_per_unit (
             benchmark_per_unit_id,
             program_year,
@@ -145,7 +148,7 @@
             update_user,
             update_date
         ) values (
-            nextval('seq_bpu'),
+            #{benchmarkPerUnitId},
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
