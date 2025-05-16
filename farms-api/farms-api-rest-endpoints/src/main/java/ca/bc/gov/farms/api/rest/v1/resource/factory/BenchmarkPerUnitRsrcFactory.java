@@ -158,6 +158,7 @@ public class BenchmarkPerUnitRsrcFactory extends BaseResourceFactory implements 
         dto.setInventoryItemCode(model.getInventoryItemCode());
         dto.setStructureGroupCode(model.getStructureGroupCode());
         dto.setInventoryCode(model.getInventoryCode());
+        dto.setInventoryDesc(model.getInventoryDesc());
         dto.setYearMinus6Margin(model.getYearMinus6Margin());
         dto.setYearMinus5Margin(model.getYearMinus5Margin());
         dto.setYearMinus4Margin(model.getYearMinus4Margin());
