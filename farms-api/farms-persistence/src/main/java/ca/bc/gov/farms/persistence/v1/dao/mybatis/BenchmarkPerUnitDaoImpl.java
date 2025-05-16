@@ -91,18 +91,16 @@ public class BenchmarkPerUnitDaoImpl extends BaseDao implements BenchmarkPerUnit
                     dto.getYearMinus3Expense(), dto.getYearMinus4Expense(), dto.getYearMinus5Expense(),
                     dto.getYearMinus6Expense() };
             for (int i = 0; i < margins.length; i++) {
-                if (margins[i] != null) {
-                    parameters.clear();
-                    parameters.put("benchmarkPerUnitId", benchmarkPerUnitId);
-                    parameters.put("benchmarkYear", dto.getProgramYear() - (i + 1));
-                    parameters.put("averageMargin", margins[i]);
-                    parameters.put("averageExpense", expenses[i]);
-                    parameters.put("userId", userId);
-                    count = this.mapper.insertBenchmarkYear(parameters);
+                parameters.clear();
+                parameters.put("benchmarkPerUnitId", benchmarkPerUnitId);
+                parameters.put("benchmarkYear", dto.getProgramYear() - (i + 1));
+                parameters.put("averageMargin", margins[i] != null ? margins[i] : BigDecimal.ZERO);
+                parameters.put("averageExpense", expenses[i]);
+                parameters.put("userId", userId);
+                count = this.mapper.insertBenchmarkYear(parameters);
 
-                    if (count == 0) {
-                        throw new DaoException("Record not inserted: " + count);
-                    }
+                if (count == 0) {
+                    throw new DaoException("Record not inserted: " + count);
                 }
             }
         } catch (RuntimeException e) {
