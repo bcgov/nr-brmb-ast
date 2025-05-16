@@ -113,6 +113,7 @@ public class BenchmarkPerUnitServiceImpl implements BenchmarkPerUnitService {
             benchmarkPerUnitFactory.updateBenchmarkPerUnit(dto, resource);
             benchmarkPerUnitDao.insert(dto, userId);
 
+            dto = benchmarkPerUnitDao.fetch(dto.getBenchmarkPerUnitId());
             result = benchmarkPerUnitFactory.getBenchmarkPerUnit(dto, factoryContext);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
@@ -148,6 +149,7 @@ public class BenchmarkPerUnitServiceImpl implements BenchmarkPerUnitService {
             benchmarkPerUnitFactory.updateBenchmarkPerUnit(dto, benchmarkPerUnit);
             benchmarkPerUnitDao.update(dto, userId);
 
+            dto = benchmarkPerUnitDao.fetch(benchmarkPerUnitId);
             result = benchmarkPerUnitFactory.getBenchmarkPerUnit(dto, factoryContext);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
