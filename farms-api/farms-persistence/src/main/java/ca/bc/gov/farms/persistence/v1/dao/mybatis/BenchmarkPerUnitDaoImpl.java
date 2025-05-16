@@ -120,11 +120,32 @@ public class BenchmarkPerUnitDaoImpl extends BaseDao implements BenchmarkPerUnit
 
                 parameters.put("dto", dto);
                 parameters.put("userId", userId);
-                int count = this.mapper.update(parameters);
+                int count = this.mapper.updateBenchmarkPerUnit(parameters);
 
                 if (count == 0) {
                     throw new NotFoundDaoException("Record not updated: " + count);
                 }
+
+                BigDecimal[] margins = { dto.getYearMinus1Margin(), dto.getYearMinus2Margin(),
+                        dto.getYearMinus3Margin(), dto.getYearMinus4Margin(), dto.getYearMinus5Margin(),
+                        dto.getYearMinus6Margin() };
+                BigDecimal[] expenses = { dto.getYearMinus1Expense(), dto.getYearMinus2Expense(),
+                        dto.getYearMinus3Expense(), dto.getYearMinus4Expense(), dto.getYearMinus5Expense(),
+                        dto.getYearMinus6Expense() };
+                for (int i = 0; i < margins.length; i++) {
+                    parameters.clear();
+                    parameters.put("benchmarkPerUnitId", dto.getBenchmarkPerUnitId());
+                    parameters.put("benchmarkYear", dto.getProgramYear() - (i + 1));
+                    parameters.put("averageMargin", margins[i] != null ? margins[i] : BigDecimal.ZERO);
+                    parameters.put("averageExpense", expenses[i]);
+                    parameters.put("userId", userId);
+                    count = this.mapper.updateBenchmarkYear(parameters);
+
+                    if (count == 0) {
+                        throw new NotFoundDaoException("Record not updated: " + count);
+                    }
+                }
+
             } catch (RuntimeException e) {
                 handleException(e);
             }

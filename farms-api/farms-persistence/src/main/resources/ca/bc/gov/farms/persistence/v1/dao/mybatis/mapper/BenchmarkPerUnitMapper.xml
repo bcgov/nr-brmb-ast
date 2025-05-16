@@ -197,18 +197,39 @@
         )
     </insert>
 
-    <update id="update">
+    <update id="updateBenchmarkPerUnit">
         update farms.benchmark_per_unit
         set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             unit_comment = #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             expiry_date = #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
             municipality_code = #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            structure_group_code = #{dto.structureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            inventory_item_code = (
+                select iic.inventory_item_code
+                from inventory_item_code iic
+                where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and iic.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            structure_group_code = (
+                select sgc.structure_group_code
+                from structure_group_code sgc
+                where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and sgc.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
             revision_count = revision_count + 1,
             update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             update_date = now()
         where benchmark_per_unit_id = #{dto.benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+    </update>
+
+    <update id="updateBenchmarkYear">
+        update farms.benchmark_year
+        set average_margin = #{averageMargin, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            average_expense = #{averageExpense, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            revision_count = revision_count + 1,
+            update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            update_date = now()
+        where benchmark_per_unit_id = #{benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+        and benchmark_year = #{benchmarkYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN}
     </update>
 
     <delete id="deleteBenchmarkYear">
