@@ -11,7 +11,8 @@ public interface BenchmarkPerUnitMapper {
 
     List<BenchmarkPerUnitDto> fetchBy(Map<String, Object> parameters);
 
-    int insert(Map<String, Object> parameters);
+    int insertBenchmarkPerUnit(Map<String, Object> parameters);
+    int insertBenchmarkYear(Map<String, Object> parameters);
 
     int update(Map<String, Object> parameters);
 

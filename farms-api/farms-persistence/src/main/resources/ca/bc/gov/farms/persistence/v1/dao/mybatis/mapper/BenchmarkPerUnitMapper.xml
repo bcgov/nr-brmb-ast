@@ -130,11 +130,7 @@
         order by bpu.unit_comment
     </select>
 
-    <insert id="insert">
-        <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
-            select nextval('seq_bpu')
-        </selectKey>
-
+    <insert id="insertBenchmarkPerUnit">
         insert into benchmark_per_unit (
             benchmark_per_unit_id,
             program_year,
@@ -149,13 +145,45 @@
             update_user,
             update_date
         ) values (
-            #{benchmarkPerUnitId},
+            nextval('seq_bpu'),
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
             #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            #{dto.structureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            (
+                select iic.inventory_item_code
+                from inventory_item_code iic
+                where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select sgc.structure_group_code
+                from structure_group_code sgc
+                where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <insert id="insertBenchmarkYear">
+        insert into benchmark_year (
+            benchmark_per_unit_id,
+            benchmark_year,
+            average_margin,
+            average_expense,
+            revision_count,
+            create_user,
+            create_date,
+            update_user,
+            update_date
+        ) values (
+            #{benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
+            #{benchmarkYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{averageMargin, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            #{averageExpense, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             1,
             #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             now(),

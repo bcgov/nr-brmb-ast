@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class BenchmarkPerUnitDaoImpl extends BaseDao implements BenchmarkPerUnit
 
             parameters.put("dto", dto);
             parameters.put("userId", userId);
-            int count = this.mapper.insert(parameters);
+            int count = this.mapper.insertBenchmarkPerUnit(parameters);
 
             if (count == 0) {
                 throw new DaoException("Record not inserted: " + count);
@@ -83,6 +84,27 @@ public class BenchmarkPerUnitDaoImpl extends BaseDao implements BenchmarkPerUnit
 
             benchmarkPerUnitId = (Long) parameters.get("benchmarkPerUnitId");
             dto.setBenchmarkPerUnitId(benchmarkPerUnitId);
+
+            BigDecimal[] margins = { dto.getYearMinus1Margin(), dto.getYearMinus2Margin(), dto.getYearMinus3Margin(),
+                    dto.getYearMinus4Margin(), dto.getYearMinus5Margin(), dto.getYearMinus6Margin() };
+            BigDecimal[] expenses = { dto.getYearMinus1Expense(), dto.getYearMinus2Expense(),
+                    dto.getYearMinus3Expense(), dto.getYearMinus4Expense(), dto.getYearMinus5Expense(),
+                    dto.getYearMinus6Expense() };
+            for (int i = 0; i < margins.length; i++) {
+                if (margins[i] != null) {
+                    parameters.clear();
+                    parameters.put("benchmarkPerUnitId", benchmarkPerUnitId);
+                    parameters.put("benchmarkYear", dto.getProgramYear() - (i + 1));
+                    parameters.put("averageMargin", margins[i]);
+                    parameters.put("averageExpense", expenses[i]);
+                    parameters.put("userId", userId);
+                    count = this.mapper.insertBenchmarkYear(parameters);
+
+                    if (count == 0) {
+                        throw new DaoException("Record not inserted: " + count);
+                    }
+                }
+            }
         } catch (RuntimeException e) {
             handleException(e);
         }
