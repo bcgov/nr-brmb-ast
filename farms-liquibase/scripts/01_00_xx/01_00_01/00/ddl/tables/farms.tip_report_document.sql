@@ -1,4 +1,4 @@
-CREATE TABLE tip_report_document(
+CREATE TABLE farms.tip_report_document(
     tip_report_document_id    numeric(10, 0)    NOT NULL,
     alignment_key             varchar(2)        NOT NULL,
     generation_date           date              NOT NULL,
@@ -15,39 +15,39 @@ CREATE TABLE tip_report_document(
 
 
 
-COMMENT ON COLUMN tip_report_document.tip_report_document_id IS 'TIP REPORT DOCUMENT ID is a surrogate unique identifier for TIP REPORT DOCUMENTs.'
+COMMENT ON COLUMN farms.tip_report_document.tip_report_document_id IS 'TIP REPORT DOCUMENT ID is a surrogate unique identifier for TIP REPORT DOCUMENTs.'
 ;
-COMMENT ON COLUMN tip_report_document.alignment_key IS 'ALIGNMENT KEY is used to align the same FARMING OPERATION across multiple years.'
+COMMENT ON COLUMN farms.tip_report_document.alignment_key IS 'ALIGNMENT KEY is used to align the same FARMING OPERATION across multiple years.'
 ;
-COMMENT ON COLUMN tip_report_document.generation_date IS 'GENERATION DATE is the date the document was generated.'
+COMMENT ON COLUMN farms.tip_report_document.generation_date IS 'GENERATION DATE is the date the document was generated.'
 ;
-COMMENT ON COLUMN tip_report_document.document IS 'DOCUMENT is the PDF for the ''TIP Report'' sent to the grower.'
+COMMENT ON COLUMN farms.tip_report_document.document IS 'DOCUMENT is the PDF for the ''TIP Report'' sent to the grower.'
 ;
-COMMENT ON COLUMN tip_report_document.program_year_id IS 'PROGRAM YEAR ID is a surrogate unique identifier for PROGRAM YEARS.'
+COMMENT ON COLUMN farms.tip_report_document.program_year_id IS 'PROGRAM YEAR ID is a surrogate unique identifier for PROGRAM YEARS.'
 ;
-COMMENT ON COLUMN tip_report_document.farming_operation_id IS 'FARMING OPERATION ID is a surrogate unique identifier for FARMING OPERATIONs.'
+COMMENT ON COLUMN farms.tip_report_document.farming_operation_id IS 'FARMING OPERATION ID is a surrogate unique identifier for FARMING OPERATIONs.'
 ;
-COMMENT ON COLUMN tip_report_document.revision_count IS 'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.'
+COMMENT ON COLUMN farms.tip_report_document.revision_count IS 'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.'
 ;
-COMMENT ON COLUMN tip_report_document.create_user IS 'CREATE USER indicates the user that created the physical record in the database.'
+COMMENT ON COLUMN farms.tip_report_document.create_user IS 'CREATE USER indicates the user that created the physical record in the database.'
 ;
-COMMENT ON COLUMN tip_report_document.create_date IS 'CREATE DATE indicates when the physical record was created in the database.'
+COMMENT ON COLUMN farms.tip_report_document.create_date IS 'CREATE DATE indicates when the physical record was created in the database.'
 ;
-COMMENT ON COLUMN tip_report_document.update_user IS 'UPDATE USER indicates the user that updated the physical record in the database.'
+COMMENT ON COLUMN farms.tip_report_document.update_user IS 'UPDATE USER indicates the user that updated the physical record in the database.'
 ;
-COMMENT ON COLUMN tip_report_document.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
+COMMENT ON COLUMN farms.tip_report_document.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
-COMMENT ON TABLE tip_report_document IS 'TIP REPORT DOCUMENT is the TIP Report that will be provided to a farming business.'
+COMMENT ON TABLE farms.tip_report_document IS 'TIP REPORT DOCUMENT is the TIP Report that will be provided to a farming business.'
 ;
 
 
-CREATE UNIQUE INDEX uk_trd_foi ON tip_report_document(farming_operation_id)
+CREATE UNIQUE INDEX uk_trd_foi ON farms.tip_report_document(farming_operation_id)
  TABLESPACE pg_default
 ;
-CREATE UNIQUE INDEX uk_trd_pyi_ak ON tip_report_document(program_year_id, alignment_key)
+CREATE UNIQUE INDEX uk_trd_pyi_ak ON farms.tip_report_document(program_year_id, alignment_key)
  TABLESPACE pg_default
 ;
 
-ALTER TABLE tip_report_document ADD 
+ALTER TABLE farms.tip_report_document ADD 
     CONSTRAINT pk_trd PRIMARY KEY (tip_report_document_id) USING INDEX TABLESPACE pg_default 
 ;

@@ -9,4 +9,7 @@ public class ResourceTypes extends BaseResourceTypes {
 	public static final String ENDPOINTS_NAME = "endpoints";
 	public static final String ENDPOINTS = NAMESPACE + ENDPOINTS_NAME;
 
+	// Benchmark Per Unit
+	public static final String BENCHMARK_PER_UNIT_NAME = "benchmarkPerUnit";
+	public static final String BENCHMARK_PER_UNIT_LIST_NAME = "benchmarkPerUnits";
 }

@@ -440,7 +440,7 @@
                     {
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
-                            "path": "ddl/tables/farms.user.sql"
+                            "path": "ddl/tables/farms.usr.sql"
                         }
                     },
                     {

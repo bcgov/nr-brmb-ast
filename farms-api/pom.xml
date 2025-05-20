@@ -20,6 +20,7 @@
         <dollar>$</dollar>
     </properties>
     <modules>
+        <module>farms-model</module>
         <module>farms-service-api</module>
         <module>farms-api-rest-common</module>
         <module>farms-api-rest-endpoints</module>

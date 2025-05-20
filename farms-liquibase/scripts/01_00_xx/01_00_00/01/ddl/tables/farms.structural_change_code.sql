@@ -1,4 +1,4 @@
-CREATE TABLE structural_change_code(
+CREATE TABLE farms.structural_change_code(
     structural_change_code    varchar(10)      NOT NULL,
     description               varchar(256)     NOT NULL,
     effective_date            date             NOT NULL,
@@ -13,27 +13,27 @@ CREATE TABLE structural_change_code(
 
 
 
-COMMENT ON COLUMN structural_change_code.structural_change_code IS 'STRUCTURAL CHANGE CODE denotes the method used to create the structural change.'
+COMMENT ON COLUMN farms.structural_change_code.structural_change_code IS 'STRUCTURAL CHANGE CODE denotes the method used to create the structural change.'
 ;
-COMMENT ON COLUMN structural_change_code.description IS 'DESCRIPTION is a textual description of the code value.'
+COMMENT ON COLUMN farms.structural_change_code.description IS 'DESCRIPTION is a textual description of the code value.'
 ;
-COMMENT ON COLUMN structural_change_code.effective_date IS 'EFFECTIVE DATE identifies the effective date of the record.'
+COMMENT ON COLUMN farms.structural_change_code.effective_date IS 'EFFECTIVE DATE identifies the effective date of the record.'
 ;
-COMMENT ON COLUMN structural_change_code.expiry_date IS 'EXPIRY DATE identifies the date this record is no longer valid.'
+COMMENT ON COLUMN farms.structural_change_code.expiry_date IS 'EXPIRY DATE identifies the date this record is no longer valid.'
 ;
-COMMENT ON COLUMN structural_change_code.revision_count IS 'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.'
+COMMENT ON COLUMN farms.structural_change_code.revision_count IS 'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.'
 ;
-COMMENT ON COLUMN structural_change_code.create_user IS 'CREATE USER indicates the user that created the physical record in the database.'
+COMMENT ON COLUMN farms.structural_change_code.create_user IS 'CREATE USER indicates the user that created the physical record in the database.'
 ;
-COMMENT ON COLUMN structural_change_code.create_date IS 'CREATE DATE indicates when the physical record was created in the database.'
+COMMENT ON COLUMN farms.structural_change_code.create_date IS 'CREATE DATE indicates when the physical record was created in the database.'
 ;
-COMMENT ON COLUMN structural_change_code.update_user IS 'UPDATE USER indicates the user that updated the physical record in the database.'
+COMMENT ON COLUMN farms.structural_change_code.update_user IS 'UPDATE USER indicates the user that updated the physical record in the database.'
 ;
-COMMENT ON COLUMN structural_change_code.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
+COMMENT ON COLUMN farms.structural_change_code.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
-COMMENT ON TABLE structural_change_code IS 'STRUCTURAL CHANGE CODE denotes the method used to create a structural change. Example codes and descriptions are: RAT-Ratio, ADD-Additive.'
+COMMENT ON TABLE farms.structural_change_code IS 'STRUCTURAL CHANGE CODE denotes the method used to create a structural change. Example codes and descriptions are: RAT-Ratio, ADD-Additive.'
 ;
 
-ALTER TABLE structural_change_code ADD 
+ALTER TABLE farms.structural_change_code ADD 
     CONSTRAINT pk_scc2 PRIMARY KEY (structural_change_code) USING INDEX TABLESPACE pg_default 
 ;

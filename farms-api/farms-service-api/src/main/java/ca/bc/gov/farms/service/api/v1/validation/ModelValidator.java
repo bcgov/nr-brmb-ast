@@ -4,7 +4,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ca.bc.gov.farms.model.v1.BenchmarkPerUnit;
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.BenchmarkPerUnitRsrcConstraints;
 import ca.bc.gov.brmb.common.model.Message;
 import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
@@ -12,6 +17,8 @@ import ca.bc.gov.brmb.common.service.api.validation.BaseValidator;
 import ca.bc.gov.brmb.common.utils.MessageBuilder;
 
 public class ModelValidator extends BaseValidator {
+
+    private static final Logger logger = LoggerFactory.getLogger(ModelValidator.class);
 
     private CachedCodeTables cachedCodeTables;
 
@@ -63,5 +70,14 @@ public class ModelValidator extends BaseValidator {
 
     public void setCachedCodeTables(CachedCodeTables cachedCodeTables) {
         this.cachedCodeTables = cachedCodeTables;
+    }
+
+    public List<Message> validateBenchmarkPerUnit(BenchmarkPerUnit resource) {
+        logger.debug("<validateBenchmarkPerUnit");
+
+        List<Message> results = this.validate(resource, BenchmarkPerUnitRsrcConstraints.class);
+
+        logger.debug(">validateBenchmarkPerUnit " + results.size());
+        return results;
     }
 }

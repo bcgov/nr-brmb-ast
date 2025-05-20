@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.BenchmarkPerUnitMapper">
+
+    <resultMap id="BenchmarkPerUnitDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.BenchmarkPerUnitDto">
+        <id property="benchmarkPerUnitId" column="benchmark_per_unit_id" javaType="java.lang.Long" jdbcType="NUMERIC" />
+
+        <result property="programYear" column="program_year" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="unitComment" column="unit_comment" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="expiryDate" column="expiry_date" javaType="java.util.Date" jdbcType="DATE" />
+        <result property="municipalityCode" column="municipality_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="municipalityDesc" column="municipality_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryItemCode" column="inventory_item_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryItemDesc" column="inventory_item_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="structureGroupCode" column="structure_group_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="structureGroupDesc" column="structure_group_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryCode" column="inventory_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryDesc" column="inventory_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="yearMinus6Margin" column="year_minus_6_margin" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus5Margin" column="year_minus_5_margin" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus4Margin" column="year_minus_4_margin" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus3Margin" column="year_minus_3_margin" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus2Margin" column="year_minus_2_margin" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus1Margin" column="year_minus_1_margin" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus6Expense" column="year_minus_6_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus5Expense" column="year_minus_5_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus4Expense" column="year_minus_4_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus3Expense" column="year_minus_3_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus2Expense" column="year_minus_2_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="yearMinus1Expense" column="year_minus_1_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="create_user" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="create_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="update_user" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="update_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select bpu.benchmark_per_unit_id,
+               bpu.program_year,
+               bpu.unit_comment,
+               bpu.expiry_date,
+	           mc.municipality_code,
+	           mc.description AS municipality_desc,
+	           iic.inventory_item_code,
+               iic.description as inventory_item_desc,
+               sgc.structure_group_code,
+               sgc.description as structure_group_desc,
+               coalesce(iic.inventory_item_code, sgc.structure_group_code) as inventory_code,
+               coalesce(iic.description, sgc.description) as inventory_desc,
+	           mt.year_minus_6_margin,
+	           mt.year_minus_5_margin,
+	           mt.year_minus_4_margin,
+	           mt.year_minus_3_margin,
+	           mt.year_minus_2_margin,
+	           mt.year_minus_1_margin,
+	           et.year_minus_6_expense,
+	           et.year_minus_5_expense,
+	           et.year_minus_4_expense,
+	           et.year_minus_3_expense,
+	           et.year_minus_2_expense,
+	           et.year_minus_1_expense
+    </sql>
+
+    <sql id="fromClause">
+        from farms.benchmark_per_unit bpu
+        join farms.municipality_code mc using (municipality_code)
+        left join farms.inventory_item_code iic using (inventory_item_code)
+        left join farms.structure_group_code sgc using (structure_group_code)
+        join crosstab($$
+	        select by.benchmark_per_unit_id,
+		    (case
+			    when by.benchmark_year = bpu.program_year-6 then 'year_minus_6_margin'
+			    when by.benchmark_year = bpu.program_year-5 then 'year_minus_5_margin'
+			    when by.benchmark_year = bpu.program_year-4 then 'year_minus_4_margin'
+			    when by.benchmark_year = bpu.program_year-3 then 'year_minus_3_margin'
+			    when by.benchmark_year = bpu.program_year-2 then 'year_minus_2_margin'
+			    when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_margin'
+		    end) as year,
+		    by.average_margin
+	        from farms.benchmark_per_unit bpu
+	        join farms.benchmark_year by using (benchmark_per_unit_id)
+	        where (bpu.expiry_date is null or bpu.expiry_date &gt; now())
+	        order by 1, 2
+        $$)
+        as mt(benchmark_per_unit_id numeric,
+	          "year_minus_1_margin" numeric,
+	          "year_minus_2_margin" numeric,
+	          "year_minus_3_margin" numeric,
+	          "year_minus_4_margin" numeric,
+	          "year_minus_5_margin" numeric,
+	          "year_minus_6_margin" numeric) using (benchmark_per_unit_id)
+        join crosstab($$
+	        select by.benchmark_per_unit_id,
+		    (case
+			    when by.benchmark_year = bpu.program_year-6 then 'year_minus_6_expense'
+			    when by.benchmark_year = bpu.program_year-5 then 'year_minus_5_expense'
+			    when by.benchmark_year = bpu.program_year-4 then 'year_minus_4_expense'
+			    when by.benchmark_year = bpu.program_year-3 then 'year_minus_3_expense'
+			    when by.benchmark_year = bpu.program_year-2 then 'year_minus_2_expense'
+			    when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_expense'
+		    end) as year,
+		    by.average_expense
+	        from farms.benchmark_per_unit bpu
+	        join farms.benchmark_year by using (benchmark_per_unit_id)
+	        where (bpu.expiry_date is null or bpu.expiry_date &gt; now())
+	        order by 1, 2
+        $$)
+        as et(benchmark_per_unit_id numeric,
+	          "year_minus_1_expense" numeric,
+	          "year_minus_2_expense" numeric,
+	          "year_minus_3_expense" numeric,
+	          "year_minus_4_expense" numeric,
+	          "year_minus_5_expense" numeric,
+	          "year_minus_6_expense" numeric) USING (benchmark_per_unit_id)
+    </sql>
+
+    <select id="fetch" resultMap="BenchmarkPerUnitDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where bpu.benchmark_per_unit_id = #{benchmarkPerUnitId}
+    </select>
+
+    <select id="fetchBy" resultMap="BenchmarkPerUnitDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where bpu.program_year = #{programYear}
+        order by bpu.unit_comment
+    </select>
+
+    <insert id="insertBenchmarkPerUnit">
+        <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('seq_bpu')
+        </selectKey>
+        insert into farms.benchmark_per_unit (
+            benchmark_per_unit_id,
+            program_year,
+            unit_comment,
+            expiry_date,
+            municipality_code,
+            inventory_item_code,
+            structure_group_code,
+            revision_count,
+            create_user,
+            create_date,
+            update_user,
+            update_date
+        ) values (
+            #{benchmarkPerUnitId},
+            #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
+            #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            (
+                select iic.inventory_item_code
+                from inventory_item_code iic
+                where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and iic.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select sgc.structure_group_code
+                from structure_group_code sgc
+                where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and sgc.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <insert id="insertBenchmarkYear">
+        insert into farms.benchmark_year (
+            benchmark_per_unit_id,
+            benchmark_year,
+            average_margin,
+            average_expense,
+            revision_count,
+            create_user,
+            create_date,
+            update_user,
+            update_date
+        ) values (
+            #{benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
+            #{benchmarkYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{averageMargin, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            #{averageExpense, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateBenchmarkPerUnit">
+        update farms.benchmark_per_unit
+        set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            unit_comment = #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            expiry_date = #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
+            municipality_code = #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            inventory_item_code = (
+                select iic.inventory_item_code
+                from inventory_item_code iic
+                where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and iic.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            structure_group_code = (
+                select sgc.structure_group_code
+                from structure_group_code sgc
+                where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and sgc.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            update_date = now()
+        where benchmark_per_unit_id = #{dto.benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+    </update>
+
+    <update id="updateBenchmarkYear">
+        update farms.benchmark_year
+        set average_margin = #{averageMargin, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            average_expense = #{averageExpense, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            revision_count = revision_count + 1,
+            update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            update_date = now()
+        where benchmark_per_unit_id = #{benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+        and benchmark_year = #{benchmarkYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN}
+    </update>
+
+    <delete id="deleteBenchmarkYear">
+        delete from farms.benchmark_year
+        where benchmark_per_unit_id = #{benchmarkPerUnitId}
+    </delete>
+
+    <delete id="deleteBenchmarkPerUnit">
+        delete from farms.benchmark_per_unit
+        where benchmark_per_unit_id = #{benchmarkPerUnitId}
+    </delete>
+</mapper>

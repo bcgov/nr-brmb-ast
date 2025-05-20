@@ -1,4 +1,4 @@
-CREATE TABLE aarm_margin(
+CREATE TABLE farms.aarm_margin(
     aarm_margin_id             numeric(10, 0)    NOT NULL,
     participant_pin            numeric(9, 0)     NOT NULL,
     program_year               numeric(4, 0)     NOT NULL,
@@ -22,51 +22,51 @@ CREATE TABLE aarm_margin(
 
 
 
-COMMENT ON COLUMN aarm_margin.aarm_margin_id IS 'AARM MARGIN ID is a sequential number given in the first column of the AARM CSV file.'
+COMMENT ON COLUMN farms.aarm_margin.aarm_margin_id IS 'AARM MARGIN ID is a sequential number given in the first column of the AARM CSV file.'
 ;
-COMMENT ON COLUMN aarm_margin.participant_pin IS 'PARTICIPANT PIN is the unique AgriStability/AgriInvest pin for this producer. Was previous CAIS Pin and NISA Pin.'
+COMMENT ON COLUMN farms.aarm_margin.participant_pin IS 'PARTICIPANT PIN is the unique AgriStability/AgriInvest pin for this producer. Was previous CAIS Pin and NISA Pin.'
 ;
-COMMENT ON COLUMN aarm_margin.program_year IS 'PROGRAM YEAR is the year this data pertains to.'
+COMMENT ON COLUMN farms.aarm_margin.program_year IS 'PROGRAM YEAR is the year this data pertains to.'
 ;
-COMMENT ON COLUMN aarm_margin.operation_number IS 'OPERATION NUMBER identifies each operation a participant reports for a given stab year. Operations may have different statement numbers in different program years.'
+COMMENT ON COLUMN farms.aarm_margin.operation_number IS 'OPERATION NUMBER identifies each operation a participant reports for a given stab year. Operations may have different statement numbers in different program years.'
 ;
-COMMENT ON COLUMN aarm_margin.partner_percent IS 'PARTNER PERCENT is the partners percentage share.'
+COMMENT ON COLUMN farms.aarm_margin.partner_percent IS 'PARTNER PERCENT is the partners percentage share.'
 ;
-COMMENT ON COLUMN aarm_margin.inventory_type_code IS 'INVENTORY TYPE CODE is a numeric code indicating an inventory type. Valid values are 1 - Crops Inventory, 2 - Livestock  Inventory, 3 - Purchased Inputs, 4 - Deferred Income & Receivables, 5 - Accounts Payable.'
+COMMENT ON COLUMN farms.aarm_margin.inventory_type_code IS 'INVENTORY TYPE CODE is a numeric code indicating an inventory type. Valid values are 1 - Crops Inventory, 2 - Livestock  Inventory, 3 - Purchased Inputs, 4 - Deferred Income & Receivables, 5 - Accounts Payable.'
 ;
-COMMENT ON COLUMN aarm_margin.inventory_code IS 'INVENTORY CODE is a numeric code used to uniquely identify an inventory item.'
+COMMENT ON COLUMN farms.aarm_margin.inventory_code IS 'INVENTORY CODE is a numeric code used to uniquely identify an inventory item.'
 ;
-COMMENT ON COLUMN aarm_margin.inventory_description IS 'INVENTORY DESCRIPTION is the english description of the Inventory. An English text description of an inventory item.'
+COMMENT ON COLUMN farms.aarm_margin.inventory_description IS 'INVENTORY DESCRIPTION is the english description of the Inventory. An English text description of an inventory item.'
 ;
-COMMENT ON COLUMN aarm_margin.production_unit IS 'PRODUCTION UNIT is the unit of measure code.'
+COMMENT ON COLUMN farms.aarm_margin.production_unit IS 'PRODUCTION UNIT is the unit of measure code.'
 ;
-COMMENT ON COLUMN aarm_margin.aarm_reference_p1_price IS 'AARM REFERENCE P1 PRICE identifies that when processing 2007 payments, the start of year prices for each reference year could be manipulated for AARM purposes, to adjust the calculated margin for that year. This would affect processing of the PROGRAM YEAR (2007), but not affect processing of the year being adjusted. This field will only be populated if the start of year price has been over-ridden.'
+COMMENT ON COLUMN farms.aarm_margin.aarm_reference_p1_price IS 'AARM REFERENCE P1 PRICE identifies that when processing 2007 payments, the start of year prices for each reference year could be manipulated for AARM purposes, to adjust the calculated margin for that year. This would affect processing of the PROGRAM YEAR (2007), but not affect processing of the year being adjusted. This field will only be populated if the start of year price has been over-ridden.'
 ;
-COMMENT ON COLUMN aarm_margin.aarm_reference_p2_price IS 'AARM REFERENCE P2 PRICE identifies that when processing 2007 payments, the end of year prices for each reference year could be manipulated for AARM purposes, to adjust the calculated margin for that year. This would affect processing of the PROGRAM YEAR (2007), but not affect processing of the year being adjusted. This field will only be populated if the end of year price has been over-ridden.'
+COMMENT ON COLUMN farms.aarm_margin.aarm_reference_p2_price IS 'AARM REFERENCE P2 PRICE identifies that when processing 2007 payments, the end of year prices for each reference year could be manipulated for AARM purposes, to adjust the calculated margin for that year. This would affect processing of the PROGRAM YEAR (2007), but not affect processing of the year being adjusted. This field will only be populated if the end of year price has been over-ridden.'
 ;
-COMMENT ON COLUMN aarm_margin.quantity_start IS 'QUANTITY START is the Start of year quantity of inventory. For livestock this will always be # of Head.'
+COMMENT ON COLUMN farms.aarm_margin.quantity_start IS 'QUANTITY START is the Start of year quantity of inventory. For livestock this will always be # of Head.'
 ;
-COMMENT ON COLUMN aarm_margin.quantity_end IS 'QUANTITY END is the ending inventory for livestock (section 7 column c) or crop (section 8 column f).'
+COMMENT ON COLUMN farms.aarm_margin.quantity_end IS 'QUANTITY END is the ending inventory for livestock (section 7 column c) or crop (section 8 column f).'
 ;
-COMMENT ON COLUMN aarm_margin.revision_count IS 'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.'
+COMMENT ON COLUMN farms.aarm_margin.revision_count IS 'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.'
 ;
-COMMENT ON COLUMN aarm_margin.create_user IS 'CREATE USER indicates the user that created the physical record in the database.'
+COMMENT ON COLUMN farms.aarm_margin.create_user IS 'CREATE USER indicates the user that created the physical record in the database.'
 ;
-COMMENT ON COLUMN aarm_margin.create_date IS 'CREATE DATE indicates when the physical record was created in the database.'
+COMMENT ON COLUMN farms.aarm_margin.create_date IS 'CREATE DATE indicates when the physical record was created in the database.'
 ;
-COMMENT ON COLUMN aarm_margin.update_user IS 'UPDATE USER indicates the user that updated the physical record in the database.'
+COMMENT ON COLUMN farms.aarm_margin.update_user IS 'UPDATE USER indicates the user that updated the physical record in the database.'
 ;
-COMMENT ON COLUMN aarm_margin.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
+COMMENT ON COLUMN farms.aarm_margin.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
 
 
-CREATE INDEX ix_am_pp_py_on ON aarm_margin(participant_pin, program_year, operation_number)
+CREATE INDEX ix_am_pp_py_on ON farms.aarm_margin(participant_pin, program_year, operation_number)
  TABLESPACE pg_default
 ;
-CREATE INDEX ix_am_pp_py_on_itc_ic ON aarm_margin(participant_pin, program_year, operation_number, inventory_type_code, inventory_code)
+CREATE INDEX ix_am_pp_py_on_itc_ic ON farms.aarm_margin(participant_pin, program_year, operation_number, inventory_type_code, inventory_code)
  TABLESPACE pg_default
 ;
 
-ALTER TABLE aarm_margin ADD 
+ALTER TABLE farms.aarm_margin ADD 
     CONSTRAINT pk_am PRIMARY KEY (aarm_margin_id) USING INDEX TABLESPACE pg_default 
 ;

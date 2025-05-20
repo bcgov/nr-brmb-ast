@@ -1,9 +1,9 @@
-ALTER TABLE office_municipality_xref ADD CONSTRAINT fk_omx_mc 
+ALTER TABLE farms.office_municipality_xref ADD CONSTRAINT fk_omx_mc 
     FOREIGN KEY (municipality_code)
-    REFERENCES municipality_code(municipality_code)
+    REFERENCES farms.municipality_code(municipality_code)
 ;
 
-ALTER TABLE office_municipality_xref ADD CONSTRAINT fk_omx_roc 
+ALTER TABLE farms.office_municipality_xref ADD CONSTRAINT fk_omx_roc 
     FOREIGN KEY (regional_office_code)
-    REFERENCES regional_office_code(regional_office_code)
+    REFERENCES farms.regional_office_code(regional_office_code)
 ;
