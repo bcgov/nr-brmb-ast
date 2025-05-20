@@ -1,4 +1,4 @@
-create function farms_bpu_pkg.is_group_code(
+create or replace function farms_bpu_pkg.is_group_code(
     in in_code varchar
 )
 returns boolean
