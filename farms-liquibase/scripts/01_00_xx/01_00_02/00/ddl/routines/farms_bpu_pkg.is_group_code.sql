@@ -1,5 +1,6 @@
 create function farms_bpu_pkg.is_group_code(
-    in in_code varchar)
+    in in_code varchar
+)
 returns boolean
 language plpgsql
 as
