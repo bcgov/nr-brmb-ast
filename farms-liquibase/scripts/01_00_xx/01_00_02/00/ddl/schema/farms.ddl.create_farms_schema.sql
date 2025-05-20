@@ -2,8 +2,6 @@
 
 -- DROP SCHEMA "farms_bpu_pkg" ;
 
-\connect "farms${ENV}"
-
 CREATE SCHEMA "farms_bpu_pkg"
     AUTHORIZATION postgres;
 
