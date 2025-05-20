@@ -1,4 +1,4 @@
-create or replace function farms_bpu_pkg.validate_expense(
+create or replace function farms_bpu_pkg.margin_data_differences(
    in in_margin_data numeric[],
    in in_benchmark_per_unit_id numeric,
    in in_program_year numeric
