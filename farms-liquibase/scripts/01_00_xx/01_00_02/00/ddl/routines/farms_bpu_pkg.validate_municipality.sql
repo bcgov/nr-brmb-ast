@@ -12,19 +12,13 @@ declare
             from farms.municipality_code
             where current_date between effective_date and expiry_date
         );
-    v_line_number numeric := 0;
+    v_row record;
 
     v_msg varchar(200) := 'Invalid municipality';
 begin
-    open c_check;
+    for v_row in c_check
     loop
-        fetch next from c_check into v_line_number;
-        if not found then
-            exit;
-        end if;
-
-        call farms_bpu_pkg.insert_error(in_import_version_id, v_line_number, v_msg);
+        call farms_bpu_pkg.insert_error(in_import_version_id, v_row.line_number, v_msg);
     end loop;
-    close c_check;
 end;
 $$;
