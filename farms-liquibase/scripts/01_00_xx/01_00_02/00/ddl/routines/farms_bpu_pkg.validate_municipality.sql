@@ -10,7 +10,7 @@ declare
         where municipality_code not in (
             select municipality_code
             from farms.municipality_code
-            where current_date between effective_date and expiry_date
+            where now() between effective_date and expiry_date
         );
     v_row record;
 
