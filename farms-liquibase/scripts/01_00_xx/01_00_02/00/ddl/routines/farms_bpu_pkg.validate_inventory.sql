@@ -12,12 +12,12 @@ declare
             from farms.inventory_item_code inv
             join farms.agristabilty_commodity_xref comm on comm.inventory_item_code = inv.inventory_item_code
             where comm.inventory_class_code in ('1', '2')
-            and now() between inv.effective_date and inv.expiry_date
+            and current_date between inv.effective_date and inv.expiry_date
         )
         and inventory_item_code not in (
             select structure_group_code
             from farms.structure_group_code
-            where now() between effective_date and expiry_date
+            where current_date between effective_date and expiry_date
         );
     v_row record;
 

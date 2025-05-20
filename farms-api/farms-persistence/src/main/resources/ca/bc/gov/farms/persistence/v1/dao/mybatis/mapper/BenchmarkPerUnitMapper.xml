@@ -132,7 +132,7 @@
 
     <insert id="insertBenchmarkPerUnit">
         <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
-            select nextval('seq_bpu')
+            select nextval('farms.seq_bpu')
         </selectKey>
         insert into farms.benchmark_per_unit (
             benchmark_per_unit_id,
