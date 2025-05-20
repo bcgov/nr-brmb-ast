@@ -29,3 +29,4 @@ GRANT EXECUTE ON PROCEDURE farms_bpu_pkg.validate_staging(NUMERIC) TO "app_farms
 GRANT EXECUTE ON FUNCTION farms_bpu_pkg.get_staging_errors(NUMERIC) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_bpu_pkg.delete_staging_errors(NUMERIC) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_bpu_pkg.margin_data_differences(NUMERIC[], NUMERIC, NUMERIC) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_bpu_pkg.expense_data_differences(NUMERIC[], NUMERIC, NUMERIC) TO "app_farms_rest_proxy";
