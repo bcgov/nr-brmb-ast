@@ -82,7 +82,7 @@
 		    by.average_margin
 	        from farms.benchmark_per_unit bpu
 	        join farms.benchmark_year by using (benchmark_per_unit_id)
-	        where (bpu.expiry_date is null or bpu.expiry_date &gt; now())
+	        where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
 	        order by 1, 2
         $$)
         as mt(benchmark_per_unit_id numeric,
@@ -105,7 +105,7 @@
 		    by.average_expense
 	        from farms.benchmark_per_unit bpu
 	        join farms.benchmark_year by using (benchmark_per_unit_id)
-	        where (bpu.expiry_date is null or bpu.expiry_date &gt; now())
+	        where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
 	        order by 1, 2
         $$)
         as et(benchmark_per_unit_id numeric,
