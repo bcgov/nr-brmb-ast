@@ -20,7 +20,7 @@ on:
       JAVA_VERSION:
         required: false
         type: string
-        default: "8"
+        default: "17"
       TAG:
         required: true
         type: string

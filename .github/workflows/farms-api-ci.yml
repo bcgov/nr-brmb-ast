@@ -15,6 +15,7 @@ jobs:
       TAG: 1.0.0
       ENVIRONMENT: DEV
       MICROSERVICE_NAME: farms-api
+      JAVA_VERSION: 17
 
   openshift-deploy:
     uses: ./.github/workflows/openshift-deploy.yml
