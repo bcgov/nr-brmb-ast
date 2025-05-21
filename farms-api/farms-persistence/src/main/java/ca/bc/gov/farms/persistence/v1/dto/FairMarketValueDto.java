@@ -15,6 +15,7 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
 
     private static final Logger logger = LoggerFactory.getLogger(FairMarketValueDto.class);
 
+    private String fairMarketValueId;
     private String programYear;
     private String inventoryItemCode;
     private String inventoryItemDesc;
@@ -59,6 +60,7 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
     }
 
     public FairMarketValueDto(FairMarketValueDto dto) {
+        this.fairMarketValueId = dto.fairMarketValueId;
         this.programYear = dto.programYear;
         this.inventoryItemCode = dto.inventoryItemCode;
         this.inventoryItemDesc = dto.inventoryItemDesc;
@@ -122,6 +124,7 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
         if (other != null) {
             result = true;
             DtoUtils dtoUtils = new DtoUtils(getLogger());
+            result = result && dtoUtils.equals("fairMarketValueId", this.fairMarketValueId, other.fairMarketValueId);
             result = result && dtoUtils.equals("programYear", this.programYear, other.programYear);
             result = result && dtoUtils.equals("inventoryItemCode", this.inventoryItemCode, other.inventoryItemCode);
             result = result && dtoUtils.equals("inventoryItemDesc", this.inventoryItemDesc, other.inventoryItemDesc);
@@ -160,6 +163,14 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
         }
 
         return result;
+    }
+
+    public String getFairMarketValueId() {
+        return fairMarketValueId;
+    }
+
+    public void setFairMarketValueId(String fairMarketValueId) {
+        this.fairMarketValueId = fairMarketValueId;
     }
 
     public String getProgramYear() {
