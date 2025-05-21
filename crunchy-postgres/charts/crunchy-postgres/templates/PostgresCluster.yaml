@@ -10,6 +10,7 @@ spec:
   image: {{ .Values.crunchyImage }}
   {{ end }}
   imagePullPolicy: {{.Values.imagePullPolicy}}
+  openshift: {{ .Values.openshift }}
   postgresVersion: {{ .Values.postgresVersion }}
   {{ if .Values.postGISVersion }}
   postGISVersion: {{ .Values.postGISVersion | quote }}
