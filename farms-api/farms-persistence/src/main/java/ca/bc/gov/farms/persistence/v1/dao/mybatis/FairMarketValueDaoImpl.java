@@ -90,6 +90,10 @@ public class FairMarketValueDaoImpl extends BaseDao implements FairMarketValueDa
                     throw new DaoException("Record not inserted: " + count);
                 }
             }
+
+            String fairMarketValueId = dto.getProgramYear() + "_" + dto.getInventoryItemCode() + "_"
+                    + dto.getMunicipalityCode() + "_" + dto.getCropUnitCode();
+            dto.setFairMarketValueId(fairMarketValueId);
         } catch (RuntimeException e) {
             handleException(e);
         }
