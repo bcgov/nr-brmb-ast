@@ -143,6 +143,12 @@
     <select id="fetchBy" resultMap="FairMarketValueResultDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
+        where apt.group_id = #{fairMarketValueId}
+    </select>
+
+    <select id="fetchBy" resultMap="FairMarketValueResultDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
         order by lower(iic.description),
                  lower(mc.description),
                  lower(cuc.description)

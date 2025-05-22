@@ -7,5 +7,7 @@ import ca.bc.gov.farms.persistence.v1.dto.FairMarketValueDto;
 
 public interface FairMarketValueMapper {
 
+    FairMarketValueDto fetch(Map<String, Object> parameters);
+
     List<FairMarketValueDto> fetchBy(Map<String, Object> parameters);
 }
