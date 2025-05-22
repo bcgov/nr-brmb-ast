@@ -16,7 +16,7 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
     private static final Logger logger = LoggerFactory.getLogger(FairMarketValueDto.class);
 
     private String fairMarketValueId;
-    private String programYear;
+    private Integer programYear;
     private String inventoryItemCode;
     private String inventoryItemDesc;
     private String municipalityCode;
@@ -173,11 +173,11 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
         this.fairMarketValueId = fairMarketValueId;
     }
 
-    public String getProgramYear() {
+    public Integer getProgramYear() {
         return programYear;
     }
 
-    public void setProgramYear(String programYear) {
+    public void setProgramYear(Integer programYear) {
         this.programYear = programYear;
     }
 

@@ -19,7 +19,7 @@ public class FairMarketValueRsrc extends BaseResource implements FairMarketValue
     private static final long serialVersionUID = 1L;
 
     private String fairMarketValueId;
-    private String programYear;
+    private Integer programYear;
     private String inventoryItemCode;
     private String inventoryItemDesc;
     private String municipalityCode;
@@ -64,12 +64,12 @@ public class FairMarketValueRsrc extends BaseResource implements FairMarketValue
     }
 
     @Override
-    public String getProgramYear() {
+    public Integer getProgramYear() {
         return programYear;
     }
 
     @Override
-    public void setProgramYear(String programYear) {
+    public void setProgramYear(Integer programYear) {
         this.programYear = programYear;
     }
 

@@ -8,8 +8,8 @@ public interface FairMarketValue extends Serializable {
     public String getFairMarketValueId();
     public void setFairMarketValueId(String fairMarketValueId);
 
-    public String getProgramYear();
-    public void setProgramYear(String programYear);
+    public Integer getProgramYear();
+    public void setProgramYear(Integer programYear);
 
     public String getInventoryItemCode();
     public void setInventoryItemCode(String inventoryItemCode);

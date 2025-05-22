@@ -6,7 +6,7 @@
     <resultMap id="FairMarketValueResultDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.FairMarketValueDto">
         <id property="fairMarketValueId" column="fair_market_value_id" javaType="java.lang.String" jdbcType="VARCHAR" />
 
-        <result property="programYear" column="program_year" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="programYear" column="program_year" javaType="java.lang.Integer" jdbcType="NUMERIC" />
         <result property="inventoryItemCode" column="inventory_item_code" javaType="java.lang.String" jdbcType="VARCHAR" />
         <result property="inventoryItemDesc" column="inventory_item_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
         <result property="municipalityCode" column="municipality_code" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -49,7 +49,7 @@
 
     <sql id="selectColumns">
         select apt.group_id as fair_market_value_id,
-               split_part(apt.group_id, '_', 1) as program_year,
+               split_part(apt.group_id, '_', 1)::numeric as program_year,
                iic.inventory_item_code,
                iic.description as inventory_item_desc,
                mc.municipality_code,
