@@ -140,7 +140,7 @@
         left join farms.crop_unit_code cudc on cud.crop_unit_code = cudc.crop_unit_code
     </sql>
 
-    <select id="fetchBy" resultMap="FairMarketValueResultDtoMap">
+    <select id="fetch" resultMap="FairMarketValueResultDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         where apt.group_id = #{fairMarketValueId}
