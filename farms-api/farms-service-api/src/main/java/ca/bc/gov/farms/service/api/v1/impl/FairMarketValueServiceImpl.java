@@ -127,4 +127,40 @@ public class FairMarketValueServiceImpl implements FairMarketValueService {
         logger.debug(">createFairMarketValue");
         return result;
     }
+
+    @Override
+    public FairMarketValue updateFairMarketValue(String fairMarketValueId, FairMarketValue fairMarketValue,
+            FactoryContext factoryContext) throws ServiceException, ValidationFailureException, NotFoundException {
+        logger.debug("<updateFairMarketValue");
+
+        FairMarketValue result = null;
+        String userId = "UserId";
+
+        try {
+
+            List<Message> errors = modelValidator.validateFairMarketValue(fairMarketValue);
+            if (!errors.isEmpty()) {
+                throw new ValidationFailureException(errors);
+            }
+
+            String[] parts = fairMarketValueId.split("_");
+            Integer programYear = Integer.valueOf(parts[0]);
+            FairMarketValueDto dto = fairMarketValueDao.fetch(programYear, fairMarketValueId);
+
+            if (dto == null) {
+                throw new NotFoundException("Did not find the fair market value: " + fairMarketValueId);
+            }
+
+            fairMarketValueFactory.updateFairMarketValue(dto, fairMarketValue);
+            fairMarketValueDao.update(dto, userId);
+
+            dto = fairMarketValueDao.fetch(dto.getProgramYear(), dto.getFairMarketValueId());
+            result = fairMarketValueFactory.getFairMarketValue(dto, factoryContext);
+        } catch (DaoException e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">updateFairMarketValue");
+        return result;
+    }
 }

@@ -190,4 +190,18 @@
             now()
         )
     </insert>
+
+    <update id="updateFairMarketValue">
+        update farms.fair_market_value
+        set average_price = #{averagePrice, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            percent_variance = #{percentVariance, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            revision_count = revision_count + 1,
+            update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            update_date = now()
+        where program_year || '_' ||
+              inventory_item_code || '_' ||
+              municipality_code || '_' ||
+              crop_unit_code = #{fairMarketValueId}
+        and period = #{period, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN}
+    </update>
 </mapper>

@@ -12,4 +12,6 @@ public interface FairMarketValueMapper {
     List<FairMarketValueDto> fetchBy(Map<String, Object> parameters);
 
     int insertFairMarketValue(Map<String, Object> parameters);
+
+    int updateFairMarketValue(Map<String, Object> parameters);
 }

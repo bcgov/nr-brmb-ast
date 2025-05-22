@@ -22,4 +22,8 @@ public interface FairMarketValueService {
     @Transactional(readOnly = false, rollbackFor = Exception.class)
     FairMarketValue createFairMarketValue(FairMarketValue fairMarketValue, FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException;
+
+    @Transactional(readOnly = false, rollbackFor = Exception.class)
+    FairMarketValue updateFairMarketValue(String fairMarketValueId, FairMarketValue fairMarketValue,
+            FactoryContext factoryContext) throws ServiceException, ValidationFailureException, NotFoundException;
 }
