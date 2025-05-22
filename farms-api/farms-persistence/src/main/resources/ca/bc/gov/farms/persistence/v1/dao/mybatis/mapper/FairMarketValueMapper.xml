@@ -93,7 +93,7 @@
 	        'period_' || to_char(period, '00') || '_price' as period_str,
 	        fmv.average_price
 	        from farms.fair_market_value fmv
-	        where fmv.program_year = #{programYear}
+	        where fmv.program_year = #{programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN}
 	        order by 1, 2
         $$)
         as apt(group_id text,
@@ -117,7 +117,7 @@
 	        'period_' || to_char(period, '00') || '_variance' as period_str,
 	        fmv.percent_variance
 	        from farms.fair_market_value fmv
-	        where fmv.program_year = #{programYear}
+	        where fmv.program_year = #{programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN}
 	        order by 1, 2
         $$)
         as pvt(group_id text,
