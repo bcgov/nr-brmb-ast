@@ -42,26 +42,26 @@
                bpu.program_year,
                bpu.unit_comment,
                bpu.expiry_date,
-	           mc.municipality_code,
-	           mc.description AS municipality_desc,
-	           iic.inventory_item_code,
+               mc.municipality_code,
+               mc.description AS municipality_desc,
+               iic.inventory_item_code,
                iic.description as inventory_item_desc,
                sgc.structure_group_code,
                sgc.description as structure_group_desc,
                coalesce(iic.inventory_item_code, sgc.structure_group_code) as inventory_code,
                coalesce(iic.description, sgc.description) as inventory_desc,
-	           mt.year_minus_6_margin,
-	           mt.year_minus_5_margin,
-	           mt.year_minus_4_margin,
-	           mt.year_minus_3_margin,
-	           mt.year_minus_2_margin,
-	           mt.year_minus_1_margin,
-	           et.year_minus_6_expense,
-	           et.year_minus_5_expense,
-	           et.year_minus_4_expense,
-	           et.year_minus_3_expense,
-	           et.year_minus_2_expense,
-	           et.year_minus_1_expense
+               mt.year_minus_6_margin,
+               mt.year_minus_5_margin,
+               mt.year_minus_4_margin,
+               mt.year_minus_3_margin,
+               mt.year_minus_2_margin,
+               mt.year_minus_1_margin,
+               et.year_minus_6_expense,
+               et.year_minus_5_expense,
+               et.year_minus_4_expense,
+               et.year_minus_3_expense,
+               et.year_minus_2_expense,
+               et.year_minus_1_expense
     </sql>
 
     <sql id="fromClause">
@@ -70,51 +70,51 @@
         left join farms.inventory_item_code iic using (inventory_item_code)
         left join farms.structure_group_code sgc using (structure_group_code)
         join crosstab($$
-	        select by.benchmark_per_unit_id,
-		    (case
-			    when by.benchmark_year = bpu.program_year-6 then 'year_minus_6_margin'
-			    when by.benchmark_year = bpu.program_year-5 then 'year_minus_5_margin'
-			    when by.benchmark_year = bpu.program_year-4 then 'year_minus_4_margin'
-			    when by.benchmark_year = bpu.program_year-3 then 'year_minus_3_margin'
-			    when by.benchmark_year = bpu.program_year-2 then 'year_minus_2_margin'
-			    when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_margin'
-		    end) as year,
-		    by.average_margin
-	        from farms.benchmark_per_unit bpu
-	        join farms.benchmark_year by using (benchmark_per_unit_id)
-	        where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
-	        order by 1, 2
+            select by.benchmark_per_unit_id,
+            (case
+                when by.benchmark_year = bpu.program_year-6 then 'year_minus_6_margin'
+                when by.benchmark_year = bpu.program_year-5 then 'year_minus_5_margin'
+                when by.benchmark_year = bpu.program_year-4 then 'year_minus_4_margin'
+                when by.benchmark_year = bpu.program_year-3 then 'year_minus_3_margin'
+                when by.benchmark_year = bpu.program_year-2 then 'year_minus_2_margin'
+                when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_margin'
+            end) as year,
+            by.average_margin
+            from farms.benchmark_per_unit bpu
+            join farms.benchmark_year by using (benchmark_per_unit_id)
+            where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
+            order by 1, 2
         $$)
         as mt(benchmark_per_unit_id numeric,
-	          "year_minus_1_margin" numeric,
-	          "year_minus_2_margin" numeric,
-	          "year_minus_3_margin" numeric,
-	          "year_minus_4_margin" numeric,
-	          "year_minus_5_margin" numeric,
-	          "year_minus_6_margin" numeric) using (benchmark_per_unit_id)
+              "year_minus_1_margin" numeric,
+              "year_minus_2_margin" numeric,
+              "year_minus_3_margin" numeric,
+              "year_minus_4_margin" numeric,
+              "year_minus_5_margin" numeric,
+              "year_minus_6_margin" numeric) using (benchmark_per_unit_id)
         join crosstab($$
-	        select by.benchmark_per_unit_id,
-		    (case
-			    when by.benchmark_year = bpu.program_year-6 then 'year_minus_6_expense'
-			    when by.benchmark_year = bpu.program_year-5 then 'year_minus_5_expense'
-			    when by.benchmark_year = bpu.program_year-4 then 'year_minus_4_expense'
-			    when by.benchmark_year = bpu.program_year-3 then 'year_minus_3_expense'
-			    when by.benchmark_year = bpu.program_year-2 then 'year_minus_2_expense'
-			    when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_expense'
-		    end) as year,
-		    by.average_expense
-	        from farms.benchmark_per_unit bpu
-	        join farms.benchmark_year by using (benchmark_per_unit_id)
-	        where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
-	        order by 1, 2
+            select by.benchmark_per_unit_id,
+            (case
+                when by.benchmark_year = bpu.program_year-6 then 'year_minus_6_expense'
+                when by.benchmark_year = bpu.program_year-5 then 'year_minus_5_expense'
+                when by.benchmark_year = bpu.program_year-4 then 'year_minus_4_expense'
+                when by.benchmark_year = bpu.program_year-3 then 'year_minus_3_expense'
+                when by.benchmark_year = bpu.program_year-2 then 'year_minus_2_expense'
+                when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_expense'
+            end) as year,
+            by.average_expense
+            from farms.benchmark_per_unit bpu
+            join farms.benchmark_year by using (benchmark_per_unit_id)
+            where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
+            order by 1, 2
         $$)
         as et(benchmark_per_unit_id numeric,
-	          "year_minus_1_expense" numeric,
-	          "year_minus_2_expense" numeric,
-	          "year_minus_3_expense" numeric,
-	          "year_minus_4_expense" numeric,
-	          "year_minus_5_expense" numeric,
-	          "year_minus_6_expense" numeric) USING (benchmark_per_unit_id)
+              "year_minus_1_expense" numeric,
+              "year_minus_2_expense" numeric,
+              "year_minus_3_expense" numeric,
+              "year_minus_4_expense" numeric,
+              "year_minus_5_expense" numeric,
+              "year_minus_6_expense" numeric) USING (benchmark_per_unit_id)
     </sql>
 
     <select id="fetch" resultMap="BenchmarkPerUnitDtoMap">
