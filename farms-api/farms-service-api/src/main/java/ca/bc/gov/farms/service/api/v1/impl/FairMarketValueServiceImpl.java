@@ -7,9 +7,11 @@ import java.util.regex.PatternSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.bc.gov.brmb.common.model.Message;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
+import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.FairMarketValue;
 import ca.bc.gov.farms.model.v1.FairMarketValueList;
@@ -93,6 +95,36 @@ public class FairMarketValueServiceImpl implements FairMarketValueService {
         }
 
         logger.debug(">getFairMarketValue");
+        return result;
+    }
+
+    @Override
+    public FairMarketValue createFairMarketValue(FairMarketValue resource, FactoryContext factoryContext)
+            throws ServiceException, ValidationFailureException {
+        logger.debug("<createFairMarketValue");
+
+        FairMarketValue result = null;
+        String userId = "UserId";
+
+        try {
+
+            List<Message> errors = modelValidator.validateFairMarketValue(resource);
+            if (!errors.isEmpty()) {
+                throw new ValidationFailureException(errors);
+            }
+
+            FairMarketValueDto dto = new FairMarketValueDto();
+
+            fairMarketValueFactory.updateFairMarketValue(dto, resource);
+            fairMarketValueDao.insert(dto, userId);
+
+            dto = fairMarketValueDao.fetch(dto.getProgramYear(), dto.getFairMarketValueId());
+            result = fairMarketValueFactory.getFairMarketValue(dto, factoryContext);
+        } catch (DaoException e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">createFairMarketValue");
         return result;
     }
 }

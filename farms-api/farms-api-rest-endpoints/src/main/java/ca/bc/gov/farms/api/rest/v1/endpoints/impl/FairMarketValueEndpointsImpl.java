@@ -64,4 +64,26 @@ public class FairMarketValueEndpointsImpl extends BaseEndpointsImpl implements F
         return response;
     }
 
+    @Override
+    public Response createFairMarketValue(FairMarketValueRsrc fairMarketValueRsrc) {
+        logger.debug("<createFairMarketValue");
+
+        Response response = null;
+
+        logRequest();
+
+        try {
+            FairMarketValueRsrc result = (FairMarketValueRsrc) service.createFairMarketValue(fairMarketValueRsrc,
+                    getFactoryContext());
+            response = Response.status(Response.Status.CREATED).entity(result).tag(result.getUnquotedETag()).build();
+        } catch (Throwable t) {
+            response = getInternalServerErrorResponse(t);
+        }
+
+        logResponse(response);
+
+        logger.debug(">createFairMarketValue " + response.getStatus());
+        return response;
+    }
+
 }

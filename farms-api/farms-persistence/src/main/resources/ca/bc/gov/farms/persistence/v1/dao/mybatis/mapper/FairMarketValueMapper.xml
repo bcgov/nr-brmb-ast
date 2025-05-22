@@ -153,4 +153,41 @@
                  lower(mc.description),
                  lower(cuc.description)
     </select>
+
+    <insert id="insertFairMarketValue">
+        <selectKey keyProperty="fairMarketValueId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.seq_fmv')
+        </selectKey>
+        insert into farms.fair_market_value (
+            fair_market_value_id,
+            program_year,
+            period,
+            average_price,
+            percent_variance,
+            expiry_date,
+            inventory_item_code,
+            municipality_code,
+            crop_unit_code,
+            revision_count,
+            create_user,
+            create_date,
+            update_user,
+            update_date
+        ) values (
+            #{fairMarketValueId},
+            #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{period, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{averagePrice, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            #{percentVariance, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            null,
+            #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.cropUnitCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
 </mapper>

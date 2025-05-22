@@ -66,7 +66,7 @@ public class BenchmarkPerUnitEndpointsImpl extends BaseEndpointsImpl implements 
     }
 
     @Override
-    public Response createBenchmarkPerUnit(Long benchmarkPerUnitId, BenchmarkPerUnitRsrc benchmarkPerUnitRsrc) {
+    public Response createBenchmarkPerUnit(BenchmarkPerUnitRsrc benchmarkPerUnitRsrc) {
         logger.debug("<createBenchmarkPerUnit");
 
         Response response = null;

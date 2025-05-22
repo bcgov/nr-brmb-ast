@@ -95,7 +95,6 @@ public interface BenchmarkPerUnitEndpoints {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createBenchmarkPerUnit(
-            @Parameter(description = "The identifier of the Benchmark Per Unit resource.") @PathParam("benchmarkPerUnitId") Long benchmarkPerUnitId,
             @Parameter(name = "benchmarkPerUnitRsrc", description = "The Benchmark Per Unit resource containing the new values.", required = true) BenchmarkPerUnitRsrc benchmarkPerUnitRsrc);
 
     @Operation(operationId = "Delete Benchmark Per Unit resource.", summary = "Delete Benchmark Per Unit resource.", extensions = {
