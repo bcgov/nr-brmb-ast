@@ -101,4 +101,20 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
         return result;
     }
 
+    @Override
+    public void stagingToOperational(Long importVersionId, String userId) throws DaoException {
+        logger.debug("<stagingToOperational");
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("importVersionId", importVersionId);
+            parameters.put("userId", userId);
+            this.mapper.stagingToOperational(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">stagingToOperational");
+    }
+
 }
