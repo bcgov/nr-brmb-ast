@@ -4,3 +4,4 @@ GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version(
     VARCHAR
 ) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload(NUMERIC, VARCHAR) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_version_pkg.update_control_file_info_stg(NUMERIC, VARCHAR) TO "app_farms_rest_proxy";
