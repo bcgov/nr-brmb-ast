@@ -10,10 +10,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import ca.bc.gov.farms.model.v1.FairMarketValue;
 import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 import ca.bc.gov.farms.service.api.v1.BenchmarkPerUnitService;
+import ca.bc.gov.farms.service.api.v1.FairMarketValueService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.FairMarketValueServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
 import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
 
 @Configuration
@@ -40,6 +44,8 @@ public class ServiceApiSpringConfig {
     // Beans provided by ResourceFactorySpringConfig
     @Autowired
     private BenchmarkPerUnitFactory benchmarkPerUnitFactory;
+    @Autowired
+    private FairMarketValueFactory fairMarketValueFactory;
 
     // Imported Spring Config
     @Autowired
@@ -69,6 +75,21 @@ public class ServiceApiSpringConfig {
         result.setBenchmarkPerUnitFactory(benchmarkPerUnitFactory);
 
         result.setBenchmarkPerUnitDao(persistenceSpringConfig.benchmarkPerUnitDao());
+
+        return result;
+    }
+
+    @Bean
+    public FairMarketValueService fairMarketValueService() {
+        FairMarketValueServiceImpl result;
+
+        result = new FairMarketValueServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setFairMarketValueFactory(fairMarketValueFactory);
+
+        result.setFairMarketValueDao(persistenceSpringConfig.fairMarketValueDao());
 
         return result;
     }

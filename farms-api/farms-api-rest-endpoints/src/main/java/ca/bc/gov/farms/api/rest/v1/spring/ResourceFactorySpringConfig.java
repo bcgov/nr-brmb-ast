@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ca.bc.gov.farms.api.rest.v1.resource.factory.BenchmarkPerUnitRsrcFactory;
+import ca.bc.gov.farms.api.rest.v1.resource.factory.FairMarketValueRsrcFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
 
 @Configuration
 public class ResourceFactorySpringConfig {
@@ -22,5 +24,10 @@ public class ResourceFactorySpringConfig {
     @Bean
     public BenchmarkPerUnitFactory benchmarkPerUnitFactory() {
         return new BenchmarkPerUnitRsrcFactory();
+    }
+
+    @Bean
+    public FairMarketValueFactory fairMarketValueFactory() {
+        return new FairMarketValueRsrcFactory();
     }
 }

@@ -5,6 +5,7 @@ crunchyImage: # it's not necessary to specify an image as the images specified i
 postgresVersion: 15
 #postGISVersion: '3.3' # use this version of POSTGIS. both crunchyImage and this property needs to have valid values for POSTGIS to be enabled.
 imagePullPolicy: IfNotPresent
+openshift: true
 
 instances:
   name: ha # high availability
