@@ -66,4 +66,19 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
         logger.debug(">deleteStagingErrors");
     }
 
+    @Override
+    public void validateStaging(Long importVersionId) throws DaoException {
+        logger.debug("<validateStaging");
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("importVersionId", importVersionId);
+            this.mapper.validateStaging(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">validateStaging");
+    }
+
 }
