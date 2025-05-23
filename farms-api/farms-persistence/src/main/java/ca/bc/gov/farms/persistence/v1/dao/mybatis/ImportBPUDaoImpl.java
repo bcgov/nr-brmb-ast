@@ -37,5 +37,18 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
 
         logger.debug(">insertStagingRow");
     }
-    
+
+    @Override
+    public void clearStaging() throws DaoException {
+        logger.debug("<clearStaging");
+
+        try {
+            this.mapper.clearStaging();
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">clearStaging");
+    }
+
 }
