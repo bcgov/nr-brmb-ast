@@ -27,4 +27,10 @@
             )
         }
     </insert>
+
+    <delete id="clearStaging">
+        {
+            call farms_bpu_pkg.clear_staging()
+        }
+    </delete>
 </mapper>
