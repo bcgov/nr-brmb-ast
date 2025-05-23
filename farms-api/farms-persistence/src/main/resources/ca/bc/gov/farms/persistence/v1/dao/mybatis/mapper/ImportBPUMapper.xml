@@ -41,4 +41,12 @@
             )
         }
     </delete>
+
+    <insert id="validateStaging">
+        {
+            call farms_bpu_pkg.validate_staging(
+                #{importVersionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+            )
+        }
+    </insert>
 </mapper>

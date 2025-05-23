@@ -9,4 +9,6 @@ public interface ImportBPUMapper {
     void clearStaging();
 
     void deleteStagingErrors(Map<String, Object> parameters);
+
+    void validateStaging(Map<String, Object> parameters);
 }
