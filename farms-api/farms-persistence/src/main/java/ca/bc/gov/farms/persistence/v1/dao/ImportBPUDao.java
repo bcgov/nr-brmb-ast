@@ -18,4 +18,6 @@ public interface ImportBPUDao extends Serializable {
     void validateStaging(Long importVersionId) throws DaoException;
 
     List<ImportLogDto> getStagingErrors(Long importVersionId) throws DaoException;
+
+    void stagingToOperational(Long importVersionId, String userId) throws DaoException;
 }

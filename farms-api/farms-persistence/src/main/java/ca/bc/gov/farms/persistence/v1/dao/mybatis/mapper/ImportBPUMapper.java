@@ -16,4 +16,6 @@ public interface ImportBPUMapper {
     void validateStaging(Map<String, Object> parameters);
 
     List<ImportLogDto> getStagingErrors(Map<String, Object> parameters);
+
+    void stagingToOperational(Map<String, Object> parameters);
 }

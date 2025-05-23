@@ -57,4 +57,13 @@
             )
         }
     </select>
+
+    <insert id="stagingToOperational">
+        {
+            call farms_bpu_pkg.staging_to_operational(
+                #{importVersionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
+                #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            )
+        }
+    </insert>
 </mapper>
