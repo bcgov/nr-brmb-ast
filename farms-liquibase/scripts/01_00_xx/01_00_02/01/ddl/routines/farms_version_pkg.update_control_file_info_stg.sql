@@ -18,14 +18,14 @@ begin
     end;
 
     begin
-        select 'Imported ' || row_cnt || ' representing ' || pins ||
+        select 'Imported ' || t.row_cnt || ' representing ' || t.pins ||
             ' Participant Years.'
         into p_import_control_file_info
         from (
             select max(case when extract_file_number = 1 then row_count else null end) as pins,
                    sum(row_count) as row_cnt
             from farms.z99_extract_file
-        );
+        ) as t;
     exception
         when others then
             null;
