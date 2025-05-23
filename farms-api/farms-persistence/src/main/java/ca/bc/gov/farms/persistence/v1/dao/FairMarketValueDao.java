@@ -16,4 +16,6 @@ public interface FairMarketValueDao extends Serializable {
     void insert(FairMarketValueDto dto, String userId) throws DaoException;
 
     void update(FairMarketValueDto dto, String userId) throws DaoException, NotFoundDaoException;
+
+    void delete(Integer programYear, String fairMarketValueId) throws DaoException, NotFoundDaoException;
 }

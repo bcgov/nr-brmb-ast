@@ -99,7 +99,7 @@ public class BenchmarkPerUnitEndpointsImpl extends BaseEndpointsImpl implements 
             service.deleteBenchmarkPerUnit(benchmarkPerUnitId);
             response = Response.status(Status.NO_CONTENT).build();
         } catch (NotFoundException e) {
-            response = Response.status(Response.Status.NOT_FOUND).build();
+            response = Response.status(Status.NOT_FOUND).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
         }

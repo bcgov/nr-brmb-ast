@@ -163,4 +163,27 @@ public class FairMarketValueServiceImpl implements FairMarketValueService {
         logger.debug(">updateFairMarketValue");
         return result;
     }
+
+    @Override
+    public void deleteFairMarketValue(String fairMarketValueId) throws ServiceException, NotFoundException {
+        logger.debug("<deleteFairMarketValue");
+
+        try {
+            String[] parts = fairMarketValueId.split("_");
+            Integer programYear = Integer.valueOf(parts[0]);
+            FairMarketValueDto dto = fairMarketValueDao.fetch(programYear, fairMarketValueId);
+
+            if (dto == null) {
+                throw new NotFoundException("Did not find the fair market value: " + fairMarketValueId);
+            }
+
+            fairMarketValueDao.delete(programYear, fairMarketValueId);
+        } catch (PatternSyntaxException | NumberFormatException e) {
+            throw new NotFoundException("Did not find the fair market value: " + fairMarketValueId);
+        } catch (DaoException e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">deleteFairMarketValue");
+    }
 }

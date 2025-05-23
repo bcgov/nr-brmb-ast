@@ -138,4 +138,24 @@ public class FairMarketValueDaoImpl extends BaseDao implements FairMarketValueDa
         logger.debug(">update ");
     }
 
+    @Override
+    public void delete(Integer programYear, String fairMarketValueId) throws DaoException, NotFoundDaoException {
+        logger.debug("<delete");
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("programYear", programYear);
+            parameters.put("fairMarketValueId", fairMarketValueId);
+            int count = this.mapper.deleteFairMarketValue(parameters);
+
+            if (count == 0) {
+                throw new NotFoundDaoException("Record not deleted: " + count);
+            }
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">delete");
+    }
+
 }

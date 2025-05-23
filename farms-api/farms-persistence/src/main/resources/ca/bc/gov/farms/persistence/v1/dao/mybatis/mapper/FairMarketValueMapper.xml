@@ -204,4 +204,12 @@
               crop_unit_code = #{fairMarketValueId}
         and period = #{period, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN}
     </update>
+
+    <delete id="deleteFairMarketValue">
+        delete from farms.fair_market_value
+        where program_year || '_' ||
+              inventory_item_code || '_' ||
+              municipality_code || '_' ||
+              crop_unit_code = #{fairMarketValueId}
+    </delete>
 </mapper>

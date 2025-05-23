@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.api.rest.v1.endpoints.impl;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,29 @@ public class FairMarketValueEndpointsImpl extends BaseEndpointsImpl implements F
         logResponse(response);
 
         logger.debug(">createFairMarketValue " + response.getStatus());
+        return response;
+    }
+
+    @Override
+    public Response deleteFairMarketValue(String fairMarketValueId) {
+        logger.debug("<deleteFairMarketValue");
+
+        Response response = null;
+
+        logRequest();
+
+        try {
+            service.deleteFairMarketValue(fairMarketValueId);
+            response = Response.status(Status.NO_CONTENT).build();
+        } catch (NotFoundException e) {
+            response = Response.status(Status.NOT_FOUND).build();
+        } catch (Throwable t) {
+            response = getInternalServerErrorResponse(t);
+        }
+
+        logResponse(response);
+
+        logger.debug(">deleteFairMarketValue " + response.getStatus());
         return response;
     }
 

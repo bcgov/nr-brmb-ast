@@ -14,4 +14,6 @@ public interface FairMarketValueMapper {
     int insertFairMarketValue(Map<String, Object> parameters);
 
     int updateFairMarketValue(Map<String, Object> parameters);
+
+    int deleteFairMarketValue(Map<String, Object> parameters);
 }
