@@ -33,4 +33,12 @@
             call farms_bpu_pkg.clear_staging()
         }
     </delete>
+
+    <delete id="deleteStagingErrors">
+        {
+            call farms_bpu_pkg.delete_staging_errors(
+                #{importVersionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+            )
+        }
+    </delete>
 </mapper>
