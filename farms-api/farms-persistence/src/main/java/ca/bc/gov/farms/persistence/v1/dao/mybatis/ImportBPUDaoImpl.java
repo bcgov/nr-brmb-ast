@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import ca.bc.gov.brmb.common.persistence.dao.mybatis.BaseDao;
 import ca.bc.gov.farms.persistence.v1.dao.ImportBPUDao;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.ImportBPUMapper;
 import ca.bc.gov.farms.persistence.v1.dto.ImportBPUDto;
+import ca.bc.gov.farms.persistence.v1.dto.ImportLogDto;
 
 public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
 
@@ -79,6 +81,24 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
         }
 
         logger.debug(">validateStaging");
+    }
+
+    @Override
+    public List<ImportLogDto> getStagingErrors(Long importVersionId) throws DaoException {
+        logger.debug("<getStagingErrors");
+
+        List<ImportLogDto> result = null;
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("importVersionId", importVersionId);
+            result = this.mapper.getStagingErrors(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">getStagingErrors");
+        return result;
     }
 
 }

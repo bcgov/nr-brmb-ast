@@ -49,4 +49,12 @@
             )
         }
     </insert>
+
+    <select id="getStagingErrors" statementType="CALLABLE" resultType="ca.bc.gov.farms.persistence.v1.dto.ImportLogDto">
+        {
+            call farms_bpu_pkg.get_staging_errors(
+                #{importVersionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+            )
+        }
+    </select>
 </mapper>
