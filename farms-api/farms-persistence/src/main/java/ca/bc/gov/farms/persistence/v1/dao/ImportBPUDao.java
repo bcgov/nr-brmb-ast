@@ -10,4 +10,6 @@ public interface ImportBPUDao extends Serializable {
     void insertStagingRow(ImportBPUDto dto, String userId) throws DaoException;
 
     void clearStaging() throws DaoException;
+
+    void deleteStagingErrors(Long importVersionId) throws DaoException;
 }
