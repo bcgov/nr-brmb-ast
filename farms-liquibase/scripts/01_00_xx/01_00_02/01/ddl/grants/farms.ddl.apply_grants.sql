@@ -55,6 +55,14 @@ GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_operation(
     farms.farming_operation.federal_accounting_code%TYPE,
     farms.farming_operation.program_year_version_id%TYPE
 ) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_program_year(
+    VARCHAR,
+    farms.program_year.year%TYPE,
+    farms.program_year.agristability_client_id%TYPE,
+    farms.program_year_version.participant_profile_code%TYPE,
+    farms.program_year_version.federal_status_code%TYPE,
+    farms.program_year_version.municipality_code%TYPE
+) TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_import_pkg.numbers_equal(NUMERIC, NUMERIC) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.text_equal(VARCHAR, VARCHAR) TO "app_farms_rest_proxy";
