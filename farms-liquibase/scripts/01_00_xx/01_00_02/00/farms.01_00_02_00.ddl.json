@@ -8,7 +8,7 @@
                     {
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
-                            "path": "ddl/schema/farms.ddl.create_farms_schema.sql"
+                            "path": "ddl/schema/farms.ddl.create_farms_bpu_pkg_schema.sql"
                         }
                     },
                     {
