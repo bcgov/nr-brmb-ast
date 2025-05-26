@@ -5,6 +5,12 @@ GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_production_unit(
     farms.crop_unit_code.crop_unit_code%TYPE
 ) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_inventory_code(VARCHAR, VARCHAR, DATE) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_participant(
+    VARCHAR,
+    farms.agristability_client.participant_pin%TYPE,
+    farms.agristability_client.participant_class_code%TYPE,
+    farms.agristability_client.participant_language_code%TYPE
+) TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_import_pkg.numbers_equal(NUMERIC, NUMERIC) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.text_equal(VARCHAR, VARCHAR) TO "app_farms_rest_proxy";
