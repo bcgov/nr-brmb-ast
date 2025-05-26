@@ -71,3 +71,8 @@ COMMENT ON COLUMN farms.zbpu_benchmark_per_unit.update_user IS 'UPDATE USER indi
 COMMENT ON COLUMN farms.zbpu_benchmark_per_unit.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
 
+
+
+ALTER TABLE farms.zbpu_benchmark_per_unit ADD 
+    CONSTRAINT pk_zbpu PRIMARY KEY (line_number) USING INDEX TABLESPACE pg_default 
+;

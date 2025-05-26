@@ -44,3 +44,7 @@ COMMENT ON COLUMN farms.zfmv_fair_market_value.update_user IS 'UPDATE USER indic
 COMMENT ON COLUMN farms.zfmv_fair_market_value.update_date IS 'UPDATE DATE indicates when the physical record was updated in the database.'
 ;
 
+
+ALTER TABLE farms.zfmv_fair_market_value ADD 
+    CONSTRAINT pk_zfmv PRIMARY KEY (line_number) USING INDEX TABLESPACE pg_default 
+;
