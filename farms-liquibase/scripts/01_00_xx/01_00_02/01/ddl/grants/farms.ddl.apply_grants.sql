@@ -45,6 +45,10 @@ GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_operational_partner(
     VARCHAR,
     farms.farming_operatin_partner.farming_operation_id%TYPE
 ) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_production_insurance(
+    VARCHAR,
+    farms.farming_operatin_partner.farming_operation_id%TYPE
+) TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_import_pkg.numbers_equal(NUMERIC, NUMERIC) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.text_equal(VARCHAR, VARCHAR) TO "app_farms_rest_proxy";
