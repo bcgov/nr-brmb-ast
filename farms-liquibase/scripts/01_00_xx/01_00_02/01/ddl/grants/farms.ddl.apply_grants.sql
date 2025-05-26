@@ -11,6 +11,13 @@ GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_participant(
     farms.agristability_client.participant_class_code%TYPE,
     farms.agristability_client.participant_language_code%TYPE
 ) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_reported_inventory(
+    VARCHAR,
+    farms.agristabilty_commodity_xref.inventory_item_code%TYPE,
+    farms.agristabilty_commodity_xref.inventory_class_code%TYPE,
+    farms.reported_inventory.crop_unit_code%TYPE,
+    farms.reported_inventory.farming_operation_id%TYPE
+) TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_import_pkg.numbers_equal(NUMERIC, NUMERIC) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.text_equal(VARCHAR, VARCHAR) TO "app_farms_rest_proxy";
