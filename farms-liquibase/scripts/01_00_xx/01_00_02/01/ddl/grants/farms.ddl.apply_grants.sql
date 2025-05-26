@@ -18,6 +18,12 @@ GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_reported_inventory(
     farms.reported_inventory.crop_unit_code%TYPE,
     farms.reported_inventory.farming_operation_id%TYPE
 ) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_productive_unit_capacity(
+    VARCHAR,
+    farms.productive_unit_capacity.farming_operation_id%TYPE,
+    farms.productive_unit_capacity.structure_group_code%TYPE,
+    farms.productive_unit_capacity.inventory_item_code%TYPE
+) TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_import_pkg.numbers_equal(NUMERIC, NUMERIC) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.text_equal(VARCHAR, VARCHAR) TO "app_farms_rest_proxy";
