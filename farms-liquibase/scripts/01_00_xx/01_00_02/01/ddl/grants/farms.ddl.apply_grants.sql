@@ -4,6 +4,7 @@ GRANT EXECUTE ON PROCEDURE farms_import_pkg.update_status(NUMERIC, VARCHAR) TO "
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.update_status_non_autonomous(NUMERIC, VARCHAR) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.append_imp(NUMERIC, VARCHAR) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.update_imp(NUMERIC, VARCHAR) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_import_pkg.append_imp1(NUMERIC, VARCHAR) TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version(
     farms.import_version.description%TYPE,
