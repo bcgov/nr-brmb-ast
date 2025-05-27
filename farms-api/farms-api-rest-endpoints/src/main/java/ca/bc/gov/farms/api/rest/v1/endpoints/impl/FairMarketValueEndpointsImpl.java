@@ -7,7 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
+import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
+import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.farms.api.rest.v1.endpoints.FairMarketValueEndpoints;
 import ca.bc.gov.farms.api.rest.v1.resource.FairMarketValueListRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.FairMarketValueRsrc;
@@ -77,6 +80,10 @@ public class FairMarketValueEndpointsImpl extends BaseEndpointsImpl implements F
             FairMarketValueRsrc result = (FairMarketValueRsrc) service.createFairMarketValue(fairMarketValueRsrc,
                     getFactoryContext());
             response = Response.status(Response.Status.CREATED).entity(result).tag(result.getUnquotedETag()).build();
+        } catch (ValidationFailureException e) {
+            response = Response.status(Status.BAD_REQUEST).entity(new MessageListRsrc(e.getValidationErrors())).build();
+        } catch (ConflictException e) {
+            response = Response.status(Status.CONFLICT).entity(e.getMessage()).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
         }
@@ -122,6 +129,8 @@ public class FairMarketValueEndpointsImpl extends BaseEndpointsImpl implements F
             FairMarketValueRsrc result = (FairMarketValueRsrc) service.updateFairMarketValue(fairMarketValueId,
                     fairMarketValueRsrc, getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
+        } catch (ValidationFailureException e) {
+            response = Response.status(Status.BAD_REQUEST).entity(new MessageListRsrc(e.getValidationErrors())).build();
         } catch (NotFoundException e) {
             response = Response.status(Response.Status.NOT_FOUND).build();
         } catch (Throwable t) {

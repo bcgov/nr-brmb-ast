@@ -7,7 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
+import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
+import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.farms.api.rest.v1.endpoints.BenchmarkPerUnitEndpoints;
 import ca.bc.gov.farms.api.rest.v1.resource.BenchmarkPerUnitListRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.BenchmarkPerUnitRsrc;
@@ -77,6 +80,8 @@ public class BenchmarkPerUnitEndpointsImpl extends BaseEndpointsImpl implements 
             BenchmarkPerUnitRsrc result = (BenchmarkPerUnitRsrc) service
                     .createBenchmarkPerUnit(benchmarkPerUnitRsrc, getFactoryContext());
             response = Response.status(Status.CREATED).entity(result).tag(result.getUnquotedETag()).build();
+        } catch (ValidationFailureException e) {
+            response = Response.status(Status.BAD_REQUEST).entity(new MessageListRsrc(e.getValidationErrors())).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
         }
@@ -122,6 +127,8 @@ public class BenchmarkPerUnitEndpointsImpl extends BaseEndpointsImpl implements 
             BenchmarkPerUnitRsrc result = (BenchmarkPerUnitRsrc) service
                     .updateBenchmarkPerUnit(benchmarkPerUnitId, benchmarkPerUnitRsrc, getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
+        } catch (ValidationFailureException e) {
+            response = Response.status(Status.BAD_REQUEST).entity(new MessageListRsrc(e.getValidationErrors())).build();
         } catch (NotFoundException e) {
             response = Response.status(Response.Status.NOT_FOUND).build();
         } catch (Throwable t) {
