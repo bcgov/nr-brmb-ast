@@ -114,7 +114,7 @@ begin
                         current_timestamp
                     );
 
-                    insert farms.inventory_item_attribute(
+                    insert into farms.inventory_item_attribute(
                         inventory_item_attribute_id,
                         inventory_item_code,
                         rollup_inventory_item_code,
@@ -134,7 +134,7 @@ begin
                         1
                     );
 
-                    insert farms.inventory_item_detail(
+                    insert into farms.inventory_item_detail(
                         inventory_item_detail_id,
                         program_year,
                         eligibility_indicator,
@@ -155,7 +155,7 @@ begin
                         current_timestamp,
                         in_user,
                         current_timestamp
-                    from (select unique year program_year from farms.program_year) y;
+                    from (select distinct year program_year from farms.program_year) y;
                 end if;
             end if;
         exception
