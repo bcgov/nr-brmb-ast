@@ -13,6 +13,9 @@ public interface FairMarketValueDao extends Serializable {
 
     List<FairMarketValueDto> fetchByProgramYear(Integer programYear) throws DaoException;
 
+    List<FairMarketValueDto> fetchBy(Integer programYear, String inventoryItemCode, String municipalityCode,
+            String cropUnitCode) throws DaoException;
+
     void insert(FairMarketValueDto dto, String userId) throws DaoException;
 
     void update(FairMarketValueDto dto, String userId) throws DaoException, NotFoundDaoException;

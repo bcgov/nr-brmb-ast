@@ -2,6 +2,7 @@ package ca.bc.gov.farms.service.api.v1;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
@@ -21,7 +22,7 @@ public interface FairMarketValueService {
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
     FairMarketValue createFairMarketValue(FairMarketValue fairMarketValue, FactoryContext factoryContext)
-            throws ServiceException, ValidationFailureException;
+            throws ServiceException, ValidationFailureException, ConflictException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
     FairMarketValue updateFairMarketValue(String fairMarketValueId, FairMarketValue fairMarketValue,

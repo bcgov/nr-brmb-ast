@@ -63,6 +63,28 @@ public class FairMarketValueDaoImpl extends BaseDao implements FairMarketValueDa
     }
 
     @Override
+    public List<FairMarketValueDto> fetchBy(Integer programYear, String inventoryItemCode, String municipalityCode,
+            String cropUnitCode) throws DaoException {
+        logger.debug("<fetchBy");
+
+        List<FairMarketValueDto> dtos = null;
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("programYear", programYear);
+            parameters.put("inventoryItemCode", inventoryItemCode);
+            parameters.put("municipalityCode", municipalityCode);
+            parameters.put("cropUnitCode", cropUnitCode);
+            dtos = this.mapper.fetchBy(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">fetchBy " + dtos);
+        return dtos;
+    }
+
+    @Override
     public void insert(FairMarketValueDto dto, String userId) throws DaoException {
         logger.debug("<insert");
 

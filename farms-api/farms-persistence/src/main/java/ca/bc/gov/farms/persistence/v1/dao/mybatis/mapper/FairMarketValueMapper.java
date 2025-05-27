@@ -9,6 +9,8 @@ public interface FairMarketValueMapper {
 
     FairMarketValueDto fetch(Map<String, Object> parameters);
 
+    List<FairMarketValueDto> fetchByProgramYear(Map<String, Object> parameters);
+
     List<FairMarketValueDto> fetchBy(Map<String, Object> parameters);
 
     int insertFairMarketValue(Map<String, Object> parameters);
