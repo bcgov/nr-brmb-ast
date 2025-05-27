@@ -32,9 +32,9 @@ create or replace function farms_import_pkg.person(
     in in_user farms.person.create_user%type,
     inout in_out_activity numeric,
     in in_agristability_client_id farms.agristability_client.agristability_client_id%type,
-    inout in_change_contact_client_ids numeric[]
+    inout in_change_contact_client_ids numeric[],
+    out out_result varchar
 )
-returns varchar
 language plpgsql
 as $$
 declare
@@ -239,11 +239,11 @@ begin
         end if;
     end if;
 
-    return null;
+    out_result := null;
 exception
     when others then
         -- general exceptions
-        return '<PERSON action="error"><ERROR>' ||
+        out_result := '<PERSON action="error"><ERROR>' ||
             farms_import_pkg.scrub(farms_error_pkg.codify(sqlerrm)) ||
             '</ERROR></PERSON>';
 end;
