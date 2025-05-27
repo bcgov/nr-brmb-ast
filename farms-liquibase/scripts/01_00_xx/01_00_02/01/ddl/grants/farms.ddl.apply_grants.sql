@@ -77,6 +77,42 @@ GRANT EXECUTE ON FUNCTION farms_import_pkg.scrub(VARCHAR) TO "app_farms_rest_pro
 GRANT EXECUTE ON FUNCTION farms_import_pkg.production_unit(NUMERIC, VARCHAR) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.commodities(NUMERIC, VARCHAR) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.strings_are_different(VARCHAR, VARCHAR) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_import_pkg.person(
+    NUMERIC,
+    farms.person.person_id%TYPE,
+    farms.person.address_line_1%TYPE,
+    farms.person.address_line_2%TYPE,
+    farms.person.city%TYPE,
+    farms.person.corp_name%TYPE,
+    farms.person.daytime_phone%TYPE,
+    farms.person.evening_phone%TYPE,
+    farms.person.fax_number%TYPE,
+    farms.person.cell_number%TYPE,
+    farms.person.first_name%TYPE,
+    farms.person.last_name%TYPE,
+    farms.person.postal_code%TYPE,
+    farms.person.province_state%TYPE,
+    farms.person.country%TYPE,
+    farms.person.email_address%TYPE,
+    farms.person.address_line_1%TYPE,
+    farms.person.address_line_2%TYPE,
+    farms.person.city%TYPE,
+    farms.person.corp_name%TYPE,
+    farms.person.daytime_phone%TYPE,
+    farms.person.evening_phone%TYPE,
+    farms.person.fax_number%TYPE,
+    farms.person.cell_number%TYPE,
+    farms.person.first_name%TYPE,
+    farms.person.last_name%TYPE,
+    farms.person.postal_code%TYPE,
+    farms.person.province_state%TYPE,
+    farms.person.country%TYPE,
+    farms.person.email_address%TYPE
+    farms.person.create_user%TYPE,
+    NUMERIC,
+    farms.agristability_client.agristability_client_id%TYPE,
+    NUMERIC[]
+) TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version(
     farms.import_version.description%TYPE,
