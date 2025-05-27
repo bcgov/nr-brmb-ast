@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.brmb.common.model.Message;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
+import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
@@ -100,7 +101,7 @@ public class FairMarketValueServiceImpl implements FairMarketValueService {
 
     @Override
     public FairMarketValue createFairMarketValue(FairMarketValue resource, FactoryContext factoryContext)
-            throws ServiceException, ValidationFailureException {
+            throws ServiceException, ValidationFailureException, ConflictException {
         logger.debug("<createFairMarketValue");
 
         FairMarketValue result = null;
@@ -111,6 +112,13 @@ public class FairMarketValueServiceImpl implements FairMarketValueService {
             List<Message> errors = modelValidator.validateFairMarketValue(resource);
             if (!errors.isEmpty()) {
                 throw new ValidationFailureException(errors);
+            }
+
+            List<FairMarketValueDto> dtos = fairMarketValueDao.fetchBy(resource.getProgramYear(),
+                    resource.getInventoryItemCode(), resource.getMunicipalityCode(),
+                    resource.getCropUnitCode());
+            if (!dtos.isEmpty()) {
+                throw new ConflictException("Fair market value already exists for the given parameters.");
             }
 
             FairMarketValueDto dto = new FairMarketValueDto();
