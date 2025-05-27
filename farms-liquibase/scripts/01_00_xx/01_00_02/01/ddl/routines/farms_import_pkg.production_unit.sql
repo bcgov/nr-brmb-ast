@@ -34,8 +34,6 @@ begin
             opened := 1;
         end if;
 
-        savepoint produnits;
-
         -- old pu codes are not removed though this process.
         begin
             if pu_val.old_description is null then
@@ -87,7 +85,6 @@ begin
             end if;
         exception
             when others then
-                rollback to savepoint produnits;
                 errors := errors + 1;
 
                 call farms_import_pkg.append_imp1(in_version_id,
@@ -112,7 +109,7 @@ exception
             call farms_import_pkg.append_imp1(in_version_id, '</PRODUCTION_UNITS>');
         end if;
 
-        farms_import_pkg.append_imp1(in_version_id, -- generic error
+        call farms_import_pkg.append_imp1(in_version_id, -- generic error
             '<ERROR>' || farms_import_pkg.scrub(farms_error_pkg.codify(sqlerrm)) ||
             '</ERROR>');
 
