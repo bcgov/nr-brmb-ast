@@ -69,7 +69,7 @@ declare
 
                -- this was changed after the initial implmenetation to force the values to be
                -- returned to the client spreadsheet. When P1 or P2 is null, the CRA data is used.
-               max(z40.end_year_producer_price) end_year_product_price,
+               max(z40.end_year_producer_price) end_year_producer_price,
                max(z40.accept_producer_price_indicator) accept_producer_price_indicator,
                coalesce(max(aarm.aarm_reference_p1_price), max(z40.aarm_reference_p1_price)) aarm_reference_p1_price,
                coalesce(max(aarm.aarm_reference_p2_price), max(z40.aarm_reference_p2_price)) aarm_reference_p2_price,
@@ -217,14 +217,14 @@ begin
             ri_id,
             inv_insert_val.price_start,
             inv_insert_val.price_end,
-            inv_insert_val.end_year_product_price,
-            inv_insert_val.quantity_end,            
+            inv_insert_val.end_year_producer_price,
+            inv_insert_val.quantity_end,
             inv_insert_val.start_of_year_amount,
             inv_insert_val.end_of_year_amount,
             inv_insert_val.quantity_produced,
             inv_insert_val.on_farm_acres,
             inv_insert_val.unseedable_acres,
-            inv_insert_val.quantity_start,   
+            inv_insert_val.quantity_start,
             inv_insert_val.accept_producer_price_indicator,
             inv_insert_val.aarm_reference_p1_price,
             inv_insert_val.aarm_reference_p2_price,
@@ -239,7 +239,7 @@ begin
             in_user,
             current_timestamp
         );
-    
+
     end loop;
 
     return null;
