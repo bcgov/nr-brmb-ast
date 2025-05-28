@@ -35,6 +35,7 @@ GRANT EXECUTE ON FUNCTION farms_import_pkg.productive_unit_capacity TO "app_farm
 GRANT EXECUTE ON FUNCTION farms_import_pkg.reported_income_expense TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.claim TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.benefit_margins TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_import_pkg.scenario TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
