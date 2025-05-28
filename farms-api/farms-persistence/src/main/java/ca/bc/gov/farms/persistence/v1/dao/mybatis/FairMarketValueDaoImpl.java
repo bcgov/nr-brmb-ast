@@ -53,7 +53,7 @@ public class FairMarketValueDaoImpl extends BaseDao implements FairMarketValueDa
         try {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("programYear", programYear);
-            dtos = this.mapper.fetchBy(parameters);
+            dtos = this.mapper.fetchByProgramYear(parameters);
         } catch (RuntimeException e) {
             handleException(e);
         }
