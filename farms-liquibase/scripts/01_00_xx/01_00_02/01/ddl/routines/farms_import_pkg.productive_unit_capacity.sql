@@ -232,10 +232,10 @@ declare
                          when b.farming_operation_id is not null then b.inventory_item_code
                          else c.inventory_item_code
                      end)
-        );
+        ) t;
     puc_insert_val record;
 
-    puc_id farms.productive_unit_capacity.productive_unit_capacity_id%type;
+    puc_id farms.productive_unit_capacity.productve_unit_capacity_id%type;
 
     v_farming_operation_id farms.productive_unit_capacity.farming_operation_id%type := null;
     v_structure_group_code farms.productive_unit_capacity.structure_group_code%type := null;
