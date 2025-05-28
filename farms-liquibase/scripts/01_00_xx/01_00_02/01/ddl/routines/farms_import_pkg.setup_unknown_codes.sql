@@ -11,7 +11,7 @@ declare
         from farms.inventory_class_code codes
         left outer join farms.agristabilty_commodity_xref x on x.inventory_class_code = cds.inventory_class_code
                                                             and x.inventory_item_code = Unknown
-        where x.agristabilty_commodity_xref_id is null
+        where x.agristabilty_commodity_xref_id is null;
 begin
     dt := to_date('31/12/9999', 'DD/MM/YYYY');
 
