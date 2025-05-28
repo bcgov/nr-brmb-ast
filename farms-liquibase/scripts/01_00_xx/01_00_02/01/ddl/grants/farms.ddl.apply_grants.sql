@@ -33,6 +33,7 @@ GRANT EXECUTE ON PROCEDURE farms_import_pkg.setup_unknown_codes TO "app_farms_re
 GRANT EXECUTE ON FUNCTION farms_import_pkg.reported_inventory TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.productive_unit_capacity TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.reported_income_expense TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_import_pkg.claim TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
