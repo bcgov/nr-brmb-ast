@@ -28,6 +28,7 @@ GRANT EXECUTE ON FUNCTION farms_import_pkg.production_unit TO "app_farms_rest_pr
 GRANT EXECUTE ON FUNCTION farms_import_pkg.commodities TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.strings_are_different TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.person TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_import_pkg.participant TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
