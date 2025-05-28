@@ -36,7 +36,7 @@ begin
             join farms.agristability_scenario scp on pyv.program_year_version_id = scp.program_year_version_id
             join farms.agristability_claim clm on scp.agristability_scenario_id = clm.agristability_scenario_id
             where scp.agristability_scenario_id = v_scenario_id
-            minus
+            except
             select coalesce(z50.unadjusted_reference_margin, 0) unadj_reference_margin,
                    coalesce(z50.adjusted_reference_margin, 0) adjusted_reference_margin,
                    coalesce(z50.program_margin, 0) program_year_margin,
@@ -61,7 +61,7 @@ begin
             and (v_scenario_id is null
                 or sc.agristability_scenario_id is null
                 or sc.agristability_scenario_id = v_scenario_id)
-        )
+        ) t1
         union all
         (
             select coalesce(z50.unadjusted_reference_margin, 0) unadj_reference_margin,
@@ -88,7 +88,7 @@ begin
             and (v_scenario_id is null
                 or sc.agristability_scenario_id is null
                 or sc.agristability_scenario_id = v_scenario_id)
-            minus
+            except
             select clm.unadjusted_reference_margin,
                    clm.adjusted_reference_margin,
                    clm.program_year_margin,
@@ -104,7 +104,7 @@ begin
             join farms.agristability_claim clm on scp.agristability_scenario_id = clm.agristability_scenario_id
             where scp.agristability_scenario_id = v_scenario_id
         )
-    );
+    ) t2;
 
     if cnt > 0 then
         return true;
