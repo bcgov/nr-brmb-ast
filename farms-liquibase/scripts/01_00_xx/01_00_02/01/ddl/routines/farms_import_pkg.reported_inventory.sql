@@ -30,7 +30,8 @@ declare
                    else z21.inventory_code || ' ' || z21.inventory_type_code
                end) import_comment,
                coalesce(x.agristabilty_commodity_xref_id, x2.agristabilty_commodity_xref_id) agristabilty_commodity_xref_id
-        left outer join farms.agristabilty_commodity_xref x on to_char(z21.invetory_code) = x.inventory_item_code
+        from farms.z21_participant_supplementary z21
+        left outer join farms.agristabilty_commodity_xref x on to_char(z21.inventory_code) = x.inventory_item_code
                                                             and to_char(z21.inventory_type_code) = x.inventory_class_code
         left outer join farms.agristabilty_commodity_xref x2 on x2.inventory_class_code = to_char(z21.inventory_type_code)
                                                             and x2.inventory_item_code = Unknown
