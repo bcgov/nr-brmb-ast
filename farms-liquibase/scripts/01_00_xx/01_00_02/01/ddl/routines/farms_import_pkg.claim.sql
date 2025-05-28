@@ -76,7 +76,7 @@ begin
     return null;
 exception
     when others then
-        farms_import_pkg.scrub(farms_error_pkg.codify_claim(
+        call farms_import_pkg.scrub(farms_error_pkg.codify_claim(
             sqlerrm,
             in_sc_id
         ));
