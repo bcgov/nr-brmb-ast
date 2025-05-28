@@ -14,7 +14,7 @@ declare
                string_agg(case
                    when li.line_item_id is not null then null
                    else z.line_code
-               end) ' ' order by case
+               end, ' ' order by case
                    when li.line_item_id is not null then null
                    else z.line_code
                end) as import_comment,
@@ -45,7 +45,7 @@ declare
     ie_insert_val record;
 
     v_line_item farms.line_item.line_item%type := null;
-    v_farming_operation_id farms.reported_income_expense.farming_operation_id%type := null;
+    v_farming_operation_id farms.reported_income_expenses.farming_operation_id%type := null;
 
     t_id numeric;
 
@@ -72,9 +72,8 @@ begin
 
         expry := to_date('31/12/9999', 'DD/MM/YYYY');
 
-        raise exception 'Line items have not been created for ' || yr ||
-            '. Go to the Line Items screen in Code Management and click the button, ' ||
-            'Copy From ' || (yr - 1) || ' To ' || yr || ', to create them.');
+        raise exception 'Line items have not been created for %s. Go to the Line Items screen in Code Management and click the button, Copy From %s To %s, to create them.',
+            yr, (yr - 1), yr;
     end if;
 
     for ie_insert_val in ie_insert_cursor
@@ -118,7 +117,7 @@ begin
     return null;
 exception
     when others then
-        farms_import_pkg.scrub(farms_error_pkg.codify_income_expense(
+        call farms_import_pkg.scrub(farms_error_pkg.codify_income_expense(
             sqlerrm,
             v_line_item,
             v_farming_operation_id
