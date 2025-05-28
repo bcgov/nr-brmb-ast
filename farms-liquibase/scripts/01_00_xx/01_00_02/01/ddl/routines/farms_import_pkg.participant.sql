@@ -4,7 +4,8 @@ create or replace function farms_import_pkg.participant(
     out out_agristability_client_id farms.agristability_client.agristability_client_id%type,
     in in_user varchar,
     inout in_out_activity numeric,
-    inout in_changed_contact_client_ids numeric[]
+    inout in_changed_contact_client_ids numeric[],
+    out errors numeric
 )
 language plpgsql
 as $$
@@ -119,10 +120,9 @@ declare
 
     person_id numeric := null;
     person_rep_id numeric := null;
-
-    errors numeric := 0;
 begin
-    savepoint participant;
+    errors := 0;
+
     -- participant person info
     for z01_val in z01_cursor
     loop
@@ -169,14 +169,14 @@ begin
             if z01_val.p_locally_updated_indicator = 'Y' then
                 out_agristability_client_id := z01_val.agristability_client_id;
                 -- log changes with a warning
-                farms_import_pkg.append_imp1(in_version_id,
+                call farms_import_pkg.append_imp1(in_version_id,
                     '<AGRISTATIBLITY_CLIENT action="locally_updated" participant_pin="' ||
                     farms_import_pkg.scrub(z01_val.participant_pin::varchar) || '">');
             else
                 -- update and log
                 out_agristability_client_id := z01_val.agristability_client_id;
 
-                farms_import_pkg.append_imp1(in_version_id,
+                call farms_import_pkg.append_imp1(in_version_id,
                     '<AGRISTATIBLITY_CLIENT action="update" participant_pin="' ||
                     z01_val.participant_pin || '">' ||
                     (case
@@ -238,7 +238,7 @@ begin
             end if;
         else
             out_agristability_client_id := z01_val.agristability_client_id;
-            farms_import_pkg.append_imp1(in_version_id,
+            call farms_import_pkg.append_imp1(in_version_id,
                 '<AGRISTATIBLITY_CLIENT action="update" participant_pin="' ||
                 farms_import_pkg.scrub(z01_val.participant_pin::varchar) || '"/>');
         end if;
@@ -397,36 +397,37 @@ begin
             end if;
         end if;
 
-        farms_import_pkg.append_imp1(in_version_id, '</AGRISTATIBLITY_CLIENT>');
+        call farms_import_pkg.append_imp1(in_version_id, '</AGRISTATIBLITY_CLIENT>');
     end loop;
 
     if p1_msg is not null or p2_msg is not null then
-        rollback to savepoint participant;
-
-        farms_import_pkg.append_imp1(in_version_id,
-            '<AGRISTATIBLITY_CLIENT action="error" participant_pin="' ||
-            farms_import_pkg.scrub(z01_val.participant_pin::varchar) || '">');
-        if p1_msg is not null then
-            farms_import_pkg.append_imp1(in_version_id, p1_msg);
-        end if;
-        if p2_msg is not null then
-            farms_import_pkg.append_imp1(in_version_id, p2_msg);
-        end if;
-        farms_import_pkg.append_imp1(in_version_id, '</AGRISTATIBLITY_CLIENT>');
-        return errors + 1;
+        raise exception 'Participant % has warnings: % %',
+            in_participant_pin,
+            coalesce(p1_msg, ''),
+            coalesce(p2_msg, '');
     end if;
-    return errors;
 exception
     when others then
-        rollback to savepoint participant;
-        farms_import_pkg.append_imp1(in_version_id,
-            '<AGRISTATIBLITY_CLIENT action="error"><ERROR>' ||
-            farms_import_pkg.scrub(farms_error_pkg.codify_participant(
-                sqlerrm,
-                in_participant_pin,
-                to_char(v_participant_class_code),
-                to_char(v_participant_language_code))) ||
-            '</ERROR></AGRISTATIBLITY_CLIENT>');
-        return errors + 1;
+        if p1_msg is not null or p2_msg is not null then
+            call farms_import_pkg.append_imp1(in_version_id,
+                '<AGRISTATIBLITY_CLIENT action="error" participant_pin="' ||
+                farms_import_pkg.scrub(z01_val.participant_pin::varchar) || '">');
+            if p1_msg is not null then
+                call farms_import_pkg.append_imp1(in_version_id, p1_msg);
+            end if;
+            if p2_msg is not null then
+                call farms_import_pkg.append_imp1(in_version_id, p2_msg);
+            end if;
+            call farms_import_pkg.append_imp1(in_version_id, '</AGRISTATIBLITY_CLIENT>');
+        else
+            call farms_import_pkg.append_imp1(in_version_id,
+                '<AGRISTATIBLITY_CLIENT action="error"><ERROR>' ||
+                farms_import_pkg.scrub(farms_error_pkg.codify_participant(
+                    sqlerrm,
+                    in_participant_pin,
+                    to_char(v_participant_class_code),
+                    to_char(v_participant_language_code))) ||
+                '</ERROR></AGRISTATIBLITY_CLIENT>');
+        end if;
 end;
 $$;
