@@ -1,3 +1,5 @@
+GRANT SELECT ON farms.operations_vw TO "app_farms_rest_proxy";
+
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_mun_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_production_unit TO "app_farms_rest_proxy";
