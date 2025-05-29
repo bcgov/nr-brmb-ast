@@ -62,7 +62,7 @@ begin
             select *
             from cur_ie
         )
-    );
+    ) t;
 
     if cnt > 0 then
         return true;
