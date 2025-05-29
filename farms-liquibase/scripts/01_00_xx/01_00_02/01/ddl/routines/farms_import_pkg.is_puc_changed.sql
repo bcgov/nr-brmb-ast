@@ -1,5 +1,5 @@
 create or replace function farms_import_pkg.is_puc_changed(
-    in in_program_year_id farms.program_years.program_year_id%type,
+    in in_program_year_id farms.program_year.program_year_id%type,
     in in_program_year_vrsn_prev_id farms.program_year_version.program_year_version_id%type
 )
 returns boolean
@@ -24,7 +24,7 @@ begin
                z21.operation_number
         from farms.z21_participant_supplementary z21
         join farms.agristability_client ac on z21.participant_pin = ac.participant_pin
-        join farms.program_years py on ac.agristability_client_id = py.agristability_client_id
+        join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                     and z21.program_year = py.year
         left outer join farms.inventory_item_code iic on iic.inventory_item_code = to_char(z21.inventory_code)
         where z21.inventory_type_code = '1'
@@ -45,7 +45,7 @@ begin
                z23.operation_number
         from farms.z23_livestock_production_capacity z23
         join farms.agristability_client ac on z23.participant_pin = ac.participant_pin
-        join farms.program_years py on ac.agristability_client_id = py.agristability_client_id
+        join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                     and z23.program_year = py.year
         left outer join farms.inventory_item_code iic on iic.inventory_item_code = to_char(z23.inventory_code)
         left outer join farms.structure_group_code sgc on sgc.structure_group_code = to_char(z23.inventory_code)
@@ -71,7 +71,7 @@ begin
                z42.operation_number
         from farms.z42_participant_reference_year z42
         join farms.agristability_client ac on z42.participant_pin = ac.participant_pin
-        join farms.program_years py on ac.agristability_client_id = py.agristability_client_id
+        join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                     and z42.program_year = py.year
         left outer join farms.structure_group_code sgc on sgc.structure_group_code = to_char(z42.productive_code)
         left outer join farms.inventory_item_code iic on iic.inventory_item_code = to_char(z42.productive_code)
@@ -108,7 +108,7 @@ begin
         left outer join farms.agristabilty_commodity_xref x2 on x2.inventory_class_code = to_char(aarm.inventory_type_code)
                                                              and x2.inventory_item_code = Unknown
         join farms.agristability_client ac on aarm.participant_pin = ac.participant_pin
-        join farms.program_years py on ac.agristability_client_id = py.agristability_client_id
+        join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                     and aarm.program_year = py.year
         where z40.crop_on_farm_acres is not null
         and py.program_year_id = in_program_year_id
@@ -143,7 +143,7 @@ begin
             where aarm.aarm_margin_id is null
         ) zz
         join farms.agristability_client ac on zz.participant_pin = ac.participant_pin
-        join farms.program_years py on ac.agristability_client_id = py.agristability_client_id
+        join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                     and zz.program_year = py.year
         left outer join farms.inventory_item_code iic on iic.inventory_item_code = to_char(zz.inventory_code)
         where zz.crop_on_farm_acres is not null
@@ -217,8 +217,8 @@ begin
                          when a.operation_number is not null then a.inventory_item_code
                          when b.operation_number is not null then b.inventory_item_code
                          else c.inventory_item_code
-                     end),
-        )
+                     end)
+        ) t1
     ), cur_values as (
         select puc.productive_capacity_amount,
                puc.import_comment,
@@ -252,7 +252,7 @@ begin
             select *
             from new_values
         )
-    );
+    ) t2;
 
     if cnt > 0 then
         return true;
