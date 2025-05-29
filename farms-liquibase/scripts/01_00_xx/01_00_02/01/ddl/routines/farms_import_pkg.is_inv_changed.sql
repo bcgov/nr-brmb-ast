@@ -145,7 +145,7 @@ begin
                  x.agristabilty_commodity_xref_id,
                  x2.inventory_item_code,
                  x2.inventory_class_code
-    ) file_40 as (
+    ), file_40 as (
         select (case
                    when x.agristabilty_commodity_xref_id is not null then to_char(zz.inventory_code)
                    else x2.inventory_item_code
@@ -193,7 +193,7 @@ begin
         join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                    and zz.program_year = py.year
         where py.program_year_id = in_program_year_id
-    ) staging_area as (
+    ), staging_area as (
         select inventory_item_code,
                inventory_class_code,
                crop_unit_code,
@@ -226,7 +226,7 @@ begin
             union all
             select *
             from file_40
-        )
+        ) t1
     )
     select count(*)
     into cnt
@@ -238,7 +238,7 @@ begin
             except
             select *
             from cur
-        )
+        ) t2
         union all
         (
             select *
@@ -247,7 +247,7 @@ begin
             select *
             from staging_area
         )
-    );
+    ) t3;
 
     if cnt > 0 then
         return true;
