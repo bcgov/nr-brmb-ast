@@ -75,7 +75,7 @@ declare
                coalesce(max(aarm.aarm_reference_p2_price), max(z40.aarm_reference_p2_price)) aarm_reference_p2_price,
                max(op.farming_operation_id) farming_operation_id,
                (case
-                   when max(x.agristabilty_commodity_xref_id) is null then null
+                   when max(x.agristabilty_commodity_xref_id) is not null then null
                    else aarm.inventory_code || ' ' || aarm.inventory_type_code
                end) import_comment,
                coalesce(max(x.agristabilty_commodity_xref_id), max(x2.agristabilty_commodity_xref_id)) agristabilty_commodity_xref_id
