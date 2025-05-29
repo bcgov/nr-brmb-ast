@@ -69,6 +69,5 @@ exception
             sqlerrm,
             in_farming_operation_id
         ));
-    end;
 end;
 $$;
