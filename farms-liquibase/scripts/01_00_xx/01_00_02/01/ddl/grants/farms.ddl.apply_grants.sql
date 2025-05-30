@@ -7,6 +7,7 @@ GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_line_item TO "app_farms_
 GRANT EXECUTE ON FUNCTION farms_codes_write_pkg.in_use_line_item TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.delete_line_item TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_write_pkg.copy_year_line_items TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.expire_fmv TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_mun_code TO "app_farms_rest_proxy";
