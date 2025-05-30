@@ -89,7 +89,7 @@ begin
             )
         )
         limit 1
-    );
+    ) t;
 
     if v_post_mark_date is null or v_received_date is null then
         return 'Must include both post mark date and file received date';
