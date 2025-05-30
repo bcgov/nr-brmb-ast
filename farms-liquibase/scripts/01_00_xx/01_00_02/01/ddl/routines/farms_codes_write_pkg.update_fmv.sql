@@ -7,7 +7,7 @@ create or replace procedure farms_codes_write_pkg.update_fmv(
    in in_inventory_item_code farms.fair_market_value.inventory_item_code%type,
    in in_municipality_code farms.fair_market_value.municipality_code%type,
    in in_crop_unit_code farms.fair_market_value.crop_unit_code%type,
-   in in_revision_count farms.fair_market_value.revision_count%type
+   in in_revision_count farms.fair_market_value.revision_count%type,
    in in_user farms.fair_market_value.update_user%type
 )
 language plpgsql
