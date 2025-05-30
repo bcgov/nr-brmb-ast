@@ -13,11 +13,11 @@ begin
 
     if v_in_use = 0 then
 
-        delete farms.sector_detail_line_item sdli
+        delete from farms.sector_detail_line_item sdli
         where sdli.line_item = in_line_item;
 
         -- Make sure no one has changed the line item
-        delete farms.line_item c
+        delete from farms.line_item c
         where c.line_item = in_line_item
         and c.revision_count = in_revision_count;
 
@@ -27,7 +27,7 @@ begin
 
         -- Since the line item is not in use for this year
         -- we can delete any expired copies of it too.
-        delete farms.line_item c
+        delete from farms.line_item c
         where c.line_item = in_line_item
         and c.program_year = in_program_year;
     end if;
