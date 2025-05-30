@@ -12,7 +12,7 @@ create or replace procedure farms_codes_write_pkg.create_line_item(
    in in_industry_average_expense_indicator farms.line_item.industry_average_expense_indicator%type,
    in in_established_date farms.line_item.established_date%type,
    in in_expiry_date farms.line_item.expiry_date%type,
-   in in_sector_detail_code farms.line_item.sector_detail_code%type,
+   in in_sector_detail_code farms.sector_detail_line_item.sector_detail_code%type,
    in in_fruit_vegetable_type_code farms.line_item.fruit_vegetable_type_code%type,
    in in_commodity_type_code farms.line_item.commodity_type_code%type,
    in in_user farms.line_item.update_user%type
