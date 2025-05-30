@@ -68,7 +68,7 @@ begin
                z.partnership_percent,
                z.partnership_pin,
                z.participant_pin,
-               z.operation_number
+               z.operation_number,
                row_number() over (partition by to_char(z.accounting_code),
                z.business_use_of_home_expenses, z.crop_disaster_indicator, z.crop_share_indicator,
                z.expenses, z.feeder_member_indicator, to_date(z.fiscal_year_end, 'YYYYMMDD'),
@@ -82,7 +82,7 @@ begin
         join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                    and z.program_year = py.year
         where py.program_year_id = in_program_year_id
-    )
+    ) t1
     union all
     (
         select to_char(z.accounting_code) federal_accounting_code,
@@ -197,7 +197,7 @@ begin
         join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                    and py.year = z.program_year
         where py.program_year_id = in_program_year_id
-    )
+    ) t2
     union all
     (
         select z.partner_sin_ctn_business_number partner_sin,
@@ -258,7 +258,7 @@ begin
         join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                    and py.year = z.program_year
         where py.program_year_id = in_program_year_id
-    )
+    ) t3
     union all
     (
         select z.operation_number,
