@@ -47,6 +47,7 @@ GRANT EXECUTE ON FUNCTION farms_import_pkg.operation_partner TO "app_farms_rest_
 GRANT EXECUTE ON FUNCTION farms_import_pkg.production_insurance TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.operation TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.is_operation_changed TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_import_pkg.is_changed_bool TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
