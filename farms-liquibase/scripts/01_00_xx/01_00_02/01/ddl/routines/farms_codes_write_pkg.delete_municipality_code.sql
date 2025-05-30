@@ -12,7 +12,7 @@ begin
 
     if v_in_use = 0 then
 
-        delete farms.office_municipality_xref x
+        delete from farms.office_municipality_xref x
         where x.municipality_code = in_municipality_code;
 
         delete from farms.municipality_code c
