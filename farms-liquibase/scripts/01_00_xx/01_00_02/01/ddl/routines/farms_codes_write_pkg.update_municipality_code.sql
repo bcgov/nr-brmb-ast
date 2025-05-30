@@ -25,7 +25,7 @@ begin
         c.update_user = in_user,
         c.update_date = current_timestamp
     where c.municipality_code = in_municipality_code
-      and c.revision_count = in_revision_count;
+    and c.revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
         raise exception 'Invalid revision count';
