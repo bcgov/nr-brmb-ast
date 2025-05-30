@@ -1,9 +1,9 @@
 create or replace procedure farms_codes_write_pkg.create_federal_accounting_code(
-   in in_federal_accounting_code in farms.federal_accounting_code.federal_accounting_code%type,
-   in in_description in farms.federal_accounting_code.description%type,
-   in in_effective_date in farms.federal_accounting_code.effective_date%type,
-   in in_expiry_date in farms.federal_accounting_code.expiry_date%type,
-   in in_user in farms.federal_accounting_code.update_user%type
+   in in_federal_accounting_code farms.federal_accounting_code.federal_accounting_code%type,
+   in in_description farms.federal_accounting_code.description%type,
+   in in_effective_date farms.federal_accounting_code.effective_date%type,
+   in in_expiry_date farms.federal_accounting_code.expiry_date%type,
+   in in_user farms.federal_accounting_code.update_user%type
 )
 language plpgsql
 as $$
