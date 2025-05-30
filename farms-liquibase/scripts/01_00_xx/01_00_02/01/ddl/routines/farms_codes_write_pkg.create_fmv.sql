@@ -46,7 +46,7 @@ begin
         update_date,
         revision_count
     ) values (
-        nextval('farms.seq_fmv')
+        nextval('farms.seq_fmv'),
         in_program_year,
         in_period,
         in_average_price,
