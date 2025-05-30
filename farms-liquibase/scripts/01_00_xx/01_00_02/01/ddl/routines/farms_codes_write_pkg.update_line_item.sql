@@ -46,14 +46,14 @@ begin
     set c.expiry_date = current_date,
         c.revision_count = c.revision_count + 1,
         c.update_user = in_user,
-        c.update_date = current_timestamp
+        c.update_date = current_timestamp,
         c.fruit_vegetable_type_code = in_fruit_vegetable_type_code,
         c.commodity_type_code = in_commodity_type_code
     where c.line_item_id = in_line_item_id
     and c.revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
-        raise exception 'Invalid revision count'
+        raise exception 'Invalid revision count';
     end if;
 end;
 $$;
