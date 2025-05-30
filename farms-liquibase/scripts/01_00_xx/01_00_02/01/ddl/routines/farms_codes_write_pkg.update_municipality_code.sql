@@ -21,7 +21,7 @@ begin
     set c.description = in_description,
         c.effective_date = in_effective_date,
         c.expiry_date = in_expiry_date,
-        c.revision_count = in_revision_count + 1,
+        c.revision_count = c.revision_count + 1,
         c.update_user = in_user,
         c.update_date = current_timestamp
     where c.municipality_code = in_municipality_code
