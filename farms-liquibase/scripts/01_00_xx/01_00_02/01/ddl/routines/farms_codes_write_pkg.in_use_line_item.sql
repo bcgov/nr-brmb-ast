@@ -2,7 +2,7 @@ create or replace function farms_codes_write_pkg.in_use_line_item(
     in in_program_year farms.line_item.program_year%type,
     in in_line_item farms.line_item.line_item%type
 )
-returns numeric;
+returns numeric
 language plpgsql
 as $$
 declare
