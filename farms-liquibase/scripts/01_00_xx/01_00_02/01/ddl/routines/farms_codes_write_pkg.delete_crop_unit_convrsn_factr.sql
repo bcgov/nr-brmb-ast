@@ -8,7 +8,7 @@ begin
 
     delete from farms.crop_unit_conversion_factor cf
     where cf.inventory_item_code = in_inventory_item_code
-    and (in-in_target_crop_unit_code is null
+    and (in_target_crop_unit_code is null
         or cf.target_crop_unit_code = in_target_crop_unit_code);
 
 end;
