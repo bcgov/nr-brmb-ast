@@ -30,7 +30,5 @@ begin
         current_timestamp
     );
 
-    -- audit stuff will be taken care of in the main body
-    commit;
 end;
 $$;
