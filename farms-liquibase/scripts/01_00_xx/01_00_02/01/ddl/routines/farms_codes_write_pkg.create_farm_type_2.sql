@@ -1,7 +1,7 @@
 create or replace procedure farms_codes_write_pkg.create_farm_type_2(
    inout in_farm_type_2_id farms.tip_farm_type_2_lookup.tip_farm_type_2_lookup_id%type,
    in in_farm_type_3_id farms.tip_farm_type_3_lookup.tip_farm_type_3_lookup_id%type,
-   in in_farm_type_name farms.tip_farm_type_2_lookup.tip_farm_type_2_name%type,
+   in in_farm_type_name farms.tip_farm_type_2_lookup.farm_type_2_name%type,
    in in_farm_user farms.tip_farm_type_2_lookup.update_user%type
 )
 language plpgsql
