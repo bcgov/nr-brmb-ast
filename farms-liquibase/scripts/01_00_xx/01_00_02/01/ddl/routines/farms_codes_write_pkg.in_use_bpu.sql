@@ -27,7 +27,7 @@ begin
     close c_xref;
 
     if v_result = 0 then
-        opn c_bpu;
+        open c_bpu;
         fetch c_bpu into v_bpu;
         close c_bpu;
 
