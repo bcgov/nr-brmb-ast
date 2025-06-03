@@ -1,7 +1,7 @@
 create or replace procedure farms_codes_write_pkg.create_structure_group_code(
    in in_structure_group_code farms.structure_group_code.structure_group_code%type,
    in in_description farms.structure_group_code.description%type,
-   in in_rollup_structure_group_code farms.structure_group_code.rollup_structure_group_code%type,
+   in in_rollup_structure_group_code farms.structure_group_attribute.rollup_structure_group_code%type,
    in in_effective_date farms.structure_group_code.effective_date%type,
    in in_expiry_date farms.structure_group_code.expiry_date%type,
    in in_user farms.structure_group_code.update_user%type
