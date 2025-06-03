@@ -25,7 +25,7 @@ begin
         line_item,
         insurable_value,
         premium_rate,
-        commodity_type_code
+        commodity_type_code,
         revision_count
     ) values (
         nextval('farms.seq_iid'),
