@@ -62,6 +62,7 @@ GRANT EXECUTE ON FUNCTION farms_codes_write_pkg.in_use_inventory_item_code TO "a
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.delete_inventory_item_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_inventory_item_detail TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_inventory_item_detail TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_codes_write_pkg.copy_year_inventory_details TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_mun_code TO "app_farms_rest_proxy";
