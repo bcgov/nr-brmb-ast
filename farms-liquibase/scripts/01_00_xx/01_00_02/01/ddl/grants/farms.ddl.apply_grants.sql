@@ -55,6 +55,7 @@ GRANT EXECUTE ON FUNCTION farms_codes_write_pkg.in_use_bpu TO "app_farms_rest_pr
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.delete_bpu TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_write_pkg.is_structure_group_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_bpu TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_bpu_year TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_mun_code TO "app_farms_rest_proxy";
