@@ -1,5 +1,5 @@
 create or replace procedure farms_codes_write_pkg.delete_inventory_xref(
-   in in_agristabilty_commodity_xref_id farms.agristabilty_commodity_xref.agristabilty_commodity_xref_id%type
+   in in_agristabilty_commodity_xref_id farms.agristabilty_commodity_xref.agristabilty_commodity_xref_id%type,
    in in_revision_count farms.agristabilty_commodity_xref.revision_count%type
 )
 language plpgsql
