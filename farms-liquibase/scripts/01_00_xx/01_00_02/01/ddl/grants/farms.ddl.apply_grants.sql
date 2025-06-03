@@ -78,6 +78,7 @@ GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.delete_crop_unit_convrsn_factr 
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.recalculate_fmvs TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_farm_type_3 TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_farm_type_3 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.delete_farm_type_3 TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_mun_code TO "app_farms_rest_proxy";
