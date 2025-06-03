@@ -90,6 +90,7 @@ GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.delete_farm_type_default_income
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_fruit_veg_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_fruit_veg_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.delete_fruit_veg_code TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_expected_production_value TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_mun_code TO "app_farms_rest_proxy";
