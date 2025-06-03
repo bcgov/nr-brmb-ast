@@ -24,8 +24,8 @@ begin
         in_farm_user,
         current_timestamp,
         in_farm_user,
-        current_timestamp
-        1,
+        current_timestamp,
+        1
     ) returning tip_farm_type_1_lookup_id into in_farm_type_1_id;
 
 end;
