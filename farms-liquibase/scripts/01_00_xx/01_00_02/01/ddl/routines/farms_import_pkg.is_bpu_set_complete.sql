@@ -36,7 +36,7 @@ begin
                      or bpu.inventory_group_code = puc.inventory_group_code)
             )
         ) then 'N'
-        else 'Y' bpu_set_complete
+        else 'Y'
     end) into bpu_set_complete_ind;
 
     return bpu_set_complete_ind;
