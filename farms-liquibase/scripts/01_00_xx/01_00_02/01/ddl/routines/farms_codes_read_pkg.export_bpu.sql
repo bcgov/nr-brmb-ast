@@ -60,7 +60,7 @@ begin
                 (in_inventory_desc_filter is not null and (
                     lower(iic.description) like lower(in_inventory_desc_filter || '%') or
                     lower(sgc.description) like lower(in_inventory_desc_filter || '%')
-                )) or
+                ))
             )
             and (
                 in_municipality_desc_filter is null or
