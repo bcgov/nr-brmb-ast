@@ -25,6 +25,7 @@ GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_inventory_item_codes TO "app
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_inventory_item_details TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_inventory_xrefs TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_program_years TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_market_rate_premiums TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_sector_line_item TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_line_item TO "app_farms_rest_proxy";
