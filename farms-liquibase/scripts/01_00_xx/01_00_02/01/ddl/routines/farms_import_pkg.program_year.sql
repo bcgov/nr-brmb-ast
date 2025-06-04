@@ -2,9 +2,9 @@ create or replace function farms_import_pkg.program_year(
     in in_version_id numeric,
     in in_agristability_client_id farms.agristability_client.agristability_client_id%type,
     in in_user varchar,
-    inout in_out_activity numeric
+    inout in_out_activity numeric,
+    out errors numeric
 )
-returns numeric
 language plpgsql
 as $$
 declare
@@ -104,7 +104,6 @@ declare
     opened_py numeric := 0;
     closed_py numeric := 0;
 
-    errors numeric := 0;
     error_msg varchar(512);
 
     ch boolean := true;
@@ -346,14 +345,13 @@ begin
                     in_version_id,
                     '<ERROR>' || farms_import_pkg.scrub(error_msg) || '</ERROR>'
                 );
-                error_msg := null;
                 errors := errors + 1;
-                raise exception error_msg;
+                raise exception '%', error_msg;
             end if;
         exception
             when others then
                 rollback;
-                farms_import_pkg.append_impl1(
+                call farms_import_pkg.append_impl1(
                     in_version_id,
                     '<ERROR>' ||
                     farms_import_pkg.scrub(farms_import_pkg.codify_program_year(
@@ -382,7 +380,5 @@ begin
     if opened > 0 then
         call farms_import_pkg.append_imp1(in_version_id, '</PROGRAM_YEARS>');
     end if;
-
-    return errors;
 end;
 $$;
