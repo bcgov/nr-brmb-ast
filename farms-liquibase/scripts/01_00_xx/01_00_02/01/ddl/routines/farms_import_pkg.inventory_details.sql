@@ -1,7 +1,6 @@
-create or replace function farms_import_pkg.inventory_details(
+create or replace procedure farms_import_pkg.inventory_details(
     in in_user farms.program_year.create_user%type
 )
-returns varchar
 language plpgsql
 as $$
 declare
