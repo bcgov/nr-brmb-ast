@@ -8,6 +8,7 @@ GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.export_fmv TO "app_farms_rest_pro
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.export_missing_fmv TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_municipality_codes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_municipality_office_codes TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_regional_office_codes TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_sector_line_item TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_line_item TO "app_farms_rest_proxy";
