@@ -157,6 +157,7 @@ GRANT EXECUTE ON FUNCTION farms_import_pkg.is_operation_changed TO "app_farms_re
 GRANT EXECUTE ON FUNCTION farms_import_pkg.is_changed_bool TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.is_changed TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.supplemental_date TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_import_pkg.inventory_details TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
