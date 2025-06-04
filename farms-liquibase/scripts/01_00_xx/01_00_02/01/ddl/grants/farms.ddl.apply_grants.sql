@@ -160,6 +160,7 @@ GRANT EXECUTE ON FUNCTION farms_import_pkg.supplemental_date TO "app_farms_rest_
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.inventory_details TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.year_configuration_params TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.line_items TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_import_pkg.create_config_data TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
