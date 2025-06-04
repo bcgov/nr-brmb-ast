@@ -32,7 +32,7 @@ begin
         /* read relies on this ordering to construct objects. */
         order by lower(coalesce(iic.description, sgc.description)),
                  coalesce(bpu.inventory_item_code, bpu.structure_group_code),
-                 lower(mc.description)
+                 lower(mc.description),
                  bpuy.benchmark_year;
     return cur;
 end;
