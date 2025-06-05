@@ -28,7 +28,7 @@ begin
                 ) s
                 join farms.program_year_version pyv on pyv.program_year_version_id = s.program_year_version_id
                 join (
-                    select fo.*
+                    select fo.*,
                            (
                                (to_number(to_char(fo.fiscal_year_end, 'YYYY')) - to_number(to_char(fo.fiscal_year_start, 'YYYY'))) * 12 +
                                (to_number(to_char(fo.fiscal_year_end, 'MM')) - to_number(to_char(fo.fiscal_year_start, 'MM'))) + 1
@@ -44,7 +44,7 @@ begin
                     ri.quantity_start != 0 or
                     ri.quantity_end != 0 or
                     ri.price_start != 0 or
-                    ri.price_end != 0 or
+                    ri.price_end != 0
                 )
             ) t
             where t.fiscal_months != (
