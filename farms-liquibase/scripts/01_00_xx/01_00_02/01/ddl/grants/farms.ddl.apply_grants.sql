@@ -228,6 +228,7 @@ GRANT EXECUTE ON FUNCTION farms_read_pkg.read_pyv_op TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_part TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_pi TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_pyv_wf TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_pyv_sc TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
