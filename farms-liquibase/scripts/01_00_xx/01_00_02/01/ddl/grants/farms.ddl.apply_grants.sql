@@ -222,6 +222,7 @@ GRANT EXECUTE ON FUNCTION farms_import_pkg.is_fmv_set_complete TO "app_farms_res
 
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_client TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_py_meta TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_pyv TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
