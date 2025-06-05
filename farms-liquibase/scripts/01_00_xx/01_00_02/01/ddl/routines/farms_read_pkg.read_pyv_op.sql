@@ -20,7 +20,7 @@ begin
                op.landlord_indicator,
                op.net_farm_income,
                op.net_income_after_adjustments,
-               op.net_income_before_adjustments
+               op.net_income_before_adjustments,
                op.other_deductions,
                op.partnership_name,
                op.partnership_percent,
