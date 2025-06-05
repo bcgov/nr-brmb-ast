@@ -45,6 +45,7 @@ GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.check_expected_production_item_ex
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_configuration_parameters TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_configuration_parameter TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_year_configuration_params TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_year_configuration_param TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_sector_line_item TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_line_item TO "app_farms_rest_proxy";
