@@ -53,6 +53,7 @@ GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_tip_benchmark_info TO "app_f
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_commodity_type_codes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_document_templates TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_sector_codes TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_sector_detail_codes TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_sector_line_item TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_line_item TO "app_farms_rest_proxy";
