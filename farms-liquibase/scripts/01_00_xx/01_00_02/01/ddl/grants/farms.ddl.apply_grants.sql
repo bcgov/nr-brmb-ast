@@ -41,6 +41,7 @@ GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_fruit_veg_codes TO "app_farm
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_variance_limit_for_fruit_veg_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.check_fruit_veg_code_in_use TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_expected_production_items TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.check_expected_production_item_exists TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_sector_line_item TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_line_item TO "app_farms_rest_proxy";
