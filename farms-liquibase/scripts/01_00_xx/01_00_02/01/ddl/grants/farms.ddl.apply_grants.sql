@@ -244,6 +244,7 @@ GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_fmv TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_single_fmv TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_fmv_prev_year TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_cob_gen_date TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_enrolment TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
