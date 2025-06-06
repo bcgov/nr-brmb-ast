@@ -127,7 +127,7 @@ begin
         join farms.inventory_class_code icc on iic.inventory_class_code = icc.inventory_class_code
         join farms.farming_operation fo on fo.farming_operation_id = coalesce(a.farming_operation_id, b.farming_operation_id)
         join farms.program_year_version pyv on pyv.program_year_version_id = fo.program_year_version_id
-        join farms.program_year py py.program_year_id = pyv.program_year_id
+        join farms.program_year py on py.program_year_id = pyv.program_year_id
         join farms.inventory_item_detail iid on x.inventory_item_code = iid.inventory_item_code
                                              and iid.program_year = py.year
         left outer join farms.inventory_group_code igc on x.inventory_group_code = igc.inventory_group_code
