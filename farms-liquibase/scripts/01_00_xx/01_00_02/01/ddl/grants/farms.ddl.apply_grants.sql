@@ -220,6 +220,7 @@ GRANT EXECUTE ON PROCEDURE farms_import_pkg.create_config_data TO "app_farms_res
 GRANT EXECUTE ON FUNCTION farms_import_pkg.program_year TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.is_bpu_set_complete TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.is_fmv_set_complete TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_import_pkg.get_scenario_ids TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_client TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_py_meta TO "app_farms_rest_proxy";
