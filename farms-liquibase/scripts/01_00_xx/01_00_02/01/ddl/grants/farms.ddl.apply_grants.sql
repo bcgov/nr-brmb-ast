@@ -239,6 +239,7 @@ GRANT EXECUTE ON FUNCTION farms_read_pkg.read_inv TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_puc TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_ie TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_read_pkg.read_bpu_all TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_bpu_xref TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_version_pkg.create_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.start_upload TO "app_farms_rest_proxy";
