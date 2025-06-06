@@ -10,7 +10,7 @@ begin
     open cur for
         select docs.generation_date
         from farms.benefit_calculation_document docs
-        where docs.agristability_scenario_id = scenario_id
+        where docs.agristability_scenario_id = scenario_id;
     return cur;
 end;
 $$;
