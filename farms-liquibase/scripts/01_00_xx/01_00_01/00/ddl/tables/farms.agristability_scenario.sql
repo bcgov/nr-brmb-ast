@@ -107,7 +107,7 @@ CREATE INDEX ix_as_tqc ON farms.agristability_scenario(triage_queue_code)
 CREATE INDEX ix_as_vui ON farms.agristability_scenario(verifier_user_id)
  TABLESPACE pg_default
 ;
-CREATE UNIQUE INDEX uk_as_pyvi ON farms.agristability_scenario(program_year_version_id)
+CREATE UNIQUE INDEX uk_as_pyvi_sn ON farms.agristability_scenario(program_year_version_id, scenario_number)
  TABLESPACE pg_default
 ;
 
