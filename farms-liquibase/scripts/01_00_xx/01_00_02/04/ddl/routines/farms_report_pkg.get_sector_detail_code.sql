@@ -5,7 +5,7 @@ returns varchar
 language plpgsql
 as $$
 declare
-    sector_detail_code_cursor(p_scenario_ids numeric[]) cursor for
+    sector_detail_code_cursor cursor (p_scenario_ids numeric[]) for
         select (case
                    when t.sector_detail_code is null or t.sector_detail_income_percent = 0 then 'NO_INCOME'
                    when t.sector_detail_income_percent >= 50 then t.sector_detail_code
@@ -52,7 +52,7 @@ declare
             and sector_detail_income_sum != 0
         ) t on 1 = 1
         left outer join farms.sector_detail_xref mix on mix.sector_code = t.sector_code
-                                                     and mix.sector_detail_code in ('MIX_CATTLE', 'MIX_CR_G_O', 'MIX_FRUIT', 'MIX_LIVE', 'MIX_OTH_CR', 'MIX_SM',   'MIX_VEG');
+                                                     and mix.sector_detail_code in ('MIX_CATTLE', 'MIX_CR_G_O', 'MIX_FRUIT', 'MIX_LIVE', 'MIX_OTH_CR', 'MIX_SM',   'MIX_VEG')
         where (t.income_rank = 1 or t.income_rank is null);
 
     v_sector_detail_code farms.sector_code.description%type;
