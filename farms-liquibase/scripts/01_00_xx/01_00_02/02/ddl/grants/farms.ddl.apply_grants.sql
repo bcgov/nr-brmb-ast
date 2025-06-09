@@ -1,3 +1,5 @@
+GRANT SELECT ON farms.agri_scenarios_vw TO "app_farms_rest_proxy";
+
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_sector_line_item TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.create_line_item TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_codes_write_pkg.update_line_item TO "app_farms_rest_proxy";
