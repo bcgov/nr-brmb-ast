@@ -17,3 +17,4 @@ begin
     return cur;
 
 end;
+$$;
