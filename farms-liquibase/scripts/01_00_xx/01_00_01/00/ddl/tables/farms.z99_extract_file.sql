@@ -31,3 +31,7 @@ COMMENT ON COLUMN farms.z99_extract_file.update_date IS 'UPDATE DATE indicates w
 COMMENT ON TABLE farms.z99_extract_file IS 'Z99 EXTRACT FILE identifies row counts for every other file in the extract. There will be one row per file. This file is created by FIPD. If both the AgriStability t1273 extract files and the AgriStability supplemental data files are extracted, there will be a single file 99 with counts for all files. This is a staging object used to load temporary data set before being merged into the operational data.'
 ;
 
+
+ALTER TABLE farms.z99_extract_file ADD 
+    CONSTRAINT pk_zei PRIMARY KEY (extract_file_number) USING INDEX TABLESPACE pg_default 
+;
