@@ -1,0 +1,765 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "7",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/schema/farms.ddl.create_farms_codes_write_pkg_schema.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/views/farms.agri_scenarios_vw.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.copy_forward_year_config.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.copy_year_configuration_params.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.copy_year_inventory_details.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.copy_year_line_items.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_bpu.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_bpu_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_crop_unit_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_crop_unit_convrsn_factr.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_crop_unit_default.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_expected_production.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_farm_type_1.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_farm_type_2.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_farm_type_3.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_farm_type_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_federal_accounting_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_federal_status_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_fmv.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_fruit_veg_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_income_range.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_inventory_item_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_inventory_item_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_inventory_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_market_rate_premium.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_municipality_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_participant_class_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_participant_lang_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_participant_prof_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_sector_detail_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_structure_group_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.create_tip_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_bpu.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_crop_unit_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_crop_unit_convrsn_factr.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_crop_unit_default.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_expected_production.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_farm_type_1.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_farm_type_2.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_farm_type_3.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_farm_type_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_farm_type_default_income_range.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_federal_accounting_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_federal_status_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_fmv.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_fruit_veg_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_inventory_item_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_inventory_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_market_rate_premium.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_municipality_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_participant_class_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_participant_lang_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_participant_prof_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_sector_detail_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_structure_group_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.delete_tip_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.expire_fmv.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_bpu.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_crop_unit_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_farm_type_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_federal_accounting_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_federal_status_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_fmv.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_inventory_item_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_inventory_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_municipality_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_participant_class_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_participant_lang_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_participant_prof_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_sector_detail_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.in_use_structure_group_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.is_structure_group_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.recalculate_fmvs.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_bpu_year.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_configuration_parameter.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_crop_unit_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_crop_unit_default.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_document_template.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_expected_production_value.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_farm_type_1.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_farm_type_2.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_farm_type_3.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_farm_type_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_federal_accounting_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_federal_status_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_fmv.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_fruit_veg_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_inventory_item_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_inventory_item_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_inventory_xref.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_market_rate_premium.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_municipality_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_municipality_off_codes.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_participant_class_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_participant_lang_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_participant_prof_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_sector_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_sector_detail_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_sector_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_structure_group_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_tip_line_item.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_triage_queue_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.update_year_configuration_param.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/grants/farms.ddl.apply_grants.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
