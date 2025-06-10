@@ -44,3 +44,4 @@ GRANT EXECUTE ON FUNCTION farms_import_pkg.program_year TO "app_farms_rest_proxy
 GRANT EXECUTE ON FUNCTION farms_import_pkg.is_bpu_set_complete TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.is_fmv_set_complete TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_import_pkg.get_scenario_ids TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_import_pkg.benefit_update_transfer TO "app_farms_rest_proxy";
