@@ -8,3 +8,4 @@ GRANT EXECUTE ON PROCEDURE farms_version_pkg.perform_import TO "app_farms_rest_p
 GRANT EXECUTE ON FUNCTION farms_version_pkg.import_failure TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_version_pkg.import_complete TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_version_pkg.import_complete1 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_version_pkg.analyze_schema TO "app_farms_rest_proxy";
