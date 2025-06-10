@@ -248,7 +248,7 @@ begin
         if (z01_val.p_out_identity_effective_date is null
             or z01_val.p_out_identity_effective_date <> z01_val.p_in_identity_effective_date) then
 
-            farms_import_pkg.person(
+            call farms_import_pkg.person(
                 in_version_id,
                 person_id,
                 z01_val.c_in_address_1,
@@ -286,7 +286,7 @@ begin
                 p1_msg
             );
 
-            farms_import_pkg.person(
+            call farms_import_pkg.person(
                 in_version_id,
                 person_rep_id,
                 z01_val.r_in_address_1,
