@@ -5,6 +5,6 @@ language plpgsql
 as $$
 begin
     call farms_import_pkg.update_status(in_version_id, 'Analyzing schema');
-    analyze farms;
+    analyze schema farms;
 end;
 $$;
