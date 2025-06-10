@@ -90,10 +90,10 @@ declare
     transfer_version_id farms.import_version.import_version_id%type;
     cur_line varchar(32767);
     cnt numeric := 0;
-    scenario_ids numeric[] := {};
+    scenario_ids numeric[] := '{}';
     farm_sector_detail_code farms.sector_detail_code.sector_detail_code%type;
-    farm_sector farms.sector_codes.description%type;
-    farm_sector_detail farms.sector_detail_codes.description%type;
+    farm_sector farms.sector_code.description%type;
+    farm_sector_detail farms.sector_detail_code.description%type;
     bpu_set_complete_ind varchar(1);
     fmv_set_complete_ind varchar(1);
     import_date farms.import_version.create_date%type;
@@ -112,7 +112,7 @@ begin
         from farms.import_version iv
         where iv.import_version_id = in_cra_version_id;
 
-        farms_webapp_pkg.insert_import_version(
+        call farms_webapp_pkg.insert_import_version(
             transfer_version_id,
             'XSTATE',
             'SS',
@@ -130,7 +130,7 @@ begin
 
         loop
             cnt := cnt + 1;
-            farms_import_pkg.update_status(
+            call farms_import_pkg.update_status(
                 in_cra_version_id,
                 'Processing State Transfer for Scenario Id: ' || transfer_val.agristability_scenario_id
             );
@@ -190,7 +190,7 @@ begin
                         null ||        -- FIFO Result Type
                         chr(10);
 
-            b := coalesce(b, '':bytea) || convert_to(cur_line, 'UTF8');
+            b := coalesce(b, ''::bytea) || convert_to(cur_line, 'UTF8');
 
             -- Add 2 seconds to the When_Created date so that this
             -- transfer will be run after the contact transfer.
@@ -205,7 +205,7 @@ begin
             exit when received_cursor%notfound;
         end loop;
 
-        farms_import_pkg.update_status(
+        call farms_import_pkg.update_status(
             in_cra_version_id,
             'Saved State Transfer List'
         );
