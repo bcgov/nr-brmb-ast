@@ -14,7 +14,7 @@ begin
         iv.import_state_code = (case when r = 0 then 'IC' else 'IPC' end),
         iv.revision_count = iv.revision_count + 1,
         iv.update_user = in_user,
-        iv.update_date = current_timestamp,
+        iv.update_date = current_timestamp
     where iv.import_version_id = in_version_id;
 exception
     when others then
@@ -23,7 +23,7 @@ exception
             iv.import_state_code = 'IF',
             iv.revision_count = iv.revision_count + 1,
             iv.update_user = in_user,
-            iv.update_date = current_timestamp,
+            iv.update_date = current_timestamp
         where iv.import_version_id = in_version_id;
         raise;
 end;
