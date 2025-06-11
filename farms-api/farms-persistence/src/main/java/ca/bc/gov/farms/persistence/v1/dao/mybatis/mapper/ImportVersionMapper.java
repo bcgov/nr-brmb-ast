@@ -23,4 +23,6 @@ public interface ImportVersionMapper {
     void importComplete(Map<String, Object> parameters);
 
     void clearSuccessfulTransfers(Map<String, Object> parameters);
+
+    void analyzeSchema(Map<String, Object> parameters);
 }

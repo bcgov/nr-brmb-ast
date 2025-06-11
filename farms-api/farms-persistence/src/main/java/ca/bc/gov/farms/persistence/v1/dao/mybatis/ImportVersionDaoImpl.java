@@ -187,4 +187,19 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug(">clearSuccessfulTransfers");
     }
 
+    @Override
+    public void analyzeSchema(Long versionId) throws DaoException {
+        logger.debug("<analyzeSchema");
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("versionId", versionId);
+            this.mapper.analyzeSchema(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">analyzeSchema");
+    }
+
 }

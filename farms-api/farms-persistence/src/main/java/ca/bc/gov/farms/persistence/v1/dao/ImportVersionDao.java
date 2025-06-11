@@ -25,4 +25,6 @@ public interface ImportVersionDao extends Serializable {
     void importComplete(Long versionId, String message, String user) throws DaoException;
 
     void clearSuccessfulTransfers() throws DaoException;
+
+    void analyzeSchema(Long versionId) throws DaoException;
 }

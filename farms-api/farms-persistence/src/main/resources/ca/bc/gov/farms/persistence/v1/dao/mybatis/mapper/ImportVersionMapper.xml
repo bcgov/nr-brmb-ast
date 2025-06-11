@@ -100,4 +100,10 @@
     <delete id="clearSuccessfulTransfers">
         call farms_version_pkg.clear_successful_transfers()
     </delete>
+
+    <update id="analyzeSchema">
+        call farms_version_pkg.analyze_schema(
+            #{versionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+        )
+    </update>
 </mapper>
