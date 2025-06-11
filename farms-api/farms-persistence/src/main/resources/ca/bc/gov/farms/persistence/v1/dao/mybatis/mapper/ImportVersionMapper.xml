@@ -80,4 +80,12 @@
             #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
         )
     </update>
+
+    <update id="importFailure">
+        call farms_version_pkg.import_failure(
+            #{versionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
+            #{message, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+        )
+    </update>
 </mapper>
