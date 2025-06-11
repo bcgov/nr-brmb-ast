@@ -44,10 +44,17 @@
     </update>
 
     <update id="uploadedVersion">
-        select farms_version_pkg.uploaded_version(
+        call farms_version_pkg.uploaded_version(
             #{versionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
             #{xml, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             #{hasErrorsInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+        )
+    </update>
+
+    <update id="startImport">
+        call farms_version_pkg.start_import(
+            #{versionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
             #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
         )
     </update>

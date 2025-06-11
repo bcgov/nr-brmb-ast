@@ -9,4 +9,6 @@ public interface ImportVersionMapper {
     void updateControlFileInfoStg(Map<String, Object> parameters);
 
     void uploadedVersion(Map<String, Object> parameters);
+
+    void startImport(Map<String, Object> parameters);
 }
