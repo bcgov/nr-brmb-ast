@@ -90,4 +90,20 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug(">startImport");
     }
 
+    @Override
+    public void startUpload(Long versionId, String user) throws DaoException {
+        logger.debug("<startUpload");
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("versionId", versionId);
+            parameters.put("user", user);
+            this.mapper.startUpload(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">startUpload");
+    }
+
 }

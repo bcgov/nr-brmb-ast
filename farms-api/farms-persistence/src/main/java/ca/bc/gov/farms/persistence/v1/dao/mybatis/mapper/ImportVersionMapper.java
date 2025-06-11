@@ -11,4 +11,6 @@ public interface ImportVersionMapper {
     void uploadedVersion(Map<String, Object> parameters);
 
     void startImport(Map<String, Object> parameters);
+
+    void startUpload(Map<String, Object> parameters);
 }
