@@ -88,4 +88,12 @@
             #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
         )
     </update>
+
+    <update id="importComplete">
+        call farms_version_pkg.import_complete(
+            #{versionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
+            #{message, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+        )
+    </update>
 </mapper>

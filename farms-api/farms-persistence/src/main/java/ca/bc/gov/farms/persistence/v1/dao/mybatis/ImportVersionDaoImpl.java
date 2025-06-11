@@ -156,4 +156,21 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug(">importFailure");
     }
 
+    @Override
+    public void importComplete(Long versionId, String message, String user) throws DaoException {
+        logger.debug("<importComplete");
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("versionId", versionId);
+            parameters.put("message", message);
+            parameters.put("user", user);
+            this.mapper.importComplete(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">importComplete");
+    }
+
 }
