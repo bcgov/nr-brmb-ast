@@ -21,4 +21,6 @@ public interface ImportVersionMapper {
     void importFailure(Map<String, Object> parameters);
 
     void importComplete(Map<String, Object> parameters);
+
+    void clearSuccessfulTransfers(Map<String, Object> parameters);
 }

@@ -173,4 +173,18 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug(">importComplete");
     }
 
+    @Override
+    public void clearSuccessfulTransfers() throws DaoException {
+        logger.debug("<clearSuccessfulTransfers");
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            this.mapper.clearSuccessfulTransfers(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">clearSuccessfulTransfers");
+    }
+
 }

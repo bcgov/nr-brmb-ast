@@ -96,4 +96,8 @@
             #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
         )
     </update>
+
+    <delete id="clearSuccessfulTransfers">
+        call farms_version_pkg.clear_successful_transfers()
+    </delete>
 </mapper>
