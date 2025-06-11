@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.VersionMapper">
+
+    <resultMap id="ImportVersionResultDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.ImportVersionDto">
+        <id property="importVersionId" column="import_version_id" javaType="java.lang.Long" jdbcType="NUMERIC" />
+
+        <result property="importedByUser" column="imported_by_user" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="description" column="description" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="importControlFileDate" column="import_control_file_date" javaType="java.util.Date" jdbcType="DATE" />
+        <result property="importControlFileInformation" column="import_control_file_information" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="importDate" column="import_date" javaType="java.util.Date" jdbcType="DATE" />
+        <result property="importFileName" column="import_file_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="importFilePassword" column="import_file_password" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="importFile" column="import_file" javaType="byte[]" jdbcType="BINARY" />
+        <result property="stagingAuditInformation" column="staging_audit_information" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="importAuditInformation" column="import_audit_information" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="lastStatusMessage" column="last_status_message" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="lastStatusDate" column="last_status_date" javaType="java.util.Date" jdbcType="DATE" />
+        <result property="importStateCode" column="import_state_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="importClassCode" column="import_class_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="create_user" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="create_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="update_user" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="update_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <insert id="createVersion">
+        select farms_version_pkg.create_version(
+            #{description, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{importFileName, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+        )
+    </insert>
+
+    <update id="uploadedVersion">
+        select farms_version_pkg.uploaded_version(
+            #{versionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
+            #{xml, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{hasErrorsInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+        )
+    </update>
+</mapper>

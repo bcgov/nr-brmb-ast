@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 
-public interface VersionDao extends Serializable {
+public interface ImportVersionDao extends Serializable {
 
     Integer createVersion(String description, String importFileName, String user) throws DaoException;
+
+    void uploadedVersion(Long versionId, String xml, Boolean hasErrorsInd, String user) throws DaoException;
 }
