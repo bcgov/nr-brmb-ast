@@ -36,6 +36,13 @@
         )
     </insert>
 
+    <update id="updateControlFileInfoStg">
+        call farms_version_pkg.update_control_file_info_stg(
+            #{versionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
+            #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+        )
+    </update>
+
     <update id="uploadedVersion">
         select farms_version_pkg.uploaded_version(
             #{versionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},

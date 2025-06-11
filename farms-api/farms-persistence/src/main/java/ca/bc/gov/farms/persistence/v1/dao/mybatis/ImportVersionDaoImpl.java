@@ -41,6 +41,22 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     }
 
     @Override
+    public void updateControlFileInfoStg(Long versionId, String user) throws DaoException {
+        logger.debug("<updateControlFileInfoStg");
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("versionId", versionId);
+            parameters.put("user", user);
+            this.mapper.updateControlFileInfoStg(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">updateControlFileInfoStg");
+    }
+
+    @Override
     public void uploadedVersion(Long versionId, String xml, Boolean hasErrorsInd, String user) throws DaoException {
         logger.debug("<uploadedVersion");
 
