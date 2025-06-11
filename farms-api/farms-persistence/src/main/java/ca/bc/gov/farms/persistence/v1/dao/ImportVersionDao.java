@@ -15,4 +15,6 @@ public interface ImportVersionDao extends Serializable {
     void startImport(Long versionId, String user) throws DaoException;
 
     void startUpload(Long versionId, String user) throws DaoException;
+
+    void performImport(Long versionId, String user) throws DaoException;
 }

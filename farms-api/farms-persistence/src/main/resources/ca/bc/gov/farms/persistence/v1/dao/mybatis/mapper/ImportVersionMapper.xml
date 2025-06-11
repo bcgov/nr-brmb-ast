@@ -65,4 +65,11 @@
             #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
         )
     </update>
+
+    <update id="performImport">
+        call farms_version_pkg.perform_import(
+            #{versionId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
+            #{user, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+        )
+    </update>
 </mapper>
