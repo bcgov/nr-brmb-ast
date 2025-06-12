@@ -83,11 +83,11 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
     public void deleteStagingErrors(Long importVersionId) throws DaoException {
         logger.debug("<deleteStagingErrors");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("importVersionId", importVersionId);
-            this.mapper.deleteStagingErrors(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_bpu_pkg.delete_staging_errors(?) }")) {
+            callableStatement.setLong(1, importVersionId);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
