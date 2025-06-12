@@ -6,17 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.BaseDao;
 import ca.bc.gov.farms.persistence.v1.dao.ImportBPUDao;
-import ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.ImportBPUMapper;
 import ca.bc.gov.farms.persistence.v1.dto.ImportBPUDto;
 import ca.bc.gov.farms.persistence.v1.dto.ImportLogDto;
 
@@ -25,9 +20,6 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
     private static final long serialVersionUID = 1L;
 
     private static final Logger logger = LoggerFactory.getLogger(ImportBPUDaoImpl.class);
-
-    @Autowired
-    private ImportBPUMapper mapper;
 
     private Connection conn;
 
