@@ -13,7 +13,6 @@ import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.BaseDao;
 import ca.bc.gov.farms.persistence.v1.dao.ImportBPUDao;
 import ca.bc.gov.farms.persistence.v1.dto.ImportBPUDto;
-import ca.bc.gov.farms.persistence.v1.dto.ImportLogDto;
 
 public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
 
@@ -28,13 +27,13 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
     }
 
     @Override
-    public void insertStagingRow(ImportBPUDto dto, String userId) throws DaoException {
+    public void insertStagingRow(ImportBPUDto dto, String userId, int rowNum) throws DaoException {
         logger.debug("<insertStagingRow");
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
                         "{ call farms_bpu_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }")) {
-            callableStatement.setInt(1, dto.getLineNumber());
+            callableStatement.setInt(1, rowNum);
             callableStatement.setInt(2, dto.getProgramYear());
             callableStatement.setString(3, dto.getMunicipalityCode());
             callableStatement.setString(4, dto.getInventoryItemCode());
@@ -105,10 +104,10 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
     }
 
     @Override
-    public List<ImportLogDto> getStagingErrors(Long importVersionId) throws DaoException {
+    public List<String> getStagingErrors(Long importVersionId) throws DaoException {
         logger.debug("<getStagingErrors");
 
-        List<ImportLogDto> importLogDtoList = new ArrayList<>();
+        List<String> importLogDtoList = new ArrayList<>();
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall("{ ? = call farms_bpu_pkg.get_staging_errors(?) }")) {
@@ -119,9 +118,8 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
 
             ResultSet resultSet = callableStatement.getObject(1, ResultSet.class);
             while (resultSet.next()) {
-                ImportLogDto importLogDto = new ImportLogDto();
-                importLogDto.setLogMessage(resultSet.getString("log_message"));
-                importLogDtoList.add(importLogDto);
+                String logMessage = resultSet.getString("log_message");
+                importLogDtoList.add(logMessage);
             }
             resultSet.close();
 
@@ -147,6 +145,22 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
         }
 
         logger.debug(">stagingToOperational");
+    }
+
+    @Override
+    public void performImport(Long importVersionId, String userId) throws DaoException {
+        logger.debug("<performImport");
+
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_bpu_pkg.perform_import(?, ?) }")) {
+            callableStatement.setLong(1, importVersionId);
+            callableStatement.setString(2, userId);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
+            handleException(e);
+        }
+
+        logger.debug(">performImport");
     }
 
 }

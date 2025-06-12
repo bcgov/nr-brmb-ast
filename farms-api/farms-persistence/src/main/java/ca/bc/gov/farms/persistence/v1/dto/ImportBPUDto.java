@@ -7,7 +7,6 @@ public class ImportBPUDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer lineNumber;
     private Integer programYear;
     private String municipalityCode;
     private String inventoryItemCode;
@@ -24,14 +23,6 @@ public class ImportBPUDto implements Serializable {
     private BigDecimal yearMinus3Expense;
     private BigDecimal yearMinus2Expense;
     private BigDecimal yearMinus1Expense;
-
-    public Integer getLineNumber() {
-        return lineNumber;
-    }
-
-    public void setLineNumber(Integer lineNumber) {
-        this.lineNumber = lineNumber;
-    }
 
     public Integer getProgramYear() {
         return programYear;
