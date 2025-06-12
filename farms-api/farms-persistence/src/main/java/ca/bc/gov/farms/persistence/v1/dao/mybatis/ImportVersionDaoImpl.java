@@ -205,11 +205,11 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     public void analyzeSchema(Long versionId) throws DaoException {
         logger.debug("<analyzeSchema");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("versionId", versionId);
-            this.mapper.analyzeSchema(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_version_pkg.analyze_schema(?) }")) {
+            callableStatement.setLong(1, versionId);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
