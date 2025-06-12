@@ -1,5 +1,8 @@
 package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,22 +24,31 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     @Autowired
     private ImportVersionMapper mapper;
 
+    private Connection conn;
+
+    public ImportVersionDaoImpl(Connection c) {
+        this.conn = c;
+    }
+
     @Override
     public Integer createVersion(String description, String importFileName, String user) throws DaoException {
         logger.debug("<createVersion");
 
         Integer versionId = null;
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("description", description);
-            parameters.put("importFileName", importFileName);
-            parameters.put("user", user);
-            versionId = this.mapper.createVersion(parameters);
-        } catch (RuntimeException e) {
+
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ ? = call farms_version_pkg.create_version(?, ?, ?) }")) {
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setString(2, description);
+            callableStatement.setString(3, importFileName);
+            callableStatement.setString(4, user);
+            callableStatement.execute();
+            versionId = callableStatement.getInt(1);
+            logger.debug(">createVersion: " + versionId);
+            return versionId;
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
-
-        logger.debug(">createVersion: " + versionId);
         return versionId;
     }
 
