@@ -56,12 +56,12 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     public void updateControlFileInfoStg(Long versionId, String user) throws DaoException {
         logger.debug("<updateControlFileInfoStg");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("versionId", versionId);
-            parameters.put("user", user);
-            this.mapper.updateControlFileInfoStg(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_version_pkg.update_control_file_info_stg(?, ?) }")) {
+            callableStatement.setLong(1, versionId);
+            callableStatement.setString(2, user);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
