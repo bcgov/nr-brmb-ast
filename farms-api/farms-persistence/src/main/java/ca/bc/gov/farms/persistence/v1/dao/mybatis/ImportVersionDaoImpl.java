@@ -174,13 +174,13 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     public void importComplete(Long versionId, String message, String user) throws DaoException {
         logger.debug("<importComplete");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("versionId", versionId);
-            parameters.put("message", message);
-            parameters.put("user", user);
-            this.mapper.importComplete(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_version_pkg.import_complete(?, ?, ?) }")) {
+            callableStatement.setLong(1, versionId);
+            callableStatement.setString(2, message);
+            callableStatement.setString(3, user);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
