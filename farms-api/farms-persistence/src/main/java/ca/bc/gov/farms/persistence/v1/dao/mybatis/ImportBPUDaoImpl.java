@@ -145,12 +145,12 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
     public void stagingToOperational(Long importVersionId, String userId) throws DaoException {
         logger.debug("<stagingToOperational");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("importVersionId", importVersionId);
-            parameters.put("userId", userId);
-            this.mapper.stagingToOperational(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_bpu_pkg.staging_to_operational(?, ?) }")) {
+            callableStatement.setLong(1, importVersionId);
+            callableStatement.setString(2, userId);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
