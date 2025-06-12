@@ -98,11 +98,11 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
     public void validateStaging(Long importVersionId) throws DaoException {
         logger.debug("<validateStaging");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("importVersionId", importVersionId);
-            this.mapper.validateStaging(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_bpu_pkg.validate_staging(?) }")) {
+            callableStatement.setLong(1, importVersionId);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
