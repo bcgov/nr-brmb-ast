@@ -2,7 +2,10 @@ package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,18 +116,29 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
     public List<ImportLogDto> getStagingErrors(Long importVersionId) throws DaoException {
         logger.debug("<getStagingErrors");
 
-        List<ImportLogDto> result = null;
+        List<ImportLogDto> importLogDtoList = new ArrayList<>();
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("importVersionId", importVersionId);
-            result = this.mapper.getStagingErrors(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ ? = call farms_bpu_pkg.get_staging_errors(?) }")) {
+
+            callableStatement.registerOutParameter(1, Types.OTHER);
+            callableStatement.setLong(2, importVersionId);
+            callableStatement.execute();
+
+            ResultSet resultSet = callableStatement.getObject(1, ResultSet.class);
+            while (resultSet.next()) {
+                ImportLogDto importLogDto = new ImportLogDto();
+                importLogDto.setLogMessage(resultSet.getString("log_message"));
+                importLogDtoList.add(importLogDto);
+            }
+            resultSet.close();
+
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
-        logger.debug(">getStagingErrors");
-        return result;
+        logger.debug(">getStagingErrors: " + importLogDtoList.size());
+        return importLogDtoList;
     }
 
     @Override
