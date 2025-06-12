@@ -191,10 +191,10 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     public void clearSuccessfulTransfers() throws DaoException {
         logger.debug("<clearSuccessfulTransfers");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            this.mapper.clearSuccessfulTransfers(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_version_pkg.clear_successful_transfers() }")) {
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
