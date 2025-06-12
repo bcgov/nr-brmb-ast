@@ -1,9 +1,11 @@
 package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +26,39 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
     @Autowired
     private ImportBPUMapper mapper;
 
+    private Connection conn;
+
+    public ImportBPUDaoImpl(Connection c) {
+        this.conn = c;
+    }
+
     @Override
     public void insertStagingRow(ImportBPUDto dto, String userId) throws DaoException {
         logger.debug("<insertStagingRow");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("dto", dto);
-            parameters.put("userId", userId);
-            this.mapper.insertStagingRow(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "{ call farms_bpu_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }")) {
+            callableStatement.setInt(1, dto.getLineNumber());
+            callableStatement.setInt(2, dto.getProgramYear());
+            callableStatement.setString(3, dto.getMunicipalityCode());
+            callableStatement.setString(4, dto.getInventoryItemCode());
+            callableStatement.setString(5, dto.getUnitComment());
+            callableStatement.setBigDecimal(6, dto.getYearMinus6Margin());
+            callableStatement.setBigDecimal(7, dto.getYearMinus5Margin());
+            callableStatement.setBigDecimal(8, dto.getYearMinus4Margin());
+            callableStatement.setBigDecimal(9, dto.getYearMinus3Margin());
+            callableStatement.setBigDecimal(10, dto.getYearMinus2Margin());
+            callableStatement.setBigDecimal(11, dto.getYearMinus1Margin());
+            callableStatement.setBigDecimal(12, dto.getYearMinus6Expense());
+            callableStatement.setBigDecimal(13, dto.getYearMinus5Expense());
+            callableStatement.setBigDecimal(14, dto.getYearMinus4Expense());
+            callableStatement.setBigDecimal(15, dto.getYearMinus3Expense());
+            callableStatement.setBigDecimal(16, dto.getYearMinus2Expense());
+            callableStatement.setBigDecimal(17, dto.getYearMinus1Expense());
+            callableStatement.setString(18, userId);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
