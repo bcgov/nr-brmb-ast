@@ -69,9 +69,10 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
     public void clearStaging() throws DaoException {
         logger.debug("<clearStaging");
 
-        try {
-            this.mapper.clearStaging();
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_bpu_pkg.clear_staging() }")) {
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
