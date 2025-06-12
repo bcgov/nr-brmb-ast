@@ -49,6 +49,8 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
+
+        logger.debug(">createVersion: " + versionId);
         return versionId;
     }
 
@@ -72,14 +74,14 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     public void uploadedVersion(Long versionId, String xml, Boolean hasErrorsInd, String user) throws DaoException {
         logger.debug("<uploadedVersion");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("versionId", versionId);
-            parameters.put("xml", xml);
-            parameters.put("hasErrorsInd", hasErrorsInd != null && hasErrorsInd ? "Y" : "N");
-            parameters.put("user", user);
-            this.mapper.uploadedVersion(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_version_pkg.uploaded_version(?, ?, ?, ?) }")) {
+            callableStatement.setLong(1, versionId);
+            callableStatement.setString(2, xml);
+            callableStatement.setString(3, hasErrorsInd != null && hasErrorsInd ? "Y" : "N");
+            callableStatement.setString(4, user);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
