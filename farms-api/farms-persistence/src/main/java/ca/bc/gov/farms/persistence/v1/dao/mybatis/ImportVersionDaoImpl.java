@@ -92,12 +92,12 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     public void startImport(Long versionId, String user) throws DaoException {
         logger.debug("<startImport");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("versionId", versionId);
-            parameters.put("user", user);
-            this.mapper.startImport(parameters);
-        } catch (RuntimeException e) {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ call farms_version_pkg.start_import(?, ?) }")) {
+            callableStatement.setLong(1, versionId);
+            callableStatement.setString(2, user);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
 
