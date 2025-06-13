@@ -30,7 +30,7 @@ public class ImportDaoImpl extends BaseDao implements ImportDao {
         logger.debug("<insertImportVersion");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_webapp_pkg.insert_import_version(?, ?, ?, ?, ?, ?, ?) }")) {
+                .prepareCall("{ call farms_webapp_pkg.insert_import_version(?, ?, ?, ?, ?, ?, ?, ?) }")) {
             callableStatement.registerOutParameter(1, Types.OTHER);
             callableStatement.setNull(1, Types.BIGINT);
             callableStatement.setString(2, dto.getImportClassCode());
@@ -38,7 +38,8 @@ public class ImportDaoImpl extends BaseDao implements ImportDao {
             callableStatement.setString(4, dto.getDescription());
             callableStatement.setString(5, dto.getImportFileName());
             callableStatement.setString(6, null); // passwords no longer used
-            callableStatement.setString(7, dto.getImportedByUser());
+            callableStatement.setBytes(7, dto.getImportFile());
+            callableStatement.setString(8, dto.getImportedByUser());
             callableStatement.execute();
             dto.setImportVersionId(callableStatement.getLong(1));
         } catch (RuntimeException | SQLException e) {
