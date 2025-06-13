@@ -50,7 +50,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<updateControlFileInfoStg");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.update_control_file_info_stg(?, ?) }")) {
+                .prepareCall("call farms_version_pkg.update_control_file_info_stg(?, ?)")) {
             callableStatement.setLong(1, versionId);
             callableStatement.setString(2, user);
             callableStatement.execute();
@@ -66,7 +66,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<uploadedVersion");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.uploaded_version(?, ?, ?, ?) }")) {
+                .prepareCall("call farms_version_pkg.uploaded_version(?, ?, ?, ?)")) {
             callableStatement.setLong(1, versionId);
             callableStatement.setString(2, xml);
             callableStatement.setString(3, hasErrorsInd != null && hasErrorsInd ? "Y" : "N");
@@ -84,7 +84,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<startImport");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.start_import(?, ?) }")) {
+                .prepareCall("call farms_version_pkg.start_import(?, ?)")) {
             callableStatement.setLong(1, versionId);
             callableStatement.setString(2, user);
             callableStatement.execute();
@@ -100,7 +100,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<startUpload");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.start_upload(?, ?) }")) {
+                .prepareCall("call farms_version_pkg.start_upload(?, ?)")) {
             callableStatement.setLong(1, versionId);
             callableStatement.setString(2, user);
             callableStatement.execute();
@@ -116,7 +116,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<performImport");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.perform_import(?, ?) }")) {
+                .prepareCall("call farms_version_pkg.perform_import(?, ?)")) {
             callableStatement.setLong(1, versionId);
             callableStatement.setString(2, user);
             callableStatement.execute();
@@ -132,7 +132,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<uploadFailure");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.upload_failure(?, ?, ?) }")) {
+                .prepareCall("call farms_version_pkg.upload_failure(?, ?, ?)")) {
             callableStatement.setLong(1, versionId);
             callableStatement.setString(2, message);
             callableStatement.setString(3, user);
@@ -149,7 +149,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<importFailure");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.import_failure(?, ?, ?) }")) {
+                .prepareCall("call farms_version_pkg.import_failure(?, ?, ?)")) {
             callableStatement.setLong(1, versionId);
             callableStatement.setString(2, message);
             callableStatement.setString(3, user);
@@ -166,7 +166,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<importComplete");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.import_complete(?, ?, ?) }")) {
+                .prepareCall("call farms_version_pkg.import_complete(?, ?, ?)")) {
             callableStatement.setLong(1, versionId);
             callableStatement.setString(2, message);
             callableStatement.setString(3, user);
@@ -183,7 +183,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<clearSuccessfulTransfers");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.clear_successful_transfers() }")) {
+                .prepareCall("call farms_version_pkg.clear_successful_transfers()")) {
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
             handleException(e);
@@ -197,7 +197,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         logger.debug("<analyzeSchema");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_version_pkg.analyze_schema(?) }")) {
+                .prepareCall("call farms_version_pkg.analyze_schema(?)")) {
             callableStatement.setLong(1, versionId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
