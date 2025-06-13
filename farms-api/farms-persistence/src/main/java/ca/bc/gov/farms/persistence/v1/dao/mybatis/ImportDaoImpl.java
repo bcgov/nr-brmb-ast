@@ -31,7 +31,7 @@ public class ImportDaoImpl extends BaseDao implements ImportDao {
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall("call farms_webapp_pkg.insert_import_version(?, ?, ?, ?, ?, ?, ?, ?)")) {
-            callableStatement.registerOutParameter(1, Types.NUMERIC);
+            callableStatement.registerOutParameter(1, Types.BIGINT);
             callableStatement.setString(2, dto.getImportClassCode());
             callableStatement.setString(3, dto.getImportStateCode());
             callableStatement.setString(4, dto.getDescription());
