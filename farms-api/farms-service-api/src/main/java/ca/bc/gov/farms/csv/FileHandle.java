@@ -18,7 +18,7 @@ public abstract class FileHandle<T> {
                 CSVReader csvReader = new CSVReader(inputStreamReader)) {
             String[] line = null;
             while ((line = csvReader.readNext()) != null) {
-                if (actualHeaders == null) {
+                if (actualHeaders == null || actualHeaders.length == 0) {
                     actualHeaders = line; // First line is the header
                 } else {
                     T record = parseLine(line);
