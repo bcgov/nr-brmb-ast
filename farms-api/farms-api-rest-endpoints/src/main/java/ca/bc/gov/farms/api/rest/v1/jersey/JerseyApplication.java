@@ -3,11 +3,12 @@ package ca.bc.gov.farms.api.rest.v1.jersey;
 import javax.servlet.ServletConfig;
 import javax.ws.rs.core.Context;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.BenchmarkPerUnitEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.FairMarketValueEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ImportEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.TopLevelEndpointsImpl;
 import ca.bc.gov.brmb.common.api.rest.code.endpoints.impl.CodeEndpointsImpl;
 import ca.bc.gov.brmb.common.api.rest.code.endpoints.impl.CodeTableEndpointsImpl;
@@ -33,6 +34,9 @@ public class JerseyApplication extends JerseyResourceConfig {
 
         register(BenchmarkPerUnitEndpointsImpl.class);
         register(FairMarketValueEndpointsImpl.class);
+
+        register(MultiPartFeature.class);
+        register(ImportEndpointsImpl.class);
 
         logger.debug(">JerseyApplication");
     }

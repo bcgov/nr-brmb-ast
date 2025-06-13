@@ -32,7 +32,7 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
-                        "{ call farms_bpu_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }")) {
+                        "call farms_bpu_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             callableStatement.setInt(1, rowNum);
             callableStatement.setInt(2, dto.getProgramYear());
             callableStatement.setString(3, dto.getMunicipalityCode());
@@ -64,7 +64,7 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
         logger.debug("<clearStaging");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_bpu_pkg.clear_staging() }")) {
+                .prepareCall("call farms_bpu_pkg.clear_staging()")) {
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
             handleException(e);
@@ -78,7 +78,7 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
         logger.debug("<deleteStagingErrors");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_bpu_pkg.delete_staging_errors(?) }")) {
+                .prepareCall("call farms_bpu_pkg.delete_staging_errors(?)")) {
             callableStatement.setLong(1, importVersionId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
@@ -93,7 +93,7 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
         logger.debug("<validateStaging");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_bpu_pkg.validate_staging(?) }")) {
+                .prepareCall("call farms_bpu_pkg.validate_staging(?)")) {
             callableStatement.setLong(1, importVersionId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
@@ -136,7 +136,7 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
         logger.debug("<stagingToOperational");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_bpu_pkg.staging_to_operational(?, ?) }")) {
+                .prepareCall("call farms_bpu_pkg.staging_to_operational(?, ?)")) {
             callableStatement.setLong(1, importVersionId);
             callableStatement.setString(2, userId);
             callableStatement.execute();
@@ -152,7 +152,7 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
         logger.debug("<performImport");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ call farms_bpu_pkg.perform_import(?, ?) }")) {
+                .prepareCall("call farms_bpu_pkg.perform_import(?, ?)")) {
             callableStatement.setLong(1, importVersionId);
             callableStatement.setString(2, userId);
             callableStatement.execute();

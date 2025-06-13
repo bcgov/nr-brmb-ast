@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
-import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.farms.api.rest.v1.endpoints.BenchmarkPerUnitEndpoints;

@@ -10,8 +10,6 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import ca.bc.gov.farms.csv.BpuFileHandle;
 import ca.bc.gov.farms.csv.CSVParserException;
 import ca.bc.gov.farms.persistence.v1.dao.ImportBPUDao;
@@ -27,8 +25,11 @@ public class ImportBPUServiceImpl implements ImportBPUService {
 
     private List<Object> stagingErrors = new ArrayList<>();
 
-    @Autowired
     private DataSource dataSource;
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public List<Object> getStagingErrors() {
