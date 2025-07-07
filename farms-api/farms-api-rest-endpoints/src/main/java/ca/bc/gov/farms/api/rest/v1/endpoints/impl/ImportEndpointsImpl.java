@@ -1,13 +1,10 @@
 package ca.bc.gov.farms.api.rest.v1.endpoints.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,7 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
     private ImportBPUService importBPUService;
 
     @Override
-    public Response importBPU(InputStream fileInputStream, FormDataContentDisposition fileDetail) throws Exception {
+    public Response importBPU(String fileName, String fileContent) throws Exception {
         logger.debug("<importBPU");
 
         Response response = null;
@@ -37,16 +34,13 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
         logRequest();
 
         try {
-            byte[] fileContent = readBytes(fileInputStream);
-            String fileName = fileDetail.getFileName();
-
             // Call the service layer to handle the import
             ImportVersionDto importVersionDto = importService.createImportVersion(
                     ImportClassCodes.BPU, ImportStateCodes.SCHEDULED_FOR_STAGING, ImportClassCodes.BPU_DESCRIPTION,
-                    fileName, fileContent, "UserId");
+                    fileName, fileContent.getBytes(), "UserId");
 
             Long importVersionId = importVersionDto.getImportVersionId();
-            InputStream inputStream = new ByteArrayInputStream(fileContent);
+            InputStream inputStream = new ByteArrayInputStream(fileContent.getBytes());
             String userId = "UserId";
             importBPUService.importCSV(importVersionId, inputStream, userId);
 
@@ -61,17 +55,6 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
 
         logger.debug(">importBPU " + response);
         return response;
-    }
-
-    private byte[] readBytes(InputStream inputStream) throws IOException {
-        try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-            int nRead;
-            byte[] data = new byte[4096];
-            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, nRead);
-            }
-            return buffer.toByteArray();
-        }
     }
 
 }
