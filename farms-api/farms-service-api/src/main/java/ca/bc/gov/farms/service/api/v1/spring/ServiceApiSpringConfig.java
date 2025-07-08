@@ -2,6 +2,8 @@ package ca.bc.gov.farms.service.api.v1.spring;
 
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +12,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-import ca.bc.gov.farms.model.v1.FairMarketValue;
 import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 import ca.bc.gov.farms.service.api.v1.BenchmarkPerUnitService;
 import ca.bc.gov.farms.service.api.v1.FairMarketValueService;
+import ca.bc.gov.farms.service.api.v1.ImportBPUService;
+import ca.bc.gov.farms.service.api.v1.ImportService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.FairMarketValueServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.ImportBPUServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.ImportServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
 import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
@@ -90,6 +95,26 @@ public class ServiceApiSpringConfig {
         result.setFairMarketValueFactory(fairMarketValueFactory);
 
         result.setFairMarketValueDao(persistenceSpringConfig.fairMarketValueDao());
+
+        return result;
+    }
+
+    @Bean
+    public ImportBPUService importBPUService(DataSource farmsDataSource) {
+        ImportBPUServiceImpl result;
+
+        result = new ImportBPUServiceImpl();
+        result.setDataSource(farmsDataSource);
+
+        return result;
+    }
+
+    @Bean
+    public ImportService importService(DataSource farmsDataSource) {
+        ImportServiceImpl result;
+
+        result = new ImportServiceImpl();
+        result.setDataSource(farmsDataSource);
 
         return result;
     }
