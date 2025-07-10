@@ -23,13 +23,13 @@ begin
     execute 'truncate table farms.z23_livestock_production_capacity';
     execute 'truncate table farms.z22_production_insurance';
     execute 'truncate table farms.z21_participant_supplementary';
-    execute 'truncate table farms.z28_production_insurance_reference';
+    execute 'truncate table farms.z28_production_insurance_reference cascade';
     execute 'truncate table farms.z29_inventory_code_reference';
     execute 'truncate table farms.z05_partner_information';
     execute 'truncate table farms.z04_income_expenses_detail';
-    execute 'truncate table farms.z03_statement_information';
-    execute 'truncate table farms.z02_participant_farm_information';
-    execute 'truncate table farms.z01_participant_information';
+    execute 'truncate table farms.z03_statement_information cascade';
+    execute 'truncate table farms.z02_participant_farm_information cascade';
+    execute 'truncate table farms.z01_participant_information cascade';
 
     execute 'alter table farms.z02_participant_farm_information alter constraint fk_zpfi_zpi not deferrable initially immediate';
     execute 'alter table farms.z03_statement_information alter constraint fk_zsi_zpfi not deferrable initially immediate';
