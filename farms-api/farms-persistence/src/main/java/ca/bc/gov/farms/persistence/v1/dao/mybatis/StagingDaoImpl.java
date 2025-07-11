@@ -19,6 +19,7 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z40PrtcpntRefSuplDtl;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z42ParticipantRefYear;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z50ParticipntBnftCalc;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z51ParticipantContrib;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z99ExtractFileCtl;
 
 public class StagingDaoImpl extends BaseDao implements StagingDao {
 
@@ -433,6 +434,24 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
             callableStatement.setDouble(i++, obj.getFederalContributions());
             callableStatement.setDouble(i++, obj.getInterimContributions());
             callableStatement.setDouble(i++, obj.getProducerShare());
+            callableStatement.setString(i++, userId);
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void insert(final Z99ExtractFileCtl obj, final String userId) throws SQLException {
+        int i = 1;
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "call farms_staging_pkg.insert_z99(?, ?, ?, ?)")) {
+
+            callableStatement.setInt(i++, obj.getExtractFileNumber());
+            callableStatement.setString(i++, obj.getExtractDate());
+            callableStatement.setInt(i++, obj.getRowCount());
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();

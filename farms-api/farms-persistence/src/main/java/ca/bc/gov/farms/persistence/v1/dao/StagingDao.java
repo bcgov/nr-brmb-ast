@@ -17,6 +17,7 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z40PrtcpntRefSuplDtl;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z42ParticipantRefYear;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z50ParticipntBnftCalc;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z51ParticipantContrib;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z99ExtractFileCtl;
 
 public interface StagingDao extends Serializable {
 
@@ -47,4 +48,6 @@ public interface StagingDao extends Serializable {
     void insert(final Z50ParticipntBnftCalc obj, final String userId) throws SQLException;
 
     void insert(final Z51ParticipantContrib obj, final String userId) throws SQLException;
+
+    void insert(final Z99ExtractFileCtl obj, final String userId) throws SQLException;
 }
