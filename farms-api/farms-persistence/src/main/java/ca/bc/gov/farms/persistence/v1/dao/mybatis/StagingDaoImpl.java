@@ -8,6 +8,7 @@ import ca.bc.gov.farms.persistence.v1.dao.StagingDao;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z01ParticipantInfo;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z02PartpntFarmInfo;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z03StatementInfo;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z04IncomeExpsDtl;
 
 public class StagingDaoImpl extends BaseDao implements StagingDao {
 
@@ -130,7 +131,7 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
     }
 
     @Override
-    public void insert(Z03StatementInfo obj, String userId) throws SQLException {
+    public void insert(final Z03StatementInfo obj, final String userId) throws SQLException {
         int i = 1;
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
@@ -161,6 +162,28 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
             callableStatement.setString(i++, obj.isCropDisaster() == null ? null : obj.isCropDisaster() ? "Y" : "N");
             callableStatement.setString(i++,
                     obj.isLivestockDisaster() == null ? null : obj.isLivestockDisaster() ? "Y" : "N");
+            callableStatement.setString(i++, userId);
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void insert(final Z04IncomeExpsDtl obj, final String userId) throws SQLException {
+        int i = 1;
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "call farms_staging_pkg.insert_z04(?, ?, ?, ?, ?, ?, ?, ?)")) {
+
+            callableStatement.setInt(i++, obj.getIncomeExpenseKey());
+            callableStatement.setInt(i++, obj.getParticipantPin());
+            callableStatement.setInt(i++, obj.getProgramYear());
+            callableStatement.setInt(i++, obj.getOperationNumber());
+            callableStatement.setInt(i++, obj.getLineCode());
+            callableStatement.setString(i++, obj.getIe());
+            callableStatement.setDouble(i++, obj.getAmount());
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();
