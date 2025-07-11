@@ -16,6 +16,7 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z23LivestockProdCpct;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z28ProdInsuranceRef;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z29InventoryRef;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z40PrtcpntRefSuplDtl;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z42ParticipantRefYear;
 
 public class StagingDaoImpl extends BaseDao implements StagingDao {
 
@@ -360,6 +361,28 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
             callableStatement.setDouble(i++, obj.getEndYearPrice());
             callableStatement.setDouble(i++, obj.getAarmReferenceP1Price());
             callableStatement.setDouble(i++, obj.getAarmReferenceP2Price());
+            callableStatement.setString(i++, userId);
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void insert(final Z42ParticipantRefYear obj, final String userId) throws SQLException {
+        int i = 1;
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "call farms_staging_pkg.insert_z42(?, ?, ?, ?, ?, ?, ?, ?)")) {
+
+            callableStatement.setInt(i++, obj.getProductiveCapacityKey());
+            callableStatement.setInt(i++, obj.getRefOperationNumber());
+            callableStatement.setInt(i++, obj.getParticipantPin());
+            callableStatement.setInt(i++, obj.getProgramYear());
+            callableStatement.setInt(i++, obj.getProductiveTypeCode());
+            callableStatement.setInt(i++, obj.getProductiveCode());
+            callableStatement.setDouble(i++, obj.getProductiveCapacityUnits());
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();
