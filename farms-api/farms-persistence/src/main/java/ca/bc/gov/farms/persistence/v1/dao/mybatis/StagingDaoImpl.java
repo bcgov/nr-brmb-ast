@@ -17,6 +17,7 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z28ProdInsuranceRef;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z29InventoryRef;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z40PrtcpntRefSuplDtl;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z42ParticipantRefYear;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z50ParticipntBnftCalc;
 
 public class StagingDaoImpl extends BaseDao implements StagingDao {
 
@@ -383,6 +384,32 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
             callableStatement.setInt(i++, obj.getProductiveTypeCode());
             callableStatement.setInt(i++, obj.getProductiveCode());
             callableStatement.setDouble(i++, obj.getProductiveCapacityUnits());
+            callableStatement.setString(i++, userId);
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void insert(final Z50ParticipntBnftCalc obj, final String userId) throws SQLException {
+        int i = 1;
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "call farms_staging_pkg.insert_z50(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+
+            callableStatement.setInt(i++, obj.getBenefitCalcKey());
+            callableStatement.setInt(i++, obj.getParticipantPin());
+            callableStatement.setInt(i++, obj.getProgramYear());
+            callableStatement.setInt(i++, obj.getAgristabilityStatus());
+            callableStatement.setDouble(i++, obj.getUnadjustedReferenceMargin());
+            callableStatement.setDouble(i++, obj.getAdjustedReferenceMargin());
+            callableStatement.setDouble(i++, obj.getProgramMargin());
+            callableStatement.setString(i++, obj.isWholeFarm() == null ? null : obj.isWholeFarm() ? "Y" : "N");
+            callableStatement.setString(i++,
+                    obj.isStructureChange() == null ? null : obj.isStructureChange() ? "Y" : "N");
+            callableStatement.setDouble(i++, obj.getStructureChangeAdjAmount());
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();
