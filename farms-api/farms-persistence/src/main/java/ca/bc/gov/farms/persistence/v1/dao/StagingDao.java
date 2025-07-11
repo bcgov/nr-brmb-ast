@@ -52,4 +52,6 @@ public interface StagingDao extends Serializable {
     void insert(final Z99ExtractFileCtl obj, final String userId) throws SQLException;
 
     void status(Integer pImportVersionId, String pString) throws SQLException;
+
+    void statusNonAutonomous(Integer pImportVersionId, String pString) throws SQLException;
 }
