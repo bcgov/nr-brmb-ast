@@ -14,6 +14,7 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z21ParticipantSuppl;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z22ProductionInsurance;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z23LivestockProdCpct;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z28ProdInsuranceRef;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z29InventoryRef;
 
 public class StagingDaoImpl extends BaseDao implements StagingDao {
 
@@ -302,6 +303,29 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
 
             callableStatement.setInt(i++, obj.getProductionUnit());
             callableStatement.setString(i++, obj.getProductionUnitDescription());
+            callableStatement.setString(i++, userId);
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void insert(final Z29InventoryRef obj, final String userId) throws SQLException {
+        int i = 1;
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "call farms_staging_pkg.insert_z29(?, ?, ?, ?, ?, ?, ?, ?)")) {
+
+            callableStatement.setInt(i++, obj.getInventoryCode());
+            callableStatement.setInt(i++, obj.getInventoryTypeCode());
+            callableStatement.setString(i++, obj.getInventoryDesc());
+            callableStatement.setString(i++, obj.getInventoryTypeDescription());
+            callableStatement.setInt(i++, obj.getInventoryGroupCode());
+            callableStatement.setString(i++, obj.getInventoryGroupDescription());
+            callableStatement.setString(i++,
+                    obj.getMarketCommodityInd() == null ? null : obj.getMarketCommodityInd() ? "Y" : "N");
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();
