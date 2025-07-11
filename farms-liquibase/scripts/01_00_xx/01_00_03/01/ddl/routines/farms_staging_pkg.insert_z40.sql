@@ -1,0 +1,72 @@
+create or replace procedure farms_staging_pkg.insert_z40(
+   in in_prior_year_supplemental_key farms.z40_participant_reference_supplemental_detail.prior_year_supplemental_key%type,
+   in in_participant_pin farms.z40_participant_reference_supplemental_detail.participant_pin%type,
+   in in_program_year farms.z40_participant_reference_supplemental_detail.program_year%type,
+   in in_operation_number farms.z40_participant_reference_supplemental_detail.operation_number%type,
+   in in_production_unit farms.z40_participant_reference_supplemental_detail.production_unit%type,
+   in in_inventory_type_code farms.z40_participant_reference_supplemental_detail.inventory_type_code%type,
+   in in_inventory_code farms.z40_participant_reference_supplemental_detail.inventory_code%type,
+   in in_quantity_start farms.z40_participant_reference_supplemental_detail.quantity_start%type,
+   in in_starting_price farms.z40_participant_reference_supplemental_detail.starting_price%type,
+   in in_crop_on_farm_acres farms.z40_participant_reference_supplemental_detail.crop_on_farm_acres%type,
+   in in_crop_qty_produced farms.z40_participant_reference_supplemental_detail.crop_quantity_produced%type,
+   in in_quantity_end farms.z40_participant_reference_supplemental_detail.quantity_end%type,
+   in in_end_year_producer_price farms.z40_participant_reference_supplemental_detail.end_year_producer_price%type,
+   in in_accept_producer_price_ind farms.z40_participant_reference_supplemental_detail.accept_producer_price_indicator%type,
+   in in_end_year_price farms.z40_participant_reference_supplemental_detail.end_year_price%type,
+   in in_aarm_reference_p1_price farms.z40_participant_reference_supplemental_detail.aarm_reference_p1_price%type,
+   in in_aarm_reference_p2_price farms.z40_participant_reference_supplemental_detail.aarm_reference_p2_price%type,
+   in in_user varchar
+)
+language plpgsql
+as $$
+begin
+    insert into farms.z40_participant_reference_supplemental_detail (
+        prior_year_supplemental_key,
+        participant_pin,
+        program_year,
+        operation_number,
+        production_unit,
+        inventory_type_code,
+        inventory_code,
+        quantity_start,
+        starting_price,
+        crop_on_farm_acres,
+        crop_quantity_produced,
+        quantity_end,
+        end_year_producer_price,
+        accept_producer_price_indicator,
+        end_year_price,
+        aarm_reference_p1_price,
+        aarm_reference_p2_price,
+        revision_count,
+        create_user,
+        create_date,
+        update_user,
+        update_date
+    ) values (
+        in_prior_year_supplemental_key,
+        in_participant_pin,
+        in_program_year,
+        in_operation_number,
+        in_production_unit,
+        in_inventory_type_code,
+        in_inventory_code,
+        in_quantity_start,
+        in_starting_price,
+        in_crop_on_farm_acres,
+        in_crop_qty_produced,
+        in_quantity_end,
+        in_end_year_producer_price,
+        in_accept_producer_price_ind,
+        in_end_year_price,
+        in_aarm_reference_p1_price,
+        in_aarm_reference_p2_price,
+        1,
+        in_user,
+        current_timestamp,
+        in_user,
+        current_timestamp
+    );
+end;
+$$;
