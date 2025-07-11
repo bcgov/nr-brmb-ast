@@ -1,4 +1,4 @@
-package ca.bc.gov.farms.domain.staging;
+package ca.bc.gov.farms.persistence.v1.dto.staging;
 
 /**
  * Z21ParticipantSuppl identifies Inventory information from parts 7, 8, 10, 11,

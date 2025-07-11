@@ -1,4 +1,4 @@
-package ca.bc.gov.farms.domain.staging;
+package ca.bc.gov.farms.persistence.v1.dto.staging;
 
 /**
  * Z04IncomeExpsDtl identifies all the income(sales) and expense(purchases)

@@ -1,17 +1,17 @@
-package ca.bc.gov.farms.domain.staging;
+package ca.bc.gov.farms.persistence.v1.dto.staging;
 
 /**
- * Z23LivestockProdCpct identifies the Livestock production capacity information
- * provided by the participant in section 9 of the supplemental page of the
- * AgriStability application. This file will have 0 to many rows per participant
- * and farming operation.This file is created by FIPD. This is a staging object
- * used to load temporary data set before being merged into the operational data
+ * Z22ProductionInsurance identifies the Insurance contract numbers provided by
+ * the participant on the supplemental page of the AgriStability application.
+ * This file will have 0 to 4 rows per participant and farming operation, for
+ * the current year. This file is created by FIPD. This is a staging object used
+ * to load temporary data set before being merged into the operational data
  *
  * @author Vivid Solutions Inc.
  * @version 1.0
- * @created 03-Jul-2009 2:07:14 PM
+ * @created 03-Jul-2009 2:07:13 PM
  */
-public final class Z23LivestockProdCpct {
+public final class Z22ProductionInsurance {
 
     /**
      * participantPin is the unique AgriStability/AgriInvest pin for this
@@ -30,22 +30,13 @@ public final class Z23LivestockProdCpct {
     private java.lang.Integer operationNumber;
 
     /**
-     * productiveCapacityKey is the primary key for the file. Provides each row
+     * productionInsuranceKey is th primary key for the file. Provides each row
      * with a unique identifier over the whole file.
      */
-    private java.lang.Integer productiveCapacityKey;
+    private java.lang.Integer productionInsuranceKey;
 
-    /**
-     * inventoryCode is a numeric code used to uniquely identify an inventory
-     * item.
-     */
-    private java.lang.Integer inventoryCode;
-
-    /**
-     * productiveCapacityAmount is the quantity entered in section 9 for this
-     * inventory/bpu code.
-     */
-    private java.lang.Double productiveCapacityAmount;
+    /** productionInsuranceNumber is the productionInsuranceNumber. */
+    private String productionInsuranceNumber;
 
     /**
      * revisionCount is a counter identifying the number of times this record as
@@ -55,7 +46,7 @@ public final class Z23LivestockProdCpct {
     private java.lang.Integer revisionCount;
 
     /** Constructor. */
-    public Z23LivestockProdCpct() {
+    public Z22ProductionInsurance() {
 
     }
 
@@ -120,63 +111,41 @@ public final class Z23LivestockProdCpct {
     }
 
     /**
-     * ProductiveCapacityKey is the primary key for the file. Provides each row
+     * ProductionInsuranceKey is th primary key for the file. Provides each row
      * with a unique identifier over the whole file.
      *
      * @return java.lang.Integer
      */
-    public java.lang.Integer getProductiveCapacityKey() {
-        return productiveCapacityKey;
+    public java.lang.Integer getProductionInsuranceKey() {
+        return productionInsuranceKey;
     }
 
     /**
-     * ProductiveCapacityKey is the primary key for the file. Provides each row
+     * ProductionInsuranceKey is th primary key for the file. Provides each row
      * with a unique identifier over the whole file.
      *
      * @param newVal The new value for this property
      */
-    public void setProductiveCapacityKey(final java.lang.Integer newVal) {
-        productiveCapacityKey = newVal;
+    public void setProductionInsuranceKey(final java.lang.Integer newVal) {
+        productionInsuranceKey = newVal;
     }
 
     /**
-     * InventoryCode is a numeric code used to uniquely identify an inventory
-     * item.
+     * ProductionInsuranceNumber is the productionInsuranceNumber.
      *
-     * @return java.lang.Integer
+     * @return String
      */
-    public java.lang.Integer getInventoryCode() {
-        return inventoryCode;
+    public String getProductionInsuranceNumber() {
+        return productionInsuranceNumber;
     }
 
     /**
-     * InventoryCode is a numeric code used to uniquely identify an inventory
-     * item.
+     * ProductionInsuranceNumber is the productionInsuranceNumber.
      *
      * @param newVal The new value for this property
      */
-    public void setInventoryCode(final java.lang.Integer newVal) {
-        inventoryCode = newVal;
-    }
-
-    /**
-     * ProductiveCapacityAmount is the quantity entered in section 9 for this
-     * inventory/bpu code.
-     *
-     * @return java.lang.Double
-     */
-    public java.lang.Double getProductiveCapacityAmount() {
-        return productiveCapacityAmount;
-    }
-
-    /**
-     * ProductiveCapacityAmount is the quantity entered in section 9 for this
-     * inventory/bpu code.
-     *
-     * @param newVal The new value for this property
-     */
-    public void setProductiveCapacityAmount(final java.lang.Double newVal) {
-        productiveCapacityAmount = newVal;
+    public void setProductionInsuranceNumber(final String newVal) {
+        productionInsuranceNumber = newVal;
     }
 
     /**

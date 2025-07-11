@@ -1,4 +1,4 @@
-package ca.bc.gov.farms.domain.staging;
+package ca.bc.gov.farms.persistence.v1.dto.staging;
 
 /**
  * Z03StatementInfo identifies the data from section 3 of the Statement A. Also

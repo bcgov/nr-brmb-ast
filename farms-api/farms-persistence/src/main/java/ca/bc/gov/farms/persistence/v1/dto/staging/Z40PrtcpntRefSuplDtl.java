@@ -1,4 +1,4 @@
-package ca.bc.gov.farms.domain.staging;
+package ca.bc.gov.farms.persistence.v1.dto.staging;
 
 /**
  * Z40PrtcpntRefSuplDtl identifies reference year crop and livestock inventory
