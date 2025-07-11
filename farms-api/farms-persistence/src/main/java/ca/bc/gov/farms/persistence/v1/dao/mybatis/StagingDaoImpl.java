@@ -460,4 +460,20 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
         }
     }
 
+    @Override
+    public void status(Integer pImportVersionId, String pString) throws SQLException {
+        int i = 1;
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "call farms_import_pkg.update_status(?, ?)")) {
+
+            callableStatement.setInt(i++, pImportVersionId);
+            callableStatement.setString(i++, pString);
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
 }
