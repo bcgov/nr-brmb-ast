@@ -26,7 +26,7 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
     private ImportBPUService importBPUService;
 
     @Override
-    public Response importBPU(String fileName, String fileContent) throws Exception {
+    public Response importBPU(String fileName, byte[] fileContent) throws Exception {
         logger.debug("<importBPU");
 
         Response response = null;
@@ -37,10 +37,10 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
             // Call the service layer to handle the import
             ImportVersionDto importVersionDto = importService.createImportVersion(
                     ImportClassCodes.BPU, ImportStateCodes.SCHEDULED_FOR_STAGING, ImportClassCodes.BPU_DESCRIPTION,
-                    fileName, fileContent.getBytes(), "UserId");
+                    fileName, fileContent, "UserId");
 
             Long importVersionId = importVersionDto.getImportVersionId();
-            InputStream inputStream = new ByteArrayInputStream(fileContent.getBytes());
+            InputStream inputStream = new ByteArrayInputStream(fileContent);
             String userId = "UserId";
             importBPUService.importCSV(importVersionId, inputStream, userId);
 
