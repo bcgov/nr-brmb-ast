@@ -10,6 +10,7 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z04IncomeExpsDtl;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z05PartnerInfo;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z21ParticipantSuppl;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z22ProductionInsurance;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z23LivestockProdCpct;
 
 public interface StagingDao extends Serializable {
 
@@ -26,4 +27,6 @@ public interface StagingDao extends Serializable {
     void insert(final Z21ParticipantSuppl obj, final String userId) throws SQLException;
 
     void insert(final Z22ProductionInsurance obj, final String userId) throws SQLException;
+
+    void insert(final Z23LivestockProdCpct obj, final String userId) throws SQLException;
 }
