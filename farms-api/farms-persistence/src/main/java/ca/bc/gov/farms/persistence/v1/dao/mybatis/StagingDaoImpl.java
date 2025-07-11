@@ -10,6 +10,7 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z02PartpntFarmInfo;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z03StatementInfo;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z04IncomeExpsDtl;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z05PartnerInfo;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z21ParticipantSuppl;
 
 public class StagingDaoImpl extends BaseDao implements StagingDao {
 
@@ -212,6 +213,34 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
             callableStatement.setString(i++, obj.getPartnerSinCtnBn());
             callableStatement.setDouble(i++, obj.getPartnerPercent());
             callableStatement.setInt(i++, obj.getPartnerPin());
+            callableStatement.setString(i++, userId);
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void insert(final Z21ParticipantSuppl obj, final String userId) throws SQLException {
+        int i = 1;
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "call farms_staging_pkg.insert_z21(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+
+            callableStatement.setInt(i++, obj.getInventoryKey());
+            callableStatement.setInt(i++, obj.getParticipantPin());
+            callableStatement.setInt(i++, obj.getProgramYear());
+            callableStatement.setInt(i++, obj.getOperationNumber());
+            callableStatement.setInt(i++, obj.getInventoryTypeCode());
+            callableStatement.setInt(i++, obj.getInventoryCode());
+            callableStatement.setInt(i++, obj.getCropUnitType());
+            callableStatement.setDouble(i++, obj.getCropOnFarmAcres());
+            callableStatement.setDouble(i++, obj.getCropQtyProduced());
+            callableStatement.setDouble(i++, obj.getQuantityEnd());
+            callableStatement.setDouble(i++, obj.getEndOfYearPrice());
+            callableStatement.setDouble(i++, obj.getEndOfYearAmount());
+            callableStatement.setDouble(i++, obj.getCropUnseedableAcres());
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();
