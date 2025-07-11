@@ -7,6 +7,7 @@ import ca.bc.gov.brmb.common.persistence.dao.mybatis.BaseDao;
 import ca.bc.gov.farms.persistence.v1.dao.StagingDao;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z01ParticipantInfo;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z02PartpntFarmInfo;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z03StatementInfo;
 
 public class StagingDaoImpl extends BaseDao implements StagingDao {
 
@@ -120,6 +121,46 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
 
             callableStatement.setInt(i++, obj.getMunicipalityCode());
             callableStatement.setString(i++, obj.getFormVersionEffectiveDate());
+            callableStatement.setString(i++, userId);
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void insert(Z03StatementInfo obj, String userId) throws SQLException {
+        int i = 1;
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "call farms_staging_pkg.insert_z03(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+
+            callableStatement.setInt(i++, obj.getOperationNumber());
+            callableStatement.setInt(i++, obj.getParticipantPin());
+            callableStatement.setInt(i++, obj.getProgramYear());
+
+            callableStatement.setInt(i++, obj.getPartnershipPin());
+            callableStatement.setString(i++, obj.getPartnershipName());
+            callableStatement.setDouble(i++, obj.getPartnershipPercent());
+            callableStatement.setString(i++, obj.getFiscalYearStart());
+            callableStatement.setString(i++, obj.getFiscalYearEnd());
+            callableStatement.setInt(i++, obj.getAccountingCode());
+
+            callableStatement.setString(i++, obj.isLandlord() == null ? null : obj.isLandlord() ? "Y" : "N");
+            callableStatement.setString(i++, obj.isCropShare() == null ? null : obj.isCropShare() ? "Y" : "N");
+            callableStatement.setString(i++, obj.isFeederMember() == null ? null : obj.isFeederMember() ? "Y" : "N");
+            callableStatement.setDouble(i++, obj.getGrossIncome());
+            callableStatement.setDouble(i++, obj.getExpenses());
+            callableStatement.setDouble(i++, obj.getNetIncomeBeforeAdj());
+            callableStatement.setDouble(i++, obj.getOtherDeductions());
+            callableStatement.setDouble(i++, obj.getInventoryAdjustments());
+            callableStatement.setDouble(i++, obj.getNetIncomeAfterAdj());
+            callableStatement.setDouble(i++, obj.getBusinessUseOfHomeExpenses());
+            callableStatement.setDouble(i++, obj.getNetFarmIncome());
+            callableStatement.setString(i++, obj.isCropDisaster() == null ? null : obj.isCropDisaster() ? "Y" : "N");
+            callableStatement.setString(i++,
+                    obj.isLivestockDisaster() == null ? null : obj.isLivestockDisaster() ? "Y" : "N");
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();
