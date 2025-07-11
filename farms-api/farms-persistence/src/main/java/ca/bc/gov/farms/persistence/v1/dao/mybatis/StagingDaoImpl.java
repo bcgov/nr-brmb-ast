@@ -13,6 +13,7 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z05PartnerInfo;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z21ParticipantSuppl;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z22ProductionInsurance;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z23LivestockProdCpct;
+import ca.bc.gov.farms.persistence.v1.dto.staging.Z28ProdInsuranceRef;
 
 public class StagingDaoImpl extends BaseDao implements StagingDao {
 
@@ -284,6 +285,23 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
             callableStatement.setInt(i++, obj.getOperationNumber());
             callableStatement.setInt(i++, obj.getInventoryCode());
             callableStatement.setDouble(i++, obj.getProductiveCapacityAmount());
+            callableStatement.setString(i++, userId);
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void insert(final Z28ProdInsuranceRef obj, final String userId) throws SQLException {
+        int i = 1;
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall(
+                        "call farms_staging_pkg.insert_z28(?, ?, ?)")) {
+
+            callableStatement.setInt(i++, obj.getProductionUnit());
+            callableStatement.setString(i++, obj.getProductionUnitDescription());
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();
