@@ -69,4 +69,9 @@ public final class Fipd50 extends FileHandle<Z50ParticipntBnftCalc> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_50_NUMBER;
+    }
+
 }

@@ -49,4 +49,9 @@ public final class Fipd28 extends FileHandle<Z28ProdInsuranceRef> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_28_NUMBER;
+    }
+
 }

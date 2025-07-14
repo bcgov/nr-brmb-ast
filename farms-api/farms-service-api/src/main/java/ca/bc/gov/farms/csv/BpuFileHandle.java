@@ -62,4 +62,9 @@ public class BpuFileHandle extends FileHandle<ImportBPUDto> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return 0;
+    }
+
 }

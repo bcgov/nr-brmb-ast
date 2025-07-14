@@ -95,4 +95,9 @@ public final class Fipd03 extends FileHandle<Z03StatementInfo> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_03_NUMBER;
+    }
+
 }

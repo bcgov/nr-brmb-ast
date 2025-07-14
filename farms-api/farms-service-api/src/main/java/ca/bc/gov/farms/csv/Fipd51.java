@@ -61,4 +61,9 @@ public final class Fipd51 extends FileHandle<Z51ParticipantContrib> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_51_NUMBER;
+    }
+
 }

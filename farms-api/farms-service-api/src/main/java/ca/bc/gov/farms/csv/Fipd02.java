@@ -126,4 +126,9 @@ public final class Fipd02 extends FileHandle<Z02PartpntFarmInfo> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_02_NUMBER;
+    }
+
 }

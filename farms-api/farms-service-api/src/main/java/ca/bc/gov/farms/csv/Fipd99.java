@@ -53,4 +53,9 @@ public final class Fipd99 extends FileHandle<Z99ExtractFileCtl> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_99_NUMBER;
+    }
+
 }

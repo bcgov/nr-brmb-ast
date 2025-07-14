@@ -58,4 +58,9 @@ public final class Fipd22 extends FileHandle<Z22ProductionInsurance> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_22_NUMBER;
+    }
+
 }

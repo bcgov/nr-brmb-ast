@@ -60,4 +60,9 @@ public final class Fipd29 extends FileHandle<Z29InventoryRef> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_29_NUMBER;
+    }
+
 }

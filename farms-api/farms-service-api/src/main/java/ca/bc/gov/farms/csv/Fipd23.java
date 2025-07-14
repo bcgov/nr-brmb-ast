@@ -60,4 +60,9 @@ public final class Fipd23 extends FileHandle<Z23LivestockProdCpct> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_23_NUMBER;
+    }
+
 }

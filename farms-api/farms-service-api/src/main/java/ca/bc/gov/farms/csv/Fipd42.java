@@ -60,4 +60,9 @@ public final class Fipd42 extends FileHandle<Z42ParticipantRefYear> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_42_NUMBER;
+    }
+
 }

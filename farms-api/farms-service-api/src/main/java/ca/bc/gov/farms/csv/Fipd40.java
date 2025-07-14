@@ -83,4 +83,9 @@ public final class Fipd40 extends FileHandle<Z40PrtcpntRefSuplDtl> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_40_NUMBER;
+    }
+
 }

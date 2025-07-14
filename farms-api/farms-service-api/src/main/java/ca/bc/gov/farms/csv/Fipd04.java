@@ -62,4 +62,9 @@ public final class Fipd04 extends FileHandle<Z04IncomeExpsDtl> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_04_NUMBER;
+    }
+
 }

@@ -76,4 +76,9 @@ public final class Fipd21 extends FileHandle<Z21ParticipantSuppl> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_21_NUMBER;
+    }
+
 }

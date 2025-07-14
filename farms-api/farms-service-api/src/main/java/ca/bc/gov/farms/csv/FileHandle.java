@@ -14,16 +14,19 @@ public abstract class FileHandle<T> {
 
     private List<T> records = new ArrayList<>();
 
+    protected int row = 0;
+
     protected FileHandle(InputStream inputStream) {
         try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 CSVReader csvReader = new CSVReader(inputStreamReader)) {
             String[] line = null;
-            int row = 2;
             while ((line = csvReader.readNext()) != null) {
+                row++;
                 if (actualHeaders == null || actualHeaders.length == 0) {
                     actualHeaders = line; // First line is the header
+                    row++;
                 } else {
-                    T record = parseLine(line, row++);
+                    T record = parseLine(line, row);
                     records.add(record);
                 }
             }
@@ -76,5 +79,11 @@ public abstract class FileHandle<T> {
             case INVALID_ROW:
                 throw new ParseException("Row " + row + " does not contain the correct number of columns", offset);
         }
+    }
+
+    public abstract int getFileNumber();
+
+    public final int getRowsRead() {
+        return row;
     }
 }

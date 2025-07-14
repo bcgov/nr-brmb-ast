@@ -70,4 +70,9 @@ public final class Fipd05 extends FileHandle<Z05PartnerInfo> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_05_NUMBER;
+    }
+
 }

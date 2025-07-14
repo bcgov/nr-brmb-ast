@@ -117,4 +117,9 @@ public final class Fipd01 extends FileHandle<Z01ParticipantInfo> {
         };
     }
 
+    @Override
+    public int getFileNumber() {
+        return FileCacheManager.FIPD_01_NUMBER;
+    }
+
 }
