@@ -37,7 +37,7 @@ public final class Fipd01 extends FileHandle<Z01ParticipantInfo> {
 
         Z01ParticipantInfo c = new Z01ParticipantInfo();
 
-        int i = 1;
+        int i = 1; // skip uk
         c.setParticipantPin(ParseUtils.parseInteger(cols[i++]));
         c.setSinCtnBn(cols[i++]);
 
