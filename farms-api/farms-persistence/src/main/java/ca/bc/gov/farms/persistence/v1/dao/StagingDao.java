@@ -21,6 +21,8 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z99ExtractFileCtl;
 
 public interface StagingDao extends Serializable {
 
+    void clear() throws SQLException;
+
     void insert(final Z01ParticipantInfo obj, final String userId) throws SQLException;
 
     void insert(final Z02PartpntFarmInfo obj, final String userId) throws SQLException;

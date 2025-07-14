@@ -32,6 +32,17 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
     }
 
     @Override
+    public void clear() throws SQLException {
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("call farms_staging_pkg.clear()")) {
+
+            callableStatement.execute();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
     public void insert(final Z01ParticipantInfo obj, final String userId) throws SQLException {
         int i = 1;
         try (CallableStatement callableStatement = this.conn
