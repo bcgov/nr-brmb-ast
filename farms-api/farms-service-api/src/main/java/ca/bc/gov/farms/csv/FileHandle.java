@@ -2,6 +2,7 @@ package ca.bc.gov.farms.csv;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +18,12 @@ public abstract class FileHandle<T> {
         try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 CSVReader csvReader = new CSVReader(inputStreamReader)) {
             String[] line = null;
+            int row = 2;
             while ((line = csvReader.readNext()) != null) {
                 if (actualHeaders == null || actualHeaders.length == 0) {
                     actualHeaders = line; // First line is the header
                 } else {
-                    T record = parseLine(line);
+                    T record = parseLine(line, row++);
                     records.add(record);
                 }
             }
@@ -31,7 +33,7 @@ public abstract class FileHandle<T> {
         }
     }
 
-    protected abstract T parseLine(String[] line);
+    protected abstract T parseLine(String[] cols, int row) throws ParseException;
 
     protected abstract List<String> getExpectedHeaders();
 
@@ -60,5 +62,19 @@ public abstract class FileHandle<T> {
 
     public List<T> getRecords() {
         return records;
+    }
+
+    protected enum ParseError {
+        MISSING_ROW,
+        INVALID_ROW
+    }
+
+    protected final void error(final ParseError parseError, final int row, final int offset) throws ParseException {
+        switch (parseError) {
+            case MISSING_ROW:
+                throw new ParseException("Row " + row + " does not contain any data", offset);
+            case INVALID_ROW:
+                throw new ParseException("Row " + row + " does not contain the correct number of columns", offset);
+        }
     }
 }
