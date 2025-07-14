@@ -18,22 +18,22 @@ public class BpuFileHandle extends FileHandle<ImportBPUDto> {
         int index = 0;
 
         ImportBPUDto dto = new ImportBPUDto();
-        dto.setProgramYear(Integer.parseInt(line[index++].trim()));
+        dto.setProgramYear(ParseUtils.parseInteger(line[index++].trim()));
         dto.setMunicipalityCode(line[index++].trim());
         dto.setInventoryItemCode(line[index++].trim());
         dto.setUnitComment(line[index++].trim());
-        dto.setYearMinus6Margin(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus5Margin(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus4Margin(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus3Margin(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus2Margin(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus1Margin(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus6Expense(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus5Expense(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus4Expense(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus3Expense(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus2Expense(new BigDecimal(line[index++].trim()));
-        dto.setYearMinus1Expense(new BigDecimal(line[index++].trim()));
+        dto.setYearMinus6Margin(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus5Margin(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus4Margin(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus3Margin(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus2Margin(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus1Margin(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus6Expense(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus5Expense(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus4Expense(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus3Expense(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus2Expense(ParseUtils.parseBigDecimal(line[index++].trim()));
+        dto.setYearMinus1Expense(ParseUtils.parseBigDecimal(line[index++].trim()));
 
         return dto;
     }
