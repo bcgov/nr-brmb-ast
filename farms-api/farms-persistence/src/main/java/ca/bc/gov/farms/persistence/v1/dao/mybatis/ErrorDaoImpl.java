@@ -23,7 +23,7 @@ public class ErrorDaoImpl extends BaseDao implements ErrorDao {
     public String codify(String msg) throws DaoException {
         int i = 1;
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("? = call farms_error_pkg.codify(?)")) {
+                .prepareCall("{ ? = call farms_error_pkg.codify(?) }")) {
             callableStatement.registerOutParameter(i++, Types.VARCHAR);
             callableStatement.setString(i++, msg);
             callableStatement.execute();
