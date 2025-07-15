@@ -1,7 +1,7 @@
 create or replace function farms_error_pkg.codify(
     in msg varchar
 )
-returns boolean
+returns varchar
 language plpgsql
 as $$
 begin

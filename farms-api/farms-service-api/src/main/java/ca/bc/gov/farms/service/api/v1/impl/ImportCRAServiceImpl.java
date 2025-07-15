@@ -100,9 +100,21 @@ public class ImportCRAServiceImpl implements ImportCRAService {
                 // skip loading if there were errors with the package
                 load(fcm, errors, userId, importVersionId);
             }
+
+            logger.debug("updating import version");
+            vdao.updateControlFileInfoStg(importVersionId, userId);
+            vdao.uploadedVersion(
+                    importVersionId,
+                    ImportLogFormatter.formatStagingXml(errors, warnings, conn),
+                    new Boolean(!(errors.size() == 0) || !validated),
+                    userId);
+            logger.debug("Completed csv load");
         } catch (SQLException | DaoException e) {
             e.printStackTrace();
             logger.error("Unexpected error: ", e);
+
+            String xml = ImportLogFormatter.formatUploadException(e);
+            vdao.uploadFailure(importVersionId, xml, userId);
         }
     }
 

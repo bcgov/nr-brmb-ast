@@ -128,7 +128,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     }
 
     @Override
-    public void uploadFailure(Long versionId, String message, String user) throws DaoException {
+    public void uploadFailure(Long versionId, String message, String user) {
         logger.debug("<uploadFailure");
 
         try (CallableStatement callableStatement = this.conn
@@ -138,7 +138,8 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
             callableStatement.setString(3, user);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
-            handleException(e);
+            // eat it
+            logger.error("Unexpected error: ", e);
         }
 
         logger.debug(">uploadFailure");
