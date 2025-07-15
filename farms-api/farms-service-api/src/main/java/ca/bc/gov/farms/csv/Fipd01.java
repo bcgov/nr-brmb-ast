@@ -78,8 +78,7 @@ public final class Fipd01 extends FileHandle<Z01ParticipantInfo> {
         return c;
     }
 
-    @Override
-    protected List<String> getExpectedHeaders() {
+    protected List<String> getLegacyExpectedHeaders() {
         return new ArrayList<String>() {
             {
                 add("gk_participant");
@@ -113,6 +112,51 @@ public final class Fipd01 extends FileHandle<Z01ParticipantInfo> {
                 add("ident_effective_date");
                 add("part_email");
                 add("bn");
+            }
+        };
+    }
+
+    @Override
+    protected List<String> getExpectedHeaders() {
+        if (actualHeaders.length == NUM_COLS_LEGACY) {
+            return getLegacyExpectedHeaders();
+        }
+
+        return new ArrayList<String>() {
+            {
+                add("gk_participant");
+                add("part_pin");
+                add("sin_bn");
+                add("part_gname");
+                add("part_sname");
+                add("corp_name");
+                add("part_line1_addr");
+                add("part_line2_addr");
+                add("part_city");
+                add("part_prov");
+                add("part_pstl_code");
+                add("part_cntry_code");
+                add("part_type_code");
+                add("part_lang_code");
+                add("part_fax_num");
+                add("part_day_tel_num");
+                add("part_eve_tel_num");
+                add("cnct_first_name");
+                add("cntc_last_name");
+                add("cntct_name");
+                add("cntct_line1_addr");
+                add("cntct_line2_addr");
+                add("cntct_city");
+                add("cntct_prov");
+                add("cntct_pstl_code");
+                add("cntct_day_tel_num");
+                add("cntct_fax_num");
+                add("pblc_offc_aafc_empl_ind");
+                add("ident_effective_date");
+                add("part_email");
+                add("bn");
+                add("part_cell_num");
+                add("cntct_cell_num");
             }
         };
     }

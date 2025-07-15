@@ -10,7 +10,7 @@ import com.opencsv.CSVReader;
 
 public abstract class FileHandle<T> {
 
-    private String[] actualHeaders = {};
+    protected String[] actualHeaders = {};
 
     private List<T> records = new ArrayList<>();
 
