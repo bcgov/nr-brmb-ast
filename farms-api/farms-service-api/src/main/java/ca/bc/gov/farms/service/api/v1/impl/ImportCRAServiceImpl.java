@@ -274,4 +274,36 @@ public class ImportCRAServiceImpl implements ImportCRAService {
             }
         }
     }
+
+    @Override
+    public void processImport(Long pImportVersionId, String userId) {
+        ImportVersionDao vdao = null;
+
+        try {
+            conn = dataSource.getConnection();
+            vdao = new ImportVersionDaoImpl(conn);
+
+            vdao.startImport(pImportVersionId, userId);
+            conn.commit(); // saves the started status and empty clob
+
+            vdao.performImport(pImportVersionId, userId);
+            conn.commit(); // saves the work
+
+            vdao.analyzeSchema(pImportVersionId);
+            // no need to do a commit here
+        } catch (SQLException | DaoException e) {
+            logger.error("Unexpected error: ", e);
+
+            try {
+                conn.rollback();
+
+                String xml = ImportLogFormatter.formatImportException(e);
+                vdao.importFailure(pImportVersionId, xml, userId);
+                conn.commit(); // saves the failure state
+            } catch (SQLException | DaoException e1) {
+                logger.error("Error updating log XML for CRA import", e1);
+            }
+        }
+
+    }
 }
