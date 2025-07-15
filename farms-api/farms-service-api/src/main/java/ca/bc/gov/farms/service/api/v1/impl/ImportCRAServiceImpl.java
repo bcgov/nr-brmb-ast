@@ -115,6 +115,14 @@ public class ImportCRAServiceImpl implements ImportCRAService {
 
             String xml = ImportLogFormatter.formatUploadException(e);
             vdao.uploadFailure(importVersionId, xml, userId);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    logger.error("Error closing connection", e);
+                }
+            }
         }
     }
 
@@ -303,7 +311,14 @@ public class ImportCRAServiceImpl implements ImportCRAService {
             } catch (SQLException | DaoException e1) {
                 logger.error("Error updating log XML for CRA import", e1);
             }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    logger.error("Error closing connection", e);
+                }
+            }
         }
-
     }
 }
