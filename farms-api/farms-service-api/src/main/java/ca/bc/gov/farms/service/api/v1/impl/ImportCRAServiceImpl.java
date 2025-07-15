@@ -231,6 +231,7 @@ public class ImportCRAServiceImpl extends BaseServiceImpl implements ImportCRASe
             }
 
             List<?> records = fileHandle.getRecords();
+            logger.debug("Number of records: " + records.size());
             for (Object record : records) {
                 try {
                     if (record instanceof Z01ParticipantInfo) {

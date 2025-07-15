@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.csv;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
@@ -33,6 +34,11 @@ public abstract class FileHandle<T> {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error processing CSV file", e);
+        } finally {
+            // reset inputStream for next read
+            if (inputStream instanceof ByteArrayInputStream) {
+                ((ByteArrayInputStream) inputStream).reset();
+            }
         }
     }
 
