@@ -19,16 +19,14 @@ import ca.bc.gov.farms.persistence.v1.dao.mybatis.ImportVersionDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dto.ImportBPUDto;
 import ca.bc.gov.farms.service.api.v1.ImportBPUService;
 
-public class ImportBPUServiceImpl implements ImportBPUService {
+public class ImportBPUServiceImpl extends BaseServiceImpl implements ImportBPUService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImportBPUServiceImpl.class);
 
     private List<Object> stagingErrors = new ArrayList<>();
 
-    private DataSource dataSource;
-
     public ImportBPUServiceImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+        super(dataSource);
     }
 
     @Override
@@ -43,7 +41,7 @@ public class ImportBPUServiceImpl implements ImportBPUService {
         ImportBPUDao bpuDao = null;
 
         try {
-            connection = dataSource.getConnection();
+            connection = getConnection();
             vdao = new ImportVersionDaoImpl(connection);
             bpuDao = new ImportBPUDaoImpl(connection);
 
@@ -123,7 +121,7 @@ public class ImportBPUServiceImpl implements ImportBPUService {
         ImportBPUDao bpuDao = null;
 
         try {
-            connection = dataSource.getConnection();
+            connection = getConnection();
             vdao = new ImportVersionDaoImpl(connection);
             bpuDao = new ImportBPUDaoImpl(connection);
 

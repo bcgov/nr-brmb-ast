@@ -12,14 +12,12 @@ import ca.bc.gov.farms.persistence.v1.dao.mybatis.ImportDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dto.ImportVersionDto;
 import ca.bc.gov.farms.service.api.v1.ImportService;
 
-public class ImportServiceImpl implements ImportService {
+public class ImportServiceImpl extends BaseServiceImpl implements ImportService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImportServiceImpl.class);
 
-    private DataSource dataSource;
-
     public ImportServiceImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+        super(dataSource);
     }
 
     @Override
@@ -29,7 +27,7 @@ public class ImportServiceImpl implements ImportService {
         ImportDao importDao = null;
 
         try {
-            connection = dataSource.getConnection();
+            connection = getConnection();
             importDao = new ImportDaoImpl(connection);
 
             ImportVersionDto importVersionDto = new ImportVersionDto();

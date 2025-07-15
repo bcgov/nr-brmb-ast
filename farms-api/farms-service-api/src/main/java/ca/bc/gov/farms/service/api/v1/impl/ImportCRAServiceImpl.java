@@ -39,17 +39,16 @@ import ca.bc.gov.farms.persistence.v1.dto.staging.Z51ParticipantContrib;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z99ExtractFileCtl;
 import ca.bc.gov.farms.service.api.v1.ImportCRAService;
 
-public class ImportCRAServiceImpl implements ImportCRAService {
+public class ImportCRAServiceImpl extends BaseServiceImpl implements ImportCRAService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImportCRAServiceImpl.class);
 
     private static final int DEFAULT_ERRORS = 250000;
 
-    private DataSource dataSource;
     private Connection conn;
 
     public ImportCRAServiceImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+        super(dataSource);
     }
 
     @Override
@@ -57,7 +56,7 @@ public class ImportCRAServiceImpl implements ImportCRAService {
         ImportVersionDao vdao = null;
 
         try {
-            conn = dataSource.getConnection();
+            conn = getConnection();
             vdao = new ImportVersionDaoImpl(conn);
 
             logger.debug("Starting import: " + importVersionId);
@@ -288,7 +287,7 @@ public class ImportCRAServiceImpl implements ImportCRAService {
         ImportVersionDao vdao = null;
 
         try {
-            conn = dataSource.getConnection();
+            conn = getConnection();
             vdao = new ImportVersionDaoImpl(conn);
 
             vdao.startImport(pImportVersionId, userId);
