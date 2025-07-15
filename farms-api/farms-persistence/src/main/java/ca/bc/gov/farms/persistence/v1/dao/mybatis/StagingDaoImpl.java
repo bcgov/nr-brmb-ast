@@ -472,13 +472,13 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
     }
 
     @Override
-    public void status(Integer pImportVersionId, String pString) throws SQLException {
+    public void status(Long pImportVersionId, String pString) throws SQLException {
         int i = 1;
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
                         "call farms_import_pkg.update_status(?, ?)")) {
 
-            callableStatement.setInt(i++, pImportVersionId);
+            callableStatement.setLong(i++, pImportVersionId);
             callableStatement.setString(i++, pString);
 
             callableStatement.execute();
@@ -488,13 +488,13 @@ public class StagingDaoImpl extends BaseDao implements StagingDao {
     }
 
     @Override
-    public void statusNonAutonomous(Integer pImportVersionId, String pString) throws SQLException {
+    public void statusNonAutonomous(Long pImportVersionId, String pString) throws SQLException {
         int i = 1;
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
                         "call farms_import_pkg.update_status_non_autonomous(?, ?)")) {
 
-            callableStatement.setInt(i++, pImportVersionId);
+            callableStatement.setLong(i++, pImportVersionId);
             callableStatement.setString(i++, pString);
 
             callableStatement.execute();

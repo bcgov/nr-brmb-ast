@@ -18,7 +18,7 @@ public class ImportServiceImpl implements ImportService {
 
     private DataSource dataSource;
 
-    public void setDataSource(DataSource dataSource) {
+    public ImportServiceImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

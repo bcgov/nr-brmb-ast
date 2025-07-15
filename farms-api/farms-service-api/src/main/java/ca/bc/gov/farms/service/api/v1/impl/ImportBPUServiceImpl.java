@@ -27,7 +27,7 @@ public class ImportBPUServiceImpl implements ImportBPUService {
 
     private DataSource dataSource;
 
-    public void setDataSource(DataSource dataSource) {
+    public ImportBPUServiceImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

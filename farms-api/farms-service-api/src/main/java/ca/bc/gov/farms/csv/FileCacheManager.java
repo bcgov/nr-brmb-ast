@@ -61,8 +61,8 @@ public class FileCacheManager {
     public static final String FIPD_01_NAME_PREFIX = "FIPD_AS_01_";
     public static final int FIPD_01_NUMBER = 1;
 
-    public FileCacheManager(final byte[] fileContent) {
-        this.archive = new ByteArrayInputStream(fileContent);
+    public FileCacheManager(InputStream archive) {
+        this.archive = archive;
     }
 
     public final void extract() throws IOException {
