@@ -18,6 +18,7 @@ jobs:
       JAVA_VERSION: 17
 
   openshift-deploy:
+    needs: build-farms-api
     uses: ./.github/workflows/openshift-deploy.yml
     secrets: inherit
     with:
