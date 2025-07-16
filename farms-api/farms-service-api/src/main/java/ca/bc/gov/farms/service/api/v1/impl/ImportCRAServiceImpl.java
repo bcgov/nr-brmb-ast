@@ -296,9 +296,6 @@ public class ImportCRAServiceImpl extends BaseServiceImpl implements ImportCRASe
 
             vdao.performImport(pImportVersionId, userId);
             conn.commit(); // saves the work
-
-            vdao.analyzeSchema(pImportVersionId);
-            // no need to do a commit here
         } catch (SQLException | DaoException e) {
             logger.error("Unexpected error: ", e);
 
