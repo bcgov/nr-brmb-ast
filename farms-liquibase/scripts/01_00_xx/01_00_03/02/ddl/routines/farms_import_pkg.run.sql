@@ -91,12 +91,13 @@ begin
             errors := errors + errors_t;
         else
             -- deal with versioned part
-            errors := errors + farms_import_pkg.program_year(
+            select * into in_out_activity, errors_t from farms_import_pkg.program_year(
                 in_version_id,
                 v_agristability_client_id,
                 in_user,
                 in_out_activity
             );
+            errors := errors + errors_t;
         end if;
         if in_out_activity > 0 then
             call farms_import_pkg.update_imp(
