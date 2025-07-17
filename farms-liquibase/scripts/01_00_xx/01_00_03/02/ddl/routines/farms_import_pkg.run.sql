@@ -131,7 +131,7 @@ begin
     end if;
 
     call farms_import_pkg.update_status(in_version_id, 'Processing Contact Transfers');
-    call farms_import_pkg.contact_transfers(in_version_id, changed_contact_client_ids, in_user);
+    call farms_import_pkg.contact_transfer(in_version_id, changed_contact_client_ids, in_user);
 
     call farms_import_pkg.update_status(in_version_id, 'Processing State Transfers');
     call farms_import_pkg.benefit_update_transfer(in_version_id, in_user);
