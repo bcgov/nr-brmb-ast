@@ -9,6 +9,27 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.copy_year_configuration_params.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.copy_year_inventory_details.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_codes_write_pkg.copy_year_line_items.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "ddl/routines/farms_error_pkg.codify.sql"
                         }
                     },
