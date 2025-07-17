@@ -45,7 +45,7 @@ declare
                    z.form_version_number,
                    z.province_of_residence,
                    z.province_of_main_farmstead,
-                   z.post_mark_date,
+                   z.postmark_date,
                    z.received_date,
                    z.sole_proprietor_indicator,
                    z.partnership_member_indicator,
