@@ -51,6 +51,13 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "ddl/routines/farms_import_pkg.production_unit.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "ddl/routines/farms_import_pkg.run.sql"
                         }
                     },

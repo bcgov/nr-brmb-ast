@@ -71,7 +71,7 @@ begin
         in_out_activity := 0;
         log_id := farms_import_pkg.append_imp(
             in_version_id,
-            '<PARTICIPANT pin="' || farms_import_pkg.scrub(z01_val.participant_pin) ||
+            '<PARTICIPANT pin="' || farms_import_pkg.scrub(z01_val.participant_pin::varchar) ||
             '" first_name="' || farms_import_pkg.scrub(z01_val.first_name) ||
             '" last_name="' || farms_import_pkg.scrub(z01_val.last_name) ||
             '" corp_name="' || farms_import_pkg.scrub(z01_val.corp_name) ||
@@ -102,7 +102,7 @@ begin
         if in_out_activity > 0 then
             call farms_import_pkg.update_imp(
                 log_id,
-                '<PARTICIPANT pin="' || farms_import_pkg.scrub(z01_val.participant_pin) ||
+                '<PARTICIPANT pin="' || farms_import_pkg.scrub(z01_val.participant_pin::varchar) ||
                 '" first_name="' || farms_import_pkg.scrub(z01_val.first_name) ||
                 '" last_name="' || farms_import_pkg.scrub(z01_val.last_name) ||
                 '" corp_name="' || farms_import_pkg.scrub(z01_val.corp_name) ||
