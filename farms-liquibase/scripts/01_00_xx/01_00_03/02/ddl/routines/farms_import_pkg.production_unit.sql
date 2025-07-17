@@ -11,7 +11,7 @@ declare
                z.production_unit_description new_description,
                cu.description old_description
         from farms.z28_production_insurance_reference z
-        left outer join farms.crop_unit_code cu on to_char(z.production_unit, 'FM0000') = cu.crop_unit_code
+        left outer join farms.crop_unit_code cu on z.production_unit::varchar = cu.crop_unit_code
         where cu.crop_unit_code is null
         or z.production_unit_description <> cu.description;
     pu_val record;
