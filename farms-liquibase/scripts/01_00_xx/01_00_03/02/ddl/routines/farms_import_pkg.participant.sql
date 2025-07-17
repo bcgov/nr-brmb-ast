@@ -19,11 +19,11 @@ declare
                     else z.sin
                end) p_in_sin,
                (case
-                    when z.business_number is null and a.sin_ctn_business_number like '%RC%' then z.sin_ctn_business_number
+                    when z.business_number is null and z.sin_ctn_business_number like '%RC%' then z.sin_ctn_business_number
                     else z.business_number
                end) p_in_business_number,
                (case
-                    when z.trust_number is null and a.sin_ctn_business_number like 'T%' then z.sin_ctn_business_number
+                    when z.trust_number is null and z.sin_ctn_business_number like 'T%' then z.sin_ctn_business_number
                     else z.trust_number
                end) p_in_trust_number,
                z.participant_type_code p_in_participant_class_code,
@@ -131,7 +131,7 @@ begin
         v_participant_language_code := z01_val.p_in_participant_language_code;
         -- ag client info
         if z01_val.p_locally_updated_indicator is null then
-            select nextval(farms.seq_ac1)
+            select nextval('farms.seq_ac1')
             into out_agristability_client_id;
             in_out_activity := in_out_activity + 1;
 
@@ -142,7 +142,7 @@ begin
                 '<ATTR name="federal_identifier" new="' ||
                 farms_import_pkg.scrub(z01_val.p_in_federal_identifier) || '"/>' ||
                 '<ATTR name="sin" new="' ||
-                farms_import_pkg.scrib(z01_val.p_in_sin) || '"/>' ||
+                farms_import_pkg.scrub(z01_val.p_in_sin) || '"/>' ||
                 '<ATTR name="business_number" new="' ||
                 farms_import_pkg.scrub(z01_val.p_in_business_number) || '"/>' ||
                 '<ATTR name="trust_number" new="' ||
