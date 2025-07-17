@@ -69,7 +69,7 @@ declare
                    z.disaster_indicator,
                    z.copy_cob_to_contact_indicator,
                    (case
-                       when fmc.municipality_code is not null then z.municipality_code
+                       when fmc.municipality_code is not null then z.municipality_code::varchar
                        else Unknown
                    end) municipality_code,
                    z.municipality_code in_mun_cd,
