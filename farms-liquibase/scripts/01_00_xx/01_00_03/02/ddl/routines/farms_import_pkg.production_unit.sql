@@ -57,7 +57,7 @@ begin
                     update_user,
                     update_date
                 ) values (
-                    to_char(pu_val.production_unit),
+                    pu_val.production_unit::varchar,
                     pu_val.new_description,
                     current_date,
                     exp_date,
@@ -92,7 +92,7 @@ begin
                     farms_import_pkg.scrub(pu_val.production_unit::varchar) ||
                     '" action="error"><ERROR>' ||
                     farms_import_pkg.scrub(farms_error_pkg.codify_production_unit(sqlerrm,
-                                                                                  to_char(v_production_unit))) ||
+                                                                                  v_production_unit::varchar)) ||
                     '</ERROR></PRODUCTION_UNIT>');
         end;
     end loop;
