@@ -16,6 +16,7 @@ jobs:
       ENVIRONMENT: DEV
       MICROSERVICE_NAME: farms-api
       JAVA_VERSION: 17
+      DEPLOYMENT_BRANCH: ${{ github.event.pull_request.head.ref }}
 
   openshift-deploy:
     needs: build-farms-api
