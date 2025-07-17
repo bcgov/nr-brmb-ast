@@ -48,7 +48,7 @@ begin
         where pyv.program_year_version_id = in_program_year_vrsn_prev_id
         and op.locally_generated_indicator = 'N'
         except
-        select to_char(z.accounting_code) federal_accounting_code,
+        select z.accounting_code::varchar federal_accounting_code,
                z.business_use_of_home_expenses business_use_home_expense,
                z.crop_disaster_indicator,
                z.crop_share_indicator,
@@ -69,7 +69,7 @@ begin
                z.partnership_pin,
                z.participant_pin,
                z.operation_number,
-               row_number() over (partition by to_char(z.accounting_code),
+               row_number() over (partition by z.accounting_code::varchar,
                z.business_use_of_home_expenses, z.crop_disaster_indicator, z.crop_share_indicator,
                z.expenses, z.feeder_member_indicator, to_date(z.fiscal_year_end, 'YYYYMMDD'),
                to_date(z.fiscal_year_start, 'YYYYMMDD'), z.gross_income,
@@ -85,7 +85,7 @@ begin
     ) t1
     union all
     (
-        select to_char(z.accounting_code) federal_accounting_code,
+        select z.accounting_code::varchar federal_accounting_code,
                z.business_use_of_home_expenses business_use_home_expense,
                z.crop_disaster_indicator,
                z.crop_share_indicator,
@@ -106,7 +106,7 @@ begin
                z.partnership_pin,
                z.participant_pin,
                z.operation_number,
-               row_number() over (partition by to_char(z.accounting_code),
+               row_number() over (partition by z.accounting_code::varchar,
                z.business_use_of_home_expenses, z.crop_disaster_indicator, z.crop_share_indicator,
                z.expenses, z.feeder_member_indicator, to_date(z.fiscal_year_end, 'YYYYMMDD'),
                to_date(z.fiscal_year_start, 'YYYYMMDD'), z.gross_income,
