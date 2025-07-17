@@ -103,7 +103,7 @@ begin
     open received_cursor;
     fetch received_cursor into transfer_val;
 
-    if received_cursor%found then
+    if transfer_val is not null then
 
         select iv.create_date,
                iv.description
@@ -202,7 +202,7 @@ begin
             where import_version_id = transfer_version_id;
 
             fetch received_cursor into transfer_val;
-            exit when received_cursor%notfound;
+            exit when not found;
         end loop;
 
         call farms_import_pkg.update_status(
