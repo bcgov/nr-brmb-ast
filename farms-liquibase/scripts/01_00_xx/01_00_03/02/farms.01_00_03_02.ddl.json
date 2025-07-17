@@ -37,6 +37,13 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "ddl/routines/farms_import_pkg.benefit_update_transfer.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "ddl/routines/farms_import_pkg.clear_log.sql"
                         }
                     },
@@ -45,6 +52,20 @@
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
                             "path": "ddl/routines/farms_import_pkg.close_global_log.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_import_pkg.is_operation_changed.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_import_pkg.operation_partner.sql"
                         }
                     },
                     {
