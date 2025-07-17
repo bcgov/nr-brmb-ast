@@ -24,6 +24,9 @@ on:
       TAG:
         required: true
         type: string
+      DEPLOYMENT_BRANCH:
+        required: false
+        type: string
 
 env:
   DIRECTORY_SUFFIX: ${{ contains(inputs.MICROSERVICE_NAME, '-api') && '-rest-endpoints' || '' }}
@@ -39,6 +42,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.DEPLOYMENT_BRANCH }}
 
       - name: Extract version number
         id: getVersion
