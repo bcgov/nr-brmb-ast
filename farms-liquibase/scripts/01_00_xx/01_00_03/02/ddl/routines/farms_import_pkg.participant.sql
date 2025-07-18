@@ -10,7 +10,7 @@ create or replace function farms_import_pkg.participant(
 language plpgsql
 as $$
 declare
-    z01_cursor cursor for
+    z01_participant_cursor cursor for
         select z.participant_pin,
                ac.agristability_client_id,
                z.sin_ctn_business_number p_in_federal_identifier,
@@ -42,10 +42,10 @@ declare
                ac.participant_language_code p_out_participant_language_code,
                ac.public_office_indicator p_out_public_office_indicator,
                ac.locally_updated_indicator p_locally_updated_indicator,
-
+               --
                to_date(z.identity_effective_date, 'YYYYMMDD') p_in_identity_effective_date,
                ac.identity_effective_date p_out_identity_effective_date,
-
+               --
                z.first_name c_in_first_name,
                z.last_name c_in_last_name,
                z.corp_name c_in_corp_name,
@@ -61,7 +61,7 @@ declare
                z.participant_cell_number c_in_cell_number,
                z.participant_email_address c_in_email_address,
                ac.person_id c_person_id,
-
+               --
                p.first_name c_out_first_name,
                p.last_name c_out_last_name,
                p.corp_name c_out_corp_name,
@@ -76,7 +76,7 @@ declare
                p.evening_phone c_out_evening_phone,
                p.cell_number c_out_cell_number,
                p.email_address c_out_email_address,
-
+               --
                z.contact_first_name r_in_first_name,
                z.contact_last_name r_in_last_name,
                z.contact_business_name r_in_corp_name,
@@ -104,7 +104,7 @@ declare
                q.cell_number r_out_cell_number,
                q.daytime_phone r_out_daytime_phone,
                q.email_address r_out_email_address
-
+               --
         from farms.z01_participant_information z
         left outer join farms.agristability_client ac on ac.participant_pin = z.participant_pin
         left outer join farms.person p on p.person_id = ac.person_id
@@ -124,7 +124,7 @@ begin
     errors := 0;
 
     -- participant person info
-    for z01_val in z01_cursor
+    for z01_val in z01_participant_cursor
     loop
 
         v_participant_class_code := z01_val.p_in_participant_class_code;
