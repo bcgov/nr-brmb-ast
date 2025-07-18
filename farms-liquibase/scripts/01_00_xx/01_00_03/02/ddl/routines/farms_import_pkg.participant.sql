@@ -369,8 +369,8 @@ begin
         elsif z01_val.p_in_sin <> z01_val.p_out_sin
             or z01_val.p_in_business_number <> z01_val.p_out_business_number
             or z01_val.p_in_trust_number <> z01_val.p_out_trust_number
-            or z01_val.p_in_participant_class_code <> z01_val.p_out_participant_class_code
-            or z01_val.p_in_participant_language_code <> z01_val.p_out_participant_language_code
+            or z01_val.p_in_participant_class_code::varchar <> z01_val.p_out_participant_class_code
+            or z01_val.p_in_participant_language_code::varchar <> z01_val.p_out_participant_language_code
             or z01_val.p_in_public_office_indicator <> z01_val.p_out_public_office_indicator
             or z01_val.p_in_identity_effective_date <> z01_val.p_out_identity_effective_date
             or z01_val.c_person_id <> person_id
