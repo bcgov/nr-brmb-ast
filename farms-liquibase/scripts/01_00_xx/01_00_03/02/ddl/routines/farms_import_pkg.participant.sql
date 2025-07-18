@@ -159,10 +159,10 @@ begin
         elsif not farms_import_pkg.text_equal(z01_val.p_in_sin, z01_val.p_out_sin)
             or not farms_import_pkg.text_equal(z01_val.p_in_business_number, z01_val.p_out_business_number)
             or not farms_import_pkg.text_equal(z01_val.p_in_trust_number, z01_val.p_out_trust_number)
-            or not farms_import_pkg.text_equal(z01_val.p_in_participant_class_code, z01_val.p_out_participant_class_code)
-            or not farms_import_pkg.text_equal(z01_val.p_in_participant_language_code, z01_val.p_out_participant_language_code)
+            or not farms_import_pkg.text_equal(z01_val.p_in_participant_class_code::varchar, z01_val.p_out_participant_class_code)
+            or not farms_import_pkg.text_equal(z01_val.p_in_participant_language_code::varchar, z01_val.p_out_participant_language_code)
             or not farms_import_pkg.text_equal(z01_val.p_in_public_office_indicator, z01_val.p_out_public_office_indicator)
-            or not farms_import_pkg.text_equal(z01_val.p_in_identity_effective_date, z01_val.p_out_identity_effective_date)
+            or not farms_import_pkg.text_equal(to_char(z01_val.p_in_identity_effective_date, 'YYYYMMDD'), to_char(z01_val.p_out_identity_effective_date, 'YYYYMMDD'))
             or not farms_import_pkg.numbers_equal(z01_val.c_person_id, person_id)
             or not farms_import_pkg.numbers_equal(z01_val.r_person_id, person_rep_id) then
             in_out_activity := in_out_activity + 1;
@@ -204,7 +204,7 @@ begin
                             ''
                     end) ||
                     (case
-                        when not farms_import_pkg.text_equal(z01_val.p_in_participant_class_code, z01_val.p_out_participant_class_code) then
+                        when not farms_import_pkg.text_equal(z01_val.p_in_participant_class_code::varchar, z01_val.p_out_participant_class_code) then
                             '<ATTR name="participant_class_code" old="' ||
                             farms_import_pkg.scrub(z01_val.p_out_participant_class_code::varchar) || '" new="' ||
                             farms_import_pkg.scrub(z01_val.p_in_participant_class_code::varchar) || '"/>'
@@ -212,7 +212,7 @@ begin
                             ''
                     end) ||
                     (case
-                        when not farms_import_pkg.text_equal(z01_val.p_in_participant_language_code, z01_val.p_out_participant_language_code) then
+                        when not farms_import_pkg.text_equal(z01_val.p_in_participant_language_code::varchar, z01_val.p_out_participant_language_code) then
                             '<ATTR name="participant_lang_code" old="' ||
                             farms_import_pkg.scrub(z01_val.p_out_participant_language_code::varchar) || '" new="' ||
                             farms_import_pkg.scrub(z01_val.p_in_participant_language_code::varchar) || '"/>'
@@ -228,7 +228,7 @@ begin
                             ''
                     end) ||
                     (case
-                        when not farms_import_pkg.text_equal(z01_val.p_in_identity_effective_date, z01_val.p_out_identity_effective_date) then
+                        when not farms_import_pkg.text_equal(to_char(z01_val.p_in_identity_effective_date, 'YYYYMMDD'), to_char(z01_val.p_out_identity_effective_date, 'YYYYMMDD')) then
                             '<ATTR name="ident_effective_date" old="' ||
                             to_char(z01_val.p_out_identity_effective_date, 'YYYYMMDD') || '" new="' ||
                             to_char(z01_val.p_in_identity_effective_date, 'YYYYMMDD') || '"/>'
