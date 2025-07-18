@@ -248,7 +248,7 @@ begin
         if (z01_val.p_out_identity_effective_date is null
             or z01_val.p_out_identity_effective_date <> z01_val.p_in_identity_effective_date) then
 
-            call farms_import_pkg.person(
+            select * into person_id, in_out_activity, in_changed_contact_client_ids, p1_msg from farms_import_pkg.person(
                 in_version_id,
                 person_id,
                 z01_val.c_in_address_1,
@@ -282,11 +282,10 @@ begin
                 in_user,
                 in_out_activity,
                 out_agristability_client_id,
-                in_changed_contact_client_ids,
-                p1_msg
+                in_changed_contact_client_ids
             );
 
-            call farms_import_pkg.person(
+            select * into person_rep_id, in_out_activity, in_changed_contact_client_ids, p2_msg from farms_import_pkg.person(
                 in_version_id,
                 person_rep_id,
                 z01_val.r_in_address_1,
@@ -320,8 +319,7 @@ begin
                 in_user,
                 in_out_activity,
                 out_agristability_client_id,
-                in_changed_contact_client_ids,
-                p2_msg
+                in_changed_contact_client_ids
             );
         end if;
 
