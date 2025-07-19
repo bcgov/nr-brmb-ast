@@ -29,7 +29,7 @@ declare
                pyv.partnership_member_indicator p_partnership_member_indicator,
                pyv.sole_proprietor_indicator p_sole_proprietor_indicator,
                pyv.other_text p_other_text,
-               pyv.post_mark_date p_post_mark_date,
+               pyv.post_mark_date p_postmark_date,
                pyv.province_of_residence p_province_of_residence,
                pyv.received_date p_received_date,
                pyv.last_year_farming_indicator p_last_year_farming_indicator,
@@ -127,7 +127,7 @@ begin
         v_program_year := z02_val.program_year;
         v_agristability_status := z02_val.agristability_status;
         -- for warnings
-        pmd := to_date(z02_val.post_mark_date, 'YYYYMMDD');
+        pmd := to_date(z02_val.postmark_date, 'YYYYMMDD');
         rd := to_date(z02_val.received_date, 'YYYYMMDD');
         ppc := z02_val.participant_profile_code;
         mc := z02_val.municipality_code;
@@ -230,7 +230,7 @@ begin
                             where py.agristability_client_id = z02_val.agristability_client_id
                             and py.year < z02_val.program_year
                             limit 1
-                        )
+                        ) t
                     ),
                     1,
                     in_user,
@@ -265,7 +265,7 @@ begin
                     partnership_member_indicator,
                     sole_proprietor_indicator,
                     other_text,
-                    post_mark_date,
+                    postmark_date,
                     province_of_residence,
                     received_date,
                     last_year_farming_indicator,
