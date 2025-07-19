@@ -3,6 +3,8 @@ package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
@@ -29,7 +31,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall("{ ? = call farms_version_pkg.create_version(?, ?, ?) }")) {
-            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.registerOutParameter(1, Types.INTEGER);
             callableStatement.setString(2, description);
             callableStatement.setString(3, importFileName);
             callableStatement.setString(4, user);
@@ -128,7 +130,7 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
     }
 
     @Override
-    public void uploadFailure(Long versionId, String message, String user) throws DaoException {
+    public void uploadFailure(Long versionId, String message, String user) {
         logger.debug("<uploadFailure");
 
         try (CallableStatement callableStatement = this.conn
@@ -138,7 +140,8 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
             callableStatement.setString(3, user);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
-            handleException(e);
+            // eat it
+            logger.error("Unexpected error: ", e);
         }
 
         logger.debug(">uploadFailure");
@@ -190,21 +193,6 @@ public class ImportVersionDaoImpl extends BaseDao implements ImportVersionDao {
         }
 
         logger.debug(">clearSuccessfulTransfers");
-    }
-
-    @Override
-    public void analyzeSchema(Long versionId) throws DaoException {
-        logger.debug("<analyzeSchema");
-
-        try (CallableStatement callableStatement = this.conn
-                .prepareCall("call farms_version_pkg.analyze_schema(?)")) {
-            callableStatement.setLong(1, versionId);
-            callableStatement.execute();
-        } catch (RuntimeException | SQLException e) {
-            handleException(e);
-        }
-
-        logger.debug(">analyzeSchema");
     }
 
 }
