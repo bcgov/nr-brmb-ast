@@ -350,11 +350,10 @@ begin
             end if;
         exception
             when others then
-                rollback;
                 call farms_import_pkg.append_impl1(
                     in_version_id,
                     '<ERROR>' ||
-                    farms_import_pkg.scrub(farms_import_pkg.codify_program_year(
+                    farms_import_pkg.scrub(farms_error_pkg.codify_program_year(
                         sqlerrm,
                         v_program_year,
                         in_agristability_client_id,
