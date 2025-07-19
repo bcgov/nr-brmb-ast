@@ -80,7 +80,7 @@ begin
         part_opened_a := 1;
 
         -- deal with non-versioned part
-        select * into v_agristability_client_id, errors_t from farms_import_pkg.participant(
+        select * into v_agristability_client_id, in_out_activity, changed_contact_client_ids, errors_t from farms_import_pkg.participant(
             in_version_id,
             z01_val.participant_pin,
             in_user,
