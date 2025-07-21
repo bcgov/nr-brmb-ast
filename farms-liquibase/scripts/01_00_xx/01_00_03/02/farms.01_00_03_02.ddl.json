@@ -121,6 +121,13 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "ddl/routines/farms_import_pkg.scenario.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "ddl/routines/farms_import_pkg.scrub.sql"
                         }
                     },
