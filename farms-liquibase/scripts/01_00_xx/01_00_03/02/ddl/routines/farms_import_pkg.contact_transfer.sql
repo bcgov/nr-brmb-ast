@@ -17,6 +17,7 @@ declare
 
     import_date farms.import_version.create_date%type;
     import_description farms.import_version.description%type;
+    import_file farms.import_version.import_file%type;
 begin
 
     if array_length(in_changed_contact_client_ids, 1) > 0 then
