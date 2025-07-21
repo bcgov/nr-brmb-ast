@@ -121,6 +121,13 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "ddl/routines/farms_import_pkg.reported_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "ddl/routines/farms_import_pkg.run.sql"
                         }
                     },
