@@ -145,7 +145,7 @@ begin
             call farms_import_pkg.append_imp1(
                 in_version_id,
                 '<PROGRAM_YEAR action="error" year="' ||
-                farms_import_pkg.scrub(v02_val.program_year) || '">'
+                farms_import_pkg.scrub(z02_val.program_year) || '">'
             );
         end if;
 
@@ -161,7 +161,7 @@ begin
                 call farms_import_pkg.append_imp1(
                     in_version_id,
                     '<PROGRAM_YEAR action="add" year="' ||
-                    farms_import_pkg.scrub(v02_val.program_year) || '" altered="true">'
+                    farms_import_pkg.scrub(z02_val.program_year) || '" altered="true">'
                 );
                 opened_py := 1;
                 in_out_activity := in_out_activity + 1;
@@ -175,7 +175,7 @@ begin
                     call farms_import_pkg.append_imp1(
                         in_version_id,
                         '<PROGRAM_YEAR action="updated" year="' ||
-                        farms_import_pkg.scrub(v02_val.program_year) || '" altered="true">'
+                        farms_import_pkg.scrub(z02_val.program_year) || '" altered="true">'
                     );
                     opened_py := 1;
                     in_out_activity := in_out_activity + 1;
@@ -186,7 +186,7 @@ begin
                 call farms_import_pkg.append_imp1(
                     in_version_id,
                     '<PROGRAM_YEAR action="none" year="' ||
-                    farms_import_pkg.scrub(v02_val.program_year) || '" altered="false">'
+                    farms_import_pkg.scrub(z02_val.program_year) || '" altered="false">'
                 );
                 opened_py := 1;
             end if;
@@ -341,7 +341,7 @@ begin
             end if;
 
             if error_msg is not null then
-                call farms_import_pkg.append_impl1(
+                call farms_import_pkg.append_imp1(
                     in_version_id,
                     '<ERROR>' || farms_import_pkg.scrub(error_msg) || '</ERROR>'
                 );
@@ -350,7 +350,7 @@ begin
             end if;
         exception
             when others then
-                call farms_import_pkg.append_impl1(
+                call farms_import_pkg.append_imp1(
                     in_version_id,
                     '<ERROR>' ||
                     farms_import_pkg.scrub(farms_error_pkg.codify_program_year(
