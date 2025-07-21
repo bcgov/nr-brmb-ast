@@ -145,7 +145,7 @@ begin
             call farms_import_pkg.append_imp1(
                 in_version_id,
                 '<PROGRAM_YEAR action="error" year="' ||
-                farms_import_pkg.scrub(z02_val.program_year) || '">'
+                farms_import_pkg.scrub(z02_val.program_year::varchar) || '">'
             );
         end if;
 
@@ -161,7 +161,7 @@ begin
                 call farms_import_pkg.append_imp1(
                     in_version_id,
                     '<PROGRAM_YEAR action="add" year="' ||
-                    farms_import_pkg.scrub(z02_val.program_year) || '" altered="true">'
+                    farms_import_pkg.scrub(z02_val.program_year::varchar) || '" altered="true">'
                 );
                 opened_py := 1;
                 in_out_activity := in_out_activity + 1;
@@ -175,7 +175,7 @@ begin
                     call farms_import_pkg.append_imp1(
                         in_version_id,
                         '<PROGRAM_YEAR action="updated" year="' ||
-                        farms_import_pkg.scrub(z02_val.program_year) || '" altered="true">'
+                        farms_import_pkg.scrub(z02_val.program_year::varchar) || '" altered="true">'
                     );
                     opened_py := 1;
                     in_out_activity := in_out_activity + 1;
@@ -186,7 +186,7 @@ begin
                 call farms_import_pkg.append_imp1(
                     in_version_id,
                     '<PROGRAM_YEAR action="none" year="' ||
-                    farms_import_pkg.scrub(z02_val.program_year) || '" altered="false">'
+                    farms_import_pkg.scrub(z02_val.program_year::varchar) || '" altered="false">'
                 );
                 opened_py := 1;
             end if;
@@ -195,7 +195,7 @@ begin
                 call farms_import_pkg.append_imp1(
                     in_version_id,
                     '<WARNING>' ||
-                    farms_error_pkg.codify_mun_code(farms_import_pkg.scrub(z02_val.in_mun_cd)) ||
+                    farms_error_pkg.codify_mun_code(farms_import_pkg.scrub(z02_val.in_mun_cd::varchar)) ||
                     '</WARNING>'
                 );
             end if;
@@ -265,7 +265,7 @@ begin
                     partnership_member_indicator,
                     sole_proprietor_indicator,
                     other_text,
-                    postmark_date,
+                    post_mark_date,
                     province_of_residence,
                     received_date,
                     last_year_farming_indicator,
