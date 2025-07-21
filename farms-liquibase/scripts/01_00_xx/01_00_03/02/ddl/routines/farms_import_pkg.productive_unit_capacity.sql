@@ -254,7 +254,7 @@ begin
         into puc_id;
 
         insert into farms.productive_unit_capacity (
-            productive_unit_capacity_id,
+            productve_unit_capacity_id,
             productive_capacity_amount,
             import_comment,
             farming_operation_id,
