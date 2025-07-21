@@ -43,15 +43,15 @@ begin
             in_user
         );
 
-        select import_file
+        select iv.import_file
         into b
         from farms.import_version iv
-        where import_version_id = transfer_version_id;
+        where iv.import_version_id = transfer_version_id;
 
         for client_id_val in client_id_cursor
         loop
             cnt := cnt + 1;
-            id_char := to_char(client_id_val.client_id);
+            id_char := client_id_val.client_id::varchar;
             if cnt > 1 then
                 id_char := ',' || id_char;
             end if;
@@ -63,7 +63,7 @@ begin
             where import_version_id = transfer_version_id;
         end loop;
 
-        call farms_webapp_pkg.update_status(
+        call farms_import_pkg.update_status(
             in_cra_version_id,
             'Saved Contact Transfer List'
         );
