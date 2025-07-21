@@ -114,7 +114,7 @@ begin
             'N',
             ac,
             in_program_year_version_id,
-            chr(64 + op_insert_val.operation_number),
+            chr(64 + op_insert_val.operation_number::int),
             1,
             in_user,
             current_timestamp,
