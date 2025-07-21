@@ -12,16 +12,16 @@ declare
         select op.farming_operation_id,
                coalesce(li.line_item, Unknown::numeric) line_item,
                string_agg(case
-                   when li.line_item_id is not null then null
-                   else z.line_code
+                   when li.line_item_id::varchar is not null then null
+                   else z.line_code::varchar
                end, ' ' order by case
                    when li.line_item_id is not null then null
                    else z.line_code
                end) as import_comment,
                sum(z.amount) amount,
                (case
-                   when z.ie_ind = 'E' then 'Y'
-                   when z.ie_ind = 'e' then 'Y'
+                   when z.ie_indicator = 'E' then 'Y'
+                   when z.ie_indicator = 'e' then 'Y'
                    else 'N'
                end) as expense_indicator
         from farms.z04_income_expenses_detail z
@@ -38,8 +38,8 @@ declare
         group by op.farming_operation_id,
                  li.line_item,
                  (case
-                     when z.ie_ind = 'E' then 'Y'
-                     when z.ie_ind = 'e' then 'Y'
+                     when z.ie_indicator = 'E' then 'Y'
+                     when z.ie_indicator = 'e' then 'Y'
                      else 'N'
                  end);
     ie_insert_val record;
