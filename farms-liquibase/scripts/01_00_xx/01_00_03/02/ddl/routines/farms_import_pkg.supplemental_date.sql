@@ -95,10 +95,10 @@ begin
         return 'Must include both post mark date and file received date';
     end if;
 
-    update farms.agristability_scenario s
-    set s.cra_income_expense_received_date = v_cra_income_expense_received_date,
-        s.cra_supplemental_received_date = v_cra_supplemental_received_date
-    where s.program_year_version_id = in_program_year_version_id;
+    update farms.agristability_scenario
+    set cra_income_expense_received_date = v_cra_income_expense_received_date,
+        cra_supplemental_received_date = v_cra_supplemental_received_date
+    where program_year_version_id = in_program_year_version_id;
 
     return null;
 exception
