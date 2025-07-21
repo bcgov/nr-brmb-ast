@@ -10,7 +10,7 @@ declare
     Unknown constant varchar := '-1';
     ie_insert_cursor cursor for
         select op.farming_operation_id,
-               coalesce(li.line_item, Unknown) line_item,
+               coalesce(li.line_item, Unknown::numeric) line_item,
                string_agg(case
                    when li.line_item_id is not null then null
                    else z.line_code
@@ -24,12 +24,12 @@ declare
                    when z.ie_ind = 'e' then 'Y'
                    else 'N'
                end) as expense_indicator
-        from farms.z40_participant_reference_supplemental_detail z
+        from farms.z04_income_expenses_detail z
         join farms.agristability_client ac on z.participant_pin = ac.participant_pin
         join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                    and z.program_year = py.year
         join farms.program_year_version pyv on pyv.program_year_id = py.program_year_id
-        join farms.farming_operation op on op.program_year_version_id = pyv.in_program_year_version_id
+        join farms.farming_operation op on op.program_year_version_id = pyv.program_year_version_id
                                         and op.operation_number = z.operation_number
         left outer join farms.line_item li on li.line_item = z.line_code
                                            and li.program_year = z.program_year
