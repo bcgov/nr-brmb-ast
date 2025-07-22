@@ -34,7 +34,7 @@ begin
         insert into farms.farming_operatin_partner (
             farming_operation_partner_id,
             partner_percent,
-            participant_pin,
+            partnership_pin,
             partner_sin,
             first_name,
             last_name,
