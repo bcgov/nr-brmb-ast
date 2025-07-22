@@ -88,8 +88,8 @@ begin
                aarm.inventory_code::varchar as inventory_item_code,
                aarm.operation_number,
                (case
-                   when max(x.prior_year_supplemental_key) is not null then null
-                   else aarm.inventory_code
+                   when max(x.agristabilty_commodity_xref_id) is not null then null
+                   else aarm.inventory_code::varchar
                end) import_comment
         from farms.aarm_margin aarm
         left outer join farms.z40_participant_reference_supplemental_detail z40 on aarm.participant_pin = z40.participant_pin
