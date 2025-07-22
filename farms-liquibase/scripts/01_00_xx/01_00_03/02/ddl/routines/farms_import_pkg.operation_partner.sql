@@ -65,7 +65,7 @@ begin
     return null;
 exception
     when others then
-        return farms_import_pkg.scrub(farms.farms_error_pkg.codify_operational_partner(
+        return farms_import_pkg.scrub(farms_error_pkg.codify_operational_partner(
             sqlerrm,
             in_farming_operation_id
         ));
