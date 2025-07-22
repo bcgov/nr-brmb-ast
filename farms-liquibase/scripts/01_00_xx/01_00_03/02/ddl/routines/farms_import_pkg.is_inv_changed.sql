@@ -54,16 +54,16 @@ begin
                end) inventory_class_code,
                z21.crop_unit_type::varchar crop_unit_code,
                z21.crop_quantity_produced quantity_produced,
-               null start_of_year_amount,
+               null::numeric start_of_year_amount,
                z21.end_of_year_amount,
-               null quantity_start,
+               null::numeric quantity_start,
                z21.quantity_end,
-               null price_end,
-               null price_start,
+               null::numeric price_end,
+               null::numeric price_start,
                z21.end_of_year_price end_year_producer_price,
                'N' accept_producer_price_indicator,
-               null aarm_reference_p1_price,
-               null aarm_reference_p2_price,
+               null::numeric aarm_reference_p1_price,
+               null::numeric aarm_reference_p2_price,
                z21.crop_on_farm_acres on_farm_acres,
                z21.crop_unseedable_acres unseedable_acres,
                null import_comment,
@@ -108,7 +108,7 @@ begin
                    else
                        null
                end) on_farm_acres,
-               null unseedable_acres,
+               null::numeric unseedable_acres,
                (case
                    when max(x.agristabilty_commodity_xref_id) is not null then null
                    else aarm.inventory_code || ' ' || aarm.inventory_type_code
@@ -167,7 +167,7 @@ begin
                zz.aarm_reference_p1_price,
                zz.aarm_reference_p2_price,
                zz.crop_on_farm_acres on_farm_acres,
-               null unseedable_acres,
+               null::numeric unseedable_acres,
                (case
                    when x.agristabilty_commodity_xref_id is not null then null
                    else zz.inventory_code || ' ' || zz.inventory_type_code
