@@ -11,7 +11,7 @@ begin
     -- want to know when something is different ... so missing in Z03 doesn't count as a difference but missing in op does count
     select count(*) cnt
     into cnt
-    from (
+    from ((
         select op.federal_accounting_code,
                op.business_use_home_expense,
                op.crop_disaster_indicator,
@@ -82,7 +82,7 @@ begin
         join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                    and z.program_year = py.year
         where py.program_year_id = in_program_year_id
-    ) t1
+    )
     union all
     (
         select z.accounting_code::varchar federal_accounting_code,
@@ -155,7 +155,7 @@ begin
         join farms.farming_operation op on op.program_year_version_id = pyv.program_year_version_id
         where pyv.program_year_version_id = in_program_year_vrsn_prev_id
         and op.locally_generated_indicator = 'N'
-    );
+    )) t1;
 
     if cnt > 0 then
         return true;
@@ -167,7 +167,7 @@ begin
     -- want to detect missing partners so outer join
     select count(*) cnt
     into cnt
-    from (
+    from ((
         select prt.partner_sin,
                prt.first_name,
                prt.last_name,
@@ -197,7 +197,7 @@ begin
         join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                    and py.year = z.program_year
         where py.program_year_id = in_program_year_id
-    ) t2
+    )
     union all
     (
         select z.partner_sin_ctn_business_number partner_sin,
@@ -229,7 +229,7 @@ begin
         join farms.farming_operation op on op.program_year_version_id = pyv.program_year_version_id
         join farms.farming_operatin_partner prt on op.farming_operation_id = prt.farming_operation_id
         where pyv.program_year_version_id = in_program_year_vrsn_prev_id
-    );
+    )) t2;
 
     if cnt > 0 then
         return true;
@@ -241,7 +241,7 @@ begin
     -- want to detect missing partners so outer join
     select count(*) cnt
     into cnt
-    from (
+    from ((
         select op.operation_number,
                pi.production_insurance_number
         from farms.agristability_client ac
@@ -258,7 +258,7 @@ begin
         join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
                                    and py.year = z.program_year
         where py.program_year_id = in_program_year_id
-    ) t3
+    )
     union all
     (
         select z.operation_number,
@@ -277,7 +277,7 @@ begin
         join farms.farming_operation op on op.program_year_version_id = pyv.program_year_version_id
         join farms.production_insurance pi on op.farming_operation_id = pi.farming_operation_id
         where pyv.program_year_version_id = in_program_year_vrsn_prev_id
-    );
+    )) t3;
 
     if cnt > 0 then
         return true;
