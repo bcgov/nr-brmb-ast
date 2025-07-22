@@ -27,13 +27,13 @@ begin
     ), new_ie as (
         select z.operation_number,
                (case
-                   when li.line_item_id is not null then z.line_code::varchar
-                   else Unknown
+                   when li.line_item_id is not null then z.line_code
+                   else Unknown::numeric
                end) as line_item,
                sum(z.amount) amount,
                (case
-                   when z.ie_ind = 'E' then 'Y'
-                   when z.ie_ind = 'e' then 'Y'
+                   when z.ie_indicator = 'E' then 'Y'
+                   when z.ie_indicator = 'e' then 'Y'
                    else 'N'
                end) as expense_indicator,
                string_agg(case
@@ -51,13 +51,14 @@ begin
                                                 and z.program_year = li.program_year
                                                 and (li.expiry_date is null or li.expiry_date > current_date)
         where py.program_year_id = in_program_year_id
-        group by (case
-                     when li.line_item_id is not null then z.line_code::varchar
-                     else Unknown
+        group by z.operation_number,
+                 (case
+                     when li.line_item_id is not null then z.line_code
+                     else Unknown::numeric
                  end),
                  (case
-                     when z.ie_ind = 'E' then 'Y'
-                     when z.ie_ind = 'e' then 'Y'
+                     when z.ie_indicator = 'E' then 'Y'
+                     when z.ie_indicator = 'e' then 'Y'
                      else 'N'
                  end)
     )
