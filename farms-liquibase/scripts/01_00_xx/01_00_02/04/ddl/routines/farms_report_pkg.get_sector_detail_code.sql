@@ -47,7 +47,7 @@ declare
                 and rie.expense_indicator = 'N'
                 and li.exclude_from_revenue_calculation_indicator = 'N'
                 and current_date between li.established_date and li.expiry_date
-            )
+            ) t1
             where ie_rnk = 1
             and sector_detail_income_sum != 0
         ) t on 1 = 1

@@ -1,3 +1,7 @@
+drop function if exists farms_error_pkg.codify(
+    varchar
+);
+
 create or replace function farms_error_pkg.codify(
     in msg varchar
 )

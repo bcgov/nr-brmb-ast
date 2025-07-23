@@ -230,7 +230,7 @@ begin
                             where py.agristability_client_id = z02_val.agristability_client_id
                             and py.year < z02_val.program_year
                             limit 1
-                        )
+                        ) t
                     ),
                     1,
                     in_user,
