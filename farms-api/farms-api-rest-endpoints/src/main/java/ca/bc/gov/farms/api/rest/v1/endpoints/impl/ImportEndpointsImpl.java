@@ -13,6 +13,7 @@ import ca.bc.gov.farms.domain.codes.ImportClassCodes;
 import ca.bc.gov.farms.domain.codes.ImportStateCodes;
 import ca.bc.gov.farms.persistence.v1.dto.ImportVersionDto;
 import ca.bc.gov.farms.service.api.v1.ImportBPUService;
+import ca.bc.gov.farms.service.api.v1.ImportCRAService;
 import ca.bc.gov.farms.service.api.v1.ImportService;
 
 public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndpoints {
@@ -25,8 +26,11 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
     @Autowired
     private ImportBPUService importBPUService;
 
+    @Autowired
+    private ImportCRAService importCRAService;
+
     @Override
-    public Response importBPU(String fileName, String fileContent) throws Exception {
+    public Response importBPU(String fileName, byte[] fileContent) throws Exception {
         logger.debug("<importBPU");
 
         Response response = null;
@@ -37,10 +41,10 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
             // Call the service layer to handle the import
             ImportVersionDto importVersionDto = importService.createImportVersion(
                     ImportClassCodes.BPU, ImportStateCodes.SCHEDULED_FOR_STAGING, ImportClassCodes.BPU_DESCRIPTION,
-                    fileName, fileContent.getBytes(), "UserId");
+                    fileName, fileContent, "UserId");
 
             Long importVersionId = importVersionDto.getImportVersionId();
-            InputStream inputStream = new ByteArrayInputStream(fileContent.getBytes());
+            InputStream inputStream = new ByteArrayInputStream(fileContent);
             String userId = "UserId";
             importBPUService.importCSV(importVersionId, inputStream, userId);
 
@@ -55,6 +59,39 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
 
         logger.debug(">importBPU " + response);
         return response;
+    }
+
+    @Override
+    public Response importCRA(String fileName, byte[] fileContent) throws Exception {
+        logger.debug("<importCRA");
+
+        Response response = null;
+
+        logRequest();
+
+        try {
+            // Call the service layer to handle the import
+            ImportVersionDto importVersionDto = importService.createImportVersion(
+                    ImportClassCodes.CRA, ImportStateCodes.SCHEDULED_FOR_STAGING, ImportClassCodes.CRA_DESCRIPTION,
+                    fileName, fileContent, "UserId");
+
+            Long importVersionId = importVersionDto.getImportVersionId();
+            InputStream inputStream = new ByteArrayInputStream(fileContent);
+            String userId = "UserId";
+            importCRAService.importCSV(importVersionId, inputStream, userId);
+
+            importCRAService.processImport(importVersionId, userId);
+
+            response = Response.ok().build();
+        } catch (Exception e) {
+            response = getInternalServerErrorResponse(e);
+        }
+
+        logResponse(response);
+
+        logger.debug(">importCRA " + response);
+        return response;
+
     }
 
 }

@@ -8,13 +8,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.springframework.web.bind.annotation.RequestBody;
+
 @Path("/import")
 public interface ImportEndpoints {
 
     @POST
     @Path("/bpu/{fileName}")
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    Response importBPU(@PathParam("fileName") String fileName,
-            String fileContent) throws Exception;
+    Response importBPU(@PathParam("fileName") String fileName, @RequestBody byte[] fileContent) throws Exception;
+
+    @POST
+    @Path("/cra/{fileName}")
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    Response importCRA(@PathParam("fileName") String fileName, @RequestBody byte[] fileContent) throws Exception;
 }
