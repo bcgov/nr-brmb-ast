@@ -79,7 +79,7 @@ declare
                        and pins.max_year = py.year
                        and pins.row_num = 1
                        and pins.import_version_id = pyv.import_version_id
-            )
+            ) t
             where rnk = 1
         )
         order by s.agristability_scenario_id;

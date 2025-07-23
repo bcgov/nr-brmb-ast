@@ -70,7 +70,7 @@ begin
                      bpus.unit_comment,
                      coalesce(bpus.structure_group_code, bpus.inventory_item_code),
                      bpus.municipality_code
-        )
+        ) t
         order by to_number(inventory_code),
                  to_number(municipality_code);
     return cur;
