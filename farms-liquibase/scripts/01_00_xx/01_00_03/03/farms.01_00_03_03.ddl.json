@@ -39,6 +39,13 @@
                             "splitStatements": "false",
                             "path": "ddl/routines/farms_fmv_pkg.validate_municipality.sql"
                         }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_fmv_pkg.validate_unit.sql"
+                        }
                     }
                 ]
             }
