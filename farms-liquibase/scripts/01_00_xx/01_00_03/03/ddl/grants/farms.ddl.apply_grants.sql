@@ -8,3 +8,4 @@ GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_inventory TO "app_farms_rest_p
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_xref_exists TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_uniqueness TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_one_unit_per_inventry TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_defaults TO "app_farms_rest_proxy";
