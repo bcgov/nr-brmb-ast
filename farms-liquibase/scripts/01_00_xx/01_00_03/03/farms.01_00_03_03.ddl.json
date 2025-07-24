@@ -95,6 +95,13 @@
                             "splitStatements": "false",
                             "path": "ddl/routines/farms_fmv_pkg.insert_staging_row.sql"
                         }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_fmv_pkg.validate_staging.sql"
+                        }
                     }
                 ]
             }
