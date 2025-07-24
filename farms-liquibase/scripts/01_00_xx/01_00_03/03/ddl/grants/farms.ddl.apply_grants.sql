@@ -5,3 +5,4 @@ GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_variance TO "app_farms_rest_pr
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_municipality TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_unit TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_inventory TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_xref_exists TO "app_farms_rest_proxy";
