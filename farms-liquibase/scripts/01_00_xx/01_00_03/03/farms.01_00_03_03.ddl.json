@@ -116,6 +116,13 @@
                             "splitStatements": "false",
                             "path": "ddl/routines/farms_fmv_pkg.delete_staging_errors.sql"
                         }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_fmv_pkg.staging_to_operational.sql"
+                        }
                     }
                 ]
             }
