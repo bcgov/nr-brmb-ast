@@ -12,3 +12,4 @@ GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_defaults TO "app_farms_rest_pr
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.clear_staging TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.insert_staging_row TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_staging TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_fmv_pkg.get_staging_errors TO "app_farms_rest_proxy";
