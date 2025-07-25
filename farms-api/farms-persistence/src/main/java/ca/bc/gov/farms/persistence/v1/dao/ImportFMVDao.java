@@ -17,4 +17,6 @@ public interface ImportFMVDao extends Serializable {
     void deleteStagingErrors(Long importVersionId) throws DaoException;
 
     List<String> getStagingErrors(Long importVersionId) throws DaoException;
+
+    void performImport(Long importVersionId, String userId) throws DaoException;
 }
