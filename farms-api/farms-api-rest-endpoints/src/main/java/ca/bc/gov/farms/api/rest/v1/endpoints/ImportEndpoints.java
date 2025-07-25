@@ -24,4 +24,10 @@ public interface ImportEndpoints {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     Response importCRA(@PathParam("fileName") String fileName, @RequestBody byte[] fileContent) throws Exception;
+
+    @POST
+    @Path("/fmv/{fileName}")
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    Response importFMV(@PathParam("fileName") String fileName, @RequestBody byte[] fileContent) throws Exception;
 }
