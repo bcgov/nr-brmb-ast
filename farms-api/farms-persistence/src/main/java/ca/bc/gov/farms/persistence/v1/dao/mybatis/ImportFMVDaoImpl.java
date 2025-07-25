@@ -2,7 +2,11 @@ package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,5 +94,33 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
         }
 
         logger.debug(">deleteStagingErrors");
+    }
+
+    @Override
+    public List<String> getStagingErrors(Long importVersionId) throws DaoException {
+        logger.debug("<getStagingErrors");
+
+        List<String> importLogDtoList = new ArrayList<>();
+
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("{ ? = call farms_fmv_pkg.get_staging_errors(?) }")) {
+
+            callableStatement.registerOutParameter(1, Types.OTHER);
+            callableStatement.setLong(2, importVersionId);
+            callableStatement.execute();
+
+            ResultSet resultSet = callableStatement.getObject(1, ResultSet.class);
+            while (resultSet.next()) {
+                String logMessage = resultSet.getString("log_message");
+                importLogDtoList.add(logMessage);
+            }
+            resultSet.close();
+
+        } catch (RuntimeException | SQLException e) {
+            handleException(e);
+        }
+
+        logger.debug(">getStagingErrors: " + importLogDtoList.size());
+        return importLogDtoList;
     }
 }
