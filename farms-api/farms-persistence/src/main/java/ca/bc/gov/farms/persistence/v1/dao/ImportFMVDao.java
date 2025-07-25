@@ -10,4 +10,6 @@ public interface ImportFMVDao extends Serializable {
     void clearStaging() throws DaoException;
 
     void insertStagingRow(ImportFMVDto dto, String userId, int rowNum) throws DaoException;
+
+    void validateStaging(Long importVersionId) throws DaoException;
 }

@@ -61,4 +61,19 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
 
         logger.debug(">insertStagingRow");
     }
+
+    @Override
+    public void validateStaging(Long importVersionId) throws DaoException {
+        logger.debug("<validateStaging");
+
+        try (CallableStatement callableStatement = this.conn
+                .prepareCall("call farms_fmv_pkg.validate_staging(?)")) {
+            callableStatement.setLong(1, importVersionId);
+            callableStatement.execute();
+        } catch (RuntimeException | SQLException e) {
+            handleException(e);
+        }
+
+        logger.debug(">validateStaging");
+    }
 }
