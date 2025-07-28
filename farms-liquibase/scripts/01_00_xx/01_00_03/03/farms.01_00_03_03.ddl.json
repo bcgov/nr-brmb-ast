@@ -8,6 +8,12 @@
                     {
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
+                            "path": "ddl/schema/farms.ddl.create_farms_fmv_pkg_schema.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
                             "path": "ddl/routines/farms_fmv_pkg.insert_error.sql"
                         }
@@ -122,6 +128,12 @@
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
                             "path": "ddl/routines/farms_fmv_pkg.staging_to_operational.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/grants/farms.ddl.apply_grants.sql"
                         }
                     }
                 ]
