@@ -19,7 +19,7 @@ declare
                z.inventory_item_code
         from farms.zfmv_fair_market_value z
         join farms.agristabilty_commodity_xref x on x.inventory_item_code = z.inventory_item_code
-        where x.inventory_clas_code in ('1', '2')
+        where x.inventory_class_code in ('1', '2')
         union all
         select z.line_number,
                z.program_year,
@@ -41,7 +41,7 @@ declare
 
     c_operational cursor (
         p_program_year numeric,
-        period numeric,
+        p_period numeric,
         p_inventory_item_code varchar,
         p_municipality_code varchar,
         p_crop_unit_code varchar

@@ -1,3 +1,6 @@
+GRANT USAGE ON SCHEMA farms_fmv_pkg TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.zfmv_fair_market_value TO "app_farms_rest_proxy";
+
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.insert_error TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_program_year TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_period TO "app_farms_rest_proxy";

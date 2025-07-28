@@ -10,8 +10,11 @@ declare
         from (
             select z.line_number,
                    z.inventory_item_code,
-                   count(distinct z.crop_unit_code) over (partition by z.inventory_item_code) as number_of_unit_codes
+                   count(z.crop_unit_code) over (partition by z.inventory_item_code) as number_of_unit_codes
             from farms.zfmv_fair_market_value z
+            group by z.line_number,
+                     z.inventory_item_code,
+                     z.crop_unit_code
         ) t
         where number_of_unit_codes > 1;
     v_check record;
