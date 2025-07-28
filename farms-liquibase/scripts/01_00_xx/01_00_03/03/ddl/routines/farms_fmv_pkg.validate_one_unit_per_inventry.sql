@@ -5,18 +5,19 @@ language plpgsql
 as $$
 declare
     c_check cursor for
-        select line_number,
-               inventory_item_code
-        from (
-            select z.line_number,
+        select z.line_number,
+               z.inventory_item_code,
+               t.number_of_unit_codes
+        from farms.zfmv_fair_market_value z
+        join (
+            select z.crop_unit_code,
                    z.inventory_item_code,
                    count(z.crop_unit_code) over (partition by z.inventory_item_code) as number_of_unit_codes
             from farms.zfmv_fair_market_value z
-            group by z.line_number,
-                     z.inventory_item_code,
-                     z.crop_unit_code
-        ) t
-        where number_of_unit_codes > 1;
+            group by z.crop_unit_code,
+                     z.inventory_item_code
+        ) t on z.crop_unit_code = t.crop_unit_code and z.inventory_item_code = t.inventory_item_code
+        where t.number_of_unit_codes > 1;
     v_check record;
 
     v_msg varchar(200) := 'More than one crop unit for inventory code ';

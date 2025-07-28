@@ -65,7 +65,6 @@ declare
     v_xml varchar(2000);
 begin
 
-    <<do_nothing_label>>
     for v_staging in c_staging
     loop
         v_num_staging_rows := v_num_staging_rows + 1;
@@ -80,11 +79,8 @@ begin
 
         if found then
             if v_operational.average_price = v_staging.average_price and v_operational.percent_variance = v_staging.percent_variance then
-                --
-                -- we don't want to do anything in this case. Id' like to
-                -- say continue, but Oracle doesn't seem to support it
-                --
-                exit do_nothing_label;
+                close c_operational;
+                continue;
             else
                 -- expire the old value
                 update farms.fair_market_value
