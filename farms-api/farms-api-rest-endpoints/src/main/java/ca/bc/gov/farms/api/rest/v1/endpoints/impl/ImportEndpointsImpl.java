@@ -14,6 +14,7 @@ import ca.bc.gov.farms.domain.codes.ImportStateCodes;
 import ca.bc.gov.farms.persistence.v1.dto.ImportVersionDto;
 import ca.bc.gov.farms.service.api.v1.ImportBPUService;
 import ca.bc.gov.farms.service.api.v1.ImportCRAService;
+import ca.bc.gov.farms.service.api.v1.ImportFMVService;
 import ca.bc.gov.farms.service.api.v1.ImportService;
 
 public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndpoints {
@@ -28,6 +29,9 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
 
     @Autowired
     private ImportCRAService importCRAService;
+
+    @Autowired
+    private ImportFMVService importFMVService;
 
     @Override
     public Response importBPU(String fileName, byte[] fileContent) throws Exception {
@@ -92,6 +96,38 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
         logger.debug(">importCRA " + response);
         return response;
 
+    }
+
+    @Override
+    public Response importFMV(String fileName, byte[] fileContent) throws Exception {
+        logger.debug("<importFMV");
+
+        Response response = null;
+
+        logRequest();
+
+        try {
+            // Call the service layer to handle the import
+            ImportVersionDto importVersionDto = importService.createImportVersion(
+                    ImportClassCodes.FMV, ImportStateCodes.SCHEDULED_FOR_STAGING, ImportClassCodes.FMV_DESCRIPTION,
+                    fileName, fileContent, "UserId");
+
+            Long importVersionId = importVersionDto.getImportVersionId();
+            InputStream inputStream = new ByteArrayInputStream(fileContent);
+            String userId = "UserId";
+            importFMVService.importCSV(importVersionId, inputStream, userId);
+
+            importFMVService.processImport(importVersionId, userId);
+
+            response = Response.ok().build();
+        } catch (Exception e) {
+            response = getInternalServerErrorResponse(e);
+        }
+
+        logResponse(response);
+
+        logger.debug(">importFMV " + response);
+        return response;
     }
 
 }
