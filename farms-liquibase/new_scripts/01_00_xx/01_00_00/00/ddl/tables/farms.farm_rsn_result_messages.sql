@@ -1,1 +1,1 @@
-ALTER TABLE farms.farm_rsn_result_messages ADD CONSTRAINT farm_rrm_farm_mtc_fk FOREIGN KEY (message_type_code) REFERENCES farm_message_type_codes(message_type_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE farms.farm_rsn_result_messages ADD CONSTRAINT farm_rrm_farm_mtc_fk FOREIGN KEY (message_type_code) REFERENCES farms.farm_message_type_codes(message_type_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;

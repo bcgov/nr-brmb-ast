@@ -1,1 +1,1 @@
-ALTER TABLE farms.farm_z02_partpnt_farm_infos ADD CONSTRAINT farm_z02_farm_z01_fk FOREIGN KEY (participant_pin) REFERENCES farm_z01_participant_infos(participant_pin) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE farms.farm_z02_partpnt_farm_infos ADD CONSTRAINT farm_z02_farm_z01_fk FOREIGN KEY (participant_pin) REFERENCES farms.farm_z01_participant_infos(participant_pin) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;

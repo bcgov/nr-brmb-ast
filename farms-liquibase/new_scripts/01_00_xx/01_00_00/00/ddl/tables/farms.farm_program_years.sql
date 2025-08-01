@@ -1,1 +1,1 @@
-ALTER TABLE farms.farm_program_years ADD CONSTRAINT farm_py_farm_ftc_fk FOREIGN KEY (farm_type_code) REFERENCES farm_farm_type_codes(farm_type_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE farms.farm_program_years ADD CONSTRAINT farm_py_farm_ftc_fk FOREIGN KEY (farm_type_code) REFERENCES farms.farm_farm_type_codes(farm_type_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
