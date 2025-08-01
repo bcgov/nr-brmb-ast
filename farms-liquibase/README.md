@@ -1,4 +1,4 @@
-# Instructions for Creating PostgresCluster
+# Instructions For Setting Up PostgresCluster
 
 ## 1. Postgres Database Setup
 
@@ -136,3 +136,7 @@ Would you like to import data from Oracle database directly into PostgreSQL? [y/
 ### 2.5. Verify Import
 
 Connect to the Postgres database using a database tool such as pgAdmin and verify that the tables are populated.
+
+## 3. Run DDL Scripts
+
+Go to GitHub Actions and invoke the ***Liquibase DDL application*** action to run DDL scripts. This will create the `proxy_farms_rest` role and apply grants and foreign key constraints to tables.
