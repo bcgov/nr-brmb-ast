@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_client_subscriptions ADD CONSTRAINT farm_csub_farm_fssc_fk FOREIGN KEY (subscription_status_code) REFERENCES farm_subscription_status_codes(subscription_status_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;

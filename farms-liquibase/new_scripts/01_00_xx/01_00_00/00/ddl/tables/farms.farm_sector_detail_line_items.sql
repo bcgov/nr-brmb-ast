@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_sector_detail_line_items ADD CONSTRAINT farm_sdli_farm_sdc_fk FOREIGN KEY (sector_detail_code) REFERENCES farm_sector_detail_codes(sector_detail_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;

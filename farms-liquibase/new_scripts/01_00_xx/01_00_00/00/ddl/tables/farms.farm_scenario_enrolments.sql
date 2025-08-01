@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_scenario_enrolments ADD CONSTRAINT farm_se_farm_ectc_fk FOREIGN KEY (enrolment_calc_type_code) REFERENCES farm_enrolment_calc_type_codes(enrolment_calc_type_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;

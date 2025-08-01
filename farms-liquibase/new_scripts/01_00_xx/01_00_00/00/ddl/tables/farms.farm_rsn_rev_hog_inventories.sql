@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_rsn_rev_hog_inventories ADD CONSTRAINT farm_rrhi_farm_ic_fk FOREIGN KEY (inventory_item_code) REFERENCES farm_inventory_item_codes(inventory_item_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;

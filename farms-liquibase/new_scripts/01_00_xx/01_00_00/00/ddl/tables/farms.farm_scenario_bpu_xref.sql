@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_scenario_bpu_xref ADD CONSTRAINT farm_bpux_farm_sbpc_fk FOREIGN KEY (scenario_bpu_purpose_code) REFERENCES farm_scenario_bpu_purpos_codes(scenario_bpu_purpose_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
