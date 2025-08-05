@@ -13,3 +13,4 @@ GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_production_unit TO "app_farms_r
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_productive_unit_capacity TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_program_year TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_reported_inventory TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_scenario TO "app_farms_rest_proxy";
