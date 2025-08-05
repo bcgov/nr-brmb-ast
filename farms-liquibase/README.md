@@ -29,6 +29,11 @@ Open file `db_preconditions/database/farms.ddl.create_database.sql`. Replace all
 
 Copy paste the result into the PSQL terminal to create database.
 
+After the database is created, execute the below command to connect to the database:
+```
+\connect <database_name>;
+```
+
 ### 1.3. Create Schema
 
 Open file `db_preconditions/schema/farms.ddl.create_farms_schema.sql`. Replace all occurrences of `${ENV}` with the name of the intended environment such as:
