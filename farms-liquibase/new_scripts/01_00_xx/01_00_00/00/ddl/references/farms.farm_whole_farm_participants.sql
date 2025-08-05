@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_whole_farm_participants ADD CONSTRAINT farm_wfp_farm_pyv_fk FOREIGN KEY (program_year_version_id) REFERENCES farms.farm_program_year_versions(program_year_version_id) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
