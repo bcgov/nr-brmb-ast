@@ -10,3 +10,4 @@ GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_operational_partner TO "app_far
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_participant TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_production_insurance TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_production_unit TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_error_pkg.codify_productive_unit_capacity TO "app_farms_rest_proxy";
