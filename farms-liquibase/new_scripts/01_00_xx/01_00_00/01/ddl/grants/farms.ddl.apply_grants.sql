@@ -1,3 +1,5 @@
+GRANT USAGE ON SCHEMA farms_bpu_pkg TO "app_farms_rest_proxy";
+
 GRANT TRUNCATE ON TABLE farms.farm_zbpu_benchmark_per_units TO "app_farms_rest_proxy";
 GRANT TRUNCATE ON TABLE farms.farm_import_logs TO "app_farms_rest_proxy";
 
