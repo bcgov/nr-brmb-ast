@@ -9,6 +9,11 @@
             "include": {
                 "file": "new_scripts/01_00_xx/01_00_00/01/farms.01_00_00_01.ddl.json"
             }
+        },
+        {
+            "include": {
+                "file": "new_scripts/01_00_xx/01_00_00/02/farms.01_00_00_02.ddl.json"
+            }
         }
     ]
 }
