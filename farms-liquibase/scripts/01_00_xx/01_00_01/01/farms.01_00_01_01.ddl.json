@@ -565,7 +565,7 @@
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/grants/farms.ddl.apply_grants.sql"
                         }
                     }
