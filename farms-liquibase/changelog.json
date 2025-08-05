@@ -4,6 +4,11 @@
             "include": {
                 "file": "new_scripts/01_00_xx/01_00_00/00/farms.01_00_00_00.ddl.json"
             }
+        },
+        {
+            "include": {
+                "file": "new_scripts/01_00_xx/01_00_00/01/farms.01_00_00_01.ddl.json"
+            }
         }
     ]
 }
