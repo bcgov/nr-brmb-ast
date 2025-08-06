@@ -88,8 +88,12 @@ SCHEMA HR
 # Define the following directive to send export directly to a PostgreSQL
 # database. This will disable file output.
 PG_DSN          dbi:Pg:dbname=hr;host=localhost;port=5432
-PG_USER        btpg10
-PG_PWD        xxxxxxx
+PG_USER         btpg10
+PG_PWD          xxxxxxx
+
+KEEP_PKEY_NAMES 1
+FKEY_DEFERRABLE 1
+DROP_FKEY       1
 ```
 
 Please modify the variables accordingly so that they point to the right Oracle and Postgres databases.
@@ -103,16 +107,7 @@ Execute the below command to export Oracle schema objects into their respective 
 
 Note that `ora2pg` tends to hang when exporting Oracle packages. If that happens, press Ctrl+C multiple times to exit the program. We will be manually translating Oracle packages into Postgres compatible format and so it's okay that Oracle packages fail to export. 
 
-### 2.3. Remove Foreign Key Constraints
-
-Execute the below two commands to remove foreign key constraints from the generated DDL scripts:
-```
-sed '/FOREIGN/d' schema/tables/table.sql > schema/tables/new_table.sql
-
-mv schema/tables/new_table.sql schema/tables/table.sql
-```
-
-### 2.4. Import Schema
+### 2.3. Import Schema
 
 Execute the below command to initiate the import process. Note that `<...>` are placeholders that need to be replaced with proper values.
 ```
@@ -138,7 +133,7 @@ Would you like to import TABLESPACE from ./schema/tablespaces/tablespace.sql? [y
 Would you like to import data from Oracle database directly into PostgreSQL? [y/N/q] y
 ```
 
-### 2.5. Verify Import
+### 2.4. Verify Import
 
 Connect to the Postgres database using a database tool such as pgAdmin and verify that the tables are populated.
 
