@@ -10,7 +10,7 @@ declare
 begin
     select count(structure_group_code)
     into v_num
-    from farms.structure_group_code
+    from farms.farm_structure_group_codes
     where structure_group_code = in_code;
 
     return (v_num = 1);

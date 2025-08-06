@@ -6,11 +6,11 @@ as $$
 declare
     c_check cursor for
         select line_number
-        from farms.zbpu_benchmark_per_unit
+        from farms.farm_zbpu_benchmark_per_units
         where municipality_code not in (
             select municipality_code
-            from farms.municipality_code
-            where current_date between effective_date and expiry_date
+            from farms.farm_municipality_codes
+            where current_date between established_date and expiry_date
         );
     v_row record;
 

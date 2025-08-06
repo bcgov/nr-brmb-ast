@@ -6,7 +6,7 @@ as $$
 declare
     c_check cursor for
         select line_number
-        from farms.zfmv_fair_market_value
+        from farms.farm_zfmv_fair_market_values
         where period not between 1 and 12;
     v_check record;
 

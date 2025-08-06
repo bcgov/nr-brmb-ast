@@ -13,7 +13,7 @@ declare
             b.year_minus_3_expense,
             b.year_minus_2_expense,
             b.year_minus_1_expense
-        from farms.zbpu_benchmark_per_unit b;
+        from farms.farm_zbpu_benchmark_per_units b;
     v_row record;
 
     v_growing_forward_2013 numeric := 2013;

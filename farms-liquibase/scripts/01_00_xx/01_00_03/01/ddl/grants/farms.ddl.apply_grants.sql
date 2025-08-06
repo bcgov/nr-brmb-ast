@@ -17,18 +17,18 @@ GRANT EXECUTE ON PROCEDURE farms_staging_pkg.insert_z99 TO "app_farms_rest_proxy
 
 GRANT USAGE ON SCHEMA farms_staging_pkg TO "app_farms_rest_proxy";
 
-GRANT TRUNCATE ON TABLE farms.z99_extract_file TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z51_participant_contribution TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z50_participant_benefit_calculation TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z42_participant_reference_year TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z40_participant_reference_supplemental_detail TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z23_livestock_production_capacity TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z22_production_insurance TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z21_participant_supplementary TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z28_production_insurance_reference TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z29_inventory_code_reference TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z05_partner_information TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z04_income_expenses_detail TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z03_statement_information TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z02_participant_farm_information TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.z01_participant_information TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z99_extract_file_ctls TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z51_participant_contribs TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z50_participnt_bnft_calcs TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z42_participant_ref_years TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z40_prtcpnt_ref_supl_dtls TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z23_livestock_prod_cpcts TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z22_production_insurances TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z21_participant_suppls TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z28_prod_insurance_refs TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z29_inventory_code_refs TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z05_partner_infos TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z04_income_exps_dtls TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z03_statement_infos TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z02_partpnt_farm_infos TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z01_participant_infos TO "app_farms_rest_proxy";

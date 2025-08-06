@@ -1,17 +1,17 @@
 create or replace procedure farms_staging_pkg.insert_z42(
-   in in_productive_capacity_key farms.z42_participant_reference_year.productive_capacity_key%type,
-   in in_ref_operation_number farms.z42_participant_reference_year.operation_number%type,
-   in in_participant_pin farms.z42_participant_reference_year.participant_pin%type,
-   in in_program_year farms.z42_participant_reference_year.program_year%type,
-   in in_productive_type_code farms.z42_participant_reference_year.productive_type_code%type,
-   in in_productive_code farms.z42_participant_reference_year.productive_code%type,
-   in in_productive_capacity_units farms.z42_participant_reference_year.productive_capacity_units%type,
+   in in_productive_capacity_key farms.farm_z42_participant_ref_years.productive_capacity_key%type,
+   in in_ref_operation_number farms.farm_z42_participant_ref_years.operation_number%type,
+   in in_participant_pin farms.farm_z42_participant_ref_years.participant_pin%type,
+   in in_program_year farms.farm_z42_participant_ref_years.program_year%type,
+   in in_productive_type_code farms.farm_z42_participant_ref_years.productive_type_code%type,
+   in in_productive_code farms.farm_z42_participant_ref_years.productive_code%type,
+   in in_productive_capacity_units farms.farm_z42_participant_ref_years.productive_capacity_units%type,
    in in_user varchar
 )
 language plpgsql
 as $$
 begin
-    insert into farms.z42_participant_reference_year (
+    insert into farms.farm_z42_participant_ref_years (
         productive_capacity_key,
         operation_number,
         participant_pin,
@@ -20,10 +20,10 @@ begin
         productive_code,
         productive_capacity_units,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         in_productive_capacity_key,
         in_ref_operation_number,

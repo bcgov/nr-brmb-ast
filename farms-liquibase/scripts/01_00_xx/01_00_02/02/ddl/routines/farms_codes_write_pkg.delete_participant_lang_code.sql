@@ -1,6 +1,6 @@
 create or replace procedure farms_codes_write_pkg.delete_participant_lang_code(
-   in in_participant_language_code farms.participant_language_code.participant_language_code%type,
-   in in_revision_count farms.participant_language_code.revision_count%type
+   in in_participant_language_code farms.farm_participant_lang_codes.participant_lang_code%type,
+   in in_revision_count farms.farm_participant_lang_codes.revision_count%type
 )
 language plpgsql
 as $$
@@ -12,8 +12,8 @@ begin
 
     if v_in_use = 0 then
 
-        delete from farms.participant_language_code c
-        where c.participant_language_code = in_participant_language_code
+        delete from farms.farm_participant_lang_codes c
+        where c.participant_lang_code = in_participant_language_code
         and c.revision_count = in_revision_count;
 
         if sql%rowcount <> 1 then

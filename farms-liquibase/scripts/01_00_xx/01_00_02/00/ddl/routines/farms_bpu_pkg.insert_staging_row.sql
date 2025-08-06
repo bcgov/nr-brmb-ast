@@ -1,27 +1,27 @@
 create or replace procedure farms_bpu_pkg.insert_staging_row(
-   in in_line_number farms.zbpu_benchmark_per_unit.line_number%type,
-   in in_program_year farms.zbpu_benchmark_per_unit.program_year%type,
-   in in_municipality_code farms.zbpu_benchmark_per_unit.municipality_code%type,
-   in in_inventory_item_code farms.zbpu_benchmark_per_unit.inventory_item_code%type,
-   in in_unit_comment farms.zbpu_benchmark_per_unit.unit_comment%type,
-   in in_year_minus_6_margin farms.zbpu_benchmark_per_unit.year_minus_6_margin%type,
-   in in_year_minus_5_margin farms.zbpu_benchmark_per_unit.year_minus_5_margin%type,
-   in in_year_minus_4_margin farms.zbpu_benchmark_per_unit.year_minus_4_margin%type,
-   in in_year_minus_3_margin farms.zbpu_benchmark_per_unit.year_minus_3_margin%type,
-   in in_year_minus_2_margin farms.zbpu_benchmark_per_unit.year_minus_2_margin%type,
-   in in_year_minus_1_margin farms.zbpu_benchmark_per_unit.year_minus_1_margin%type,
-   in in_year_minus_6_expense farms.zbpu_benchmark_per_unit.year_minus_6_expense%type,
-   in in_year_minus_5_expense farms.zbpu_benchmark_per_unit.year_minus_5_expense%type,
-   in in_year_minus_4_expense farms.zbpu_benchmark_per_unit.year_minus_4_expense%type,
-   in in_year_minus_3_expense farms.zbpu_benchmark_per_unit.year_minus_3_expense%type,
-   in in_year_minus_2_expense farms.zbpu_benchmark_per_unit.year_minus_2_expense%type,
-   in in_year_minus_1_expense farms.zbpu_benchmark_per_unit.year_minus_1_expense%type,
+   in in_line_number farms.farm_zbpu_benchmark_per_units.line_number%type,
+   in in_program_year farms.farm_zbpu_benchmark_per_units.program_year%type,
+   in in_municipality_code farms.farm_zbpu_benchmark_per_units.municipality_code%type,
+   in in_inventory_item_code farms.farm_zbpu_benchmark_per_units.inventory_item_code%type,
+   in in_unit_comment farms.farm_zbpu_benchmark_per_units.unit_comment%type,
+   in in_year_minus_6_margin farms.farm_zbpu_benchmark_per_units.year_minus_6_margin%type,
+   in in_year_minus_5_margin farms.farm_zbpu_benchmark_per_units.year_minus_5_margin%type,
+   in in_year_minus_4_margin farms.farm_zbpu_benchmark_per_units.year_minus_4_margin%type,
+   in in_year_minus_3_margin farms.farm_zbpu_benchmark_per_units.year_minus_3_margin%type,
+   in in_year_minus_2_margin farms.farm_zbpu_benchmark_per_units.year_minus_2_margin%type,
+   in in_year_minus_1_margin farms.farm_zbpu_benchmark_per_units.year_minus_1_margin%type,
+   in in_year_minus_6_expense farms.farm_zbpu_benchmark_per_units.year_minus_6_expense%type,
+   in in_year_minus_5_expense farms.farm_zbpu_benchmark_per_units.year_minus_5_expense%type,
+   in in_year_minus_4_expense farms.farm_zbpu_benchmark_per_units.year_minus_4_expense%type,
+   in in_year_minus_3_expense farms.farm_zbpu_benchmark_per_units.year_minus_3_expense%type,
+   in in_year_minus_2_expense farms.farm_zbpu_benchmark_per_units.year_minus_2_expense%type,
+   in in_year_minus_1_expense farms.farm_zbpu_benchmark_per_units.year_minus_1_expense%type,
    in in_user varchar
 )
 language plpgsql
 as $$
 begin
-    insert into farms.zbpu_benchmark_per_unit (
+    insert into farms.farm_zbpu_benchmark_per_units (
         line_number,
         program_year,
         municipality_code,
@@ -40,10 +40,10 @@ begin
         year_minus_2_expense,
         year_minus_1_expense,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         in_line_number,
         in_program_year,

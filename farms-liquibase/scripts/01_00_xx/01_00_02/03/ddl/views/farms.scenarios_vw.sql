@@ -18,12 +18,12 @@ select ac.participant_pin,
        pyv.program_year_version_id,
        sc.combined_farm_number,
        sub.chef_submission_guid
-from farms.agristability_client ac
-join farms.program_year py on py.agristability_client_id = ac.agristability_client_id
-join farms.program_year_version pyv on pyv.program_year_id = py.program_year_id
-join farms.agristability_scenario sc on sc.program_year_version_id = pyv.program_year_version_id
-join farms.person p on p.person_id = ac.person_id
-join farms.scenario_category_code scc on scc.scenario_category_code = sc.scenario_category_code
-join farms.scenario_state_code ssc on ssc.scenario_state_code = sc.scenario_state_code
-left outer join farms.municipality_code mc on mc.municipality_code = pyv.municipality_code
-left outer join farms.chef_submission sub on sub.chef_submission_id = sc.chef_submission_id;
+from farms.farm_agristability_clients ac
+join farms.farm_program_years py on py.agristability_client_id = ac.agristability_client_id
+join farms.farm_program_year_versions pyv on pyv.program_year_id = py.program_year_id
+join farms.farm_agristability_scenarios sc on sc.program_year_version_id = pyv.program_year_version_id
+join farms.farm_persons p on p.person_id = ac.person_id
+join farms.farm_scenario_category_codes scc on scc.scenario_category_code = sc.scenario_category_code
+join farms.farm_scenario_state_codes ssc on ssc.scenario_state_code = sc.scenario_state_code
+left outer join farms.farm_municipality_codes mc on mc.municipality_code = pyv.municipality_code
+left outer join farms.farm_chef_submissions sub on sub.chef_submission_id = sc.chef_submission_id;

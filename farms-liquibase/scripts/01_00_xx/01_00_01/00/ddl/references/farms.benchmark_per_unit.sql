@@ -1,14 +1,14 @@
-ALTER TABLE farms.benchmark_per_unit ADD CONSTRAINT fk_bpu_iic 
+ALTER TABLE farms.farm_benchmark_per_units ADD CONSTRAINT fk_bpu_iic 
     FOREIGN KEY (inventory_item_code)
-    REFERENCES farms.inventory_item_code(inventory_item_code)
+    REFERENCES farms.farm_inventory_item_codes(inventory_item_code)
 ;
 
-ALTER TABLE farms.benchmark_per_unit ADD CONSTRAINT fk_bpu_mc 
+ALTER TABLE farms.farm_benchmark_per_units ADD CONSTRAINT fk_bpu_mc 
     FOREIGN KEY (municipality_code)
-    REFERENCES farms.municipality_code(municipality_code)
+    REFERENCES farms.farm_municipality_codes(municipality_code)
 ;
 
-ALTER TABLE farms.benchmark_per_unit ADD CONSTRAINT fk_bpu_sgc 
+ALTER TABLE farms.farm_benchmark_per_units ADD CONSTRAINT fk_bpu_sgc 
     FOREIGN KEY (structure_group_code)
-    REFERENCES farms.structure_group_code(structure_group_code)
+    REFERENCES farms.farm_structure_group_codes(structure_group_code)
 ;

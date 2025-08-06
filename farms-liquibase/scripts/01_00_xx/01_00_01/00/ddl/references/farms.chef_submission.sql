@@ -1,9 +1,9 @@
-ALTER TABLE farms.chef_submission ADD CONSTRAINT fk_cs_cftc 
+ALTER TABLE farms.farm_chef_submissions ADD CONSTRAINT fk_cs_cftc 
     FOREIGN KEY (chef_form_type_code)
-    REFERENCES farms.chef_form_type_code(chef_form_type_code)
+    REFERENCES farms.farm_chef_form_type_codes(chef_form_type_code)
 ;
 
-ALTER TABLE farms.chef_submission ADD CONSTRAINT fk_cs_cssc 
-    FOREIGN KEY (chef_submission_status_code)
-    REFERENCES farms.chef_submission_status_code(chef_submission_status_code)
+ALTER TABLE farms.farm_chef_submissions ADD CONSTRAINT fk_cs_cssc 
+    FOREIGN KEY (chef_submssn_status_code)
+    REFERENCES farms.farm_chef_submssn_status_codes(chef_submssn_status_code)
 ;

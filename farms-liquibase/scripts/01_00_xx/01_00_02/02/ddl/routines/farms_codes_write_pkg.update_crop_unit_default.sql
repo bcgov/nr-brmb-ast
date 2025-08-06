@@ -1,18 +1,18 @@
 create or replace procedure farms_codes_write_pkg.update_crop_unit_default(
-   in in_inventory_item_code farms.crop_unit_default.inventory_item_code%type,
-   in in_crop_unit_code farms.crop_unit_default.crop_unit_code%type,
-   in in_revision_count farms.crop_unit_default.revision_count%type,
-   in in_user farms.crop_unit_default.update_user%type
+   in in_inventory_item_code farms.farm_crop_unit_defaults.inventory_item_code%type,
+   in in_crop_unit_code farms.farm_crop_unit_defaults.crop_unit_code%type,
+   in in_revision_count farms.farm_crop_unit_defaults.revision_count%type,
+   in in_user farms.farm_crop_unit_defaults.who_updated%type
 )
 language plpgsql
 as $$
 begin
 
-    update farms.crop_unit_default cud
+    update farms.farm_crop_unit_defaults cud
     set cud.crop_unit_code = in_crop_unit_code,
         cud.revision_count = cud.revision_count + 1,
-        cud.update_user = in_user,
-        cud.update_date = current_timestamp
+        cud.who_updated = in_user,
+        cud.when_updated = current_timestamp
     where cud.inventory_item_code = in_inventory_item_code
     and cud.revision_count = in_revision_count;
 

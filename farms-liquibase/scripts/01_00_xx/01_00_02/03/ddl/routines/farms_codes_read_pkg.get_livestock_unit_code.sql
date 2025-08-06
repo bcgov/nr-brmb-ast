@@ -1,5 +1,5 @@
 create or replace function farms_codes_read_pkg.get_livestock_unit_code(
-    in in_inventory_item_code farms.fair_market_value.inventory_item_code%type
+    in in_inventory_item_code farms.farm_fair_market_values.inventory_item_code%type
 )
 returns varchar
 language plpgsql

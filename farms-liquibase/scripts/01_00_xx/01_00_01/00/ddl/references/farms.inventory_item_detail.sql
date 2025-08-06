@@ -1,19 +1,19 @@
-ALTER TABLE farms.inventory_item_detail ADD CONSTRAINT fk_iid_ctc 
+ALTER TABLE farms.farm_inventory_item_details ADD CONSTRAINT fk_iid_ctc 
     FOREIGN KEY (commodity_type_code)
-    REFERENCES farms.commodity_type_code(commodity_type_code)
+    REFERENCES farms.farm_commodity_type_codes(commodity_type_code)
 ;
 
-ALTER TABLE farms.inventory_item_detail ADD CONSTRAINT fk_iid_fvtc 
-    FOREIGN KEY (fruit_vegetable_type_code)
-    REFERENCES farms.fruit_vegetable_type_code(fruit_vegetable_type_code)
+ALTER TABLE farms.farm_inventory_item_details ADD CONSTRAINT fk_iid_fvtc 
+    FOREIGN KEY (fruit_veg_type_code)
+    REFERENCES farms.farm_fruit_veg_type_codes(fruit_veg_type_code)
 ;
 
-ALTER TABLE farms.inventory_item_detail ADD CONSTRAINT fk_iid_iic 
+ALTER TABLE farms.farm_inventory_item_details ADD CONSTRAINT fk_iid_iic 
     FOREIGN KEY (inventory_item_code)
-    REFERENCES farms.inventory_item_code(inventory_item_code)
+    REFERENCES farms.farm_inventory_item_codes(inventory_item_code)
 ;
 
-ALTER TABLE farms.inventory_item_detail ADD CONSTRAINT fk_iid_mscc 
-    FOREIGN KEY (multiple_stage_commodity_code)
-    REFERENCES farms.multiple_stage_commodity_code(multiple_stage_commodity_code)
+ALTER TABLE farms.farm_inventory_item_details ADD CONSTRAINT fk_iid_mscc 
+    FOREIGN KEY (multi_stage_commdty_code)
+    REFERENCES farms.farm_multi_stage_commdty_codes(multi_stage_commdty_code)
 ;

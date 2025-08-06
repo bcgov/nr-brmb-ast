@@ -1,7 +1,7 @@
 create or replace function farms_import_pkg.participant(
     in in_version_id numeric,
     in in_participant_pin numeric,
-    out out_agristability_client_id farms.agristability_client.agristability_client_id%type,
+    out out_agristability_client_id farms.farm_agristability_clients.agristability_client_id%type,
     in in_user varchar,
     inout in_out_activity numeric,
     inout in_changed_contact_client_ids numeric[],
@@ -13,25 +13,25 @@ declare
     z01_cursor cursor for
         select z.participant_pin,
                ac.agristability_client_id,
-               z.sin_ctn_business_number p_in_federal_identifier,
+               z.sin_ctn_bn p_in_federal_identifier,
                (case
-                    when z.sin is null and trim(translate(z.sin_ctn_business_number, '0123456789-,.', ' ')) is null then z.sin_ctn_business_number
+                    when z.sin is null and trim(translate(z.sin_ctn_bn, '0123456789-,.', ' ')) is null then z.sin_ctn_bn
                     else z.sin
                end) p_in_sin,
                (case
-                    when z.business_number is null and a.sin_ctn_business_number like '%RC%' then z.sin_ctn_business_number
+                    when z.business_number is null and a.sin_ctn_bn like '%RC%' then z.sin_ctn_bn
                     else z.business_number
                end) p_in_business_number,
                (case
-                    when z.trust_number is null and a.sin_ctn_business_number like 'T%' then z.sin_ctn_business_number
+                    when z.trust_number is null and a.sin_ctn_bn like 'T%' then z.sin_ctn_bn
                     else z.trust_number
                end) p_in_trust_number,
                z.participant_type_code p_in_participant_class_code,
                z.participant_language p_in_participant_language_code,
                (case
-                    when z.public_office_indicator = 0 then 'N'
-                    when z.public_office_indicator = 1 then 'Y'
-                    when z.public_office_indicator = 2 then 'N'
+                    when z.public_office_ind = 0 then 'N'
+                    when z.public_office_ind = 1 then 'Y'
+                    when z.public_office_ind = 2 then 'N'
                     else 'N'
                end) p_in_public_office_indicator,
                ac.agristability_client_id p_agristability_client_id,
@@ -39,12 +39,12 @@ declare
                ac.business_number p_out_business_number,
                ac.trust_number p_out_trust_number,
                ac.participant_class_code p_out_participant_class_code,
-               ac.participant_language_code p_out_participant_language_code,
-               ac.public_office_indicator p_out_public_office_indicator,
-               ac.locally_updated_indicator p_locally_updated_indicator,
+               ac.participant_lang_code p_out_participant_language_code,
+               ac.public_office_ind p_out_public_office_indicator,
+               ac.locally_updated_ind p_locally_updated_indicator,
 
-               to_date(z.identity_effective_date, 'YYYYMMDD') p_in_identity_effective_date,
-               ac.identity_effective_date p_out_identity_effective_date,
+               to_date(z.ident_effective_date, 'YYYYMMDD') p_in_identity_effective_date,
+               ac.ident_effective_date p_out_identity_effective_date,
 
                z.first_name c_in_first_name,
                z.last_name c_in_last_name,
@@ -105,15 +105,15 @@ declare
                q.daytime_phone r_out_daytime_phone,
                q.email_address r_out_email_address
 
-        from farms.z01_participant_information z
-        left outer join farms.agristability_client ac on ac.participant_pin = z.participant_pin
-        left outer join farms.person p on p.person_id = ac.person_id
-        left outer join farms.person q on q.person_id = ac.person_id_client_contacted_by
+        from farms.farm_z01_participant_infos z
+        left outer join farms.farm_agristability_clients ac on ac.participant_pin = z.participant_pin
+        left outer join farms.farm_persons p on p.person_id = ac.person_id
+        left outer join farms.farm_persons q on q.person_id = ac.person_id_client_contacted_by
         where z.participant_pin = in_participant_pin;
     z01_val record;
 
-    v_participant_class_code farms.z01_participant_information.participant_type_code%type := null;
-    v_participant_language_code farms.z01_participant_information.participant_language%type := null;
+    v_participant_class_code farms.farm_z01_participant_infos.participant_type_code%type := null;
+    v_participant_language_code farms.farm_z01_participant_infos.participant_language%type := null;
 
     p1_msg varchar(4000) := null;
     p2_msg varchar(4000) := null;
@@ -328,25 +328,25 @@ begin
         -- ag client info
         if z01_val.p_locally_updated_indicator is null then
             -- insert row + log
-            insert into farms.agristability_client (
+            insert into farms.farm_agristability_clients (
                 agristability_client_id,
                 participant_pin,
                 sin,
                 business_number,
                 trust_number,
                 federal_identifier,
-                identity_effective_date,
+                ident_effective_date,
                 participant_class_code,
-                participant_language_code,
-                public_office_indicator,
+                participant_lang_code,
+                public_office_ind,
                 person_id,
                 person_id_client_contacted_by,
-                locally_updated_indicator,
+                locally_updated_ind,
                 revision_count,
-                create_user,
-                create_date,
-                update_user,
-                update_date
+                who_created,
+                when_created,
+                who_updated,
+                when_updated
             ) values (
                 out_agristability_client_id,
                 z01_val.participant_pin,
@@ -379,20 +379,20 @@ begin
             or z01_val.r_person_id <> person_rep_id then
             if z01_val.p_locally_updated_indicator <> 'Y' then
                 -- update
-                update farms.agristability_client
+                update farms.farm_agristability_clients
                 set federal_identifier = z01_val.p_in_federal_identifier,
                     sin = z01_val.p_in_sin,
                     business_number = z01_val.p_in_business_number,
                     trust_number = z01_val.p_in_trust_number,
                     participant_class_code = to_char(z01_val.p_in_participant_class_code),
-                    participant_language_code = to_char(z01_val.p_in_participant_language_code),
-                    public_office_indicator = z01_val.p_in_public_office_indicator,
-                    identity_effective_date = z01_val.p_in_identity_effective_date,
+                    participant_lang_code = to_char(z01_val.p_in_participant_language_code),
+                    public_office_ind = z01_val.p_in_public_office_indicator,
+                    ident_effective_date = z01_val.p_in_identity_effective_date,
                     person_id = person_id,
                     person_id_client_contacted_by = person_rep_id,
                     revision_count = revision_count + 1,
-                    update_user = in_user,
-                    update_date = current_timestamp
+                    who_updated = in_user,
+                    when_updated = current_timestamp
                 where agristability_client_id = z01_val.p_agristability_client_id;
             end if;
         end if;

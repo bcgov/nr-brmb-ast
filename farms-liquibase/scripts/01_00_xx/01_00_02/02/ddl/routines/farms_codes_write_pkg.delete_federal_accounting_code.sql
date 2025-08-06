@@ -1,6 +1,6 @@
 create or replace procedure farms_codes_write_pkg.delete_federal_accounting_code(
-   in in_federal_accounting_code farms.federal_accounting_code.federal_accounting_code%type,
-   in in_revision_count farms.federal_accounting_code.revision_count%type
+   in in_federal_accounting_code farms.farm_federal_accounting_codes.federal_accounting_code%type,
+   in in_revision_count farms.farm_federal_accounting_codes.revision_count%type
 )
 language plpgsql
 as $$
@@ -12,7 +12,7 @@ begin
 
     if v_in_use = 0 then
 
-        delete from farms.federal_accounting_code c
+        delete from farms.farm_federal_accounting_codes c
         where c.federal_accounting_code = in_federal_accounting_code
         and c.revision_count = in_revision_count;
 

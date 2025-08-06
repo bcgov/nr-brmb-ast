@@ -1,8 +1,8 @@
 create or replace function farms_read_pkg.read_bpu_all(
-    in in_sc_id farms.agristability_scenario.agristability_scenario_id%type,
+    in in_sc_id farms.farm_agristability_scenarios.agristability_scenario_id%type,
     in inv_cds numeric[],
     in str_cds numeric[],
-    in in_base_year farms.program_year.year%type
+    in in_base_year farms.farm_program_years.year%type
 )
 returns refcursor
 language plpgsql
@@ -36,10 +36,10 @@ begin
                    bnch.average_margin,
                    bnch.average_expense,
                    bnch.revision_count as bnch_revision_count
-            from farms.benchmark_per_unit bpu
-            join farms.benchmark_year bnch on bpu.benchmark_per_unit_id = bnch.benchmark_per_unit_id
-            join farms.agristability_scenario sc on sc.agristability_scenario_id = in_sc_id
-            join farms.program_year_version pyv on sc.program_year_version_id = pyv.program_year_version_id
+            from farms.farm_benchmark_per_units bpu
+            join farms.farm_benchmark_years bnch on bpu.benchmark_per_unit_id = bnch.benchmark_per_unit_id
+            join farms.farm_agristability_scenarios sc on sc.agristability_scenario_id = in_sc_id
+            join farms.farm_program_year_versions pyv on sc.program_year_version_id = pyv.program_year_version_id
                                                 and (bpu.municipality_code = pyv.municipality_code or bpu.municipality_code = '0')
             where bpu.program_year = in_base_year
             and (bpu.expiry_date is null or bpu.expiry_date >= current_date)

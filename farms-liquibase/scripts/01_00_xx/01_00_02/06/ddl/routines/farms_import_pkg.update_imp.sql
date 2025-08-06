@@ -5,7 +5,7 @@ create or replace procedure farms_import_pkg.update_imp(
 language plpgsql
 as $$
 begin
-    update farms.import_log
+    update farms.farm_import_logs
     set log_message = in_msg
     where import_log_id = in_id;
 end;

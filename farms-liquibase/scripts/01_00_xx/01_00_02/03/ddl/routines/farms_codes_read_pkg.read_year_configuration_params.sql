@@ -1,5 +1,5 @@
 create or replace function farms_codes_read_pkg.read_year_configuration_params(
-    in in_program_year farms.year_configuration_parameter.program_year%type
+    in in_program_year farms.farm_year_configuration_params.program_year%type
 )
 returns refcursor
 language plpgsql
@@ -9,19 +9,19 @@ declare
 begin
 
     open cur for
-        select t.year_configuration_parameter_id,
+        select t.year_configuration_param_id,
                t.program_year,
                t.parameter_name,
                t.parameter_value,
-               t.configuration_parameter_type_code,
-               t.create_user,
-               t.create_date,
-               t.update_user,
-               t.update_date,
+               t.config_param_type_code,
+               t.who_created,
+               t.when_created,
+               t.who_updated,
+               t.when_updated,
                t.revision_count,
                c.description
-        from farms.year_configuration_parameter t
-        inner join farms.configuration_parameter_type_code c on c.configuration_parameter_type_code = t.configuration_parameter_type_code
+        from farms.farm_year_configuration_params t
+        inner join farms.farm_config_param_type_codes c on c.config_param_type_code = t.config_param_type_code
         where t.program_year = in_program_year
         order by lower(t.parameter_name);
     return cur;

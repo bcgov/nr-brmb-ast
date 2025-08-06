@@ -1,6 +1,6 @@
 create or replace function farms_import_pkg.is_changed(
-    in in_program_year_id farms.program_year.program_year_id%type,
-    in in_program_year_vrsn_prev_id farms.program_year_version.program_year_version_id%type
+    in in_program_year_id farms.farm_program_years.program_year_id%type,
+    in in_program_year_vrsn_prev_id farms.farm_program_year_versions.program_year_version_id%type
 )
 returns integer
 language plpgsql

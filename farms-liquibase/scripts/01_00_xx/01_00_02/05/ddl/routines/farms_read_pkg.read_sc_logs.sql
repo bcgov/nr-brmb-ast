@@ -1,5 +1,5 @@
 create or replace function farms_read_pkg.read_sc_logs(
-    in sc_id farms.scenario_log.agristability_scenario_id%type
+    in sc_id farms.farm_scenario_logs.agristability_scenario_id%type
 )
 returns refcursor
 language plpgsql
@@ -9,11 +9,11 @@ declare
 begin
     open cur for
         select sl.log_message,
-               sl.create_user,
-               sl.create_date
-        from farms.scenario_log sl
+               sl.who_created,
+               sl.when_created
+        from farms.farm_scenario_logs sl
         where sl.agristability_scenario_id = sc_id
-        order by sl.create_date desc;
+        order by sl.when_created desc;
 
     return cur;
 end;

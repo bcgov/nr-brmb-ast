@@ -1,8 +1,8 @@
 create or replace function farms_error_pkg.codify_productive_unit_capacity(
     in msg varchar,
-    in farming_operation_id farms.productive_unit_capacity.farming_operation_id%type,
-    in structure_group_code farms.productive_unit_capacity.structure_group_code%type,
-    in inventory_item_code farms.productive_unit_capacity.inventory_item_code%type
+    in farming_operation_id farms.farm_productve_unit_capacities.farming_operation_id%type,
+    in structure_group_code farms.farm_productve_unit_capacities.structure_group_code%type,
+    in inventory_item_code farms.farm_productve_unit_capacities.inventory_item_code%type
 )
 returns varchar
 language plpgsql

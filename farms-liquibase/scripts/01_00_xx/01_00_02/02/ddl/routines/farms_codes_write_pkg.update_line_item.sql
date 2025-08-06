@@ -1,23 +1,23 @@
 create or replace procedure farms_codes_write_pkg.update_line_item(
-   in in_line_item_id farms.line_item.line_item_id%type,
-   in in_program_year farms.line_item.program_year%type,
-   in in_line_item farms.line_item.line_item%type,
-   in in_description farms.line_item.description%type,
-   in in_eligibility_indicator farms.line_item.eligibility_indicator%type,
-   in in_eligibility_for_reference_years_indicator farms.line_item.eligibility_for_reference_years_indicator%type,
-   in in_yardage_indicator farms.line_item.yardage_indicator%type,
-   in in_program_payment_indicator farms.line_item.program_payment_indicator%type,
-   in in_contract_work_indicator farms.line_item.contract_work_indicator%type,
-   in in_supply_managed_commodity_indicator farms.line_item.supply_managed_commodity_indicator%type,
-   in in_exclude_from_revenue_calculation_indicator farms.line_item.exclude_from_revenue_calculation_indicator%type,
-   in in_industry_average_expense_indicator farms.line_item.industry_average_expense_indicator%type,
-   in in_established_date farms.line_item.established_date%type,
-   in in_expiry_date farms.line_item.expiry_date%type,
-   in in_sector_detail_code farms.sector_detail_line_item.sector_detail_code%type,
-   in in_revision_count farms.line_item.revision_count%type,
-   in in_fruit_vegetable_type_code farms.line_item.fruit_vegetable_type_code%type,
-   in in_commodity_type_code farms.line_item.commodity_type_code%type,
-   in in_user farms.line_item.update_user%type
+   in in_line_item_id farms.farm_line_items.line_item_id%type,
+   in in_program_year farms.farm_line_items.program_year%type,
+   in in_line_item farms.farm_line_items.line_item%type,
+   in in_description farms.farm_line_items.description%type,
+   in in_eligibility_indicator farms.farm_line_items.eligibility_ind%type,
+   in in_eligibility_for_reference_years_indicator farms.farm_line_items.eligibility_for_ref_years_ind%type,
+   in in_yardage_indicator farms.farm_line_items.yardage_ind%type,
+   in in_program_payment_indicator farms.farm_line_items.program_payment_ind%type,
+   in in_contract_work_indicator farms.farm_line_items.contract_work_ind%type,
+   in in_supply_managed_commodity_indicator farms.farm_line_items.supply_managed_commodity_ind%type,
+   in in_exclude_from_revenue_calculation_indicator farms.farm_line_items.exclude_from_revenue_calc_ind%type,
+   in in_industry_average_expense_indicator farms.farm_line_items.industry_average_expense_ind%type,
+   in in_established_date farms.farm_line_items.established_date%type,
+   in in_expiry_date farms.farm_line_items.expiry_date%type,
+   in in_sector_detail_code farms.farm_sector_detail_line_items.sector_detail_code%type,
+   in in_revision_count farms.farm_line_items.revision_count%type,
+   in in_fruit_vegetable_type_code farms.farm_line_items.fruit_veg_type_code%type,
+   in in_commodity_type_code farms.farm_line_items.commodity_type_code%type,
+   in in_user farms.farm_line_items.who_updated%type
 )
 language plpgsql
 as $$
@@ -42,12 +42,12 @@ begin
         in_user
     );
 
-    update farms.line_item c
+    update farms.farm_line_items c
     set c.expiry_date = current_date,
         c.revision_count = c.revision_count + 1,
-        c.update_user = in_user,
-        c.update_date = current_timestamp,
-        c.fruit_vegetable_type_code = in_fruit_vegetable_type_code,
+        c.who_updated = in_user,
+        c.when_updated = current_timestamp,
+        c.fruit_veg_type_code = in_fruit_vegetable_type_code,
         c.commodity_type_code = in_commodity_type_code
     where c.line_item_id = in_line_item_id
     and c.revision_count = in_revision_count;

@@ -1,6 +1,6 @@
 create or replace function farms_version_pkg.create_version(
-   in in_description farms.import_version.description%type,
-   in in_import_file_name farms.import_version.import_file_name%type,
+   in in_description farms.farm_import_versions.description%type,
+   in in_import_file_name farms.farm_import_versions.import_file_name%type,
    in in_user varchar
 )
 returns integer
@@ -12,20 +12,20 @@ begin
     select nextval('farms.seq_iv')
     into r;
 
-    insert into farms.import_version (
+    insert into farms.farm_import_versions (
         import_version_id,
         imported_by_user,
         description,
         import_file_name,
         import_state_code,
         import_class_code,
-        staging_audit_information,
-        import_audit_information,
+        staging_audit_info,
+        import_audit_info,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         r,
         in_user,
@@ -42,7 +42,7 @@ begin
         current_timestamp
     );
 
-    update farms.import_version
+    update farms.farm_import_versions
     set import_state_code = 'CAN'
     where import_state_code = 'SC';
 

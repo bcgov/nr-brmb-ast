@@ -1,5 +1,5 @@
 create or replace function farms_codes_write_pkg.in_use_crop_unit_code(
-    in in_crop_unit_code farms.crop_unit_code.crop_unit_code%type
+    in in_crop_unit_code farms.farm_crop_unit_codes.crop_unit_code%type
 )
 returns numeric
 language plpgsql
@@ -11,12 +11,12 @@ begin
     select (case
         when exists(
             select null
-            from farms.reported_inventory t
+            from farms.farm_reported_inventories t
             where t.crop_unit_code = in_crop_unit_code
         )
         or exists(
             select null
-            from farms.fair_market_value t
+            from farms.farm_fair_market_values t
             where t.crop_unit_code = in_crop_unit_code
         ) then 1
         else 0

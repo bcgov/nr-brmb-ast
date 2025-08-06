@@ -1,10 +1,10 @@
 create or replace function farms_error_pkg.codify_program_year(
     in msg varchar,
-    in program_year farms.program_year.year%type,
-    in agristability_client_id farms.program_year.agristability_client_id%type,
-    in participant_profile_code farms.program_year_version.participant_profile_code%type,
-    in federal_status_code farms.program_year_version.federal_status_code%type,
-    in municipality_code farms.program_year_version.municipality_code%type
+    in program_year farms.farm_program_years.year%type,
+    in agristability_client_id farms.farm_program_years.agristability_client_id%type,
+    in participant_profile_code farms.farm_program_year_versions.participant_profile_code%type,
+    in federal_status_code farms.farm_program_year_versions.federal_status_code%type,
+    in municipality_code farms.farm_program_year_versions.municipality_code%type
 )
 returns varchar
 language plpgsql

@@ -1,6 +1,6 @@
 create or replace function farms_import_pkg.is_inv_changed(
-    in in_program_year_id farms.program_year.program_year_id%type,
-    in in_program_year_vrsn_prev_id farms.program_year_version.program_year_version_id%type
+    in in_program_year_id farms.farm_program_years.program_year_id%type,
+    in in_program_year_vrsn_prev_id farms.farm_program_year_versions.program_year_version_id%type
 )
 returns boolean
 language plpgsql
@@ -22,7 +22,7 @@ begin
                inv.price_end,
                inv.price_start,
                inv.end_year_producer_price,
-               inv.accept_producer_price_indicator,
+               inv.accept_producer_price_ind,
                inv.aarm_reference_p1_price,
                inv.aarm_reference_p2_price,
                inv.on_farm_acres,
@@ -32,28 +32,28 @@ begin
                row_number() over (partition by inventory_item_code, inventory_class_code,
                crop_unit_code, quantity_produced, start_of_year_amount, end_of_year_amount,
                quantity_start, quantity_end, price_end, price_start, end_year_producer_price,
-               accept_producer_price_indicator, aarm_reference_p1_price, aarm_reference_p2_price,
+               accept_producer_price_ind, aarm_reference_p1_price, aarm_reference_p2_price,
                on_farm_acres, unseedable_acres, import_comment, operation_number order by 1) rn
-        from farms.agristability_client ac
-        join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
-        join farms.program_year_version pyv on pyv.program_year_id = py.program_year_id
-        join farms.farming_operation op on op.program_year_version_id = pyv.program_year_version_id
-        join farms.reported_inventory inv on inv.farming_operation_id = op.farming_operation_id
-        join farms.agristabilty_commodity_xref x on inv.agristabilty_commodity_xref_id = x.agristabilty_commodity_xref_id
+        from farms.farm_agristability_clients ac
+        join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
+        join farms.farm_program_year_versions pyv on pyv.program_year_id = py.program_year_id
+        join farms.farm_farming_operations op on op.program_year_version_id = pyv.program_year_version_id
+        join farms.farm_reported_inventories inv on inv.farming_operation_id = op.farming_operation_id
+        join farms.farm_agristabilty_cmmdty_xref x on inv.agristabilty_cmmdty_xref_id = x.agristabilty_cmmdty_xref_id
         where pyv.program_year_version_id = in_program_year_vrsn_prev_id
-        and op.locally_generated_indicator = 'N'
+        and op.locally_generated_ind = 'N'
         and inv.agristability_scenario_id is null
     ), file_21 as (
         select (case
-                   when x.agristabilty_commodity_xref_id is not null then to_char(z21.inventory_code)
+                   when x.agristabilty_cmmdty_xref_id is not null then to_char(z21.inventory_code)
                    else x2.inventory_item_code
                end) inventory_item_code,
                (case
-                   when x.agristabilty_commodity_xref_id is not null then to_char(z21.inventory_type_code)
+                   when x.agristabilty_cmmdty_xref_id is not null then to_char(z21.inventory_type_code)
                    else x2.inventory_class_code
                end) inventory_class_code,
                to_char(z21.crop_unit_type) crop_unit_code,
-               z21.crop_quantity_produced quantity_produced,
+               z21.crop_qty_produced quantity_produced,
                null start_of_year_amount,
                z21.end_of_year_amount,
                null quantity_start,
@@ -61,32 +61,32 @@ begin
                null price_end,
                null price_start,
                z21.end_of_year_price end_year_producer_price,
-               'N' accept_producer_price_indicator,
+               'N' accept_producer_price_ind,
                null aarm_reference_p1_price,
                null aarm_reference_p2_price,
                z21.crop_on_farm_acres on_farm_acres,
                z21.crop_unseedable_acres unseedable_acres,
                null import_comment,
                z21.operation_number
-        from farms.z21_participant_supplementary z21
-        join farms.agristability_client ac on z21.participant_pin = ac.participant_pin
-        join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+        from farms.farm_z21_participant_suppls z21
+        join farms.farm_agristability_clients ac on z21.participant_pin = ac.participant_pin
+        join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                    and z21.program_year = py.year
-        left outer join farms.agristabilty_commodity_xref x on to_char(z21.inventory_code) = x.inventory_item_code
+        left outer join farms.farm_agristabilty_cmmdty_xref x on to_char(z21.inventory_code) = x.inventory_item_code
                                                             and to_char(z21.inventory_type_code) = x.inventory_class_code
-        left outer join farms.agristabilty_commodity_xref x2 on to_char(z21.inventory_type_code) = x2.inventory_class_code
+        left outer join farms.farm_agristabilty_cmmdty_xref x2 on to_char(z21.inventory_type_code) = x2.inventory_class_code
                                                              and x2.inventory_item_code = Unknown
         where py.program_year_id = in_program_year_id
     ), aarm as (
         select (case
-                   when x.agristabilty_commodity_xref_id is not null then to_char(aarm.inventory_code)
+                   when x.agristabilty_cmmdty_xref_id is not null then to_char(aarm.inventory_code)
                    else x2.inventory_item_code
                end) inventory_item_code,
                to_char(aarm.inventory_type_code) inventory_class_code,
                to_char(aarm.production_unit) crop_unit_code,
                (case
                    when max(z40.prior_year_supplemental_key) is not null and aarm.inventory_type_code in ('1', '2') then
-                       sum(z40.crop_quantity_produced)
+                       sum(z40.crop_qty_produced)
                    else
                        null
                end) quantity_produced,
@@ -99,7 +99,7 @@ begin
                -- this was changed after the initial implmenetation to force the values to be
                -- returned to the client spreadsheet. When P1 or P2 is null, the CRA data is used.
                max(z40.end_year_producer_price) end_year_producer_price,
-               max(z40.accept_producer_price_indicator) accept_producer_price_indicator,
+               max(z40.accept_producer_price_ind) accept_producer_price_ind,
                coalesce(max(aarm.aarm_reference_p1_price), max(z40.aarm_reference_p1_price)) aarm_reference_p1_price,
                coalesce(max(aarm.aarm_reference_p2_price), max(z40.aarm_reference_p2_price)) aarm_reference_p2_price,
                (case
@@ -110,12 +110,12 @@ begin
                end) on_farm_acres,
                null unseedable_acres,
                (case
-                   when max(x.agristabilty_commodity_xref_id) is not null then null
+                   when max(x.agristabilty_cmmdty_xref_id) is not null then null
                    else aarm.inventory_code || ' ' || aarm.inventory_type_code
                end) import_comment,
                max(aarm.operation_number) operation_number
-        from farms.aarm_margin aarm
-        left outer join farms.z40_participant_reference_supplemental_detail z40 on aarm.participant_pin = z40.participant_pin
+        from farms.farm_aarm_margins aarm
+        left outer join farms.farm_z40_prtcpnt_ref_supl_dtls z40 on aarm.participant_pin = z40.participant_pin
                                                                                 and aarm.program_year = z40.program_year
                                                                                 and aarm.operation_number = z40.operation_number
                                                                                 and aarm.inventory_type_code = z40.inventory_type_code
@@ -126,12 +126,12 @@ begin
                                                                                      or aarm.inventory_type_code in ('1', '2')
                                                                                      or (aarm.inventory_type_code in ('3', '4', '5')
                                                                                          and (aarm.quantity_start > 0 or aarm.quantity_end > 0)))
-        left outer join farms.agristabilty_commodity_xref x on to_char(aarm.inventory_code) = x.inventory_item_code
+        left outer join farms.farm_agristabilty_cmmdty_xref x on to_char(aarm.inventory_code) = x.inventory_item_code
                                                             and to_char(aarm.inventory_type_code) = x.inventory_class_code
-        left outer join farms.agristabilty_commodity_xref x2 on to_char(aarm.inventory_type_code) = x2.inventory_class_code
+        left outer join farms.farm_agristabilty_cmmdty_xref x2 on to_char(aarm.inventory_type_code) = x2.inventory_class_code
                                                              and x2.inventory_item_code = Unknown
-        join farms.agristability_client ac on aarm.participant_pin = ac.participant_pin
-        join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+        join farms.farm_agristability_clients ac on aarm.participant_pin = ac.participant_pin
+        join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                    and aarm.program_year = py.year
         where aarm.program_year = in_program_year_id
         group by -- can be simplified with a parent id + inv code/type
@@ -142,20 +142,20 @@ begin
                  aarm.inventory_type_code,
                  aarm.inventory_code,
                  aarm.production_unit,
-                 x.agristabilty_commodity_xref_id,
+                 x.agristabilty_cmmdty_xref_id,
                  x2.inventory_item_code,
                  x2.inventory_class_code
     ), file_40 as (
         select (case
-                   when x.agristabilty_commodity_xref_id is not null then to_char(zz.inventory_code)
+                   when x.agristabilty_cmmdty_xref_id is not null then to_char(zz.inventory_code)
                    else x2.inventory_item_code
                end) inventory_item_code,
                (case
-                   when x.agristabilty_commodity_xref_id is not null then to_char(zz.inventory_type_code)
+                   when x.agristabilty_cmmdty_xref_id is not null then to_char(zz.inventory_type_code)
                    else x2.inventory_class_code
                end) inventory_class_code,
                to_char(zz.production_unit) crop_unit_code,
-               zz.crop_quantity_produced quantity_produced,
+               zz.crop_qty_produced quantity_produced,
                zz.quantity_start start_of_year_amount,
                zz.quantity_end end_of_year_amount,
                zz.quantity_start,
@@ -163,20 +163,20 @@ begin
                zz.end_year_price price_end,
                zz.starting_price price_start,
                zz.end_year_producer_price,
-               zz.accept_producer_price_indicator,
+               zz.accept_producer_price_ind,
                zz.aarm_reference_p1_price,
                zz.aarm_reference_p2_price,
                zz.crop_on_farm_acres on_farm_acres,
                null unseedable_acres,
                (case
-                   when x.agristabilty_commodity_xref_id is not null then null
+                   when x.agristabilty_cmmdty_xref_id is not null then null
                    else zz.inventory_code || ' ' || zz.inventory_type_code
                end) import_comment,
                zz.operation_number
         from (
             select z40.*
-            from farms.z40_participant_reference_supplemental_detail z40
-            left outer join farms.aarm_margin aarm on aarm.participant_pin = z40.participant_pin
+            from farms.farm_z40_prtcpnt_ref_supl_dtls z40
+            left outer join farms.farm_aarm_margins aarm on aarm.participant_pin = z40.participant_pin
                                                     and aarm.program_year = z40.program_year
                                                     and aarm.operation_number = z40.operation_number
                                                     and aarm.inventory_type_code = z40.inventory_type_code
@@ -185,12 +185,12 @@ begin
                                                          or (aarm.production_unit is null and z40.production_unit is null))
             where aarm.aarm_margin_id is null
         ) zz
-        left outer join farms.agristabilty_commodity_xref x on to_char(zz.inventory_code) = x.inventory_item_code
+        left outer join farms.farm_agristabilty_cmmdty_xref x on to_char(zz.inventory_code) = x.inventory_item_code
                                                             and to_char(zz.inventory_type_code) = x.inventory_class_code
-        left outer join farms.agristabilty_commodity_xref x2 on to_char(zz.inventory_type_code) = x2.inventory_class_code
+        left outer join farms.farm_agristabilty_cmmdty_xref x2 on to_char(zz.inventory_type_code) = x2.inventory_class_code
                                                              and x2.inventory_item_code = Unknown
-        join farms.agristability_client ac on zz.participant_pin = ac.participant_pin
-        join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+        join farms.farm_agristability_clients ac on zz.participant_pin = ac.participant_pin
+        join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                    and zz.program_year = py.year
         where py.program_year_id = in_program_year_id
     ), staging_area as (
@@ -205,7 +205,7 @@ begin
                price_end,
                price_start,
                end_year_producer_price,
-               accept_producer_price_indicator,
+               accept_producer_price_ind,
                aarm_reference_p1_price,
                aarm_reference_p2_price,
                on_farm_acres,
@@ -215,7 +215,7 @@ begin
                row_number() over (partition by inventory_item_code, inventory_class_code,
                crop_unit_code, quantity_produced, start_of_year_amount, end_of_year_amount,
                quantity_start, quantity_end, price_end, price_start, end_year_producer_price,
-               accept_producer_price_indicator, aarm_reference_p1_price, aarm_reference_p2_price,
+               accept_producer_price_ind, aarm_reference_p1_price, aarm_reference_p2_price,
                on_farm_acres, unseedable_acres, import_comment, operation_number order by 1) rn
         from (
             select *

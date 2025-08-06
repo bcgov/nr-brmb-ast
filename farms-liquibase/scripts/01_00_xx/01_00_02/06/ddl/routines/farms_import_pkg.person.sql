@@ -1,37 +1,37 @@
 create or replace function farms_import_pkg.person(
     in in_version_id numeric,
-    inout in_person_id farms.person.person_id%type,
-    in in_address_1 farms.person.address_line_1%type,
-    in in_address_2 farms.person.address_line_2%type,
-    in in_city farms.person.city%type,
-    in in_corp_name farms.person.corp_name%type,
-    in in_daytime_phone farms.person.daytime_phone%type,
-    in in_evening_phone farms.person.evening_phone%type,
-    in in_fax_number farms.person.fax_number%type,
-    in in_cell_number farms.person.cell_number%type,
-    in in_first_name farms.person.first_name%type,
-    in in_last_name farms.person.last_name%type,
-    in in_postal_code farms.person.postal_code%type,
-    in in_province_state farms.person.province_state%type,
-    in in_country farms.person.country%type,
-    in in_email_address farms.person.email_address%type,
-    in out_address_1 farms.person.address_line_1%type,
-    in out_address_2 farms.person.address_line_2%type,
-    in out_city farms.person.city%type,
-    in out_corp_name farms.person.corp_name%type,
-    in out_daytime_phone farms.person.daytime_phone%type,
-    in out_evening_phone farms.person.evening_phone%type,
-    in out_fax_number farms.person.fax_number%type,
-    in out_cell_number farms.person.cell_number%type,
-    in out_first_name farms.person.first_name%type,
-    in out_last_name farms.person.last_name%type,
-    in out_postal_code farms.person.postal_code%type,
-    in out_province_state farms.person.province_state%type,
-    in out_country farms.person.country%type,
-    in out_email_address farms.person.email_address%type,
-    in in_user farms.person.create_user%type,
+    inout in_person_id farms.farm_persons.person_id%type,
+    in in_address_1 farms.farm_persons.address_line_1%type,
+    in in_address_2 farms.farm_persons.address_line_2%type,
+    in in_city farms.farm_persons.city%type,
+    in in_corp_name farms.farm_persons.corp_name%type,
+    in in_daytime_phone farms.farm_persons.daytime_phone%type,
+    in in_evening_phone farms.farm_persons.evening_phone%type,
+    in in_fax_number farms.farm_persons.fax_number%type,
+    in in_cell_number farms.farm_persons.cell_number%type,
+    in in_first_name farms.farm_persons.first_name%type,
+    in in_last_name farms.farm_persons.last_name%type,
+    in in_postal_code farms.farm_persons.postal_code%type,
+    in in_province_state farms.farm_persons.province_state%type,
+    in in_country farms.farm_persons.country%type,
+    in in_email_address farms.farm_persons.email_address%type,
+    in out_address_1 farms.farm_persons.address_line_1%type,
+    in out_address_2 farms.farm_persons.address_line_2%type,
+    in out_city farms.farm_persons.city%type,
+    in out_corp_name farms.farm_persons.corp_name%type,
+    in out_daytime_phone farms.farm_persons.daytime_phone%type,
+    in out_evening_phone farms.farm_persons.evening_phone%type,
+    in out_fax_number farms.farm_persons.fax_number%type,
+    in out_cell_number farms.farm_persons.cell_number%type,
+    in out_first_name farms.farm_persons.first_name%type,
+    in out_last_name farms.farm_persons.last_name%type,
+    in out_postal_code farms.farm_persons.postal_code%type,
+    in out_province_state farms.farm_persons.province_state%type,
+    in out_country farms.farm_persons.country%type,
+    in out_email_address farms.farm_persons.email_address%type,
+    in in_user farms.farm_persons.who_created%type,
     inout in_out_activity numeric,
-    in in_agristability_client_id farms.agristability_client.agristability_client_id%type,
+    in in_agristability_client_id farms.farm_agristability_clients.agristability_client_id%type,
     inout in_change_contact_client_ids numeric[],
     out out_result varchar
 )
@@ -50,7 +50,7 @@ begin
         in_out_activity := in_out_activity + 1;
         person_changed := true;
 
-        insert into farms.person(
+        insert into farms.farm_persons(
             person_id,
             address_line_1,
             address_line_2,
@@ -67,10 +67,10 @@ begin
             country,
             email_address,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             in_person_id,
             in_address_1,
@@ -116,7 +116,7 @@ begin
         in_out_activity := in_out_activity + 1;
         person_changed := true;
 
-        update farms.person
+        update farms.farm_persons
         set first_name = in_first_name,
             last_name = in_last_name,
             corp_name = in_corp_name,
@@ -132,8 +132,8 @@ begin
             cell_number = in_cell_number,
             email_address = in_email_address,
             revision_count = revision_count + 1,
-            update_user = in_user,
-            update_date = current_timestamp
+            who_updated = in_user,
+            when_updated = current_timestamp
         where person_id = in_person_id;
 
         tmp := '<PERSON action="update">' ||

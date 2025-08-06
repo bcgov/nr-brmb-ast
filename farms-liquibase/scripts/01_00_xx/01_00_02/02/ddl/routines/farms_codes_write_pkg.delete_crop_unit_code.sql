@@ -1,6 +1,6 @@
 create or replace procedure farms_codes_write_pkg.delete_crop_unit_code(
-   in in_crop_unit_code farms.crop_unit_code.crop_unit_code%type,
-   in in_revision_count farms.crop_unit_code.revision_count%type
+   in in_crop_unit_code farms.farm_crop_unit_codes.crop_unit_code%type,
+   in in_revision_count farms.farm_crop_unit_codes.revision_count%type
 )
 language plpgsql
 as $$
@@ -12,7 +12,7 @@ begin
 
     if v_in_use = 0 then
 
-        delete from farms.crop_unit_code c
+        delete from farms.farm_crop_unit_codes c
         where c.crop_unit_code = in_crop_unit_code
         and c.revision_count = in_revision_count;
 

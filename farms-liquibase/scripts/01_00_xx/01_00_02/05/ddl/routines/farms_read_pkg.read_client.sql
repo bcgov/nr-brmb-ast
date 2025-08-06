@@ -1,5 +1,5 @@
 create or replace function farms_read_pkg.read_client(
-    in ppin farms.agristability_client.participant_pin%type
+    in ppin farms.farm_agristability_clients.participant_pin%type
 )
 returns refcursor
 language plpgsql
@@ -14,10 +14,10 @@ begin
                ac.business_number,
                ac.trust_number,
                ac.participant_pin,
-               ac.identity_effective_date,
-               ac.public_office_indicator,
-               ac.locally_updated_indicator,
-               ac.participant_language_code,
+               ac.ident_effective_date,
+               ac.public_office_ind,
+               ac.locally_updated_ind,
+               ac.participant_lang_code,
                plc.description as participant_language_description,
                ac.participant_class_code,
                pcc.description as participant_class_description,
@@ -56,11 +56,11 @@ begin
                rp.country rp_country,
                rp.email_address rp_email_address,
                rp.revision_count rp_revision_count
-        from farms.agristability_client ac
-        left outer join farms.participant_language_code plc on ac.participant_language_code = plc.participant_language_code
-        left outer join farms.participant_class_code pcc on ac.participant_class_code = pcc.participant_class_code
-        left outer join farms.person cl on ac.person_id = cl.person_id
-        left outer join farms.person rp on ac.person_id_client_contacted_by = rp.person_id
+        from farms.farm_agristability_clients ac
+        left outer join farms.farm_participant_lang_codes plc on ac.participant_lang_code = plc.participant_lang_code
+        left outer join farms.farm_participant_class_codes pcc on ac.participant_class_code = pcc.participant_class_code
+        left outer join farms.farm_persons cl on ac.person_id = cl.person_id
+        left outer join farms.farm_persons rp on ac.person_id_client_contacted_by = rp.person_id
         where ac.participant_pin = ppin;
 
     return cur;

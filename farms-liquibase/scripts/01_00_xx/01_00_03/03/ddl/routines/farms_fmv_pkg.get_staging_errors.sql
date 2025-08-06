@@ -10,7 +10,7 @@ declare
 begin
     open v_cursor for
         select log_message
-        from farms.import_log
+        from farms.farm_import_logs
         where import_version_id = in_import_version_id
         order by import_log_id;
 

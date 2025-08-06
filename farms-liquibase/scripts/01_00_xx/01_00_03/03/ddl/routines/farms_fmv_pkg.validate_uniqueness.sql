@@ -12,8 +12,8 @@ declare
                    x.inventory_class_code,
                    row_number() over (partition by z.program_year, z.period, z.inventory_item_code, z.municipality_code, z.crop_unit_code order by z.line_number) unique_crop_num,
                    row_number() over (partition by z.program_year, z.period, z.inventory_item_code, z.municipality_code order by z.line_number) unique_livestock_num
-            from farms.zfmv_fair_market_value z
-            join farms.agristabilty_commodity_xref x on x.inventory_item_code = z.inventory_item_code
+            from farms.farm_zfmv_fair_market_values z
+            join farms.farm_agristabilty_cmmdty_xref x on x.inventory_item_code = z.inventory_item_code
             where x.inventory_class_code in ('1', '2')
         ) t
         where (t.inventory_class_code = '1' and t.unique_crop_num > 1)

@@ -1,22 +1,22 @@
 create or replace procedure farms_codes_write_pkg.create_participant_lang_code(
-   in in_participant_language_code farms.participant_language_code.participant_language_code%type,
-   in in_description farms.participant_language_code.description%type,
-   in in_effective_date farms.participant_language_code.effective_date%type,
-   in in_expiry_date farms.participant_language_code.expiry_date%type,
-   in in_user farms.participant_language_code.update_user%type
+   in in_participant_language_code farms.farm_participant_lang_codes.participant_lang_code%type,
+   in in_description farms.farm_participant_lang_codes.description%type,
+   in in_effective_date farms.farm_participant_lang_codes.established_date%type,
+   in in_expiry_date farms.farm_participant_lang_codes.expiry_date%type,
+   in in_user farms.farm_participant_lang_codes.who_updated%type
 )
 language plpgsql
 as $$
 begin
-    insert into farms.participant_language_code (
-        participant_language_code,
+    insert into farms.farm_participant_lang_codes (
+        participant_lang_code,
         description,
-        effective_date,
+        established_date,
         expiry_date,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         in_participant_language_code,

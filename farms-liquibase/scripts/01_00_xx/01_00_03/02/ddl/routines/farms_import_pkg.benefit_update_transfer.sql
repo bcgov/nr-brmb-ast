@@ -1,5 +1,5 @@
 create or replace procedure farms_import_pkg.benefit_update_transfer(
-   in in_cra_version_id farms.import_version.import_version_id%type,
+   in in_cra_version_id farms.farm_import_versions.import_version_id%type,
    in in_user varchar
 )
 language plpgsql
@@ -15,21 +15,21 @@ declare
                to_char(current_date, 'YYYY-MM-DD HH24:MI:SS') state_change_date,
                'SYSTEM' verifier,
                to_char(s.cra_supplemental_received_date, 'YYYY-MM-DD HH24:MI:SS') supplemental_received_date,
-               to_char(coalesce(pyv.received_date, py.create_date), 'YYYY-MM-DD HH24:MI:SS') file_start_date,
+               to_char(coalesce(pyv.received_date, py.when_created), 'YYYY-MM-DD HH24:MI:SS') file_start_date,
                null benefit_amount,
                null interim_benefit_percent,
                null allocated_reference_margin,
                (case
                    when exists (
                        select 1
-                       from farms.farming_operation fo
-                       join farms.farming_operatin_partner fop on fop.farming_operation_id = fo.farming_operation_id
+                       from farms.farm_farming_operations fo
+                       join farms.farm_farming_operatin_prtnrs fop on fop.farming_operation_id = fo.farming_operation_id
                        where fo.program_year_version_id = pyv.program_year_version_id
                        group by fo.farming_operation_id
                        having count(1) >= 1
                    ) or exists (
                        select *
-                       from farms.farming_operation fo
+                       from farms.farm_farming_operations fo
                        where fo.program_year_version_id = pyv.program_year_version_id
                        and (
                            fo.partnership_pin != 0 or
@@ -40,40 +40,40 @@ declare
                    else 'N'
                end) partnership_indicator,
                mc.description municipality_description,
-               py.non_participant_indicator,
+               py.non_participant_ind,
                null negative_margin_decline,
                null negative_margin_benefit,
-               'N' late_participant_indicator,
+               'N' late_participant_ind,
                null provincially_funded_amount,
                null prod_insur_deemed_benefit,
                null late_enrolment_penalty,
-               to_char(py.local_supplemental_received_date, 'YYYY-MM-DD') local_supp_date_string,
+               to_char(py.local_supplemntl_received_date, 'YYYY-MM-DD') local_supp_date_string,
                to_char(py.local_statement_a_received_date, 'YYYY-MM-DD') local_statement_a_date_string,
                to_char(pyv.received_date, 'YYYY-MM-DD') cra_statement_a_date_string,
-               pyv.can_send_cob_to_representative_indicator send_copy_to_contact_person_ind
-        from farms.program_year_version pyv
-        join farms.agristability_scenario s on s.program_year_version_id = pyv.program_year_version_id
-        join farms.program_year py on py.program_year_id = pyv.program_year_id
-        join farms.agristability_client ac on ac.agristability_client_id = py.agristability_client_id
-        left outer join farms.municipality_code mc on mc.municipality_code = pyv.municipality_code
+               pyv.can_send_cob_to_rep_ind send_copy_to_contact_person_ind
+        from farms.farm_program_year_versions pyv
+        join farms.farm_agristability_scenarios s on s.program_year_version_id = pyv.program_year_version_id
+        join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+        join farms.farm_agristability_clients ac on ac.agristability_client_id = py.agristability_client_id
+        left outer join farms.farm_municipality_codes mc on mc.municipality_code = pyv.municipality_code
         where s.scenario_class_code = 'CRA'
         and pyv.program_year_version_id in (
             select program_year_version_id
             from (
                 select pyv.program_year_version_id,
                        rank() over (partition by ac.participant_pin order by pyv.program_year_version_number desc) rnk
-                from farms.program_year_version pyv
-                join farms.program_year py on py.program_year_id = pyv.program_year_id
-                join farms.agristability_client ac on ac.agristability_client_id = py.agristability_client_id
+                from farms.farm_program_year_versions pyv
+                join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+                join farms.farm_agristability_clients ac on ac.agristability_client_id = py.agristability_client_id
                 join (
                     select ac.participant_pin,
                            pyv.import_version_id,
                            row_number() over (partition by ac.participant_pin order by 1) row_num,
                            max(z.program_year) over (order by 1) max_year
-                    from farms.program_year_version pyv
-                    join farms.program_year py on py.program_year_id = pyv.program_year_id
-                    join farms.agristability_client ac on ac.agristability_client_id = py.agristability_client_id
-                    join farms.z02_participant_farm_information z on z.participant_pin = ac.participant_pin
+                    from farms.farm_program_year_versions pyv
+                    join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+                    join farms.farm_agristability_clients ac on ac.agristability_client_id = py.agristability_client_id
+                    join farms.farm_z02_partpnt_farm_infos z on z.participant_pin = ac.participant_pin
                     where pyv.import_version_id = in_cra_version_id
                 ) pins on pins.participant_pin = ac.participant_pin
                        and pins.max_year = py.year
@@ -87,18 +87,18 @@ declare
 
     pyv_count numeric;
     b bytea := null;
-    transfer_version_id farms.import_version.import_version_id%type;
+    transfer_version_id farms.farm_import_versions.import_version_id%type;
     cur_line varchar(32767);
     cnt numeric := 0;
     scenario_ids numeric[] := '{}';
-    farm_sector_detail_code farms.sector_detail_code.sector_detail_code%type;
-    farm_sector farms.sector_code.description%type;
-    farm_sector_detail farms.sector_detail_code.description%type;
+    farm_sector_detail_code farms.farm_sector_detail_codes.sector_detail_code%type;
+    farm_sector farms.farm_sector_codes.description%type;
+    farm_sector_detail farms.farm_sector_detail_codes.description%type;
     bpu_set_complete_ind varchar(1);
     fmv_set_complete_ind varchar(1);
-    import_date farms.import_version.create_date%type;
-    import_description farms.import_version.description%type;
-    import_file farms.import_version.import_file%type;
+    import_date farms.farm_import_versions.when_created%type;
+    import_description farms.farm_import_versions.description%type;
+    import_file farms.farm_import_versions.import_file%type;
 begin
 
     open received_cursor;
@@ -106,13 +106,13 @@ begin
 
     if transfer_val is not null then
 
-        select iv.create_date,
+        select iv.when_created,
                iv.description,
                iv.import_file
         into import_date,
              import_description,
              import_file
-        from farms.import_version iv
+        from farms.farm_import_versions iv
         where iv.import_version_id = in_cra_version_id;
 
         call farms_webapp_pkg.insert_import_version(
@@ -129,7 +129,7 @@ begin
 
         select import_file
         into b
-        from farms.import_version iv
+        from farms.farm_import_versions iv
         where import_version_id = transfer_version_id;
 
         loop
@@ -144,9 +144,9 @@ begin
                    sdc.description sector_detail_code_desc
             into farm_sector,
                  farm_sector_detail
-            from farms.sector_detail_xref sdx
-            join farms.sector_code sc on sc.sector_code = sdx.sector_code
-            join farms.sector_detail_code sdc on sdc.sector_detail_code = sdx.sector_detail_code
+            from farms.farm_sector_detail_xref sdx
+            join farms.farm_sector_codes sc on sc.sector_code = sdx.sector_code
+            join farms.farm_sector_detail_codes sdc on sdc.sector_detail_code = sdx.sector_detail_code
             where sdx.sector_detail_code = farm_sector_detail_code;
 
             scenario_ids := farms_import_pkg.get_scenario_ids(
@@ -172,13 +172,13 @@ begin
                         fmv_set_complete_ind || ',' ||
                         'N,,"' || -- inCombinedFarm indictor and combinedFarmPins list
                         transfer_val.municipality_description || '",' ||
-                        transfer_val.non_participant_indicator || ',' ||
+                        transfer_val.non_participant_ind || ',' ||
                         transfer_val.scenario_category_code || ',' ||
                         transfer_val.interim_benefit_percent || ',' ||
                         transfer_val.allocated_reference_margin || ',' ||
                         transfer_val.negative_margin_decline || ',' ||
                         transfer_val.negative_margin_benefit || ',' ||
-                        transfer_val.late_participant_indicator || ',' ||
+                        transfer_val.late_participant_ind || ',' ||
                         transfer_val.provincially_funded_amount || ',' ||
                         transfer_val.prod_insur_deemed_benefit || ',' ||
                         transfer_val.late_enrolment_penalty || ',' ||
@@ -199,10 +199,10 @@ begin
             -- Add 2 seconds to the When_Created date so that this
             -- transfer will be run after the contact transfer.
             -- Do the same for When_Updated so it doesn't look weird.
-            update farms.import_version
+            update farms.farm_import_versions
             set import_file = b,
-                create_date = create_date + interval '2 seconds',
-                update_date = update_date + interval '2 seconds'
+                when_created = when_created + interval '2 seconds',
+                when_updated = when_updated + interval '2 seconds'
             where import_version_id = transfer_version_id;
 
             fetch received_cursor into transfer_val;

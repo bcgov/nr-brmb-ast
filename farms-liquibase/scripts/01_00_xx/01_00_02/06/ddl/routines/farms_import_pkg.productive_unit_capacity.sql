@@ -1,5 +1,5 @@
 create or replace function farms_import_pkg.productive_unit_capacity(
-    in in_program_year_version_id farms.program_year_version.program_year_version_id%type,
+    in in_program_year_version_id farms.farm_program_year_versions.program_year_version_id%type,
     in in_user varchar
 )
 returns varchar
@@ -21,14 +21,14 @@ declare
                    end) structure_group_code,
                    iic.inventory_item_code inventory_item_code,
                    op.farming_operation_id
-            from farms.z21_participant_supplementary z21
-            join farms.agristability_client ac on z21.participant_pin = ac.participant_pin
-            join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+            from farms.farm_z21_participant_suppls z21
+            join farms.farm_agristability_clients ac on z21.participant_pin = ac.participant_pin
+            join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                        and py.year = z21.program_year
-            join farms.program_year_version pyv on py.program_year_id = pyv.program_year_id
-            join farms.farming_operation op on pyv.program_year_version_id = op.program_year_version_id
+            join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+            join farms.farm_farming_operations op on pyv.program_year_version_id = op.program_year_version_id
                                             and op.operation_number = z21.operation_number
-            left outer join farms.inventory_item_code iic on iic.inventory_item_code = to_char(z21.inventory_code)
+            left outer join farms.farm_inventory_item_codes iic on iic.inventory_item_code = to_char(z21.inventory_code)
             where z21.inventory_type_code = '1'
             and (z21.crop_on_farm_acres is not null or z21.crop_unseedable_acres is not null)
             and pyv.program_year_version_id = in_program_year_version_id
@@ -45,14 +45,14 @@ declare
                        else Unknown
                    end) inventory_item_code,
                    op.farming_operation_id
-            from farms.z23_livestock_production_capacity z23
-            join farms.agristability_client ac on z23.participant_pin = ac.participant_pin
-            join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+            from farms.farm_z23_livestock_prod_cpcts z23
+            join farms.farm_agristability_clients ac on z23.participant_pin = ac.participant_pin
+            join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                        and py.year = z23.program_year
-            join farms.program_year_version pyv on py.program_year_id = pyv.program_year_id
-            join farms.farming_operation op on pyv.program_year_version_id = op.program_year_version_id
+            join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+            join farms.farm_farming_operations op on pyv.program_year_version_id = op.program_year_version_id
                                             and op.operation_number = z23.operation_number
-            left outer join farms.structure_group_code sgc on sgc.structure_group_code = to_char(z23.inventory_code)
+            left outer join farms.farm_structure_group_codes sgc on sgc.structure_group_code = to_char(z23.inventory_code)
             where pyv.program_year_version_id = in_program_year_version_id
         ), file_42 as (
             -- mixed historical productive units
@@ -75,15 +75,15 @@ declare
                        else null
                    end) import_comment,
                    op.farming_operation_id
-            from farms.z42_participant_reference_year z42
-            join farms.agristability_client ac on z42.participant_pin = ac.participant_pin
-            join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+            from farms.farm_z42_participant_ref_years z42
+            join farms.farm_agristability_clients ac on z42.participant_pin = ac.participant_pin
+            join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                        and py.year = z42.program_year
-            join farms.program_year_version pyv on py.program_year_id = pyv.program_year_id
-            join farms.farming_operation op on pyv.program_year_version_id = op.program_year_version_id
+            join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+            join farms.farm_farming_operations op on pyv.program_year_version_id = op.program_year_version_id
                                             and op.operation_number = z42.operation_number
-            left outer join farms.structure_group_code sgc on sgc.structure_group_code = to_char(z42.productive_code)
-            left outer join farms.inventory_item_code iic on iic.inventory_item_code = to_char(z42.productive_code)
+            left outer join farms.farm_structure_group_codes sgc on sgc.structure_group_code = to_char(z42.productive_code)
+            left outer join farms.farm_inventory_item_codes iic on iic.inventory_item_code = to_char(z42.productive_code)
             where pyv.program_year_version_id = in_program_year_version_id
         ), file_40_aarm as (
             -- historical AARM crops productive capacity
@@ -96,11 +96,11 @@ declare
                    to_char(aarm.inventory_code) inventory_item_code,
                    max(op.farming_operation_id) farming_operation_id,
                    (case
-                       when max(x.agristabilty_commodity_xref_id) is not null then null
+                       when max(x.agristabilty_cmmdty_xref_id) is not null then null
                        else aarm.inventory_code
                    end) import_comment
-            from farms.aarm_margin aarm
-            left outer join farms.z40_participant_reference_supplemental_detail z40 on aarm.participant_pin = z40.participant_pin
+            from farms.farm_aarm_margins aarm
+            left outer join farms.farm_z40_prtcpnt_ref_supl_dtls z40 on aarm.participant_pin = z40.participant_pin
                                                                                     and aarm.program_year = z40.program_year
                                                                                     and aarm.operation_number = z40.operation_number
                                                                                     and aarm.inventory_type_code = z40.inventory_type_code
@@ -111,15 +111,15 @@ declare
                                                                                         or aarm.inventory_type_code in ('1', '2')
                                                                                         or (aarm.inventory_type_code in ('3', '4', '5')
                                                                                             and (aarm.quantity_start > 0 or aarm.quantity_end > 0)))
-            left outer join farms.agristabilty_commodity_xref x on to_char(aarm.inventory_code) = x.inventory_item_code
+            left outer join farms.farm_agristabilty_cmmdty_xref x on to_char(aarm.inventory_code) = x.inventory_item_code
                                                                 and to_char(aarm.inventory_type_code) = x.inventory_class_code
-            left outer join farms.agristabilty_commodity_xref x2 on x2.inventory_class_code = to_char(aarm.inventory_type_code)
+            left outer join farms.farm_agristabilty_cmmdty_xref x2 on x2.inventory_class_code = to_char(aarm.inventory_type_code)
                                                                 and x2.inventory_item_code = Unknown
-            join farms.agristability_client ac on aarm.participant_pin = ac.participant_pin
-            join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+            join farms.farm_agristability_clients ac on aarm.participant_pin = ac.participant_pin
+            join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                        and aarm.program_year = py.year
-            join farms.program_year_version pyv on py.program_year_id = pyv.program_year_id
-            join farms.farming_operation op on pyv.program_year_version_id = op.program_year_version_id
+            join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+            join farms.farm_farming_operations op on pyv.program_year_version_id = op.program_year_version_id
                                             and op.operation_number = aarm.operation_number
             where z40.crop_on_farm_acres is not null
             and pyv.program_year_version_id = in_program_year_version_id
@@ -143,8 +143,8 @@ declare
                    op.farming_operation_id
             from (
                 select z40.*
-                from farms.z40_participant_reference_supplemental_detail z40
-                left outer join farms.aarm_margin aarm on aarm.participant_pin = z40.participant_pin
+                from farms.farm_z40_prtcpnt_ref_supl_dtls z40
+                left outer join farms.farm_aarm_margins aarm on aarm.participant_pin = z40.participant_pin
                                                        and aarm.program_year = z40.program_year
                                                        and aarm.operation_number = z40.operation_number
                                                        and aarm.inventory_type_code = z40.inventory_type_code
@@ -153,13 +153,13 @@ declare
                                                            or (aarm.production_unit is null and z40.production_unit is null))
                 where aarm.aarm_margin_id is null
             ) zz
-            join farms.agristability_client ac on zz.participant_pin = ac.participant_pin
-            join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+            join farms.farm_agristability_clients ac on zz.participant_pin = ac.participant_pin
+            join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                        and py.year = zz.program_year
-            join farms.program_year_version pyv on py.program_year_id = pyv.program_year_id
-            join farms.farming_operation op on pyv.program_year_version_id = op.program_year_version_id
+            join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+            join farms.farm_farming_operations op on pyv.program_year_version_id = op.program_year_version_id
                                             and op.operation_number = zz.operation_number
-            left outer join farms.inventory_item_code iic on iic.inventory_item_code = to_char(zz.inventory_code)
+            left outer join farms.farm_inventory_item_codes iic on iic.inventory_item_code = to_char(zz.inventory_code)
             where zz.crop_on_farm_acres is not null
             and pyv.program_year_version_id = in_program_year_version_id
         )
@@ -235,11 +235,11 @@ declare
         ) t;
     puc_insert_val record;
 
-    puc_id farms.productive_unit_capacity.productve_unit_capacity_id%type;
+    puc_id farms.farm_productve_unit_capacities.productve_unit_capacity_id%type;
 
-    v_farming_operation_id farms.productive_unit_capacity.farming_operation_id%type := null;
-    v_structure_group_code farms.productive_unit_capacity.structure_group_code%type := null;
-    v_inventory_item_code farms.productive_unit_capacity.inventory_item_code%type := null;
+    v_farming_operation_id farms.farm_productve_unit_capacities.farming_operation_id%type := null;
+    v_structure_group_code farms.farm_productve_unit_capacities.structure_group_code%type := null;
+    v_inventory_item_code farms.farm_productve_unit_capacities.inventory_item_code%type := null;
 
 begin
 
@@ -253,7 +253,7 @@ begin
         select nextval('farms.seq_puc')
         into puc_id;
 
-        insert into farms.productive_unit_capacity (
+        insert into farms.farm_productve_unit_capacities (
             productive_unit_capacity_id,
             productive_capacity_amount,
             import_comment,
@@ -262,10 +262,10 @@ begin
             agristability_scenario_id,
             inventory_item_code,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             puc_id,
             puc_insert_val.productive_capacity_amount,

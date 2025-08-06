@@ -9,7 +9,7 @@ as $$
 declare
     c_benchmark_year cursor (p_year numeric, p_margin numeric) for
         select average_margin
-        from farms.benchmark_year
+        from farms.farm_benchmark_years
         where benchmark_per_unit_id = in_benchmark_per_unit_id
         and benchmark_year = p_year
         and average_margin <> p_margin;

@@ -10,11 +10,11 @@ begin
     open cur for
         select whole_farm_participant_id,
                whole_farm_combined_pin,
-               whole_farm_combined_pin_add_indicator,
-               whole_farm_combined_pin_remove_indicator,
+               whole_farm_comb_pin_add_ind,
+               whole_farm_comb_pin_remove_ind,
                program_year_version_id,
                revision_count
-        from farms.whole_farm_participant p
+        from farms.farm_whole_farm_participants p
         where p.program_year_version_id = any(pyv_ids);
     return cur;
 end;

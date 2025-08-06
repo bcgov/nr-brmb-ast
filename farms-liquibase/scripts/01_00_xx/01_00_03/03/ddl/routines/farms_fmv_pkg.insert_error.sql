@@ -10,7 +10,7 @@ declare
 begin
     v_xml_msg := '<ERROR rowNumber="' || in_line_number || '">' || in_msg || '</ERROR>';
 
-    insert into farms.import_log (
+    insert into farms.farm_import_logs (
         import_log_id,
         log_message,
         import_version_id

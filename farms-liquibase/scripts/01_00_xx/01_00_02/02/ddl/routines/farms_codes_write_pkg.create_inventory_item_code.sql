@@ -1,23 +1,23 @@
 create or replace procedure farms_codes_write_pkg.create_inventory_item_code(
-   in in_inventory_item_code farms.inventory_item_code.inventory_item_code%type,
-   in in_description farms.inventory_item_code.description%type,
-   in in_rollup_inventory_item_code farms.inventory_item_attribute.rollup_inventory_item_code%type,
-   in in_effective_date farms.inventory_item_code.effective_date%type,
-   in in_expiry_date farms.inventory_item_code.expiry_date%type,
-   in in_user farms.inventory_item_code.update_user%type
+   in in_inventory_item_code farms.farm_inventory_item_codes.inventory_item_code%type,
+   in in_description farms.farm_inventory_item_codes.description%type,
+   in in_rollup_inventory_item_code farms.farm_inventory_item_attributes.rollup_inventory_item_code%type,
+   in in_effective_date farms.farm_inventory_item_codes.established_date%type,
+   in in_expiry_date farms.farm_inventory_item_codes.expiry_date%type,
+   in in_user farms.farm_inventory_item_codes.who_updated%type
 )
 language plpgsql
 as $$
 begin
-    insert into farms.inventory_item_code (
+    insert into farms.farm_inventory_item_codes (
         inventory_item_code,
         description,
-        effective_date,
+        established_date,
         expiry_date,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         in_inventory_item_code,
@@ -31,14 +31,14 @@ begin
         1
     );
 
-    insert into farms.inventory_item_attribute (
-        inventory_item_attribute_id,
+    insert into farms.farm_inventory_item_attributes (
+        inventory_item_attrib_id,
         inventory_item_code,
         rollup_inventory_item_code,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         nextval('farms.seq_iia'),

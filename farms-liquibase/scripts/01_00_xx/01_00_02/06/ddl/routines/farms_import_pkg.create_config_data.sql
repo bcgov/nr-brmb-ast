@@ -1,5 +1,5 @@
 create or replace procedure farms_import_pkg.create_config_data(
-   in in_user farms.program_year.create_user%type
+   in in_user farms.farm_program_years.who_created%type
 )
 language plpgsql
 as $$

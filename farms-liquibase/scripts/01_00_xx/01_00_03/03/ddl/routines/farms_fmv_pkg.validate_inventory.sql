@@ -6,11 +6,11 @@ as $$
 declare
     c_check cursor for
         select line_number
-        from farms.zfmv_fair_market_value
+        from farms.farm_zfmv_fair_market_values
         where inventory_item_code not in (
             select inventory_item_code
-            from farms.inventory_item_code
-            where current_date between effective_date and expiry_date
+            from farms.farm_inventory_item_codes
+            where current_date between established_date and expiry_date
         );
     v_check record;
 

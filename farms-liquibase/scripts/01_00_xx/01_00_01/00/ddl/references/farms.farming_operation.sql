@@ -1,9 +1,9 @@
-ALTER TABLE farms.farming_operation ADD CONSTRAINT fk_fo_fac 
+ALTER TABLE farms.farm_farming_operations ADD CONSTRAINT fk_fo_fac 
     FOREIGN KEY (federal_accounting_code)
-    REFERENCES farms.federal_accounting_code(federal_accounting_code)
+    REFERENCES farms.farm_federal_accounting_codes(federal_accounting_code)
 ;
 
-ALTER TABLE farms.farming_operation ADD CONSTRAINT fk_fo_pyv 
+ALTER TABLE farms.farm_farming_operations ADD CONSTRAINT fk_fo_pyv 
     FOREIGN KEY (program_year_version_id)
-    REFERENCES farms.program_year_version(program_year_version_id)
+    REFERENCES farms.farm_program_year_versions(program_year_version_id)
 ;

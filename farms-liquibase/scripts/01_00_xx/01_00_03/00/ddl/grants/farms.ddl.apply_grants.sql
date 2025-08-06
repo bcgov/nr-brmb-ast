@@ -14,5 +14,5 @@ GRANT USAGE ON SCHEMA farms_report_pkg TO "app_farms_rest_proxy";
 GRANT USAGE ON SCHEMA farms_version_pkg TO "app_farms_rest_proxy";
 GRANT USAGE ON SCHEMA farms_webapp_pkg TO "app_farms_rest_proxy";
 
-GRANT TRUNCATE ON TABLE farms.zbpu_benchmark_per_unit TO "app_farms_rest_proxy";
-GRANT TRUNCATE ON TABLE farms.import_log TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_zbpu_benchmark_per_units TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_import_logs TO "app_farms_rest_proxy";

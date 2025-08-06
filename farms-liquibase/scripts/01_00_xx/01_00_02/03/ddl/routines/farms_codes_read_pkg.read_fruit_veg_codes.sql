@@ -7,15 +7,15 @@ declare
 begin
 
     open cur for
-        select t.fruit_vegetable_type_code,
+        select t.fruit_veg_type_code,
                t.description,
-               t.effective_date,
+               t.established_date,
                t.expiry_date,
                t.revision_count,
                c.revenue_variance_limit
-        from farms.fruit_vegetable_type_code t
-        join farms.fruit_vegetable_type_detail c on t.fruit_vegetable_type_code = c.fruit_vegetable_type_code
-        order by lower(t.fruit_vegetable_type_code);
+        from farms.farm_fruit_veg_type_codes t
+        join farms.farm_fruit_veg_type_details c on t.fruit_veg_type_code = c.fruit_veg_type_code
+        order by lower(t.fruit_veg_type_code);
     return cur;
 
 end;

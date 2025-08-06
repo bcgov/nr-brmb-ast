@@ -1,7 +1,7 @@
 create or replace function farms_import_pkg.scenario(
-    in in_program_year_id farms.program_year.program_year_id%type,
-    in in_program_year_version_id farms.program_year_version.program_year_version_id%type,
-    in in_pyv_prev_id farms.program_year_version.program_year_version_id%type,
+    in in_program_year_id farms.farm_program_years.program_year_id%type,
+    in in_program_year_version_id farms.farm_program_year_versions.program_year_version_id%type,
+    in in_pyv_prev_id farms.farm_program_year_versions.program_year_version_id%type,
     in in_user varchar
 )
 returns varchar
@@ -17,11 +17,11 @@ begin
 
     select max(sc.scenario_number) last_scenario_number
     into v_last_scenario_number
-    from farms.agristability_scenario sc
-    join farms.program_year_version pyv on sc.program_year_version_id = pyv.program_year_version_id
+    from farms.farm_agristability_scenarios sc
+    join farms.farm_program_year_versions pyv on sc.program_year_version_id = pyv.program_year_version_id
     where pyv.program_year_id = (
         select program_year_id
-        from farms.program_year_version t
+        from farms.farm_program_year_versions t
         where t.program_year_version_id = in_pyv_prev_id
     );
 
@@ -30,24 +30,24 @@ begin
     select nextval('farms.seq_as')
     into scenario_id;
 
-    insert into farms.agristability_scenario (
+    insert into farms.farm_agristability_scenarios (
         agristability_scenario_id,
         scenario_number,
         benefits_calculator_version,
         scenario_created_by,
         description,
-        default_indicator,
+        default_ind,
         scenario_creation_date,
         program_year_version_id,
         scenario_class_code,
         scenario_state_code,
         scenario_category_code,
-        participant_data_source_code,
+        participnt_data_src_code,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         scenario_id,
         v_new_scenario_number,

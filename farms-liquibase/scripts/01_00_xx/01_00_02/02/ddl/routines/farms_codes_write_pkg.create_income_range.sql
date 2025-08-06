@@ -1,17 +1,17 @@
 create or replace procedure farms_codes_write_pkg.create_income_range(
-   in in_farm_type_3_id farms.tip_income_range.tip_farm_type_3_lookup_id%type,
-   in in_farm_type_2_id farms.tip_income_range.tip_farm_type_2_lookup_id%type,
-   in in_farm_type_1_id farms.tip_income_range.tip_farm_type_1_lookup_id%type,
-   in in_range_high farms.tip_income_range.range_high%type,
-   in in_range_low farms.tip_income_range.range_low%type,
-   in in_mimimum_group_count farms.tip_income_range.minimum_group_count%type,
-   in in_farm_user farms.tip_income_range.create_user%type
+   in in_farm_type_3_id farms.farm_tip_income_ranges.tip_farm_type_3_lookup_id%type,
+   in in_farm_type_2_id farms.farm_tip_income_ranges.tip_farm_type_2_lookup_id%type,
+   in in_farm_type_1_id farms.farm_tip_income_ranges.tip_farm_type_1_lookup_id%type,
+   in in_range_high farms.farm_tip_income_ranges.range_high%type,
+   in in_range_low farms.farm_tip_income_ranges.range_low%type,
+   in in_mimimum_group_count farms.farm_tip_income_ranges.minimum_group_count%type,
+   in in_farm_user farms.farm_tip_income_ranges.who_created%type
 )
 language plpgsql
 as $$
 begin
 
-    insert into farms.tip_income_range (
+    insert into farms.farm_tip_income_ranges (
         tip_income_range_id,
         tip_farm_type_3_lookup_id,
         tip_farm_type_2_lookup_id,
@@ -19,10 +19,10 @@ begin
         range_high,
         range_low,
         minimum_group_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         nextval('farms.seq_tir'),

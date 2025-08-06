@@ -23,21 +23,21 @@ begin
                        end) crop_unit_code
                 from (
                     select s.program_year_version_id
-                    from farms.agristability_scenario s
+                    from farms.farm_agristability_scenarios s
                     where s.agristability_scenario_id = any(scenario_ids)
                 ) s
-                join farms.program_year_version pyv on pyv.program_year_version_id = s.program_year_version_id
+                join farms.farm_program_year_versions pyv on pyv.program_year_version_id = s.program_year_version_id
                 join (
                     select fo.*,
                            (
                                (to_number(to_char(fo.fiscal_year_end, 'YYYY')) - to_number(to_char(fo.fiscal_year_start, 'YYYY'))) * 12 +
                                (to_number(to_char(fo.fiscal_year_end, 'MM')) - to_number(to_char(fo.fiscal_year_start, 'MM'))) + 1
                            ) fiscal_months
-                    from farms.farming_operation fo
+                    from farms.farm_farming_operations fo
                 ) fo on fo.program_year_version_id = pyv.program_year_version_id
-                join farms.reported_inventory ri on ri.farming_operation_id = fo.farming_operation_id
+                join farms.farm_reported_inventories ri on ri.farming_operation_id = fo.farming_operation_id
                                                  and ri.agristability_scenario_id is null
-                join farms.agristabilty_commodity_xref x on x.agristabilty_commodity_xref_id = ri.agristabilty_commodity_xref_id
+                join farms.farm_agristabilty_cmmdty_xref x on x.agristabilty_cmmdty_xref_id = ri.agristabilty_cmmdty_xref_id
                 where x.inventory_class_code in ('1', '2')
                 and (
                     (x.inventory_class_code = '1' and ri.quantity_produced != 0) or
@@ -49,7 +49,7 @@ begin
             ) t
             where t.fiscal_months != (
                 select count(1)
-                from farms.fair_market_value fmv
+                from farms.farm_fair_market_values fmv
                 where fmv.inventory_item_code = t.inventory_item_code
                 and fmv.crop_unit_code = t.crop_unit_code
                 and (fmv.expiry_date is null or fmv.expiry_date > current_date)
@@ -58,7 +58,7 @@ begin
             )
             and f.fiscal_months != (
                 select count(1)
-                from farms.fair_market_value fmv
+                from farms.farm_fair_market_values fmv
                 where fmv.inventory_item_code = t.inventory_item_code
                 and fmv.crop_unit_code = t.crop_unit_code
                 and (fmv.expiry_date is null or fmv.expiry_date > current_date)

@@ -1,5 +1,5 @@
 create or replace function farms_codes_read_pkg.read_structure_group_codes(
-    in in_code farms.structure_group_code.structure_group_code%type
+    in in_code farms.farm_structure_group_codes.structure_group_code%type
 )
 returns refcursor
 language plpgsql
@@ -13,15 +13,15 @@ begin
                a.rollup_structure_group_code,
                (
                    select description
-                   from farms.structure_group_code
+                   from farms.farm_structure_group_codes
                    where structure_group_code = a.rollup_structure_group_code
                    limit 1
                ) rollup_structure_group_desc,
-               c.effective_date,
+               c.established_date,
                c.expiry_date,
                c.revision_count
-        from farms.structure_group_code c
-        left join farms.structure_group_attribute a on c.structure_group_code = a.structure_group_code
+        from farms.farm_structure_group_codes c
+        left join farms.farm_structure_group_attributs a on c.structure_group_code = a.structure_group_code
         where (in_code is null or c.structure_group_code = in_code)
         order by lower(c.description);
     return cur;

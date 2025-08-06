@@ -1,6 +1,6 @@
 create or replace function farms_error_pkg.codify_scenario(
     in msg varchar,
-    in in_sc_id farms.agristability_scenario.agristability_scenario_id%type
+    in in_sc_id farms.farm_agristability_scenarios.agristability_scenario_id%type
 )
 returns varchar
 language plpgsql

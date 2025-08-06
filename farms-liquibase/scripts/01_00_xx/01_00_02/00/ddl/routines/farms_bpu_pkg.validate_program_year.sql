@@ -9,7 +9,7 @@ declare
 begin
     select count(distinct program_year)
     into v_num_years
-    from farms.zbpu_benchmark_per_unit;
+    from farms.farm_zbpu_benchmark_per_units;
 
     if v_num_years > 1 then
         call farms_bpu_pkg.insert_error(in_import_version_id, 0, v_msg);

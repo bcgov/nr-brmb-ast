@@ -11,7 +11,7 @@ declare
                z.first_name,
                z.last_name,
                z.corp_name
-        from farms.z01_participant_information z;
+        from farms.farm_z01_participant_infos z;
     z01_val record;
 
     imp_opened numeric := 0;
@@ -26,7 +26,7 @@ declare
     errors numeric := 0;
     errors_t numeric := 0;
 
-    v_agristability_client_id farms.agristability_client.agristability_client_id%type := null;
+    v_agristability_client_id farms.farm_agristability_clients.agristability_client_id%type := null;
     in_out_activity numeric := 0;
     log_id numeric;
 
@@ -55,7 +55,7 @@ begin
     start_time := current_timestamp;
     select count(*)
     into total_pins
-    from farms.z01_participant_information z;
+    from farms.farm_z01_participant_infos z;
 
     -- start 'real' data
     for z01_val in z01_cursor

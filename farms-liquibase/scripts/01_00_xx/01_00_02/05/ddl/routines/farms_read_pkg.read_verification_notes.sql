@@ -21,10 +21,10 @@ begin
                    when py.adjustment_verification_notes is null or length(py.adjustment_verification_notes) = 0 then at.template_content
                    else py.adjustment_verification_notes
                end) adjustment_verification_notes
-        from farms.program_year py
-        left outer join farms.document_template it on it.template_name = 'Verification Notes - Interim'
-        left outer join farms.document_template ft on ft.template_name = 'Verification Notes - Final'
-        left outer join farms.document_template at on at.template_name = 'Verification Notes - Adjustment'
+        from farms.farm_program_years py
+        left outer join farms.farm_document_templates it on it.template_name = 'Verification Notes - Interim'
+        left outer join farms.farm_document_templates ft on ft.template_name = 'Verification Notes - Final'
+        left outer join farms.farm_document_templates at on at.template_name = 'Verification Notes - Adjustment'
         where py.program_year_id = py_id;
     return cur;
 end;

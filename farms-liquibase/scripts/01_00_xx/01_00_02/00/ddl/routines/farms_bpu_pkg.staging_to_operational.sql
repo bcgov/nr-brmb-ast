@@ -7,14 +7,14 @@ as $$
 declare
     c_staging cursor for
         select *
-        from farms.zbpu_benchmark_per_unit
+        from farms.farm_zbpu_benchmark_per_units
         order by line_number;
     v_staging record;
 
     c_operational cursor (p_program_year numeric, p_inv_code varchar, p_municipality_code varchar) for
         select benchmark_per_unit_id,
             revision_count
-        from farms.benchmark_per_unit
+        from farms.farm_benchmark_per_units
         where program_year = p_program_year
         and (
             (inventory_item_code is not null and inventory_item_code = p_inv_code)
@@ -41,7 +41,7 @@ declare
 begin
     select count(line_number)
     into v_num_staging_rows
-    from farms.zbpu_benchmark_per_unit;
+    from farms.farm_zbpu_benchmark_per_units;
 
     for v_staging in c_staging
     loop
@@ -80,11 +80,11 @@ begin
                 close c_operational;
                 continue;
             else
-                update farms.benchmark_per_unit
+                update farms.farm_benchmark_per_units
                 set expiry_date = current_date,
                     revision_count = v_operational.revision_count + 1,
-                    update_user = in_user,
-                    update_date = current_timestamp
+                    who_updated = in_user,
+                    when_updated = current_timestamp
                 where benchmark_per_unit_id = v_operational.benchmark_per_unit_id;
 
                 v_num_updated := v_num_updated + 1;
@@ -103,7 +103,7 @@ begin
             v_inventory_item_code := v_staging.inventory_item_code;
         end if;
 
-        insert into farms.benchmark_per_unit (
+        insert into farms.farm_benchmark_per_units (
             benchmark_per_unit_id,
             program_year,
             unit_comment,
@@ -112,10 +112,10 @@ begin
             inventory_item_code,
             structure_group_code,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             nextval('farms.seq_bpu'),
             v_staging.program_year,
@@ -135,16 +135,16 @@ begin
         loop
             v_year := v_staging.program_year - ref_year_index;
 
-            insert into farms.benchmark_year (
+            insert into farms.farm_benchmark_years (
                 benchmark_year,
                 average_margin,
                 average_expense,
                 benchmark_per_unit_id,
                 revision_count,
-                create_user,
-                create_date,
-                update_user,
-                update_date
+                who_created,
+                when_created,
+                who_updated,
+                when_updated
             ) values (
                 v_year,
                 v_margin_data[ref_year_index],
@@ -167,15 +167,15 @@ begin
         '</NUM_UPDATED><NUM_VALUES_UPDATED>' || v_values_updated ||
         '</NUM_VALUES_UPDATED></IMPORT_LOG>';
 
-    select import_audit_information
+    select import_audit_info
     into v_clob
-    from farms.import_version
+    from farms.farm_import_versions
     where import_version_id = in_import_version_id
     for update;
 
     v_clob := v_xml;
 
-    update farms.import_version
+    update farms.farm_import_versions
     set import_state_code = 'IC'
     where import_version_id = in_import_version_id;
 end;

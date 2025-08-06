@@ -1,6 +1,6 @@
 create or replace function farms_import_pkg.is_claim_changed(
-    in in_program_year_id farms.program_year.program_year_id%type,
-    in in_program_year_vrsn_prev_id farms.program_year_version.program_year_version_id%type
+    in in_program_year_id farms.farm_program_years.program_year_id%type,
+    in in_program_year_vrsn_prev_id farms.farm_program_year_versions.program_year_version_id%type
 )
 returns boolean
 language plpgsql
@@ -12,7 +12,7 @@ begin
     -- find previous scenario id
     select first_value(s.agristability_scenario_id) over (order by s.scenario_number desc) s_id
     into v_scenario_id
-    from farms.agristability_scenario s
+    from farms.farm_agristability_scenarios s
     where s.scenario_class_code = 'CRA'
     and s.program_year_version_id = in_program_year_vrsn_prev_id;
 
@@ -30,11 +30,11 @@ begin
                    clm.interim_contributions,
                    clm.total_benefit,
                    clm.producer_share
-            from farms.agristability_client ac
-            join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
-            join farms.program_year_version pyv on py.program_year_id = pyv.program_year_id
-            join farms.agristability_scenario scp on pyv.program_year_version_id = scp.program_year_version_id
-            join farms.agristability_claim clm on scp.agristability_scenario_id = clm.agristability_scenario_id
+            from farms.farm_agristability_clients ac
+            join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
+            join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+            join farms.farm_agristability_scenarios scp on pyv.program_year_version_id = scp.program_year_version_id
+            join farms.farm_agristability_claims clm on scp.agristability_scenario_id = clm.agristability_scenario_id
             where scp.agristability_scenario_id = v_scenario_id
             except
             select coalesce(z50.unadjusted_reference_margin, 0) unadj_reference_margin,
@@ -45,15 +45,15 @@ begin
                    z51.interim_contributions,
                    coalesce(z51.federal_contributions, 0) + coalesce(z51.provincial_contributions, 0) + coalesce(z51.interim_contributions, 0) total_benefit,
                    z51.producer_share
-            from farms.z50_participant_benefit_calculation z50
-            full outer join farms.z51_participant_contribution z51 on z50.participant_pin = z51.participant_pin
+            from farms.farm_z50_participnt_bnft_calcs z50
+            full outer join farms.farm_z51_participant_contribs z51 on z50.participant_pin = z51.participant_pin
                                                                    and z50.program_year = z51.program_year
-            join farms.agristability_client ac on z50.participant_pin = ac.participant_pin
+            join farms.farm_agristability_clients ac on z50.participant_pin = ac.participant_pin
                                                and z51.participant_pin = ac.participant_pin
-            join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+            join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                        and (z50.program_year = py.year or z51.program_year = py.year)
-            left outer join farms.program_year_version pyv on py.program_year_id = pyv.program_year_id
-            left outer join farms.agristability_scenario sc on pyv.program_year_version_id = sc.program_year_version_id
+            left outer join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+            left outer join farms.farm_agristability_scenarios sc on pyv.program_year_version_id = sc.program_year_version_id
             where py.program_year_id = in_program_year_id
             and (in_program_year_vrsn_prev_id is null
                 or pyv.program_year_version_id is null
@@ -72,15 +72,15 @@ begin
                    z51.interim_contributions,
                    coalesce(z51.federal_contributions, 0) + coalesce(z51.provincial_contributions, 0) + coalesce(z51.interim_contributions, 0) total_benefit,
                    z51.producer_share
-            from farms.z50_participant_benefit_calculation z50
-            full outer join farms.z51_participant_contribution z51 on z50.participant_pin = z51.participant_pin
+            from farms.farm_z50_participnt_bnft_calcs z50
+            full outer join farms.farm_z51_participant_contribs z51 on z50.participant_pin = z51.participant_pin
                                                                    and z50.program_year = z51.program_year
-            join farms.agristability_client ac on z50.participant_pin = ac.participant_pin
+            join farms.farm_agristability_clients ac on z50.participant_pin = ac.participant_pin
                                                and z51.participant_pin = ac.participant_pin
-            join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
+            join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
                                        and (z50.program_year = py.year or z51.program_year = py.year)
-            left outer join farms.program_year_version pyv on py.program_year_id = pyv.program_year_id
-            left outer join farms.agristability_scenario sc on pyv.program_year_version_id = sc.program_year_version_id
+            left outer join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+            left outer join farms.farm_agristability_scenarios sc on pyv.program_year_version_id = sc.program_year_version_id
             where py.program_year_id = in_program_year_id
             and (in_program_year_vrsn_prev_id is null
                 or pyv.program_year_version_id is null
@@ -97,11 +97,11 @@ begin
                    clm.interim_contributions,
                    clm.total_benefit,
                    clm.producer_share
-            from farms.agristability_client ac
-            join farms.program_year py on ac.agristability_client_id = py.agristability_client_id
-            join farms.program_year_version pyv on py.program_year_id = pyv.program_year_id
-            join farms.agristability_scenario scp on pyv.program_year_version_id = scp.program_year_version_id
-            join farms.agristability_claim clm on scp.agristability_scenario_id = clm.agristability_scenario_id
+            from farms.farm_agristability_clients ac
+            join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
+            join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+            join farms.farm_agristability_scenarios scp on pyv.program_year_version_id = scp.program_year_version_id
+            join farms.farm_agristability_claims clm on scp.agristability_scenario_id = clm.agristability_scenario_id
             where scp.agristability_scenario_id = v_scenario_id
         )
     ) t2;

@@ -1,6 +1,6 @@
 create or replace function farms_read_pkg.read_py_id(
-    in ppin farms.agristability_client.participant_pin%type,
-    in pyear farms.program_year.year%type,
+    in ppin farms.farm_agristability_clients.participant_pin%type,
+    in pyear farms.farm_program_years.year%type,
     in sc_num numeric,
     in alg varchar
 )
@@ -41,14 +41,14 @@ begin
                        py.year,
                        first_value(sc.agristability_scenario_id) over (order by
                            case when (sc_num is null or sc_num = sc.scenario_number) then 0 else 1 end,
-                           case when (sc.default_indicator = 'Y') then 0 else 1 end,
+                           case when (sc.default_ind = 'Y') then 0 else 1 end,
                            case when sc.scenario_class_code != 'REF' then 0 else 1 end,
                            sc.scenario_number desc
                        ) sc_id_def,
                        first_value(sc.agristability_scenario_id) over (order by
                            case when (sc_num is null or sc_num = sc.scenario_number) then 0 else 1 end,
                            case when (sc.scenario_state_code in ('COMP','AMEND') and sc.scenario_class_code = 'USER') then 0 else 1 end,
-                           case when (sc.default_indicator = 'Y') then 0 else 1 end,
+                           case when (sc.default_ind = 'Y') then 0 else 1 end,
                            case when sc.scenario_class_code != 'REF' then 0 else 1 end,
                            sc.scenario_number desc
                        ) sc_id_app,
@@ -58,13 +58,13 @@ begin
                            case when (sc.scenario_catregory_code in ('FIN','PADJ','AADJ') and sc.scenario_state_code in ('COMP','AMEND') and sc.scenario_class_code = 'USER') then 0 else 1 end,
                            case when sc.scenario_class_code in ('CRA','LOCAL','CHEF') then 0 else 1 end,
                            case when sc.scenario_class_code = 'GEN' then 0 else 1 end,
-                           case when sc.default_indicator = 'Y' then 0 else 1 end,
+                           case when sc.default_ind = 'Y' then 0 else 1 end,
                            sc.scenario_number desc
                        ) sc_id_enrol
-                from farms.program_year py
-                join farms.agristability_client ac on py.agristability_client_id = ac.agristability_client_id
-                join farms.program_year_version pyv on pyv.program_year_id = py.program_year_id
-                join farms.agristability_scenario sc on pyv.program_year_version_id = sc.program_year_version_id
+                from farms.farm_program_years py
+                join farms.farm_agristability_clients ac on py.agristability_client_id = ac.agristability_client_id
+                join farms.farm_program_year_versions pyv on pyv.program_year_id = py.program_year_id
+                join farms.farm_agristability_scenarios sc on pyv.program_year_version_id = sc.program_year_version_id
                 where ac.participant_pin = ppin
                 and py.year = pyear
             ) cur
@@ -86,14 +86,14 @@ begin
                        py.year,
                        first_value(sc.agristability_scenario_id) over (order by
                            case when (sc_num is null or sc_num = sc.scenario_number) then 0 else 1 end,
-                           case when (sc.default_indicator = 'Y') then 0 else 1 end,
+                           case when (sc.default_ind = 'Y') then 0 else 1 end,
                            case when sc.scenario_class_code != 'REF' then 0 else 1 end,
                            sc.scenario_number desc
                        ) sc_id_def,
                        first_value(sc.agristability_scenario_id) over (order by
                            case when (sc_num is null or sc_num = sc.scenario_number) then 0 else 1 end,
                            case when (sc.scenario_state_code = 'COMP' and sc.scenario_class_code = 'USER') then 0 else 1 end,
-                           case when (sc.default_indicator = 'Y') then 0 else 1 end,
+                           case when (sc.default_ind = 'Y') then 0 else 1 end,
                            case when sc.scenario_class_code != 'REF' then 0 else 1 end,
                            sc.scenario_number desc
                        ) sc_id_app,
@@ -103,20 +103,20 @@ begin
                            case when (sc.scenario_catregory_code in ('FIN','PADJ','AADJ') and sc.scenario_state_code in ('COMP','AMEND') and sc.scenario_class_code = 'USER') then 0 else 1 end,
                            case when sc.scenario_class_code in ('CRA','LOCAL','CHEF') then 0 else 1 end,
                            case when sc.scenario_class_code = 'GEN' then 0 else 1 end,
-                           case when sc.default_indicator = 'Y' then 0 else 1 end,
+                           case when sc.default_ind = 'Y' then 0 else 1 end,
                            sc.scenario_number desc
                        ) sc_id_enrol
-                from farms.program_year py
-                join farms.agristability_client ac on py.agristability_client_id = ac.agristability_client_id
-                join farms.program_year_version pyv on pyv.program_year_id = py.program_year_id
-                join farms.agristability_scenario sc on pyv.program_year_version_id = sc.program_year_version_id
+                from farms.farm_program_years py
+                join farms.farm_agristability_clients ac on py.agristability_client_id = ac.agristability_client_id
+                join farms.farm_program_year_versions pyv on pyv.program_year_id = py.program_year_id
+                join farms.farm_agristability_scenarios sc on pyv.program_year_version_id = sc.program_year_version_id
                 where ac.participant_pin = ppin
                 and py.year = pyear
             ) cur
-            join farms.reference_scenario ref on ref.for_agristability_scenario_id = cur.agristability_scenario_id
-            join farms.agristability_scenario sc2 on ref.agristability_scenario_id = sc2.agristability_scenario_id
-            join farms.program_year_version pyv2 on pyv2.program_year_version_id = sc2.program_year_version_id
-            join farms.program_year py2 on pyv2.program_year_id = py2.program_year_id
+            join farms.farm_reference_scenarios ref on ref.for_agristability_scenario_id = cur.agristability_scenario_id
+            join farms.farm_agristability_scenarios sc2 on ref.agristability_scenario_id = sc2.agristability_scenario_id
+            join farms.farm_program_year_versions pyv2 on pyv2.program_year_version_id = sc2.program_year_version_id
+            join farms.farm_program_years py2 on pyv2.program_year_id = py2.program_year_id
             where (
                 (alg = 'DEF' and cur.agristability_scenario_id = cur.sc_id_def) or
                 (alg = 'COMP' and cur.agristability_scenario_id = cur.sc_id_app) or
@@ -140,31 +140,31 @@ begin
                        -- sc_Id_def and sc_Id_app logic are the same for this part of the query
                        first_value(sc.agristability_scenario_id) over (partition by py.program_year_id order by
                            case when sc.scenario_state_code = 'COMP' then 0 else 1 end,
-                           coalesce(comp.create_date, pcomp.create_date) desc,
+                           coalesce(comp.when_created, pcomp.when_created) desc,
                            case when (sc.scenario_class_code in ('CRA','GEN','LOCAL','CHEF') or psc.scenario_class_code in ('CRA','GEN','LOCAL','CHEF')) then 0 else 1 end,
                            pyv.program_year_version_number desc
                        ) sc_id_def,
                        first_value(sc.agristability_scenario_id) over (partition by py.program_year_id order by
                            case when sc.scenario_state_code = 'COMP' then 0 else 1 end,
-                           coalesce(comp.create_date, pcomp.create_date) desc,
+                           coalesce(comp.when_created, pcomp.when_created) desc,
                            case when (sc.scenario_class_code in ('CRA','GEN','LOCAL','CHEF') or psc.scenario_class_code in ('CRA','GEN','LOCAL','CHEF')) then 0 else 1 end,
                            pyv.program_year_version_number desc
                        ) sc_id_app,
                        first_value(sc.agristability_scenario_id) over (partition by py.program_year_id order by
                            case when sc.scenario_category_code in ('FIN','PADJ','AADJ') and sc.scenario_state_code in ('COMP','AMEND') and sc.scenario_class_code in ('USER','REF') then 0 else 1 end,
-                           coalesce(comp.create_date, pcomp.create_date) desc,
+                           coalesce(comp.when_created, pcomp.when_created) desc,
                            case when (sc.scenario_class_code in ('CRA','GEN','LOCAL','CHEF') or psc.scenario_class_code in ('CRA','GEN','LOCAL','CHEF')) then 0 else 1 end,
                            pyv.program_year_version_number desc
                        ) sc_id_enrol
-                from farms.program_year py
-                join farms.agristability_client ac on py.agristability_client_id = ac.agristability_client_id
-                join farms.program_year_version pyv on pyv.program_year_id = py.program_year_id
-                join farms.agristability_scenario sc on pyv.program_year_version_id = sc.program_year_version_id
-                left outer join farms.reference_scenario rs on rs.agristability_scenario_id = sc.agristability_scenario_id
-                left outer join farms.agristability_scenario psc on psc.agristability_scenario_id = rs.for_agristability_scenario_id
-                left outer join farms.scenario_state_audit comp on comp.agristability_scenario_id = sc.agristability_scenario_id
+                from farms.farm_program_years py
+                join farms.farm_agristability_clients ac on py.agristability_client_id = ac.agristability_client_id
+                join farms.farm_program_year_versions pyv on pyv.program_year_id = py.program_year_id
+                join farms.farm_agristability_scenarios sc on pyv.program_year_version_id = sc.program_year_version_id
+                left outer join farms.farm_reference_scenarios rs on rs.agristability_scenario_id = sc.agristability_scenario_id
+                left outer join farms.farm_agristability_scenarios psc on psc.agristability_scenario_id = rs.for_agristability_scenario_id
+                left outer join farms.farm_scenario_state_audits comp on comp.agristability_scenario_id = sc.agristability_scenario_id
                                                                 and comp.scenario_state_code = 'COMP'
-                left outer join farms.scenario_state_audit pcomp on pcomp.agristability_scenario_id = psc.agristability_scenario_id
+                left outer join farms.farm_scenario_state_audits pcomp on pcomp.agristability_scenario_id = psc.agristability_scenario_id
                                                                 and pcomp.scenario_state_code = 'COMP'
                 where ac.participant_pin = ppin
                 and py.year between (pyear - 5) and (pyear - 1)

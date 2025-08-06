@@ -17,8 +17,8 @@ declare
                    else z.crop_unit_code
                end) crop_unit_code,
                z.inventory_item_code
-        from farms.zfmv_fair_market_value z
-        join farms.agristabilty_commodity_xref x on x.inventory_item_code = z.inventory_item_code
+        from farms.farm_zfmv_fair_market_values z
+        join farms.farm_agristabilty_cmmdty_xref x on x.inventory_item_code = z.inventory_item_code
         where x.inventory_class_code in ('1', '2')
         union all
         select z.line_number,
@@ -32,9 +32,9 @@ declare
                    else cucf.target_crop_unit_code
                end) crop_unit_code,
                z.inventory_item_code
-        from farms.zfmv_fair_market_value z
-        join farms.agristabilty_commodity_xref x on x.inventory_item_code = z.inventory_item_code
-        join farms.crop_unit_conversion_factor cucf on cucf.inventory_item_code = z.inventory_item_code
+        from farms.farm_zfmv_fair_market_values z
+        join farms.farm_agristabilty_cmmdty_xref x on x.inventory_item_code = z.inventory_item_code
+        join farms.farm_crop_unit_conversn_fctrs cucf on cucf.inventory_item_code = z.inventory_item_code
         where x.inventory_class_code in ('1', '2')
         order by line_number;
     v_staging record;
@@ -50,7 +50,7 @@ declare
                average_price,
                percent_variance,
                revision_count
-        from farms.fair_market_value
+        from farms.farm_fair_market_values
         where program_year = p_program_year
         and period = p_period
         and inventory_item_code = p_inventory_item_code
@@ -83,11 +83,11 @@ begin
                 continue;
             else
                 -- expire the old value
-                update farms.fair_market_value
+                update farms.farm_fair_market_values
                 set expiry_date = current_date,
                     revision_count = v_operational.revision_count + 1,
-                    create_user = in_user,
-                    create_date = current_timestamp
+                    who_created = in_user,
+                    when_created = current_timestamp
                 where fair_market_value_id = v_operational.fair_market_value_id;
 
                 v_num_updated := v_num_updated + 1;
@@ -96,7 +96,7 @@ begin
             v_num_added := v_num_added + 1;
         end if;
 
-        insert into farms.fair_market_value (
+        insert into farms.farm_fair_market_values (
             fair_market_value_id,
             program_year,
             period,
@@ -107,10 +107,10 @@ begin
             municipality_code,
             crop_unit_code,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             nextval('farms.seq_fmv'),
             v_staging.program_year,

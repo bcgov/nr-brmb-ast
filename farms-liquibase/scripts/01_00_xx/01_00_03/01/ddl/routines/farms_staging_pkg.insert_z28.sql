@@ -1,19 +1,19 @@
 create or replace procedure farms_staging_pkg.insert_z28(
-   in in_production_unit farms.z28_production_insurance_reference.production_unit%type,
-   in in_production_unit_description farms.z28_production_insurance_reference.production_unit_description%type,
+   in in_production_unit farms.farm_z28_prod_insurance_refs.production_unit%type,
+   in in_production_unit_description farms.farm_z28_prod_insurance_refs.production_unit_description%type,
    in in_user varchar
 )
 language plpgsql
 as $$
 begin
-    insert into farms.z28_production_insurance_reference (
+    insert into farms.farm_z28_prod_insurance_refs (
         production_unit,
         production_unit_description,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         in_production_unit,
         in_production_unit_description,

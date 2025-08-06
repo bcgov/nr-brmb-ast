@@ -9,10 +9,10 @@ declare
     iic_cursor cursor for
         select z.inventory_code,
                -- descriptions should be unique in CD; may have more than one in Z so pick one
-               max(z.inventory_description) new_description,
+               max(z.inventory_desc) new_description,
                max(cd.description) old_description
-        from farms.z29_inventory_code_reference z
-        left outer join farms.inventory_item_code cd on to_char(z.inventory_code) = cd.inventory_item_code
+        from farms.farm_z29_inventory_code_refs z
+        left outer join farms.farm_inventory_item_codes cd on to_char(z.inventory_code) = cd.inventory_item_code
         where cd.inventory_item_code is null
         group by z.inventory_code;
     iic_val record;
@@ -22,8 +22,8 @@ declare
                -- descriptions should be unique in CD; may have more than one in Z so pick one
                max(z.inventory_type_description) new_description,
                max(cd.description) old_description
-        from farms.z29_inventory_code_reference z
-        left outer join farms.inventory_class_code cd on to_char(z.inventory_type_code) = cd.inventory_class_code
+        from farms.farm_z29_inventory_code_refs z
+        left outer join farms.farm_inventory_class_codes cd on to_char(z.inventory_type_code) = cd.inventory_class_code
         where cd.inventory_class_code is null
         group by z.inventory_type_code;
     icc_val record;
@@ -33,8 +33,8 @@ declare
                -- descriptions should be unique in CD; may have more than one in Z so pick one
                max(z.inventory_group_description) new_description,
                max(cd.description) old_description
-        from farms.z29_inventory_code_reference z
-        left outer join farms.inventory_group_code cd on to_char(z.inventory_group_code) = cd.inventory_group_code
+        from farms.farm_z29_inventory_code_refs z
+        left outer join farms.farm_inventory_group_codes cd on to_char(z.inventory_group_code) = cd.inventory_group_code
         where cd.inventory_group_code is null
         group by z.inventory_group_code;
     igc_val record;
@@ -43,11 +43,11 @@ declare
         select z.inventory_code,
                z.inventory_type_code,
                z.inventory_group_code,
-               z.market_commodity_indicator,
-               x.market_commodity_indicator as old_market_commodity_indicator,
-               x.agristabilty_commodity_xref_id
-        from farms.z29_inventory_code_reference z
-        left outer join farms.agristabilty_commodity_xref x on to_char(z.inventory_code) = x.inventory_item_code
+               z.market_commodity_ind,
+               x.market_commodity_ind as old_market_commodity_indicator,
+               x.agristabilty_cmmdty_xref_id
+        from farms.farm_z29_inventory_code_refs z
+        left outer join farms.farm_agristabilty_cmmdty_xref x on to_char(z.inventory_code) = x.inventory_item_code
                                                            and to_char(z.inventory_type_code) = x.inventory_class_code
                                                            and (z.inventory_group_code is null
                                                                 or to_char(z.inventory_group_code) = x.inventory_group_code);
@@ -57,10 +57,10 @@ declare
     closed numeric := 0;
     exp_date date := null;
 
-    v_inventory_code farms.z29_inventory_code_reference.inventory_code%type := null;
-    v_inventory_type_code farms.z29_inventory_code_reference.inventory_type_code%type := null;
-    v_inventory_group_code farms.z29_inventory_code_reference.inventory_group_code%type := null;
-    v_program_year farms.program_year.year%type;
+    v_inventory_code farms.farm_z29_inventory_code_refs.inventory_code%type := null;
+    v_inventory_type_code farms.farm_z29_inventory_code_refs.inventory_type_code%type := null;
+    v_inventory_group_code farms.farm_z29_inventory_code_refs.inventory_group_code%type := null;
+    v_program_year farms.farm_program_years.year%type;
 
     errors numeric := 0;
 begin
@@ -88,20 +88,20 @@ begin
 
                     select py.year program_year
                     into v_program_year
-                    from farms.program_year_version pyv
-                    join farms.program_year py on py.program_year_id = pyv.program_year_id
+                    from farms.farm_program_year_versions pyv
+                    join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
                     where pyv.import_version_id = in_version_id;
 
-                    insert into farms.inventory_item_code(
+                    insert into farms.farm_inventory_item_codes(
                         inventory_item_code,
                         description,
-                        effective_date,
+                        established_date,
                         expiry_date,
                         revision_count,
-                        create_user,
-                        create_date,
-                        update_user,
-                        update_date
+                        who_created,
+                        when_created,
+                        who_updated,
+                        when_updated
                     ) values (
                         to_char(iic_val.inventory_code),
                         iic_val.new_description,
@@ -114,14 +114,14 @@ begin
                         current_timestamp
                     );
 
-                    insert into farms.inventory_item_attribute(
-                        inventory_item_attribute_id,
+                    insert into farms.farm_inventory_item_attributes(
+                        inventory_item_attrib_id,
                         inventory_item_code,
                         rollup_inventory_item_code,
-                        create_user,
-                        create_date,
-                        update_user,
-                        update_date,
+                        who_created,
+                        when_created,
+                        who_updated,
+                        when_updated,
                         revision_count
                     ) values (
                         nextval('farms.seq_iia'),
@@ -134,16 +134,16 @@ begin
                         1
                     );
 
-                    insert into farms.inventory_item_detail(
+                    insert into farms.farm_inventory_item_details(
                         inventory_item_detail_id,
                         program_year,
-                        eligibility_indicator,
+                        eligibility_ind,
                         inventory_item_code,
                         revision_count,
-                        create_user,
-                        create_date,
-                        update_user,
-                        update_date
+                        who_created,
+                        when_created,
+                        who_updated,
+                        when_updated
                     )
                     select
                         nextval('farms.seq_iid'),
@@ -155,7 +155,7 @@ begin
                         current_timestamp,
                         in_user,
                         current_timestamp
-                    from (select distinct year program_year from farms.program_year) y;
+                    from (select distinct year program_year from farms.farm_program_years) y;
                 end if;
             end if;
         exception
@@ -195,16 +195,16 @@ begin
 
                     exp_date := to_date('12/31/9999', 'MM/DD/YYYY');
 
-                    insert into farms.inventory_class_code(
+                    insert into farms.farm_inventory_class_codes(
                         inventory_class_code,
                         description,
-                        effective_date,
+                        established_date,
                         expiry_date,
                         revision_count,
-                        create_user,
-                        create_date,
-                        update_user,
-                        update_date
+                        who_created,
+                        when_created,
+                        who_updated,
+                        when_updated
                     ) values (
                         to_char(iic_val.inventory_type_code),
                         iic_val.new_description,
@@ -255,16 +255,16 @@ begin
 
                     exp_date := to_date('12/31/9999', 'MM/DD/YYYY');
 
-                    insert into farms.inventory_group_code(
+                    insert into farms.farm_inventory_group_codes(
                         inventory_group_code,
                         description,
-                        effective_date,
+                        established_date,
                         expiry_date,
                         revision_count,
-                        create_user,
-                        create_date,
-                        update_user,
-                        update_date
+                        who_created,
+                        when_created,
+                        who_updated,
+                        when_updated
                     ) values (
                         to_char(igc_val.inventory_group_code),
                         igc_val.new_description,
@@ -301,27 +301,27 @@ begin
         end if;
 
         begin
-            if xref_val.agristabilty_commodity_xref_id is null then
+            if xref_val.agristabilty_cmmdty_xref_id is null then
 
                 exp_date := to_date('12/31/9999', 'MM/DD/YYYY');
 
-                insert into farms.agristabilty_commodity_xref(
-                    agristabilty_commodity_xref_id,
+                insert into farms.farm_agristabilty_cmmdty_xref(
+                    agristabilty_cmmdty_xref_id,
                     inventory_item_code,
                     inventory_group_code,
                     inventory_class_code,
-                    market_commodity_indicator,
+                    market_commodity_ind,
                     revision_count,
-                    create_user,
-                    create_date,
-                    update_user,
-                    update_date
+                    who_created,
+                    when_created,
+                    who_updated,
+                    when_updated
                 ) values (
                     nextval('farms.seq_acx'),
                     to_char(xref_val.inventory_code),
                     to_char(xref_val.inventory_group_code),
                     to_char(xref_val.inventory_type_code),
-                    xref_val.market_commodity_indicator,
+                    xref_val.market_commodity_ind,
                     1,
                     in_user,
                     current_timestamp,
@@ -329,14 +329,14 @@ begin
                     current_timestamp
                 );
             else
-                if xref_val.old_market_commodity_indicator <> xref_val.market_commodity_indicator then
+                if xref_val.old_market_commodity_indicator <> xref_val.market_commodity_ind then
                     -- only time we get here is when the three code are found
-                    update farms.agristabilty_commodity_xref
-                    set market_commodity_indicator = xref_val.market_commodity_indicator,
+                    update farms.farm_agristabilty_cmmdty_xref
+                    set market_commodity_ind = xref_val.market_commodity_ind,
                         revision_count = revision_count + 1,
-                        update_date = current_timestamp,
-                        update_user = in_user
-                    where agristabilty_commodity_xref_id = xref_val.agristabilty_commodity_xref_id;
+                        when_updated = current_timestamp,
+                        who_updated = in_user
+                    where agristabilty_cmmdty_xref_id = xref_val.agristabilty_cmmdty_xref_id;
                 end if;
             end if;
         end;

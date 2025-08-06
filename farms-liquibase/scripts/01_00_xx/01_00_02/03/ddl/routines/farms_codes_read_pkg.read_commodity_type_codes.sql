@@ -9,7 +9,7 @@ begin
     open cur for
         select ctc.commodity_type_code,
                ctc.description
-        from farms.commodity_type_code ctc;
+        from farms.farm_commodity_type_codes ctc;
     return cur;
 
 end;
