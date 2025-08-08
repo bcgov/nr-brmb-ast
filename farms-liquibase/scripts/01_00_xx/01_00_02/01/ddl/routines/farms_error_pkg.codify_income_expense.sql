@@ -1,7 +1,7 @@
 create or replace function farms_error_pkg.codify_income_expense(
     in msg varchar,
-    in line_item farms.line_item.line_item%type,
-    in farming_operation_id farms.reported_income_expenses.farming_operation_id%type
+    in line_item farms.farm_line_items.line_item%type,
+    in farming_operation_id farms.farm_reported_income_expenses.farming_operation_id%type
 )
 returns varchar
 language plpgsql

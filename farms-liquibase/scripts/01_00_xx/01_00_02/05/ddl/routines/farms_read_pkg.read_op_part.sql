@@ -8,7 +8,7 @@ declare
     cur refcursor;
 begin
     open cur for
-        select farming_operation_partner_id,
+        select farming_operatin_prtnr_id,
                partner_percent,
                participant_pin,
                partner_sin,
@@ -17,7 +17,7 @@ begin
                corp_name,
                farming_operation_id,
                revision_count
-        from farms.farming_operatin_partner p
+        from farms.farm_farming_operatin_prtnrs p
         where p.farming_operation_id = any(op_ids)
         order by p.partnership_pin,
                  p.last_name,

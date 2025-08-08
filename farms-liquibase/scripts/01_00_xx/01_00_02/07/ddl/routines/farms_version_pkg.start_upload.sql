@@ -6,12 +6,12 @@ language plpgsql
 as $$
 begin
 
-    update farms.import_version
+    update farms.farm_import_versions
     set import_state_code = 'SP',
-        staging_audit_information = null,
+        staging_audit_info = null,
         revision_count = revision_count + 1,
-        update_user = in_user,
-        update_date = current_timestamp
+        who_updated = in_user,
+        when_updated = current_timestamp
     where import_version_id = in_version_id;
 
 end;

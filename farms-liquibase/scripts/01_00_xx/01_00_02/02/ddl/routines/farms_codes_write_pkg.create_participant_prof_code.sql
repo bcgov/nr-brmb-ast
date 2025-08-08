@@ -1,22 +1,22 @@
 create or replace procedure farms_codes_write_pkg.create_participant_prof_code(
-   in in_participant_profile_code farms.participant_profile_code.participant_profile_code%type,
-   in in_description farms.participant_profile_code.description%type,
-   in in_effective_date farms.participant_profile_code.effective_date%type,
-   in in_expiry_date farms.participant_profile_code.expiry_date%type,
-   in in_user farms.participant_profile_code.update_user%type
+   in in_participant_profile_code farms.farm_participant_profile_codes.participant_profile_code%type,
+   in in_description farms.farm_participant_profile_codes.description%type,
+   in in_effective_date farms.farm_participant_profile_codes.established_date%type,
+   in in_expiry_date farms.farm_participant_profile_codes.expiry_date%type,
+   in in_user farms.farm_participant_profile_codes.who_updated%type
 )
 language plpgsql
 as $$
 begin
-    insert into farms.participant_profile_code (
+    insert into farms.farm_participant_profile_codes (
         participant_profile_code,
         description,
-        effective_date,
+        established_date,
         expiry_date,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         in_participant_profile_code,

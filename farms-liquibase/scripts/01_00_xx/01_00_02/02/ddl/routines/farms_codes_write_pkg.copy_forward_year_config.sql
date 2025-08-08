@@ -1,6 +1,6 @@
 create or replace function farms_codes_write_pkg.copy_forward_year_config(
-    in in_to_year farms.program_year.year%type,
-    in in_user farms.program_year.create_user%type
+    in in_to_year farms.farm_program_years.year%type,
+    in in_user farms.farm_program_years.who_created%type
 )
 returns numeric
 language plpgsql

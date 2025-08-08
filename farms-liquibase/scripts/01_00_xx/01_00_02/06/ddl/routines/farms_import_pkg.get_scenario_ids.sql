@@ -1,7 +1,7 @@
 create or replace function farms_import_pkg.get_scenario_ids(
-    in in_year farms.program_year.year%type,
-    in in_participant_pin farms.agristability_client.participant_pin%type,
-    in in_scenario_number farms.agristability_scenario.scenario_number%type
+    in in_year farms.farm_program_years.year%type,
+    in in_participant_pin farms.farm_agristability_clients.participant_pin%type,
+    in in_scenario_number farms.farm_agristability_scenarios.scenario_number%type
 )
 returns numeric[]
 language plpgsql

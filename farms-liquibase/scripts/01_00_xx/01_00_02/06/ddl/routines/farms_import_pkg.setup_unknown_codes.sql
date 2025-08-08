@@ -8,29 +8,29 @@ declare
 
     code_ins cursor for
         select cds.inventory_class_code
-        from farms.inventory_class_code codes
-        left outer join farms.agristabilty_commodity_xref x on x.inventory_class_code = cds.inventory_class_code
+        from farms.farm_inventory_class_codes codes
+        left outer join farms.farm_agristabilty_cmmdty_xref x on x.inventory_class_code = cds.inventory_class_code
                                                             and x.inventory_item_code = Unknown
-        where x.agristabilty_commodity_xref_id is null;
+        where x.agristabilty_cmmdty_xref_id is null;
 begin
     dt := to_date('31/12/9999', 'DD/MM/YYYY');
 
     select count(*)
     into cnt
-    from farms.inventory_class_code
+    from farms.farm_inventory_class_codes
     where inventory_class_code = Unknown;
 
     if cnt < 1 then
-        insert into farms.inventory_class_code (
+        insert into farms.farm_inventory_class_codes (
             inventory_class_code,
             description,
-            effective_date,
+            established_date,
             expiry_date,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             Unknown,
             'UNKNOWN',
@@ -46,20 +46,20 @@ begin
 
     select count(*)
     into cnt
-    from farms.inventory_group_code
+    from farms.farm_inventory_group_codes
     where inventory_group_code = Unknown;
 
     if cnt < 1 then
-        insert into farms.inventory_group_code (
+        insert into farms.farm_inventory_group_codes (
             inventory_group_code,
             description,
-            effective_date,
+            established_date,
             expiry_date,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             Unknown,
             'UNKNOWN',
@@ -75,16 +75,16 @@ begin
 
     for cd in code_ins
     loop
-        insert into farms.agristabilty_commodity_xref (
-            agristabilty_commodity_xref_id,
+        insert into farms.farm_agristabilty_cmmdty_xref (
+            agristabilty_cmmdty_xref_id,
             inventory_item_code,
             inventory_group_code,
             inventory_class_code,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             nextval('farms.seq_acx'),
             Unknown,

@@ -1,31 +1,31 @@
 create or replace function farms_import_pkg.supplemental_date(
-    in in_program_year_version_id farms.program_year_version.program_year_version_id%type
+    in in_program_year_version_id farms.farm_program_year_versions.program_year_version_id%type
 )
 returns varchar
 language plpgsql
 as $$
 declare
-    v_post_mark_date farms.program_year_version.post_mark_date%type;
-    v_received_date farms.program_year_version.received_date%type;
-    v_cra_income_expense_received_date farms.agristability_scenario.cra_income_expense_received_date%type;
-    v_cra_supplemental_received_date farms.agristability_scenario.cra_supplemental_received_date%type;
+    v_post_mark_date farms.farm_program_year_versions.post_mark_date%type;
+    v_received_date farms.farm_program_year_versions.received_date%type;
+    v_cra_income_expense_received_date farms.farm_agristability_scenarios.cra_income_expns_received_date%type;
+    v_cra_supplemental_received_date farms.farm_agristability_scenarios.cra_supplemental_received_date%type;
 begin
 
     select pyv.post_mark_date,
            pyv.received_date
     into v_post_mark_date,
          v_received_date
-    from farms.program_year_version pyv
+    from farms.farm_program_year_versions pyv
     where pyv.program_year_version_id = in_program_year_version_id;
 
     select first_value(pyv_all.post_mark_date) over (
         order by pyv_all.program_year_version_number
         rows between unbounded preceding and unbounded following
-    ) cra_income_expense_received_date
+    ) cra_income_expns_received_date
     into v_cra_income_expense_received_date
-    from farms.program_year_version pyv_cur
-    join farms.program_year_version pyv_all on pyv_all.program_year_id = pyv_cur.program_year_id
-    join farms.agristability_scenario sc on sc.program_year_version_id = pyv_all.program_year_version_id
+    from farms.farm_program_year_versions pyv_cur
+    join farms.farm_program_year_versions pyv_all on pyv_all.program_year_id = pyv_cur.program_year_id
+    join farms.farm_agristability_scenarios sc on sc.program_year_version_id = pyv_all.program_year_version_id
     where pyv_cur.program_year_version_id = in_program_year_version_id
     and sc.scenario_class_code = 'CRA'
     and pyv_all.post_mark_date is not null
@@ -46,18 +46,18 @@ begin
                    order by pyv_all.program_year_version_number
                    rows between unbounded preceding and unbounded following
                ) cra_suppl_received_date
-        from farms.program_year_version pyv_cur
-        join farms.program_year_version pyv_all on pyv_all.program_year_id = pyv_cur.program_year_id
-        join farms.agristability_scenario sc on sc.program_year_version_id = pyv_all.program_year_version_id
+        from farms.farm_program_year_versions pyv_cur
+        join farms.farm_program_year_versions pyv_all on pyv_all.program_year_id = pyv_cur.program_year_id
+        join farms.farm_agristability_scenarios sc on sc.program_year_version_id = pyv_all.program_year_version_id
         where pyv_cur.program_year_version_id = in_program_year_version_id
         and sc.scenario_class_code = 'CRA'
         and pyv_all.post_mark_date is not null
         and (
             exists (
                 select *
-                from farms.farming_operation fo
-                join farms.reported_inventory ri on ri.farming_operation_id = fo.farming_operation_id
-                join farms.agristabilty_commodity_xref x on x.agristabilty_commodity_xref_id = ri.agristabilty_commodity_xref_id
+                from farms.farm_farming_operations fo
+                join farms.farm_reported_inventories ri on ri.farming_operation_id = fo.farming_operation_id
+                join farms.farm_agristabilty_cmmdty_xref x on x.agristabilty_cmmdty_xref_id = ri.agristabilty_cmmdty_xref_id
                 where fo.program_year_version_id = pyv_all.program_year_version_id
                 and ri.agristability_scenario_id is null
                 and (
@@ -81,8 +81,8 @@ begin
                 )
             ) or exists (
                 select *
-                from farms.farming_operation fo
-                join farms.productive_unit_capacity puc on puc.farming_operation_id = fo.farming_operation_id
+                from farms.farm_farming_operations fo
+                join farms.farm_productve_unit_capacities puc on puc.farming_operation_id = fo.farming_operation_id
                 where fo.program_year_version_id = pyv_all.program_year_version_id
                 and puc.agristability_scenario_id is null
                 and puc.productive_capacity_amount is not null
@@ -95,8 +95,8 @@ begin
         return 'Must include both post mark date and file received date';
     end if;
 
-    update farms.agristability_scenario
-    set cra_income_expense_received_date = v_cra_income_expense_received_date,
+    update farms.farm_agristability_scenarios
+    set cra_income_expns_received_date = v_cra_income_expense_received_date,
         cra_supplemental_received_date = v_cra_supplemental_received_date
     where program_year_version_id = in_program_year_version_id;
 

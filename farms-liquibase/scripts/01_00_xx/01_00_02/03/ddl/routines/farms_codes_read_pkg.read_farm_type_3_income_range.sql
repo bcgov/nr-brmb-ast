@@ -1,5 +1,5 @@
 create or replace function farms_codes_read_pkg.read_farm_type_3_income_range(
-    in in_farm_type_item_id farms.tip_farm_type_3_lookup.tip_farm_type_3_lookup_id%type
+    in in_farm_type_item_id farms.farm_tip_farm_type_3_lookups.tip_farm_type_3_lookup_id%type
 )
 returns refcursor
 language plpgsql
@@ -15,7 +15,7 @@ begin
                tir.tip_farm_type_3_lookup_id,
                tir.tip_farm_type_2_lookup_id,
                tir.tip_farm_type_1_lookup_id
-        from farms.tip_income_range tir
+        from farms.farm_tip_income_ranges tir
         where tir.tip_farm_type_3_lookup_id = in_farm_type_item_id
         or tip_farm_type_3_lookup_id is null and tir.tip_farm_type_2_lookup_id is null and tir.tip_farm_type_1_lookup_id is null
         order by tir.range_low;

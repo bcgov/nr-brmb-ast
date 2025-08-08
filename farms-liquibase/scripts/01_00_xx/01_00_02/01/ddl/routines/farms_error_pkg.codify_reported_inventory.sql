@@ -1,9 +1,9 @@
 create or replace function farms_error_pkg.codify_reported_inventory(
     in msg varchar,
-    in inventory_item_code farms.agristabilty_commodity_xref.inventory_item_code%type,
-    in inventory_class_code farms.agristabilty_commodity_xref.inventory_class_code%type,
-    in crop_unit_code farms.reported_inventory.crop_unit_code%type,
-    in farming_operation_id farms.reported_inventory.farming_operation_id%type
+    in inventory_item_code farms.farm_agristabilty_cmmdty_xref.inventory_item_code%type,
+    in inventory_class_code farms.farm_agristabilty_cmmdty_xref.inventory_class_code%type,
+    in crop_unit_code farms.farm_reported_inventories.crop_unit_code%type,
+    in farming_operation_id farms.farm_reported_inventories.farming_operation_id%type
 )
 returns varchar
 language plpgsql

@@ -1,24 +1,24 @@
 create or replace procedure farms_codes_write_pkg.create_municipality_code(
-   in in_municipality_code farms.municipality_code.municipality_code%type,
-   in in_description farms.municipality_code.description%type,
-   in in_effective_date farms.municipality_code.effective_date%type,
-   in in_expiry_date farms.municipality_code.expiry_date%type,
+   in in_municipality_code farms.farm_municipality_codes.municipality_code%type,
+   in in_description farms.farm_municipality_codes.description%type,
+   in in_effective_date farms.farm_municipality_codes.established_date%type,
+   in in_expiry_date farms.farm_municipality_codes.expiry_date%type,
    in office_codes varchar[],
-   in in_user farms.municipality_code.update_user%type
+   in in_user farms.farm_municipality_codes.who_updated%type
 )
 language plpgsql
 as $$
 begin
 
-    insert into farms.municipality_code (
+    insert into farms.farm_municipality_codes (
         municipality_code,
         description,
-        effective_date,
+        established_date,
         expiry_date,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     )
     values (

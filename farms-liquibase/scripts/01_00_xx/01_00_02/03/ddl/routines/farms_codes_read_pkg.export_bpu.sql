@@ -1,5 +1,5 @@
 create or replace function farms_codes_read_pkg.export_bpu(
-    in in_program_year farms.benchmark_per_unit.program_year%type,
+    in in_program_year farms.farm_benchmark_per_units.program_year%type,
     in in_inventory_code_filter varchar,
     in in_inventory_desc_filter varchar,
     in in_municipality_desc_filter varchar
@@ -44,11 +44,11 @@ begin
                    max(case when yrs.benchmark_year = (bpus.program_year - 3) then yrs.average_expense else null end) year_minus_3_expense,
                    max(case when yrs.benchmark_year = (bpus.program_year - 2) then yrs.average_expense else null end) year_minus_2_expense,
                    max(case when yrs.benchmark_year = (bpus.program_year - 1) then yrs.average_expense else null end) year_minus_1_expense
-            from farms.benchmark_per_unit bpus
+            from farms.farm_benchmark_per_units bpus
             join farms.benchmark_years yrs on yrs.benchmark_per_unit_id = bpus.benchmark_per_unit_id
-            join farms.municipality_code mc on mc.municipality_code = bpus.municipality_code
-            left join farms.inventory_item_code iic on iic.inventory_item_code = bpus.inventory_item_code
-            left join farms.structure_group_code sgc on sgc.structure_group_code = bpus.structure_group_code
+            join farms.farm_municipality_codes mc on mc.municipality_code = bpus.municipality_code
+            left join farms.farm_inventory_item_codes iic on iic.inventory_item_code = bpus.inventory_item_code
+            left join farms.farm_structure_group_codes sgc on sgc.structure_group_code = bpus.structure_group_code
             where bpus.expiry_date is null
             and bpus.program_year = in_program_year
             and (

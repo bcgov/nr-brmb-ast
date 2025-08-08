@@ -11,24 +11,24 @@ declare
     client_id_val record;
 
     b bytea := null;
-    transfer_version_id farms.import_version.import_version_id%type;
+    transfer_version_id farms.farm_import_versions.import_version_id%type;
     id_char varchar(10);
     cnt numeric := 0;
 
-    import_date farms.import_version.create_date%type;
-    import_description farms.import_version.description%type;
-    import_file farms.import_version.import_file%type;
+    import_date farms.farm_import_versions.when_created%type;
+    import_description farms.farm_import_versions.description%type;
+    import_file farms.farm_import_versions.import_file%type;
 begin
 
     if array_length(in_changed_contact_client_ids, 1) > 0 then
 
-        select iv.create_date,
+        select iv.when_created,
                iv.description,
                iv.import_file
         into import_date,
              import_description,
              import_file
-        from farms.import_version iv
+        from farms.farm_import_versions iv
         where iv.import_version_id = in_cra_version_id;
 
         call farms_webapp_pkg.insert_import_version(
@@ -45,7 +45,7 @@ begin
 
         select iv.import_file
         into b
-        from farms.import_version iv
+        from farms.farm_import_versions iv
         where iv.import_version_id = transfer_version_id;
 
         for client_id_val in client_id_cursor
@@ -58,7 +58,7 @@ begin
 
             b := coalesce(b, ''::bytea) || convert_to(id_char, 'UTF8');
 
-            update farms.import_version
+            update farms.farm_import_versions
             set import_file = b
             where import_version_id = transfer_version_id;
         end loop;

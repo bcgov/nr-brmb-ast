@@ -8,10 +8,10 @@ select ac.agristability_client_id,
        pyv.program_year_version_number,
        op.operation_number,
        pyv.municipality_code
-from farms.agristability_client ac,
-     farms.program_year py,
-     farms.program_year_version pyv,
-     farms.farming_operation op
+from farms.farm_agristability_clients ac,
+     farms.farm_program_years py,
+     farms.farm_program_year_versions pyv,
+     farms.farm_farming_operations op
 where py.agristability_client_id = ac.agristability_client_id
 and pyv.program_year_id = py.program_year_id
 and op.program_year_version_id = pyv.program_year_version_id;

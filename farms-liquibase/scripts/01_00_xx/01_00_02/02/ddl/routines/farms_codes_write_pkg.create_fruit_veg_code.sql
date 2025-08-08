@@ -1,21 +1,21 @@
 create or replace procedure farms_codes_write_pkg.create_fruit_veg_code(
-   in in_fruit_veg_code farms.fruit_vegetable_type_code.fruit_vegetable_type_code%type,
-   in in_fruit_veg_code_description farms.fruit_vegetable_type_code.description%type,
-   in in_fruit_veg_code_variance_limit farms.fruit_vegetable_type_detail.revenue_variance_limit%type,
-   in in_farm_user farms.fruit_vegetable_type_code.update_user%type
+   in in_fruit_veg_code farms.farm_fruit_veg_type_codes.fruit_veg_type_code%type,
+   in in_fruit_veg_code_description farms.farm_fruit_veg_type_codes.description%type,
+   in in_fruit_veg_code_variance_limit farms.farm_fruit_veg_type_details.revenue_variance_limit%type,
+   in in_farm_user farms.farm_fruit_veg_type_codes.who_updated%type
 )
 language plpgsql
 as $$
 begin
 
-    insert into farms.fruit_vegetable_type_code (
-        fruit_vegetable_type_code,
+    insert into farms.farm_fruit_veg_type_codes (
+        fruit_veg_type_code,
         description,
-        create_user,
-        create_date,
-        effective_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        established_date,
+        who_updated,
+        when_updated,
         revision_count,
         expiry_date
     ) values (
@@ -30,14 +30,14 @@ begin
         to_date('9999-12-31', 'YYYY-MM-DD')
     );
 
-    insert into farms.fruit_vegetable_type_detail (
-        fruit_vegetable_type_detail_id,
-        fruit_vegetable_type_code,
+    insert into farms.farm_fruit_veg_type_details (
+        fruit_veg_type_detail_id,
+        fruit_veg_type_code,
         revenue_variance_limit,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         nextval('farms.seq_fvtd'),

@@ -6,7 +6,7 @@ as $$
 declare
     c_check cursor for
         select line_number
-        from farms.zfmv_fair_market_value
+        from farms.farm_zfmv_fair_market_values
         where percent_variance not between 0 and 100;
     v_check record;
 

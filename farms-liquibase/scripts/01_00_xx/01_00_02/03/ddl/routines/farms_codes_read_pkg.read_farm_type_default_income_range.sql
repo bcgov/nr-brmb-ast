@@ -13,7 +13,7 @@ begin
                tir.tip_farm_type_3_lookup_id,
                tir.tip_farm_type_2_lookup_id,
                tir.tip_farm_type_1_lookup_id
-        from farms.tip_income_range tir
+        from farms.farm_tip_income_ranges tir
         where tir.tip_farm_type_3_lookup_id is null
         and tir.tip_farm_type_2_lookup_id is null
         and tir.tip_farm_type_1_lookup_id is null

@@ -1,22 +1,22 @@
 create or replace procedure farms_codes_write_pkg.create_fmv(
-   in in_program_year farms.fair_market_value.program_year%type,
-   in in_period farms.fair_market_value.period%type,
-   in in_average_price farms.fair_market_value.average_price%type,
-   in in_percent_variance farms.fair_market_value.percent_variance%type,
-   in in_inventory_item_code farms.fair_market_value.inventory_item_code%type,
-   in in_municipality_code farms.fair_market_value.municipality_code%type,
-   in in_crop_unit_code farms.fair_market_value.crop_unit_code%type,
-   in in_user farms.fair_market_value.update_user%type
+   in in_program_year farms.farm_fair_market_values.program_year%type,
+   in in_period farms.farm_fair_market_values.period%type,
+   in in_average_price farms.farm_fair_market_values.average_price%type,
+   in in_percent_variance farms.farm_fair_market_values.percent_variance%type,
+   in in_inventory_item_code farms.farm_fair_market_values.inventory_item_code%type,
+   in in_municipality_code farms.farm_fair_market_values.municipality_code%type,
+   in in_crop_unit_code farms.farm_fair_market_values.crop_unit_code%type,
+   in in_user farms.farm_fair_market_values.who_updated%type
 )
 language plpgsql
 as $$
 declare
-    v_default_crop_unit_code farms.crop_unit_default.crop_unit_code%type;
+    v_default_crop_unit_code farms.farm_crop_unit_defaults.crop_unit_code%type;
 begin
 
     select cud.crop_unit_code
     into v_default_crop_unit_code
-    from farms.crop_unit_default cud
+    from farms.farm_crop_unit_defaults cud
     where cud.inventory_item_code = in_inventory_item_code;
 
     if v_default_crop_unit_code is not null then
@@ -31,7 +31,7 @@ begin
         );
     end if;
 
-    insert into farms.fair_market_value (
+    insert into farms.farm_fair_market_values (
         fair_market_value_id,
         program_year,
         period,
@@ -40,10 +40,10 @@ begin
         inventory_item_code,
         municipality_code,
         crop_unit_code,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         nextval('farms.seq_fmv'),
@@ -62,7 +62,7 @@ begin
     );
 
     if v_default_crop_unit_code is not null then
-        insert into farms.fair_market_value (
+        insert into farms.farm_fair_market_values (
             fair_market_value_id,
             program_year,
             period,
@@ -71,10 +71,10 @@ begin
             inventory_item_code,
             municipality_code,
             crop_unit_code,
-            create_user,
-            create_date,
-            update_user,
-            update_date,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated,
             revision_count
         )
         select nextval('farms.seq_fmv'),
@@ -90,7 +90,7 @@ begin
                in_user,
                current_timestamp,
                1
-        from farms.crop_unit_conversion_factor cucf
+        from farms.farm_crop_unit_conversn_fctrs cucf
         where cucf.inventory_item_code = in_inventory_item_code;
     end if;
 

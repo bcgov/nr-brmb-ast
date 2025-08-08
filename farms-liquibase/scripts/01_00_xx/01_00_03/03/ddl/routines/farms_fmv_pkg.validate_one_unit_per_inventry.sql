@@ -8,12 +8,12 @@ declare
         select z.line_number,
                z.inventory_item_code,
                t.number_of_unit_codes
-        from farms.zfmv_fair_market_value z
+        from farms.farm_zfmv_fair_market_values z
         join (
             select z.crop_unit_code,
                    z.inventory_item_code,
                    count(z.crop_unit_code) over (partition by z.inventory_item_code) as number_of_unit_codes
-            from farms.zfmv_fair_market_value z
+            from farms.farm_zfmv_fair_market_values z
             group by z.crop_unit_code,
                      z.inventory_item_code
         ) t on z.crop_unit_code = t.crop_unit_code and z.inventory_item_code = t.inventory_item_code

@@ -1,23 +1,23 @@
 create or replace procedure farms_codes_write_pkg.create_structure_group_code(
-   in in_structure_group_code farms.structure_group_code.structure_group_code%type,
-   in in_description farms.structure_group_code.description%type,
-   in in_rollup_structure_group_code farms.structure_group_attribute.rollup_structure_group_code%type,
-   in in_effective_date farms.structure_group_code.effective_date%type,
-   in in_expiry_date farms.structure_group_code.expiry_date%type,
-   in in_user farms.structure_group_code.update_user%type
+   in in_structure_group_code farms.farm_structure_group_codes.structure_group_code%type,
+   in in_description farms.farm_structure_group_codes.description%type,
+   in in_rollup_structure_group_code farms.farm_structure_group_attributs.rollup_structure_group_code%type,
+   in in_effective_date farms.farm_structure_group_codes.established_date%type,
+   in in_expiry_date farms.farm_structure_group_codes.expiry_date%type,
+   in in_user farms.farm_structure_group_codes.who_updated%type
 )
 language plpgsql
 as $$
 begin
-    insert into farms.structure_group_code (
+    insert into farms.farm_structure_group_codes (
         structure_group_code,
         description,
-        effective_date,
+        established_date,
         expiry_date,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         in_structure_group_code,
@@ -31,14 +31,14 @@ begin
         1
     );
 
-    insert into farms.structure_group_attribute (
-        structure_group_attribute_id,
+    insert into farms.farm_structure_group_attributs (
+        structure_group_attrib_id,
         structure_group_code,
         rollup_structure_group_code,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         nextval('farms.seq_sga'),

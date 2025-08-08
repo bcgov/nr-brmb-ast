@@ -1,14 +1,14 @@
-ALTER TABLE farms.reasonability_revenue_nursery_inventory ADD CONSTRAINT fk_rrni1_cuc 
+ALTER TABLE farms.farm_rsn_rev_nursery_invntries ADD CONSTRAINT fk_rrni1_cuc 
     FOREIGN KEY (crop_unit_code)
-    REFERENCES farms.crop_unit_code(crop_unit_code)
+    REFERENCES farms.farm_crop_unit_codes(crop_unit_code)
 ;
 
-ALTER TABLE farms.reasonability_revenue_nursery_inventory ADD CONSTRAINT fk_rrni1_iic 
+ALTER TABLE farms.farm_rsn_rev_nursery_invntries ADD CONSTRAINT fk_rrni1_iic 
     FOREIGN KEY (inventory_item_code)
-    REFERENCES farms.inventory_item_code(inventory_item_code)
+    REFERENCES farms.farm_inventory_item_codes(inventory_item_code)
 ;
 
-ALTER TABLE farms.reasonability_revenue_nursery_inventory ADD CONSTRAINT fk_rrni1_rrnr 
-    FOREIGN KEY (reasonability_revenue_nursery_result_id)
-    REFERENCES farms.reasonability_revenue_nursery_result(reasonability_revenue_nursery_result_id)
+ALTER TABLE farms.farm_rsn_rev_nursery_invntries ADD CONSTRAINT fk_rrni1_rrnr 
+    FOREIGN KEY (rsn_rev_nursery_result_id)
+    REFERENCES farms.farm_rsn_rev_nursery_results(rsn_rev_nursery_result_id)
 ;

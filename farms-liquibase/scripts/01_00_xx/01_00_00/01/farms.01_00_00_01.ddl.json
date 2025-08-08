@@ -7,217 +7,217 @@
                 "changes": [
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.chef_form_type_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.chef_submission_status_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.commodity_type_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.configuration_parameter_type_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.crm_entity_type_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.crop_unit_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.enrolment_calculation_type_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.farm_type_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.federal_accounting_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.federal_status_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.fruit_vegetable_type_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.import_class_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.import_state_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.inventory_class_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.inventory_group_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.inventory_item_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.message_type_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.multiple_stage_commodity_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.municipality_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.participant_class_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.participant_data_source_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.participant_language_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.participant_profile_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.regional_office_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.scenario_bpu_purpose_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.scenario_category_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.scenario_class_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.scenario_state_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.sector_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.sector_detail_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.structural_change_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.structure_group_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.subscription_status_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.tip_rating_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farms.triage_queue_code.sql"
                         }
                     },
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/grants/farms.ddl.apply_grants.sql"
                         }
                     }

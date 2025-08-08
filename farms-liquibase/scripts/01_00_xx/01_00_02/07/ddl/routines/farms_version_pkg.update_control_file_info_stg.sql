@@ -5,13 +5,13 @@ create or replace procedure farms_version_pkg.update_control_file_info_stg(
 language plpgsql
 as $$
 declare
-    p_import_control_file_date farms.import_version.import_control_file_date%type;
-    p_import_control_file_info farms.import_version.import_control_file_information%type;
+    p_import_control_file_date farms.farm_import_versions.import_control_file_date%type;
+    p_import_control_file_info farms.farm_import_versions.import_control_file_info%type;
 begin
     begin
         select max(to_date(t.extract_date, 'yyyymmdd'))
         into p_import_control_file_date
-        from farms.z99_extract_file;
+        from farms.farm_z99_extract_file_ctls;
     exception
         when others then
             null;
@@ -24,19 +24,19 @@ begin
         from (
             select max(case when extract_file_number = 1 then row_count else null end) as pins,
                    sum(row_count) as row_cnt
-            from farms.z99_extract_file
+            from farms.farm_z99_extract_file_ctls
         ) as t;
     exception
         when others then
             null;
     end;
 
-    update farms.import_version
+    update farms.farm_import_versions
     set import_control_file_date = p_import_control_file_date,
-        import_control_file_information = p_import_control_file_info,
+        import_control_file_info = p_import_control_file_info,
         revision_count = revision_count + 1,
-        update_user = in_user,
-        update_date = current_timestamp
+        who_updated = in_user,
+        when_updated = current_timestamp
     where import_version_id = in_version_id;
 end;
 $$;

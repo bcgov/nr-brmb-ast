@@ -9,9 +9,9 @@ declare
                z.inventory_item_code,
                d.crop_unit_code default_crop_unit_code,
                cuc.description default_crop_unit_code_desc
-        from farms.zfmv_fair_market_value z
-        join farms.crop_unit_default d on d.inventory_item_code = z.inventory_item_code
-        join farms.crop_unit_code cuc on cuc.crop_unit_code = d.crop_unit_code
+        from farms.farm_zfmv_fair_market_values z
+        join farms.farm_crop_unit_defaults d on d.inventory_item_code = z.inventory_item_code
+        join farms.farm_crop_unit_codes cuc on cuc.crop_unit_code = d.crop_unit_code
         where d.crop_unit_code != z.crop_unit_code;
     v_check record;
 

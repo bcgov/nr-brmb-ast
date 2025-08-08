@@ -11,7 +11,7 @@ begin
     select nextval('farms.seq_il')
     into id;
 
-    insert into farms.import_log (
+    insert into farms.farm_import_logs (
         import_version_id,
         import_log_id,
         log_message

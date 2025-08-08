@@ -1,5 +1,5 @@
 create or replace function farms_codes_write_pkg.in_use_bpu(
-    in in_benchmark_per_unit_id farms.benchmark_year.benchmark_per_unit_id%type
+    in in_benchmark_per_unit_id farms.farm_benchmark_years.benchmark_per_unit_id%type
 )
 returns numeric
 language plpgsql
@@ -7,12 +7,12 @@ as $$
 declare
     c_xref cursor for
         select agristability_scenario_id
-        from farms.scenario_bpu_xref
+        from farms.farm_scenario_bpu_xref
         where benchmark_per_unit_id = in_benchmark_per_unit_id;
 
     c_bpu cursor for
         select *
-        from farms.benchmark_per_unit
+        from farms.farm_benchmark_per_units
         where benchmark_per_unit_id = in_benchmark_per_unit_id;
 
     v_xref record;
@@ -34,9 +34,9 @@ begin
         select (case
             when exists(
                 select null
-                from farms.program_year_version pyv
-                join farms.farming_operation fo on fo.program_year_version_id = pyv.program_year_version_id
-                join farms.productive_unit_capacity puc on puc.farming_operation_id = fo.farming_operation_id
+                from farms.farm_program_year_versions pyv
+                join farms.farm_farming_operations fo on fo.program_year_version_id = pyv.program_year_version_id
+                join farms.farm_productve_unit_capacities puc on puc.farming_operation_id = fo.farming_operation_id
                 where (v_bpu.municipality_code = '0' or pyv.municipality_code = v_bpu.municipality_code)
                 and (
                     (to_number(to_char(fo.fiscal_year_start, 'YYYY')) = v_bpu.program_year)

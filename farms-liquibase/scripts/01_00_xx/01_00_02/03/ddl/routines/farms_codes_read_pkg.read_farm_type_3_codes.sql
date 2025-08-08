@@ -9,9 +9,9 @@ begin
     open cur for
         select t.tip_farm_type_3_lookup_id,
                t.farm_type_3_name code,
-               t.create_date,
+               t.when_created,
                t.revision_count
-        from farms.tip_farm_type_3_lookup t
+        from farms.farm_tip_farm_type_3_lookups t
         order by lower(t.farm_type_3_name);
     return cur;
 

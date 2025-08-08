@@ -1,23 +1,23 @@
 create or replace procedure farms_codes_write_pkg.create_crop_unit_convrsn_factr(
-   in in_inventory_item_code farms.crop_unit_conversion_factor.inventory_item_code%type,
-   in in_target_crop_unit_code farms.crop_unit_conversion_factor.target_crop_unit_code%type,
-   in in_conversion_factor farms.crop_unit_conversion_factor.conversion_factor%type,
-   in in_user farms.crop_unit_conversion_factor.update_user%type
+   in in_inventory_item_code farms.farm_crop_unit_conversn_fctrs.inventory_item_code%type,
+   in in_target_crop_unit_code farms.farm_crop_unit_conversn_fctrs.target_crop_unit_code%type,
+   in in_conversion_factor farms.farm_crop_unit_conversn_fctrs.conversion_factor%type,
+   in in_user farms.farm_crop_unit_conversn_fctrs.who_updated%type
 )
 language plpgsql
 as $$
 begin
 
-    insert into farms.crop_unit_conversion_factor (
+    insert into farms.farm_crop_unit_conversn_fctrs (
         crop_unit_conversion_factor_id,
         conversion_factor,
         inventory_item_code,
         target_crop_unit_code,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         nextval('farms.seq_cucf'),
         in_conversion_factor,

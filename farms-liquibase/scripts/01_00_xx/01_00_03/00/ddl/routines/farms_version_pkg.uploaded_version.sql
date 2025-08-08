@@ -14,52 +14,52 @@ language plpgsql
 as
 $$
 declare
-    t_icc farms.import_version.import_class_code%type;
+    t_icc farms.farm_import_versions.import_class_code%type;
 begin
 
     select import_class_code
     into t_icc
-    from farms.import_version
+    from farms.farm_import_versions
     where import_version_id = in_version_id;
 
-    update farms.import_version
+    update farms.farm_import_versions
     set import_state_code = (case when in_has_errors_ind = 'Y' then 'SF' else 'SC' end),
         revision_count = revision_count + 1,
-        update_user = in_user,
-        update_date = current_timestamp
+        who_updated = in_user,
+        when_updated = current_timestamp
     where import_version_id = in_version_id;
 
     -- Keep import file and staging audit info for 2 years, then remove.
     -- Don't update When_Updated because that is used for ordering in the UI.
-    update farms.import_version
-    set staging_audit_information = null,
-        import_audit_information = null,
+    update farms.farm_import_versions
+    set staging_audit_info = null,
+        import_audit_info = null,
         import_file = null
-    where update_date < (current_timestamp - interval '2 years')
-    and (staging_audit_information is not null or
-         import_audit_information is not null or
+    where when_updated < (current_timestamp - interval '2 years')
+    and (staging_audit_info is not null or
+         import_audit_info is not null or
          import_file is not null);
 
     if t_icc = 'CRA' then
-        analyze farms.z99_extract_file;
-        analyze farms.z51_participant_contribution;
-        analyze farms.z50_participant_benefit_calculation;
-        analyze farms.z42_participant_reference_year;
-        analyze farms.z40_participant_reference_supplemental_detail;
-        analyze farms.z23_livestock_production_capacity;
-        analyze farms.z22_production_insurance;
-        analyze farms.z21_participant_supplementary;
-        analyze farms.z28_production_insurance_reference;
-        analyze farms.z29_inventory_code_reference;
-        analyze farms.z05_partner_information;
-        analyze farms.z04_income_expenses_detail;
-        analyze farms.z03_statement_information;
-        analyze farms.z02_participant_farm_information;
-        analyze farms.z01_participant_information;
+        analyze farms.farm_z99_extract_file_ctls;
+        analyze farms.farm_z51_participant_contribs;
+        analyze farms.farm_z50_participnt_bnft_calcs;
+        analyze farms.farm_z42_participant_ref_years;
+        analyze farms.farm_z40_prtcpnt_ref_supl_dtls;
+        analyze farms.farm_z23_livestock_prod_cpcts;
+        analyze farms.farm_z22_production_insurances;
+        analyze farms.farm_z21_participant_suppls;
+        analyze farms.farm_z28_prod_insurance_refs;
+        analyze farms.farm_z29_inventory_code_refs;
+        analyze farms.farm_z05_partner_infos;
+        analyze farms.farm_z04_income_exps_dtls;
+        analyze farms.farm_z03_statement_infos;
+        analyze farms.farm_z02_partpnt_farm_infos;
+        analyze farms.farm_z01_participant_infos;
     end if;
 
-    update farms.import_version
-    set staging_audit_information = in_xml
+    update farms.farm_import_versions
+    set staging_audit_info = in_xml
     where import_version_id = in_version_id;
 end;
 $$;

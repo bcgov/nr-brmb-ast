@@ -3,7 +3,7 @@ language plpgsql
 as $$
 begin
 
-    delete from farms.tip_income_range
+    delete from farms.farm_tip_income_ranges
     where tip_farm_type_3_lookup_id is null
     and tip_farm_type_2_lookup_id is null
     and tip_farm_type_1_lookup_id is null;

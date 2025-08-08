@@ -1,8 +1,8 @@
 create or replace function farms_error_pkg.codify_operation(
     in msg varchar,
-    in operation_number farms.farming_operation.operation_number%type,
-    in federal_accounting_code farms.farming_operation.federal_accounting_code%type,
-    in program_year_version_id farms.farming_operation.program_year_version_id%type
+    in operation_number farms.farm_farming_operations.operation_number%type,
+    in federal_accounting_code farms.farm_farming_operations.federal_accounting_code%type,
+    in program_year_version_id farms.farm_farming_operations.program_year_version_id%type
 )
 returns varchar
 language plpgsql

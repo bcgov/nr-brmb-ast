@@ -1,6 +1,6 @@
 create or replace function farms_read_pkg.read_bpu_xref(
     in in_sc_ids numeric[],
-    in in_scenario_bpu_purpose_code farms.scenario_bpu_purpose_code.scenario_bpu_purpose_code%type
+    in in_scenario_bpu_purpose_code farms.farm_scenario_bpu_purpos_codes.scenario_bpu_purpose_code%type
 )
 returns refcursor
 language plpgsql
@@ -33,9 +33,9 @@ begin
                    bnch.average_margin,
                    bnch.average_expense,
                    bnch.revision_count bnch_revision_count
-            from farms.scenario_bpu_xref x
-            join farms.benchmark_per_unit bpu on x.benchmark_per_unit_id = bpu.benchmark_per_unit_id
-            join farms.benchmark_year bnch on bpu.benchmark_per_unit_id = bnch.benchmark_per_unit_id
+            from farms.farm_scenario_bpu_xref x
+            join farms.farm_benchmark_per_units bpu on x.benchmark_per_unit_id = bpu.benchmark_per_unit_id
+            join farms.farm_benchmark_years bnch on bpu.benchmark_per_unit_id = bnch.benchmark_per_unit_id
             where x.agristability_scenario_id = any(in_sc_ids)
             and x.scenario_bpu_purpose_code = in_scenario_bpu_purpose_code
         ) x

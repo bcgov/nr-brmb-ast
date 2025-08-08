@@ -1,16 +1,16 @@
 create or replace procedure farms_webapp_pkg.insert_import_version(
-   out io_import_version_id farms.import_version.import_version_id%type,
-   in in_import_class farms.import_version.import_class_code%type,
-   in in_import_state farms.import_version.import_state_code%type,
-   in in_description farms.import_version.description%type,
-   in in_import_file_name farms.import_version.import_file_name%type,
-   in in_import_file_pwd farms.import_version.import_file_password%type,
-   in in_user farms.import_version.create_user%type
+   out io_import_version_id farms.farm_import_versions.import_version_id%type,
+   in in_import_class farms.farm_import_versions.import_class_code%type,
+   in in_import_state farms.farm_import_versions.import_state_code%type,
+   in in_description farms.farm_import_versions.description%type,
+   in in_import_file_name farms.farm_import_versions.import_file_name%type,
+   in in_import_file_pwd farms.farm_import_versions.import_file_password%type,
+   in in_user farms.farm_import_versions.who_created%type
 )
 language plpgsql
 as $$
 begin
-    insert into farms.import_version (
+    insert into farms.farm_import_versions (
         import_version_id,
         imported_by_user,
         description,
@@ -18,14 +18,14 @@ begin
         import_file_password,
         import_state_code,
         import_file,
-        staging_audit_information,
-        import_audit_information,
+        staging_audit_info,
+        import_audit_info,
         import_class_code,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         nextval('farms.seq_iv'),
         in_user,

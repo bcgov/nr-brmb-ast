@@ -4,7 +4,7 @@ create or replace procedure farms_bpu_pkg.delete_staging_errors(
 language plpgsql
 as $$
 begin
-    delete from farms.import_log
+    delete from farms.farm_import_logs
     where import_version_id = in_import_version_id;
 end;
 $$;

@@ -1,22 +1,22 @@
 create or replace procedure farms_codes_write_pkg.create_farm_type_code(
-   in in_farm_type_code farms.farm_type_code.farm_type_code%type,
-   in in_description farms.farm_type_code.description%type,
-   in in_effective_date farms.farm_type_code.effective_date%type,
-   in in_expiry_date farms.farm_type_code.expiry_date%type,
-   in in_user farms.farm_type_code.update_user%type
+   in in_farm_type_code farms.farm_farm_type_codes.farm_type_code%type,
+   in in_description farms.farm_farm_type_codes.description%type,
+   in in_effective_date farms.farm_farm_type_codes.established_date%type,
+   in in_expiry_date farms.farm_farm_type_codes.expiry_date%type,
+   in in_user farms.farm_farm_type_codes.who_updated%type
 )
 language plpgsql
 as $$
 begin
-    insert into farms.farm_type_code (
+    insert into farms.farm_farm_type_codes (
         farm_type_code,
         description,
-        effective_date,
+        established_date,
         expiry_date,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         in_farm_type_code,

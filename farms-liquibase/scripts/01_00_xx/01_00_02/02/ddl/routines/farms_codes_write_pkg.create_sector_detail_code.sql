@@ -1,22 +1,22 @@
 create or replace procedure farms_codes_write_pkg.create_sector_detail_code(
-   in in_sector_code farms.sector_code.sector_code%type,
-   in in_sector_detail_code farms.sector_detail_code.sector_detail_code%type,
-   in in_description farms.sector_detail_code.description%type,
-   in in_expiry_date farms.sector_detail_code.expiry_date%type,
-   in in_user farms.sector_detail_code.update_user%type
+   in in_sector_code farms.farm_sector_codes.sector_code%type,
+   in in_sector_detail_code farms.farm_sector_detail_codes.sector_detail_code%type,
+   in in_description farms.farm_sector_detail_codes.description%type,
+   in in_expiry_date farms.farm_sector_detail_codes.expiry_date%type,
+   in in_user farms.farm_sector_detail_codes.who_updated%type
 )
 language plpgsql
 as $$
 begin
-    insert into farms.sector_detail_code (
+    insert into farms.farm_sector_detail_codes (
         sector_detail_code,
         description,
-        effective_date,
+        established_date,
         expiry_date,
-        create_user,
-        create_date,
-        update_user,
-        update_date,
+        who_created,
+        when_created,
+        who_updated,
+        when_updated,
         revision_count
     ) values (
         in_sector_detail_code,
@@ -30,15 +30,15 @@ begin
         1
     );
 
-    insert into farms.sector_detail_xref (
+    insert into farms.farm_sector_detail_xref (
         sector_detail_xref_id,
         sector_code,
         sector_detail_code,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         nextval('farms.seq_sdx'),
         in_sector_code,

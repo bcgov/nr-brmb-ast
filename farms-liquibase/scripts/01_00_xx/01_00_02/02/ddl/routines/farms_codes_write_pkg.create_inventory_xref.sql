@@ -1,31 +1,31 @@
 create or replace function farms_codes_write_pkg.create_inventory_xref(
-    in in_inventory_class_code farms.agristabilty_commodity_xref.inventory_class_code%type,
-    in in_inventory_item_code farms.agristabilty_commodity_xref.inventory_item_code%type,
-    in in_inventory_group_code farms.agristabilty_commodity_xref.inventory_group_code%type,
-    in in_market_commodity_indicator farms.agristabilty_commodity_xref.market_commodity_indicator%type,
-    in in_user farms.agristabilty_commodity_xref.update_user%type
+    in in_inventory_class_code farms.farm_agristabilty_cmmdty_xref.inventory_class_code%type,
+    in in_inventory_item_code farms.farm_agristabilty_cmmdty_xref.inventory_item_code%type,
+    in in_inventory_group_code farms.farm_agristabilty_cmmdty_xref.inventory_group_code%type,
+    in in_market_commodity_indicator farms.farm_agristabilty_cmmdty_xref.market_commodity_ind%type,
+    in in_user farms.farm_agristabilty_cmmdty_xref.who_updated%type
 )
-returns farms.agristabilty_commodity_xref.agristabilty_commodity_xref_id%type
+returns farms.farm_agristabilty_cmmdty_xref.agristabilty_cmmdty_xref_id%type
 language plpgsql
 as $$
 declare
-    v_xref_id farms.agristabilty_commodity_xref.agristabilty_commodity_xref_id%type;
+    v_xref_id farms.farm_agristabilty_cmmdty_xref.agristabilty_cmmdty_xref_id%type;
 begin
 
     select nextval('farms.seq_acx')
     into v_xref_id;
 
-    insert into farms.agristabilty_commodity_xref (
-        agristabilty_commodity_xref_id,
-        market_commodity_indicator,
+    insert into farms.farm_agristabilty_cmmdty_xref (
+        agristabilty_cmmdty_xref_id,
+        market_commodity_ind,
         inventory_item_code,
         inventory_group_code,
         inventory_class_code,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         v_xref_id,
         in_market_commodity_indicator,

@@ -1,6 +1,6 @@
 create or replace procedure farms_codes_write_pkg.delete_participant_prof_code(
-   in in_participant_profile_code farms.participant_profile_code.participant_profile_code%type,
-   in in_revision_count farms.participant_profile_code.revision_count%type
+   in in_participant_profile_code farms.farm_participant_profile_codes.participant_profile_code%type,
+   in in_revision_count farms.farm_participant_profile_codes.revision_count%type
 )
 language plpgsql
 as $$
@@ -12,7 +12,7 @@ begin
 
     if v_in_use = 0 then
 
-        delete from farms.participant_profile_code c
+        delete from farms.farm_participant_profile_codes c
         where c.participant_profile_code = in_participant_profile_code
         and c.revision_count = in_revision_count;
 

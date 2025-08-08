@@ -9,7 +9,7 @@ declare
 begin
     select count(distinct program_year)
     into v_num_years
-    from farms.zfmv_fair_market_value;
+    from farms.farm_zfmv_fair_market_values;
 
     if v_num_years > 1 then
         call farms_fmv_pkg.insert_error(

@@ -6,10 +6,10 @@ as $$
 declare
     c_check cursor for
         select line_number
-        from farms.zfmv_fair_market_value z
+        from farms.farm_zfmv_fair_market_values z
         where not exists (
             select null
-            from farms.agristabilty_commodity_xref x
+            from farms.farm_agristabilty_cmmdty_xref x
             where x.inventory_item_code = z.inventory_item_code
             and x.inventory_class_code in ('1', '2')
         );

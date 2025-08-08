@@ -1,5 +1,5 @@
 create or replace function farms_codes_read_pkg.read_bpu(
-    in in_program_year farms.benchmark_per_unit.program_year%type
+    in in_program_year farms.farm_benchmark_per_units.program_year%type
 )
 returns refcursor
 language plpgsql
@@ -22,11 +22,11 @@ begin
                bpuy.average_margin,
                bpuy.average_expense,
                bpuy.revision_count
-        from farms.benchmark_per_unit bpu
-        join farms.benchmark_year bpuy on bpuy.benchmark_per_unit_id = bpu.benchmark_per_unit_id
-        join farms.municipality_code mc on mc.municipality_code = bpu.municipality_code
-        left join farms.inventory_item_code iic on iic.inventory_item_code = bpu.inventory_item_code
-        left join farms.structure_group_code sgc on sgc.structure_group_code = bpu.structure_group_code
+        from farms.farm_benchmark_per_units bpu
+        join farms.farm_benchmark_years bpuy on bpuy.benchmark_per_unit_id = bpu.benchmark_per_unit_id
+        join farms.farm_municipality_codes mc on mc.municipality_code = bpu.municipality_code
+        left join farms.farm_inventory_item_codes iic on iic.inventory_item_code = bpu.inventory_item_code
+        left join farms.farm_structure_group_codes sgc on sgc.structure_group_code = bpu.structure_group_code
         where bpu.program_year = in_program_year
         and (bpu.expiry_date is null or bpu.expiry_date > current_date)
         /* read relies on this ordering to construct objects. */

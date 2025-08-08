@@ -1,5 +1,5 @@
 create or replace function farms_codes_read_pkg.export_missing_fmv(
-    in in_program_year farms.fair_market_value.program_year%type
+    in in_program_year farms.farm_fair_market_values.program_year%type
 )
 returns refcursor
 language plpgsql
@@ -18,8 +18,8 @@ begin
                        else ri.crop_unit_code
                    end) crop_unit_code
             from farms.operations_vw m
-            join farms.reported_inventory ri on ri.farming_operation_id = m.farming_operation_id
-            join farms.agristabilty_commodity_xref x on x.agristabilty_commodity_xref_id = ri.agristabilty_commodity_xref_id
+            join farms.farm_reported_inventories ri on ri.farming_operation_id = m.farming_operation_id
+            join farms.farm_agristabilty_cmmdty_xref x on x.agristabilty_cmmdty_xref_id = ri.agristabilty_cmmdty_xref_id
             where x.inventory_class_code in ('1', '2')
             and x.inventory_item_code != '-1'
             and m.municipality_code not in ('-1', '0')
@@ -45,7 +45,7 @@ begin
         from inv
         where not exists (
             select null
-            from farms.fair_market_value fmv
+            from farms.farm_fair_market_values fmv
             where fmv.program_year = inv.year
             and fmv.inventory_item_code = inv.inventory_item_code
             and (fmv.municipality_code = inv.municipality_code or fmv.municipality_code = '0')

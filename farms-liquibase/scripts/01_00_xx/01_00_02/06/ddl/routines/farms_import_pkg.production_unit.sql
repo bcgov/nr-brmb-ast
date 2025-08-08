@@ -10,8 +10,8 @@ declare
         select z.production_unit,
                z.production_unit_description new_description,
                cu.description old_description
-        from farms.z28_production_insurance_reference z
-        left outer join farms.crop_unit_code cu on to_char(z.production_unit, 'FM0000') = cu.crop_unit_code
+        from farms.farm_z28_prod_insurance_refs z
+        left outer join farms.farm_crop_unit_codes cu on to_char(z.production_unit, 'FM0000') = cu.crop_unit_code
         where cu.crop_unit_code is null
         or z.production_unit_description <> cu.description;
     pu_val record;
@@ -22,7 +22,7 @@ declare
     exp_date date := null;
     errors numeric := 0;
 
-    v_production_unit farms.z28_production_insurance_reference.production_unit%type := null;
+    v_production_unit farms.farm_z28_prod_insurance_refs.production_unit%type := null;
 begin
     -- type casts will not occur because they have been completed
 
@@ -46,16 +46,16 @@ begin
 
                 exp_date := to_date('12/31/9999', 'MM/DD/YYYY');
 
-                insert into farms.crop_unit_code(
+                insert into farms.farm_crop_unit_codes(
                     crop_unit_code,
                     description,
-                    effective_date,
+                    established_date,
                     expiry_date,
                     revision_count,
-                    create_user,
-                    create_date,
-                    update_user,
-                    update_date
+                    who_created,
+                    when_created,
+                    who_updated,
+                    when_updated
                 ) values (
                     to_char(pu_val.production_unit),
                     pu_val.new_description,
@@ -76,11 +76,11 @@ begin
                     farms_import_pkg.scrub(pu_val.new_description) ||
                     '"/></PRODUCTION_UNIT>');
 
-                update farms.crop_unit_code
+                update farms.farm_crop_unit_codes
                 set description = pu_val.new_description,
                     revision_count = revision_count + 1,
-                    update_user = in_user,
-                    update_date = current_timestamp
+                    who_updated = in_user,
+                    when_updated = current_timestamp
                 where crop_unit_code = pu_val.production_unit;
             end if;
         exception

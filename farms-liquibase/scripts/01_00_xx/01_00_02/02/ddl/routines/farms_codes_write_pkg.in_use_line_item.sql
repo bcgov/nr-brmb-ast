@@ -1,6 +1,6 @@
 create or replace function farms_codes_write_pkg.in_use_line_item(
-    in in_program_year farms.line_item.program_year%type,
-    in in_line_item farms.line_item.line_item%type
+    in in_program_year farms.farm_line_items.program_year%type,
+    in in_line_item farms.farm_line_items.line_item%type
 )
 returns numeric
 language plpgsql
@@ -12,8 +12,8 @@ begin
         when exists(
             select null
             from farms.agri_scenarios_vw m
-            join farms.farming_operation fo on fo.program_year_version_id = m.program_year_version_id
-            join farms.reported_income_expenses rie on rie.farming_operation_id = fo.farming_operation_id
+            join farms.farm_farming_operations fo on fo.program_year_version_id = m.program_year_version_id
+            join farms.farm_reported_income_expenses rie on rie.farming_operation_id = fo.farming_operation_id
             where m.program_year = in_program_year
             and rie.line_item = in_line_item
         ) then 1

@@ -1,30 +1,30 @@
 create or replace procedure farms_staging_pkg.insert_z04(
-   in in_income_expense_key farms.z04_income_expenses_detail.income_expense_key%type,
-   in in_participant_pin farms.z04_income_expenses_detail.participant_pin%type,
-   in in_program_year farms.z04_income_expenses_detail.program_year%type,
-   in in_operation_number farms.z04_income_expenses_detail.operation_number%type,
-   in in_line_code farms.z04_income_expenses_detail.line_code%type,
-   in in_ie_ind farms.z04_income_expenses_detail.ie_indicator%type,
-   in in_amount farms.z04_income_expenses_detail.amount%type,
+   in in_income_expense_key farms.farm_z04_income_exps_dtls.income_expense_key%type,
+   in in_participant_pin farms.farm_z04_income_exps_dtls.participant_pin%type,
+   in in_program_year farms.farm_z04_income_exps_dtls.program_year%type,
+   in in_operation_number farms.farm_z04_income_exps_dtls.operation_number%type,
+   in in_line_code farms.farm_z04_income_exps_dtls.line_code%type,
+   in in_ie_ind farms.farm_z04_income_exps_dtls.ie_ind%type,
+   in in_amount farms.farm_z04_income_exps_dtls.amount%type,
    in in_user varchar
 )
 language plpgsql
 as $$
 begin
-    insert into farms.z04_income_expenses_detail (
+    insert into farms.farm_z04_income_exps_dtls (
         income_expense_key,
         participant_pin,
         program_year,
         program_year_codified_by,
         operation_number,
         line_code,
-        ie_indicator,
+        ie_ind,
         amount,
         revision_count,
-        create_user,
-        create_date,
-        update_user,
-        update_date
+        who_created,
+        when_created,
+        who_updated,
+        when_updated
     ) values (
         in_income_expense_key,
         in_participant_pin,

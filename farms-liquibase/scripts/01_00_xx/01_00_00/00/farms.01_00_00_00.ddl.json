@@ -7,7 +7,7 @@
                 "changes": [
                     {
                         "sqlFile": {
-                            "relativeToChangelogFile": "true",
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/roles/farms.ddl.create_login_proxy_farms_rest.sql"
                         }
                     }

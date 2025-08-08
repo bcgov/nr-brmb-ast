@@ -1,6 +1,6 @@
 create or replace procedure farms_codes_write_pkg.delete_inventory_xref(
-   in in_agristabilty_commodity_xref_id farms.agristabilty_commodity_xref.agristabilty_commodity_xref_id%type,
-   in in_revision_count farms.agristabilty_commodity_xref.revision_count%type
+   in in_agristabilty_commodity_xref_id farms.farm_agristabilty_cmmdty_xref.agristabilty_cmmdty_xref_id%type,
+   in in_revision_count farms.farm_agristabilty_cmmdty_xref.revision_count%type
 )
 language plpgsql
 as $$
@@ -12,8 +12,8 @@ begin
 
     if v_in_use = 0 then
 
-        delete from farms.agristabilty_commodity_xref x
-        where x.agristabilty_commodity_xref_id = in_agristabilty_commodity_xref_id
+        delete from farms.farm_agristabilty_cmmdty_xref x
+        where x.agristabilty_cmmdty_xref_id = in_agristabilty_commodity_xref_id
         and x.revision_count = in_revision_count;
 
         if sql%rowcount <> 1 then

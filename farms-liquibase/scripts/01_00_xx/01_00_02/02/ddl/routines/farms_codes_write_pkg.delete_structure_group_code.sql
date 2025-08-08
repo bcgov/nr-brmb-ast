@@ -1,6 +1,6 @@
 create or replace procedure farms_codes_write_pkg.delete_structure_group_code(
-   in in_structure_group_code farms.structure_group_code.structure_group_code%type,
-   in in_revision_count farms.structure_group_code.revision_count%type
+   in in_structure_group_code farms.farm_structure_group_codes.structure_group_code%type,
+   in in_revision_count farms.farm_structure_group_codes.revision_count%type
 )
 language plpgsql
 as $$
@@ -12,10 +12,10 @@ begin
 
     if v_in_use = 0 then
 
-        delete from farms.structure_group_attribute a
+        delete from farms.farm_structure_group_attributs a
         where a.structure_group_code = in_structure_group_code;
 
-        delete from farms.structure_group_code c
+        delete from farms.farm_structure_group_codes c
         where c.structure_group_code = in_structure_group_code
         and c.revision_count = in_revision_count;
 
