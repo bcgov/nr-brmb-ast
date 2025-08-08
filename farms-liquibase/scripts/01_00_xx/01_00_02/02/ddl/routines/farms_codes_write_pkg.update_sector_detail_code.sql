@@ -10,21 +10,21 @@ language plpgsql
 as $$
 begin
 
-    update farms.farm_sector_detail_xref sdx
-    set sdx.sector_code = in_sector_code,
-        sdx.revision_count = sdx.revision_count + 1,
-        sdx.who_updated = in_user,
-        sdx.when_updated = current_timestamp
-    where sdx.sector_detail_code = in_sector_detail_code;
+    update farms.farm_sector_detail_xref
+    set sector_code = in_sector_code,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where sector_detail_code = in_sector_detail_code;
 
-    update farms.farm_sector_detail_codes c
-    set c.description = in_description,
-        c.expiry_date = in_expiry_date,
-        c.revision_count = c.revision_count + 1,
-        c.who_updated = in_user,
-        c.when_updated = current_timestamp
-    where c.sector_detail_code = in_sector_detail_code
-    and c.revision_count = in_revision_count;
+    update farms.farm_sector_detail_codes
+    set description = in_description,
+        expiry_date = in_expiry_date,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where sector_detail_code = in_sector_detail_code
+    and revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
         raise exception 'Invalid revision count';

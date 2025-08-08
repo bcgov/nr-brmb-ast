@@ -29,9 +29,9 @@ begin
         in_user
     );
 
-    update farms.farm_import_versions iv
-    set iv.import_file = null
-    where iv.import_version_id = transfer_version_id;
+    update farms.farm_import_versions
+    set import_file = null
+    where import_version_id = transfer_version_id;
 
     call farms_import_pkg.update_status(
         in_cra_version_id,

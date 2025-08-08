@@ -7,12 +7,12 @@ language plpgsql
 as $$
 begin
 
-    update farms.farm_document_templates t
-    set t.template_content = '',
-        t.when_updated = current_timestamp,
-        t.who_updated = in_user,
-        t.revision_count = t.revision_count + 1
-    where t.template_name = in_template_name;
+    update farms.farm_document_templates
+    set template_content = '',
+        when_updated = current_timestamp,
+        who_updated = in_user,
+        revision_count = revision_count + 1
+    where template_name = in_template_name;
 
     return null;
 

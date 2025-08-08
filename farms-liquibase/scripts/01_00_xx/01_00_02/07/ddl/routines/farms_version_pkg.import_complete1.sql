@@ -7,12 +7,12 @@ language plpgsql
 as $$
 begin
 
-    update farms.farm_import_versions iv
-    set iv.import_state_code = 'IC',
-        iv.revision_count = iv.revision_count + 1,
-        iv.who_updated = in_user,
-        iv.when_updated = current_timestamp,
+    update farms.farm_import_versions
+    set import_state_code = 'IC',
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp,
         import_audit_info = in_message
-    where iv.import_version_id = in_version_id;
+    where import_version_id = in_version_id;
 end;
 $$;

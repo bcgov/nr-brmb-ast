@@ -42,15 +42,15 @@ begin
         in_user
     );
 
-    update farms.farm_line_items c
-    set c.expiry_date = current_date,
-        c.revision_count = c.revision_count + 1,
-        c.who_updated = in_user,
-        c.when_updated = current_timestamp,
-        c.fruit_veg_type_code = in_fruit_vegetable_type_code,
-        c.commodity_type_code = in_commodity_type_code
-    where c.line_item_id = in_line_item_id
-    and c.revision_count = in_revision_count;
+    update farms.farm_line_items
+    set expiry_date = current_date,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp,
+        fruit_veg_type_code = in_fruit_vegetable_type_code,
+        commodity_type_code = in_commodity_type_code
+    where line_item_id = in_line_item_id
+    and revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
         raise exception 'Invalid revision count';

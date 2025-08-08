@@ -7,12 +7,12 @@ language plpgsql
 as $$
 begin
 
-    update farms.farm_expected_productions c
-    set c.expected_prodctn_per_prod_unit = in_expected_production_value,
-        c.who_updated = in_farm_user,
-        c.when_updated = current_timestamp,
-        c.revision_count = c.revision_count + 1
-    where c.expected_production_id = in_expected_production_id;
+    update farms.farm_expected_productions
+    set expected_prodctn_per_prod_unit = in_expected_production_value,
+        who_updated = in_farm_user,
+        when_updated = current_timestamp,
+        revision_count = revision_count + 1
+    where expected_production_id = in_expected_production_id;
 
 end;
 $$;

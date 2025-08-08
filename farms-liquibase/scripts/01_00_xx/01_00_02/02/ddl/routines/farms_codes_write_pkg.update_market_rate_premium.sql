@@ -11,17 +11,17 @@ create or replace procedure farms_codes_write_pkg.update_market_rate_premium(
 language plpgsql
 as $$
 begin
-    update farms.farm_market_rate_premium m
-    set m.min_total_premium_amount = in_minimum_total_premium_amount,
-        m.max_total_premium_amount = in_maximum_total_premium_amount,
-        m.risk_charge_flat_amount = in_risk_charge_flat_amount,
-        m.risk_charge_pct_premium = in_risk_charge_percent_premium,
-        m.adjust_charge_flat_amount = in_adjust_charge_flat_amount,
-        m.revision_count = m.revision_count + 1,
-        m.who_updated = in_user,
-        m.when_updated = current_timestamp
-    where m.market_rate_premium_id = in_market_rate_premium_id
-    and m.revision_count = in_revision_count;
+    update farms.farm_market_rate_premium
+    set min_total_premium_amount = in_minimum_total_premium_amount,
+        max_total_premium_amount = in_maximum_total_premium_amount,
+        risk_charge_flat_amount = in_risk_charge_flat_amount,
+        risk_charge_pct_premium = in_risk_charge_percent_premium,
+        adjust_charge_flat_amount = in_adjust_charge_flat_amount,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where market_rate_premium_id = in_market_rate_premium_id
+    and revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
         raise exception 'Invalid revision count';
