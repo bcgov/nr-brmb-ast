@@ -1,1 +1,0 @@
-ALTER TABLE farms.farm_negative_margins ADD CONSTRAINT farm_nm_farm_ic_fk FOREIGN KEY (inventory_item_code) REFERENCES farms.farm_inventory_item_codes(inventory_item_code) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
