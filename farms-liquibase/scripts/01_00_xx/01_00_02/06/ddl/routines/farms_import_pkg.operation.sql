@@ -57,7 +57,7 @@ begin
         ys := op_insert_val.fiscal_year_start;
         ac := op_insert_val.federal_accounting_code;
 
-        select nextval('farms.seq_fo')
+        select nextval('farms.farm_fo_seq')
         into fo_id;
 
         insert into farms.farm_farming_operations (

@@ -202,7 +202,7 @@ begin
 
             -- check PY existance, insert if not found
             if z02_val.program_year_id is null then
-                select nextval('farms.seq_py')
+                select nextval('farms.farm_py_seq')
                 into py_id;
                 insert into farms.farm_program_years (
                     program_year_id,
@@ -242,7 +242,7 @@ begin
 
             if ch then
 
-                select nextval('farms.seq_pyv')
+                select nextval('farms.farm_pyv_seq')
                 into pyv_id;
 
                 insert into farms.farm_program_year_versions (

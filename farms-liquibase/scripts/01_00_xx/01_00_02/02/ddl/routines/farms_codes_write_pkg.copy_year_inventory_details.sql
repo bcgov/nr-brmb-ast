@@ -24,7 +24,7 @@ begin
         who_updated,
         when_updated
     )
-    select nextval('farms.seq_iid'),
+    select nextval('farms.farm_iid_seq'),
            in_to_year,
            iid.eligibility_ind,
            iid.line_item,

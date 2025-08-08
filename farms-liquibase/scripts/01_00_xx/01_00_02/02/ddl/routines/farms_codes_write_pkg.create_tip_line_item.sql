@@ -31,7 +31,7 @@ begin
         who_updated,
         when_updated
     ) values (
-        nextval('farms.seq_tli'),
+        nextval('farms.farm_tli_seq'),
         in_line_item,
         in_operating_cost_indicator,
         in_direct_expense_indicator,

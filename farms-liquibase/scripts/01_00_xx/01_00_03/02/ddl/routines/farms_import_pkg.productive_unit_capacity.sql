@@ -250,7 +250,7 @@ begin
         v_structure_group_code := puc_insert_val.structure_group_code;
         v_inventory_item_code := puc_insert_val.inventory_item_code;
 
-        select nextval('farms.seq_puc')
+        select nextval('farms.farm_puc_seq')
         into puc_id;
 
         insert into farms.farm_productve_unit_capacities (

@@ -43,7 +43,7 @@ begin
             who_updated,
             when_updated
         )
-        select nextval('farms.seq_fmv'),
+        select nextval('farms.farm_fmv_seq'),
                fmv.program_year,
                fmv.period,
                fmv.average_price / cucf.conversion_factor,

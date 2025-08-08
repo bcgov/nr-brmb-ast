@@ -32,7 +32,7 @@ begin
         who_created,
         when_created
     ) values (
-        nextval('farms.seq_bpu'),
+        nextval('farms.farm_bpu_seq'),
         in_program_year,
         in_municipality_code,
         v_inventory_item_code,

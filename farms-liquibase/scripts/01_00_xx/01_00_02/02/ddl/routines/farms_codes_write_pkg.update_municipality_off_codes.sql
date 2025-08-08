@@ -20,7 +20,7 @@ begin
         when_updated,
         revision_count
     )
-    select nextval('farms.seq_omx'),
+    select nextval('farms.farm_omx_seq'),
            in_municipality_code,
            r.regional_office_code,
            in_user,

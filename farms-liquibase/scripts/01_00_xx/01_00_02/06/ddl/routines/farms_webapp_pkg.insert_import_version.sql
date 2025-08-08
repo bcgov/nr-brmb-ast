@@ -27,7 +27,7 @@ begin
         who_updated,
         when_updated
     ) values (
-        nextval('farms.seq_iv'),
+        nextval('farms.farm_iv_seq'),
         in_user,
         in_description,
         in_import_file_name,

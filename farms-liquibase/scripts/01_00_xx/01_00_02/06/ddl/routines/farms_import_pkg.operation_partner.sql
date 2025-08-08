@@ -28,7 +28,7 @@ begin
     for ptr_insert_val in ptr_insert_cursor
     loop
         -- always insert, history is just for reporting
-        select nextval('farms.seq_fop')
+        select nextval('farms.farm_fop_seq')
         into part_id;
 
         insert into farms.farming_operation_partner (

@@ -23,7 +23,7 @@ declare
 begin
     for pi_insert_val in pi_insert_cursor
     loop
-        select nextval('farms.seq_pi')
+        select nextval('farms.farm_pi_seq')
         into p_id;
 
         insert into farms.farm_production_insurances (

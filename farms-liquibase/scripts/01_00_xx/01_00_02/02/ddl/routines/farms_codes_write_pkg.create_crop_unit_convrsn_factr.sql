@@ -19,7 +19,7 @@ begin
         who_updated,
         when_updated
     ) values (
-        nextval('farms.seq_cucf'),
+        nextval('farms.farm_cucf_seq'),
         in_conversion_factor,
         in_inventory_item_code,
         in_target_crop_unit_code,

@@ -27,7 +27,7 @@ begin
 
     v_new_scenario_number := coalesce(v_last_scenario_number, 0) + 1;
 
-    select nextval('farms.seq_as')
+    select nextval('farms.farm_as_seq')
     into scenario_id;
 
     insert into farms.farm_agristability_scenarios (

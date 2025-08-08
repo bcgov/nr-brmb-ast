@@ -12,7 +12,7 @@ declare
     v_xref_id farms.farm_agristabilty_cmmdty_xref.agristabilty_cmmdty_xref_id%type;
 begin
 
-    select nextval('farms.seq_acx')
+    select nextval('farms.farm_acx_seq')
     into v_xref_id;
 
     insert into farms.farm_agristabilty_cmmdty_xref (

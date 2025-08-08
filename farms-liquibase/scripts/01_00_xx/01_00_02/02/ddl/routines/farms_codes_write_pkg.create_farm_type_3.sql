@@ -16,7 +16,7 @@ begin
         when_updated,
         revision_count
     ) values (
-        nextval('farms.seq_tft3l'),
+        nextval('farms.farm_tft3l_seq'),
         in_farm_type_3_name,
         in_farm_user,
         current_timestamp,

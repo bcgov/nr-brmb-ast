@@ -29,7 +29,7 @@ begin
             when_updated,
             who_updated
         )
-        select nextval('farms.seq_ycp'),
+        select nextval('farms.farm_ycp_seq'),
                in_to_year,
                parameter_name,
                parameter_value,

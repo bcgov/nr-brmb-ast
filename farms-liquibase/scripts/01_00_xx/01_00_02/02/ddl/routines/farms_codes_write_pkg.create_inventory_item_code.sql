@@ -41,7 +41,7 @@ begin
         when_updated,
         revision_count
     ) values (
-        nextval('farms.seq_iia'),
+        nextval('farms.farm_iia_seq'),
         in_inventory_item_code,
         in_rollup_inventory_item_code,
         in_user,

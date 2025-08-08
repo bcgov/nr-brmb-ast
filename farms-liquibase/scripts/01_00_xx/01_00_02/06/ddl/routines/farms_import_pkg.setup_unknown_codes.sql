@@ -86,7 +86,7 @@ begin
             who_updated,
             when_updated
         ) values (
-            nextval('farms.seq_acx'),
+            nextval('farms.farm_acx_seq'),
             Unknown,
             Unknown,
             cd.inventory_class_code,

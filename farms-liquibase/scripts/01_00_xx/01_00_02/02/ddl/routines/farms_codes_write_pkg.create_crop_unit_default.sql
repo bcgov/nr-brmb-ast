@@ -17,7 +17,7 @@ begin
         who_updated,
         when_updated
     ) values (
-        nextval('farms.seq_cud'),
+        nextval('farms.farm_cud_seq'),
         in_inventory_item_code,
         in_crop_unit_code,
         1,

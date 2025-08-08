@@ -44,7 +44,7 @@ begin
         commodity_type_code,
         revision_count
     ) values (
-        nextval('farms.seq_li'),
+        nextval('farms.farm_li_seq'),
         in_program_year,
         in_line_item,
         in_description,

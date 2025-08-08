@@ -117,7 +117,7 @@ begin
             who_updated,
             when_updated
         ) values (
-            nextval('farms.seq_bpu'),
+            nextval('farms.farm_bpu_seq'),
             v_staging.program_year,
             v_staging.unit_comment,
             null,
@@ -149,7 +149,7 @@ begin
                 v_year,
                 v_margin_data[ref_year_index],
                 v_expense_data[ref_year_index],
-                currval('farms.seq_bpu'),
+                currval('farms.farm_bpu_seq'),
                 1,
                 in_user,
                 current_timestamp,

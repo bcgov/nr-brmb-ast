@@ -40,7 +40,7 @@ begin
             when_updated,
             revision_count
         ) values (
-            nextval('farms.seq_sdli'),
+            nextval('farms.farm_sdli_seq'),
             in_program_year,
             in_line_item,
             in_sector_detail_code,

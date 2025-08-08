@@ -19,7 +19,7 @@ begin
         who_updated,
         when_updated
     ) values (
-        nextval('farms.seq_ep'),
+        nextval('farms.farm_ep_seq'),
         in_expected_production_value,
         in_inventory_code,
         in_crop_unit_code,

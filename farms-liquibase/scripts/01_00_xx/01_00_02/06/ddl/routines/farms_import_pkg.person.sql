@@ -44,7 +44,7 @@ declare
 begin
     if in_person_id is null then
         -- insert row + log
-        select nextval('farms.seq_p')
+        select nextval('farms.farm_per_seq')
         into in_person_id;
 
         in_out_activity := in_out_activity + 1;

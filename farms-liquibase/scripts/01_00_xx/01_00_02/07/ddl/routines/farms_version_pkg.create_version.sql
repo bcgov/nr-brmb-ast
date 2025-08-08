@@ -9,7 +9,7 @@ as $$
 declare
     r integer;
 begin
-    select nextval('farms.seq_iv')
+    select nextval('farms.farm_iv_seq')
     into r;
 
     insert into farms.farm_import_versions (

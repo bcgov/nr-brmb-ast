@@ -46,7 +46,7 @@ begin
         when_updated,
         revision_count
     ) values (
-        nextval('farms.seq_fmv'),
+        nextval('farms.farm_fmv_seq'),
         in_program_year,
         in_period,
         in_average_price,
@@ -77,7 +77,7 @@ begin
             when_updated,
             revision_count
         )
-        select nextval('farms.seq_fmv'),
+        select nextval('farms.farm_fmv_seq'),
                in_program_year,
                in_period,
                in_average_price / cucf.conversion_factor average_price,

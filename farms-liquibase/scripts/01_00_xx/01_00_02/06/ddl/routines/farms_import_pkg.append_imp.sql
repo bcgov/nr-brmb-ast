@@ -8,7 +8,7 @@ as $$
 declare
     id numeric;
 begin
-    select nextval('farms.seq_il')
+    select nextval('farms.farm_ilg_seq')
     into id;
 
     insert into farms.farm_import_logs (
