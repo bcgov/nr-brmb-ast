@@ -20,7 +20,7 @@ begin
         when_updated,
         revision_count
     )
-    select nextval('farms.seq_omx'),
+    select nextval('farms.farm_omx_seq'),
            in_municipality_code,
            r.regional_office_code,
            in_user,
@@ -28,7 +28,7 @@ begin
            in_user,
            current_timestamp,
            1
-    from farms.regional_office r
+    from farms.farm_regional_office_codes r
     where r.regional_office_code = any(office_codes);
 
 end;

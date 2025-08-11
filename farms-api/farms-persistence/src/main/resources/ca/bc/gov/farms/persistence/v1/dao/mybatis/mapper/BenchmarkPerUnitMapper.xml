@@ -31,10 +31,10 @@
         <result property="yearMinus1Expense" column="year_minus_1_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
 
         <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
-        <result property="createUser" column="create_user" javaType="java.lang.String" jdbcType="VARCHAR" />
-        <result property="createDate" column="create_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-        <result property="updateUser" column="update_user" javaType="java.lang.String" jdbcType="VARCHAR" />
-        <result property="updateDate" column="update_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
     </resultMap>
 
     <sql id="selectColumns">
@@ -65,10 +65,10 @@
     </sql>
 
     <sql id="fromClause">
-        from farms.benchmark_per_unit bpu
-        join farms.municipality_code mc using (municipality_code)
-        left join farms.inventory_item_code iic using (inventory_item_code)
-        left join farms.structure_group_code sgc using (structure_group_code)
+        from farms.farm_benchmark_per_units bpu
+        join farms.farm_municipality_codes mc using (municipality_code)
+        left join farms.farm_inventory_item_codes iic using (inventory_item_code)
+        left join farms.farm_structure_group_codes sgc using (structure_group_code)
         join crosstab($$
             select by.benchmark_per_unit_id,
             (case
@@ -80,8 +80,8 @@
                 when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_margin'
             end) as year,
             by.average_margin
-            from farms.benchmark_per_unit bpu
-            join farms.benchmark_year by using (benchmark_per_unit_id)
+            from farms.farm_benchmark_per_units bpu
+            join farms.farm_benchmark_years by using (benchmark_per_unit_id)
             where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
             order by 1, 2
         $$)
@@ -103,8 +103,8 @@
                 when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_expense'
             end) as year,
             by.average_expense
-            from farms.benchmark_per_unit bpu
-            join farms.benchmark_year by using (benchmark_per_unit_id)
+            from farms.farm_benchmark_per_units bpu
+            join farms.farm_benchmark_years by using (benchmark_per_unit_id)
             where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
             order by 1, 2
         $$)
@@ -132,9 +132,9 @@
 
     <insert id="insertBenchmarkPerUnit">
         <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
-            select nextval('farms.seq_bpu')
+            select nextval('farms.farm_bpu_seq')
         </selectKey>
-        insert into farms.benchmark_per_unit (
+        insert into farms.farm_benchmark_per_units (
             benchmark_per_unit_id,
             program_year,
             unit_comment,
@@ -143,10 +143,10 @@
             inventory_item_code,
             structure_group_code,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             #{benchmarkPerUnitId},
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
@@ -174,16 +174,16 @@
     </insert>
 
     <insert id="insertBenchmarkYear">
-        insert into farms.benchmark_year (
+        insert into farms.farm_benchmark_years (
             benchmark_per_unit_id,
             benchmark_year,
             average_margin,
             average_expense,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             #{benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN},
             #{benchmarkYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
@@ -198,7 +198,7 @@
     </insert>
 
     <update id="updateBenchmarkPerUnit">
-        update farms.benchmark_per_unit
+        update farms.farm_benchmark_per_units
         set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             unit_comment = #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             expiry_date = #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
@@ -216,29 +216,29 @@
                 and sgc.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             revision_count = revision_count + 1,
-            update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            update_date = now()
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
         where benchmark_per_unit_id = #{dto.benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
     </update>
 
     <update id="updateBenchmarkYear">
-        update farms.benchmark_year
+        update farms.farm_benchmark_years
         set average_margin = #{averageMargin, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             average_expense = #{averageExpense, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             revision_count = revision_count + 1,
-            update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            update_date = now()
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
         where benchmark_per_unit_id = #{benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
         and benchmark_year = #{benchmarkYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN}
     </update>
 
     <delete id="deleteBenchmarkYear">
-        delete from farms.benchmark_year
+        delete from farms.farm_benchmark_years
         where benchmark_per_unit_id = #{benchmarkPerUnitId}
     </delete>
 
     <delete id="deleteBenchmarkPerUnit">
-        delete from farms.benchmark_per_unit
+        delete from farms.farm_benchmark_per_units
         where benchmark_per_unit_id = #{benchmarkPerUnitId}
     </delete>
 </mapper>

@@ -28,7 +28,7 @@ begin
         commodity_type_code,
         revision_count
     ) values (
-        nextval('farms.seq_iid'),
+        nextval('farms.farm_iid_seq'),
         in_program_year,
         in_eligibility_indicator,
         in_inventory_item_code,

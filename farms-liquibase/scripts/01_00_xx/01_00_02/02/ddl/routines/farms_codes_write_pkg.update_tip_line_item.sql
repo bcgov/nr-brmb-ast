@@ -15,19 +15,19 @@ language plpgsql
 as $$
 begin
 
-    update farms.farm_tip_line_items tli
-    set tli.line_item = in_line_item,
-        tli.operating_cost_ind = in_operating_cost_indicator,
-        tli.direct_expense_ind = in_direct_expense_indicator,
-        tli.machinery_expense_ind = in_machinery_expense_indicator,
-        tli.land_and_building_expense_ind = in_land_and_building_expense_indicator,
-        tli.overhead_expense_ind = in_overhead_expense_indicator,
-        tli.program_payment_for_tips_ind = in_program_payment_for_tips_indicator,
-        tli.other_ind = in_other_indicator,
-        tli.tip_farm_type_1_lookup_id = in_tip_farm_type_1_lookup_id,
-        tli.revision_count = tli.revision_count + 1,
-        tli.who_updated = in_farm_user
-    where tli.tip_line_item_id = in_tip_line_item_id;
+    update farms.farm_tip_line_items
+    set line_item = in_line_item,
+        operating_cost_ind = in_operating_cost_indicator,
+        direct_expense_ind = in_direct_expense_indicator,
+        machinery_expense_ind = in_machinery_expense_indicator,
+        land_and_building_expense_ind = in_land_and_building_expense_indicator,
+        overhead_expense_ind = in_overhead_expense_indicator,
+        program_payment_for_tips_ind = in_program_payment_for_tips_indicator,
+        other_ind = in_other_indicator,
+        tip_farm_type_1_lookup_id = in_tip_farm_type_1_lookup_id,
+        revision_count = revision_count + 1,
+        who_updated = in_farm_user
+    where tip_line_item_id = in_tip_line_item_id;
 
 end;
 $$;

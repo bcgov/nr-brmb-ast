@@ -8,7 +8,7 @@ as $$
 declare
     c_status cursor for
         select ssc.description
-        from farms.agri_scenarios_vw m
+        from farms.farm_agri_scenarios_vw m
         join farms.farm_agristability_scenarios s on s.agristability_scenario_id = m.agristability_scenario_id
         join farms.farm_scenario_state_codes ssc on ssc.scenario_state_code = s.scenario_state_code
         where m.year = in_year

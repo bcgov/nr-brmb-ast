@@ -185,7 +185,7 @@ begin
             ));
         end if;
 
-        select nextval('farms.seq_ri')
+        select nextval('farms.farm_ri_seq')
         into ri_id;
 
         insert into farms.farm_reported_inventories (

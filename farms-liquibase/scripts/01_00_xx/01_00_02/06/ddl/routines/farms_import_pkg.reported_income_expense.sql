@@ -67,7 +67,7 @@ begin
     and li.program_year = yr;
 
     if cnt < 1 then
-        select nextval('farms.seq_li')
+        select nextval('farms.farm_li_seq')
         into t_id;
 
         expry := to_date('31/12/9999', 'DD/MM/YYYY');
@@ -82,7 +82,7 @@ begin
         v_line_item := ie_insert_val.line_item;
         v_farming_operation_id := ie_insert_val.farming_operation_id;
 
-        select nextval('farms.seq_rie')
+        select nextval('farms.farm_rie_seq')
         into t_id;
 
         insert into farms.farm_reported_income_expenses (

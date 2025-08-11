@@ -40,7 +40,7 @@ begin
         who_updated,
         when_updated
     ) values (
-        nextval('farms.seq_sdx'),
+        nextval('farms.farm_sdx_seq'),
         in_sector_code,
         in_sector_detail_code,
         1,

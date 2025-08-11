@@ -112,7 +112,7 @@ begin
             who_updated,
             when_updated
         ) values (
-            nextval('farms.seq_fmv'),
+            nextval('farms.farm_fmv_seq'),
             v_staging.program_year,
             v_staging.period,
             v_staging.average_price,

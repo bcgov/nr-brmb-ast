@@ -34,7 +34,7 @@ begin
     for clm_insert_val in clm_insert_cursor
     loop
 
-        select nextval('farms.seq_ac')
+        select nextval('farms.farm_acl_seq')
         into c_id;
 
         insert into farms.farm_agristability_claims (

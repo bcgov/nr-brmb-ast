@@ -1,4 +1,4 @@
-GRANT SELECT ON farms.scenarios_vw TO "app_farms_rest_proxy";
+GRANT SELECT ON farms.farm_scenarios_vw TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.read_line_items TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_codes_read_pkg.check_line_item_exists_for_program_year TO "app_farms_rest_proxy";

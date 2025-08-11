@@ -16,15 +16,15 @@ begin
 
     if v_default_crop_unit_code is not null then
         -- Expire FMVs for non-default crop units
-        update farms.farm_fair_market_values fmv
-        set fmv.expiry_date = current_date,
-            fmv.revision_count = fmv.revision_count + 1,
-            fmv.who_updated = in_user,
-            fmv.when_updated = current_timestamp
-        where fmv.program_year = in_program_year
-        and fmv.inventory_item_code = in_inventory_item_code
-        and fmv.crop_unit_code != v_default_crop_unit_code
-        and (fmv.expiry_date is null or fmv.expiry_date > current_date);
+        update farms.farm_fair_market_values
+        set expiry_date = current_date,
+            revision_count = revision_count + 1,
+            who_updated = in_user,
+            when_updated = current_timestamp
+        where program_year = in_program_year
+        and inventory_item_code = in_inventory_item_code
+        and crop_unit_code != v_default_crop_unit_code
+        and (expiry_date is null or expiry_date > current_date);
 
         -- Create non-default crop unit FMVs using conversion factors
         insert into farms.farm_fair_market_values (
@@ -43,7 +43,7 @@ begin
             who_updated,
             when_updated
         )
-        select nextval('farms.seq_fmv'),
+        select nextval('farms.farm_fmv_seq'),
                fmv.program_year,
                fmv.period,
                fmv.average_price / cucf.conversion_factor,

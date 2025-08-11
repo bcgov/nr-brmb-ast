@@ -12,18 +12,18 @@ create or replace procedure farms_codes_write_pkg.update_inventory_item_detail(
 language plpgsql
 as $$
 begin
-    update farms.farm_inventory_item_details t
-    set t.eligibility_ind = in_eligibility_indicator,
-        t.revision_count = t.revision_count + 1,
-        t.who_updated = in_user,
-        t.when_updated = current_timestamp,
-        t.fruit_veg_type_code = in_fruit_vegetable_type_code,
-        t.line_item = in_line_item,
-        t.insurable_value = in_insurable_value,
-        t.premium_rate = in_premium_rate,
-        t.commodity_type_code = in_commodity_type_code
-    where t.inventory_item_detail_id = in_inventory_item_detail_id
-    and t.revision_count = in_revision_count;
+    update farms.farm_inventory_item_details
+    set eligibility_ind = in_eligibility_indicator,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp,
+        fruit_veg_type_code = in_fruit_vegetable_type_code,
+        line_item = in_line_item,
+        insurable_value = in_insurable_value,
+        premium_rate = in_premium_rate,
+        commodity_type_code = in_commodity_type_code
+    where inventory_item_detail_id = in_inventory_item_detail_id
+    and revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
         raise exception 'Invalid revision count';

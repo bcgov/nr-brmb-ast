@@ -68,7 +68,7 @@ begin
                b.revision_count as adj_revision_count
         from a
         full outer join b on a.reported_income_expense_id = b.cra_reported_income_expense_id
-        join farms.operations_vw m on a.farming_operation_id = m.farming_operation_id
+        join farms.farm_operations_vw m on a.farming_operation_id = m.farming_operation_id
                                    or b.farming_operation_id = m.farming_operation_id
         join farms.farm_line_items li on (li.line_item = a.line_item or li.line_item = b.line_item)
                                 and m.year = li.program_year

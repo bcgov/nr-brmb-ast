@@ -14,13 +14,13 @@ declare
 begin
 
     if in_fair_market_value_id is not null then
-        update farms.farm_fair_market_values fmv
-        set fmv.expiry_date = current_date,
-            fmv.revision_count = fmv.revision_count + 1,
-            fmr.who_updated = in_user,
-            fmv.when_updated = current_timestamp
-        where fmv.fair_market_value_id = in_fair_market_value_id
-        and fmv.revision_count = in_revision_count;
+        update farms.farm_fair_market_values
+        set expiry_date = current_date,
+            revision_count = revision_count + 1,
+            who_updated = in_user,
+            when_updated = current_timestamp
+        where fair_market_value_id = in_fair_market_value_id
+        and revision_count = in_revision_count;
 
         if sql%rowcount <> 1 then
             raise exception 'Invalid revision count';
@@ -33,17 +33,17 @@ begin
     where cud.inventory_item_code = in_inventory_item_code;
 
     if v_default_crop_unit_code is not null then
-        update farms.farm_fair_market_values fmv
-        set fmv.expiry_date = current_date,
-            fmv.revision_count = fmv.revision_count + 1,
-            fmv.who_updated = in_user,
-            fmv.when_updated = current_timestamp
-        where fmv.program_year = in_program_year
-        and fmv.period = in_period
-        and fmv.inventory_item_code = in_inventory_item_code
-        and fmv.municipality_code = in_municipality_code
-        and (fmv.expiry_date is null or fmv.expiry_date > current_date)
-        and (in_fair_market_value_id is null or fmv.fair_market_value_id != in_fair_market_value_id);
+        update farms.farm_fair_market_values
+        set expiry_date = current_date,
+            revision_count = revision_count + 1,
+            who_updated = in_user,
+            when_updated = current_timestamp
+        where program_year = in_program_year
+        and period = in_period
+        and inventory_item_code = in_inventory_item_code
+        and municipality_code = in_municipality_code
+        and (expiry_date is null or expiry_date > current_date)
+        and (in_fair_market_value_id is null or fair_market_value_id != in_fair_market_value_id);
     end if;
 
 end;

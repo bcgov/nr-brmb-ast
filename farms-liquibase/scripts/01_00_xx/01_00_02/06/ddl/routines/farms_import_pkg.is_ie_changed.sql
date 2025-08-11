@@ -17,7 +17,7 @@ begin
                sum(ie.amount) as amount,
                ie.expense_ind,
                string_agg(ie.import_comment, ' ' order by ie.import_comment) as import_comment
-        from farms.operations_vw m
+        from farms.farm_operations_vw m
         join farms.farm_farming_operations op on op.farming_operation_id = m.farming_operation_id
         join farms.farm_reported_income_expenses ie on ie.farming_operation_id = m.farming_operation_id
         where m.program_year_version_id = in_program_year_vrsn_prev_id

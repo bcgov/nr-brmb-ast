@@ -40,7 +40,7 @@ begin
             when_updated,
             revision_count
         ) values (
-            nextval('farms.seq_sdli'),
+            nextval('farms.farm_sdli_seq'),
             in_program_year,
             in_line_item,
             in_sector_detail_code,
@@ -51,12 +51,12 @@ begin
             1
         );
     elsif v_sector_detail_line_item_id is not null and in_sector_detail_code is not null and v_current_sector_detail_code != in_sector_detail_code then
-        update farms.farm_sector_detail_line_items sdli
-        set sdli.sector_detail_code = in_sector_detail_code,
-            sdli.revision_count = revision_count + 1,
+        update farms.farm_sector_detail_line_items
+        set sector_detail_code = in_sector_detail_code,
+            revision_count = revision_count + 1,
             who_updated = in_user,
             when_updated = current_timestamp
-        where sdli.sector_detail_line_item_id = v_sector_detail_line_item_id;
+        where sector_detail_line_item_id = v_sector_detail_line_item_id;
     elsif v_sector_detail_line_item_id is not null and in_sector_detail_code is null then
         delete from farms.farm_sector_detail_line_items sdli
         where sdli.sector_detail_line_item_id = v_sector_detail_line_item_id;

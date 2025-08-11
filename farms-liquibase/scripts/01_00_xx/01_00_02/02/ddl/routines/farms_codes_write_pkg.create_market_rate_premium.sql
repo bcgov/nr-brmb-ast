@@ -22,7 +22,7 @@ begin
         who_updated,
         when_updated
     ) values (
-        nextval('farms.seq_mrp'),
+        nextval('farms.farm_mrp_seq'),
         in_minimum_total_premium_amount,
         in_maximum_total_premium_amount,
         in_risk_charge_flat_amount,

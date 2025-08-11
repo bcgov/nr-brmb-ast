@@ -15,7 +15,7 @@ begin
         log_message,
         import_version_id
     ) values (
-        nextval('farms.seq_il'),
+        nextval('farms.farm_ilg_seq'),
         v_xml_msg,
         in_import_version_id
     );

@@ -17,15 +17,15 @@ begin
         in_user
     );
 
-    update farms.farm_municipality_codes c
-    set c.description = in_description,
-        c.established_date = in_effective_date,
-        c.expiry_date = in_expiry_date,
-        c.revision_count = c.revision_count + 1,
-        c.who_updated = in_user,
-        c.when_updated = current_timestamp
-    where c.municipality_code = in_municipality_code
-    and c.revision_count = in_revision_count;
+    update farms.farm_municipality_codes
+    set description = in_description,
+        established_date = in_effective_date,
+        expiry_date = in_expiry_date,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where municipality_code = in_municipality_code
+    and revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
         raise exception 'Invalid revision count';

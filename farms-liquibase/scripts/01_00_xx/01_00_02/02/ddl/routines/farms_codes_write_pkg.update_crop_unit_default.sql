@@ -8,13 +8,13 @@ language plpgsql
 as $$
 begin
 
-    update farms.farm_crop_unit_defaults cud
-    set cud.crop_unit_code = in_crop_unit_code,
-        cud.revision_count = cud.revision_count + 1,
-        cud.who_updated = in_user,
-        cud.when_updated = current_timestamp
-    where cud.inventory_item_code = in_inventory_item_code
-    and cud.revision_count = in_revision_count;
+    update farms.farm_crop_unit_defaults
+    set crop_unit_code = in_crop_unit_code,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where inventory_item_code = in_inventory_item_code
+    and revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
         raise exception 'Invalid revision count';

@@ -1,5 +1,5 @@
 drop procedure if exists farms_webapp_pkg.insert_import_version(
-    numeric,
+    bigint,
     varchar,
     varchar,
     varchar,
@@ -38,7 +38,7 @@ begin
         who_updated,
         when_updated
     ) values (
-        nextval('farms.seq_iv'),
+        nextval('farms.farm_iv_seq'),
         in_user,
         in_description,
         in_import_file_name,

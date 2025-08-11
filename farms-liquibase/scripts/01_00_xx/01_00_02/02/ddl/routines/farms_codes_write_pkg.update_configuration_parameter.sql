@@ -7,12 +7,12 @@ language plpgsql
 as $$
 begin
 
-    update farms.farm_configuration_parameters c
-    set c.parameter_value = in_config_param_value,
-        c.when_updated = current_timestamp,
-        c.who_updated = in_farm_user,
-        c.revision_count = c.revision_count + 1
-    where c.parameter_name = in_config_param_name;
+    update farms.farm_configuration_parameters
+    set parameter_value = in_config_param_value,
+        when_updated = current_timestamp,
+        who_updated = in_farm_user,
+        revision_count = revision_count + 1
+    where parameter_name = in_config_param_name;
 
 end;
 $$;

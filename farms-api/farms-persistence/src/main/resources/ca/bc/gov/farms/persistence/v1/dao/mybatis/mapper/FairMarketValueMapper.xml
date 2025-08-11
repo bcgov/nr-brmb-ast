@@ -41,10 +41,10 @@
         <result property="period12Variance" column="period_12_variance" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
 
         <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
-        <result property="createUser" column="create_user" javaType="java.lang.String" jdbcType="VARCHAR" />
-        <result property="createDate" column="create_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-        <result property="updateUser" column="update_user" javaType="java.lang.String" jdbcType="VARCHAR" />
-        <result property="updateDate" column="update_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
     </resultMap>
 
     <sql id="selectColumns">
@@ -92,7 +92,7 @@
                 fmv.crop_unit_code as group_id,
             'period_' || to_char(period, '00') || '_price' as period_str,
             fmv.average_price
-            from farms.fair_market_value fmv
+            from farms.farm_fair_market_values fmv
             where fmv.program_year = ${programYear}
             order by 1, 2
         $$)
@@ -116,7 +116,7 @@
                 fmv.crop_unit_code as group_id,
             'period_' || to_char(period, '00') || '_variance' as period_str,
             fmv.percent_variance
-            from farms.fair_market_value fmv
+            from farms.farm_fair_market_values fmv
             where fmv.program_year = ${programYear}
             order by 1, 2
         $$)
@@ -133,11 +133,11 @@
                "period_10_variance" numeric,
                "period_11_variance" numeric,
                "period_12_variance" numeric) on apt.group_id = pvt.group_id
-        join farms.inventory_item_code iic on split_part(apt.group_id, '_', 2) = iic.inventory_item_code
-        join farms.municipality_code mc on split_part(apt.group_id, '_', 3) = mc.municipality_code
-        join farms.crop_unit_code cuc on split_part(apt.group_id, '_', 4) = cuc.crop_unit_code
-        left join farms.crop_unit_default cud using (inventory_item_code)
-        left join farms.crop_unit_code cudc on cud.crop_unit_code = cudc.crop_unit_code
+        join farms.farm_inventory_item_codes iic on split_part(apt.group_id, '_', 2) = iic.inventory_item_code
+        join farms.farm_municipality_codes mc on split_part(apt.group_id, '_', 3) = mc.municipality_code
+        join farms.farm_crop_unit_codes cuc on split_part(apt.group_id, '_', 4) = cuc.crop_unit_code
+        left join farms.farm_crop_unit_defaults cud using (inventory_item_code)
+        left join farms.farm_crop_unit_codes cudc on cud.crop_unit_code = cudc.crop_unit_code
     </sql>
 
     <select id="fetch" resultMap="FairMarketValueResultDtoMap">
@@ -167,9 +167,9 @@
 
     <insert id="insertFairMarketValue">
         <selectKey keyProperty="fairMarketValueId" resultType="java.lang.Long" order="BEFORE">
-            select nextval('farms.seq_fmv')
+            select nextval('farms.farm_fmv_seq')
         </selectKey>
-        insert into farms.fair_market_value (
+        insert into farms.farm_fair_market_values (
             fair_market_value_id,
             program_year,
             period,
@@ -180,10 +180,10 @@
             municipality_code,
             crop_unit_code,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             #{fairMarketValueId},
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
@@ -203,12 +203,12 @@
     </insert>
 
     <update id="updateFairMarketValue">
-        update farms.fair_market_value
+        update farms.farm_fair_market_values
         set average_price = #{averagePrice, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             percent_variance = #{percentVariance, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             revision_count = revision_count + 1,
-            update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            update_date = now()
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
         where program_year || '_' ||
               inventory_item_code || '_' ||
               municipality_code || '_' ||
@@ -217,7 +217,7 @@
     </update>
 
     <delete id="deleteFairMarketValue">
-        delete from farms.fair_market_value
+        delete from farms.farm_fair_market_values
         where program_year || '_' ||
               inventory_item_code || '_' ||
               municipality_code || '_' ||

@@ -235,6 +235,12 @@
                             "splitStatements": "false",
                             "path": "ddl/routines/farms_version_pkg.perform_import.sql"
                         }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/grants/farms.ddl.apply_grants.sql"
+                        }
                     }
                 ]
             }

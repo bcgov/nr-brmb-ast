@@ -41,7 +41,7 @@ begin
         when_updated,
         revision_count
     ) values (
-        nextval('farms.seq_sga'),
+        nextval('farms.farm_sga_seq'),
         in_structure_group_code,
         in_rollup_structure_group_code,
         in_user,

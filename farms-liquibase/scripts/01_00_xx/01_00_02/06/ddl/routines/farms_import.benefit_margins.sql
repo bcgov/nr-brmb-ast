@@ -25,7 +25,7 @@ begin
     for bm_insert_val in bm_insert_cursor
     loop
 
-        select nextval('farms.seq_bct')
+        select nextval('farms.farm_bcmt_seq')
         into c_id;
 
         insert into farms.farm_benefit_calc_totals (

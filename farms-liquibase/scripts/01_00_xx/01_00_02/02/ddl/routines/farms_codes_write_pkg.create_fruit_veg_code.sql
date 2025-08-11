@@ -40,7 +40,7 @@ begin
         when_updated,
         revision_count
     ) values (
-        nextval('farms.seq_fvtd'),
+        nextval('farms.farm_fvtd_seq'),
         in_fruit_veg_code,
         in_fruit_veg_code_variance_limit,
         in_farm_user,

@@ -18,7 +18,7 @@ begin
         when_updated,
         revision_count
     ) values (
-        nextval('farms.seq_tft1l'),
+        nextval('farms.farm_tft1l_seq'),
         in_farm_type_name,
         in_farm_type_2_id,
         in_farm_user,

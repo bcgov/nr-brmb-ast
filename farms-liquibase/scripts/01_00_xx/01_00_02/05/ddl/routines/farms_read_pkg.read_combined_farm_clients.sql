@@ -17,7 +17,7 @@ begin
                o.corp_name,
                cl.total_benefit
         from farms.farm_agristability_scenarios sc
-        join farms.agri_scenarios_vw m on m.agristability_scenario_id = sc.agristability_scenario_id
+        join farms.farm_agri_scenarios_vw m on m.agristability_scenario_id = sc.agristability_scenario_id
         join farms.farm_agristability_clients ac on ac.agristability_client_id = m.agristability_client_id
         join farms.farm_persons o on o.person_id = ac.person_id
         left outer join farms.farm_agristability_claims cl on cl.agristability_scenario_id = sc.agristability_scenario_id

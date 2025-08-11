@@ -10,26 +10,26 @@ create or replace procedure farms_codes_write_pkg.update_structure_group_code(
 language plpgsql
 as $$
 begin
-    update farms.farm_structure_group_codes c
-    set c.description = in_description,
-        c.established_date = in_effective_date,
-        c.expiry_date = in_expiry_date,
-        c.revision_count = c.revision_count + 1,
-        c.who_updated = in_user,
-        c.when_updated = current_timestamp
-    where c.structure_group_code = in_structure_group_code
-    and c.revision_count = in_revision_count;
+    update farms.farm_structure_group_codes
+    set description = in_description,
+        established_date = in_effective_date,
+        expiry_date = in_expiry_date,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where structure_group_code = in_structure_group_code
+    and revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
         raise exception 'Invalid revision count';
     end if;
 
-    update farms.farm_structure_group_attributs a
-    set a.rollup_structure_group_code = in_rollup_structure_group_code,
-        a.revision_count = a.revision_count + 1,
-        a.who_updated = in_user,
-        a.when_updated = current_timestamp
-    where a.structure_group_code = in_structure_group_code;
+    update farms.farm_structure_group_attributs
+    set rollup_structure_group_code = in_rollup_structure_group_code,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where structure_group_code = in_structure_group_code;
 
 end;
 $$;

@@ -8,14 +8,14 @@ create or replace procedure farms_codes_write_pkg.update_inventory_xref(
 language plpgsql
 as $$
 begin
-    update farms.farm_agristabilty_cmmdty_xref x
-    set x.inventory_group_code = in_inventory_group_code,
-        x.market_commodity_ind = in_market_commodity_indicator,
-        x.revision_count = x.revision_count + 1,
-        x.who_updated = in_user,
-        x.when_updated = current_timestamp
-    where x.agristabilty_cmmdty_xref_id = in_agristabilty_commodity_xref_id
-    and x.revision_count = in_revision_count;
+    update farms.farm_agristabilty_cmmdty_xref
+    set inventory_group_code = in_inventory_group_code,
+        market_commodity_ind = in_market_commodity_indicator,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where agristabilty_cmmdty_xref_id = in_agristabilty_commodity_xref_id
+    and revision_count = in_revision_count;
 
     if sql%rowcount <> 1 then
         raise exception 'Invalid revision count';

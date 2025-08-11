@@ -1,4 +1,4 @@
-create or replace view farms.agri_scenarios_vw as
+create or replace view farms.farm_agri_scenarios_vw as
 select ac.agristability_client_id,
        py.program_year_id,
        pyv.program_year_version_id,

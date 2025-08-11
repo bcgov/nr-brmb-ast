@@ -10,7 +10,7 @@ begin
     open cur for
         select ftc.farm_type_code,
                ftc.description
-        from farms.scenarios_vw sv
+        from farms.farm_scenarios_vw sv
         join farms.farm_program_years py on sv.program_year_id = py.program_year_id
         join farms.farm_farm_type_codes ftc on py.farm_type_code = ftc.farm_type_code
         where sv.agristability_scenario_id = in_agristability_scenario_id;

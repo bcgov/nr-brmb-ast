@@ -48,7 +48,7 @@ begin
             when_updated,
             revision_count
         )
-        select nextval('farms.seq_li') line_item_id,
+        select nextval('farms.farm_li_seq') line_item_id,
                in_to_year,
                line_item,
                description,
@@ -112,7 +112,7 @@ begin
             who_updated,
             when_updated
         )
-        select nextval('farms.seq_sdli') sector_detail_line_item_id,
+        select nextval('farms.farm_sdli_seq') sector_detail_line_item_id,
                in_to_year program_year,
                line_item,
                sector_detail_code,

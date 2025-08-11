@@ -25,7 +25,7 @@ begin
         when_updated,
         revision_count
     ) values (
-        nextval('farms.seq_tir'),
+        nextval('farms.farm_tir_seq'),
         in_farm_type_3_id,
         in_farm_type_2_id,
         in_farm_type_1_id,

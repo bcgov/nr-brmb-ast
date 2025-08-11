@@ -124,7 +124,7 @@ begin
                         when_updated,
                         revision_count
                     ) values (
-                        nextval('farms.seq_iia'),
+                        nextval('farms.farm_iia_seq'),
                         iic_val.inventory_code::varchar,
                         null,
                         in_user,
@@ -146,7 +146,7 @@ begin
                         when_updated
                     )
                     select
-                        nextval('farms.seq_iid'),
+                        nextval('farms.farm_iid_seq'),
                         y.program_year,
                         'Y',
                         iic_val.inventory_code::varchar,
@@ -317,7 +317,7 @@ begin
                     who_updated,
                     when_updated
                 ) values (
-                    nextval('farms.seq_acx'),
+                    nextval('farms.farm_acx_seq'),
                     xref_val.inventory_code::varchar,
                     xref_val.inventory_group_code::varchar,
                     xref_val.inventory_type_code::varchar,

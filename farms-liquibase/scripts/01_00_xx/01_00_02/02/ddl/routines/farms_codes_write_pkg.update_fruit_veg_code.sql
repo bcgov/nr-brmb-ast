@@ -8,16 +8,16 @@ language plpgsql
 as $$
 begin
 
-    update farms.farm_fruit_veg_type_codes c
-    set c.description = in_fruit_veg_code_description,
-        c.who_updated = in_farm_user
-    where c.fruit_veg_type_code = in_fruit_veg_code;
+    update farms.farm_fruit_veg_type_codes
+    set description = in_fruit_veg_code_description,
+        who_updated = in_farm_user
+    where fruit_veg_type_code = in_fruit_veg_code;
 
-    update farms.farm_fruit_veg_type_details c
-    set c.revenue_variance_limit = in_fruit_veg_code_variance_limit,
-        c.who_updated = in_farm_user,
-        c.revision_count = c.revision_count + 1
-    where c.fruit_veg_type_code = in_fruit_veg_code;
+    update farms.farm_fruit_veg_type_details
+    set revenue_variance_limit = in_fruit_veg_code_variance_limit,
+        who_updated = in_farm_user,
+        revision_count = revision_count + 1
+    where fruit_veg_type_code = in_fruit_veg_code;
 
 end;
 $$;

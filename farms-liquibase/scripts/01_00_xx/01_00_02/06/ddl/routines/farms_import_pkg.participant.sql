@@ -131,7 +131,7 @@ begin
         v_participant_language_code := z01_val.p_in_participant_language_code;
         -- ag client info
         if z01_val.p_locally_updated_indicator is null then
-            select nextval(farms.seq_ac1)
+            select nextval(farms.farm_asc_seq)
             into out_agristability_client_id;
             in_out_activity := in_out_activity + 1;
 
