@@ -68,7 +68,7 @@
         from farms.farm_benchmark_per_units bpu
         join farms.farm_municipality_codes mc using (municipality_code)
         left join farms.farm_inventory_item_codes iic using (inventory_item_code)
-        left join farms.structure_group_code sgc using (structure_group_code)
+        left join farms.farm_structure_group_codes sgc using (structure_group_code)
         join crosstab($$
             select by.benchmark_per_unit_id,
             (case
@@ -81,7 +81,7 @@
             end) as year,
             by.average_margin
             from farms.farm_benchmark_per_units bpu
-            join farms.benchmark_year by using (benchmark_per_unit_id)
+            join farms.farm_benchmark_years by using (benchmark_per_unit_id)
             where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
             order by 1, 2
         $$)
@@ -104,7 +104,7 @@
             end) as year,
             by.average_expense
             from farms.farm_benchmark_per_units bpu
-            join farms.benchmark_year by using (benchmark_per_unit_id)
+            join farms.farm_benchmark_years by using (benchmark_per_unit_id)
             where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
             order by 1, 2
         $$)
@@ -174,7 +174,7 @@
     </insert>
 
     <insert id="insertBenchmarkYear">
-        insert into farms.benchmark_year (
+        insert into farms.farm_benchmark_years (
             benchmark_per_unit_id,
             benchmark_year,
             average_margin,
@@ -222,7 +222,7 @@
     </update>
 
     <update id="updateBenchmarkYear">
-        update farms.benchmark_year
+        update farms.farm_benchmark_years
         set average_margin = #{averageMargin, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             average_expense = #{averageExpense, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             revision_count = revision_count + 1,
@@ -233,7 +233,7 @@
     </update>
 
     <delete id="deleteBenchmarkYear">
-        delete from farms.benchmark_year
+        delete from farms.farm_benchmark_years
         where benchmark_per_unit_id = #{benchmarkPerUnitId}
     </delete>
 

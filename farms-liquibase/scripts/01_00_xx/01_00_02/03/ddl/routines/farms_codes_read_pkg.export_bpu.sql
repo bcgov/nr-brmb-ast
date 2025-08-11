@@ -45,7 +45,7 @@ begin
                    max(case when yrs.benchmark_year = (bpus.program_year - 2) then yrs.average_expense else null end) year_minus_2_expense,
                    max(case when yrs.benchmark_year = (bpus.program_year - 1) then yrs.average_expense else null end) year_minus_1_expense
             from farms.farm_benchmark_per_units bpus
-            join farms.benchmark_years yrs on yrs.benchmark_per_unit_id = bpus.benchmark_per_unit_id
+            join farms.farm_benchmark_years yrs on yrs.benchmark_per_unit_id = bpus.benchmark_per_unit_id
             join farms.farm_municipality_codes mc on mc.municipality_code = bpus.municipality_code
             left join farms.farm_inventory_item_codes iic on iic.inventory_item_code = bpus.inventory_item_code
             left join farms.farm_structure_group_codes sgc on sgc.structure_group_code = bpus.structure_group_code
