@@ -32,7 +32,7 @@ begin
                csub.chef_submission_guid,
                sc.participnt_data_src_code,
                fpyv.municipality_code
-        from farms.agri_scenarios_vw m
+        from farms.farm_agri_scenarios_vw m
         join farms.farm_agristability_scenarios sc on sc.agristability_scenario_id = m.agristability_scenario_id
         join farms.farm_scenario_state_codes ssc on ssc.scenario_state_code = sc.scenario_state_code
         join farms.farm_scenario_class_codes stc on stc.scenario_class_code = sc.scenario_class_code

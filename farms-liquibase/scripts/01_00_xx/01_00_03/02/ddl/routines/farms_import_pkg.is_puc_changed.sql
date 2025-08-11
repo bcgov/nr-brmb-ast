@@ -227,7 +227,7 @@ begin
                m.operation_number,
                row_number() over (partition by productive_capacity_amount, import_comment,
                structure_group_code, inventory_item_code, m.operation_number order by 1) rn
-        from farms.operations_vw m
+        from farms.farm_operations_vw m
         join farms.farm_farming_operations op on op.farming_operation_id = m.farming_operation_id
         join farms.farm_productve_unit_capacities puc on puc.farming_operation_id = m.farming_operation_id
         where m.program_year_version_id = in_program_year_vrsn_prev_id

@@ -28,7 +28,7 @@ begin
            in_user,
            current_timestamp,
            1
-    from farms.regional_office r
+    from farms.farm_regional_office_codes r
     where r.regional_office_code = any(office_codes);
 
 end;

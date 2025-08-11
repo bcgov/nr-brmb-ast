@@ -17,7 +17,7 @@ begin
                        when x.inventory_class_code = '2' then null
                        else ri.crop_unit_code
                    end) crop_unit_code
-            from farms.operations_vw m
+            from farms.farm_operations_vw m
             join farms.farm_reported_inventories ri on ri.farming_operation_id = m.farming_operation_id
             join farms.farm_agristabilty_cmmdty_xref x on x.agristabilty_cmmdty_xref_id = ri.agristabilty_cmmdty_xref_id
             where x.inventory_class_code in ('1', '2')

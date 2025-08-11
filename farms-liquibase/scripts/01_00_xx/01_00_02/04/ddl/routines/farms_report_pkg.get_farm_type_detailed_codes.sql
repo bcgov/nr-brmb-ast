@@ -15,7 +15,7 @@ begin
                puc.structure_group_code,
                puc.agristability_scenario_id,
                puc.inventory_item_code
-        from farms.scenarios_vw sv
+        from farms.farm_scenarios_vw sv
         join farms.farm_farming_operations fo on fo.program_year_version_id = sv.program_year_version_id
         join farms.farm_productve_unit_capacities puc on puc.farming_operation_id = fo.farming_operation_id
         where sv.agristability_scenario_id = in_scenario_id

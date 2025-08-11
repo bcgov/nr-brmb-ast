@@ -1,4 +1,4 @@
-GRANT SELECT ON farms.operations_vw TO "app_farms_rest_proxy";
+GRANT SELECT ON farms.farm_operations_vw TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.insert_import_version TO "app_farms_rest_proxy";
 

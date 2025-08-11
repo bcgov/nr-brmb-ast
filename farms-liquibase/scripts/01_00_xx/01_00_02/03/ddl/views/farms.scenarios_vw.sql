@@ -1,4 +1,4 @@
-create or replace view farms.scenarios_vw as
+create or replace view farms.farm_scenarios_vw as
 select ac.participant_pin,
        py.year,
        pyv.program_year_version_number,

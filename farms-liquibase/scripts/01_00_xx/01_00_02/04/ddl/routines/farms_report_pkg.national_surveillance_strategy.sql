@@ -30,7 +30,7 @@ begin
                    m.agristability_scenario_id,
                    s.combined_farm_number,
                    (case when s.combined_farm_number is not null then cl.applied_benefit_percent end) combined_farm_percent
-            from farms.agri_scenarios_vw m
+            from farms.farm_agri_scenarios_vw m
             join farms.farm_program_years py on py.program_year_id = m.program_year_id
             join farms.farm_agristability_scenarios s on s.agristability_scenario_id = m.agristability_scenario_id
             join farms.farm_benefit_calc_totals bct on bct.agristability_scenario_id = m.agristability_scenario_id

@@ -14,7 +14,7 @@ begin
                    puc.inventory_item_code,
                    m.year ref_year,
                    count(distinct m.participant_pin) affected_pin_count
-            from farms.operations_vw m
+            from farms.farm_operations_vw m
             join farms.farm_productve_unit_capacities puc on puc.farming_operation_id = m.farming_operation_id
             where (puc.inventory_item_code is null or puc.inventory_item_code != '-1')
             and (puc.structure_group_code is null or puc.structure_group_code != '-1')
