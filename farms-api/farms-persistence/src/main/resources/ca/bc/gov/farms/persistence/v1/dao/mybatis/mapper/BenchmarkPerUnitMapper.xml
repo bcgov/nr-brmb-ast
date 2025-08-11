@@ -65,9 +65,9 @@
     </sql>
 
     <sql id="fromClause">
-        from farms.benchmark_per_unit bpu
-        join farms.municipality_code mc using (municipality_code)
-        left join farms.inventory_item_code iic using (inventory_item_code)
+        from farms.farm_benchmark_per_units bpu
+        join farms.farm_municipality_codes mc using (municipality_code)
+        left join farms.farm_inventory_item_codes iic using (inventory_item_code)
         left join farms.structure_group_code sgc using (structure_group_code)
         join crosstab($$
             select by.benchmark_per_unit_id,
@@ -80,7 +80,7 @@
                 when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_margin'
             end) as year,
             by.average_margin
-            from farms.benchmark_per_unit bpu
+            from farms.farm_benchmark_per_units bpu
             join farms.benchmark_year by using (benchmark_per_unit_id)
             where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
             order by 1, 2
@@ -103,7 +103,7 @@
                 when by.benchmark_year = bpu.program_year-1 then 'year_minus_1_expense'
             end) as year,
             by.average_expense
-            from farms.benchmark_per_unit bpu
+            from farms.farm_benchmark_per_units bpu
             join farms.benchmark_year by using (benchmark_per_unit_id)
             where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
             order by 1, 2
@@ -132,9 +132,9 @@
 
     <insert id="insertBenchmarkPerUnit">
         <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
-            select nextval('farms.seq_bpu')
+            select nextval('farms.farm_bpu_seq')
         </selectKey>
-        insert into farms.benchmark_per_unit (
+        insert into farms.farm_benchmark_per_units (
             benchmark_per_unit_id,
             program_year,
             unit_comment,
@@ -198,7 +198,7 @@
     </insert>
 
     <update id="updateBenchmarkPerUnit">
-        update farms.benchmark_per_unit
+        update farms.farm_benchmark_per_units
         set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             unit_comment = #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             expiry_date = #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
@@ -238,7 +238,7 @@
     </delete>
 
     <delete id="deleteBenchmarkPerUnit">
-        delete from farms.benchmark_per_unit
+        delete from farms.farm_benchmark_per_units
         where benchmark_per_unit_id = #{benchmarkPerUnitId}
     </delete>
 </mapper>
