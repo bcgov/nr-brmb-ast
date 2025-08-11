@@ -231,7 +231,7 @@ public class CodeTableSpringConfig {
         CodeTableConfig result = new CodeTableConfig();
 
         String fetchSql = String.format(
-                "SELECT T.%s CODE, T.DESCRIPTION, NULL DISPLAY_ORDER, T.EFFECTIVE_DATE, T.EXPIRY_DATE, T.REVISION_COUNT, T.CREATE_USER, T.CREATE_DATE, T.UPDATE_USER, T.UPDATE_DATE FROM %s T ORDER BY T."
+                "SELECT T.%s CODE, T.DESCRIPTION, NULL DISPLAY_ORDER, T.EFFECTIVE_DATE, T.EXPIRY_DATE, T.REVISION_COUNT, T.WHO_CREATED, T.WHEN_CREATED, T.WHO_UPDATED, T.WHEN_UPDATED FROM %s T ORDER BY T."
                         + sortColumn,
                 tableName, tableName);
 

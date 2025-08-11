@@ -41,10 +41,10 @@
         <result property="period12Variance" column="period_12_variance" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
 
         <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
-        <result property="createUser" column="create_user" javaType="java.lang.String" jdbcType="VARCHAR" />
-        <result property="createDate" column="create_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-        <result property="updateUser" column="update_user" javaType="java.lang.String" jdbcType="VARCHAR" />
-        <result property="updateDate" column="update_date" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
     </resultMap>
 
     <sql id="selectColumns">
@@ -180,10 +180,10 @@
             municipality_code,
             crop_unit_code,
             revision_count,
-            create_user,
-            create_date,
-            update_user,
-            update_date
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
         ) values (
             #{fairMarketValueId},
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
@@ -207,8 +207,8 @@
         set average_price = #{averagePrice, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             percent_variance = #{percentVariance, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             revision_count = revision_count + 1,
-            update_user = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            update_date = now()
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
         where program_year || '_' ||
               inventory_item_code || '_' ||
               municipality_code || '_' ||
