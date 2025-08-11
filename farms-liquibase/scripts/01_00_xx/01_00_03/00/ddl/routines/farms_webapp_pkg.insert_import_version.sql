@@ -1,5 +1,5 @@
 drop procedure if exists farms_webapp_pkg.insert_import_version(
-    numeric,
+    bigint,
     varchar,
     varchar,
     varchar,
