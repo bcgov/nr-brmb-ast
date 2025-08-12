@@ -34,7 +34,17 @@ After the database is created, execute the below command to connect to the datab
 \connect <database_name>;
 ```
 
-### 1.3. Create Schema
+### 1.3. Create Logins
+
+Open file `db_preconditions/logins/farms.ddl.create_login_app_farms.sql`. Replace `${POSTGRES_ADMIN_PASSWORD}` with password of your choosing.
+
+Copy paste the result into the PSQL terminal to create logins.
+
+### 1.4. Create Roles
+
+Open file `db_preconditions/roles/farms.ddl.create_roles.sql`. Copy paste the file content into PSQL terminal to create roles.
+
+### 1.5. Create Schema
 
 Open file `db_preconditions/schema/farms.ddl.create_farms_schema.sql`. Replace all occurrences of `${ENV}` with the name of the intended environment such as:
 * dev
@@ -45,19 +55,9 @@ Open file `db_preconditions/schema/farms.ddl.create_farms_schema.sql`. Replace a
 
 Copy paste the result into the PSQL terminal to create schema.
 
-### 1.4. Create Extensions
+### 1.6. Create Extensions
 
 Open file `db_preconditions/extensions/farms.ddl.create_extensions.sql`. Copy paste the file content into PSQL terminal to create extensions.
-
-### 1.5. Create Logins
-
-Open file `db_preconditions/logins/farms.ddl.create_login_app_farms.sql`. Replace `${POSTGRES_ADMIN_PASSWORD}` with password of your choosing.
-
-Copy paste the result into the PSQL terminal to create logins.
-
-### 1.6. Create Roles
-
-Open file `db_preconditions/roles/farms.ddl.create_roles.sql`. Copy paste the file content into PSQL terminal to create roles.
 
 ## 2. Export/Import Schema
 
