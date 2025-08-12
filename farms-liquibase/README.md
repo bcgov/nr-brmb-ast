@@ -111,7 +111,7 @@ Note that `ora2pg` tends to hang when exporting Oracle packages. If that happens
 
 Execute the below command to initiate the import process. Note that `<...>` are placeholders that need to be replaced with proper values.
 ```
-./import_all.sh -h <host> -U <database_user> -d <database_name> -p 5432 -o <database_owner>
+./import_all.sh -h <host> -U <database_user> -d <database_name> -p <database_port> -o <database_owner>
 ```
 
 Note that you will be prompted for passwords multiple times. Please enter them accordingly so that the import process will proceed to the next step.
