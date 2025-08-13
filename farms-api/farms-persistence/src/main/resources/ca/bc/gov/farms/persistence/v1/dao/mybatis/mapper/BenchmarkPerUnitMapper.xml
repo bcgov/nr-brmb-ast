@@ -4,7 +4,7 @@
 <mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.BenchmarkPerUnitMapper">
 
     <resultMap id="BenchmarkPerUnitDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.BenchmarkPerUnitDto">
-        <id property="benchmarkPerUnitId" column="benchmark_per_unit_id" javaType="java.lang.Long" jdbcType="NUMERIC" />
+        <id property="benchmarkPerUnitId" column="benchmark_per_unit_id" javaType="java.lang.Long" jdbcType="BIGINT" />
 
         <result property="programYear" column="program_year" javaType="java.lang.Integer" jdbcType="NUMERIC" />
         <result property="unitComment" column="unit_comment" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -85,7 +85,7 @@
             where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
             order by 1, 2
         $$)
-        as mt(benchmark_per_unit_id numeric,
+        as mt(benchmark_per_unit_id bigint,
               "year_minus_1_margin" numeric,
               "year_minus_2_margin" numeric,
               "year_minus_3_margin" numeric,
@@ -108,7 +108,7 @@
             where (bpu.expiry_date is null or bpu.expiry_date &gt; current_date)
             order by 1, 2
         $$)
-        as et(benchmark_per_unit_id numeric,
+        as et(benchmark_per_unit_id bigint,
               "year_minus_1_expense" numeric,
               "year_minus_2_expense" numeric,
               "year_minus_3_expense" numeric,
@@ -218,7 +218,7 @@
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             when_updated = now()
-        where benchmark_per_unit_id = #{dto.benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+        where benchmark_per_unit_id = #{dto.benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
     </update>
 
     <update id="updateBenchmarkYear">
@@ -228,7 +228,7 @@
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             when_updated = now()
-        where benchmark_per_unit_id = #{benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=NUMERIC, mode=IN}
+        where benchmark_per_unit_id = #{benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
         and benchmark_year = #{benchmarkYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN}
     </update>
 
