@@ -40,7 +40,7 @@ public class ImportDaoImpl extends BaseDao implements ImportDao {
             callableStatement.setBytes(7, dto.getImportFile());
             callableStatement.setString(8, dto.getImportedByUser());
             callableStatement.execute();
-            dto.setImportVersionId(callableStatement.getBigDecimal(1).longValue());
+            dto.setImportVersionId(callableStatement.getLong(1));
         } catch (RuntimeException | SQLException e) {
             handleException(e);
         }
