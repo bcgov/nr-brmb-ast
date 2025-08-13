@@ -22,6 +22,7 @@ import ca.bc.gov.brmb.common.persistence.code.dao.jdbc.BaseDao;
 import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
 import ca.bc.gov.brmb.common.persistence.code.dto.CodeTableDto;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
+import ca.bc.gov.farms.persistence.code.dao.FarmsCodeTableConfig;
 
 public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
 
@@ -37,7 +38,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
 
         try (Connection conn = this.dataSource.getConnection()) {
 
-            List<CodeDto> dtos = select(conn, codeTableConfig, effectiveAsOfDate);
+            List<CodeDto> dtos = select(conn, (FarmsCodeTableConfig) codeTableConfig, effectiveAsOfDate);
 
             result = new CodeTableDto();
             result.setCodeTableName(codeTableConfig.getCodeTableName());
@@ -62,7 +63,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
 
         try (Connection conn = this.dataSource.getConnection()) {
 
-            List<CodeDto> persistedDtos = select(conn, codeTableConfig, null);
+            List<CodeDto> persistedDtos = select(conn, (FarmsCodeTableConfig) codeTableConfig, null);
 
             for (Iterator<CodeDto> iter = dtos.iterator(); iter.hasNext();) {
                 CodeDto dto = iter.next();
@@ -72,7 +73,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
                     if (dto.equals(persistedDto)) {
                         found = true;
                         if (isDirty(dto, persistedDto)) {
-                            update(conn, codeTableConfig, dto, currentUserId);
+                            update(conn, (FarmsCodeTableConfig) codeTableConfig, dto, currentUserId);
                         }
                         results.add(persistedDto);
                         break;
@@ -80,7 +81,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
                 }
 
                 if (!found) {
-                    insert(conn, codeTableConfig, dto, currentUserId);
+                    insert(conn, (FarmsCodeTableConfig) codeTableConfig, dto, currentUserId);
                     persistedDtos.add(dto);
                     results.add(dto);
                 }
@@ -98,7 +99,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
 
                 if (!found && (persistedDto.getExpiryDate() == null
                         || persistedDto.getExpiryDate().isAfter(LocalDate.now()))) {
-                    expire(conn, codeTableConfig, persistedDto, currentUserId);
+                    expire(conn, (FarmsCodeTableConfig) codeTableConfig, persistedDto, currentUserId);
                 }
             }
 
@@ -109,7 +110,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
         logger.debug(">update");
     }
 
-    protected List<CodeDto> select(Connection conn, CodeTableConfig codeTableConfig, LocalDate effectiveAsOfDate)
+    protected List<CodeDto> select(Connection conn, FarmsCodeTableConfig codeTableConfig, LocalDate effectiveAsOfDate)
             throws DaoException {
         logger.debug("<select");
         List<CodeDto> result = null;
@@ -117,7 +118,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
         String fetchSql = codeTableConfig.getFetchSql();
 
         if (fetchSql == null || fetchSql.trim().length() == 0) {
-            fetchSql = "SELECT " + codeTableConfig.getCodeTableName() + " CODE, DESCRIPTION, "
+            fetchSql = "SELECT " + codeTableConfig.getCodeCodeName() + " CODE, DESCRIPTION, "
                     + (Boolean.TRUE.equals(codeTableConfig.getUseDisplayOrder()) ? "DISPLAY_ORDER, "
                             : "row_number() OVER (ORDER BY DESCRIPTION) DISPLAY_ORDER, ")
                     + "ESTABLISHED_DATE, EXPIRY_DATE, "
@@ -168,7 +169,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
         return result;
     }
 
-    protected void insert(Connection conn, CodeTableConfig codeTableConfig, CodeDto dto, String currentUserId)
+    protected void insert(Connection conn, FarmsCodeTableConfig codeTableConfig, CodeDto dto, String currentUserId)
             throws DaoException {
         logger.debug("<insert " + codeTableConfig);
 
@@ -177,7 +178,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
         if (insertSql == null || insertSql.trim().length() == 0) {
 
             insertSql = "insert into " + codeTableConfig.getCodeTableName() + " ("
-                    + codeTableConfig.getCodeTableName() + ", "
+                    + codeTableConfig.getCodeCodeName() + ", "
                     + "DESCRIPTION, "
                     + (Boolean.TRUE.equals(codeTableConfig.getUseDisplayOrder()) ? "DISPLAY_ORDER, " : "")
                     + "ESTABLISHED_DATE, "
@@ -231,7 +232,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
         logger.debug(">insert");
     }
 
-    protected void update(Connection conn, CodeTableConfig codeTableConfig, CodeDto dto, String currentUserId)
+    protected void update(Connection conn, FarmsCodeTableConfig codeTableConfig, CodeDto dto, String currentUserId)
             throws DaoException {
         logger.debug("<update");
 
@@ -249,7 +250,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
                             : "")
                     + "WHO_UPDATED = ?, "
                     + "WHEN_UPDATED = CURRENT_TIMESTAMP "
-                    + "WHERE " + codeTableConfig.getCodeTableName() + " = ?";
+                    + "WHERE " + codeTableConfig.getCodeCodeName() + " = ?";
 
         }
 
@@ -280,7 +281,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
         logger.debug(">update");
     }
 
-    protected void expire(Connection conn, CodeTableConfig codeTableConfig, CodeDto dto, String currentUserId)
+    protected void expire(Connection conn, FarmsCodeTableConfig codeTableConfig, CodeDto dto, String currentUserId)
             throws DaoException {
         logger.debug("<expire");
 
@@ -291,7 +292,7 @@ public class CodeTableDaoImpl extends BaseDao implements CodeTableDao {
                     + (Boolean.TRUE.equals(codeTableConfig.getUseRevisionCount())
                             ? "REVISION_COUNT = REVISION_COUNT + 1, "
                             : "")
-                    + "WHO_UPDATED = ?, WHEN_UPDATED = CURRENT_TIMESTAMP WHERE " + codeTableConfig.getCodeTableName()
+                    + "WHO_UPDATED = ?, WHEN_UPDATED = CURRENT_TIMESTAMP WHERE " + codeTableConfig.getCodeCodeName()
                     + " = ?";
 
         }
