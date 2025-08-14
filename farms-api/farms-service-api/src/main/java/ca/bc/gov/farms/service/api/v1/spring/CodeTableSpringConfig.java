@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import ca.bc.gov.farms.persistence.code.dao.FarmsCodeTableConfig;
 import ca.bc.gov.farms.persistence.code.spring.CodePersistenceSpringConfig;
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.brmb.common.persistence.code.dao.CodeTableConfig;
@@ -88,156 +89,157 @@ public class CodeTableSpringConfig {
     }
 
     private CodeTableConfig chefFormTypeCodeConfig() {
-        return createCodeTableConfig("chef_form_type_code", "DESCRIPTION");
+        return createCodeTableConfig("chef_form_type_code", "farm_chef_form_type_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig chefSubmissionStatusCodeConfig() {
-        return createCodeTableConfig("chef_submission_status_code", "DESCRIPTION");
+        return createCodeTableConfig("chef_submssn_status_code", "farm_chef_submssn_status_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig commodityTypeCodeConfig() {
-        return createCodeTableConfig("commodity_type_code", "DESCRIPTION");
+        return createCodeTableConfig("commodity_type_code", "farm_commodity_type_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig configurationParameterTypeCodeConfig() {
-        return createCodeTableConfig("configuration_parameter_type_code", "DESCRIPTION");
+        return createCodeTableConfig("config_param_type_code", "farm_config_param_type_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig crmEntityTypeCodeConfig() {
-        return createCodeTableConfig("crm_entity_type_code", "DESCRIPTION");
+        return createCodeTableConfig("crm_entity_type_code","farm_crm_entity_type_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig cropUnitCodeConfig() {
-        return createCodeTableConfig("crop_unit_code", "DESCRIPTION");
+        return createCodeTableConfig("crop_unit_code", "farm_crop_unit_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig enrolmentCalculationTypeCodeConfig() {
-        return createCodeTableConfig("enrolment_calculation_type_code", "DESCRIPTION");
+        return createCodeTableConfig("enrolment_calc_type_code", "farm_enrolment_calc_type_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig farmTypeCodeConfig() {
-        return createCodeTableConfig("farm_type_code", "DESCRIPTION");
+        return createCodeTableConfig("farm_type_code", "farm_farm_type_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig federalAccountingCodeConfig() {
-        return createCodeTableConfig("federal_accounting_code", "DESCRIPTION");
+        return createCodeTableConfig("federal_accounting_code","farm_federal_accounting_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig federalStatusCodeConfig() {
-        return createCodeTableConfig("federal_status_code", "DESCRIPTION");
+        return createCodeTableConfig("federal_status_code","farm_federal_status_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig fruitVegetableTypeCodeConfig() {
-        return createCodeTableConfig("fruit_vegetable_type_code", "DESCRIPTION");
+        return createCodeTableConfig("fruit_veg_type_code", "farm_fruit_veg_type_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig importClassCodeConfig() {
-        return createCodeTableConfig("import_class_code", "DESCRIPTION");
+        return createCodeTableConfig("import_class_code","farm_import_class_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig importStateCodeConfig() {
-        return createCodeTableConfig("import_state_code", "DESCRIPTION");
+        return createCodeTableConfig("import_state_code", "farm_import_state_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig inventoryClassCodeConfig() {
-        return createCodeTableConfig("inventory_class_code", "DESCRIPTION");
+        return createCodeTableConfig("inventory_class_code","farm_inventory_class_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig inventoryGroupCodeConfig() {
-        return createCodeTableConfig("inventory_group_code", "DESCRIPTION");
+        return createCodeTableConfig("inventory_group_code", "farm_inventory_group_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig inventoryItemCodeConfig() {
-        return createCodeTableConfig("inventory_item_code", "DESCRIPTION");
+        return createCodeTableConfig("inventory_item_code","farm_inventory_item_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig messageTypeCodeConfig() {
-        return createCodeTableConfig("message_type_code", "DESCRIPTION");
+        return createCodeTableConfig("message_type_code", "farm_message_type_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig multipleStageCommodityCodeConfig() {
-        return createCodeTableConfig("multiple_stage_commodity_code", "DESCRIPTION");
+        return createCodeTableConfig("multi_stage_commdty_code", "farm_multi_stage_commdty_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig municipalityCodeConfig() {
-        return createCodeTableConfig("municipality_code", "DESCRIPTION");
+        return createCodeTableConfig("municipality_code", "farm_municipality_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig participantClassCodeConfig() {
-        return createCodeTableConfig("participant_class_code", "DESCRIPTION");
+        return createCodeTableConfig("participant_class_code", "farm_participant_class_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig participantDataSourceCodeConfig() {
-        return createCodeTableConfig("participant_data_source_code", "DESCRIPTION");
+        return createCodeTableConfig("participnt_data_src_code", "farm_participnt_data_src_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig participantLanguageCodeConfig() {
-        return createCodeTableConfig("participant_language_code", "DESCRIPTION");
+        return createCodeTableConfig("participant_lang_code", "farm_participant_lang_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig participantProfileCodeConfig() {
-        return createCodeTableConfig("participant_profile_code", "DESCRIPTION");
+        return createCodeTableConfig("participant_profile_code", "farm_participant_profile_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig regionalOfficeCodeConfig() {
-        return createCodeTableConfig("regional_office_code", "DESCRIPTION");
+        return createCodeTableConfig("regional_office_code", "farm_regional_office_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig scenarioBpuPurposeCodeConfig() {
-        return createCodeTableConfig("scenario_bpu_purpose_code", "DESCRIPTION");
+        return createCodeTableConfig("scenario_bpu_purpose_code", "farm_scenario_bpu_purpos_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig scenarioCategoryCodeConfig() {
-        return createCodeTableConfig("scenario_category_code", "DESCRIPTION");
+        return createCodeTableConfig("scenario_category_code", "farm_scenario_category_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig scenarioClassCodeConfig() {
-        return createCodeTableConfig("scenario_class_code", "DESCRIPTION");
+        return createCodeTableConfig("scenario_class_code", "farm_scenario_class_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig scenarioStateCodeConfig() {
-        return createCodeTableConfig("scenario_state_code", "DESCRIPTION");
+        return createCodeTableConfig("scenario_state_code", "farm_scenario_state_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig sectorCodeConfig() {
-        return createCodeTableConfig("sector_code", "DESCRIPTION");
+        return createCodeTableConfig("sector_code", "farm_sector_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig sectorDetailCodeConfig() {
-        return createCodeTableConfig("sector_detail_code", "DESCRIPTION");
+        return createCodeTableConfig("sector_detail_code", "farm_sector_detail_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig structuralChangeCodeConfig() {
-        return createCodeTableConfig("structural_change_code", "DESCRIPTION");
+        return createCodeTableConfig("structural_change_code", "farm_structural_change_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig structureGroupCodeConfig() {
-        return createCodeTableConfig("structure_group_code", "DESCRIPTION");
+        return createCodeTableConfig("structure_group_code", "farm_structure_group_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig subscriptionStatusCodeConfig() {
-        return createCodeTableConfig("subscription_status_code", "DESCRIPTION");
+        return createCodeTableConfig("subscription_status_code", "farm_subscription_status_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig tipRatingCodeConfig() {
-        return createCodeTableConfig("tip_rating_code", "DESCRIPTION");
+        return createCodeTableConfig("tip_rating_code", "farm_tip_rating_codes", "DESCRIPTION");
     }
 
     private CodeTableConfig triageQueueCodeConfig() {
-        return createCodeTableConfig("triage_queue_code", "DESCRIPTION");
+        return createCodeTableConfig("triage_queue_code", "farm_triage_queue_codes", "DESCRIPTION");
     }
 
-    private CodeTableConfig createCodeTableConfig(String tableName, String sortColumn) {
-        CodeTableConfig result = new CodeTableConfig();
+    private CodeTableConfig createCodeTableConfig(String codeName, String tableName, String sortColumn) {
+        FarmsCodeTableConfig result = new FarmsCodeTableConfig();
 
         String fetchSql = String.format(
                 "SELECT T.%s CODE, T.DESCRIPTION, NULL DISPLAY_ORDER, T.ESTABLISHED_DATE, T.EXPIRY_DATE, T.REVISION_COUNT, T.WHO_CREATED, T.WHEN_CREATED, T.WHO_UPDATED, T.WHEN_UPDATED FROM %s T ORDER BY T."
                         + sortColumn,
-                tableName, tableName);
+                codeName, tableName);
 
         result.setUseRevisionCount(Boolean.TRUE);
         result.setUseDisplayOrder(Boolean.FALSE);
         result.setCodeTableDao(codePersistenceSpringConfig.codeTableDao());
+        result.setCodeCodeName(codeName);
         result.setCodeTableName(tableName);
         result.setFetchSql(fetchSql);
 
