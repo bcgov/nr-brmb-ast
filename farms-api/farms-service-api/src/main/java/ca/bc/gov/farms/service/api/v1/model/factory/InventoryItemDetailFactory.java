@@ -14,5 +14,5 @@ public interface InventoryItemDetailFactory {
     InventoryItemDetailList<? extends InventoryItemDetail> getInventoryItemDetailList(
             List<InventoryItemDetailDto> dtos, FactoryContext context);
 
-    void updateInventoryItemDetail(InventoryItemDetailDto dto, FactoryContext context);
+    void updateInventoryItemDetail(InventoryItemDetailDto dto, InventoryItemDetail model);
 }
