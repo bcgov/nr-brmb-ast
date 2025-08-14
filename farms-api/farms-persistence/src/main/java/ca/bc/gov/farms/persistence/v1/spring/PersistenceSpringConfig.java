@@ -28,8 +28,10 @@ import ca.bc.gov.brmb.common.persistence.dao.mybatis.LocalTimeTypeHandler;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.ResetDirtyInterceptor;
 import ca.bc.gov.farms.persistence.v1.dao.BenchmarkPerUnitDao;
 import ca.bc.gov.farms.persistence.v1.dao.FairMarketValueDao;
+import ca.bc.gov.farms.persistence.v1.dao.InventoryItemDetailDao;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.BenchmarkPerUnitDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.FairMarketValueDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryItemDetailDaoImpl;
 
 @Configuration
 @EnableTransactionManagement
@@ -90,5 +92,10 @@ public class PersistenceSpringConfig {
     @Bean
     public FairMarketValueDao fairMarketValueDao() {
         return new FairMarketValueDaoImpl();
+    }
+
+    @Bean
+    public InventoryItemDetailDao inventoryItemDetailDao() {
+        return new InventoryItemDetailDaoImpl();
     }
 }
