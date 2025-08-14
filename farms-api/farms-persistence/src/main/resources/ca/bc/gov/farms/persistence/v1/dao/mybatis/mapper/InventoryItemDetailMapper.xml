@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.InventoryItemDetailMapper">
+
+    <resultMap id="InventoryItemDetailDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.InventoryItemDetailDto">
+        <id property="inventoryItemDetailId" column="inventory_item_detail_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="programYear" column="program_year" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="eligibilityInd" column="eligibility_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="lineItem" column="line_item" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="insurableValue" column="insurable_value" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="premiumRate" column="premium_rate" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="inventoryItemCode" column="inventory_item_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryItemDesc" column="inventory_item_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="commodityTypeCode" column="commodity_type_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="commodityTypeDesc" column="commodity_type_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="fruitVegTypeCode" column="fruit_veg_type_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="fruitVegTypeDesc" column="fruit_veg_type_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="multiStageCommdtyCode" column="multi_stage_commdty_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="multiStageCommdtyDesc" column="multi_stage_commdty_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select iid.inventory_item_detail_id,
+               iid.program_year,
+               iid.eligibility_ind,
+               iid.line_item,
+               iid.insurable_value,
+               iid.premium_rate,
+               iic.inventory_item_code,
+               iic.description as inventory_item_desc,
+               ctc.commodity_type_code,
+               ctc.description as commodity_type_desc,
+               fvtc.fruit_veg_type_code,
+               fvtc.description as fruit_veg_type_desc,
+               mscc.multi_stage_commdty_code,
+               mscc.description as multi_stage_commdty_desc
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_inventory_item_details iid
+        left join farms.farm_inventory_item_codes iic using (inventory_item_code)
+        left join farms.farm_commodity_type_codes ctc using (commodity_type_code)
+        left join farms.farm_fruit_veg_type_codes fvtc using (fruit_veg_type_code)
+        left join farms.farm_multi_stage_commdty_codes mscc using (multi_stage_commdty_code)
+    </sql>
+
+    <select id="fetch" resultMap="InventoryItemDetailDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where iid.inventory_item_detail_id = #{inventoryItemDetailId}
+    </select>
+
+    <select id="fetchBy" resultMap="InventoryItemDetailDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where iid.inventory_item_code = #{inventoryItemCode}
+        order by iid.program_year
+    </select>
+
+    <insert id="insertInventoryItemDetail">
+        <selectKey keyProperty="inventoryItemDetailId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_iid_seq')
+        </selectKey>
+        insert into farms.farm_inventory_item_details (
+            inventory_item_detail_id,
+            program_year,
+            eligibility_ind,
+            line_item,
+            insurable_value,
+            premium_rate,
+            inventory_item_code,
+            commodity_type_code,
+            fruit_veg_type_code,
+            multi_stage_commdty_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{inventoryItemDetailId},
+            #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{dto.eligibilityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.lineItem, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{dto.insurableValue, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            #{dto.premiumRate, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and iic.description = #{dto.inventoryItemDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select iic.commodity_type_code
+                from farms.farm_commodity_type_codes ctc
+                where ctc.commodity_type_code = #{dto.commodityTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and ctc.description = #{dto.commodityTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select fvtc.fruit_veg_type_code
+                from farms.farm_fruit_veg_type_codes fvtc
+                where fvtc.fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and fvtc.description = #{dto.fruitVegTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select mscc.multi_stage_commdty_code
+                from farms.farm_multi_stage_commdty_codes mscc
+                where mscc.multi_stage_commdty_code = #{dto.multiStageCommdtyCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and mscc.description = #{dto.multiStageCommdtyDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateInventoryItemDetail">
+        update farms.farm_inventory_item_details
+        set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            eligibility_ind = #{dto.eligibilityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            line_item = #{dto.lineItem, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            insurable_value = #{dto.insurableValue, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            premium_rate = #{dto.premiumRate, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            inventory_item_code = (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and iic.description = #{dto.inventoryItemDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            commodity_type_code = (
+                select iic.commodity_type_code
+                from farms.farm_commodity_type_codes ctc
+                where ctc.commodity_type_code = #{dto.commodityTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and ctc.description = #{dto.commodityTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            fruit_veg_type_code = (
+                select fvtc.fruit_veg_type_code
+                from farms.farm_fruit_veg_type_codes fvtc
+                where fvtc.fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and fvtc.description = #{dto.fruitVegTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            multi_stage_commdty_code = (
+                select mscc.multi_stage_commdty_code
+                from farms.farm_multi_stage_commdty_codes mscc
+                where mscc.multi_stage_commdty_code = #{dto.multiStageCommdtyCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and mscc.description = #{dto.multiStageCommdtyDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where inventory_item_detail_id = #{dto.inventoryItemDetailId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteInventoryItemDetail">
+        delete from farms.farm_inventory_item_details
+        where inventory_item_detail_id = #{inventoryItemDetailId}
+    </delete>
+</mapper>
