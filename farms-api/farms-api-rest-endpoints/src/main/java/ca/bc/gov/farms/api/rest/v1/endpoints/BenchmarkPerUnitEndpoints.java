@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import ca.bc.gov.brmb.common.rest.resource.HeaderConstants;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
+import ca.bc.gov.farms.api.rest.v1.resource.BenchmarkPerUnitListRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.BenchmarkPerUnitRsrc;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -43,12 +44,12 @@ public interface BenchmarkPerUnitEndpoints {
             @Parameter(name = HeaderConstants.AUTHORIZATION_HEADER, description = HeaderConstants.AUTHORIZATION_HEADER_DESCRIPTION, required = false, schema = @Schema(implementation = String.class), in = ParameterIn.HEADER)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = BenchmarkPerUnitRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = BenchmarkPerUnitListRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getBenchmarkPerUnitsByProgramYear(
-            @Parameter(description = "The identifier of the Benchmark Per Unit resource.") @QueryParam("programYear") Integer programYear);
+            @Parameter(description = "The program year.") @QueryParam("programYear") Integer programYear);
 
     @Operation(operationId = "Get Benchmark Per Unit resource by Benchmark Per Unit Id.", summary = "Get Benchmark Per Unit resource by Benchmark Per Unit Id.", extensions = {
             @Extension(properties = {
