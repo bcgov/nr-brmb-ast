@@ -48,13 +48,13 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z01(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getParticipantPin()));
+            callableStatement.setInt(i++, obj.getParticipantPin());
             callableStatement.setString(i++, obj.getSinCtnBn());
             callableStatement.setString(i++, obj.getSin());
             callableStatement.setString(i++, obj.getBusinessNumber());
             callableStatement.setString(i++, obj.getTrustNumber());
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getParticipantTypeCode()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getParticipantLanguage()));
+            callableStatement.setShort(i++, toShort(obj.getParticipantTypeCode()));
+            callableStatement.setShort(i++, toShort(obj.getParticipantLanguage()));
             callableStatement.setString(i++, obj.getFirstName());
             callableStatement.setString(i++, obj.getLastName());
             callableStatement.setString(i++, obj.getCorpName());
@@ -80,7 +80,7 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
             callableStatement.setString(i++, obj.getContactPhoneDay());
             callableStatement.setString(i++, obj.getContactFaxNumber());
             callableStatement.setString(i++, obj.getContactPhoneCell());
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getPublicOffice()));
+            callableStatement.setShort(i++, toShort(obj.getPublicOffice()));
             callableStatement.setString(i++, obj.getIdentEffectiveDate());
             callableStatement.setString(i++, userId);
 
@@ -445,7 +445,7 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z99(?, ?, ?, ?)")) {
 
-            callableStatement.setShort(i++, obj.getExtractFileNumber().shortValue());
+            callableStatement.setShort(i++, toShort(obj.getExtractFileNumber()));
             callableStatement.setString(i++, obj.getExtractDate());
             callableStatement.setInt(i++, obj.getRowCount());
             callableStatement.setString(i++, userId);
