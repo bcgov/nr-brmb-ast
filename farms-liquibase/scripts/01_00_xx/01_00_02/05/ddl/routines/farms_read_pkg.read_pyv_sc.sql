@@ -31,7 +31,7 @@ begin
                sc.when_updated,
                sc.cra_income_expns_received_date,
                sc.cra_supplemental_received_date,
-               py.local_statement_a_received_date,
+               py.local_statement_a_receivd_date,
                py.local_supplemntl_received_date,
                cs.chef_submission_id,
                cs.main_task_guid crm_task_guid,
