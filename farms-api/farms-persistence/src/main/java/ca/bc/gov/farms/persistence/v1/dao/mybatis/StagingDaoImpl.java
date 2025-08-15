@@ -445,7 +445,7 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z99(?, ?, ?, ?)")) {
 
-            callableStatement.setInt(i++, obj.getExtractFileNumber());
+            callableStatement.setShort(i++, obj.getExtractFileNumber().shortValue());
             callableStatement.setString(i++, obj.getExtractDate());
             callableStatement.setInt(i++, obj.getRowCount());
             callableStatement.setString(i++, userId);
