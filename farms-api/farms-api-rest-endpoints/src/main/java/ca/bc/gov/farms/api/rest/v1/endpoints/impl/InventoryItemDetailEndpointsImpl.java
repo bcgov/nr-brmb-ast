@@ -8,32 +8,31 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
-import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
-import ca.bc.gov.farms.api.rest.v1.endpoints.FairMarketValueEndpoints;
-import ca.bc.gov.farms.api.rest.v1.resource.FairMarketValueListRsrc;
-import ca.bc.gov.farms.api.rest.v1.resource.FairMarketValueRsrc;
-import ca.bc.gov.farms.service.api.v1.FairMarketValueService;
+import ca.bc.gov.farms.api.rest.v1.endpoints.InventoryItemDetailEndpoints;
+import ca.bc.gov.farms.api.rest.v1.resource.InventoryItemDetailListRsrc;
+import ca.bc.gov.farms.api.rest.v1.resource.InventoryItemDetailRsrc;
+import ca.bc.gov.farms.service.api.v1.InventoryItemDetailService;
 
-public class FairMarketValueEndpointsImpl extends BaseEndpointsImpl implements FairMarketValueEndpoints {
+public class InventoryItemDetailEndpointsImpl extends BaseEndpointsImpl implements InventoryItemDetailEndpoints {
 
-    private static final Logger logger = LoggerFactory.getLogger(FairMarketValueEndpointsImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(InventoryItemDetailEndpointsImpl.class);
 
     @Autowired
-    private FairMarketValueService service;
+    private InventoryItemDetailService service;
 
     @Override
-    public Response getFairMarketValuesByProgramYear(Integer programYear) {
-        logger.debug("<getFairMarketValuesByProgramYear");
+    public Response getInventoryItemDetailsByInventoryItemCode(String inventoryItemCode) {
+        logger.debug("<getInventoryItemDetailsByInventoryItemCode");
 
         Response response = null;
 
         logRequest();
 
         try {
-            FairMarketValueListRsrc result = (FairMarketValueListRsrc) service
-                    .getFairMarketValuesByProgramYear(programYear, getFactoryContext());
+            InventoryItemDetailListRsrc result = (InventoryItemDetailListRsrc) service
+                    .getInventoryItemDetailsByInventoryItemCode(inventoryItemCode, getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
@@ -41,20 +40,20 @@ public class FairMarketValueEndpointsImpl extends BaseEndpointsImpl implements F
 
         logResponse(response);
 
-        logger.debug(">getFairMarketValuesByProgramYear " + response);
+        logger.debug(">getInventoryItemDetailsByInventoryItemCode " + response);
         return response;
     }
 
     @Override
-    public Response getFairMarketValue(String fairMarketValueId) {
-        logger.debug("<getFairMarketValue");
+    public Response getInventoryItemDetail(Long inventoryItemDetailId) {
+        logger.debug("<getInventoryItemDetail");
         Response response = null;
 
         logRequest();
 
         try {
-            FairMarketValueRsrc result = (FairMarketValueRsrc) service.getFairMarketValue(fairMarketValueId,
-                    getFactoryContext());
+            InventoryItemDetailRsrc result = (InventoryItemDetailRsrc) service
+                    .getInventoryItemDetail(inventoryItemDetailId, getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (NotFoundException e) {
             response = Response.status(Status.NOT_FOUND).build();
@@ -64,46 +63,44 @@ public class FairMarketValueEndpointsImpl extends BaseEndpointsImpl implements F
 
         logResponse(response);
 
-        logger.debug(">getFairMarketValue " + response);
+        logger.debug(">getInventoryItemDetail " + response);
         return response;
     }
 
     @Override
-    public Response createFairMarketValue(FairMarketValueRsrc fairMarketValueRsrc) {
-        logger.debug("<createFairMarketValue");
+    public Response createInventoryItemDetail(InventoryItemDetailRsrc inventoryItemDetailRsrc) {
+        logger.debug("<createInventoryItemDetail");
 
         Response response = null;
 
         logRequest();
 
         try {
-            FairMarketValueRsrc result = (FairMarketValueRsrc) service.createFairMarketValue(fairMarketValueRsrc,
-                    getFactoryContext());
+            InventoryItemDetailRsrc result = (InventoryItemDetailRsrc) service
+                    .createInventoryItemDetail(inventoryItemDetailRsrc, getFactoryContext());
             response = Response.status(Status.CREATED).entity(result).tag(result.getUnquotedETag()).build();
         } catch (ValidationFailureException e) {
             response = Response.status(Status.BAD_REQUEST).entity(new MessageListRsrc(e.getValidationErrors())).build();
-        } catch (ConflictException e) {
-            response = Response.status(Status.CONFLICT).entity(e.getMessage()).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
         }
 
         logResponse(response);
 
-        logger.debug(">createFairMarketValue " + response.getStatus());
+        logger.debug(">createInventoryItemDetail " + response.getStatus());
         return response;
     }
 
     @Override
-    public Response deleteFairMarketValue(String fairMarketValueId) {
-        logger.debug("<deleteFairMarketValue");
+    public Response deleteInventoryItemDetail(Long inventoryItemDetailId) {
+        logger.debug("<deleteInventoryItemDetail");
 
         Response response = null;
 
         logRequest();
 
         try {
-            service.deleteFairMarketValue(fairMarketValueId);
+            service.deleteInventoryItemDetail(inventoryItemDetailId);
             response = Response.status(Status.NO_CONTENT).build();
         } catch (NotFoundException e) {
             response = Response.status(Status.NOT_FOUND).build();
@@ -113,21 +110,22 @@ public class FairMarketValueEndpointsImpl extends BaseEndpointsImpl implements F
 
         logResponse(response);
 
-        logger.debug(">deleteFairMarketValue " + response.getStatus());
+        logger.debug(">deleteInventoryItemDetail " + response.getStatus());
         return response;
     }
 
     @Override
-    public Response updateFairMarketValue(String fairMarketValueId, FairMarketValueRsrc fairMarketValueRsrc) {
-        logger.debug("<updateFairMarketValue");
+    public Response updateInventoryItemDetail(Long inventoryItemDetailId,
+            InventoryItemDetailRsrc inventoryItemDetailRsrc) {
+        logger.debug("<updateInventoryItemDetail");
 
         Response response = null;
 
         logRequest();
 
         try {
-            FairMarketValueRsrc result = (FairMarketValueRsrc) service.updateFairMarketValue(fairMarketValueId,
-                    fairMarketValueRsrc, getFactoryContext());
+            InventoryItemDetailRsrc result = (InventoryItemDetailRsrc) service
+                    .updateInventoryItemDetail(inventoryItemDetailId, inventoryItemDetailRsrc, getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (ValidationFailureException e) {
             response = Response.status(Status.BAD_REQUEST).entity(new MessageListRsrc(e.getValidationErrors())).build();
@@ -139,7 +137,7 @@ public class FairMarketValueEndpointsImpl extends BaseEndpointsImpl implements F
 
         logResponse(response);
 
-        logger.debug(">updateFairMarketValue " + response.getStatus());
+        logger.debug(">updateInventoryItemDetail " + response.getStatus());
         return response;
     }
 

@@ -56,7 +56,7 @@ public class BenchmarkPerUnitEndpointsImpl extends BaseEndpointsImpl implements 
                     getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (NotFoundException e) {
-            response = Response.status(Response.Status.NOT_FOUND).build();
+            response = Response.status(Status.NOT_FOUND).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
         }
@@ -129,7 +129,7 @@ public class BenchmarkPerUnitEndpointsImpl extends BaseEndpointsImpl implements 
         } catch (ValidationFailureException e) {
             response = Response.status(Status.BAD_REQUEST).entity(new MessageListRsrc(e.getValidationErrors())).build();
         } catch (NotFoundException e) {
-            response = Response.status(Response.Status.NOT_FOUND).build();
+            response = Response.status(Status.NOT_FOUND).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
         }
