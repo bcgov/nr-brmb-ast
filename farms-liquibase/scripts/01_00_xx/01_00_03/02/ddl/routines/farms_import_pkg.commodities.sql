@@ -1,5 +1,5 @@
 create or replace function farms_import_pkg.commodities(
-    in in_version_id numeric,
+    in in_version_id bigint,
     in in_user varchar
 )
 returns numeric

@@ -1,11 +1,11 @@
 drop function if exists farms_version_pkg.uploaded_version(
-    numeric,
+    bigint,
     varchar,
     varchar
 );
 
 create or replace procedure farms_version_pkg.uploaded_version(
-    in in_version_id numeric,
+    in in_version_id bigint,
     in in_xml varchar,
     in in_has_errors_ind varchar,
     in in_user varchar

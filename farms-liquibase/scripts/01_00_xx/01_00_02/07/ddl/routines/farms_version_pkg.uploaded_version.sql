@@ -1,5 +1,5 @@
 create or replace function farms_version_pkg.uploaded_version(
-    in in_version_id numeric,
+    in in_version_id bigint,
     in in_has_errors_ind varchar,
     in in_user varchar
 )

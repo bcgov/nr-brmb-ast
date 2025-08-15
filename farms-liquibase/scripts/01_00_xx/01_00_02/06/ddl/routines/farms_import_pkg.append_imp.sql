@@ -1,12 +1,12 @@
 create or replace function farms_import_pkg.append_imp(
-    in in_version_id numeric,
+    in in_version_id bigint,
     in in_msg varchar
 )
-returns numeric
+returns bigint
 language plpgsql
 as $$
 declare
-    id numeric;
+    id bigint;
 begin
     select nextval('farms.farm_ilg_seq')
     into id;

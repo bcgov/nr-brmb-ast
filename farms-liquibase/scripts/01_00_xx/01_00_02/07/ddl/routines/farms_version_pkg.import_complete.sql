@@ -1,5 +1,5 @@
 create or replace function farms_version_pkg.import_complete(
-    in in_version_id numeric,
+    in in_version_id bigint,
     in in_user varchar
 )
 returns refcursor
