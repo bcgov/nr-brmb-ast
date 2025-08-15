@@ -19,14 +19,17 @@ import ca.bc.gov.farms.service.api.v1.ImportBPUService;
 import ca.bc.gov.farms.service.api.v1.ImportCRAService;
 import ca.bc.gov.farms.service.api.v1.ImportFMVService;
 import ca.bc.gov.farms.service.api.v1.ImportService;
+import ca.bc.gov.farms.service.api.v1.InventoryItemDetailService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.FairMarketValueServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportBPUServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportCRAServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportFMVServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.InventoryItemDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
 
 @Configuration
@@ -55,6 +58,8 @@ public class ServiceApiSpringConfig {
     private BenchmarkPerUnitFactory benchmarkPerUnitFactory;
     @Autowired
     private FairMarketValueFactory fairMarketValueFactory;
+    @Autowired
+    private InventoryItemDetailFactory inventoryItemDetailFactory;
 
     // Imported Spring Config
     @Autowired
@@ -99,6 +104,21 @@ public class ServiceApiSpringConfig {
         result.setFairMarketValueFactory(fairMarketValueFactory);
 
         result.setFairMarketValueDao(persistenceSpringConfig.fairMarketValueDao());
+
+        return result;
+    }
+
+    @Bean
+    public InventoryItemDetailService inventoryItemDetailService() {
+        InventoryItemDetailServiceImpl result;
+
+        result = new InventoryItemDetailServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setInventoryItemDetailFactory(inventoryItemDetailFactory);
+
+        result.setInventoryItemDetailDao(persistenceSpringConfig.inventoryItemDetailDao());
 
         return result;
     }
