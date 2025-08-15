@@ -89,8 +89,8 @@ public class InventoryItemDetailDto extends BaseDto<InventoryItemDetailDto> {
             result = result && dtoUtils.equals("programYear", programYear, other.programYear);
             result = result && dtoUtils.equals("eligibilityInd", eligibilityInd, other.eligibilityInd);
             result = result && dtoUtils.equals("lineItem", lineItem, other.lineItem);
-            result = result && dtoUtils.equals("insurableValue", insurableValue, other.insurableValue);
-            result = result && dtoUtils.equals("premiumRate", premiumRate, other.premiumRate);
+            result = result && dtoUtils.equals("insurableValue", this, other);
+            result = result && dtoUtils.equals("premiumRate", this, other);
             result = result && dtoUtils.equals("inventoryItemCode", inventoryItemCode, other.inventoryItemCode);
             result = result && dtoUtils.equals("inventoryItemDesc", inventoryItemDesc, other.inventoryItemDesc);
             result = result && dtoUtils.equals("commodityTypeCode", commodityTypeCode, other.commodityTypeCode);

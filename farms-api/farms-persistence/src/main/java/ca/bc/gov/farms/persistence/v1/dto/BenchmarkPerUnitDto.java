@@ -114,6 +114,18 @@ public class BenchmarkPerUnitDto extends BaseDto<BenchmarkPerUnitDto> {
             result = result && dtoUtils.equals("inventoryItemDesc", inventoryItemDesc, other.inventoryItemDesc);
             result = result && dtoUtils.equals("structureGroupCode", structureGroupCode, other.structureGroupCode);
             result = result && dtoUtils.equals("structureGroupDesc", structureGroupDesc, other.structureGroupDesc);
+            result = result && dtoUtils.equals("yearMinus6Margin", this, other);
+            result = result && dtoUtils.equals("yearMinus5Margin", this, other);
+            result = result && dtoUtils.equals("yearMinus4Margin", this, other);
+            result = result && dtoUtils.equals("yearMinus3Margin", this, other);
+            result = result && dtoUtils.equals("yearMinus2Margin", this, other);
+            result = result && dtoUtils.equals("yearMinus1Margin", this, other);
+            result = result && dtoUtils.equals("yearMinus6Expense", this, other);
+            result = result && dtoUtils.equals("yearMinus5Expense", this, other);
+            result = result && dtoUtils.equals("yearMinus4Expense", this, other);
+            result = result && dtoUtils.equals("yearMinus3Expense", this, other);
+            result = result && dtoUtils.equals("yearMinus2Expense", this, other);
+            result = result && dtoUtils.equals("yearMinus1Expense", this, other);
         }
 
         return result;
