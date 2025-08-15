@@ -99,7 +99,7 @@
                 and iic.description = #{dto.inventoryItemDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             (
-                select iic.commodity_type_code
+                select ctc.commodity_type_code
                 from farms.farm_commodity_type_codes ctc
                 where ctc.commodity_type_code = #{dto.commodityTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
                 and ctc.description = #{dto.commodityTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
@@ -138,7 +138,7 @@
                 and iic.description = #{dto.inventoryItemDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             commodity_type_code = (
-                select iic.commodity_type_code
+                select ctc.commodity_type_code
                 from farms.farm_commodity_type_codes ctc
                 where ctc.commodity_type_code = #{dto.commodityTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
                 and ctc.description = #{dto.commodityTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
