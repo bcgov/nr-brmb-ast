@@ -97,9 +97,9 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z02(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getParticipantPin()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getProgramYear()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getFormVersionNumber()));
+            callableStatement.setInt(i++, obj.getParticipantPin());
+            callableStatement.setShort(i++, toShort(obj.getProgramYear()));
+            callableStatement.setShort(i++, toShort(obj.getFormVersionNumber()));
 
             callableStatement.setString(i++, obj.getProvinceOfResidence());
             callableStatement.setString(i++, obj.getProvinceOfMainFarmstead());
@@ -111,12 +111,12 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
             callableStatement.setString(i++, toString(obj.isCorporateShareholder()));
             callableStatement.setString(i++, toString(obj.isCoopMember()));
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getCommonShareTotal()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getFarmYears()));
+            callableStatement.setInt(i++, obj.getCommonShareTotal());
+            callableStatement.setShort(i++, toShort(obj.getFarmYears()));
             callableStatement.setString(i++, toString(obj.isLastYearFarming()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getFormOriginCode()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getIndustryCode()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getParticipantProfileCode()));
+            callableStatement.setShort(i++, toShort(obj.getFormOriginCode()));
+            callableStatement.setInt(i++, obj.getIndustryCode());
+            callableStatement.setShort(i++, toShort(obj.getParticipantProfileCode()));
 
             callableStatement.setString(i++, toString(obj.isAccrualCashConversion()));
             callableStatement.setString(i++, toString(obj.isPerishableCommodities()));
@@ -131,7 +131,7 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
             callableStatement.setString(i++, toString(obj.isDisaster()));
             callableStatement.setString(i++, toString(obj.isCopyCobToContact()));
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getMunicipalityCode()));
+            callableStatement.setShort(i++, toShort(obj.getMunicipalityCode()));
             callableStatement.setString(i++, obj.getFormVersionEffectiveDate());
             callableStatement.setString(i++, userId);
 
