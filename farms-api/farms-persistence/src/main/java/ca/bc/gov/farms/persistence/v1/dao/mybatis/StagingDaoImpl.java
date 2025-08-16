@@ -3,6 +3,8 @@ package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
+
 import ca.bc.gov.farms.persistence.v1.dao.StagingDao;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z01ParticipantInfo;
 import ca.bc.gov.farms.persistence.v1.dto.staging.Z02PartpntFarmInfo;
@@ -48,13 +50,13 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z01(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-            callableStatement.setInt(i++, obj.getParticipantPin());
+            callableStatement.setObject(i++, obj.getParticipantPin(), Types.INTEGER);
             callableStatement.setString(i++, obj.getSinCtnBn());
             callableStatement.setString(i++, obj.getSin());
             callableStatement.setString(i++, obj.getBusinessNumber());
             callableStatement.setString(i++, obj.getTrustNumber());
-            callableStatement.setShort(i++, toShort(obj.getParticipantTypeCode()));
-            callableStatement.setShort(i++, toShort(obj.getParticipantLanguage()));
+            callableStatement.setObject(i++, toShort(obj.getParticipantTypeCode()), Types.SMALLINT);
+            callableStatement.setObject(i++, toShort(obj.getParticipantLanguage()), Types.SMALLINT);
             callableStatement.setString(i++, obj.getFirstName());
             callableStatement.setString(i++, obj.getLastName());
             callableStatement.setString(i++, obj.getCorpName());
@@ -80,7 +82,7 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
             callableStatement.setString(i++, obj.getContactPhoneDay());
             callableStatement.setString(i++, obj.getContactFaxNumber());
             callableStatement.setString(i++, obj.getContactPhoneCell());
-            callableStatement.setShort(i++, toShort(obj.getPublicOffice()));
+            callableStatement.setObject(i++, toShort(obj.getPublicOffice()), Types.SMALLINT);
             callableStatement.setString(i++, obj.getIdentEffectiveDate());
             callableStatement.setString(i++, userId);
 
@@ -97,9 +99,9 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z02(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-            callableStatement.setInt(i++, obj.getParticipantPin());
-            callableStatement.setShort(i++, toShort(obj.getProgramYear()));
-            callableStatement.setShort(i++, toShort(obj.getFormVersionNumber()));
+            callableStatement.setObject(i++, obj.getParticipantPin(), Types.INTEGER);
+            callableStatement.setObject(i++, toShort(obj.getProgramYear()), Types.SMALLINT);
+            callableStatement.setObject(i++, toShort(obj.getFormVersionNumber()), Types.SMALLINT);
 
             callableStatement.setString(i++, obj.getProvinceOfResidence());
             callableStatement.setString(i++, obj.getProvinceOfMainFarmstead());
@@ -111,12 +113,12 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
             callableStatement.setString(i++, toString(obj.isCorporateShareholder()));
             callableStatement.setString(i++, toString(obj.isCoopMember()));
 
-            callableStatement.setInt(i++, obj.getCommonShareTotal());
-            callableStatement.setShort(i++, toShort(obj.getFarmYears()));
+            callableStatement.setObject(i++, obj.getCommonShareTotal(), Types.INTEGER);
+            callableStatement.setObject(i++, toShort(obj.getFarmYears()), Types.SMALLINT);
             callableStatement.setString(i++, toString(obj.isLastYearFarming()));
-            callableStatement.setShort(i++, toShort(obj.getFormOriginCode()));
-            callableStatement.setInt(i++, obj.getIndustryCode());
-            callableStatement.setShort(i++, toShort(obj.getParticipantProfileCode()));
+            callableStatement.setObject(i++, toShort(obj.getFormOriginCode()), Types.SMALLINT);
+            callableStatement.setObject(i++, obj.getIndustryCode(), Types.INTEGER);
+            callableStatement.setObject(i++, toShort(obj.getParticipantProfileCode()), Types.SMALLINT);
 
             callableStatement.setString(i++, toString(obj.isAccrualCashConversion()));
             callableStatement.setString(i++, toString(obj.isPerishableCommodities()));
@@ -131,7 +133,7 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
             callableStatement.setString(i++, toString(obj.isDisaster()));
             callableStatement.setString(i++, toString(obj.isCopyCobToContact()));
 
-            callableStatement.setShort(i++, toShort(obj.getMunicipalityCode()));
+            callableStatement.setObject(i++, toShort(obj.getMunicipalityCode()), Types.SMALLINT);
             callableStatement.setString(i++, obj.getFormVersionEffectiveDate());
             callableStatement.setString(i++, userId);
 
@@ -445,9 +447,9 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z99(?, ?, ?, ?)")) {
 
-            callableStatement.setShort(i++, toShort(obj.getExtractFileNumber()));
+            callableStatement.setObject(i++, toShort(obj.getExtractFileNumber()), Types.SMALLINT);
             callableStatement.setString(i++, obj.getExtractDate());
-            callableStatement.setInt(i++, obj.getRowCount());
+            callableStatement.setObject(i++, obj.getRowCount(), Types.INTEGER);
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();
