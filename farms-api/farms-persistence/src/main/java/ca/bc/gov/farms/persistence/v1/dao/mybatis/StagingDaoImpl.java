@@ -307,7 +307,7 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z28(?, ?, ?)")) {
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getProductionUnit()));
+            callableStatement.setObject(i++, toShort(obj.getProductionUnit()), Types.SMALLINT);
             callableStatement.setString(i++, obj.getProductionUnitDescription());
             callableStatement.setString(i++, userId);
 
