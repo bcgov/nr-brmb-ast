@@ -96,8 +96,8 @@ declare
         order by a.program_year asc; -- historical first!
     z02_val record;
 
-    py_id numeric := null;
-    pyv_id bigint := null;
+    py_id farms.farm_program_years.program_year_id%type := null;
+    pyv_id farms.farm_program_year_versions.program_year_version_id%type := null;
 
     opened numeric := 0;
 
