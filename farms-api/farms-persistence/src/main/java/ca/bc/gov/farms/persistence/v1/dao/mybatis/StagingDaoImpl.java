@@ -238,13 +238,13 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z21(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getInventoryKey()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getParticipantPin()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getProgramYear()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getOperationNumber()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getInventoryTypeCode()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getInventoryCode()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getCropUnitType()));
+            callableStatement.setObject(i++, toLong(obj.getInventoryKey()), Types.BIGINT);
+            callableStatement.setObject(i++, obj.getParticipantPin(), Types.INTEGER);
+            callableStatement.setObject(i++, toShort(obj.getProgramYear()), Types.SMALLINT);
+            callableStatement.setObject(i++, toShort(obj.getOperationNumber()), Types.SMALLINT);
+            callableStatement.setObject(i++, toShort(obj.getInventoryTypeCode()), Types.SMALLINT);
+            callableStatement.setObject(i++, obj.getInventoryCode(), Types.INTEGER);
+            callableStatement.setObject(i++, toShort(obj.getCropUnitType()), Types.SMALLINT);
             callableStatement.setBigDecimal(i++, toBigDecimal(obj.getCropOnFarmAcres()));
             callableStatement.setBigDecimal(i++, toBigDecimal(obj.getCropQtyProduced()));
             callableStatement.setBigDecimal(i++, toBigDecimal(obj.getQuantityEnd()));
