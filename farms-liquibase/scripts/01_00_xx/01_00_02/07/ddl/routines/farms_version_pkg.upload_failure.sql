@@ -1,5 +1,5 @@
 create or replace procedure farms_version_pkg.upload_failure(
-   in in_version_id numeric,
+   in in_version_id bigint,
    in in_message varchar,
    in in_user varchar
 )

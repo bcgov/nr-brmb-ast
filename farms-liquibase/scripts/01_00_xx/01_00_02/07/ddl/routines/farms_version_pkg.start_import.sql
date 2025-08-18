@@ -1,5 +1,5 @@
 create or replace procedure farms_version_pkg.start_import(
-   in in_version_id numeric,
+   in in_version_id bigint,
    in in_user varchar
 )
 language plpgsql

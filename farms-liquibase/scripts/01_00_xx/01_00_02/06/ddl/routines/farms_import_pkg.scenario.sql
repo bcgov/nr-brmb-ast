@@ -10,7 +10,7 @@ as $$
 declare
     v_last_scenario_number numeric;
     v_new_scenario_number numeric;
-    scenario_id numeric;
+    scenario_id farms.farm_agristability_scenarios.agristability_scenario_id%type;
 
     err_msg varchar(512);
 begin

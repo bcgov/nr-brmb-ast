@@ -48,7 +48,7 @@ declare
                null prod_insur_deemed_benefit,
                null late_enrolment_penalty,
                to_char(py.local_supplemntl_received_date, 'YYYY-MM-DD') local_supp_date_string,
-               to_char(py.local_statement_a_received_date, 'YYYY-MM-DD') local_statement_a_date_string,
+               to_char(py.local_statement_a_receivd_date, 'YYYY-MM-DD') local_statement_a_date_string,
                to_char(pyv.received_date, 'YYYY-MM-DD') cra_statement_a_date_string,
                pyv.can_send_cob_to_rep_ind send_copy_to_contact_person_ind
         from farms.farm_program_year_versions pyv

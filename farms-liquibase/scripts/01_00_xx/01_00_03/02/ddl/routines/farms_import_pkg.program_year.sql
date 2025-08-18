@@ -1,5 +1,5 @@
 create or replace function farms_import_pkg.program_year(
-    in in_version_id numeric,
+    in in_version_id bigint,
     in in_agristability_client_id farms.farm_agristability_clients.agristability_client_id%type,
     in in_user varchar,
     inout in_out_activity numeric,
@@ -96,8 +96,8 @@ declare
         order by a.program_year asc; -- historical first!
     z02_val record;
 
-    py_id numeric := null;
-    pyv_id numeric := null;
+    py_id farms.farm_program_years.program_year_id%type := null;
+    pyv_id farms.farm_program_year_versions.program_year_version_id%type := null;
 
     opened numeric := 0;
 
@@ -114,8 +114,8 @@ declare
     ppc varchar(10) := null;
     mc varchar(10) := null;
 
-    v_program_year farms.farm_program_years.program_year_id%type := null;
-    v_prev_program_year farms.farm_program_years.program_year_id%type := null;
+    v_program_year farms.farm_program_years.year%type := null;
+    v_prev_program_year farms.farm_program_years.year%type := null;
     v_duplicate_year boolean := false;
     v_has_verified_scenario varchar(1);
     v_agristability_status farms.farm_program_year_versions.federal_status_code%type := null;

@@ -59,4 +59,17 @@ public class Errors {
     public static final String PERIOD_10_VARIANCE_DIGITS = "error.period.10.variance.digits";
     public static final String PERIOD_11_VARIANCE_DIGITS = "error.period.11.variance.digits";
     public static final String PERIOD_12_VARIANCE_DIGITS = "error.period.12.variance.digits";
+
+    public static final String ELIGIBILITY_IND_NOTBLANK = "error.eligibility.ind.notblank";
+    public static final String ELIGIBILITY_IND_SIZE = "error.eligibility.ind.size";
+
+    public static final String INSURABLE_VALUE_DIGITS = "error.insurable.value.digits";
+
+    public static final String PREMIUM_RATE_DIGITS = "error.premium.rate.digits";
+
+    public static final String COMMODITY_TYPE_CODE_SIZE = "error.commodity.type.code.size";
+
+    public static final String FRUIT_VEG_TYPE_CODE_SIZE = "error.fruit.veg.type.code.size";
+
+    public static final String MULTI_STAGE_COMMDTY_CODE_SIZE = "error.multi.stage.commdty.code.size";
 }

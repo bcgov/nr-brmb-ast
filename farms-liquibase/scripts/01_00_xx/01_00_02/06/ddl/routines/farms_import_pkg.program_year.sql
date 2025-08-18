@@ -1,5 +1,5 @@
 create or replace function farms_import_pkg.program_year(
-    in in_version_id numeric,
+    in in_version_id bigint,
     in in_agristability_client_id farms.farm_agristability_clients.agristability_client_id%type,
     in in_user varchar,
     inout in_out_activity numeric,
@@ -96,8 +96,8 @@ declare
         order by a.program_year asc; -- historical first!
     z02_val record;
 
-    py_id numeric := null;
-    pyv_id numeric := null;
+    py_id farms.farm_program_years.program_year_id%type := null;
+    pyv_id farms.farm_program_year_versions.program_year_version_id%type := null;
 
     opened numeric := 0;
 

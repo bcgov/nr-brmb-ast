@@ -1,5 +1,5 @@
 create or replace procedure farms_version_pkg.import_complete1(
-   in in_version_id numeric,
+   in in_version_id bigint,
    in in_message varchar,
    in in_user varchar
 )

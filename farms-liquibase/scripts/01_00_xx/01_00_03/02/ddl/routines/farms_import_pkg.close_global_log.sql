@@ -1,5 +1,5 @@
 create or replace procedure farms_import_pkg.close_global_log(
-   in in_version_id numeric
+   in in_version_id bigint
 )
 language plpgsql
 as $$

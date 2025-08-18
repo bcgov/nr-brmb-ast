@@ -1,6 +1,6 @@
 create or replace function farms_import_pkg.participant(
-    in in_version_id numeric,
-    in in_participant_pin numeric,
+    in in_version_id bigint,
+    in in_participant_pin integer,
     out out_agristability_client_id farms.farm_agristability_clients.agristability_client_id%type,
     in in_user varchar,
     inout in_out_activity numeric,
@@ -118,8 +118,8 @@ declare
     p1_msg varchar(4000) := null;
     p2_msg varchar(4000) := null;
 
-    person_id numeric := null;
-    person_rep_id numeric := null;
+    person_id bigint := null;
+    person_rep_id bigint := null;
 begin
     errors := 0;
 

@@ -1,10 +1,10 @@
 drop function if exists farms_version_pkg.import_failure(
-    numeric,
+    bigint,
     varchar
 );
 
 create or replace procedure farms_version_pkg.import_failure(
-    in in_version_id numeric,
+    in in_version_id bigint,
     in in_message varchar,
     in in_user varchar
 )

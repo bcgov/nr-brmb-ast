@@ -1,5 +1,5 @@
 create or replace function farms_import_pkg.person(
-    in in_version_id numeric,
+    in in_version_id bigint,
     inout in_person_id farms.farm_persons.person_id%type,
     in in_address_1 farms.farm_persons.address_line_1%type,
     in in_address_2 farms.farm_persons.address_line_2%type,

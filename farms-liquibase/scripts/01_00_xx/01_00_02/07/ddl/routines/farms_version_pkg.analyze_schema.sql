@@ -1,5 +1,5 @@
 create or replace procedure farms_version_pkg.analyze_schema(
-   in in_version_id numeric
+   in in_version_id bigint
 )
 language plpgsql
 as $$

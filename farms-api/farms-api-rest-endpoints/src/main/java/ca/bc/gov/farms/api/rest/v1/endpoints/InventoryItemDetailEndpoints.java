@@ -14,8 +14,8 @@ import javax.ws.rs.core.Response;
 
 import ca.bc.gov.brmb.common.rest.resource.HeaderConstants;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
-import ca.bc.gov.farms.api.rest.v1.resource.BenchmarkPerUnitListRsrc;
-import ca.bc.gov.farms.api.rest.v1.resource.BenchmarkPerUnitRsrc;
+import ca.bc.gov.farms.api.rest.v1.resource.InventoryItemDetailListRsrc;
+import ca.bc.gov.farms.api.rest.v1.resource.InventoryItemDetailRsrc;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -28,11 +28,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-@Path("/benchmarkPerUnits")
+@Path("/inventoryItemDetails")
 @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-public interface BenchmarkPerUnitEndpoints {
+public interface InventoryItemDetailEndpoints {
 
-    @Operation(operationId = "Get Benchmark Per Unit resource by Program Year.", summary = "Get Benchmark Per Unit resource by Program Year.", extensions = {
+    @Operation(operationId = "Get Inventory Item Detail resource by Inventory Item Code.", summary = "Get Inventory Item Detail resource by Inventory Item Code.", extensions = {
             @Extension(properties = {
                     @ExtensionProperty(name = "auth-type", value = "#{wso2.x-auth-type.app_and_app_user}"),
                     @ExtensionProperty(name = "throttling-tier", value = "Unlimited") }) })
@@ -44,14 +44,14 @@ public interface BenchmarkPerUnitEndpoints {
             @Parameter(name = HeaderConstants.AUTHORIZATION_HEADER, description = HeaderConstants.AUTHORIZATION_HEADER_DESCRIPTION, required = false, schema = @Schema(implementation = String.class), in = ParameterIn.HEADER)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = BenchmarkPerUnitListRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = InventoryItemDetailListRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getBenchmarkPerUnitsByProgramYear(
-            @Parameter(description = "The program year.") @QueryParam("programYear") Integer programYear);
+    public Response getInventoryItemDetailsByInventoryItemCode(
+            @Parameter(description = "The identifier of the Inventory Item Code resource.") @QueryParam("inventoryItemCode") String inventoryItemCode);
 
-    @Operation(operationId = "Get Benchmark Per Unit resource by Benchmark Per Unit Id.", summary = "Get Benchmark Per Unit resource by Benchmark Per Unit Id.", extensions = {
+    @Operation(operationId = "Get Inventory Item Detail resource by Inventory Item Detail Id.", summary = "Get Inventory Item Detail resource by Inventory Item Detail Id.", extensions = {
             @Extension(properties = {
                     @ExtensionProperty(name = "auth-type", value = "#{wso2.x-auth-type.app_and_app_user}"),
                     @ExtensionProperty(name = "throttling-tier", value = "Unlimited") }) })
@@ -63,16 +63,16 @@ public interface BenchmarkPerUnitEndpoints {
             @Parameter(name = HeaderConstants.AUTHORIZATION_HEADER, description = HeaderConstants.AUTHORIZATION_HEADER_DESCRIPTION, required = false, schema = @Schema(implementation = String.class), in = ParameterIn.HEADER)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = BenchmarkPerUnitRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = InventoryItemDetailRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
-    @Path("/{benchmarkPerUnitId}")
+    @Path("/{inventoryItemDetailId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getBenchmarkPerUnit(
-            @Parameter(description = "The identifier of the Benchmark Per Unit resource.") @PathParam("benchmarkPerUnitId") Long benchmarkPerUnitId);
+    public Response getInventoryItemDetail(
+            @Parameter(description = "The identifier of the Inventory Item Detail resource.") @PathParam("inventoryItemDetailId") Long inventoryItemDetailId);
 
-    @Operation(operationId = "Create Benchmark Per Unit resource.", summary = "Create Benchmark Per Unit resource.", extensions = {
+    @Operation(operationId = "Create Inventory Item Detail resource.", summary = "Create Inventory Item Detail resource.", extensions = {
             @Extension(properties = {
                     @ExtensionProperty(name = "auth-type", value = "#{wso2.x-auth-type.app_and_app_user}"),
                     @ExtensionProperty(name = "throttling-tier", value = "Unlimited") }) })
@@ -85,7 +85,7 @@ public interface BenchmarkPerUnitEndpoints {
             @Parameter(name = HeaderConstants.IF_MATCH_HEADER, description = HeaderConstants.IF_MATCH_DESCRIPTION, required = true, schema = @Schema(implementation = String.class), in = ParameterIn.HEADER)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = BenchmarkPerUnitRsrc.class)), headers = {
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = InventoryItemDetailRsrc.class)), headers = {
                     @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION),
                     @Header(name = HeaderConstants.LOCATION_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.LOCATION_DESCRIPTION) }),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
@@ -96,10 +96,10 @@ public interface BenchmarkPerUnitEndpoints {
     @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response createBenchmarkPerUnit(
-            @Parameter(name = "benchmarkPerUnitRsrc", description = "The Benchmark Per Unit resource containing the new values.", required = true) BenchmarkPerUnitRsrc benchmarkPerUnitRsrc);
+    public Response createInventoryItemDetail(
+            @Parameter(name = "inventoryItemDetailRsrc", description = "The Inventory Item Detail resource containing the new values.", required = true) InventoryItemDetailRsrc inventoryItemDetailRsrc);
 
-    @Operation(operationId = "Delete Benchmark Per Unit resource.", summary = "Delete Benchmark Per Unit resource.", extensions = {
+    @Operation(operationId = "Delete Inventory Item Detail resource.", summary = "Delete Inventory Item Detail resource.", extensions = {
             @Extension(properties = {
                     @ExtensionProperty(name = "auth-type", value = "#{wso2.x-auth-type.app_and_app_user}"),
                     @ExtensionProperty(name = "throttling-tier", value = "Unlimited") }) })
@@ -115,11 +115,11 @@ public interface BenchmarkPerUnitEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @DELETE
-    @Path("/{benchmarkPerUnitId}")
-    public Response deleteBenchmarkPerUnit(
-            @Parameter(description = "The identifier of the Benchmark Per Unit resource.") @PathParam("benchmarkPerUnitId") Long benchmarkPerUnitId);
+    @Path("/{inventoryItemDetailId}")
+    public Response deleteInventoryItemDetail(
+            @Parameter(description = "The identifier of the Inventory Item Detail resource.") @PathParam("inventoryItemDetailId") Long inventoryItemDetailId);
 
-    @Operation(operationId = "Update Benchmark Per Unit resource.", summary = "Update Benchmark Per Unit resource.", extensions = {
+    @Operation(operationId = "Update Inventory Item Detail resource.", summary = "Update Inventory Item Detail resource.", extensions = {
             @Extension(properties = {
                     @ExtensionProperty(name = "auth-type", value = "#{wso2.x-auth-type.app_and_app_user}"),
                     @ExtensionProperty(name = "throttling-tier", value = "Unlimited") }) })
@@ -132,16 +132,16 @@ public interface BenchmarkPerUnitEndpoints {
             @Parameter(name = HeaderConstants.IF_MATCH_HEADER, description = HeaderConstants.IF_MATCH_DESCRIPTION, required = true, schema = @Schema(implementation = String.class), in = ParameterIn.HEADER)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = BenchmarkPerUnitRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = InventoryItemDetailRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @PUT
-    @Path("/{benchmarkPerUnitId}")
+    @Path("/{inventoryItemDetailId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response updateBenchmarkPerUnit(
-            @Parameter(description = "The identifier of the Benchmark Per Unit resource.") @PathParam("benchmarkPerUnitId") Long benchmarkPerUnitId,
-            @Parameter(name = "benchmarkPerUnitRsrc", description = "The Benchmark Per Unit resource containing the new values.", required = true) BenchmarkPerUnitRsrc benchmarkPerUnitRsrc);
+    public Response updateInventoryItemDetail(
+            @Parameter(description = "The identifier of the Inventory Item Detail resource.") @PathParam("inventoryItemDetailId") Long inventoryItemDetailId,
+            @Parameter(name = "inventoryItemDetailRsrc", description = "The Inventory Item Detail resource containing the new values.", required = true) InventoryItemDetailRsrc inventoryItemDetailRsrc);
 
 }

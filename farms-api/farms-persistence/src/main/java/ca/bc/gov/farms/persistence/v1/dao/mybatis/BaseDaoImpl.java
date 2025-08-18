@@ -17,4 +17,12 @@ public class BaseDaoImpl extends BaseDao {
     protected String toString(Boolean b) {
         return b == null ? null : b ? "Y" : "N";
     }
+
+    protected Short toShort(Integer i) {
+        return i == null ? null : i.shortValue();
+    }
+
+    protected Long toLong(Integer i) {
+        return i == null ? null : i.longValue();
+    }
 }

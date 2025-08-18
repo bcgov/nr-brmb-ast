@@ -12,6 +12,7 @@ import ca.bc.gov.farms.model.v1.FairMarketValue;
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.BenchmarkPerUnitRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.FairMarketValueRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemDetailRsrcConstraints;
 import ca.bc.gov.brmb.common.model.Message;
 import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
@@ -89,6 +90,15 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, FairMarketValueRsrcConstraints.class);
 
         logger.debug(">validateFairMarketValue " + results.size());
+        return results;
+    }
+
+    public List<Message> validateInventoryItemDetail(Object resource) {
+        logger.debug("<validateInventoryItemDetail");
+
+        List<Message> results = this.validate(resource, InventoryItemDetailRsrcConstraints.class);
+
+        logger.debug(">validateInventoryItemDetail " + results.size());
         return results;
     }
 }
