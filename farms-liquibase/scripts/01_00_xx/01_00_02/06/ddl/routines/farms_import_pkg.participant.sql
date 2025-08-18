@@ -118,8 +118,8 @@ declare
     p1_msg varchar(4000) := null;
     p2_msg varchar(4000) := null;
 
-    person_id numeric := null;
-    person_rep_id numeric := null;
+    person_id bigint := null;
+    person_rep_id bigint := null;
 begin
     errors := 0;
 
