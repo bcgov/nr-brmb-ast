@@ -36,7 +36,7 @@ declare
         where pyv.program_year_version_id = in_program_year_version_id;
     op_insert_val record;
 
-    fo_id numeric;
+    fo_id farms.farm_farming_operations.farming_operation_id%type;
 
     ye date;
     ys date;
