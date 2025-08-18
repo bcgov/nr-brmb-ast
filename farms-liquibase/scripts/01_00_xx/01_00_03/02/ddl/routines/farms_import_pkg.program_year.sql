@@ -114,8 +114,8 @@ declare
     ppc varchar(10) := null;
     mc varchar(10) := null;
 
-    v_program_year farms.farm_program_years.program_year_id%type := null;
-    v_prev_program_year farms.farm_program_years.program_year_id%type := null;
+    v_program_year farms.farm_program_years.year%type := null;
+    v_prev_program_year farms.farm_program_years.year%type := null;
     v_duplicate_year boolean := false;
     v_has_verified_scenario varchar(1);
     v_agristability_status farms.farm_program_year_versions.federal_status_code%type := null;
