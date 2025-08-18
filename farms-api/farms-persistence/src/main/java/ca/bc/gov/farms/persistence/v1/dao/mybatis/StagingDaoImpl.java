@@ -189,11 +189,11 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z04(?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getIncomeExpenseKey()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getParticipantPin()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getProgramYear()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getOperationNumber()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getLineCode()));
+            callableStatement.setObject(i++, toLong(obj.getIncomeExpenseKey()), Types.BIGINT);
+            callableStatement.setObject(i++, obj.getParticipantPin(), Types.INTEGER);
+            callableStatement.setObject(i++, toShort(obj.getProgramYear()), Types.SMALLINT);
+            callableStatement.setObject(i++, toShort(obj.getOperationNumber()), Types.SMALLINT);
+            callableStatement.setObject(i++, toShort(obj.getLineCode()), Types.SMALLINT);
             callableStatement.setString(i++, obj.getIe());
             callableStatement.setBigDecimal(i++, toBigDecimal(obj.getAmount()));
             callableStatement.setString(i++, userId);

@@ -21,4 +21,8 @@ public class BaseDaoImpl extends BaseDao {
     protected Short toShort(Integer i) {
         return i == null ? null : i.shortValue();
     }
+
+    protected Long toLong(Integer i) {
+        return i == null ? null : i.longValue();
+    }
 }
