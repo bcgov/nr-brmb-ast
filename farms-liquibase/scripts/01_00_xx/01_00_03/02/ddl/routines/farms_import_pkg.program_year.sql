@@ -97,7 +97,7 @@ declare
     z02_val record;
 
     py_id numeric := null;
-    pyv_id numeric := null;
+    pyv_id bigint := null;
 
     opened numeric := 0;
 
