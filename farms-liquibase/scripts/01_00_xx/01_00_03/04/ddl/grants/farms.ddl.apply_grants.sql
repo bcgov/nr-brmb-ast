@@ -6,3 +6,4 @@ GRANT EXECUTE ON PROCEDURE farms_ivpr_pkg.validate_inventory TO "app_farms_rest_
 GRANT EXECUTE ON PROCEDURE farms_ivpr_pkg.insert_staging_row TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_ivpr_pkg.clear_staging TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_ivpr_pkg.delete_staging_errors TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_ivpr_pkg.validate_staging TO "app_farms_rest_proxy";
