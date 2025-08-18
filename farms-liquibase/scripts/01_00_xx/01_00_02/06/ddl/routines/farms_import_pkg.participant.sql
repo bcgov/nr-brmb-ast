@@ -1,6 +1,6 @@
 create or replace function farms_import_pkg.participant(
     in in_version_id bigint,
-    in in_participant_pin numeric,
+    in in_participant_pin integer,
     out out_agristability_client_id farms.farm_agristability_clients.agristability_client_id%type,
     in in_user varchar,
     inout in_out_activity numeric,
