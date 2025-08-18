@@ -8,3 +8,4 @@ GRANT EXECUTE ON PROCEDURE farms_ivpr_pkg.clear_staging TO "app_farms_rest_proxy
 GRANT EXECUTE ON PROCEDURE farms_ivpr_pkg.delete_staging_errors TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_ivpr_pkg.validate_staging TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_ivpr_pkg.get_staging_errors TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_ivpr_pkg.staging_to_operational TO "app_farms_rest_proxy";
