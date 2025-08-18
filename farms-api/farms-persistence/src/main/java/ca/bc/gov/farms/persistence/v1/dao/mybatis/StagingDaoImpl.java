@@ -150,16 +150,16 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z03(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getOperationNumber()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getParticipantPin()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getProgramYear()));
+            callableStatement.setObject(i++, toShort(obj.getOperationNumber()), Types.SMALLINT);
+            callableStatement.setObject(i++, obj.getParticipantPin(), Types.INTEGER);
+            callableStatement.setObject(i++, toShort(obj.getProgramYear()), Types.SMALLINT);
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getPartnershipPin()));
+            callableStatement.setObject(i++, obj.getPartnershipPin(), Types.INTEGER);
             callableStatement.setString(i++, obj.getPartnershipName());
             callableStatement.setBigDecimal(i++, toBigDecimal(obj.getPartnershipPercent()));
             callableStatement.setString(i++, obj.getFiscalYearStart());
             callableStatement.setString(i++, obj.getFiscalYearEnd());
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getAccountingCode()));
+            callableStatement.setObject(i++, toBigDecimal(obj.getAccountingCode()), Types.SMALLINT);
 
             callableStatement.setString(i++, toString(obj.isLandlord()));
             callableStatement.setString(i++, toString(obj.isCropShare()));
