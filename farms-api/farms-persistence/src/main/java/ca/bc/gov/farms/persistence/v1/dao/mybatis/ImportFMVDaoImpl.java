@@ -49,9 +49,11 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
                         "call farms_fmv_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            callableStatement.setInt(1, rowNum);
-            callableStatement.setInt(2, dto.getProgramYear());
-            callableStatement.setInt(3, dto.getPeriod());
+            callableStatement.setLong(1, rowNum);
+            callableStatement.setObject(2, dto.getProgramYear() == null ? null : dto.getProgramYear().shortValue(),
+                    Types.SMALLINT);
+            callableStatement.setObject(3, dto.getPeriod() == null ? null : dto.getPeriod().shortValue(),
+                    Types.SMALLINT);
             callableStatement.setBigDecimal(4, dto.getAveragePrice());
             callableStatement.setBigDecimal(5, dto.getPercentVariance());
             callableStatement.setString(6, dto.getMunicipalityCode());
