@@ -202,7 +202,7 @@ begin
             where import_version_id = transfer_version_id;
 
             fetch received_cursor into transfer_val;
-            exit when received_cursor%notfound;
+            exit when not found;
         end loop;
 
         call farms_import_pkg.update_status(

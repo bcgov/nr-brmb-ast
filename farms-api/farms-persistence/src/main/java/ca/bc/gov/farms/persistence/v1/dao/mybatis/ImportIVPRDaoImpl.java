@@ -13,18 +13,18 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.BaseDao;
-import ca.bc.gov.farms.persistence.v1.dao.ImportFMVDao;
-import ca.bc.gov.farms.persistence.v1.dto.ImportFMVDto;
+import ca.bc.gov.farms.persistence.v1.dao.ImportIVPRDao;
+import ca.bc.gov.farms.persistence.v1.dto.ImportIVPRDto;
 
-public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
+public class ImportIVPRDaoImpl extends BaseDao implements ImportIVPRDao {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = LoggerFactory.getLogger(ImportFMVDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImportIVPRDaoImpl.class);
 
     private Connection conn;
 
-    public ImportFMVDaoImpl(Connection c) {
+    public ImportIVPRDaoImpl(Connection c) {
         this.conn = c;
     }
 
@@ -33,7 +33,7 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
         logger.debug("<clearStaging");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("call farms_fmv_pkg.clear_staging()")) {
+                .prepareCall("call farms_ivpr_pkg.clear_staging()")) {
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
             handleException(e);
@@ -43,23 +43,19 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
     }
 
     @Override
-    public void insertStagingRow(ImportFMVDto dto, String userId, int rowNum) throws DaoException {
+    public void insertStagingRow(ImportIVPRDto dto, String userId, int rowNum) throws DaoException {
         logger.debug("<insertStagingRow");
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
-                        "call farms_fmv_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                        "call farms_ivpr_pkg.insert_staging_row(?, ?, ?, ?, ?, ?)")) {
             callableStatement.setLong(1, rowNum);
             callableStatement.setObject(2, dto.getProgramYear() == null ? null : dto.getProgramYear().shortValue(),
                     Types.SMALLINT);
-            callableStatement.setObject(3, dto.getPeriod() == null ? null : dto.getPeriod().shortValue(),
-                    Types.SMALLINT);
-            callableStatement.setBigDecimal(4, dto.getAveragePrice());
-            callableStatement.setBigDecimal(5, dto.getPercentVariance());
-            callableStatement.setString(6, dto.getMunicipalityCode());
-            callableStatement.setString(7, dto.getCropUnitCode());
-            callableStatement.setString(8, dto.getInventoryItemCode());
-            callableStatement.setString(9, userId);
+            callableStatement.setString(3, dto.getInventoryItemCode());
+            callableStatement.setBigDecimal(4, dto.getInsurableValue());
+            callableStatement.setBigDecimal(5, dto.getPremiumRate());
+            callableStatement.setString(6, userId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
             handleException(e);
@@ -73,7 +69,7 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
         logger.debug("<validateStaging");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("call farms_fmv_pkg.validate_staging(?)")) {
+                .prepareCall("call farms_ivpr_pkg.validate_staging(?)")) {
             callableStatement.setLong(1, importVersionId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
@@ -88,7 +84,7 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
         logger.debug("<deleteStagingErrors");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("call farms_fmv_pkg.delete_staging_errors(?)")) {
+                .prepareCall("call farms_ivpr_pkg.delete_staging_errors(?)")) {
             callableStatement.setLong(1, importVersionId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
@@ -105,7 +101,7 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
         List<String> importLogDtoList = new ArrayList<>();
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("{ ? = call farms_fmv_pkg.get_staging_errors(?) }")) {
+                .prepareCall("{ ? = call farms_ivpr_pkg.get_staging_errors(?) }")) {
 
             callableStatement.registerOutParameter(1, Types.OTHER);
             callableStatement.setLong(2, importVersionId);
@@ -131,7 +127,7 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
         logger.debug("<performImport");
 
         try (CallableStatement callableStatement = this.conn
-                .prepareCall("call farms_fmv_pkg.staging_to_operational(?, ?)")) {
+                .prepareCall("call farms_ivpr_pkg.staging_to_operational(?, ?)")) {
             callableStatement.setLong(1, importVersionId);
             callableStatement.setString(2, userId);
             callableStatement.execute();

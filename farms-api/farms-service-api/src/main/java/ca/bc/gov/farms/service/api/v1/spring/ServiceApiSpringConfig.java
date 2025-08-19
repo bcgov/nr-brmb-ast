@@ -18,6 +18,7 @@ import ca.bc.gov.farms.service.api.v1.FairMarketValueService;
 import ca.bc.gov.farms.service.api.v1.ImportBPUService;
 import ca.bc.gov.farms.service.api.v1.ImportCRAService;
 import ca.bc.gov.farms.service.api.v1.ImportFMVService;
+import ca.bc.gov.farms.service.api.v1.ImportIVPRService;
 import ca.bc.gov.farms.service.api.v1.ImportService;
 import ca.bc.gov.farms.service.api.v1.InventoryItemDetailService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
@@ -25,6 +26,7 @@ import ca.bc.gov.farms.service.api.v1.impl.FairMarketValueServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportBPUServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportCRAServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportFMVServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.ImportIVPRServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryItemDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
@@ -141,5 +143,10 @@ public class ServiceApiSpringConfig {
     @Bean
     public ImportService importService(DataSource farmsDataSource) {
         return new ImportServiceImpl(farmsDataSource);
+    }
+
+    @Bean
+    public ImportIVPRService importIVPRService(DataSource farmsDataSource) {
+        return new ImportIVPRServiceImpl(farmsDataSource);
     }
 }

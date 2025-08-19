@@ -15,6 +15,7 @@ import ca.bc.gov.farms.persistence.v1.dto.ImportVersionDto;
 import ca.bc.gov.farms.service.api.v1.ImportBPUService;
 import ca.bc.gov.farms.service.api.v1.ImportCRAService;
 import ca.bc.gov.farms.service.api.v1.ImportFMVService;
+import ca.bc.gov.farms.service.api.v1.ImportIVPRService;
 import ca.bc.gov.farms.service.api.v1.ImportService;
 
 public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndpoints {
@@ -32,6 +33,9 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
 
     @Autowired
     private ImportFMVService importFMVService;
+
+    @Autowired
+    private ImportIVPRService importIVPRService;
 
     @Override
     public Response importBPU(String fileName, byte[] fileContent) throws Exception {
@@ -127,6 +131,38 @@ public class ImportEndpointsImpl extends BaseEndpointsImpl implements ImportEndp
         logResponse(response);
 
         logger.debug(">importFMV " + response);
+        return response;
+    }
+
+    @Override
+    public Response importIVPR(String fileName, byte[] fileContent) throws Exception {
+        logger.debug("<importIVPR");
+
+        Response response = null;
+
+        logRequest();
+
+        try {
+            // Call the service layer to handle the import
+            ImportVersionDto importVersionDto = importService.createImportVersion(
+                    ImportClassCodes.IVPR, ImportStateCodes.SCHEDULED_FOR_STAGING, ImportClassCodes.IVPR_DESCRIPTION,
+                    fileName, fileContent, "UserId");
+
+            Long importVersionId = importVersionDto.getImportVersionId();
+            InputStream inputStream = new ByteArrayInputStream(fileContent);
+            String userId = "UserId";
+            importIVPRService.importCSV(importVersionId, inputStream, userId);
+
+            importIVPRService.processImport(importVersionId, userId);
+
+            response = Response.ok().build();
+        } catch (Exception e) {
+            response = getInternalServerErrorResponse(e);
+        }
+
+        logResponse(response);
+
+        logger.debug(">importIVPR " + response);
         return response;
     }
 
