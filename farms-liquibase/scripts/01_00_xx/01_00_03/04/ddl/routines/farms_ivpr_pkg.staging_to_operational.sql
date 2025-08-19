@@ -40,6 +40,7 @@ begin
             v_staging.program_year);
         loop
             fetch c_operational into v_operational;
+            exit when not found;
 
             update farms.farm_inventory_item_details
             set insurable_value = v_staging.insurable_value,
@@ -50,8 +51,6 @@ begin
             where inventory_item_detail_id = v_operational.inventory_item_detail_id;
 
             v_num_updated := v_num_updated + 1;
-
-            exit when not found;
         end loop;
 
         close c_operational;
