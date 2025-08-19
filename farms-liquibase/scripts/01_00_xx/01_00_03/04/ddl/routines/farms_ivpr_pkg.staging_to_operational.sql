@@ -51,7 +51,7 @@ begin
 
             v_num_updated := v_num_updated + 1;
 
-            exit when c_operational%notfound;
+            exit when not found;
         end loop;
 
         close c_operational;
