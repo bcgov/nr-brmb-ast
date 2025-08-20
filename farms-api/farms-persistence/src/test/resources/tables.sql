@@ -1,7 +1,3 @@
-CREATE SCHEMA "farms";
-
-CREATE EXTENSION IF NOT EXISTS tablefunc;
-
 CREATE TABLE farms.farm_benchmark_per_units (
     benchmark_per_unit_id bigint NOT NULL,
     program_year smallint NOT NULL,
