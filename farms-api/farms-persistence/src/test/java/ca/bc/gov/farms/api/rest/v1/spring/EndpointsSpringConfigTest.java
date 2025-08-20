@@ -17,7 +17,7 @@ public class EndpointsSpringConfigTest {
                 .withDatabaseName("farmsdev")
                 .withUsername("app_farms")
                 .withPassword("test1234")
-                .withInitScripts("schemas.sql", "extensions.sql", "tables.sql");
+                .withInitScripts("schemas.sql", "extensions.sql", "tables.sql", "sequences.sql");
     }
 
     @Primary
