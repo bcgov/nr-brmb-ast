@@ -16,7 +16,8 @@ public class EndpointsSpringConfigTest {
         return new PostgreSQLContainer<>("postgres:17-alpine")
                 .withDatabaseName("farmsdev")
                 .withUsername("app_farms")
-                .withPassword("test1234");
+                .withPassword("test1234")
+                .withInitScript("main.sql");
     }
 
     @Primary
