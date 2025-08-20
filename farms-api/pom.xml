@@ -99,6 +99,8 @@
                 <artifactId>brmb-common-checkhealth</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
+
+            <!-- Miscellaneous -->
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
