@@ -1,7 +1,9 @@
 package ca.bc.gov.farms.persistence.v1.dao;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,6 +24,7 @@ import java.math.BigDecimal;
 @ExtendWith(SpringExtension.class)
 @ComponentScan(basePackages = "ca.bc.gov.farms")
 @ContextConfiguration(classes = { EndpointsSpringConfigTest.class, PersistenceSpringConfig.class })
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class BenchmarkPerUnitDaoTest {
 
     @Autowired
@@ -148,5 +151,13 @@ public class BenchmarkPerUnitDaoTest {
         assertThat(result.getYearMinus3Expense()).isEqualByComparingTo(new BigDecimal("1186.58"));
         assertThat(result.getYearMinus2Expense()).isEqualByComparingTo(new BigDecimal("1258.28"));
         assertThat(result.getYearMinus1Expense()).isEqualByComparingTo(new BigDecimal("1258.28"));
+    }
+
+    @Test
+    @Order(3)
+    public void testDelete() {
+        assertThatNoException().isThrownBy(() -> {
+            benchmarkPerUnitDao.delete(benchmarkPerUnitId);
+        });
     }
 }
