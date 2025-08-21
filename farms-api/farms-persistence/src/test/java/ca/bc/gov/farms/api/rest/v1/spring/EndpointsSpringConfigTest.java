@@ -17,7 +17,17 @@ public class EndpointsSpringConfigTest {
                 .withDatabaseName("farmsdev")
                 .withUsername("app_farms")
                 .withPassword("test1234")
-                .withInitScripts("schemas.sql", "extensions.sql", "tables.sql", "sequences.sql");
+                .withInitScripts(
+                        "farms/schema.sql",
+                        "farms/extensions.sql",
+                        "farms/sequences.sql",
+                        "farms/tables/farms.farm_benchmark_years.sql",
+                        "farms/tables/farms.farm_benchmark_per_units.sql",
+                        "farms/tables/farms.farm_inventory_item_codes.sql",
+                        "farms/tables/farms.farm_municipality_codes.sql",
+                        "farms/tables/farms.farm_structure_group_codes.sql",
+                        "farms/tables/foreign_keys.sql",
+                        "farms/tables/data.sql");
     }
 
     @Primary
