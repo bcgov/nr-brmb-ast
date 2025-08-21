@@ -18,6 +18,16 @@ insert into farms.farm_municipality_codes (
     current_timestamp,
     current_user,
     current_timestamp
+), (
+    '43',
+    'Mount Waddington (Island part)',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
 );
 
 insert into farms.farm_inventory_item_codes (
@@ -40,5 +50,14 @@ insert into farms.farm_inventory_item_codes (
     current_timestamp,
     current_user,
     current_timestamp
+), (
+    '5562',
+    'Greenfeed',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
 );
-

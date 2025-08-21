@@ -152,18 +152,20 @@
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
-            #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            (
+                select mc.municipality_code
+                from farms.farm_municipality_codes mc
+                where mc.municipality_code = #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
             (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
                 where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and iic.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             (
                 select sgc.structure_group_code
                 from farms.farm_structure_group_codes sgc
                 where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and sgc.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             1,
             #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
@@ -202,18 +204,20 @@
         set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             unit_comment = #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             expiry_date = #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
-            municipality_code = #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            municipality_code = (
+                select mc.municipality_code
+                from farms.farm_municipality_codes mc
+                where mc.municipality_code = #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
             inventory_item_code = (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
                 where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and iic.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             structure_group_code = (
                 select sgc.structure_group_code
                 from farms.farm_structure_group_codes sgc
                 where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and sgc.description = #{dto.inventoryDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
