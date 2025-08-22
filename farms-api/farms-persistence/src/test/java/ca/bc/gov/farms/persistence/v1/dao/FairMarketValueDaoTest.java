@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.persistence.v1.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
@@ -237,5 +238,13 @@ public class FairMarketValueDaoTest {
         assertThat(result.getPeriod10Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
         assertThat(result.getPeriod11Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
         assertThat(result.getPeriod12Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+    }
+
+    @Test
+    @Order(4)
+    public void testDelete() {
+        assertThatNoException().isThrownBy(() -> {
+            fairMarketValueDao.delete(2024, fairMarketValueId);
+        });
     }
 }
