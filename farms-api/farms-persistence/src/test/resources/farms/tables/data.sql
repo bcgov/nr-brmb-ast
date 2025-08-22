@@ -60,6 +60,16 @@ insert into farms.farm_inventory_item_codes (
     current_timestamp,
     current_user,
     current_timestamp
+), (
+    '7208',
+    'Daffodils; Fresh cut',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
 );
 
 insert into farms.farm_crop_unit_codes (

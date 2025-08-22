@@ -96,25 +96,21 @@
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
                 where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and iic.description = #{dto.inventoryItemDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             (
                 select ctc.commodity_type_code
                 from farms.farm_commodity_type_codes ctc
                 where ctc.commodity_type_code = #{dto.commodityTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and ctc.description = #{dto.commodityTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             (
                 select fvtc.fruit_veg_type_code
                 from farms.farm_fruit_veg_type_codes fvtc
                 where fvtc.fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and fvtc.description = #{dto.fruitVegTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             (
                 select mscc.multi_stage_commdty_code
                 from farms.farm_multi_stage_commdty_codes mscc
                 where mscc.multi_stage_commdty_code = #{dto.multiStageCommdtyCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and mscc.description = #{dto.multiStageCommdtyDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             1,
             #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
@@ -135,25 +131,21 @@
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
                 where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and iic.description = #{dto.inventoryItemDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             commodity_type_code = (
                 select ctc.commodity_type_code
                 from farms.farm_commodity_type_codes ctc
                 where ctc.commodity_type_code = #{dto.commodityTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and ctc.description = #{dto.commodityTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             fruit_veg_type_code = (
                 select fvtc.fruit_veg_type_code
                 from farms.farm_fruit_veg_type_codes fvtc
                 where fvtc.fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and fvtc.description = #{dto.fruitVegTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             multi_stage_commdty_code = (
                 select mscc.multi_stage_commdty_code
                 from farms.farm_multi_stage_commdty_codes mscc
                 where mscc.multi_stage_commdty_code = #{dto.multiStageCommdtyCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
-                and mscc.description = #{dto.multiStageCommdtyDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
