@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.farms.api.rest.v1.spring.EndpointsSpringConfigTest;
+import ca.bc.gov.farms.persistence.v1.dto.FairMarketValueDto;
 import ca.bc.gov.farms.persistence.v1.dto.InventoryItemDetailDto;
 import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 
@@ -99,5 +100,51 @@ public class InventoryItemDetailDaoTest {
         assertThat(fetchedDto.getFruitVegTypeDesc()).isNull();
         assertThat(fetchedDto.getMultiStageCommdtyCode()).isNull();
         assertThat(fetchedDto.getMultiStageCommdtyDesc()).isNull();
+    }
+
+    @Test
+    @Order(3)
+    public void testUpdate() {
+        InventoryItemDetailDto dto = null;
+        try {
+            dto = inventoryItemDetailDao.fetch(inventoryItemDetailId);
+        } catch (DaoException e) {
+            fail(e.getMessage());
+            return;
+        }
+        assertThat(dto).isNotNull();
+
+        dto.setProgramYear(2024);
+        dto.setEligibilityInd("N");
+        dto.setLineItem(null);
+        dto.setInsurableValue(new BigDecimal("24000.001"));
+        dto.setPremiumRate(new BigDecimal("0.0465"));
+        dto.setInventoryItemCode("5562");
+        dto.setCommodityTypeCode(null);
+        dto.setFruitVegTypeCode(null);
+        dto.setMultiStageCommdtyCode(null);
+
+        InventoryItemDetailDto result = null;
+        try {
+            inventoryItemDetailDao.update(dto, "testUser");
+            result = inventoryItemDetailDao.fetch(inventoryItemDetailId);
+        } catch (DaoException e) {
+            fail(e.getMessage());
+            return;
+        }
+
+        assertThat(result.getProgramYear()).isEqualTo(2024);
+        assertThat(result.getEligibilityInd()).isEqualTo("N");
+        assertThat(result.getLineItem()).isNull();
+        assertThat(result.getInsurableValue()).isEqualTo(new BigDecimal("24000.001"));
+        assertThat(result.getPremiumRate()).isEqualTo(new BigDecimal("0.0465"));
+        assertThat(result.getInventoryItemCode()).isEqualTo("5562");
+        assertThat(result.getInventoryItemDesc()).isEqualTo("Greenfeed");
+        assertThat(result.getCommodityTypeCode()).isNull();
+        assertThat(result.getCommodityTypeDesc()).isNull();
+        assertThat(result.getFruitVegTypeCode()).isNull();
+        assertThat(result.getFruitVegTypeDesc()).isNull();
+        assertThat(result.getMultiStageCommdtyCode()).isNull();
+        assertThat(result.getMultiStageCommdtyDesc()).isNull();
     }
 }
