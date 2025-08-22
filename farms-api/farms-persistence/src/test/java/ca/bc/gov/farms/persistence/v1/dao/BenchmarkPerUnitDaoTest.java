@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @ComponentScan(basePackages = "ca.bc.gov.farms")
@@ -91,6 +92,46 @@ public class BenchmarkPerUnitDaoTest {
 
     @Test
     @Order(2)
+    public void testFetchByProgramYear() {
+        List<BenchmarkPerUnitDto> dtos = null;
+        try {
+            dtos = benchmarkPerUnitDao.fetchByProgramYear(2024);
+        } catch (DaoException e) {
+            fail(e.getMessage());
+            return;
+        }
+        assertThat(dtos).isNotNull();
+        assertThat(dtos).isNotEmpty();
+        assertThat(dtos.size()).isEqualTo(1);
+
+        BenchmarkPerUnitDto dto = dtos.iterator().next();
+        assertThat(dto.getProgramYear()).isEqualTo(2024);
+        assertThat(dto.getUnitComment()).isEqualTo("Alfalfa Dehy");
+        assertThat(dto.getExpiryDate()).isNull();
+        assertThat(dto.getMunicipalityCode()).isEqualTo("41");
+        assertThat(dto.getMunicipalityDesc()).isEqualTo("Cariboo");
+        assertThat(dto.getInventoryItemCode()).isEqualTo("5560");
+        assertThat(dto.getInventoryItemDesc()).isEqualTo("Alfalfa Dehy");
+        assertThat(dto.getStructureGroupCode()).isNull();
+        assertThat(dto.getStructureGroupDesc()).isNull();
+        assertThat(dto.getInventoryCode()).isEqualTo("5560");
+        assertThat(dto.getInventoryDesc()).isEqualTo("Alfalfa Dehy");
+        assertThat(dto.getYearMinus6Margin()).isEqualByComparingTo(new BigDecimal("106.43"));
+        assertThat(dto.getYearMinus5Margin()).isEqualByComparingTo(new BigDecimal("128.79"));
+        assertThat(dto.getYearMinus4Margin()).isEqualByComparingTo(new BigDecimal("127.41"));
+        assertThat(dto.getYearMinus3Margin()).isEqualByComparingTo(new BigDecimal("109.64"));
+        assertThat(dto.getYearMinus2Margin()).isEqualByComparingTo(new BigDecimal("95.13"));
+        assertThat(dto.getYearMinus1Margin()).isEqualByComparingTo(new BigDecimal("0.00"));
+        assertThat(dto.getYearMinus6Expense()).isEqualByComparingTo(new BigDecimal("151.44"));
+        assertThat(dto.getYearMinus5Expense()).isEqualByComparingTo(new BigDecimal("156.59"));
+        assertThat(dto.getYearMinus4Expense()).isEqualByComparingTo(new BigDecimal("140.79"));
+        assertThat(dto.getYearMinus3Expense()).isEqualByComparingTo(new BigDecimal("186.58"));
+        assertThat(dto.getYearMinus2Expense()).isEqualByComparingTo(new BigDecimal("258.28"));
+        assertThat(dto.getYearMinus1Expense()).isEqualByComparingTo(new BigDecimal("258.28"));
+    }
+
+    @Test
+    @Order(3)
     public void testUpdate() {
         BenchmarkPerUnitDto dto = null;
         try {
@@ -154,7 +195,7 @@ public class BenchmarkPerUnitDaoTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void testDelete() {
         assertThatNoException().isThrownBy(() -> {
             benchmarkPerUnitDao.delete(benchmarkPerUnitId);
