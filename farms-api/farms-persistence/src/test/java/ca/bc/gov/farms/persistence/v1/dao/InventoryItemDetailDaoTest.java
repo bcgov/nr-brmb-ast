@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.persistence.v1.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
@@ -18,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.farms.api.rest.v1.spring.EndpointsSpringConfigTest;
-import ca.bc.gov.farms.persistence.v1.dto.FairMarketValueDto;
 import ca.bc.gov.farms.persistence.v1.dto.InventoryItemDetailDto;
 import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 
@@ -146,5 +146,13 @@ public class InventoryItemDetailDaoTest {
         assertThat(result.getFruitVegTypeDesc()).isNull();
         assertThat(result.getMultiStageCommdtyCode()).isNull();
         assertThat(result.getMultiStageCommdtyDesc()).isNull();
+    }
+
+    @Test
+    @Order(4)
+    public void testDelete() {
+        assertThatNoException().isThrownBy(() -> {
+            inventoryItemDetailDao.delete(inventoryItemDetailId);
+        });
     }
 }
