@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -105,5 +106,53 @@ public class FairMarketValueDaoTest {
         assertThat(result.getPeriod10Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
         assertThat(result.getPeriod11Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
         assertThat(result.getPeriod12Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+    }
+
+    @Test
+    @Order(2)
+    public void testFetchByProgramYear() {
+        List<FairMarketValueDto> dtos = null;
+        try {
+            dtos = fairMarketValueDao.fetchByProgramYear(2024);
+        } catch (DaoException e) {
+            fail(e.getMessage());
+            return;
+        }
+        assertThat(dtos).isNotNull();
+        assertThat(dtos).isNotEmpty();
+        assertThat(dtos.size()).isEqualTo(1);
+
+        FairMarketValueDto dto = dtos.iterator().next();
+        assertThat(dto.getProgramYear()).isEqualTo(2024);
+        assertThat(dto.getInventoryItemCode()).isEqualTo("5562");
+        assertThat(dto.getInventoryItemDesc()).isEqualTo("Greenfeed");
+        assertThat(dto.getMunicipalityCode()).isEqualTo("43");
+        assertThat(dto.getMunicipalityDesc()).isEqualTo("Mount Waddington (Island part)");
+        assertThat(dto.getCropUnitCode()).isEqualTo("2");
+        assertThat(dto.getCropUnitDesc()).isEqualTo("Tonnes");
+        assertThat(dto.getPeriod01Price()).isEqualByComparingTo(new BigDecimal("216.05"));
+        assertThat(dto.getPeriod02Price()).isEqualByComparingTo(new BigDecimal("216.05"));
+        assertThat(dto.getPeriod03Price()).isEqualByComparingTo(new BigDecimal("216.05"));
+        assertThat(dto.getPeriod04Price()).isEqualByComparingTo(new BigDecimal("198.42"));
+        assertThat(dto.getPeriod05Price()).isEqualByComparingTo(new BigDecimal("198.42"));
+        assertThat(dto.getPeriod06Price()).isEqualByComparingTo(new BigDecimal("198.42"));
+        assertThat(dto.getPeriod07Price()).isEqualByComparingTo(new BigDecimal("176.37"));
+        assertThat(dto.getPeriod08Price()).isEqualByComparingTo(new BigDecimal("176.37"));
+        assertThat(dto.getPeriod09Price()).isEqualByComparingTo(new BigDecimal("176.37"));
+        assertThat(dto.getPeriod10Price()).isEqualByComparingTo(new BigDecimal("190.04"));
+        assertThat(dto.getPeriod11Price()).isEqualByComparingTo(new BigDecimal("190.04"));
+        assertThat(dto.getPeriod12Price()).isEqualByComparingTo(new BigDecimal("190.04"));
+        assertThat(dto.getPeriod01Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod02Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod03Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod04Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod05Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod06Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod07Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod08Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod09Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod10Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod11Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getPeriod12Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
     }
 }
