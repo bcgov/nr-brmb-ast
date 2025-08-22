@@ -155,4 +155,87 @@ public class FairMarketValueDaoTest {
         assertThat(dto.getPeriod11Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
         assertThat(dto.getPeriod12Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
     }
+
+    @Test
+    @Order(3)
+    public void testUpdate() {
+        FairMarketValueDto dto = null;
+        try {
+            dto = fairMarketValueDao.fetch(2024, fairMarketValueId);
+        } catch (DaoException e) {
+            fail(e.getMessage());
+            return;
+        }
+        assertThat(dto).isNotNull();
+
+        dto.setProgramYear(2024);
+        dto.setInventoryItemCode("5562");
+        dto.setMunicipalityCode("43");
+        dto.setCropUnitCode("2");
+        dto.setPeriod01Price(new BigDecimal("1216.05"));
+        dto.setPeriod02Price(new BigDecimal("1216.05"));
+        dto.setPeriod03Price(new BigDecimal("1216.05"));
+        dto.setPeriod04Price(new BigDecimal("1198.42"));
+        dto.setPeriod05Price(new BigDecimal("1198.42"));
+        dto.setPeriod06Price(new BigDecimal("1198.42"));
+        dto.setPeriod07Price(new BigDecimal("1176.37"));
+        dto.setPeriod08Price(new BigDecimal("1176.37"));
+        dto.setPeriod09Price(new BigDecimal("1176.37"));
+        dto.setPeriod10Price(new BigDecimal("1190.04"));
+        dto.setPeriod11Price(new BigDecimal("1190.04"));
+        dto.setPeriod12Price(new BigDecimal("1190.04"));
+        dto.setPeriod01Variance(new BigDecimal("55.00"));
+        dto.setPeriod02Variance(new BigDecimal("55.00"));
+        dto.setPeriod03Variance(new BigDecimal("55.00"));
+        dto.setPeriod04Variance(new BigDecimal("55.00"));
+        dto.setPeriod05Variance(new BigDecimal("55.00"));
+        dto.setPeriod06Variance(new BigDecimal("55.00"));
+        dto.setPeriod07Variance(new BigDecimal("55.00"));
+        dto.setPeriod08Variance(new BigDecimal("55.00"));
+        dto.setPeriod09Variance(new BigDecimal("55.00"));
+        dto.setPeriod10Variance(new BigDecimal("55.00"));
+        dto.setPeriod11Variance(new BigDecimal("55.00"));
+        dto.setPeriod12Variance(new BigDecimal("55.00"));
+
+        FairMarketValueDto result = null;
+        try {
+            fairMarketValueDao.update(dto, "testUser");
+            result = fairMarketValueDao.fetch(2024, fairMarketValueId);
+        } catch (DaoException e) {
+            fail(e.getMessage());
+            return;
+        }
+
+        assertThat(result.getProgramYear()).isEqualTo(2024);
+        assertThat(result.getInventoryItemCode()).isEqualTo("5562");
+        assertThat(result.getInventoryItemDesc()).isEqualTo("Greenfeed");
+        assertThat(result.getMunicipalityCode()).isEqualTo("43");
+        assertThat(result.getMunicipalityDesc()).isEqualTo("Mount Waddington (Island part)");
+        assertThat(result.getCropUnitCode()).isEqualTo("2");
+        assertThat(result.getCropUnitDesc()).isEqualTo("Tonnes");
+        assertThat(result.getPeriod01Price()).isEqualByComparingTo(new BigDecimal("1216.05"));
+        assertThat(result.getPeriod02Price()).isEqualByComparingTo(new BigDecimal("1216.05"));
+        assertThat(result.getPeriod03Price()).isEqualByComparingTo(new BigDecimal("1216.05"));
+        assertThat(result.getPeriod04Price()).isEqualByComparingTo(new BigDecimal("1198.42"));
+        assertThat(result.getPeriod05Price()).isEqualByComparingTo(new BigDecimal("1198.42"));
+        assertThat(result.getPeriod06Price()).isEqualByComparingTo(new BigDecimal("1198.42"));
+        assertThat(result.getPeriod07Price()).isEqualByComparingTo(new BigDecimal("1176.37"));
+        assertThat(result.getPeriod08Price()).isEqualByComparingTo(new BigDecimal("1176.37"));
+        assertThat(result.getPeriod09Price()).isEqualByComparingTo(new BigDecimal("1176.37"));
+        assertThat(result.getPeriod10Price()).isEqualByComparingTo(new BigDecimal("1190.04"));
+        assertThat(result.getPeriod11Price()).isEqualByComparingTo(new BigDecimal("1190.04"));
+        assertThat(result.getPeriod12Price()).isEqualByComparingTo(new BigDecimal("1190.04"));
+        assertThat(result.getPeriod01Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod02Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod03Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod04Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod05Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod06Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod07Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod08Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod09Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod10Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod11Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getPeriod12Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+    }
 }

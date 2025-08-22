@@ -73,6 +73,16 @@ insert into farms.farm_crop_unit_codes (
     who_updated,
     when_updated
 ) values (
+    '1',
+    'Pounds',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+), (
     '2',
     'Tonnes',
     current_date,
