@@ -43,6 +43,7 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
     private BigDecimal yearMinus3Expense;
     private BigDecimal yearMinus2Expense;
     private BigDecimal yearMinus1Expense;
+    private String userEmail;
 
     @Override
     public Long getBenchmarkPerUnitId() {
@@ -284,4 +285,13 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
         this.yearMinus1Expense = yearMinus1Expense;
     }
 
+    @Override
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    @Override
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 }

@@ -13,6 +13,7 @@ import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
+import ca.bc.gov.brmb.common.service.api.code.UserUtil;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.FairMarketValue;
 import ca.bc.gov.farms.model.v1.FairMarketValueList;
@@ -105,7 +106,7 @@ public class FairMarketValueServiceImpl implements FairMarketValueService {
         logger.debug("<createFairMarketValue");
 
         FairMarketValue result = null;
-        String userId = "UserId";
+        String userId = UserUtil.toUserId(resource.getUserEmail());
 
         try {
 
@@ -142,7 +143,7 @@ public class FairMarketValueServiceImpl implements FairMarketValueService {
         logger.debug("<updateFairMarketValue");
 
         FairMarketValue result = null;
-        String userId = "UserId";
+        String userId = UserUtil.toUserId(fairMarketValue.getUserEmail());
 
         try {
 

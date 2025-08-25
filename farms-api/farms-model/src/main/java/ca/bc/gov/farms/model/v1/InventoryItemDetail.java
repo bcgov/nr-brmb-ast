@@ -46,4 +46,7 @@ public interface InventoryItemDetail extends Serializable {
 
     public String getMultiStageCommdtyDesc();
     public void setMultiStageCommdtyDesc(String multiStageCommdtyDesc);
+
+    public String getUserEmail();
+    public void setUserEmail(String userEmail);
 }
