@@ -52,6 +52,7 @@ public class FairMarketValueRsrc extends BaseResource implements FairMarketValue
     private BigDecimal period10Variance;
     private BigDecimal period11Variance;
     private BigDecimal period12Variance;
+    private String userEmail;
 
     @Override
     public String getFairMarketValueId() {
@@ -393,4 +394,13 @@ public class FairMarketValueRsrc extends BaseResource implements FairMarketValue
         this.period12Variance = period12Variance;
     }
 
+    @Override
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    @Override
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 }

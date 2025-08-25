@@ -10,11 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import ca.bc.gov.farms.persistence.code.dao.FarmsCodeTableConfig;
-import ca.bc.gov.farms.persistence.code.spring.CodePersistenceSpringConfig;
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.brmb.common.persistence.code.dao.CodeTableConfig;
 import ca.bc.gov.brmb.common.persistence.code.spring.CodeHierarchySpringConfig;
+import ca.bc.gov.brmb.common.persistence.code.spring.CodePersistenceSpringConfig;
 
 @Configuration
 @Import({
@@ -229,7 +228,7 @@ public class CodeTableSpringConfig {
     }
 
     private CodeTableConfig createCodeTableConfig(String codeName, String tableName, String sortColumn) {
-        FarmsCodeTableConfig result = new FarmsCodeTableConfig();
+        CodeTableConfig result = new CodeTableConfig();
 
         String fetchSql = String.format(
                 "SELECT T.%s CODE, T.DESCRIPTION, NULL DISPLAY_ORDER, T.ESTABLISHED_DATE, T.EXPIRY_DATE, T.REVISION_COUNT, T.WHO_CREATED, T.WHEN_CREATED, T.WHO_UPDATED, T.WHEN_UPDATED FROM %s T ORDER BY T."

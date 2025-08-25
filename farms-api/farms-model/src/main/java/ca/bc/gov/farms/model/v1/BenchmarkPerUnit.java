@@ -77,4 +77,7 @@ public interface BenchmarkPerUnit extends Serializable {
 
     public BigDecimal getYearMinus1Expense();
     public void setYearMinus1Expense(BigDecimal yearMinus1Expense);
+
+    public String getUserEmail();
+    public void setUserEmail(String userEmail);
 }

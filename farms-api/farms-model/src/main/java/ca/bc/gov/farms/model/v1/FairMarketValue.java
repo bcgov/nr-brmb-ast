@@ -106,4 +106,7 @@ public interface FairMarketValue extends Serializable {
 
     public BigDecimal getPeriod12Variance();
     public void setPeriod12Variance(BigDecimal period12Variance);
+
+    public String getUserEmail();
+    public void setUserEmail(String userEmail);
 }

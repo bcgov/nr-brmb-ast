@@ -11,6 +11,7 @@ import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
+import ca.bc.gov.brmb.common.service.api.code.UserUtil;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.InventoryItemDetail;
 import ca.bc.gov.farms.model.v1.InventoryItemDetailList;
@@ -98,7 +99,7 @@ public class InventoryItemDetailServiceImpl implements InventoryItemDetailServic
         logger.debug("<createInventoryItemDetail");
 
         InventoryItemDetail result = null;
-        String userId = "UserId";
+        String userId = UserUtil.toUserId(resource.getUserEmail());
 
         try {
 
@@ -129,7 +130,7 @@ public class InventoryItemDetailServiceImpl implements InventoryItemDetailServic
         logger.debug("<updateInventoryItemDetail");
 
         InventoryItemDetail result = null;
-        String userId = "UserId";
+        String userId = UserUtil.toUserId(inventoryItemDetail.getUserEmail());
 
         try {
 
