@@ -11,7 +11,7 @@ public interface InventoryTypeXrefDao extends Serializable {
 
     InventoryTypeXrefDto fetch(Long agristabilityCommodityXrefId) throws DaoException;
 
-    List<InventoryTypeXrefDto> fetchBy(String inventoryClassCode) throws DaoException;
+    List<InventoryTypeXrefDto> fetchByInventoryClassCode(String inventoryClassCode) throws DaoException;
 
     void insert(InventoryTypeXrefDto dto, String userId) throws DaoException;
 
