@@ -99,17 +99,17 @@
             inventory_item_code = (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
-                where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             inventory_group_code = (
                 select igc.inventory_group_code
                 from farms.farm_inventory_group_codes igc
-                where igc.inventory_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where igc.inventory_group_code = #{dto.inventoryGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             inventory_class_code = (
                 select icc.inventory_class_code
                 from farms.farm_inventory_class_codes icc
-                where icc.inventory_class_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where icc.inventory_class_code = #{dto.inventoryClassCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
