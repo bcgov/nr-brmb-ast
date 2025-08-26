@@ -13,6 +13,7 @@ import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.BenchmarkPerUnitRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.FairMarketValueRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemDetailRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryTypeXrefRsrcConstraints;
 import ca.bc.gov.brmb.common.model.Message;
 import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
@@ -99,6 +100,15 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, InventoryItemDetailRsrcConstraints.class);
 
         logger.debug(">validateInventoryItemDetail " + results.size());
+        return results;
+    }
+
+    public List<Message> validateInventoryTypeXref(Object resource) {
+        logger.debug("<validateInventoryTypeXref");
+
+        List<Message> results = this.validate(resource, InventoryTypeXrefRsrcConstraints.class);
+
+        logger.debug(">validateInventoryTypeXref " + results.size());
         return results;
     }
 }
