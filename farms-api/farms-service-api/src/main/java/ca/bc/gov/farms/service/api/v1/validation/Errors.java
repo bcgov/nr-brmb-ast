@@ -72,4 +72,12 @@ public class Errors {
     public static final String FRUIT_VEG_TYPE_CODE_SIZE = "error.fruit.veg.type.code.size";
 
     public static final String MULTI_STAGE_COMMDTY_CODE_SIZE = "error.multi.stage.commdty.code.size";
+
+    public static final String MARKET_COMMODITY_IND_NOTBLANK = "error.market.commodity.ind.notblank";
+    public static final String MARKET_COMMODITY_IND_SIZE = "error.market.commodity.ind.size";
+
+    public static final String INVENTORY_GROUP_CODE_SIZE = "error.inventory.group.code.size";
+
+    public static final String INVENTORY_CLASS_CODE_NOTBLANK = "error.inventory.class.code.notblank";
+    public static final String INVENTORY_CLASS_CODE_SIZE = "error.inventory.class.code.size";
 }

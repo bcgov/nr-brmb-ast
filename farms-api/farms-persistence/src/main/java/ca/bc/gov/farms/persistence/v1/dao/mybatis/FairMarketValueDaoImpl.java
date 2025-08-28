@@ -36,6 +36,10 @@ public class FairMarketValueDaoImpl extends BaseDao implements FairMarketValueDa
             parameters.put("programYear", programYear);
             parameters.put("fairMarketValueId", fairMarketValueId);
             result = this.mapper.fetch(parameters);
+
+            if (result != null) {
+                result.resetDirty();
+            }
         } catch (RuntimeException e) {
             handleException(e);
         }
@@ -128,36 +132,38 @@ public class FairMarketValueDaoImpl extends BaseDao implements FairMarketValueDa
     public void update(FairMarketValueDto dto, String userId) throws DaoException, NotFoundDaoException {
         logger.debug("<update");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("fairMarketValueId", dto.getFairMarketValueId());
-            parameters.put("userId", userId);
+        if (dto.isDirty()) {
+            try {
+                Map<String, Object> parameters = new HashMap<>();
+                parameters.put("fairMarketValueId", dto.getFairMarketValueId());
+                parameters.put("userId", userId);
 
-            BigDecimal[] averagePrices = { dto.getPeriod01Price(), dto.getPeriod02Price(), dto.getPeriod03Price(),
-                    dto.getPeriod04Price(), dto.getPeriod05Price(), dto.getPeriod06Price(),
-                    dto.getPeriod07Price(), dto.getPeriod08Price(), dto.getPeriod09Price(),
-                    dto.getPeriod10Price(), dto.getPeriod11Price(), dto.getPeriod12Price() };
-            BigDecimal[] percentVariances = { dto.getPeriod01Variance(), dto.getPeriod02Variance(),
-                    dto.getPeriod03Variance(), dto.getPeriod04Variance(), dto.getPeriod05Variance(),
-                    dto.getPeriod06Variance(), dto.getPeriod07Variance(), dto.getPeriod08Variance(),
-                    dto.getPeriod09Variance(), dto.getPeriod10Variance(), dto.getPeriod11Variance(),
-                    dto.getPeriod12Variance() };
+                BigDecimal[] averagePrices = { dto.getPeriod01Price(), dto.getPeriod02Price(), dto.getPeriod03Price(),
+                        dto.getPeriod04Price(), dto.getPeriod05Price(), dto.getPeriod06Price(),
+                        dto.getPeriod07Price(), dto.getPeriod08Price(), dto.getPeriod09Price(),
+                        dto.getPeriod10Price(), dto.getPeriod11Price(), dto.getPeriod12Price() };
+                BigDecimal[] percentVariances = { dto.getPeriod01Variance(), dto.getPeriod02Variance(),
+                        dto.getPeriod03Variance(), dto.getPeriod04Variance(), dto.getPeriod05Variance(),
+                        dto.getPeriod06Variance(), dto.getPeriod07Variance(), dto.getPeriod08Variance(),
+                        dto.getPeriod09Variance(), dto.getPeriod10Variance(), dto.getPeriod11Variance(),
+                        dto.getPeriod12Variance() };
 
-            for (int period = 1; period <= 12; period++) {
-                parameters.put("period", period);
-                parameters.put("averagePrice", averagePrices[period - 1]);
-                parameters.put("percentVariance", percentVariances[period - 1]);
-                int count = this.mapper.updateFairMarketValue(parameters);
+                for (int period = 1; period <= 12; period++) {
+                    parameters.put("period", period);
+                    parameters.put("averagePrice", averagePrices[period - 1]);
+                    parameters.put("percentVariance", percentVariances[period - 1]);
+                    int count = this.mapper.updateFairMarketValue(parameters);
 
-                if (count == 0) {
-                    throw new NotFoundDaoException("Record not updated: " + count);
+                    if (count == 0) {
+                        throw new NotFoundDaoException("Record not updated: " + count);
+                    }
                 }
+            } catch (RuntimeException e) {
+                handleException(e);
             }
-        } catch (RuntimeException e) {
-            handleException(e);
         }
 
-        logger.debug(">update ");
+        logger.debug(">update");
     }
 
     @Override
