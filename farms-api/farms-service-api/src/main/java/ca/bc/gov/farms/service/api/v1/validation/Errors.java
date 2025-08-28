@@ -80,4 +80,6 @@ public class Errors {
 
     public static final String INVENTORY_CLASS_CODE_NOTBLANK = "error.inventory.class.code.notblank";
     public static final String INVENTORY_CLASS_CODE_SIZE = "error.inventory.class.code.size";
+
+    public static final String ROLLUP_INVENTORY_ITEM_CODE_SIZE = "error.rollup.inventory.item.code.size";
 }
