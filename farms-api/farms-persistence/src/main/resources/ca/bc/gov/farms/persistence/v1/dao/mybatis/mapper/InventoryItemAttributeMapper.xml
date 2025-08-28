@@ -98,6 +98,6 @@
 
     <delete id="deleteInventoryItemAttribute">
         delete from farms.farm_inventory_item_attributes
-        where inventory_item_attrib_id = #{dto.inventoryItemAttributeId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+        where inventory_item_attrib_id = #{inventoryItemAttributeId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
     </delete>
 </mapper>
