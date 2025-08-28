@@ -24,4 +24,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Inventory Type Xref
 	public static final String INVENTORY_TYPE_XREF_NAME = "inventoryTypeXref";
 	public static final String INVENTORY_TYPE_XREF_LIST_NAME = "inventoryTypeXrefs";
+
+	// Inventory Item Attribute
+	public static final String INVENTORY_ITEM_ATTRIBUTE_NAME = "inventoryItemAttribute";
+	public static final String INVENTORY_ITEM_ATTRIBUTE_LIST_NAME = "inventoryItemAttributes";
 }
