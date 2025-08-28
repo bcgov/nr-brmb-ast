@@ -21,6 +21,7 @@ public class InventoryItemAttributeRsrc extends BaseResource implements Inventor
     private String inventoryItemDesc;
     private String rollupInventoryItemCode;
     private String rollupInventoryItemDesc;
+    private String userEmail;
 
     @Override
     public Long getInventoryItemAttributeId() {
@@ -70,5 +71,15 @@ public class InventoryItemAttributeRsrc extends BaseResource implements Inventor
     @Override
     public void setRollupInventoryItemDesc(String rollupInventoryItemDesc) {
         this.rollupInventoryItemDesc = rollupInventoryItemDesc;
+    }
+
+    @Override
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    @Override
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

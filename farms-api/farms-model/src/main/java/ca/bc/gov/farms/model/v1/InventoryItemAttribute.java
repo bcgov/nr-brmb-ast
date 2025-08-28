@@ -18,4 +18,7 @@ public interface InventoryItemAttribute extends Serializable {
 
     public String getRollupInventoryItemDesc();
     public void setRollupInventoryItemDesc(String rollupInventoryItemDesc);
+
+    public String getUserEmail();
+    public void setUserEmail(String userEmail);
 }

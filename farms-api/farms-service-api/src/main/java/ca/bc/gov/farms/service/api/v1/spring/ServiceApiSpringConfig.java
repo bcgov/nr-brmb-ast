@@ -20,6 +20,7 @@ import ca.bc.gov.farms.service.api.v1.ImportCRAService;
 import ca.bc.gov.farms.service.api.v1.ImportFMVService;
 import ca.bc.gov.farms.service.api.v1.ImportIVPRService;
 import ca.bc.gov.farms.service.api.v1.ImportService;
+import ca.bc.gov.farms.service.api.v1.InventoryItemAttributeService;
 import ca.bc.gov.farms.service.api.v1.InventoryItemDetailService;
 import ca.bc.gov.farms.service.api.v1.InventoryTypeXrefService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
@@ -29,10 +30,12 @@ import ca.bc.gov.farms.service.api.v1.impl.ImportCRAServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportFMVServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportIVPRServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.InventoryItemAttributeServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryItemDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryTypeXrefServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryTypeXrefFactory;
 import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
@@ -67,6 +70,8 @@ public class ServiceApiSpringConfig {
     private InventoryItemDetailFactory inventoryItemDetailFactory;
     @Autowired
     private InventoryTypeXrefFactory inventoryTypeXrefFactory;
+    @Autowired
+    private InventoryItemAttributeFactory inventoryItemAttributeFactory;
 
     // Imported Spring Config
     @Autowired
@@ -141,6 +146,21 @@ public class ServiceApiSpringConfig {
         result.setInventoryTypeXrefFactory(inventoryTypeXrefFactory);
 
         result.setInventoryTypeXrefDao(persistenceSpringConfig.inventoryTypeXrefDao());
+
+        return result;
+    }
+
+    @Bean
+    public InventoryItemAttributeService inventoryItemAttributeService() {
+        InventoryItemAttributeServiceImpl result;
+
+        result = new InventoryItemAttributeServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setInventoryItemAttributeFactory(inventoryItemAttributeFactory);
+
+        result.setInventoryItemAttributeDao(persistenceSpringConfig.inventoryItemAttributeDao());
 
         return result;
     }
