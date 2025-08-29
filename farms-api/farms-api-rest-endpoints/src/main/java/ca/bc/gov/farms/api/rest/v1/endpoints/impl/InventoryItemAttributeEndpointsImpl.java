@@ -11,7 +11,6 @@ import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.farms.api.rest.v1.endpoints.InventoryItemAttributeEndpoints;
-import ca.bc.gov.farms.api.rest.v1.resource.InventoryItemAttributeListRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.InventoryItemAttributeRsrc;
 import ca.bc.gov.farms.service.api.v1.InventoryItemAttributeService;
 
@@ -31,7 +30,7 @@ public class InventoryItemAttributeEndpointsImpl extends BaseEndpointsImpl imple
         logRequest();
 
         try {
-            InventoryItemAttributeListRsrc result = (InventoryItemAttributeListRsrc) service
+            InventoryItemAttributeRsrc result = (InventoryItemAttributeRsrc) service
                     .getInventoryItemAttributesByInventoryItemCode(rollupInventoryItemCode, getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (Throwable t) {
