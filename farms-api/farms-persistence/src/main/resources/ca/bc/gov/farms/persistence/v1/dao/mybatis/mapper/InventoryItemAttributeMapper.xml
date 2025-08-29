@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.InventoryItemAttributeMapper">
+
+    <resultMap id="InventoryItemAttributeDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.InventoryItemAttributeDto">
+        <id property="inventoryItemAttributeId" column="inventory_item_attrib_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="inventoryItemCode" column="inventory_item_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryItemDesc" column="inventory_item_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="rollupInventoryItemCode" column="rollup_inventory_item_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="rollupInventoryItemDesc" column="rollup_inventory_item_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select iia.inventory_item_attrib_id,
+               iic.inventory_item_code,
+               iic.description as inventory_item_desc,
+               iic1.inventory_item_code rollup_inventory_item_code,
+               iic1.description as rollup_inventory_item_desc
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_inventory_item_attributes iia
+        join farms.farm_inventory_item_codes iic using (inventory_item_code)
+        left join farms.farm_inventory_item_codes iic1 on iia.rollup_inventory_item_code = iic1.inventory_item_code
+    </sql>
+
+    <select id="fetch" resultMap="InventoryItemAttributeDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where iia.inventory_item_attrib_id = #{inventoryItemAttributeId}
+    </select>
+
+    <select id="fetchByInventoryItemCode" resultMap="InventoryItemAttributeDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where iia.inventory_item_code = #{inventoryItemCode}
+    </select>
+
+    <insert id="insertInventoryItemAttribute">
+        <selectKey keyProperty="inventoryItemAttributeId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_iia_seq')
+        </selectKey>
+        insert into farms.farm_inventory_item_attributes (
+            inventory_item_attrib_id,
+            inventory_item_code,
+            rollup_inventory_item_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{inventoryItemAttributeId},
+            (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select iic1.inventory_item_code
+                from farms.farm_inventory_item_codes iic1
+                where iic1.inventory_item_code = #{dto.rollupInventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateInventoryItemAttribute">
+        update farms.farm_inventory_item_attributes
+        set inventory_item_code = (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            rollup_inventory_item_code = (
+                select iic1.inventory_item_code
+                from farms.farm_inventory_item_codes iic1
+                where iic1.inventory_item_code = #{dto.rollupInventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where inventory_item_attrib_id = #{dto.inventoryItemAttributeId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteInventoryItemAttribute">
+        delete from farms.farm_inventory_item_attributes
+        where inventory_item_attrib_id = #{inventoryItemAttributeId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </delete>
+</mapper>
