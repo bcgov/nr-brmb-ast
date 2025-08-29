@@ -1,8 +1,6 @@
 package ca.bc.gov.farms.persistence.v1.dao;
 
 import java.io.Serializable;
-import java.util.List;
-
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.persistence.dao.NotFoundDaoException;
 import ca.bc.gov.farms.persistence.v1.dto.InventoryItemAttributeDto;
@@ -11,7 +9,7 @@ public interface InventoryItemAttributeDao extends Serializable {
 
     InventoryItemAttributeDto fetch(Long inventoryItemAttributeId) throws DaoException;
 
-    List<InventoryItemAttributeDto> fetchByRollupInventoryItemCode(String rollupInventoryItemCode) throws DaoException;
+    InventoryItemAttributeDto fetchByInventoryItemCode(String inventoryItemCode) throws DaoException;
 
     void insert(InventoryItemAttributeDto dto, String userId) throws DaoException;
 

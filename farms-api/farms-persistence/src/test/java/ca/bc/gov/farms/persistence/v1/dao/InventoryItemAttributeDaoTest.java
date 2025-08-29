@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.List;
-
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -57,23 +55,20 @@ public class InventoryItemAttributeDaoTest {
 
     @Test
     @Order(2)
-    public void testFetchByRollupInventoryItemCode() {
-        List<InventoryItemAttributeDto> dtos = null;
+    public void testFetchByInventoryItemCode() {
+        InventoryItemAttributeDto dto = null;
         try {
-            dtos = inventoryItemAttributeDao.fetchByRollupInventoryItemCode("73");
+            dto = inventoryItemAttributeDao.fetchByInventoryItemCode("73");
         } catch (DaoException e) {
             fail(e.getMessage());
             return;
         }
-        assertThat(dtos).isNotNull();
-        assertThat(dtos).isNotEmpty();
-        assertThat(dtos.size()).isEqualTo(1);
 
-        InventoryItemAttributeDto fetchedDto = dtos.get(0);
-        assertThat(fetchedDto.getInventoryItemCode()).isEqualTo("73");
-        assertThat(fetchedDto.getInventoryItemDesc()).isEqualTo("Strawberries");
-        assertThat(fetchedDto.getRollupInventoryItemCode()).isEqualTo("73");
-        assertThat(fetchedDto.getRollupInventoryItemDesc()).isEqualTo("Strawberries");
+        assertThat(dto).isNotNull();
+        assertThat(dto.getInventoryItemCode()).isEqualTo("73");
+        assertThat(dto.getInventoryItemDesc()).isEqualTo("Strawberries");
+        assertThat(dto.getRollupInventoryItemCode()).isEqualTo("73");
+        assertThat(dto.getRollupInventoryItemDesc()).isEqualTo("Strawberries");
     }
 
     @Test

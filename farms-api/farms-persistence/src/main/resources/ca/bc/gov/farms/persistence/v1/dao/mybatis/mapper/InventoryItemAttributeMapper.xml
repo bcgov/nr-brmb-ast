@@ -38,11 +38,10 @@
         where iia.inventory_item_attrib_id = #{inventoryItemAttributeId}
     </select>
 
-    <select id="fetchBy" resultMap="InventoryItemAttributeDtoMap">
+    <select id="fetchByInventoryItemCode" resultMap="InventoryItemAttributeDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
-        where iia.rollup_inventory_item_code = #{rollupInventoryItemCode}
-        order by iic1.description
+        where iia.inventory_item_code = #{inventoryItemCode}
     </select>
 
     <insert id="insertInventoryItemAttribute">

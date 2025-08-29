@@ -14,7 +14,6 @@ import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.brmb.common.service.api.code.UserUtil;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.InventoryItemAttribute;
-import ca.bc.gov.farms.model.v1.InventoryItemAttributeList;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryItemAttributeDao;
 import ca.bc.gov.farms.persistence.v1.dto.InventoryItemAttributeDto;
 import ca.bc.gov.farms.service.api.v1.InventoryItemAttributeService;
@@ -52,21 +51,21 @@ public class InventoryItemAttributeServiceImpl implements InventoryItemAttribute
     }
 
     @Override
-    public InventoryItemAttributeList<? extends InventoryItemAttribute> getInventoryItemAttributesByRollupInventoryItemCode(
-            String rollupInventoryItemCode, FactoryContext factoryContext) throws ServiceException {
-        logger.debug("<getInventoryItemAttributesByRollupInventoryItemCode");
+    public InventoryItemAttribute getInventoryItemAttributesByInventoryItemCode(
+            String inventoryItemCode, FactoryContext factoryContext) throws ServiceException {
+        logger.debug("<getInventoryItemAttributesByInventoryItemCode");
 
-        InventoryItemAttributeList<? extends InventoryItemAttribute> result = null;
+        InventoryItemAttribute result = null;
 
         try {
-            List<InventoryItemAttributeDto> dtos = inventoryItemAttributeDao.fetchByRollupInventoryItemCode(rollupInventoryItemCode);
+            InventoryItemAttributeDto dto = inventoryItemAttributeDao.fetchByInventoryItemCode(inventoryItemCode);
 
-            result = inventoryItemAttributeFactory.getInventoryItemAttributeList(dtos, factoryContext);
+            result = inventoryItemAttributeFactory.getInventoryItemAttribute(dto, factoryContext);
         } catch (Exception e) {
             throw new ServiceException("DAO threw an exception", e);
         }
 
-        logger.debug(">getInventoryItemAttributesByRollupInventoryItemCode");
+        logger.debug(">getInventoryItemAttributesByInventoryItemCode");
         return result;
     }
 

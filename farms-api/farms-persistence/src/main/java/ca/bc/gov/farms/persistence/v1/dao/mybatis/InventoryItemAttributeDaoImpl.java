@@ -1,7 +1,6 @@
 package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -47,21 +46,21 @@ public class InventoryItemAttributeDaoImpl extends BaseDao implements InventoryI
     }
 
     @Override
-    public List<InventoryItemAttributeDto> fetchByRollupInventoryItemCode(String rollupInventoryItemCode)
+    public InventoryItemAttributeDto fetchByInventoryItemCode(String inventoryItemCode)
             throws DaoException {
-        logger.debug("<fetchByRollupInventoryItemCode");
+        logger.debug("<fetchByInventoryItemCode");
 
-        List<InventoryItemAttributeDto> result = null;
+        InventoryItemAttributeDto result = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("rollupInventoryItemCode", rollupInventoryItemCode);
-            result = this.mapper.fetchBy(parameters);
+            parameters.put("inventoryItemCode", inventoryItemCode);
+            result = this.mapper.fetchByInventoryItemCode(parameters);
         } catch (RuntimeException e) {
             handleException(e);
         }
 
-        logger.debug(">fetchByRollupInventoryItemCode " + result);
+        logger.debug(">fetchByInventoryItemCode " + result);
         return result;
     }
 

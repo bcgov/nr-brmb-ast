@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public interface InventoryItemAttributeEndpoints {
 
-    @Operation(operationId = "Get Inventory Item Attribute resource by Inventory Class Code.", summary = "Get Inventory Item Attribute resource by Rollup Inventory Item Code.", extensions = {
+    @Operation(operationId = "Get Inventory Item Attribute resource by Inventory Item Code.", summary = "Get Inventory Item Attribute resource by Inventory Item Code.", extensions = {
             @Extension(properties = {
                     @ExtensionProperty(name = "auth-type", value = "#{wso2.x-auth-type.app_and_app_user}"),
                     @ExtensionProperty(name = "throttling-tier", value = "Unlimited") }) })
@@ -48,8 +48,8 @@ public interface InventoryItemAttributeEndpoints {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getInventoryItemAttributesByRollupInventoryItemCode(
-            @Parameter(description = "The rollup inventory item code.") @QueryParam("rollupInventoryItemCode") String rollupInventoryItemCode);
+    public Response getInventoryItemAttributesByInventoryItemCode(
+            @Parameter(description = "The inventory item code.") @QueryParam("inventoryItemCode") String inventoryItemCode);
 
     @Operation(operationId = "Get Inventory Item Attribute Xref resource by Inventory Item Attribute Id.", summary = "Get Inventory Item Attribute Xref resource by Inventory Item Attribute Id.", extensions = {
             @Extension(properties = {
