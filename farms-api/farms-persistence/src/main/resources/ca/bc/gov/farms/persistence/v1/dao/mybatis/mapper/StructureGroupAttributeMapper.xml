@@ -21,9 +21,9 @@
     <sql id="selectColumns">
         select sga.structure_group_attrib_id,
                sgc.structure_group_code,
-               sgc.structure_group_desc,
-               sgc1.rollup_structure_group_code,
-               sgc1.rollup_structure_group_desc
+               sgc.description as structure_group_desc,
+               sgc1.structure_group_code rollup_structure_group_code,
+               sgc1.description as rollup_structure_group_desc
     </sql>
 
     <sql id="fromClause">
@@ -65,9 +65,9 @@
                 where sgc.structure_group_code = #{dto.structureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             (
-                select sgc1.rollup_structure_group_code
+                select sgc1.structure_group_code
                 from farms.farm_structure_group_codes sgc1
-                where sgc1.rollup_structure_group_code = #{dto.rollupStructureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where sgc1.structure_group_code = #{dto.rollupStructureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             1,
             #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
@@ -85,9 +85,9 @@
                 where sgc.structure_group_code = #{dto.structureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             rollup_structure_group_code = (
-                select sgc1.rollup_structure_group_code
+                select sgc1.structure_group_code
                 from farms.farm_structure_group_codes sgc1
-                where sgc1.rollup_structure_group_code = #{dto.rollupStructureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where sgc1.structure_group_code = #{dto.rollupStructureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
