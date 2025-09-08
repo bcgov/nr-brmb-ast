@@ -28,4 +28,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Inventory Item Attribute
 	public static final String INVENTORY_ITEM_ATTRIBUTE_NAME = "inventoryItemAttribute";
 	public static final String INVENTORY_ITEM_ATTRIBUTE_LIST_NAME = "inventoryItemAttributes";
+
+	// Structure Group Attribute
+	public static final String STRUCTURE_GROUP_ATTRIBUTE_NAME = "structureGroupAttribute";
+	public static final String STRUCTURE_GROUP_ATTRIBUTE_LIST_NAME = "structureGroupAttributes";
 }
