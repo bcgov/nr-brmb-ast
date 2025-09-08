@@ -10,11 +10,13 @@ import ca.bc.gov.farms.api.rest.v1.resource.factory.FairMarketValueRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryItemAttributeRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryItemDetailRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryTypeXrefRsrcFactory;
+import ca.bc.gov.farms.api.rest.v1.resource.factory.StructureGroupAttributeRsrcFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryTypeXrefFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.StructureGroupAttributeFactory;
 
 @Configuration
 public class ResourceFactorySpringConfig {
@@ -50,5 +52,10 @@ public class ResourceFactorySpringConfig {
     @Bean
     public InventoryItemAttributeFactory inventoryItemAttributeFactory() {
         return new InventoryItemAttributeRsrcFactory();
+    }
+
+    @Bean
+    public StructureGroupAttributeFactory structureGroupAttributeFactory() {
+        return new StructureGroupAttributeRsrcFactory();
     }
 }

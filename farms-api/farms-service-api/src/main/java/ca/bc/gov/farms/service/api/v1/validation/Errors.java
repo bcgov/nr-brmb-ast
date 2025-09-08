@@ -12,6 +12,7 @@ public class Errors {
     public static final String INVENTORY_ITEM_CODE_NOTBLANK = "error.inventory.item.code.notblank";
     public static final String INVENTORY_ITEM_CODE_SIZE = "error.inventory.item.code.size";
 
+    public static final String STRUCTURE_GROUP_CODE_NOTBLANK = "error.structure.group.code.notblank";
     public static final String STRUCTURE_GROUP_CODE_SIZE = "error.structure.group.code.size";
 
     public static final String INVENTORY_CODE_SIZE = "error.inventory.code.size";
@@ -82,4 +83,6 @@ public class Errors {
     public static final String INVENTORY_CLASS_CODE_SIZE = "error.inventory.class.code.size";
 
     public static final String ROLLUP_INVENTORY_ITEM_CODE_SIZE = "error.rollup.inventory.item.code.size";
+
+    public static final String ROLLUP_STRUCTURE_GROUP_CODE_SIZE = "error.rollup.structure.group.code.size";
 }

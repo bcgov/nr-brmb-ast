@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.StructureGroupAttributeMapper">
+
+    <resultMap id="StructureGroupAttributeDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.StructureGroupAttributeDto">
+        <id property="structureGroupAttributeId" column="structure_group_attrib_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="structureGroupCode" column="structure_group_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="structureGroupDesc" column="structure_group_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="rollupStructureGroupCode" column="rollup_structure_group_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="rollupStructureGroupDesc" column="rollup_structure_group_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select sga.structure_group_attrib_id,
+               sgc.structure_group_code,
+               sgc.description as structure_group_desc,
+               sgc1.structure_group_code rollup_structure_group_code,
+               sgc1.description as rollup_structure_group_desc
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_structure_group_attributs sga
+        join farms.farm_structure_group_codes sgc using (structure_group_code)
+        left join farms.farm_structure_group_codes sgc1 on sga.rollup_structure_group_code = sgc1.structure_group_code
+    </sql>
+
+    <select id="fetch" resultMap="StructureGroupAttributeDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where sga.structure_group_attrib_id = #{structureGroupAttributeId}
+    </select>
+
+    <select id="fetchByStructureGroupCode" resultMap="StructureGroupAttributeDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where sga.structure_group_code = #{structureGroupCode}
+    </select>
+
+    <insert id="insertStructureGroupAttribute">
+        <selectKey keyProperty="structureGroupAttributeId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_sga_seq')
+        </selectKey>
+        insert into farms.farm_structure_group_attributs (
+            structure_group_attrib_id,
+            structure_group_code,
+            rollup_structure_group_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{structureGroupAttributeId},
+            (
+                select sgc.structure_group_code
+                from farms.farm_structure_group_codes sgc
+                where sgc.structure_group_code = #{dto.structureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select sgc1.structure_group_code
+                from farms.farm_structure_group_codes sgc1
+                where sgc1.structure_group_code = #{dto.rollupStructureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateStructureGroupAttribute">
+        update farms.farm_structure_group_attributs
+        set structure_group_code = (
+                select sgc.structure_group_code
+                from farms.farm_structure_group_codes sgc
+                where sgc.structure_group_code = #{dto.structureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            rollup_structure_group_code = (
+                select sgc1.structure_group_code
+                from farms.farm_structure_group_codes sgc1
+                where sgc1.structure_group_code = #{dto.rollupStructureGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where structure_group_attrib_id = #{dto.structureGroupAttributeId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteStructureGroupAttribute">
+        delete from farms.farm_structure_group_attributs
+        where structure_group_attrib_id = #{structureGroupAttributeId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </delete>
+</mapper>

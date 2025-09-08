@@ -15,6 +15,7 @@ import ca.bc.gov.farms.service.api.v1.validation.constraints.FairMarketValueRsrc
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemAttributeRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemDetailRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryTypeXrefRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.StructureGroupAttributeRsrcConstraints;
 import ca.bc.gov.brmb.common.model.Message;
 import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
@@ -119,6 +120,15 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, InventoryItemAttributeRsrcConstraints.class);
 
         logger.debug(">validateInventoryItemAttribute " + results.size());
+        return results;
+    }
+
+    public List<Message> validateStructureGroupAttribute(Object resource) {
+        logger.debug("<validateStructureGroupAttribute");
+
+        List<Message> results = this.validate(resource, StructureGroupAttributeRsrcConstraints.class);
+
+        logger.debug(">validateStructureGroupAttribute " + results.size());
         return results;
     }
 }
