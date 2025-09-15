@@ -11,6 +11,7 @@ import ca.bc.gov.farms.model.v1.BenchmarkPerUnit;
 import ca.bc.gov.farms.model.v1.FairMarketValue;
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.BenchmarkPerUnitRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.ConfigurationParameterRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.FairMarketValueRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemAttributeRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemDetailRsrcConstraints;
@@ -129,6 +130,15 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, StructureGroupAttributeRsrcConstraints.class);
 
         logger.debug(">validateStructureGroupAttribute " + results.size());
+        return results;
+    }
+
+    public List<Message> validateConfigurationParameter(Object resource) {
+        logger.debug("<validateConfigurationParameter");
+
+        List<Message> results = this.validate(resource, ConfigurationParameterRsrcConstraints.class);
+
+        logger.debug(">validateConfigurationParameter " + results.size());
         return results;
     }
 }

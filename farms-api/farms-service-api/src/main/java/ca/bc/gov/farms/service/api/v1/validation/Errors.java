@@ -85,4 +85,16 @@ public class Errors {
     public static final String ROLLUP_INVENTORY_ITEM_CODE_SIZE = "error.rollup.inventory.item.code.size";
 
     public static final String ROLLUP_STRUCTURE_GROUP_CODE_SIZE = "error.rollup.structure.group.code.size";
+
+    public static final String PARAMETER_NAME_NOTBLANK = "error.parameter.name.notblank";
+    public static final String PARAMETER_NAME_SIZE = "error.parameter.name.size";
+
+    public static final String PARAMETER_VALUE_NOTBLANK = "error.parameter.value.notblank";
+    public static final String PARAMETER_VALUE_SIZE = "error.parameter.value.size";
+
+    public static final String SENSITIVE_DATA_IND_NOTBLANK = "error.sensitive.data.ind.notblank";
+    public static final String SENSITIVE_DATA_IND_SIZE = "error.sensitive.data.ind.size";
+
+    public static final String CONFIG_PARAM_TYPE_CODE_NOTBLANK = "error.config.param.type.code.notblank";
+    public static final String CONFIG_PARAM_TYPE_CODE_SIZE = "error.config.param.type.code.size";
 }
