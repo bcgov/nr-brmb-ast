@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.ConfigurationParameterMapper">
+
+    <resultMap id="ConfigurationParameterDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.ConfigurationParameterDto">
+        <id property="configurationParameterId" column="configuration_parameter_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="parameterName" column="parameter_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="parameterValue" column="parameter_value" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="sensitiveDataInd" column="sensitive_data_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="configParamTypeCode" column="config_param_type_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select cp.configuration_parameter_id,
+               cp.parameter_name,
+               cp.parameter_value,
+               cp.sensitive_data_ind,
+               cp.config_param_type_code
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_configuration_parameters cp
+    </sql>
+
+    <select id="fetch" resultMap="ConfigurationParameterDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where cp.configuration_parameter_id = #{configurationParameterId}
+    </select>
+
+    <select id="fetchAll" resultMap="ConfigurationParameterDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+    </select>
+
+    <insert id="insertConfigurationParameter">
+        <selectKey keyProperty="configurationParameterId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_cp_seq')
+        </selectKey>
+        insert into farms.farm_configuration_parameters (
+            configuration_parameter_id,
+            parameter_name,
+            parameter_value,
+            sensitive_data_ind,
+            config_param_type_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{configurationParameterId},
+            #{dto.parameterName, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.parameterValue, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.sensitiveDataInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            (
+                select cptc.config_param_type_code
+                from farms.farm_config_param_type_codes cptc
+                where cptc.config_param_type_code = #{dto.configParamTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateConfigurationParameter">
+        update farms.farm_configuration_parameters
+        set parameter_name = #{dto.parameterName, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            parameter_value = #{dto.parameterValue, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            sensitive_data_ind = #{dto.sensitiveDataInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            config_param_type_code = (
+                select cptc.config_param_type_code
+                from farms.farm_config_param_type_codes cptc
+                where cptc.config_param_type_code = #{dto.configParamTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where configuration_parameter_id = #{dto.configurationParameterId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteConfigurationParameter">
+        delete from farms.farm_configuration_parameters
+        where configuration_parameter_id = #{configurationParameterId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </delete>
+</mapper>
