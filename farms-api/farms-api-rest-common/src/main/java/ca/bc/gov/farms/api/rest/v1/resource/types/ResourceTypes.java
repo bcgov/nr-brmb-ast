@@ -32,4 +32,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Structure Group Attribute
 	public static final String STRUCTURE_GROUP_ATTRIBUTE_NAME = "structureGroupAttribute";
 	public static final String STRUCTURE_GROUP_ATTRIBUTE_LIST_NAME = "structureGroupAttributes";
+
+	// Configuration Parameter
+	public static final String CONFIGURATION_PARAMETER_ATTRIBUTE_NAME = "configurationParameter";
+	public static final String CONFIGURATION_PARAMETER_ATTRIBUTE_LIST_NAME = "ConfigurationParameters";
 }
