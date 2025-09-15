@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -46,20 +47,20 @@ public class ConfigurationParameterDaoImpl extends BaseDao implements Configurat
     }
 
     @Override
-    public ConfigurationParameterDto fetchAll()
+    public List<ConfigurationParameterDto> fetchAll()
             throws DaoException {
         logger.debug("<fetchAll");
 
-        ConfigurationParameterDto result = null;
+        List<ConfigurationParameterDto> dtos = null;
 
         try {
-            result = this.mapper.fetchAll();
+            dtos = this.mapper.fetchAll();
         } catch (RuntimeException e) {
             handleException(e);
         }
 
-        logger.debug(">fetchAll " + result);
-        return result;
+        logger.debug(">fetchAll " + dtos);
+        return dtos;
     }
 
     @Override

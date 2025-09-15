@@ -219,3 +219,46 @@ insert into farms.farm_structure_group_codes (
     current_user,
     current_timestamp
 );
+
+
+insert into farms.farm_config_param_type_codes (
+    config_param_type_code,
+    description,
+    established_date,
+    expiry_date,
+    revision_count,
+    who_created,
+    when_created,
+    who_updated,
+    when_updated
+) values (
+    'DECIMAL',
+    'Decimal',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+), (
+    'INTEGER',
+    'Integer',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+), (
+    'STRING',
+    'String',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+);

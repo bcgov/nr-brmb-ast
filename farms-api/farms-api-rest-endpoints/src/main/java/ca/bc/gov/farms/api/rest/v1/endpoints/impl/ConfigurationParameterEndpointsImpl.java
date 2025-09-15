@@ -11,6 +11,7 @@ import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.farms.api.rest.v1.endpoints.ConfigurationParameterEndpoints;
+import ca.bc.gov.farms.api.rest.v1.resource.ConfigurationParameterListRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.ConfigurationParameterRsrc;
 import ca.bc.gov.farms.service.api.v1.ConfigurationParameterService;
 
@@ -31,7 +32,7 @@ public class ConfigurationParameterEndpointsImpl extends BaseEndpointsImpl
         logRequest();
 
         try {
-            ConfigurationParameterRsrc result = (ConfigurationParameterRsrc) service
+            ConfigurationParameterListRsrc result = (ConfigurationParameterListRsrc) service
                     .getAllConfigurationParameters(getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (Throwable t) {

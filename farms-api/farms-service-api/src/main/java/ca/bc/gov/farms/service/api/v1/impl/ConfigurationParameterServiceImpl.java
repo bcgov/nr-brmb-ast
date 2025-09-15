@@ -14,6 +14,7 @@ import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.brmb.common.service.api.code.UserUtil;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.ConfigurationParameter;
+import ca.bc.gov.farms.model.v1.ConfigurationParameterList;
 import ca.bc.gov.farms.persistence.v1.dao.ConfigurationParameterDao;
 import ca.bc.gov.farms.persistence.v1.dto.ConfigurationParameterDto;
 import ca.bc.gov.farms.service.api.v1.ConfigurationParameterService;
@@ -51,15 +52,15 @@ public class ConfigurationParameterServiceImpl implements ConfigurationParameter
     }
 
     @Override
-    public ConfigurationParameter getAllConfigurationParameters(FactoryContext factoryContext) throws ServiceException {
+    public ConfigurationParameterList<? extends ConfigurationParameter> getAllConfigurationParameters(FactoryContext factoryContext) throws ServiceException {
         logger.debug("<getAllConfigurationParameters");
 
-        ConfigurationParameter result = null;
+        ConfigurationParameterList<? extends ConfigurationParameter> result = null;
 
         try {
-            ConfigurationParameterDto dto = configurationParameterDao.fetchAll();
+            List<ConfigurationParameterDto> dtos = configurationParameterDao.fetchAll();
 
-            result = configurationParameterFactory.getConfigurationParameter(dto, factoryContext);
+            result = configurationParameterFactory.getConfigurationParameterList(dtos, factoryContext);
         } catch (Exception e) {
             throw new ServiceException("DAO threw an exception", e);
         }
