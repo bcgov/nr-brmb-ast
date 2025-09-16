@@ -27,12 +27,14 @@ import ca.bc.gov.brmb.common.persistence.dao.mybatis.LocalDateTypeHandler;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.LocalTimeTypeHandler;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.ResetDirtyInterceptor;
 import ca.bc.gov.farms.persistence.v1.dao.BenchmarkPerUnitDao;
+import ca.bc.gov.farms.persistence.v1.dao.ConfigurationParameterDao;
 import ca.bc.gov.farms.persistence.v1.dao.FairMarketValueDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryItemAttributeDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryItemDetailDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryTypeXrefDao;
 import ca.bc.gov.farms.persistence.v1.dao.StructureGroupAttributeDao;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.BenchmarkPerUnitDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.ConfigurationParameterDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.FairMarketValueDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryItemAttributeDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryItemDetailDaoImpl;
@@ -118,5 +120,10 @@ public class PersistenceSpringConfig {
     @Bean
     public StructureGroupAttributeDao structureGroupAttributeDao() {
         return new StructureGroupAttributeDaoImpl();
+    }
+
+    @Bean
+    public ConfigurationParameterDao configurationParameterDao() {
+        return new ConfigurationParameterDaoImpl();
     }
 }

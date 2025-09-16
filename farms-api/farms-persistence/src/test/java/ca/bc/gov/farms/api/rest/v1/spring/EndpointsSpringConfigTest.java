@@ -25,6 +25,8 @@ public class EndpointsSpringConfigTest {
                         "farms/tables/farms.farm_benchmark_years.sql",
                         "farms/tables/farms.farm_benchmark_per_units.sql",
                         "farms/tables/farms.farm_commodity_type_codes.sql",
+                        "farms/tables/farms.farm_config_param_type_codes.sql",
+                        "farms/tables/farms.farm_configuration_parameters.sql",
                         "farms/tables/farms.farm_crop_unit_codes.sql",
                         "farms/tables/farms.farm_crop_unit_defaults.sql",
                         "farms/tables/farms.farm_fair_market_values.sql",

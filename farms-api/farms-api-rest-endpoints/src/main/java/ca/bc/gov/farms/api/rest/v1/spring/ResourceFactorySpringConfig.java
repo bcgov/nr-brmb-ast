@@ -6,12 +6,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ca.bc.gov.farms.api.rest.v1.resource.factory.BenchmarkPerUnitRsrcFactory;
+import ca.bc.gov.farms.api.rest.v1.resource.factory.ConfigurationParameterRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.FairMarketValueRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryItemAttributeRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryItemDetailRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryTypeXrefRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.StructureGroupAttributeRsrcFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.ConfigurationParameterFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
@@ -57,5 +59,10 @@ public class ResourceFactorySpringConfig {
     @Bean
     public StructureGroupAttributeFactory structureGroupAttributeFactory() {
         return new StructureGroupAttributeRsrcFactory();
+    }
+
+    @Bean
+    public ConfigurationParameterFactory configurationParameterFactory() {
+        return new ConfigurationParameterRsrcFactory();
     }
 }
