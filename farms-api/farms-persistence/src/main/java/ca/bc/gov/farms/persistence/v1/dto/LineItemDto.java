@@ -28,8 +28,6 @@ public class LineItemDto extends BaseDto<LineItemDto> {
     private String manualExpenseInd;
     private String excludeFromRevenueCalcInd;
     private String industryAverageExpenseInd;
-    private Date establishedDate;
-    private Date expiryDate;
     private String commodityTypeCode;
     private String fruitVegTypeCode;
 
@@ -57,8 +55,6 @@ public class LineItemDto extends BaseDto<LineItemDto> {
         this.manualExpenseInd = dto.manualExpenseInd;
         this.excludeFromRevenueCalcInd = dto.excludeFromRevenueCalcInd;
         this.industryAverageExpenseInd = dto.industryAverageExpenseInd;
-        this.establishedDate = dto.establishedDate;
-        this.expiryDate = dto.expiryDate;
         this.commodityTypeCode = dto.commodityTypeCode;
         this.fruitVegTypeCode = dto.fruitVegTypeCode;
 
@@ -109,8 +105,6 @@ public class LineItemDto extends BaseDto<LineItemDto> {
                     other.excludeFromRevenueCalcInd);
             result = result && dtoUtils.equals("industryAverageExpenseInd", this.industryAverageExpenseInd,
                     other.industryAverageExpenseInd);
-            result = result && dtoUtils.equals("establishedDate", this.establishedDate, other.establishedDate);
-            result = result && dtoUtils.equals("expiryDate", this.expiryDate, other.expiryDate);
             result = result && dtoUtils.equals("commodityTypeCode", this.commodityTypeCode, other.commodityTypeCode);
             result = result && dtoUtils.equals("fruitVegTypeCode", this.fruitVegTypeCode, other.fruitVegTypeCode);
         }
@@ -228,22 +222,6 @@ public class LineItemDto extends BaseDto<LineItemDto> {
 
     public void setIndustryAverageExpenseInd(String industryAverageExpenseInd) {
         this.industryAverageExpenseInd = industryAverageExpenseInd;
-    }
-
-    public Date getEstablishedDate() {
-        return establishedDate;
-    }
-
-    public void setEstablishedDate(Date establishedDate) {
-        this.establishedDate = establishedDate;
-    }
-
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
     }
 
     public String getCommodityTypeCode() {
