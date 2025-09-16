@@ -9,7 +9,7 @@ public interface LineItemMapper {
 
     LineItemDto fetch(Map<String, Object> parameters);
 
-    List<LineItemDto> fetchByLineItem(Map<String, Object> parameters);
+    List<LineItemDto> fetchByProgramYear(Map<String, Object> parameters);
 
     int insertLineItem(Map<String, Object> parameters);
 
