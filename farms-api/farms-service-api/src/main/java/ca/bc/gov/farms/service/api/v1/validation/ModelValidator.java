@@ -16,6 +16,7 @@ import ca.bc.gov.farms.service.api.v1.validation.constraints.FairMarketValueRsrc
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemAttributeRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemDetailRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryTypeXrefRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.LineItemRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.StructureGroupAttributeRsrcConstraints;
 import ca.bc.gov.brmb.common.model.Message;
 import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
@@ -139,6 +140,15 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, ConfigurationParameterRsrcConstraints.class);
 
         logger.debug(">validateConfigurationParameter " + results.size());
+        return results;
+    }
+
+    public List<Message> validateLineItem(Object resource) {
+        logger.debug("<validateLineItem");
+
+        List<Message> results = this.validate(resource, LineItemRsrcConstraints.class);
+
+        logger.debug(">validateLineItem " + results.size());
         return results;
     }
 }
