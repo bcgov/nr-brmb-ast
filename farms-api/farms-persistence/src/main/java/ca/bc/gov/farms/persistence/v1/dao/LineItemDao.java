@@ -11,7 +11,7 @@ public interface LineItemDao extends Serializable {
 
     LineItemDto fetch(Long LineItemId) throws DaoException;
 
-    List<LineItemDto> fetchAll() throws DaoException;
+    List<LineItemDto> fetchByProgramYear(Integer programYear) throws DaoException;
 
     void insert(LineItemDto dto, String userId) throws DaoException;
 
