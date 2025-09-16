@@ -36,4 +36,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Configuration Parameter
 	public static final String CONFIGURATION_PARAMETER_ATTRIBUTE_NAME = "configurationParameter";
 	public static final String CONFIGURATION_PARAMETER_ATTRIBUTE_LIST_NAME = "ConfigurationParameters";
+
+	// Line Item
+	public static final String LINE_ITEM_ATTRIBUTE_NAME = "lineItem";
+	public static final String LINE_ITEM_ATTRIBUTE_LIST_NAME = "lineItems";
 }
