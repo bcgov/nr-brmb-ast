@@ -25,7 +25,6 @@ public class LineItemDto extends BaseDto<LineItemDto> {
     private String programPaymentInd;
     private String contractWorkInd;
     private String supplyManagedCommodityInd;
-    private String manualExpenseInd;
     private String excludeFromRevenueCalcInd;
     private String industryAverageExpenseInd;
     private String commodityTypeCode;
@@ -52,7 +51,6 @@ public class LineItemDto extends BaseDto<LineItemDto> {
         this.programPaymentInd = dto.programPaymentInd;
         this.contractWorkInd = dto.contractWorkInd;
         this.supplyManagedCommodityInd = dto.supplyManagedCommodityInd;
-        this.manualExpenseInd = dto.manualExpenseInd;
         this.excludeFromRevenueCalcInd = dto.excludeFromRevenueCalcInd;
         this.industryAverageExpenseInd = dto.industryAverageExpenseInd;
         this.commodityTypeCode = dto.commodityTypeCode;
@@ -100,7 +98,6 @@ public class LineItemDto extends BaseDto<LineItemDto> {
             result = result && dtoUtils.equals("contractWorkInd", this.contractWorkInd, other.contractWorkInd);
             result = result && dtoUtils.equals("supplyManagedCommodityInd", this.supplyManagedCommodityInd,
                     other.supplyManagedCommodityInd);
-            result = result && dtoUtils.equals("manualExpenseInd", this.manualExpenseInd, other.manualExpenseInd);
             result = result && dtoUtils.equals("excludeFromRevenueCalcInd", this.excludeFromRevenueCalcInd,
                     other.excludeFromRevenueCalcInd);
             result = result && dtoUtils.equals("industryAverageExpenseInd", this.industryAverageExpenseInd,
@@ -198,14 +195,6 @@ public class LineItemDto extends BaseDto<LineItemDto> {
 
     public void setSupplyManagedCommodityInd(String supplyManagedCommodityInd) {
         this.supplyManagedCommodityInd = supplyManagedCommodityInd;
-    }
-
-    public String getManualExpenseInd() {
-        return manualExpenseInd;
-    }
-
-    public void setManualExpenseInd(String manualExpenseInd) {
-        this.manualExpenseInd = manualExpenseInd;
     }
 
     public String getExcludeFromRevenueCalcInd() {

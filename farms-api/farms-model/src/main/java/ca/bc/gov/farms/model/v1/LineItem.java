@@ -37,9 +37,6 @@ public interface LineItem extends Serializable {
     public String getSupplyManagedCommodityInd();
     public void setSupplyManagedCommodityInd(String supplyManagedCommodityInd);
 
-    public String getManualExpenseInd();
-    public void setManualExpenseInd(String manualExpenseInd);
-
     public String getExcludeFromRevenueCalcInd();
     public void setExcludeFromRevenueCalcInd(String excludeFromRevenueCalcInd);
 

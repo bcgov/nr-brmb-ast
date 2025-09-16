@@ -27,7 +27,6 @@ public class LineItemRsrc extends BaseResource implements LineItem {
     private String programPaymentInd;
     private String contractWorkInd;
     private String supplyManagedCommodityInd;
-    private String manualExpenseInd;
     private String excludeFromRevenueCalcInd;
     private String industryAverageExpenseInd;
     private String commodityTypeCode;
@@ -142,16 +141,6 @@ public class LineItemRsrc extends BaseResource implements LineItem {
     @Override
     public void setSupplyManagedCommodityInd(String supplyManagedCommodityInd) {
         this.supplyManagedCommodityInd = supplyManagedCommodityInd;
-    }
-
-    @Override
-    public String getManualExpenseInd() {
-        return manualExpenseInd;
-    }
-
-    @Override
-    public void setManualExpenseInd(String manualExpenseInd) {
-        this.manualExpenseInd = manualExpenseInd;
     }
 
     @Override
