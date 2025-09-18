@@ -8,6 +8,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -27,6 +28,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+@Path("/lineItems")
+@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public interface LineItemEndpoints {
 
     @Operation(operationId = "Get Line Item resource by Program Year.", summary = "Get Line Item resource by Program Year.", extensions = {
@@ -44,9 +47,9 @@ public interface LineItemEndpoints {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = LineItemListRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
-    @Path("/lineItems")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getLineItemsByProgramYear(Integer programYear);
+    public Response getLineItemsByProgramYear(
+            @Parameter(description = "The program year.") @QueryParam("programYear") Integer programYear);
 
     @Operation(operationId = "Get Line Item resource by Line Item Id.", summary = "Get Line Item resource by Line Item Id.", extensions = {
             @Extension(properties = {
@@ -64,7 +67,7 @@ public interface LineItemEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
-    @Path("/lineItems/{lineItemId}")
+    @Path("/{lineItemId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getLineItem(
             @Parameter(description = "The identifier of the Line Item resource.") @PathParam("lineItemId") Long lineItemId);
@@ -91,7 +94,6 @@ public interface LineItemEndpoints {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
     @POST
-    @Path("/lineItems")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createLineItem(
@@ -113,7 +115,7 @@ public interface LineItemEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @DELETE
-    @Path("/lineItems/{lineItemId}")
+    @Path("/{lineItemId}")
     public Response deleteLineItem(
             @Parameter(description = "The identifier of the Line Item resource.") @PathParam("lineItemId") Long lineItemId);
 
@@ -135,7 +137,7 @@ public interface LineItemEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @PUT
-    @Path("/lineItems/{lineItemId}")
+    @Path("/{lineItemId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response updateLineItem(
@@ -158,8 +160,8 @@ public interface LineItemEndpoints {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = LineItemListRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
-    @PUT
-    @Path("/copyLineItems/{currentYear}")
+    @POST
+    @Path("/copy/{currentYear}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response copyLineItems(
