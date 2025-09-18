@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,11 @@ public class LineItemDaoTest {
 
     private static Long lineItemId;
 
+    @BeforeEach
+    void beforeEach() throws InterruptedException {
+        Thread.sleep(1000); // 1 second delay before each test
+    }
+
     @Test
     @Order(1)
     public void testInsert() {
@@ -55,8 +61,9 @@ public class LineItemDaoTest {
         try {
             lineItemDao.insert(dto, "testUser");
             lineItemId = dto.getLineItemId();
+            Thread.sleep(1000); // 1 second delay after insert
             result = lineItemDao.fetch(lineItemId);
-        } catch (DaoException e) {
+        } catch (DaoException | InterruptedException e) {
             fail(e.getMessage());
             return;
         }
