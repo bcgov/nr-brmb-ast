@@ -1,6 +1,8 @@
 package ca.bc.gov.farms.service.api.v1.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -145,8 +147,13 @@ public class LineItemServiceImpl implements LineItemService {
                 throw new NotFoundException("Did not find the line item: " + lineItemId);
             }
 
+            // expire old line item
+            lineItemDao.delete(dto.getLineItemId());
+
+            // insert new line item
             lineItemFactory.updateLineItem(dto, lineItem);
-            lineItemDao.update(dto, userId);
+            dto.setLineItemId(null);
+            lineItemDao.insert(dto, userId);
 
             dto = lineItemDao.fetch(dto.getLineItemId());
             result = lineItemFactory.getLineItem(dto, factoryContext);
@@ -186,17 +193,24 @@ public class LineItemServiceImpl implements LineItemService {
         Integer previousYear = currentYear - 1;
 
         try {
-            List<LineItemDto> dtos = lineItemDao.fetchByProgramYear(previousYear);
+            List<LineItemDto> previousYearDtos = lineItemDao.fetchByProgramYear(previousYear);
 
-            for (LineItemDto dto : dtos) {
-                dto.setLineItemId(null);
-                dto.setProgramYear(currentYear);
-                lineItemDao.insert(dto, dto.getCreateUser());
+            Map<Integer, LineItemDto> currentYearDtoMap = new HashMap<>();
+            for (LineItemDto dto : lineItemDao.fetchByProgramYear(currentYear)) {
+                currentYearDtoMap.put(dto.getLineItem(), dto);
             }
 
-            dtos = lineItemDao.fetchByProgramYear(currentYear);
+            for (LineItemDto dto : previousYearDtos) {
+                if (!currentYearDtoMap.containsKey(dto.getLineItem())) {
+                    dto.setLineItemId(null);
+                    dto.setProgramYear(currentYear);
+                    lineItemDao.insert(dto, dto.getCreateUser());
+                }
+            }
 
-            result = lineItemFactory.getLineItemList(dtos, factoryContext);
+            List<LineItemDto> currentYearDtos = lineItemDao.fetchByProgramYear(currentYear);
+
+            result = lineItemFactory.getLineItemList(currentYearDtos, factoryContext);
         } catch (Exception e) {
             throw new ServiceException("DAO threw an exception", e);
         }
