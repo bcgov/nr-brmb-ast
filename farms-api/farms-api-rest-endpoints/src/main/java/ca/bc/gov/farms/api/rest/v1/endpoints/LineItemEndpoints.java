@@ -162,7 +162,7 @@ public interface LineItemEndpoints {
     @Path("/copyLineItems/{currentYear}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response copyLineItem(
+    public Response copyLineItems(
             @Parameter(description = "The current year.") @PathParam("currentYear") Integer currentYear);
 
 }
