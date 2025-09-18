@@ -60,7 +60,7 @@
     <select id="fetchByProgramYear" resultMap="LineItemDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
-        where li.program_year = ${programYear}
+        where li.program_year = #{programYear}
         and current_timestamp between li.established_date and li.expiry_date
     </select>
 
