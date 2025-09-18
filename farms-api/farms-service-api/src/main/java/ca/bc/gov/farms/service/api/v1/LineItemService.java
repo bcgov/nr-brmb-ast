@@ -30,5 +30,6 @@ public interface LineItemService {
     void deleteLineItem(Long lineItemId) throws ServiceException, NotFoundException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    LineItemList<? extends LineItem> copyLineItems(Integer currentYear) throws ServiceException;
+    LineItemList<? extends LineItem> copyLineItems(Integer currentYear, FactoryContext factoryContext)
+            throws ServiceException;
 }
