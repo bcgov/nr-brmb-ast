@@ -54,14 +54,14 @@
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         where li.line_item_id = #{lineItemId}
-        and current_timestamp between li.established_date and li.expiry_date
+        and li.expiry_date::date = '9999-12-31'
     </select>
 
     <select id="fetchByProgramYear" resultMap="LineItemDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         where li.program_year = #{programYear}
-        and current_timestamp between li.established_date and li.expiry_date
+        and li.expiry_date::date = '9999-12-31'
     </select>
 
     <insert id="insertLineItem">
