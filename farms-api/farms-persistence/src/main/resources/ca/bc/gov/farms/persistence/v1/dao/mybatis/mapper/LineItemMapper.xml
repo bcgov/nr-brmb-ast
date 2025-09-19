@@ -43,7 +43,12 @@
                li.exclude_from_revenue_calc_ind,
                li.industry_average_expense_ind,
                li.commodity_type_code,
-               li.fruit_veg_type_code
+               li.fruit_veg_type_code,
+               li.revision_count,
+               li.who_created,
+               li.when_created,
+               li.who_updated,
+               li.when_updated
     </sql>
 
     <sql id="fromClause">
