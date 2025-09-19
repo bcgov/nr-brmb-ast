@@ -70,6 +70,7 @@ public class Errors {
 
     public static final String COMMODITY_TYPE_CODE_SIZE = "error.commodity.type.code.size";
 
+    public static final String FRUIT_VEG_TYPE_CODE_NOTBLANK = "error.fruit.veg.type.code.notblank";
     public static final String FRUIT_VEG_TYPE_CODE_SIZE = "error.fruit.veg.type.code.size";
 
     public static final String MULTI_STAGE_COMMDTY_CODE_SIZE = "error.multi.stage.commdty.code.size";
@@ -125,4 +126,6 @@ public class Errors {
 
     public static final String INDUSTRY_AVERAGE_EXPENSE_IND_NOTBLANK = "error.industry.average.expense.ind.notblank";
     public static final String INDUSTRY_AVERAGE_EXPENSE_IND_SIZE = "error.industry.average.expense.ind.size";
+
+    public static final String REVENUE_VARIANCE_LIMIT_NOTNULL = "error.revenue.variance.limit.notnull";
 }
