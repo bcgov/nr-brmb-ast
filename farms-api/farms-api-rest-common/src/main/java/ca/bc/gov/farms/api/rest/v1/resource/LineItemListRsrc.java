@@ -12,7 +12,7 @@ import ca.bc.gov.brmb.common.rest.resource.BaseResource;
 import ca.bc.gov.farms.api.rest.v1.resource.types.ResourceTypes;
 import ca.bc.gov.farms.model.v1.LineItemList;
 
-@XmlRootElement(namespace = ResourceTypes.NAMESPACE, name = ResourceTypes.LINE_ITEM_ATTRIBUTE_LIST_NAME)
+@XmlRootElement(namespace = ResourceTypes.NAMESPACE, name = ResourceTypes.LINE_ITEM_LIST_NAME)
 @XmlSeeAlso({ LineItemListRsrc.class })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 public class LineItemListRsrc extends BaseResource implements LineItemList<LineItemRsrc> {

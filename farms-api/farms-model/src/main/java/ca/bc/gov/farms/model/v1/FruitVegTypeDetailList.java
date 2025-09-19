@@ -3,9 +3,9 @@ package ca.bc.gov.farms.model.v1;
 import java.io.Serializable;
 import java.util.List;
 
-public interface FruitVegTypeDetailList extends Serializable {
+public interface FruitVegTypeDetailList<E extends FruitVegTypeDetail> extends Serializable {
 
-    public List<FruitVegTypeDetail> getFruitVegTypeDetails();
+    public List<E> getFruitVegTypeDetailList();
 
-    public void setFruitVegTypeDetails(List<FruitVegTypeDetail> fruitVegTypeDetails);
+    public void setFruitVegTypeDetailList(List<E> fruitVegTypeDetails);
 }

@@ -11,7 +11,7 @@ import ca.bc.gov.brmb.common.rest.resource.BaseResource;
 import ca.bc.gov.farms.api.rest.v1.resource.types.ResourceTypes;
 import ca.bc.gov.farms.model.v1.FruitVegTypeDetail;
 
-@XmlRootElement(namespace = ResourceTypes.NAMESPACE, name = ResourceTypes.FRUIT_VEG_TYPE_DETAIL_ATTRIBUTE_NAME)
+@XmlRootElement(namespace = ResourceTypes.NAMESPACE, name = ResourceTypes.FRUIT_VEG_TYPE_DETAIL_NAME)
 @XmlSeeAlso({ FruitVegTypeDetailRsrc.class })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 public class FruitVegTypeDetailRsrc extends BaseResource implements FruitVegTypeDetail {

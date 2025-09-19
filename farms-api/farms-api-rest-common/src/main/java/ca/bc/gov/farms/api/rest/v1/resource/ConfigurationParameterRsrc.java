@@ -9,7 +9,7 @@ import ca.bc.gov.brmb.common.rest.resource.BaseResource;
 import ca.bc.gov.farms.api.rest.v1.resource.types.ResourceTypes;
 import ca.bc.gov.farms.model.v1.ConfigurationParameter;
 
-@XmlRootElement(namespace = ResourceTypes.NAMESPACE, name = ResourceTypes.CONFIGURATION_PARAMETER_ATTRIBUTE_NAME)
+@XmlRootElement(namespace = ResourceTypes.NAMESPACE, name = ResourceTypes.CONFIGURATION_PARAMETER_NAME)
 @XmlSeeAlso({ ConfigurationParameterRsrc.class })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 public class ConfigurationParameterRsrc extends BaseResource implements ConfigurationParameter {

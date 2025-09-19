@@ -34,14 +34,14 @@ public class ResourceTypes extends BaseResourceTypes {
 	public static final String STRUCTURE_GROUP_ATTRIBUTE_LIST_NAME = "structureGroupAttributes";
 
 	// Configuration Parameter
-	public static final String CONFIGURATION_PARAMETER_ATTRIBUTE_NAME = "configurationParameter";
-	public static final String CONFIGURATION_PARAMETER_ATTRIBUTE_LIST_NAME = "ConfigurationParameters";
+	public static final String CONFIGURATION_PARAMETER_NAME = "configurationParameter";
+	public static final String CONFIGURATION_PARAMETER_LIST_NAME = "ConfigurationParameters";
 
 	// Line Item
-	public static final String LINE_ITEM_ATTRIBUTE_NAME = "lineItem";
-	public static final String LINE_ITEM_ATTRIBUTE_LIST_NAME = "lineItems";
+	public static final String LINE_ITEM_NAME = "lineItem";
+	public static final String LINE_ITEM_LIST_NAME = "lineItems";
 
 	// Fruit Veg Type Detail
-	public static final String FRUIT_VEG_TYPE_DETAIL_ATTRIBUTE_NAME = "fruitVegTypeDetail";
-	public static final String FRUIT_VEG_TYPE_DETAIL_ATTRIBUTE_LIST_NAME = "fruitVegTypeDetails";
+	public static final String FRUIT_VEG_TYPE_DETAIL_NAME = "fruitVegTypeDetail";
+	public static final String FRUIT_VEG_TYPE_DETAIL_LIST_NAME = "fruitVegTypeDetails";
 }
