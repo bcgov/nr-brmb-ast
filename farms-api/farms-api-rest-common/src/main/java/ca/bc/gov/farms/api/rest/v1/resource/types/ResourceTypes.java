@@ -40,4 +40,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Line Item
 	public static final String LINE_ITEM_ATTRIBUTE_NAME = "lineItem";
 	public static final String LINE_ITEM_ATTRIBUTE_LIST_NAME = "lineItems";
+
+	// Fruit Veg Type Detail
+	public static final String FRUIT_VEG_TYPE_DETAIL_ATTRIBUTE_NAME = "fruitVegTypeDetail";
+	public static final String FRUIT_VEG_TYPE_DETAIL_ATTRIBUTE_LIST_NAME = "fruitVegTypeDetails";
 }
