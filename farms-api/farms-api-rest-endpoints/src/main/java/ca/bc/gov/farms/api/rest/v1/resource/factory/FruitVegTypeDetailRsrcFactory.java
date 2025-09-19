@@ -1,0 +1,115 @@
+package ca.bc.gov.farms.api.rest.v1.resource.factory;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.core.UriBuilder;
+
+import ca.bc.gov.brmb.common.rest.endpoints.resource.factory.BaseResourceFactory;
+import ca.bc.gov.brmb.common.rest.resource.RelLink;
+import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
+import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
+import ca.bc.gov.farms.api.rest.v1.endpoints.FruitVegTypeDetailEndpoints;
+import ca.bc.gov.farms.api.rest.v1.resource.FruitVegTypeDetailListRsrc;
+import ca.bc.gov.farms.api.rest.v1.resource.FruitVegTypeDetailRsrc;
+import ca.bc.gov.farms.model.v1.FruitVegTypeDetail;
+import ca.bc.gov.farms.model.v1.FruitVegTypeDetailList;
+import ca.bc.gov.farms.persistence.v1.dto.FruitVegTypeDetailDto;
+import ca.bc.gov.farms.service.api.v1.model.factory.FruitVegTypeDetailFactory;
+
+public class FruitVegTypeDetailRsrcFactory extends BaseResourceFactory implements FruitVegTypeDetailFactory {
+
+    @Override
+    public FruitVegTypeDetail getFruitVegTypeDetail(FruitVegTypeDetailDto dto, FactoryContext context) {
+
+        URI baseUri = getBaseURI(context);
+
+        FruitVegTypeDetailRsrc resource = new FruitVegTypeDetailRsrc();
+
+        populateDefaultResource(resource, dto);
+
+        String eTag = getEtag(resource);
+        resource.setETag(eTag);
+
+        setSelfLink(resource.getFruitVegTypeDetailId(), resource, baseUri);
+
+        return resource;
+    }
+
+    private void populateDefaultResource(FruitVegTypeDetailRsrc resource, FruitVegTypeDetailDto dto) {
+        resource.setFruitVegTypeDetailId(dto.getFruitVegTypeDetailId());
+        resource.setRevenueVarianceLimit(dto.getRevenueVarianceLimit());
+        resource.setFruitVegTypeCode(dto.getFruitVegTypeCode());
+    }
+
+    @Override
+    public FruitVegTypeDetailList<? extends FruitVegTypeDetail> getFruitVegTypeDetailList(
+            List<FruitVegTypeDetailDto> dtos, FactoryContext context) {
+
+        URI baseUri = getBaseURI(context);
+
+        FruitVegTypeDetailListRsrc result = null;
+
+        List<FruitVegTypeDetailRsrc> resources = new ArrayList<>();
+
+        for (FruitVegTypeDetailDto dto : dtos) {
+            FruitVegTypeDetailRsrc resource = populate(dto);
+            setSelfLink(dto.getFruitVegTypeDetailId(), resource, baseUri);
+            resources.add(resource);
+        }
+
+        result = new FruitVegTypeDetailListRsrc();
+        result.setFruitVegTypeDetailList(resources);
+
+        String eTag = getEtag(result);
+        result.setETag(eTag);
+
+        setSelfLink(result, baseUri);
+
+        return result;
+    }
+
+    static FruitVegTypeDetailRsrc populate(FruitVegTypeDetailDto dto) {
+
+        FruitVegTypeDetailRsrc result = new FruitVegTypeDetailRsrc();
+
+        result.setFruitVegTypeDetailId(dto.getFruitVegTypeDetailId());
+        result.setRevenueVarianceLimit(dto.getRevenueVarianceLimit());
+        result.setFruitVegTypeCode(dto.getFruitVegTypeCode());
+
+        return result;
+    }
+
+    public static void setSelfLink(Long fruitVegTypeDetailId, FruitVegTypeDetailRsrc resource, URI baseUri) {
+
+        String selfUri = getFruitVegTypeDetailSelfUri(fruitVegTypeDetailId, baseUri);
+
+        resource.getLinks().add(new RelLink(BaseResourceTypes.SELF, selfUri, "GET"));
+    }
+
+    public static String getFruitVegTypeDetailSelfUri(Long fruitVegTypeDetailId, URI baseUri) {
+
+        String result = UriBuilder.fromUri(baseUri)
+                .path(FruitVegTypeDetailEndpoints.class)
+                .build(fruitVegTypeDetailId).toString();
+
+        return result;
+    }
+
+    public static void setSelfLink(FruitVegTypeDetailListRsrc resource, URI baseUri) {
+
+        String selfUri = UriBuilder.fromUri(baseUri)
+                .path(FruitVegTypeDetailEndpoints.class)
+                .build().toString();
+
+        resource.getLinks().add(new RelLink(BaseResourceTypes.SELF, selfUri, "GET"));
+    }
+
+    @Override
+    public void updateFruitVegTypeDetail(FruitVegTypeDetailDto dto, FruitVegTypeDetail model) {
+        dto.setFruitVegTypeDetailId(model.getFruitVegTypeDetailId());
+        dto.setRevenueVarianceLimit(model.getRevenueVarianceLimit());
+        dto.setFruitVegTypeCode(model.getFruitVegTypeCode());
+    }
+}
