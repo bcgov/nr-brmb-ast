@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.LineItemMapper">
+
+    <resultMap id="LineItemDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.LineItemDto">
+        <id property="lineItemId" column="line_item_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="programYear" column="program_year" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="lineItem" column="line_item" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="description" column="description" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="province" column="province" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="eligibilityInd" column="eligibility_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="eligibilityForRefYearsInd" column="eligibility_for_ref_years_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="yardageInd" column="yardage_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="programPaymentInd" column="program_payment_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="contractWorkInd" column="contract_work_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="supplyManagedCommodityInd" column="supply_managed_commodity_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="excludeFromRevenueCalcInd" column="exclude_from_revenue_calc_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="industryAverageExpenseInd" column="industry_average_expense_ind" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="commodityTypeCode" column="commodity_type_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="fruitVegTypeCode" column="fruit_veg_type_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select li.line_item_id,
+               li.program_year,
+               li.line_item,
+               li.description,
+               li.province,
+               li.eligibility_ind,
+               li.eligibility_for_ref_years_ind,
+               li.yardage_ind,
+               li.program_payment_ind,
+               li.contract_work_ind,
+               li.supply_managed_commodity_ind,
+               li.exclude_from_revenue_calc_ind,
+               li.industry_average_expense_ind,
+               li.commodity_type_code,
+               li.fruit_veg_type_code,
+               li.revision_count,
+               li.who_created,
+               li.when_created,
+               li.who_updated,
+               li.when_updated
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_line_items li
+    </sql>
+
+    <select id="fetch" resultMap="LineItemDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where li.line_item_id = #{lineItemId}
+        and li.expiry_date::date = '9999-12-31'
+    </select>
+
+    <select id="fetchByProgramYear" resultMap="LineItemDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where li.program_year = #{programYear}
+        and li.expiry_date::date = '9999-12-31'
+    </select>
+
+    <insert id="insertLineItem">
+        <selectKey keyProperty="lineItemId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_li_seq')
+        </selectKey>
+        insert into farms.farm_line_items (
+            line_item_id,
+            program_year,
+            line_item,
+            description,
+            province,
+            eligibility_ind,
+            eligibility_for_ref_years_ind,
+            yardage_ind,
+            program_payment_ind,
+            contract_work_ind,
+            supply_managed_commodity_ind,
+            exclude_from_revenue_calc_ind,
+            industry_average_expense_ind,
+            established_date,
+            expiry_date,
+            commodity_type_code,
+            fruit_veg_type_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{lineItemId},
+            #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{dto.lineItem, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{dto.description, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.province, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.eligibilityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.eligibilityForRefYearsInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.yardageInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.programPaymentInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.contractWorkInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.supplyManagedCommodityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.excludeFromRevenueCalcInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.industryAverageExpenseInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            '9999-12-31 23:59:59',
+            (
+                select ctc.commodity_type_code
+                from farms.farm_commodity_type_codes ctc
+                where ctc.commodity_type_code = #{dto.commodityTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select fvtc.fruit_veg_type_code
+                from farms.farm_fruit_veg_type_codes fvtc
+                where fvtc.fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateLineItem">
+        update farms.farm_line_items
+        set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            line_item = #{dto.lineItem, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            description = #{dto.description, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            province = #{dto.province, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            eligibility_ind = #{dto.eligibilityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            eligibility_for_ref_years_ind = #{dto.eligibilityForRefYearsInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            yardage_ind = #{dto.yardageInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            program_payment_ind = #{dto.programPaymentInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            contract_work_ind = #{dto.contractWorkInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            supply_managed_commodity_ind = #{dto.supplyManagedCommodityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            exclude_from_revenue_calc_ind = #{dto.excludeFromRevenueCalcInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            industry_average_expense_ind = #{dto.industryAverageExpenseInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            commodity_type_code = (
+                select ctc.commodity_type_code
+                from farms.farm_commodity_type_codes ctc
+                where ctc.commodity_type_code = #{dto.commodityTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            fruit_veg_type_code = (
+                select fvtc.fruit_veg_type_code
+                from farms.farm_fruit_veg_type_codes fvtc
+                where fvtc.fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where line_item_id = #{dto.lineItemId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteLineItem">
+        update farms.farm_line_items
+        set expiry_date = now()
+        where line_item_id = #{lineItemId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </delete>
+</mapper>

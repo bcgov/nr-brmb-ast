@@ -32,6 +32,7 @@ import ca.bc.gov.farms.persistence.v1.dao.FairMarketValueDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryItemAttributeDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryItemDetailDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryTypeXrefDao;
+import ca.bc.gov.farms.persistence.v1.dao.LineItemDao;
 import ca.bc.gov.farms.persistence.v1.dao.StructureGroupAttributeDao;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.BenchmarkPerUnitDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.ConfigurationParameterDaoImpl;
@@ -39,6 +40,7 @@ import ca.bc.gov.farms.persistence.v1.dao.mybatis.FairMarketValueDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryItemAttributeDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryItemDetailDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryTypeXrefDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.LineItemDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.StructureGroupAttributeDaoImpl;
 
 @Configuration
@@ -125,5 +127,10 @@ public class PersistenceSpringConfig {
     @Bean
     public ConfigurationParameterDao configurationParameterDao() {
         return new ConfigurationParameterDaoImpl();
+    }
+
+    @Bean
+    public LineItemDao lineItemDao() {
+        return new LineItemDaoImpl();
     }
 }

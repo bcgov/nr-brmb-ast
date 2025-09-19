@@ -97,4 +97,32 @@ public class Errors {
 
     public static final String CONFIG_PARAM_TYPE_CODE_NOTBLANK = "error.config.param.type.code.notblank";
     public static final String CONFIG_PARAM_TYPE_CODE_SIZE = "error.config.param.type.code.size";
+
+    public static final String LINE_ITEM_NOTNULL = "error.line.item.notnull";
+
+    public static final String DESCRIPTION_NOTBLANK = "error.description.notblank";
+    public static final String DESCRIPTION_SIZE = "error.description.size";
+
+    public static final String PROVINCE_SIZE = "error.province.size";
+
+    public static final String ELIGIBILITY_FOR_REF_YEARS_IND_NOTBLANK = "error.eligibility.for.ref.years.ind.notblank";
+    public static final String ELIGIBILITY_FOR_REF_YEARS_IND_SIZE = "error.eligibility.for.ref.years.ind.size";
+
+    public static final String YARDAGE_IND_NOTBLANK = "error.yardage.ind.notblank";
+    public static final String YARDAGE_IND_SIZE = "error.yardage.ind.size";
+
+    public static final String PROGRAM_PAYMENT_IND_NOTBLANK = "error.program.payment.ind.notblank";
+    public static final String PROGRAM_PAYMENT_IND_SIZE = "error.program.payment.ind.size";
+
+    public static final String CONTRACT_WORK_IND_NOTBLANK = "error.contract.work.ind.notblank";
+    public static final String CONTRACT_WORK_IND_SIZE = "error.contract.work.ind.size";
+
+    public static final String SUPPLY_MANAGED_COMMODITY_IND_NOTBLANK = "error.supply.managed.commodity.ind.notblank";
+    public static final String SUPPLY_MANAGED_COMMODITY_IND_SIZE = "error.supply.managed.commodity.ind.size";
+
+    public static final String EXCLUDE_FROM_REVENUE_CALC_IND_NOTBLANK = "error.exclude.from.revenue.calc.ind.notblank";
+    public static final String EXCLUDE_FROM_REVENUE_CALC_IND_SIZE = "error.exclude.from.revenue.calc.ind.size";
+
+    public static final String INDUSTRY_AVERAGE_EXPENSE_IND_NOTBLANK = "error.industry.average.expense.ind.notblank";
+    public static final String INDUSTRY_AVERAGE_EXPENSE_IND_SIZE = "error.industry.average.expense.ind.size";
 }

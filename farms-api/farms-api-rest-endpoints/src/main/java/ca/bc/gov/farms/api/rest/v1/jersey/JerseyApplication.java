@@ -13,6 +13,7 @@ import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ImportEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryItemAttributeEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryItemDetailEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryTypeXrefEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.LineItemEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.StructureGroupAttributeEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.TopLevelEndpointsImpl;
 import ca.bc.gov.brmb.common.api.rest.code.endpoints.impl.CodeEndpointsImpl;
@@ -44,6 +45,7 @@ public class JerseyApplication extends JerseyResourceConfig {
         register(InventoryItemAttributeEndpointsImpl.class);
         register(StructureGroupAttributeEndpointsImpl.class);
         register(ConfigurationParameterEndpointsImpl.class);
+        register(LineItemEndpointsImpl.class);
 
         register(MultiPartFeature.class);
         register(ImportEndpointsImpl.class);

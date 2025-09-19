@@ -262,3 +262,47 @@ insert into farms.farm_config_param_type_codes (
     current_user,
     current_timestamp
 );
+
+insert into farms.farm_commodity_type_codes (
+    commodity_type_code,
+    description,
+    established_date,
+    expiry_date,
+    revision_count,
+    who_created,
+    when_created,
+    who_updated,
+    when_updated
+) values (
+    'GRAIN',
+    'Grain',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+);
+
+insert into farms.farm_fruit_veg_type_codes (
+    fruit_veg_type_code,
+    description,
+    established_date,
+    expiry_date,
+    revision_count,
+    who_created,
+    when_created,
+    who_updated,
+    when_updated
+) values (
+    'APPLE',
+    'Apples',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+);

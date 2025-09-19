@@ -24,6 +24,7 @@ import ca.bc.gov.farms.service.api.v1.ImportService;
 import ca.bc.gov.farms.service.api.v1.InventoryItemAttributeService;
 import ca.bc.gov.farms.service.api.v1.InventoryItemDetailService;
 import ca.bc.gov.farms.service.api.v1.InventoryTypeXrefService;
+import ca.bc.gov.farms.service.api.v1.LineItemService;
 import ca.bc.gov.farms.service.api.v1.StructureGroupAttributeService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ConfigurationParameterServiceImpl;
@@ -36,6 +37,7 @@ import ca.bc.gov.farms.service.api.v1.impl.ImportServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryItemAttributeServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryItemDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryTypeXrefServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.LineItemServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.StructureGroupAttributeServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.ConfigurationParameterFactory;
@@ -43,6 +45,7 @@ import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryTypeXrefFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.LineItemFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.StructureGroupAttributeFactory;
 import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
 
@@ -82,6 +85,8 @@ public class ServiceApiSpringConfig {
     private StructureGroupAttributeFactory structureGroupAttributeFactory;
     @Autowired
     private ConfigurationParameterFactory configurationParameterFactory;
+    @Autowired
+    private LineItemFactory lineItemFactory;
 
     // Imported Spring Config
     @Autowired
@@ -201,6 +206,21 @@ public class ServiceApiSpringConfig {
         result.setConfigurationParameterFactory(configurationParameterFactory);
 
         result.setConfigurationParameterDao(persistenceSpringConfig.configurationParameterDao());
+
+        return result;
+    }
+
+    @Bean
+    public LineItemService lineItemService() {
+        LineItemServiceImpl result;
+
+        result = new LineItemServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setLineItemFactory(lineItemFactory);
+
+        result.setLineItemDao(persistenceSpringConfig.lineItemDao());
 
         return result;
     }
