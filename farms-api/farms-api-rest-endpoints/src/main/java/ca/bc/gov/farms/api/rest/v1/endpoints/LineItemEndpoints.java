@@ -67,7 +67,7 @@ public interface LineItemEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
-    @Path("/{lineItemId}")
+    @Path("/{lineItemId:\\d+}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getLineItem(
             @Parameter(description = "The identifier of the Line Item resource.") @PathParam("lineItemId") Long lineItemId);
@@ -115,7 +115,7 @@ public interface LineItemEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @DELETE
-    @Path("/{lineItemId}")
+    @Path("/{lineItemId:\\d+}")
     public Response deleteLineItem(
             @Parameter(description = "The identifier of the Line Item resource.") @PathParam("lineItemId") Long lineItemId);
 
@@ -137,7 +137,7 @@ public interface LineItemEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @PUT
-    @Path("/{lineItemId}")
+    @Path("/{lineItemId:\\d+}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response updateLineItem(
