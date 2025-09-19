@@ -9,7 +9,7 @@ public interface FruitVegTypeDetailMapper {
 
     FruitVegTypeDetailDto fetch(Map<String, Object> parameters);
 
-    List<FruitVegTypeDetailDto> fetchByProgramYear(Map<String, Object> parameters);
+    List<FruitVegTypeDetailDto> fetchAll();
 
     int insertFruitVegTypeDetail(Map<String, Object> parameters);
 
