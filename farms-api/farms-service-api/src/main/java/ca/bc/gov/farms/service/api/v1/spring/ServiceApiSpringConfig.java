@@ -16,6 +16,7 @@ import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 import ca.bc.gov.farms.service.api.v1.BenchmarkPerUnitService;
 import ca.bc.gov.farms.service.api.v1.ConfigurationParameterService;
 import ca.bc.gov.farms.service.api.v1.FairMarketValueService;
+import ca.bc.gov.farms.service.api.v1.FruitVegTypeDetailService;
 import ca.bc.gov.farms.service.api.v1.ImportBPUService;
 import ca.bc.gov.farms.service.api.v1.ImportCRAService;
 import ca.bc.gov.farms.service.api.v1.ImportFMVService;
@@ -29,6 +30,7 @@ import ca.bc.gov.farms.service.api.v1.StructureGroupAttributeService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ConfigurationParameterServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.FairMarketValueServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.FruitVegTypeDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportBPUServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportCRAServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportFMVServiceImpl;
@@ -42,6 +44,7 @@ import ca.bc.gov.farms.service.api.v1.impl.StructureGroupAttributeServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.ConfigurationParameterFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.FruitVegTypeDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryTypeXrefFactory;
@@ -87,6 +90,8 @@ public class ServiceApiSpringConfig {
     private ConfigurationParameterFactory configurationParameterFactory;
     @Autowired
     private LineItemFactory lineItemFactory;
+    @Autowired
+    private FruitVegTypeDetailFactory fruitVegTypeDetailFactory;
 
     // Imported Spring Config
     @Autowired
@@ -221,6 +226,21 @@ public class ServiceApiSpringConfig {
         result.setLineItemFactory(lineItemFactory);
 
         result.setLineItemDao(persistenceSpringConfig.lineItemDao());
+
+        return result;
+    }
+
+    @Bean
+    public FruitVegTypeDetailService fruitVegTypeDetailService() {
+        FruitVegTypeDetailServiceImpl result;
+
+        result = new FruitVegTypeDetailServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setFruitVegTypeDetailFactory(fruitVegTypeDetailFactory);
+
+        result.setFruitVegTypeDetailDao(persistenceSpringConfig.fruitVegTypeDetailDao());
 
         return result;
     }
