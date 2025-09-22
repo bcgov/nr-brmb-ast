@@ -18,4 +18,7 @@ public interface YearConfigurationParameter extends Serializable {
 
     public String getConfigParamTypeCode();
     public void setConfigParamTypeCode(String configParamTypeCode);
+
+    public String getUserEmail();
+    public void setUserEmail(String userEmail);
 }
