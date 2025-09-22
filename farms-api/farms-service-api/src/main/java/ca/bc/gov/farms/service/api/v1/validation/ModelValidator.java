@@ -13,6 +13,7 @@ import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.BenchmarkPerUnitRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.ConfigurationParameterRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.FairMarketValueRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.FruitVegTypeDetailRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemAttributeRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemDetailRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryTypeXrefRsrcConstraints;
@@ -149,6 +150,15 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, LineItemRsrcConstraints.class);
 
         logger.debug(">validateLineItem " + results.size());
+        return results;
+    }
+
+    public List<Message> validateFruitVegTypeDetail(Object resource) {
+        logger.debug("<validateFruitVegTypeDetail");
+
+        List<Message> results = this.validate(resource, FruitVegTypeDetailRsrcConstraints.class);
+
+        logger.debug(">validateFruitVegTypeDetail " + results.size());
         return results;
     }
 }

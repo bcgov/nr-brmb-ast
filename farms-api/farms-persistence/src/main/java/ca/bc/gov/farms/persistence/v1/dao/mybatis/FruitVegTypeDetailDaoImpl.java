@@ -11,28 +11,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.persistence.dao.NotFoundDaoException;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.BaseDao;
-import ca.bc.gov.farms.persistence.v1.dao.LineItemDao;
-import ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.LineItemMapper;
-import ca.bc.gov.farms.persistence.v1.dto.LineItemDto;
+import ca.bc.gov.farms.persistence.v1.dao.FruitVegTypeDetailDao;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.FruitVegTypeDetailMapper;
+import ca.bc.gov.farms.persistence.v1.dto.FruitVegTypeDetailDto;
 
-public class LineItemDaoImpl extends BaseDao implements LineItemDao {
+public class FruitVegTypeDetailDaoImpl extends BaseDao implements FruitVegTypeDetailDao {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = LoggerFactory.getLogger(LineItemDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FruitVegTypeDetailDaoImpl.class);
 
     @Autowired
-    private LineItemMapper mapper;
+    private FruitVegTypeDetailMapper mapper;
 
     @Override
-    public LineItemDto fetch(Long lineItemId) throws DaoException {
+    public FruitVegTypeDetailDto fetch(Long fruitVegTypeDetailId) throws DaoException {
         logger.debug("<fetch");
 
-        LineItemDto result = null;
+        FruitVegTypeDetailDto result = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("lineItemId", lineItemId);
+            parameters.put("fruitVegTypeDetailId", fruitVegTypeDetailId);
             result = this.mapper.fetch(parameters);
 
             if (result != null) {
@@ -47,43 +47,40 @@ public class LineItemDaoImpl extends BaseDao implements LineItemDao {
     }
 
     @Override
-    public List<LineItemDto> fetchByProgramYear(Integer programYear)
-            throws DaoException {
-        logger.debug("<fetchByProgramYear");
+    public List<FruitVegTypeDetailDto> fetchAll() throws DaoException {
+        logger.debug("<fetchAll");
 
-        List<LineItemDto> dtos = null;
+        List<FruitVegTypeDetailDto> dtos = null;
 
         try {
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("programYear", programYear);
-            dtos = this.mapper.fetchByProgramYear(parameters);
+            dtos = this.mapper.fetchAll();
         } catch (RuntimeException e) {
             handleException(e);
         }
 
-        logger.debug(">fetchByProgramYear " + dtos);
+        logger.debug(">fetchAll " + dtos);
         return dtos;
     }
 
     @Override
-    public void insert(LineItemDto dto, String userId) throws DaoException {
+    public void insert(FruitVegTypeDetailDto dto, String userId) throws DaoException {
         logger.debug("<insert");
 
-        Long lineItemId = null;
+        Long fruitVegTypeDetailId = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
 
             parameters.put("dto", dto);
             parameters.put("userId", userId);
-            int count = this.mapper.insertLineItem(parameters);
+            int count = this.mapper.insertFruitVegTypeDetail(parameters);
 
             if (count == 0) {
                 throw new DaoException("Record not inserted: " + count);
             }
 
-            lineItemId = (Long) parameters.get("lineItemId");
-            dto.setLineItemId(lineItemId);
+            fruitVegTypeDetailId = (Long) parameters.get("fruitVegTypeDetailId");
+            dto.setFruitVegTypeDetailId(fruitVegTypeDetailId);
         } catch (RuntimeException e) {
             handleException(e);
         }
@@ -92,7 +89,7 @@ public class LineItemDaoImpl extends BaseDao implements LineItemDao {
     }
 
     @Override
-    public void update(LineItemDto dto, String userId) throws DaoException, NotFoundDaoException {
+    public void update(FruitVegTypeDetailDto dto, String userId) throws DaoException, NotFoundDaoException {
         logger.debug("<update");
 
         if (dto.isDirty()) {
@@ -101,7 +98,7 @@ public class LineItemDaoImpl extends BaseDao implements LineItemDao {
 
                 parameters.put("dto", dto);
                 parameters.put("userId", userId);
-                int count = this.mapper.updateLineItem(parameters);
+                int count = this.mapper.updateFruitVegTypeDetail(parameters);
 
                 if (count == 0) {
                     throw new NotFoundDaoException("Record not updated: " + count);
@@ -115,13 +112,13 @@ public class LineItemDaoImpl extends BaseDao implements LineItemDao {
     }
 
     @Override
-    public void delete(Long lineItemId) throws DaoException, NotFoundDaoException {
+    public void delete(Long fruitVegTypeDetailId) throws DaoException, NotFoundDaoException {
         logger.debug("<delete");
 
         try {
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("lineItemId", lineItemId);
-            int count = this.mapper.deleteLineItem(parameters);
+            parameters.put("fruitVegTypeDetailId", fruitVegTypeDetailId);
+            int count = this.mapper.deleteFruitVegTypeDetail(parameters);
 
             if (count == 0) {
                 throw new NotFoundDaoException("Record not deleted: " + count);

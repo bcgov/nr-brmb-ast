@@ -305,4 +305,14 @@ insert into farms.farm_fruit_veg_type_codes (
     current_timestamp,
     current_user,
     current_timestamp
+), (
+    'APRICOT',
+    'Apricots',
+    current_date,
+    to_date('9999-12-31', 'yyyy-mm-dd'),
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
 );
