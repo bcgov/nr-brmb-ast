@@ -1,0 +1,33 @@
+#bcgov-header {
+  display:none;
+}
+#bcgov-menu {
+  display:none;
+}
+#bcgov-breadcrumb {
+  display:none;
+}
+#bcgov-content-body {
+  border-top: none;
+}
+#bcgov-footer {
+  display:none;
+}
+#bcgov-content fieldset {
+	background-color:#F2F2F2;
+	border:1px solid #C0C0C0;
+	border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+#bcgov-content legend {
+	top:-.5em;
+	left:.2em;
+ 	font-size:90%;
+	color:#999999;
+	font-family:Geneva, Arial, Helvetica, sans-serif
+}
