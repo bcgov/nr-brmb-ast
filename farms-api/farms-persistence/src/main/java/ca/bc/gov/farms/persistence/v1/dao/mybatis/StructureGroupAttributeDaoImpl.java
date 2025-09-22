@@ -94,18 +94,20 @@ public class StructureGroupAttributeDaoImpl extends BaseDao implements Structure
     public void update(StructureGroupAttributeDto dto, String userId) throws DaoException, NotFoundDaoException {
         logger.debug("<update");
 
-        try {
-            Map<String, Object> parameters = new HashMap<>();
+        if (dto.isDirty()) {
+            try {
+                Map<String, Object> parameters = new HashMap<>();
 
-            parameters.put("dto", dto);
-            parameters.put("userId", userId);
-            int count = this.mapper.updateStructureGroupAttribute(parameters);
+                parameters.put("dto", dto);
+                parameters.put("userId", userId);
+                int count = this.mapper.updateStructureGroupAttribute(parameters);
 
-            if (count == 0) {
-                throw new NotFoundDaoException("Record not updated: " + count);
+                if (count == 0) {
+                    throw new NotFoundDaoException("Record not updated: " + count);
+                }
+            } catch (RuntimeException e) {
+                handleException(e);
             }
-        } catch (RuntimeException e) {
-            handleException(e);
         }
 
         logger.debug(">update");
