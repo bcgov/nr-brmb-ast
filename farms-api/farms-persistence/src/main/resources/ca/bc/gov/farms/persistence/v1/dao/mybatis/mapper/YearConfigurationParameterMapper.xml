@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.YearConfigurationParameterMapper">
+
+    <resultMap id="YearConfigurationParameterDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.YearConfigurationParameterDto">
+        <id property="yearConfigurationParameterId" column="year_configuration_param_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="programYear" column="program_year" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="parameterName" column="parameter_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="parameterValue" column="parameter_value" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="configParamTypeCode" column="config_param_type_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select ycp.year_configuration_param_id,
+               ycp.program_year,
+               ycp.parameter_name,
+               ycp.parameter_value,
+               ycp.config_param_type_code
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_year_configuration_params ycp
+    </sql>
+
+    <select id="fetch" resultMap="YearConfigurationParameterDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where ycp.year_configuration_param_id = #{yearConfigurationParamId}
+    </select>
+
+    <select id="fetchAll" resultMap="YearConfigurationParameterDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+    </select>
+
+    <insert id="insertYearConfigurationParameter">
+        <selectKey keyProperty="yearConfigurationParameterId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_ycp_seq')
+        </selectKey>
+        insert into farms.farm_year_configuration_params (
+            year_configuration_param_id,
+            program_year,
+            parameter_name,
+            parameter_value,
+            config_param_type_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{yearConfigurationParameterId},
+            #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{dto.parameterName, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.parameterValue, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            (
+                select cptc.config_param_type_code
+                from farms.farm_config_param_type_codes cptc
+                where cptc.config_param_type_code = #{dto.configParamTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateYearConfigurationParameter">
+        update farms.farm_year_configuration_params
+        set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            parameter_name = #{dto.parameterName, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            parameter_value = #{dto.parameterValue, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            config_param_type_code = (
+                select cptc.config_param_type_code
+                from farms.farm_config_param_type_codes cptc
+                where cptc.config_param_type_code = #{dto.configParamTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where year_configuration_param_id = #{dto.yearConfigurationParamId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteYearConfigurationParameter">
+        delete from farms.farm_year_configuration_params
+        where year_configuration_param_id = #{yearConfigurationParamId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </delete>
+</mapper>
