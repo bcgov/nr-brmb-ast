@@ -35,3 +35,4 @@ ALTER TABLE farms.farm_line_items ADD CONSTRAINT farm_li_farm_fvtc_fk FOREIGN KE
 ALTER TABLE farms.farm_structure_group_attributs ADD CONSTRAINT farm_sga_farm_iic_fk FOREIGN KEY (structure_group_code) REFERENCES farms.farm_structure_group_codes(structure_group_code) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE farms.farm_structure_group_attributs ADD CONSTRAINT farm_sga_farm_riic_fk FOREIGN KEY (rollup_structure_group_code) REFERENCES farms.farm_structure_group_codes(structure_group_code) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE farms.farm_year_configuration_params ADD CONSTRAINT farm_ycp_farm_cptc_fk FOREIGN KEY (config_param_type_code) REFERENCES farms.farm_config_param_type_codes(config_param_type_code) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;

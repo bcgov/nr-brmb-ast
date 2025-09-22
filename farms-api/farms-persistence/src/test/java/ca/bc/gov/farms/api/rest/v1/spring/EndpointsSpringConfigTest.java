@@ -42,6 +42,7 @@ public class EndpointsSpringConfigTest {
                         "farms/tables/farms.farm_municipality_codes.sql",
                         "farms/tables/farms.farm_structure_group_attributs.sql",
                         "farms/tables/farms.farm_structure_group_codes.sql",
+                        "farms/tables/farms.farm_year_configuration_params.sql",
                         "farms/tables/foreign_keys.sql",
                         "farms/tables/data.sql");
     }

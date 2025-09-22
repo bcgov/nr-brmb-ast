@@ -33,7 +33,7 @@
     <select id="fetch" resultMap="YearConfigurationParameterDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
-        where ycp.year_configuration_param_id = #{yearConfigurationParamId}
+        where ycp.year_configuration_param_id = #{yearConfigurationParameterId}
     </select>
 
     <select id="fetchAll" resultMap="YearConfigurationParameterDtoMap">
@@ -87,11 +87,11 @@
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             when_updated = now()
-        where year_configuration_param_id = #{dto.yearConfigurationParamId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+        where year_configuration_param_id = #{dto.yearConfigurationParameterId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
     </update>
 
     <delete id="deleteYearConfigurationParameter">
         delete from farms.farm_year_configuration_params
-        where year_configuration_param_id = #{yearConfigurationParamId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+        where year_configuration_param_id = #{yearConfigurationParameterId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
     </delete>
 </mapper>
