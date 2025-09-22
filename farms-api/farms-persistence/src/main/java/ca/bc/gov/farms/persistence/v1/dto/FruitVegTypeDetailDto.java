@@ -65,7 +65,7 @@ public class FruitVegTypeDetailDto extends BaseDto<FruitVegTypeDetailDto> {
             result = result
                     && dtoUtils.equals("fruitVegTypeDetailId", this.fruitVegTypeDetailId, other.fruitVegTypeDetailId);
             result = result
-                    && dtoUtils.equals("revenueVarianceLimit", this.revenueVarianceLimit, other.revenueVarianceLimit);
+                    && dtoUtils.equals("revenueVarianceLimit", this, other);
             result = result && dtoUtils.equals("fruitVegTypeCode", this.fruitVegTypeCode, other.fruitVegTypeCode);
         }
 

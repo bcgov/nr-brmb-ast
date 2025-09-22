@@ -31,6 +31,7 @@ public class EndpointsSpringConfigTest {
                         "farms/tables/farms.farm_crop_unit_defaults.sql",
                         "farms/tables/farms.farm_fair_market_values.sql",
                         "farms/tables/farms.farm_fruit_veg_type_codes.sql",
+                        "farms/tables/farms.farm_fruit_veg_type_details.sql",
                         "farms/tables/farms.farm_inventory_class_codes.sql",
                         "farms/tables/farms.farm_inventory_group_codes.sql",
                         "farms/tables/farms.farm_inventory_item_attributes.sql",

@@ -74,7 +74,7 @@
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             when_updated = now()
-        where fruit_veg_type_detail_id = #{fruitVegTypeDetailId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+        where fruit_veg_type_detail_id = #{dto.fruitVegTypeDetailId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
     </update>
 
     <delete id="deleteFruitVegTypeDetail">
