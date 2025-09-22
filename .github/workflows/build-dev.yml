@@ -1,4 +1,4 @@
-name: Build .war files
+name: Build farms-api.war files
 
 on:
   workflow_dispatch:
@@ -20,12 +20,3 @@ jobs:
       ENVIRONMENT: DEV
       MICROSERVICE_NAME: farms-api
       JAVA_VERSION: 17
-
-  build-farms-legacy:
-    uses: ./.github/workflows/build-package.yml
-    secrets: inherit
-    with:
-      TAG: ${{ inputs.tag }}
-      ENVIRONMENT: DEV
-      MICROSERVICE_NAME: farms-legacy
-      JAVA_VERSION: 1.8
