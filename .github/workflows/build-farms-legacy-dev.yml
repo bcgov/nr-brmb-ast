@@ -1,0 +1,22 @@
+name: Build farms-legacy.war files
+
+on:
+  workflow_dispatch:
+    inputs:
+      TAG:
+          required: true
+          type: string
+          description: Additional tag to apply to images being built
+          default: latest
+
+jobs:
+  
+
+  build-farms-legacy:
+    uses: ./.github/workflows/build-package.yml
+    secrets: inherit
+    with:
+      TAG: ${{ inputs.tag }}
+      ENVIRONMENT: DEV
+      MICROSERVICE_NAME: farms-legacy
+      JAVA_VERSION: 8.0.462+8
