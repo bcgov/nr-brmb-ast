@@ -19,10 +19,6 @@ public interface YearConfigurationParameterRsrcConstraints {
     @Size(min = 0, max = 4000, message = Errors.PARAMETER_VALUE_SIZE, groups = YearConfigurationParameterRsrcConstraints.class)
     public String getParameterValue();
 
-    @NotBlank(message = Errors.SENSITIVE_DATA_IND_NOTBLANK, groups = YearConfigurationParameterRsrcConstraints.class)
-    @Size(min = 0, max = 1, message = Errors.SENSITIVE_DATA_IND_SIZE, groups = YearConfigurationParameterRsrcConstraints.class)
-    public String getSensitiveDataInd();
-
     @NotBlank(message = Errors.CONFIG_PARAM_TYPE_CODE_NOTBLANK, groups = YearConfigurationParameterRsrcConstraints.class)
     @Size(min = 0, max = 10, message = Errors.CONFIG_PARAM_TYPE_CODE_SIZE, groups = YearConfigurationParameterRsrcConstraints.class)
     public String getConfigParamTypeCode();
