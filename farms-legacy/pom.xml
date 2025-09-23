@@ -19,10 +19,12 @@
     <distributionManagement>
         <repository>
             <id>openshift-releases</id>
+            <!--suppress UnresolvedMavenProperty -->
             <url>${RELEASE_URL}</url>
         </repository>
         <snapshotRepository>
             <id>openshift-snapshots</id>
+            <!--suppress UnresolvedMavenProperty -->
             <url>${SNAPSHOT_URL}</url>
         </snapshotRepository>
     </distributionManagement>
