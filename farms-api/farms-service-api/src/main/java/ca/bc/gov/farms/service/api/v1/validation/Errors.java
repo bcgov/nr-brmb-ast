@@ -128,4 +128,14 @@ public class Errors {
     public static final String INDUSTRY_AVERAGE_EXPENSE_IND_SIZE = "error.industry.average.expense.ind.size";
 
     public static final String REVENUE_VARIANCE_LIMIT_NOTNULL = "error.revenue.variance.limit.notnull";
+
+    public static final String MIN_TOTAL_PREMIUM_AMOUNT_NOTNULL = "error.min.total.premium.amount.notnull";
+
+    public static final String MAX_TOTAL_PREMIUM_AMOUNT_NOTNULL = "error.max.total.premium.amount.notnull";
+
+    public static final String RISK_CHARGE_FLAT_AMOUNT_NOTNULL = "error.risk.charge.flat.amount.notnull";
+
+    public static final String RISK_CHARGE_PCT_PREMIUM_NOTNULL = "error.risk.charge.pct.premium.notnull";
+
+    public static final String ADJUST_CHARGE_FLAT_AMOUNT_NOTNULL = "error.adjust.charge.flat.amount.notnull";
 }

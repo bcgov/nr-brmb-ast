@@ -10,7 +10,7 @@ import ca.bc.gov.farms.service.api.v1.validation.Errors;
 
 public interface FruitVegTypeDetailRsrcConstraints {
 
-    @NotNull(message = Errors.PROGRAM_YEAR_NOTNULL, groups = FruitVegTypeDetailRsrcConstraints.class)
+    @NotNull(message = Errors.REVENUE_VARIANCE_LIMIT_NOTNULL, groups = FruitVegTypeDetailRsrcConstraints.class)
     public BigDecimal getRevenueVarianceLimit();
 
     @NotBlank(message = Errors.FRUIT_VEG_TYPE_CODE_NOTBLANK, groups = FruitVegTypeDetailRsrcConstraints.class)
