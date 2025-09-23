@@ -44,4 +44,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Fruit Veg Type Detail
 	public static final String FRUIT_VEG_TYPE_DETAIL_NAME = "fruitVegTypeDetail";
 	public static final String FRUIT_VEG_TYPE_DETAIL_LIST_NAME = "fruitVegTypeDetails";
+
+	// Year Configuration Parameter
+	public static final String YEAR_CONFIGURATION_PARAMETER_NAME = "yearConfigurationParameter";
+	public static final String YEAR_CONFIGURATION_PARAMETER_LIST_NAME = "yearConfigurationParameters";
 }

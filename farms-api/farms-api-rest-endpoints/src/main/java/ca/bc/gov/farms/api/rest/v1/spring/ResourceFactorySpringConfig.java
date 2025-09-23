@@ -14,6 +14,7 @@ import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryItemDetailRsrcFacto
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryTypeXrefRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.LineItemRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.StructureGroupAttributeRsrcFactory;
+import ca.bc.gov.farms.api.rest.v1.resource.factory.YearConfigurationParameterRsrcFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.ConfigurationParameterFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
@@ -23,6 +24,7 @@ import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryTypeXrefFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.LineItemFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.StructureGroupAttributeFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.YearConfigurationParameterFactory;
 
 @Configuration
 public class ResourceFactorySpringConfig {
@@ -78,5 +80,10 @@ public class ResourceFactorySpringConfig {
     @Bean
     public FruitVegTypeDetailFactory fruitVegTypeDetailFactory() {
         return new FruitVegTypeDetailRsrcFactory();
+    }
+
+    @Bean
+    public YearConfigurationParameterFactory yearConfigurationParameterFactory() {
+        return new YearConfigurationParameterRsrcFactory();
     }
 }

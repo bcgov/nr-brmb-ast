@@ -27,6 +27,7 @@ import ca.bc.gov.farms.service.api.v1.InventoryItemDetailService;
 import ca.bc.gov.farms.service.api.v1.InventoryTypeXrefService;
 import ca.bc.gov.farms.service.api.v1.LineItemService;
 import ca.bc.gov.farms.service.api.v1.StructureGroupAttributeService;
+import ca.bc.gov.farms.service.api.v1.YearConfigurationParameterService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ConfigurationParameterServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.FairMarketValueServiceImpl;
@@ -41,6 +42,7 @@ import ca.bc.gov.farms.service.api.v1.impl.InventoryItemDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryTypeXrefServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.LineItemServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.StructureGroupAttributeServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.YearConfigurationParameterServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.ConfigurationParameterFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
@@ -50,6 +52,7 @@ import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryTypeXrefFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.LineItemFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.StructureGroupAttributeFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.YearConfigurationParameterFactory;
 import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
 
 @Configuration
@@ -92,6 +95,8 @@ public class ServiceApiSpringConfig {
     private LineItemFactory lineItemFactory;
     @Autowired
     private FruitVegTypeDetailFactory fruitVegTypeDetailFactory;
+    @Autowired
+    private YearConfigurationParameterFactory yearConfigurationParameterFactory;
 
     // Imported Spring Config
     @Autowired
@@ -241,6 +246,21 @@ public class ServiceApiSpringConfig {
         result.setFruitVegTypeDetailFactory(fruitVegTypeDetailFactory);
 
         result.setFruitVegTypeDetailDao(persistenceSpringConfig.fruitVegTypeDetailDao());
+
+        return result;
+    }
+
+    @Bean
+    public YearConfigurationParameterService yearConfigurationParameterService() {
+        YearConfigurationParameterServiceImpl result;
+
+        result = new YearConfigurationParameterServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setYearConfigurationParameterFactory(yearConfigurationParameterFactory);
+
+        result.setYearConfigurationParameterDao(persistenceSpringConfig.yearConfigurationParameterDao());
 
         return result;
     }

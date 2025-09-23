@@ -19,6 +19,7 @@ import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemDetail
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryTypeXrefRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.LineItemRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.StructureGroupAttributeRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.YearConfigurationParameterRsrcConstraints;
 import ca.bc.gov.brmb.common.model.Message;
 import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
@@ -159,6 +160,15 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, FruitVegTypeDetailRsrcConstraints.class);
 
         logger.debug(">validateFruitVegTypeDetail " + results.size());
+        return results;
+    }
+
+    public List<Message> validateYearConfigurationParameter(Object resource) {
+        logger.debug("<validateYearConfigurationParameter");
+
+        List<Message> results = this.validate(resource, YearConfigurationParameterRsrcConstraints.class);
+
+        logger.debug(">validateYearConfigurationParameter " + results.size());
         return results;
     }
 }

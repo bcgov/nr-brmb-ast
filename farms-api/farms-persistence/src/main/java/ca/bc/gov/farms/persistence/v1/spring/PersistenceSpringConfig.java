@@ -35,6 +35,7 @@ import ca.bc.gov.farms.persistence.v1.dao.InventoryItemDetailDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryTypeXrefDao;
 import ca.bc.gov.farms.persistence.v1.dao.LineItemDao;
 import ca.bc.gov.farms.persistence.v1.dao.StructureGroupAttributeDao;
+import ca.bc.gov.farms.persistence.v1.dao.YearConfigurationParameterDao;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.BenchmarkPerUnitDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.ConfigurationParameterDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.FairMarketValueDaoImpl;
@@ -44,6 +45,7 @@ import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryItemDetailDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryTypeXrefDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.LineItemDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.StructureGroupAttributeDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.YearConfigurationParameterDaoImpl;
 
 @Configuration
 @EnableTransactionManagement
@@ -139,5 +141,10 @@ public class PersistenceSpringConfig {
     @Bean
     public FruitVegTypeDetailDao fruitVegTypeDetailDao() {
         return new FruitVegTypeDetailDaoImpl();
+    }
+
+    @Bean
+    public YearConfigurationParameterDao yearConfigurationParameterDao() {
+        return new YearConfigurationParameterDaoImpl();
     }
 }
