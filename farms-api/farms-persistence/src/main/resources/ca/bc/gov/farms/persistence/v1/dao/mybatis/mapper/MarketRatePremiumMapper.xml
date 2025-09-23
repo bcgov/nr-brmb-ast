@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.MarketRatePremiumMapper">
+
+    <resultMap id="MarketRatePremiumDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.MarketRatePremiumDto">
+        <id property="marketRatePremiumId" column="market_rate_premium_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="minTotalPremiumAmount" column="min_total_premium_amount" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="maxTotalPremiumAmount" column="max_total_premium_amount" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="riskChargeFlatAmount" column="risk_charge_flat_amount" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="riskChargePctPremium" column="risk_charge_pct_premium" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="adjustChargeFlatAmount" column="adjust_charge_flat_amount" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select mrp.market_rate_premium_id,
+               mrp.min_total_premium_amount,
+               mrp.max_total_premium_amount,
+               mrp.risk_charge_flat_amount,
+               mrp.risk_charge_pct_premium,
+               mrp.adjust_charge_flat_amount
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_market_rate_premium mrp
+    </sql>
+
+    <select id="fetch" resultMap="MarketRatePremiumDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where mrp.market_rate_premium_id = #{marketRatePremiumId}
+    </select>
+
+    <select id="fetchAll" resultMap="MarketRatePremiumDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+    </select>
+
+    <insert id="insertMarketRatePremium">
+        <selectKey keyProperty="marketRatePremiumId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_mrp_seq')
+        </selectKey>
+        insert into farms.farm_market_rate_premium (
+            market_rate_premium_id,
+            min_total_premium_amount,
+            max_total_premium_amount,
+            risk_charge_flat_amount,
+            risk_charge_pct_premium,
+            adjust_charge_flat_amount,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{marketRatePremiumId},
+            #{dto.minTotalPremiumAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            #{dto.maxTotalPremiumAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            #{dto.riskChargeFlatAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            #{dto.riskChargePctPremium, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            #{dto.adjustChargeFlatAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateMarketRatePremium">
+        update farms.farm_market_rate_premium
+        set min_total_premium_amount = #{dto.minTotalPremiumAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            max_total_premium_amount = #{dto.maxTotalPremiumAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            risk_charge_flat_amount = #{dto.riskChargeFlatAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            risk_charge_pct_premium = #{dto.riskChargePctPremium, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            adjust_charge_flat_amount = #{dto.adjustChargeFlatAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where market_rate_premium_id = #{dto.marketRatePremiumId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteMarketRatePremium">
+        delete from farms.farm_market_rate_premium
+        where market_rate_premium_id = #{marketRatePremiumId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </delete>
+</mapper>
