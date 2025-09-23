@@ -48,4 +48,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Year Configuration Parameter
 	public static final String YEAR_CONFIGURATION_PARAMETER_NAME = "yearConfigurationParameter";
 	public static final String YEAR_CONFIGURATION_PARAMETER_LIST_NAME = "yearConfigurationParameters";
+
+	// Market Rate Premium
+	public static final String MARKET_RATE_PREMIUM_NAME = "marketRatePremium";
+	public static final String MARKET_RATE_PREMIUM_LIST_NAME = "marketRatePremiums";
 }
