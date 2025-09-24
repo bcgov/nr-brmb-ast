@@ -116,12 +116,12 @@ public class CropUnitConversionDaoImpl extends BaseDao implements CropUnitConver
     }
 
     @Override
-    public void delete(Long cropUnitConversionId) throws DaoException, NotFoundDaoException {
+    public void delete(Long cropUnitConversionFactorId) throws DaoException, NotFoundDaoException {
         logger.debug("<delete");
 
         try {
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("cropUnitConversionId", cropUnitConversionId);
+            parameters.put("cropUnitConversionFactorId", cropUnitConversionFactorId);
             int count = this.mapper.deleteCropUnitConversionFactor(parameters);
 
             if (count == 0) {
