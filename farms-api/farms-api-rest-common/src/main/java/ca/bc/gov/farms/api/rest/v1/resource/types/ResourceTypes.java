@@ -52,4 +52,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Market Rate Premium
 	public static final String MARKET_RATE_PREMIUM_NAME = "marketRatePremium";
 	public static final String MARKET_RATE_PREMIUM_LIST_NAME = "marketRatePremiums";
+
+	// Crop Unit Conversion
+	public static final String CROP_UNIT_CONVERSION_NAME = "cropUnitConversion";
+	public static final String CROP_UNIT_CONVERSION_LIST_NAME = "cropUnitConversions";
 }
