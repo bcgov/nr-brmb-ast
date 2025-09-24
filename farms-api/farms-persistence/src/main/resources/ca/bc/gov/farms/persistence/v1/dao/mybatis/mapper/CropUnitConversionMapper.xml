@@ -105,7 +105,7 @@
             when_updated
         ) values (
             #{cropUnitConversionFactorId},
-            #{dto.conversionFactor, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+            #{dto.conversionFactor, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
@@ -139,7 +139,7 @@
 
     <update id="updateCropUnitConversionFactor">
         update farms.farm_crop_unit_conversn_fctrs
-        set conversion_factor = #{dto.conversionFactor, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
+        set conversion_factor = #{dto.conversionFactor, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             inventory_item_code = (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
