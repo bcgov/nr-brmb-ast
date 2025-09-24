@@ -18,6 +18,7 @@ import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemAttrib
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemDetailRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryTypeXrefRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.LineItemRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.MarketRatePremiumRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.StructureGroupAttributeRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.YearConfigurationParameterRsrcConstraints;
 import ca.bc.gov.brmb.common.model.Message;
@@ -169,6 +170,15 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, YearConfigurationParameterRsrcConstraints.class);
 
         logger.debug(">validateYearConfigurationParameter " + results.size());
+        return results;
+    }
+
+    public List<Message> validateMarketRatePremium(Object resource) {
+        logger.debug("<validateMarketRatePremium");
+
+        List<Message> results = this.validate(resource, MarketRatePremiumRsrcConstraints.class);
+
+        logger.debug(">validateMarketRatePremium " + results.size());
         return results;
     }
 }

@@ -13,6 +13,7 @@ import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryItemAttributeRsrcFa
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryItemDetailRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryTypeXrefRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.LineItemRsrcFactory;
+import ca.bc.gov.farms.api.rest.v1.resource.factory.MarketRatePremiumRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.StructureGroupAttributeRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.YearConfigurationParameterRsrcFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
@@ -23,6 +24,7 @@ import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactor
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryTypeXrefFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.LineItemFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.MarketRatePremiumFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.StructureGroupAttributeFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.YearConfigurationParameterFactory;
 
@@ -85,5 +87,10 @@ public class ResourceFactorySpringConfig {
     @Bean
     public YearConfigurationParameterFactory yearConfigurationParameterFactory() {
         return new YearConfigurationParameterRsrcFactory();
+    }
+
+    @Bean
+    public MarketRatePremiumFactory marketRatePremiumFactory() {
+        return new MarketRatePremiumRsrcFactory();
     }
 }

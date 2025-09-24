@@ -26,6 +26,7 @@ import ca.bc.gov.farms.service.api.v1.InventoryItemAttributeService;
 import ca.bc.gov.farms.service.api.v1.InventoryItemDetailService;
 import ca.bc.gov.farms.service.api.v1.InventoryTypeXrefService;
 import ca.bc.gov.farms.service.api.v1.LineItemService;
+import ca.bc.gov.farms.service.api.v1.MarketRatePremiumService;
 import ca.bc.gov.farms.service.api.v1.StructureGroupAttributeService;
 import ca.bc.gov.farms.service.api.v1.YearConfigurationParameterService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
@@ -41,6 +42,7 @@ import ca.bc.gov.farms.service.api.v1.impl.InventoryItemAttributeServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryItemDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryTypeXrefServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.LineItemServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.MarketRatePremiumServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.StructureGroupAttributeServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.YearConfigurationParameterServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
@@ -51,6 +53,7 @@ import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactor
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryTypeXrefFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.LineItemFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.MarketRatePremiumFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.StructureGroupAttributeFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.YearConfigurationParameterFactory;
 import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
@@ -97,6 +100,8 @@ public class ServiceApiSpringConfig {
     private FruitVegTypeDetailFactory fruitVegTypeDetailFactory;
     @Autowired
     private YearConfigurationParameterFactory yearConfigurationParameterFactory;
+    @Autowired
+    private MarketRatePremiumFactory marketRatePremiumFactory;
 
     // Imported Spring Config
     @Autowired
@@ -261,6 +266,21 @@ public class ServiceApiSpringConfig {
         result.setYearConfigurationParameterFactory(yearConfigurationParameterFactory);
 
         result.setYearConfigurationParameterDao(persistenceSpringConfig.yearConfigurationParameterDao());
+
+        return result;
+    }
+
+    @Bean
+    public MarketRatePremiumService marketRatePremiumService() {
+        MarketRatePremiumServiceImpl result;
+
+        result = new MarketRatePremiumServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setMarketRatePremiumFactory(marketRatePremiumFactory);
+
+        result.setMarketRatePremiumDao(persistenceSpringConfig.marketRatePremiumDao());
 
         return result;
     }

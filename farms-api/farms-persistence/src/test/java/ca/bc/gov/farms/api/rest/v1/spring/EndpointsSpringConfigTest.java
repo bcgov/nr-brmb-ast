@@ -38,6 +38,7 @@ public class EndpointsSpringConfigTest {
                         "farms/tables/farms.farm_inventory_item_codes.sql",
                         "farms/tables/farms.farm_inventory_item_details.sql",
                         "farms/tables/farms.farm_line_items.sql",
+                        "farms/tables/farms.farm_market_rate_premium.sql",
                         "farms/tables/farms.farm_multi_stage_commdty_codes.sql",
                         "farms/tables/farms.farm_municipality_codes.sql",
                         "farms/tables/farms.farm_structure_group_attributs.sql",
