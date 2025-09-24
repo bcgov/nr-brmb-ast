@@ -138,4 +138,10 @@ public class Errors {
     public static final String RISK_CHARGE_PCT_PREMIUM_NOTNULL = "error.risk.charge.pct.premium.notnull";
 
     public static final String ADJUST_CHARGE_FLAT_AMOUNT_NOTNULL = "error.adjust.charge.flat.amount.notnull";
+
+    public static final String CONVERSION_FACTOR_NOTNULL = "error.conversion.factor.notnull";
+    public static final String CONVERSION_FACTOR_DIGITS = "error.conversion.factor.digits";
+
+    public static final String TARGET_CROP_UNIT_CODE_NOTBLANK = "error.target.crop.unit.code.notblank";
+    public static final String TARGET_CROP_UNIT_CODE_SIZE = "error.target.crop.unit.code.size";
 }
