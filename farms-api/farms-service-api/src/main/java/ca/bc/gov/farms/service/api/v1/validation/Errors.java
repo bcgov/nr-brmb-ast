@@ -144,4 +144,7 @@ public class Errors {
 
     public static final String TARGET_CROP_UNIT_CODE_NOTBLANK = "error.target.crop.unit.code.notblank";
     public static final String TARGET_CROP_UNIT_CODE_SIZE = "error.target.crop.unit.code.size";
+
+    public static final String EXPECTED_PRODUCTION_PER_PROD_UNIT_NOTNULL = "error.expected.production.per.prod.unit.notnull";
+    public static final String EXPECTED_PRODUCTION_PER_PROD_UNIT_DIGITS = "error.expected.production.per.prod.unit.digits";
 }
