@@ -22,8 +22,8 @@ public class InventoryItemAttributeEndpointsImpl extends BaseEndpointsImpl imple
     private InventoryItemAttributeService service;
 
     @Override
-    public Response getInventoryItemAttributesByInventoryItemCode(String inventoryItemCode) {
-        logger.debug("<getInventoryItemAttributesByInventoryItemCode");
+    public Response getInventoryItemAttributeByInventoryItemCode(String inventoryItemCode) {
+        logger.debug("<getInventoryItemAttributeByInventoryItemCode");
 
         Response response = null;
 
@@ -31,7 +31,7 @@ public class InventoryItemAttributeEndpointsImpl extends BaseEndpointsImpl imple
 
         try {
             InventoryItemAttributeRsrc result = (InventoryItemAttributeRsrc) service
-                    .getInventoryItemAttributesByInventoryItemCode(inventoryItemCode, getFactoryContext());
+                    .getInventoryItemAttributeByInventoryItemCode(inventoryItemCode, getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
@@ -39,7 +39,7 @@ public class InventoryItemAttributeEndpointsImpl extends BaseEndpointsImpl imple
 
         logResponse(response);
 
-        logger.debug(">getInventoryItemAttributesByInventoryItemCode " + response);
+        logger.debug(">getInventoryItemAttributeByInventoryItemCode " + response);
         return response;
     }
 

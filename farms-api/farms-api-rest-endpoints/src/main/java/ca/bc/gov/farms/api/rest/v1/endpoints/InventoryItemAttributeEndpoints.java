@@ -47,7 +47,7 @@ public interface InventoryItemAttributeEndpoints {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getInventoryItemAttributesByInventoryItemCode(
+    public Response getInventoryItemAttributeByInventoryItemCode(
             @Parameter(description = "The inventory item code.") @QueryParam("inventoryItemCode") String inventoryItemCode);
 
     @Operation(operationId = "Get Inventory Item Attribute resource by Inventory Item Attribute Id.", summary = "Get Inventory Item Attribute resource by Inventory Item Attribute Id.", extensions = {

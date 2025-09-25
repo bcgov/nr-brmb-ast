@@ -11,7 +11,7 @@ import ca.bc.gov.farms.model.v1.ExpectedProduction;
 public interface ExpectedProductionService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    ExpectedProduction getExpectedProductionsByInventoryItemCode(String inventoryItemCode,
+    ExpectedProduction getExpectedProductionByInventoryItemCode(String inventoryItemCode,
             FactoryContext factoryContext) throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

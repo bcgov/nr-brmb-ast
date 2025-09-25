@@ -11,7 +11,7 @@ import ca.bc.gov.farms.model.v1.InventoryItemAttribute;
 public interface InventoryItemAttributeService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    InventoryItemAttribute getInventoryItemAttributesByInventoryItemCode(String inventoryItemCode,
+    InventoryItemAttribute getInventoryItemAttributeByInventoryItemCode(String inventoryItemCode,
             FactoryContext factoryContext) throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)

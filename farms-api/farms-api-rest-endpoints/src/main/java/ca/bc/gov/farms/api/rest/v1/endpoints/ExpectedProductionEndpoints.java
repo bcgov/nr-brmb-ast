@@ -47,7 +47,7 @@ public interface ExpectedProductionEndpoints {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getExpectedProductionsByInventoryItemCode(
+    public Response getExpectedProductionByInventoryItemCode(
             @Parameter(description = "The inventory item code.") @QueryParam("inventoryItemCode") String inventoryItemCode);
 
     @Operation(operationId = "Get Expected Production resource by Expected Production Id.", summary = "Get Expected Production resource by Expected Production Id.", extensions = {
