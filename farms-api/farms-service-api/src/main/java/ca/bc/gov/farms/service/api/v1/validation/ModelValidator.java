@@ -12,6 +12,7 @@ import ca.bc.gov.farms.model.v1.FairMarketValue;
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.BenchmarkPerUnitRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.ConfigurationParameterRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.CropUnitConversionRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.FairMarketValueRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.FruitVegTypeDetailRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemAttributeRsrcConstraints;
@@ -179,6 +180,15 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, MarketRatePremiumRsrcConstraints.class);
 
         logger.debug(">validateMarketRatePremium " + results.size());
+        return results;
+    }
+
+    public List<Message> validateCropUnitConversion(Object resource) {
+        logger.debug("<validateCropUnitConversion");
+
+        List<Message> results = this.validate(resource, CropUnitConversionRsrcConstraints.class);
+
+        logger.debug(">validateCropUnitConversion " + results.size());
         return results;
     }
 }

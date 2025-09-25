@@ -15,6 +15,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 import ca.bc.gov.farms.service.api.v1.BenchmarkPerUnitService;
 import ca.bc.gov.farms.service.api.v1.ConfigurationParameterService;
+import ca.bc.gov.farms.service.api.v1.CropUnitConversionService;
 import ca.bc.gov.farms.service.api.v1.FairMarketValueService;
 import ca.bc.gov.farms.service.api.v1.FruitVegTypeDetailService;
 import ca.bc.gov.farms.service.api.v1.ImportBPUService;
@@ -31,6 +32,7 @@ import ca.bc.gov.farms.service.api.v1.StructureGroupAttributeService;
 import ca.bc.gov.farms.service.api.v1.YearConfigurationParameterService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ConfigurationParameterServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.CropUnitConversionServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.FairMarketValueServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.FruitVegTypeDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportBPUServiceImpl;
@@ -47,6 +49,7 @@ import ca.bc.gov.farms.service.api.v1.impl.StructureGroupAttributeServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.YearConfigurationParameterServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.ConfigurationParameterFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.CropUnitConversionFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FruitVegTypeDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactory;
@@ -102,6 +105,8 @@ public class ServiceApiSpringConfig {
     private YearConfigurationParameterFactory yearConfigurationParameterFactory;
     @Autowired
     private MarketRatePremiumFactory marketRatePremiumFactory;
+    @Autowired
+    private CropUnitConversionFactory cropUnitConversionFactory;
 
     // Imported Spring Config
     @Autowired
@@ -281,6 +286,21 @@ public class ServiceApiSpringConfig {
         result.setMarketRatePremiumFactory(marketRatePremiumFactory);
 
         result.setMarketRatePremiumDao(persistenceSpringConfig.marketRatePremiumDao());
+
+        return result;
+    }
+
+    @Bean
+    public CropUnitConversionService cropUnitConversionService() {
+        CropUnitConversionServiceImpl result;
+
+        result = new CropUnitConversionServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setCropUnitConversionFactory(cropUnitConversionFactory);
+
+        result.setCropUnitConversionDao(persistenceSpringConfig.cropUnitConversionDao());
 
         return result;
     }
