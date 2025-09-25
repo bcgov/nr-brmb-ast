@@ -56,4 +56,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Crop Unit Conversion
 	public static final String CROP_UNIT_CONVERSION_NAME = "cropUnitConversion";
 	public static final String CROP_UNIT_CONVERSION_LIST_NAME = "cropUnitConversions";
+
+	// Expected Production
+	public static final String EXPECTED_PRODUCTION_NAME = "expectedProduction";
+	public static final String EXPECTED_PRODUCTION_LIST_NAME = "expectedProductions";
 }
