@@ -29,6 +29,7 @@ import ca.bc.gov.brmb.common.persistence.dao.mybatis.ResetDirtyInterceptor;
 import ca.bc.gov.farms.persistence.v1.dao.BenchmarkPerUnitDao;
 import ca.bc.gov.farms.persistence.v1.dao.ConfigurationParameterDao;
 import ca.bc.gov.farms.persistence.v1.dao.CropUnitConversionDao;
+import ca.bc.gov.farms.persistence.v1.dao.ExpectedProductionDao;
 import ca.bc.gov.farms.persistence.v1.dao.FairMarketValueDao;
 import ca.bc.gov.farms.persistence.v1.dao.FruitVegTypeDetailDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryItemAttributeDao;
@@ -41,6 +42,7 @@ import ca.bc.gov.farms.persistence.v1.dao.YearConfigurationParameterDao;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.BenchmarkPerUnitDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.ConfigurationParameterDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.CropUnitConversionDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.ExpectedProductionDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.FairMarketValueDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.FruitVegTypeDetailDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryItemAttributeDaoImpl;
@@ -160,5 +162,10 @@ public class PersistenceSpringConfig {
     @Bean
     public CropUnitConversionDao cropUnitConversionDao() {
         return new CropUnitConversionDaoImpl();
+    }
+
+    @Bean
+    public ExpectedProductionDao expectedProductionDao() {
+        return new ExpectedProductionDaoImpl();
     }
 }

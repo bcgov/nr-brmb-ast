@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.BenchmarkPerUnitRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.ConfigurationParameterRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.CropUnitConversionRsrcFactory;
+import ca.bc.gov.farms.api.rest.v1.resource.factory.ExpectedProductionRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.FairMarketValueRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.FruitVegTypeDetailRsrcFactory;
 import ca.bc.gov.farms.api.rest.v1.resource.factory.InventoryItemAttributeRsrcFactory;
@@ -20,6 +21,7 @@ import ca.bc.gov.farms.api.rest.v1.resource.factory.YearConfigurationParameterRs
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.ConfigurationParameterFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.CropUnitConversionFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.ExpectedProductionFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FruitVegTypeDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactory;
@@ -99,5 +101,10 @@ public class ResourceFactorySpringConfig {
     @Bean
     public CropUnitConversionFactory cropUnitConversionFactory() {
         return new CropUnitConversionRsrcFactory();
+    }
+
+    @Bean
+    public ExpectedProductionFactory expectedProductionFactory() {
+        return new ExpectedProductionRsrcFactory();
     }
 }
