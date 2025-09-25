@@ -1,0 +1,135 @@
+package ca.bc.gov.farms.persistence.v1.dao.mybatis;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ca.bc.gov.brmb.common.persistence.dao.DaoException;
+import ca.bc.gov.brmb.common.persistence.dao.NotFoundDaoException;
+import ca.bc.gov.brmb.common.persistence.dao.mybatis.BaseDao;
+import ca.bc.gov.farms.persistence.v1.dao.ExpectedProductionDao;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.ExpectedProductionMapper;
+import ca.bc.gov.farms.persistence.v1.dto.ExpectedProductionDto;
+
+public class ExpectedProductionDaoImpl extends BaseDao implements ExpectedProductionDao {
+
+    private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = LoggerFactory.getLogger(ExpectedProductionDaoImpl.class);
+
+    @Autowired
+    private ExpectedProductionMapper mapper;
+
+    @Override
+    public ExpectedProductionDto fetch(Long expectedProductionId) throws DaoException {
+        logger.debug("<fetch");
+
+        ExpectedProductionDto result = null;
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("expectedProductionId", expectedProductionId);
+            result = this.mapper.fetch(parameters);
+
+            if (result != null) {
+                result.resetDirty();
+            }
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">fetch " + result);
+        return result;
+    }
+
+    @Override
+    public ExpectedProductionDto fetchByInventoryItemCode(String inventoryItemCode)
+            throws DaoException {
+        logger.debug("<fetchByInventoryItemCode");
+
+        ExpectedProductionDto result = null;
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("inventoryItemCode", inventoryItemCode);
+            result = this.mapper.fetchByInventoryItemCode(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">fetchByInventoryItemCode " + result);
+        return result;
+    }
+
+    @Override
+    public void insert(ExpectedProductionDto dto, String userId) throws DaoException {
+        logger.debug("<insert");
+
+        Long expectedProductionId = null;
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+
+            parameters.put("dto", dto);
+            parameters.put("userId", userId);
+            int count = this.mapper.insertExpectedProduction(parameters);
+
+            if (count == 0) {
+                throw new DaoException("Record not inserted: " + count);
+            }
+
+            expectedProductionId = (Long) parameters.get("expectedProductionId");
+            dto.setExpectedProductionId(expectedProductionId);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">insert");
+    }
+
+    @Override
+    public void update(ExpectedProductionDto dto, String userId) throws DaoException, NotFoundDaoException {
+        logger.debug("<update");
+
+        if (dto.isDirty()) {
+            try {
+                Map<String, Object> parameters = new HashMap<>();
+
+                parameters.put("dto", dto);
+                parameters.put("userId", userId);
+                int count = this.mapper.updateExpectedProduction(parameters);
+
+                if (count == 0) {
+                    throw new NotFoundDaoException("Record not updated: " + count);
+                }
+            } catch (RuntimeException e) {
+                handleException(e);
+            }
+        }
+
+        logger.debug(">update");
+    }
+
+    @Override
+    public void delete(Long expectedProductionId) throws DaoException, NotFoundDaoException {
+        logger.debug("<delete");
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("expectedProductionId", expectedProductionId);
+            int count = this.mapper.deleteExpectedProduction(parameters);
+
+            if (count == 0) {
+                throw new NotFoundDaoException("Record not deleted: " + count);
+            }
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">delete");
+    }
+
+}
