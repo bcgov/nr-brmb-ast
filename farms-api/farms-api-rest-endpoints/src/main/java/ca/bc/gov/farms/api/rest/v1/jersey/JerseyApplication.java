@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.BenchmarkPerUnitEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ConfigurationParameterEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.CropUnitConversionEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ExpectedProductionEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.FairMarketValueEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.FruitVegTypeDetailEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ImportEndpointsImpl;
@@ -54,6 +55,7 @@ public class JerseyApplication extends JerseyResourceConfig {
         register(YearConfigurationParameterEndpointsImpl.class);
         register(MarketRatePremiumEndpointsImpl.class);
         register(CropUnitConversionEndpointsImpl.class);
+        register(ExpectedProductionEndpointsImpl.class);
 
         register(MultiPartFeature.class);
         register(ImportEndpointsImpl.class);
