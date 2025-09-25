@@ -18,7 +18,9 @@ public class ExpectedProductionDto extends BaseDto<ExpectedProductionDto> {
     private Long expectedProductionId;
     private BigDecimal expectedProductionPerProdUnit;
     private String inventoryItemCode;
+    private String inventoryItemDesc;
     private String cropUnitCode;
+    private String cropUnitDesc;
 
     private Integer revisionCount;
     private String createUser;
@@ -98,12 +100,28 @@ public class ExpectedProductionDto extends BaseDto<ExpectedProductionDto> {
         this.inventoryItemCode = inventoryItemCode;
     }
 
+    public String getInventoryItemDesc() {
+        return inventoryItemDesc;
+    }
+
+    public void setInventoryItemDesc(String inventoryItemDesc) {
+        this.inventoryItemDesc = inventoryItemDesc;
+    }
+
     public String getCropUnitCode() {
         return cropUnitCode;
     }
 
     public void setCropUnitCode(String cropUnitCode) {
         this.cropUnitCode = cropUnitCode;
+    }
+
+    public String getCropUnitDesc() {
+        return cropUnitDesc;
+    }
+
+    public void setCropUnitDesc(String cropUnitDesc) {
+        this.cropUnitDesc = cropUnitDesc;
     }
 
     public Integer getRevisionCount() {
