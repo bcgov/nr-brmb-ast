@@ -3,6 +3,7 @@ package ca.bc.gov.farms.api.rest.v1.endpoints.impl;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +25,22 @@ public class ConfigurationParameterEndpointsImpl extends BaseEndpointsImpl
     private ConfigurationParameterService service;
 
     @Override
-    public Response getAllConfigurationParameters() {
+    public Response getAllConfigurationParameters(String parameterNamePrefix) {
         logger.debug("<getAllConfigurationParameters");
 
         Response response = null;
 
         logRequest();
 
+        ConfigurationParameterListRsrc result = null;
+
         try {
-            ConfigurationParameterListRsrc result = (ConfigurationParameterListRsrc) service
-                    .getAllConfigurationParameters(getFactoryContext());
+            if (StringUtils.isBlank(parameterNamePrefix)) {
+                result = (ConfigurationParameterListRsrc) service.getAllConfigurationParameters(getFactoryContext());
+            } else {
+                result = (ConfigurationParameterListRsrc) service
+                        .getConfigurationParametersByParameterNamePrefix(parameterNamePrefix, getFactoryContext());
+            }
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
@@ -42,28 +49,6 @@ public class ConfigurationParameterEndpointsImpl extends BaseEndpointsImpl
         logResponse(response);
 
         logger.debug(">getAllConfigurationParameters " + response);
-        return response;
-    }
-
-    @Override
-    public Response getConfigurationParametersByParameterNamePrefix(String parameterNamePrefix) {
-        logger.debug("<getConfigurationParametersByParameterNamePrefix");
-
-        Response response = null;
-
-        logRequest();
-
-        try {
-            ConfigurationParameterListRsrc result = (ConfigurationParameterListRsrc) service
-                    .getConfigurationParametersByParameterNamePrefix(parameterNamePrefix, getFactoryContext());
-            response = Response.ok(result).tag(result.getUnquotedETag()).build();
-        } catch (Throwable t) {
-            response = getInternalServerErrorResponse(t);
-        }
-
-        logResponse(response);
-
-        logger.debug(">getConfigurationParametersByParameterNamePrefix " + response);
         return response;
     }
 
