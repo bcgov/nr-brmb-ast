@@ -9,6 +9,8 @@ public interface CropUnitConversionMapper {
 
     CropUnitConversionDto fetch(Map<String, Object> parameters);
 
+    List<CropUnitConversionDto> fetchAll();
+
     List<CropUnitConversionDto> fetchBy(Map<String, Object> parameters);
 
     int insertCropUnitDefault(Map<String, Object> parameters);

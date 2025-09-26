@@ -46,6 +46,15 @@
         where cucf.crop_unit_conversion_factor_id = #{cropUnitConversionFactorId}
     </select>
 
+    <select id="fetchAll" resultMap="CropUnitConversionDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        order by lower(iic.description),
+                 iic.inventory_item_code,
+                 lower(tcuc.description),
+                 tcuc.crop_unit_code
+    </select>
+
     <select id="fetchBy" resultMap="CropUnitConversionDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>

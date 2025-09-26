@@ -47,6 +47,22 @@ public class CropUnitConversionDaoImpl extends BaseDao implements CropUnitConver
     }
 
     @Override
+    public List<CropUnitConversionDto> fetchAll() throws DaoException {
+        logger.debug("<fetchAll");
+
+        List<CropUnitConversionDto> dtos = null;
+
+        try {
+            dtos = this.mapper.fetchAll();
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">fetchAll " + dtos);
+        return dtos;
+    }
+
+    @Override
     public List<CropUnitConversionDto> fetchByInventoryItemCode(String inventoryItemCode) throws DaoException {
         logger.debug("<fetchByInventoryItemCode");
 
