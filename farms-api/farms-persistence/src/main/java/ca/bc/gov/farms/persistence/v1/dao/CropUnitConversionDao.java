@@ -11,6 +11,8 @@ public interface CropUnitConversionDao extends Serializable {
 
     CropUnitConversionDto fetch(Long cropUnitConversionFactorId) throws DaoException;
 
+    List<CropUnitConversionDto> fetchAll() throws DaoException;
+
     List<CropUnitConversionDto> fetchByInventoryItemCode(String inventoryItemCode) throws DaoException;
 
     void insert(CropUnitConversionDto dto, String userId) throws DaoException;

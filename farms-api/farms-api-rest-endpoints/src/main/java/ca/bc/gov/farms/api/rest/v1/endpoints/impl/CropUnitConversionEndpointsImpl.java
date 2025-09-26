@@ -3,6 +3,7 @@ package ca.bc.gov.farms.api.rest.v1.endpoints.impl;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +24,22 @@ public class CropUnitConversionEndpointsImpl extends BaseEndpointsImpl implement
     private CropUnitConversionService service;
 
     @Override
-    public Response getCropUnitConversionsByInventoryItemCode(String inventoryItemCode) {
-        logger.debug("<getCropUnitConversionsByInventoryItemCode");
+    public Response getAllCropUnitConversions(String inventoryItemCode) {
+        logger.debug("<getAllCropUnitConversions");
 
         Response response = null;
 
         logRequest();
 
+        CropUnitConversionListRsrc result = null;
+
         try {
-            CropUnitConversionListRsrc result = (CropUnitConversionListRsrc) service
-                    .getCropUnitConversionsByInventoryItemCode(inventoryItemCode, getFactoryContext());
+            if (StringUtils.isBlank(inventoryItemCode)) {
+                result = (CropUnitConversionListRsrc) service.getAllCropUnitConversions(getFactoryContext());
+            } else {
+                result = (CropUnitConversionListRsrc) service
+                        .getCropUnitConversionsByInventoryItemCode(inventoryItemCode, getFactoryContext());
+            }
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
@@ -40,7 +47,7 @@ public class CropUnitConversionEndpointsImpl extends BaseEndpointsImpl implement
 
         logResponse(response);
 
-        logger.debug(">getCropUnitConversionsByInventoryItemCode " + response);
+        logger.debug(">getAllCropUnitConversions " + response);
         return response;
     }
 

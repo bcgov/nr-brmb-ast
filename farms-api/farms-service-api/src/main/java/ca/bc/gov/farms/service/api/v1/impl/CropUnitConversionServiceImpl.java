@@ -52,6 +52,25 @@ public class CropUnitConversionServiceImpl implements CropUnitConversionService 
     }
 
     @Override
+    public CropUnitConversionList<? extends CropUnitConversion> getAllCropUnitConversions(FactoryContext factoryContext)
+            throws ServiceException {
+        logger.debug("<getAllCropUnitConversions");
+
+        CropUnitConversionList<? extends CropUnitConversion> result = null;
+
+        try {
+            List<CropUnitConversionDto> dtos = cropUnitConversionDao.fetchAll();
+
+            result = cropUnitConversionFactory.getCropUnitConversionList(dtos, factoryContext);
+        } catch (DaoException e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">getAllCropUnitConversions");
+        return result;
+    }
+
+    @Override
     public CropUnitConversionList<? extends CropUnitConversion> getCropUnitConversionsByInventoryItemCode(
             String inventoryItemCode, FactoryContext factoryContext) throws ServiceException {
         logger.debug("<getCropUnitConversionsByInventoryItemCode");

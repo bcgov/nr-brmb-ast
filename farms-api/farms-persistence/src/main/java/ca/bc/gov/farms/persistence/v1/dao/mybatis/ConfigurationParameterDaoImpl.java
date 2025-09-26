@@ -64,6 +64,24 @@ public class ConfigurationParameterDaoImpl extends BaseDao implements Configurat
     }
 
     @Override
+    public List<ConfigurationParameterDto> fetchByParameterNamePrefix(String parameterNamePrefix) throws DaoException {
+        logger.debug("<fetchByParameterNamePrefix");
+
+        List<ConfigurationParameterDto> dtos = null;
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("parameterNamePrefix", parameterNamePrefix);
+            dtos = this.mapper.fetchBy(parameters);
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">fetchByParameterNamePrefix " + dtos);
+        return dtos;
+    }
+
+    @Override
     public void insert(ConfigurationParameterDto dto, String userId) throws DaoException {
         logger.debug("<insert");
 

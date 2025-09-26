@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public interface CropUnitConversionEndpoints {
 
-    @Operation(operationId = "Get Crop Unit Conversion resource by Inventory Item Code.", summary = "Get Crop Unit Conversion resource by Inventory Item Code.", extensions = {
+    @Operation(operationId = "Get all Crop Unit Conversion resource.", summary = "Get all Crop Unit Conversion resource.", extensions = {
             @Extension(properties = {
                     @ExtensionProperty(name = "auth-type", value = "#{wso2.x-auth-type.app_and_app_user}"),
                     @ExtensionProperty(name = "throttling-tier", value = "Unlimited") }) })
@@ -48,7 +48,7 @@ public interface CropUnitConversionEndpoints {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getCropUnitConversionsByInventoryItemCode(
+    public Response getAllCropUnitConversions(
             @Parameter(description = "The inventory item code.") @QueryParam("inventoryItemCode") String inventoryItemCode);
 
     @Operation(operationId = "Get Crop Unit Conversion resource by Crop Unit Conversion Factor Id.", summary = "Get Crop Unit Conversion resource by Crop Unit Conversion Factor Id.", extensions = {

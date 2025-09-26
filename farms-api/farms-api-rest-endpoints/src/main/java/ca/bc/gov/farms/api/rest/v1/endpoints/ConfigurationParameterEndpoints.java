@@ -8,6 +8,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -47,7 +48,8 @@ public interface ConfigurationParameterEndpoints {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getAllConfigurationParameters();
+    public Response getAllConfigurationParameters(
+            @Parameter(description = "The prefix of the parameter name of the Configuration Parameter resource.") @QueryParam("nameStartsWith") String parameterNamePrefix);
 
     @Operation(operationId = "Get Configuration Parameter resource by Configuration Parameter Id.", summary = "Get Configuration Parameter resource by Configuration Parameter Id.", extensions = {
             @Extension(properties = {

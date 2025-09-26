@@ -12,6 +12,10 @@ import ca.bc.gov.farms.model.v1.CropUnitConversionList;
 public interface CropUnitConversionService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
+    CropUnitConversionList<? extends CropUnitConversion> getAllCropUnitConversions(FactoryContext factoryContext)
+            throws ServiceException;
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     CropUnitConversionList<? extends CropUnitConversion> getCropUnitConversionsByInventoryItemCode(
             String inventoryItemCode, FactoryContext factoryContext)
             throws ServiceException;

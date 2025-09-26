@@ -52,7 +52,8 @@ public class ConfigurationParameterServiceImpl implements ConfigurationParameter
     }
 
     @Override
-    public ConfigurationParameterList<? extends ConfigurationParameter> getAllConfigurationParameters(FactoryContext factoryContext) throws ServiceException {
+    public ConfigurationParameterList<? extends ConfigurationParameter> getAllConfigurationParameters(
+            FactoryContext factoryContext) throws ServiceException {
         logger.debug("<getAllConfigurationParameters");
 
         ConfigurationParameterList<? extends ConfigurationParameter> result = null;
@@ -66,6 +67,26 @@ public class ConfigurationParameterServiceImpl implements ConfigurationParameter
         }
 
         logger.debug(">getAllConfigurationParameters");
+        return result;
+    }
+
+    @Override
+    public ConfigurationParameterList<? extends ConfigurationParameter> getConfigurationParametersByParameterNamePrefix(
+            String parameterNamePrefix, FactoryContext factoryContext) throws ServiceException {
+        logger.debug("<getConfigurationParametersByParameterNamePrefix");
+
+        ConfigurationParameterList<? extends ConfigurationParameter> result = null;
+
+        try {
+            List<ConfigurationParameterDto> dtos = configurationParameterDao
+                    .fetchByParameterNamePrefix(parameterNamePrefix);
+
+            result = configurationParameterFactory.getConfigurationParameterList(dtos, factoryContext);
+        } catch (Exception e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">getConfigurationParametersByParameterNamePrefix");
         return result;
     }
 
