@@ -6,29 +6,29 @@ import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
-import ca.bc.gov.farms.model.v1.InventoryItemAttribute;
+import ca.bc.gov.farms.model.v1.ExpectedProduction;
 
-public interface InventoryItemAttributeService {
+public interface ExpectedProductionService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    InventoryItemAttribute getInventoryItemAttributeByInventoryItemCode(String inventoryItemCode,
+    ExpectedProduction getExpectedProductionByInventoryItemCode(String inventoryItemCode,
             FactoryContext factoryContext) throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    InventoryItemAttribute getInventoryItemAttribute(Long inventoryItemAttributeId, FactoryContext factoryContext)
+    ExpectedProduction getExpectedProduction(Long expectedProductionId, FactoryContext factoryContext)
             throws ServiceException, NotFoundException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    InventoryItemAttribute createInventoryItemAttribute(InventoryItemAttribute InventoryItemAttribute,
+    ExpectedProduction createExpectedProduction(ExpectedProduction expectedProduction,
             FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    InventoryItemAttribute updateInventoryItemAttribute(Long inventoryItemAttributeId,
-            InventoryItemAttribute InventoryItemAttribute, FactoryContext factoryContext)
+    ExpectedProduction updateExpectedProduction(Long expectedProductionId,
+            ExpectedProduction expectedProduction, FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException, NotFoundException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    void deleteInventoryItemAttribute(Long inventoryItemAttributeId)
+    void deleteExpectedProduction(Long expectedProductionId)
             throws ServiceException, NotFoundException;
 }

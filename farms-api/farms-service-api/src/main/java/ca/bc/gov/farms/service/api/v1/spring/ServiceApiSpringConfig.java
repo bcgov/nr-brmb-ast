@@ -16,6 +16,7 @@ import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 import ca.bc.gov.farms.service.api.v1.BenchmarkPerUnitService;
 import ca.bc.gov.farms.service.api.v1.ConfigurationParameterService;
 import ca.bc.gov.farms.service.api.v1.CropUnitConversionService;
+import ca.bc.gov.farms.service.api.v1.ExpectedProductionService;
 import ca.bc.gov.farms.service.api.v1.FairMarketValueService;
 import ca.bc.gov.farms.service.api.v1.FruitVegTypeDetailService;
 import ca.bc.gov.farms.service.api.v1.ImportBPUService;
@@ -33,6 +34,7 @@ import ca.bc.gov.farms.service.api.v1.YearConfigurationParameterService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ConfigurationParameterServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.CropUnitConversionServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.ExpectedProductionServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.FairMarketValueServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.FruitVegTypeDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.ImportBPUServiceImpl;
@@ -50,6 +52,7 @@ import ca.bc.gov.farms.service.api.v1.impl.YearConfigurationParameterServiceImpl
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.ConfigurationParameterFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.CropUnitConversionFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.ExpectedProductionFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FairMarketValueFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.FruitVegTypeDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemAttributeFactory;
@@ -107,6 +110,8 @@ public class ServiceApiSpringConfig {
     private MarketRatePremiumFactory marketRatePremiumFactory;
     @Autowired
     private CropUnitConversionFactory cropUnitConversionFactory;
+    @Autowired
+    private ExpectedProductionFactory expectedProductionFactory;
 
     // Imported Spring Config
     @Autowired
@@ -301,6 +306,21 @@ public class ServiceApiSpringConfig {
         result.setCropUnitConversionFactory(cropUnitConversionFactory);
 
         result.setCropUnitConversionDao(persistenceSpringConfig.cropUnitConversionDao());
+
+        return result;
+    }
+
+    @Bean
+    public ExpectedProductionService expectedProductionService() {
+        ExpectedProductionServiceImpl result;
+
+        result = new ExpectedProductionServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setExpectedProductionFactory(expectedProductionFactory);
+
+        result.setExpectedProductionDao(persistenceSpringConfig.expectedProductionDao());
 
         return result;
     }
