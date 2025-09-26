@@ -41,6 +41,12 @@
         <include refid="fromClause"/>
     </select>
 
+    <select id="fetchBy" resultMap="ConfigurationParameterDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where cp.parameter_name ilike concat(#{parameterNamePrefix}, '%')
+    </select>
+
     <insert id="insertConfigurationParameter">
         <selectKey keyProperty="configurationParameterId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_cp_seq')

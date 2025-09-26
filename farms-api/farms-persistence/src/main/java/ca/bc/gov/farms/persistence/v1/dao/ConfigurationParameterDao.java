@@ -13,6 +13,8 @@ public interface ConfigurationParameterDao extends Serializable {
 
     List<ConfigurationParameterDto> fetchAll() throws DaoException;
 
+    List<ConfigurationParameterDto> fetchByParameterNamePrefix(String parameterNamePrefix) throws DaoException;
+
     void insert(ConfigurationParameterDto dto, String userId) throws DaoException;
 
     void update(ConfigurationParameterDto dto, String userId) throws DaoException, NotFoundDaoException;

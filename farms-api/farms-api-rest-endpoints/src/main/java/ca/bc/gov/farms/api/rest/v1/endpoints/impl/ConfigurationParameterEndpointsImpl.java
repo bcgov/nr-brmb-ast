@@ -46,6 +46,28 @@ public class ConfigurationParameterEndpointsImpl extends BaseEndpointsImpl
     }
 
     @Override
+    public Response getConfigurationParametersByParameterNamePrefix(String parameterNamePrefix) {
+        logger.debug("<getConfigurationParametersByParameterNamePrefix");
+
+        Response response = null;
+
+        logRequest();
+
+        try {
+            ConfigurationParameterListRsrc result = (ConfigurationParameterListRsrc) service
+                    .getConfigurationParametersByParameterNamePrefix(parameterNamePrefix, getFactoryContext());
+            response = Response.ok(result).tag(result.getUnquotedETag()).build();
+        } catch (Throwable t) {
+            response = getInternalServerErrorResponse(t);
+        }
+
+        logResponse(response);
+
+        logger.debug(">getConfigurationParametersByParameterNamePrefix " + response);
+        return response;
+    }
+
+    @Override
     public Response getConfigurationParameter(Long configurationParameterId) {
         logger.debug("<getConfigurationParameter");
         Response response = null;
