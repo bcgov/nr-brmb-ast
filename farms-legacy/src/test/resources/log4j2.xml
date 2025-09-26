@@ -1,0 +1,19 @@
+<Configuration>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%-5p: [%c:%L] - %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="ca.bc.gov.srm.farm" level="DEBUG"/>
+    
+    <Logger name="ca.bc.gov.webade" level="ERROR"/>
+    <Logger name="org.apache.axis" level="ERROR"/>
+    <Logger name="org.apache.commons" level="ERROR"/>
+    <Logger name="org.apache.pdfbox" level="ERROR"/>
+    
+    <Root level="DEBUG">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>

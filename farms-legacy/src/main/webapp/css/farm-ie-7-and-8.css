@@ -1,0 +1,14 @@
+/* Stylesheet for IE 7 and 8 specific CSS */
+/* setting a consistent width, 160px; control of type=file still not possible */
+input[type=text],input[type=password],textarea{width:11.9em;}
+
+fieldset {
+	position: relative;
+	padding-top:10px !important;
+}
+legend {
+	position: absolute;
+	top: -.75em;
+	left: .5em;
+	padding-left:10px;
+}

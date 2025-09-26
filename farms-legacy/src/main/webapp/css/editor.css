@@ -1,0 +1,20 @@
+div.editor {
+  background-color: white;
+}
+.editor table {
+  border-collapse: collapse;
+}
+.editor table {
+  border: 1px solid black;
+}
+.editor table th {
+  border: 1px solid black;
+}
+.editor table td {
+  border: 1px solid black;
+}
+
+.trumbowyg-box,
+.trumbowyg-editor {
+  min-height: 500px;
+}
