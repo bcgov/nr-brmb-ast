@@ -39,12 +39,14 @@
     <select id="fetchAll" resultMap="ConfigurationParameterDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
+        order by cp.parameter_name
     </select>
 
     <select id="fetchBy" resultMap="ConfigurationParameterDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         where cp.parameter_name ilike concat(#{parameterNamePrefix}, '%')
+        order by cp.parameter_name
     </select>
 
     <insert id="insertConfigurationParameter">
