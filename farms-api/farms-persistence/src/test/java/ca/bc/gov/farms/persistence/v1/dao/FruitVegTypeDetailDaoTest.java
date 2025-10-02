@@ -31,27 +31,29 @@ public class FruitVegTypeDetailDaoTest {
     @Autowired
     private FruitVegTypeDetailDao fruitVegTypeDetailDao;
 
-    private static Long fruitVegTypeDetailId;
+    private static String fruitVegTypeCode;
 
     @Test
     @Order(1)
     public void testInsert() {
         FruitVegTypeDetailDto dto = new FruitVegTypeDetailDto();
+        dto.setFruitVegTypeCode("LYCHEE");
+        dto.setFruitVegTypeDesc("Tropical Fruit");
         dto.setRevenueVarianceLimit(new BigDecimal("20.000"));
-        dto.setFruitVegTypeCode("APPLE");
 
         FruitVegTypeDetailDto result = null;
         try {
             fruitVegTypeDetailDao.insert(dto, "testUser");
-            fruitVegTypeDetailId = dto.getFruitVegTypeDetailId();
-            result = fruitVegTypeDetailDao.fetch(fruitVegTypeDetailId);
+            fruitVegTypeCode = dto.getFruitVegTypeCode();
+            result = fruitVegTypeDetailDao.fetch(fruitVegTypeCode);
         } catch (DaoException e) {
             fail(e.getMessage());
             return;
         }
 
+        assertThat(result.getFruitVegTypeCode()).isEqualTo("LYCHEE");
+        assertThat(result.getFruitVegTypeDesc()).isEqualTo("Tropical Fruit");
         assertThat(result.getRevenueVarianceLimit()).isEqualTo(new BigDecimal("20.000"));
-        assertThat(result.getFruitVegTypeCode()).isEqualTo("APPLE");
     }
 
     @Test
@@ -69,8 +71,9 @@ public class FruitVegTypeDetailDaoTest {
         assertThat(dtos.size()).isEqualTo(1);
 
         FruitVegTypeDetailDto fetchedDto = dtos.get(0);
+        assertThat(fetchedDto.getFruitVegTypeCode()).isEqualTo("LYCHEE");
+        assertThat(fetchedDto.getFruitVegTypeDesc()).isEqualTo("Tropical Fruit");
         assertThat(fetchedDto.getRevenueVarianceLimit()).isEqualTo(new BigDecimal("20.000"));
-        assertThat(fetchedDto.getFruitVegTypeCode()).isEqualTo("APPLE");
     }
 
     @Test
@@ -78,34 +81,36 @@ public class FruitVegTypeDetailDaoTest {
     public void testUpdate() {
         FruitVegTypeDetailDto dto = null;
         try {
-            dto = fruitVegTypeDetailDao.fetch(fruitVegTypeDetailId);
+            dto = fruitVegTypeDetailDao.fetch(fruitVegTypeCode);
         } catch (DaoException e) {
             fail(e.getMessage());
             return;
         }
         assertThat(dto).isNotNull();
 
-        dto.setRevenueVarianceLimit(new BigDecimal("30.000"));
         dto.setFruitVegTypeCode("APRICOT");
+        dto.setFruitVegTypeDesc("Apricots");
+        dto.setRevenueVarianceLimit(new BigDecimal("30.000"));
 
         FruitVegTypeDetailDto result = null;
         try {
             fruitVegTypeDetailDao.update(dto, "testUser");
-            result = fruitVegTypeDetailDao.fetch(fruitVegTypeDetailId);
+            result = fruitVegTypeDetailDao.fetch(fruitVegTypeCode);
         } catch (DaoException e) {
             fail(e.getMessage());
             return;
         }
 
-        assertThat(result.getRevenueVarianceLimit()).isEqualTo(new BigDecimal("30.000"));
         assertThat(result.getFruitVegTypeCode()).isEqualTo("APRICOT");
+        assertThat(result.getFruitVegTypeDesc()).isEqualTo("Apricots");
+        assertThat(result.getRevenueVarianceLimit()).isEqualTo(new BigDecimal("30.000"));
     }
 
     @Test
     @Order(4)
     public void testDelete() {
         assertThatNoException().isThrownBy(() -> {
-            fruitVegTypeDetailDao.delete(fruitVegTypeDetailId);
+            fruitVegTypeDetailDao.delete(fruitVegTypeCode);
         });
     }
 }
