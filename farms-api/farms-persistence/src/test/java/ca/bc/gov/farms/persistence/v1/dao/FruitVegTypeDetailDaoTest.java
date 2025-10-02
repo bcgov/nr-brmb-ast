@@ -88,21 +88,21 @@ public class FruitVegTypeDetailDaoTest {
         }
         assertThat(dto).isNotNull();
 
-        dto.setFruitVegTypeCode("APRICOT");
-        dto.setFruitVegTypeDesc("Apricots");
+        dto.setFruitVegTypeDesc("King of Fruits");
         dto.setRevenueVarianceLimit(new BigDecimal("30.000"));
 
         FruitVegTypeDetailDto result = null;
         try {
             fruitVegTypeDetailDao.update(dto, "testUser");
+            fruitVegTypeCode = dto.getFruitVegTypeCode();
             result = fruitVegTypeDetailDao.fetch(fruitVegTypeCode);
         } catch (DaoException e) {
             fail(e.getMessage());
             return;
         }
 
-        assertThat(result.getFruitVegTypeCode()).isEqualTo("APRICOT");
-        assertThat(result.getFruitVegTypeDesc()).isEqualTo("Apricots");
+        assertThat(result.getFruitVegTypeCode()).isEqualTo("LYCHEE");
+        assertThat(result.getFruitVegTypeDesc()).isEqualTo("King of Fruits");
         assertThat(result.getRevenueVarianceLimit()).isEqualTo(new BigDecimal("30.000"));
     }
 

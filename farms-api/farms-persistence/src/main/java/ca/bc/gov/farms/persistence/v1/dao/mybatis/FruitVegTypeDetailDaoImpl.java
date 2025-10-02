@@ -66,8 +66,6 @@ public class FruitVegTypeDetailDaoImpl extends BaseDao implements FruitVegTypeDe
     public void insert(FruitVegTypeDetailDto dto, String userId) throws DaoException {
         logger.debug("<insert");
 
-        String fruitVegTypeCode = null;
-
         try {
             Map<String, Object> parameters = new HashMap<>();
 
@@ -84,9 +82,6 @@ public class FruitVegTypeDetailDaoImpl extends BaseDao implements FruitVegTypeDe
             if (count == 0) {
                 throw new DaoException("Record not inserted: " + count);
             }
-
-            fruitVegTypeCode = (String) parameters.get("fruitVegTypeCode");
-            dto.setFruitVegTypeCode(fruitVegTypeCode);
         } catch (RuntimeException e) {
             handleException(e);
         }
@@ -104,13 +99,8 @@ public class FruitVegTypeDetailDaoImpl extends BaseDao implements FruitVegTypeDe
 
                 parameters.put("dto", dto);
                 parameters.put("userId", userId);
-                int count = this.mapper.updateFruitVegTypeCode(parameters);
-
-                if (count == 0) {
-                    throw new NotFoundDaoException("Record not updated: " + count);
-                }
-
-                count = this.mapper.updateFruitVegTypeDetail(parameters);
+                this.mapper.updateFruitVegTypeCode(parameters);
+                int count = this.mapper.updateFruitVegTypeDetail(parameters);
 
                 if (count == 0) {
                     throw new NotFoundDaoException("Record not updated: " + count);

@@ -108,7 +108,6 @@
     <update id="updateFruitVegTypeDetail">
         update farms.farm_fruit_veg_type_details
         set revenue_variance_limit = #{dto.revenueVarianceLimit, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
-            fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             when_updated = now()
