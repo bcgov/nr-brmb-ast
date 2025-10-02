@@ -25,14 +25,14 @@ public class FruitVegTypeDetailDaoImpl extends BaseDao implements FruitVegTypeDe
     private FruitVegTypeDetailMapper mapper;
 
     @Override
-    public FruitVegTypeDetailDto fetch(Long fruitVegTypeDetailId) throws DaoException {
+    public FruitVegTypeDetailDto fetch(String fruitVegTypeCode) throws DaoException {
         logger.debug("<fetch");
 
         FruitVegTypeDetailDto result = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("fruitVegTypeDetailId", fruitVegTypeDetailId);
+            parameters.put("fruitVegTypeCode", fruitVegTypeCode);
             result = this.mapper.fetch(parameters);
 
             if (result != null) {
@@ -112,12 +112,12 @@ public class FruitVegTypeDetailDaoImpl extends BaseDao implements FruitVegTypeDe
     }
 
     @Override
-    public void delete(Long fruitVegTypeDetailId) throws DaoException, NotFoundDaoException {
+    public void delete(String fruitVegTypeCode) throws DaoException, NotFoundDaoException {
         logger.debug("<delete");
 
         try {
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("fruitVegTypeDetailId", fruitVegTypeDetailId);
+            parameters.put("fruitVegTypeCode", fruitVegTypeCode);
             int count = this.mapper.deleteFruitVegTypeDetail(parameters);
 
             if (count == 0) {
