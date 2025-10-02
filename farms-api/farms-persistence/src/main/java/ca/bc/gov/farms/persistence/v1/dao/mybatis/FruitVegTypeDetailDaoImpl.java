@@ -66,7 +66,7 @@ public class FruitVegTypeDetailDaoImpl extends BaseDao implements FruitVegTypeDe
     public void insert(FruitVegTypeDetailDto dto, String userId) throws DaoException {
         logger.debug("<insert");
 
-        Long fruitVegTypeDetailId = null;
+        String fruitVegTypeCode = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
@@ -79,8 +79,8 @@ public class FruitVegTypeDetailDaoImpl extends BaseDao implements FruitVegTypeDe
                 throw new DaoException("Record not inserted: " + count);
             }
 
-            fruitVegTypeDetailId = (Long) parameters.get("fruitVegTypeDetailId");
-            dto.setFruitVegTypeDetailId(fruitVegTypeDetailId);
+            fruitVegTypeCode = (String) parameters.get("fruitVegTypeCode");
+            dto.setFruitVegTypeCode(fruitVegTypeCode);
         } catch (RuntimeException e) {
             handleException(e);
         }
