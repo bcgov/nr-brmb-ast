@@ -33,7 +33,7 @@
 
     <sql id="fromClause">
         from farms.farm_fruit_veg_type_codes fvtc
-        join farms.farm_fruit_veg_type_details fvtd on fvtc.fruit_veg_type_code = ftvd.fruit_veg_type_code
+        join farms.farm_fruit_veg_type_details fvtd on fvtc.fruit_veg_type_code = fvtd.fruit_veg_type_code
     </sql>
 
     <select id="fetch" resultMap="FruitVegTypeDetailDtoMap">
