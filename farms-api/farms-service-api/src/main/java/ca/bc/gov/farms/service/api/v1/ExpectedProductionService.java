@@ -7,8 +7,13 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.ExpectedProduction;
+import ca.bc.gov.farms.model.v1.ExpectedProductionList;
 
 public interface ExpectedProductionService {
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    ExpectedProductionList<? extends ExpectedProduction> getAllExpectedProductions(FactoryContext factoryContext)
+            throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     ExpectedProduction getExpectedProductionByInventoryItemCode(String inventoryItemCode,
