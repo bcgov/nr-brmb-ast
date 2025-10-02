@@ -19,6 +19,7 @@ import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.json.JSONObject;
 
 public class TopLevelEndpointsTest extends JerseyTest {
 
@@ -53,5 +54,9 @@ public class TopLevelEndpointsTest extends JerseyTest {
     public void testGetTopLevel() throws Exception {
         Response response = target("/").request().get();
         assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("http://farms.gov.bc.ca/v1/endpoints", jsonObject.getString("@type"));
     }
 }
