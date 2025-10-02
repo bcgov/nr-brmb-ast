@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.api.rest.v1.resource;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -18,20 +19,12 @@ public class FruitVegTypeDetailRsrc extends BaseResource implements FruitVegType
 
     private static final long serialVersionUID = 1L;
 
-    private Long fruitVegTypeDetailId;
-    private BigDecimal revenueVarianceLimit;
     private String fruitVegTypeCode;
+    private String fruitVegTypeDesc;
+    private Date establishedDate;
+    private Date expiryDate;
+    private BigDecimal revenueVarianceLimit;
     private String userEmail;
-
-    @Override
-    public Long getFruitVegTypeDetailId() {
-        return fruitVegTypeDetailId;
-    }
-
-    @Override
-    public void setFruitVegTypeDetailId(Long fruitVegTypeDetailId) {
-        this.fruitVegTypeDetailId = fruitVegTypeDetailId;
-    }
 
     @Override
     public BigDecimal getRevenueVarianceLimit() {
@@ -51,6 +44,36 @@ public class FruitVegTypeDetailRsrc extends BaseResource implements FruitVegType
     @Override
     public void setFruitVegTypeCode(String fruitVegTypeCode) {
         this.fruitVegTypeCode = fruitVegTypeCode;
+    }
+
+    @Override
+    public String getFruitVegTypeDesc() {
+        return fruitVegTypeDesc;
+    }
+
+    @Override
+    public void setFruitVegTypeDesc(String fruitVegTypeDesc) {
+        this.fruitVegTypeDesc = fruitVegTypeDesc;
+    }
+
+    @Override
+    public Date getEstablishedDate() {
+        return establishedDate;
+    }
+
+    @Override
+    public void setEstablishedDate(Date establishedDate) {
+        this.establishedDate = establishedDate;
+    }
+
+    @Override
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    @Override
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
     }
 
     @Override
