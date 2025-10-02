@@ -71,17 +71,17 @@ public class FruitVegTypeDetailServiceImpl implements FruitVegTypeDetailService 
     }
 
     @Override
-    public FruitVegTypeDetail getFruitVegTypeDetail(Long fruitVegTypeDetailId,
+    public FruitVegTypeDetail getFruitVegTypeDetail(String fruitVegTypeCode,
             FactoryContext factoryContext) throws ServiceException, NotFoundException {
         logger.debug("<getFruitVegTypeDetail");
 
         FruitVegTypeDetail result = null;
 
         try {
-            FruitVegTypeDetailDto dto = fruitVegTypeDetailDao.fetch(fruitVegTypeDetailId);
+            FruitVegTypeDetailDto dto = fruitVegTypeDetailDao.fetch(fruitVegTypeCode);
 
             if (dto == null) {
-                throw new NotFoundException("Did not find the fruit and veg type detail: " + fruitVegTypeDetailId);
+                throw new NotFoundException("Did not find the fruit and veg type detail: " + fruitVegTypeCode);
             }
 
             result = fruitVegTypeDetailFactory.getFruitVegTypeDetail(dto, factoryContext);
@@ -114,7 +114,7 @@ public class FruitVegTypeDetailServiceImpl implements FruitVegTypeDetailService 
             fruitVegTypeDetailFactory.updateFruitVegTypeDetail(dto, resource);
             fruitVegTypeDetailDao.insert(dto, userId);
 
-            dto = fruitVegTypeDetailDao.fetch(dto.getFruitVegTypeDetailId());
+            dto = fruitVegTypeDetailDao.fetch(dto.getFruitVegTypeCode());
             result = fruitVegTypeDetailFactory.getFruitVegTypeDetail(dto, factoryContext);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
@@ -125,7 +125,7 @@ public class FruitVegTypeDetailServiceImpl implements FruitVegTypeDetailService 
     }
 
     @Override
-    public FruitVegTypeDetail updateFruitVegTypeDetail(Long fruitVegTypeDetailId,
+    public FruitVegTypeDetail updateFruitVegTypeDetail(String fruitVegTypeCode,
             FruitVegTypeDetail fruitVegTypeDetail, FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException, NotFoundException {
         logger.debug("<updateFruitVegTypeDetail");
@@ -140,16 +140,16 @@ public class FruitVegTypeDetailServiceImpl implements FruitVegTypeDetailService 
                 throw new ValidationFailureException(errors);
             }
 
-            FruitVegTypeDetailDto dto = fruitVegTypeDetailDao.fetch(fruitVegTypeDetailId);
+            FruitVegTypeDetailDto dto = fruitVegTypeDetailDao.fetch(fruitVegTypeCode);
 
             if (dto == null) {
-                throw new NotFoundException("Did not find the fruit and veg type detail: " + fruitVegTypeDetailId);
+                throw new NotFoundException("Did not find the fruit and veg type detail: " + fruitVegTypeCode);
             }
 
             fruitVegTypeDetailFactory.updateFruitVegTypeDetail(dto, fruitVegTypeDetail);
             fruitVegTypeDetailDao.update(dto, userId);
 
-            dto = fruitVegTypeDetailDao.fetch(dto.getFruitVegTypeDetailId());
+            dto = fruitVegTypeDetailDao.fetch(dto.getFruitVegTypeCode());
             result = fruitVegTypeDetailFactory.getFruitVegTypeDetail(dto, factoryContext);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
@@ -160,18 +160,18 @@ public class FruitVegTypeDetailServiceImpl implements FruitVegTypeDetailService 
     }
 
     @Override
-    public void deleteFruitVegTypeDetail(Long fruitVegTypeDetailId)
+    public void deleteFruitVegTypeDetail(String fruitVegTypeCode)
             throws ServiceException, NotFoundException {
         logger.debug("<deleteFruitVegTypeDetail");
 
         try {
-            FruitVegTypeDetailDto dto = fruitVegTypeDetailDao.fetch(fruitVegTypeDetailId);
+            FruitVegTypeDetailDto dto = fruitVegTypeDetailDao.fetch(fruitVegTypeCode);
 
             if (dto == null) {
-                throw new NotFoundException("Did not find the fruit and veg type detail: " + fruitVegTypeDetailId);
+                throw new NotFoundException("Did not find the fruit and veg type detail: " + fruitVegTypeCode);
             }
 
-            fruitVegTypeDetailDao.delete(fruitVegTypeDetailId);
+            fruitVegTypeDetailDao.delete(fruitVegTypeCode);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
         }

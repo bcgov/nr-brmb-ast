@@ -11,8 +11,10 @@ public interface FruitVegTypeDetailMapper {
 
     List<FruitVegTypeDetailDto> fetchAll();
 
+    int insertFruitVegTypeCode(Map<String, Object> parameters);
     int insertFruitVegTypeDetail(Map<String, Object> parameters);
 
+    int updateFruitVegTypeCode(Map<String, Object> parameters);
     int updateFruitVegTypeDetail(Map<String, Object> parameters);
 
     int deleteFruitVegTypeDetail(Map<String, Object> parameters);

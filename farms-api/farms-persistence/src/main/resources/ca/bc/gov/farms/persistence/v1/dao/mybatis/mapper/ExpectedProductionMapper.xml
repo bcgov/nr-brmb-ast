@@ -46,6 +46,12 @@
         where iic.inventory_item_code = #{inventoryItemCode}
     </select>
 
+    <select id="fetchAll" resultMap="ExpectedProductionDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        order by iic.description
+    </select>
+
     <insert id="insertExpectedProduction">
         <selectKey keyProperty="expectedProductionId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_ep_seq')

@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -46,22 +47,38 @@ public class ExpectedProductionDaoImpl extends BaseDao implements ExpectedProduc
     }
 
     @Override
-    public ExpectedProductionDto fetchByInventoryItemCode(String inventoryItemCode)
+    public List<ExpectedProductionDto> fetchByInventoryItemCode(String inventoryItemCode)
             throws DaoException {
         logger.debug("<fetchByInventoryItemCode");
 
-        ExpectedProductionDto result = null;
+        List<ExpectedProductionDto> dtos = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("inventoryItemCode", inventoryItemCode);
-            result = this.mapper.fetchByInventoryItemCode(parameters);
+            dtos = this.mapper.fetchByInventoryItemCode(parameters);
         } catch (RuntimeException e) {
             handleException(e);
         }
 
-        logger.debug(">fetchByInventoryItemCode " + result);
-        return result;
+        logger.debug(">fetchByInventoryItemCode " + dtos);
+        return dtos;
+    }
+
+    @Override
+    public List<ExpectedProductionDto> fetchAll() throws DaoException {
+        logger.debug("<fetchAll");
+
+        List<ExpectedProductionDto> dtos = null;
+
+        try {
+            dtos = this.mapper.fetchAll();
+        } catch (RuntimeException e) {
+            handleException(e);
+        }
+
+        logger.debug(">fetchAll " + dtos);
+        return dtos;
     }
 
     @Override

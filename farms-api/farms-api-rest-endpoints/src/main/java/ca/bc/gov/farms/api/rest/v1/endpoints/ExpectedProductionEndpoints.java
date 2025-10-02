@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import ca.bc.gov.brmb.common.rest.resource.HeaderConstants;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
+import ca.bc.gov.farms.api.rest.v1.resource.ExpectedProductionListRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.ExpectedProductionRsrc;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +32,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public interface ExpectedProductionEndpoints {
 
-    @Operation(operationId = "Get Expected Production resource by Inventory Item Code.", summary = "Get Expected Production resource by Inventory Item Code.", extensions = {
+    @Operation(operationId = "Get all Expected Production resource by Inventory Item Code.", summary = "Get all Expected Production resource.", extensions = {
             @Extension(properties = {
                     @ExtensionProperty(name = "auth-type", value = "#{wso2.x-auth-type.app_and_app_user}"),
                     @ExtensionProperty(name = "throttling-tier", value = "Unlimited") }) })
@@ -43,11 +44,11 @@ public interface ExpectedProductionEndpoints {
             @Parameter(name = HeaderConstants.AUTHORIZATION_HEADER, description = HeaderConstants.AUTHORIZATION_HEADER_DESCRIPTION, required = false, schema = @Schema(implementation = String.class), in = ParameterIn.HEADER)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ExpectedProductionRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ExpectedProductionListRsrc.class)), headers = @Header(name = HeaderConstants.ETAG_HEADER, schema = @Schema(implementation = String.class), description = HeaderConstants.ETAG_DESCRIPTION)),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getExpectedProductionByInventoryItemCode(
+    public Response getAllExpectedProductions(
             @Parameter(description = "The inventory item code.") @QueryParam("inventoryItemCode") String inventoryItemCode);
 
     @Operation(operationId = "Get Expected Production resource by Expected Production Id.", summary = "Get Expected Production resource by Expected Production Id.", extensions = {
