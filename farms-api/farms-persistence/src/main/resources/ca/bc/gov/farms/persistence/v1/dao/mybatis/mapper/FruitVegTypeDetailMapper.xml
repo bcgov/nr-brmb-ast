@@ -21,8 +21,8 @@
     <sql id="selectColumns">
         select fvtc.fruit_veg_type_code,
                fvtc.description fruit_veg_type_desc,
-               ftvc.established_date,
-               ftvc.expiry_date,
+               fvtc.established_date,
+               fvtc.expiry_date,
                fvtd.revenue_variance_limit,
                fvtd.revision_count,
                fvtd.who_created,
@@ -33,13 +33,13 @@
 
     <sql id="fromClause">
         from farms.farm_fruit_veg_type_codes fvtc
-        join farms.farm_fruit_veg_type_details fvtd on ftvc.fruit_veg_type_code = ftvd.fruit_veg_type_code
+        join farms.farm_fruit_veg_type_details fvtd on fvtc.fruit_veg_type_code = ftvd.fruit_veg_type_code
     </sql>
 
     <select id="fetch" resultMap="FruitVegTypeDetailDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
-        where ftvc.fruit_veg_type_code = #{fruitVegTypeCode}
+        where fvtc.fruit_veg_type_code = #{fruitVegTypeCode}
     </select>
 
     <select id="fetchAll" resultMap="FruitVegTypeDetailDtoMap">
