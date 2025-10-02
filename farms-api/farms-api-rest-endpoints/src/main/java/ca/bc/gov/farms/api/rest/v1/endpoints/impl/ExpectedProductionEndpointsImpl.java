@@ -3,6 +3,7 @@ package ca.bc.gov.farms.api.rest.v1.endpoints.impl;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
 import ca.bc.gov.farms.api.rest.v1.endpoints.ExpectedProductionEndpoints;
+import ca.bc.gov.farms.api.rest.v1.resource.ExpectedProductionListRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.ExpectedProductionRsrc;
 import ca.bc.gov.farms.service.api.v1.ExpectedProductionService;
 
@@ -22,16 +24,22 @@ public class ExpectedProductionEndpointsImpl extends BaseEndpointsImpl implement
     private ExpectedProductionService service;
 
     @Override
-    public Response getExpectedProductionByInventoryItemCode(String inventoryItemCode) {
-        logger.debug("<getExpectedProductionByInventoryItemCode");
+    public Response getAllExpectedProductions(String inventoryItemCode) {
+        logger.debug("<getAllExpectedProductions");
 
         Response response = null;
 
         logRequest();
 
+        ExpectedProductionListRsrc result = null;
+
         try {
-            ExpectedProductionRsrc result = (ExpectedProductionRsrc) service
-                    .getExpectedProductionByInventoryItemCode(inventoryItemCode, getFactoryContext());
+            if (StringUtils.isBlank(inventoryItemCode)) {
+                result = (ExpectedProductionListRsrc) service.getAllExpectedProductions(getFactoryContext());
+            } else {
+                result = (ExpectedProductionListRsrc) service
+                        .getExpectedProductionByInventoryItemCode(inventoryItemCode, getFactoryContext());
+            }
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (Throwable t) {
             response = getInternalServerErrorResponse(t);
@@ -39,7 +47,7 @@ public class ExpectedProductionEndpointsImpl extends BaseEndpointsImpl implement
 
         logResponse(response);
 
-        logger.debug(">getExpectedProductionByInventoryItemCode " + response);
+        logger.debug(">getAllExpectedProductions " + response);
         return response;
     }
 

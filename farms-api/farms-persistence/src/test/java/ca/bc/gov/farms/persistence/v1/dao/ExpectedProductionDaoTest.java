@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @ComponentScan(basePackages = "ca.bc.gov.farms")
@@ -59,21 +60,24 @@ public class ExpectedProductionDaoTest {
 
     @Test
     @Order(2)
-    public void testFetchByInventoryItemCode() {
-        ExpectedProductionDto dto = null;
+    public void testFetchAll() {
+        List<ExpectedProductionDto> dtos = null;
         try {
-            dto = expectedProductionDao.fetchByInventoryItemCode("73");
+            dtos = expectedProductionDao.fetchAll();
         } catch (DaoException e) {
             fail(e.getMessage());
             return;
         }
+        assertThat(dtos).isNotNull();
+        assertThat(dtos).isNotEmpty();
+        assertThat(dtos.size()).isEqualTo(1);
 
-        assertThat(dto).isNotNull();
-        assertThat(dto.getExpectedProductionPerProdUnit()).isEqualTo(new BigDecimal("0.907"));
-        assertThat(dto.getInventoryItemCode()).isEqualTo("73");
-        assertThat(dto.getInventoryItemDesc()).isEqualTo("Strawberries");
-        assertThat(dto.getCropUnitCode()).isEqualTo("1");
-        assertThat(dto.getCropUnitDesc()).isEqualTo("Pounds");
+        ExpectedProductionDto fetchedDto = dtos.get(0);
+        assertThat(fetchedDto.getExpectedProductionPerProdUnit()).isEqualTo(new BigDecimal("0.907"));
+        assertThat(fetchedDto.getInventoryItemCode()).isEqualTo("73");
+        assertThat(fetchedDto.getInventoryItemDesc()).isEqualTo("Strawberries");
+        assertThat(fetchedDto.getCropUnitCode()).isEqualTo("1");
+        assertThat(fetchedDto.getCropUnitDesc()).isEqualTo("Pounds");
     }
 
     @Test

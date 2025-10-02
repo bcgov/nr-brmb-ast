@@ -11,7 +11,7 @@ public interface ExpectedProductionDao extends Serializable {
 
     ExpectedProductionDto fetch(Long expectedProductionId) throws DaoException;
 
-    ExpectedProductionDto fetchByInventoryItemCode(String inventoryItemCode) throws DaoException;
+    List<ExpectedProductionDto> fetchByInventoryItemCode(String inventoryItemCode) throws DaoException;
 
     List<ExpectedProductionDto> fetchAll() throws DaoException;
 

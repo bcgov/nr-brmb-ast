@@ -9,7 +9,7 @@ public interface ExpectedProductionMapper {
 
     ExpectedProductionDto fetch(Map<String, Object> parameters);
 
-    ExpectedProductionDto fetchByInventoryItemCode(Map<String, Object> parameters);
+    List<ExpectedProductionDto> fetchByInventoryItemCode(Map<String, Object> parameters);
 
     List<ExpectedProductionDto> fetchAll();
 

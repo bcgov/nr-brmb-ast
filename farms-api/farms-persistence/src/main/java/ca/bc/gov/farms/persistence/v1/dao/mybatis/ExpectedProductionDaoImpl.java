@@ -47,22 +47,22 @@ public class ExpectedProductionDaoImpl extends BaseDao implements ExpectedProduc
     }
 
     @Override
-    public ExpectedProductionDto fetchByInventoryItemCode(String inventoryItemCode)
+    public List<ExpectedProductionDto> fetchByInventoryItemCode(String inventoryItemCode)
             throws DaoException {
         logger.debug("<fetchByInventoryItemCode");
 
-        ExpectedProductionDto result = null;
+        List<ExpectedProductionDto> dtos = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("inventoryItemCode", inventoryItemCode);
-            result = this.mapper.fetchByInventoryItemCode(parameters);
+            dtos = this.mapper.fetchByInventoryItemCode(parameters);
         } catch (RuntimeException e) {
             handleException(e);
         }
 
-        logger.debug(">fetchByInventoryItemCode " + result);
-        return result;
+        logger.debug(">fetchByInventoryItemCode " + dtos);
+        return dtos;
     }
 
     @Override

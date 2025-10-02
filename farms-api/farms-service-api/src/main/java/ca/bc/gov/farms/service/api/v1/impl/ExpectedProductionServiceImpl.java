@@ -71,16 +71,16 @@ public class ExpectedProductionServiceImpl implements ExpectedProductionService 
     }
 
     @Override
-    public ExpectedProduction getExpectedProductionByInventoryItemCode(
+    public ExpectedProductionList<? extends ExpectedProduction> getExpectedProductionByInventoryItemCode(
             String inventoryItemCode, FactoryContext factoryContext) throws ServiceException {
         logger.debug("<getExpectedProductionByInventoryItemCode");
 
-        ExpectedProduction result = null;
+        ExpectedProductionList<? extends ExpectedProduction> result = null;
 
         try {
-            ExpectedProductionDto dto = expectedProductionDao.fetchByInventoryItemCode(inventoryItemCode);
+            List<ExpectedProductionDto> dtos = expectedProductionDao.fetchByInventoryItemCode(inventoryItemCode);
 
-            result = expectedProductionFactory.getExpectedProduction(dto, factoryContext);
+            result = expectedProductionFactory.getExpectedProductionList(dtos, factoryContext);
         } catch (Exception e) {
             throw new ServiceException("DAO threw an exception", e);
         }

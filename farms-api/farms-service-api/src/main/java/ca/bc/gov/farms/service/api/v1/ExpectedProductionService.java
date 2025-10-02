@@ -16,8 +16,8 @@ public interface ExpectedProductionService {
             throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    ExpectedProduction getExpectedProductionByInventoryItemCode(String inventoryItemCode,
-            FactoryContext factoryContext) throws ServiceException;
+    ExpectedProductionList<? extends ExpectedProduction> getExpectedProductionByInventoryItemCode(
+            String inventoryItemCode, FactoryContext factoryContext) throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     ExpectedProduction getExpectedProduction(Long expectedProductionId, FactoryContext factoryContext)
