@@ -2,7 +2,7 @@ package ca.bc.gov.farms.model.v1;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 public interface FruitVegTypeDetail extends Serializable {
 
@@ -12,11 +12,11 @@ public interface FruitVegTypeDetail extends Serializable {
     public String getFruitVegTypeDesc();
     public void setFruitVegTypeDesc(String fruitVegTypeDesc);
 
-    public Date getEstablishedDate();
-    public void setEstablishedDate(Date establishedDate);
+    public LocalDate getEstablishedDate();
+    public void setEstablishedDate(LocalDate establishedDate);
 
-    public Date getExpiryDate();
-    public void setExpiryDate(Date expiryDate);
+    public LocalDate getExpiryDate();
+    public void setExpiryDate(LocalDate expiryDate);
 
     public BigDecimal getRevenueVarianceLimit();
     public void setRevenueVarianceLimit(BigDecimal revenueVarianceLimit);

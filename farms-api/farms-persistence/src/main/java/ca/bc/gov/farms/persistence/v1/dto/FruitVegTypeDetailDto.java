@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.persistence.v1.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -17,8 +18,8 @@ public class FruitVegTypeDetailDto extends BaseDto<FruitVegTypeDetailDto> {
 
     private String fruitVegTypeCode;
     private String fruitVegTypeDesc;
-    private Date establishedDate;
-    private Date expiryDate;
+    private LocalDate establishedDate;
+    private LocalDate expiryDate;
     private BigDecimal revenueVarianceLimit;
 
     private Integer revisionCount;
@@ -93,19 +94,19 @@ public class FruitVegTypeDetailDto extends BaseDto<FruitVegTypeDetailDto> {
         this.fruitVegTypeDesc = fruitVegTypeDesc;
     }
 
-    public Date getEstablishedDate() {
+    public LocalDate getEstablishedDate() {
         return establishedDate;
     }
 
-    public void setEstablishedDate(Date establishedDate) {
+    public void setEstablishedDate(LocalDate establishedDate) {
         this.establishedDate = establishedDate;
     }
 
-    public Date getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
 
