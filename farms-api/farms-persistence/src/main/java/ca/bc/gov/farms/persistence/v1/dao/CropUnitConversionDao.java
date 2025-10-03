@@ -19,7 +19,5 @@ public interface CropUnitConversionDao extends Serializable {
 
     void update(CropUnitConversionDto dto, String userId) throws DaoException, NotFoundDaoException;
 
-    void deleteByCropUnitDefaultId(Long cropUnitDefaultId) throws DaoException, NotFoundDaoException;
-
-    void deleteByCropUnitConversionFactorId(Long cropUnitConversionFactorId) throws DaoException, NotFoundDaoException;
+    void delete(Long cropUnitDefaultId) throws DaoException, NotFoundDaoException;
 }

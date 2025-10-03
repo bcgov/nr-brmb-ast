@@ -1,8 +1,10 @@
 package ca.bc.gov.farms.persistence.v1.dao.mybatis;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import ca.bc.gov.brmb.common.persistence.dao.NotFoundDaoException;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.BaseDao;
 import ca.bc.gov.farms.persistence.v1.dao.CropUnitConversionDao;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.CropUnitConversionMapper;
+import ca.bc.gov.farms.persistence.v1.dto.ConversionUnitDto;
 import ca.bc.gov.farms.persistence.v1.dto.CropUnitConversionDto;
 
 public class CropUnitConversionDaoImpl extends BaseDao implements CropUnitConversionDao {
@@ -25,14 +28,14 @@ public class CropUnitConversionDaoImpl extends BaseDao implements CropUnitConver
     private CropUnitConversionMapper mapper;
 
     @Override
-    public CropUnitConversionDto fetch(Long cropUnitConversionFactorId) throws DaoException {
+    public CropUnitConversionDto fetch(Long cropUnitDefaultId) throws DaoException {
         logger.debug("<fetch");
 
         CropUnitConversionDto result = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("cropUnitConversionFactorId", cropUnitConversionFactorId);
+            parameters.put("cropUnitDefaultId", cropUnitDefaultId);
             result = this.mapper.fetch(parameters);
 
             if (result != null) {
@@ -84,22 +87,29 @@ public class CropUnitConversionDaoImpl extends BaseDao implements CropUnitConver
     public void insert(CropUnitConversionDto dto, String userId) throws DaoException {
         logger.debug("<insert");
 
-        Long cropUnitConversionFactorId = null;
+        Long cropUnitDefaultId = null;
 
         try {
             Map<String, Object> parameters = new HashMap<>();
 
             parameters.put("dto", dto);
             parameters.put("userId", userId);
-            this.mapper.insertCropUnitDefault(parameters);
-            int count = this.mapper.insertCropUnitConversionFactor(parameters);
-
+            int count = this.mapper.insertCropUnitDefault(parameters);
             if (count == 0) {
                 throw new DaoException("Record not inserted: " + count);
             }
 
-            cropUnitConversionFactorId = (Long) parameters.get("cropUnitConversionFactorId");
-            dto.setCropUnitConversionFactorId(cropUnitConversionFactorId);
+            cropUnitDefaultId = (Long) parameters.get("cropUnitDefaultId");
+            dto.setCropUnitDefaultId(cropUnitDefaultId);
+
+            parameters.put("inventoryItemCode", dto.getInventoryItemCode());
+            for (ConversionUnitDto conversionUnit : dto.getConversionUnits()) {
+                parameters.put("dto", conversionUnit);
+                count = this.mapper.insertCropUnitConversionFactor(parameters);
+                if (count == 0) {
+                    throw new DaoException("Record not inserted: " + count);
+                }
+            }
         } catch (RuntimeException e) {
             handleException(e);
         }
@@ -117,11 +127,47 @@ public class CropUnitConversionDaoImpl extends BaseDao implements CropUnitConver
 
                 parameters.put("dto", dto);
                 parameters.put("userId", userId);
-                this.mapper.updateCropUnitDefault(parameters);
-                int count = this.mapper.updateCropUnitConversionFactor(parameters);
-
+                int count = this.mapper.updateCropUnitDefault(parameters);
                 if (count == 0) {
                     throw new NotFoundDaoException("Record not updated: " + count);
+                }
+
+                parameters.put("inventoryItemCode", dto.getInventoryItemCode());
+                Set<Long> cropUnitConversionFactorIds = new HashSet<>();
+                for (ConversionUnitDto conversionUnit : dto.getConversionUnits()) {
+                    parameters.put("dto", conversionUnit);
+                    // insert
+                    if (conversionUnit.getCropUnitConversionFactorId() == null) {
+                        count = this.mapper.insertCropUnitConversionFactor(parameters);
+                        if (count == 0) {
+                            throw new NotFoundDaoException("Record not inserted: " + count);
+                        }
+                        cropUnitConversionFactorIds.add((Long) parameters.get("cropUnitConversionFactorId"));
+                    }
+                    // update
+                    else {
+                        if (conversionUnit.isDirty()) {
+                            count = this.mapper.updateCropUnitConversionFactor(parameters);
+                            if (count == 0) {
+                                throw new NotFoundDaoException("Record not updated: " + count);
+                            }
+                        }
+                        cropUnitConversionFactorIds.add(conversionUnit.getCropUnitConversionFactorId());
+                    }
+                }
+
+                // delete
+                parameters.put("cropUnitDefaultId", dto.getCropUnitDefaultId());
+                dto = this.mapper.fetch(parameters);
+                for (ConversionUnitDto conversionUnit : dto.getConversionUnits()) {
+                    Long cropUnitConversionFactorId = conversionUnit.getCropUnitConversionFactorId();
+                    if (!cropUnitConversionFactorIds.contains(cropUnitConversionFactorId)) {
+                        parameters.put("cropUnitConversionFactorId", cropUnitConversionFactorId);
+                        count = this.mapper.deleteCropUnitConversionFactor(parameters);
+                        if (count == 0) {
+                            throw new NotFoundDaoException("Record not deleted: " + count);
+                        }
+                    }
                 }
             } catch (RuntimeException e) {
                 handleException(e);
@@ -132,14 +178,23 @@ public class CropUnitConversionDaoImpl extends BaseDao implements CropUnitConver
     }
 
     @Override
-    public void delete(Long cropUnitConversionFactorId) throws DaoException, NotFoundDaoException {
+    public void delete(Long cropUnitDefaultId) throws DaoException, NotFoundDaoException {
         logger.debug("<delete");
 
         try {
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("cropUnitConversionFactorId", cropUnitConversionFactorId);
-            int count = this.mapper.deleteCropUnitConversionFactor(parameters);
+            parameters.put("cropUnitDefaultId", cropUnitDefaultId);
+            CropUnitConversionDto dto = this.mapper.fetch(parameters);
 
+            for (ConversionUnitDto conversionUnit : dto.getConversionUnits()) {
+                parameters.put("cropUnitConversionFactorId", conversionUnit.getCropUnitConversionFactorId());
+                int count = this.mapper.deleteCropUnitConversionFactor(parameters);
+                if (count == 0) {
+                    throw new NotFoundDaoException("Record not deleted: " + count);
+                }
+            }
+
+            int count = this.mapper.deleteCropUnitDefault(parameters);
             if (count == 0) {
                 throw new NotFoundDaoException("Record not deleted: " + count);
             }
