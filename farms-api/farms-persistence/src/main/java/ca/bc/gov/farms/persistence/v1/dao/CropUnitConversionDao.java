@@ -9,7 +9,7 @@ import ca.bc.gov.farms.persistence.v1.dto.CropUnitConversionDto;
 
 public interface CropUnitConversionDao extends Serializable {
 
-    CropUnitConversionDto fetch(Long cropUnitConversionFactorId) throws DaoException;
+    CropUnitConversionDto fetch(Long cropUnitDefaultId) throws DaoException;
 
     List<CropUnitConversionDto> fetchAll() throws DaoException;
 
