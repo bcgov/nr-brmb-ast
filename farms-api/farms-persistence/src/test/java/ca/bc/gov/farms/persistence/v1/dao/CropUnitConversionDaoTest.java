@@ -12,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.farms.api.rest.v1.spring.EndpointsSpringConfigTest;
+import ca.bc.gov.farms.persistence.v1.dto.ConversionUnitDto;
 import ca.bc.gov.farms.persistence.v1.dto.CropUnitConversionDto;
 import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 
@@ -31,7 +32,7 @@ public class CropUnitConversionDaoTest {
     @Autowired
     private CropUnitConversionDao cropUnitConversionDao;
 
-    private static Long cropUnitConversionFactorId;
+    private static Long cropUnitDefaultId;
 
     @Test
     @Order(1)
@@ -39,14 +40,16 @@ public class CropUnitConversionDaoTest {
         CropUnitConversionDto dto = new CropUnitConversionDto();
         dto.setInventoryItemCode("73");
         dto.setCropUnitCode("1");
-        dto.setConversionFactor(new BigDecimal("1.2345"));
-        dto.setTargetCropUnitCode("2");
+        ConversionUnitDto conversionUnitDto = new ConversionUnitDto();
+        conversionUnitDto.setConversionFactor(new BigDecimal("1.2345"));
+        conversionUnitDto.setTargetCropUnitCode("2");
+        dto.getConversionUnits().add(conversionUnitDto);
 
         CropUnitConversionDto result = null;
         try {
             cropUnitConversionDao.insert(dto, "testUser");
-            cropUnitConversionFactorId = dto.getCropUnitConversionFactorId();
-            result = cropUnitConversionDao.fetch(cropUnitConversionFactorId);
+            cropUnitDefaultId = dto.getCropUnitDefaultId();
+            result = cropUnitConversionDao.fetch(cropUnitDefaultId);
         } catch (DaoException e) {
             fail(e.getMessage());
             return;
@@ -56,9 +59,9 @@ public class CropUnitConversionDaoTest {
         assertThat(result.getInventoryItemDesc()).isEqualTo("Strawberries");
         assertThat(result.getCropUnitCode()).isEqualTo("1");
         assertThat(result.getCropUnitDesc()).isEqualTo("Pounds");
-        assertThat(result.getConversionFactor()).isEqualByComparingTo(new BigDecimal("1.2345"));
-        assertThat(result.getTargetCropUnitCode()).isEqualTo("2");
-        assertThat(result.getTargetCropUnitDesc()).isEqualTo("Tonnes");
+        assertThat(result.getConversionUnits().get(0).getConversionFactor()).isEqualByComparingTo(new BigDecimal("1.2345"));
+        assertThat(result.getConversionUnits().get(0).getTargetCropUnitCode()).isEqualTo("2");
+        assertThat(result.getConversionUnits().get(0).getTargetCropUnitDesc()).isEqualTo("Tonnes");
     }
 
     @Test
@@ -80,9 +83,10 @@ public class CropUnitConversionDaoTest {
         assertThat(dto.getInventoryItemDesc()).isEqualTo("Strawberries");
         assertThat(dto.getCropUnitCode()).isEqualTo("1");
         assertThat(dto.getCropUnitDesc()).isEqualTo("Pounds");
-        assertThat(dto.getConversionFactor()).isEqualByComparingTo(new BigDecimal("1.2345"));
-        assertThat(dto.getTargetCropUnitCode()).isEqualTo("2");
-        assertThat(dto.getTargetCropUnitDesc()).isEqualTo("Tonnes");
+        assertThat(dto.getConversionUnits().get(0).getConversionFactor())
+                .isEqualByComparingTo(new BigDecimal("1.2345"));
+        assertThat(dto.getConversionUnits().get(0).getTargetCropUnitCode()).isEqualTo("2");
+        assertThat(dto.getConversionUnits().get(0).getTargetCropUnitDesc()).isEqualTo("Tonnes");
     }
 
     @Test
@@ -90,7 +94,7 @@ public class CropUnitConversionDaoTest {
     public void testUpdate() {
         CropUnitConversionDto dto = null;
         try {
-            dto = cropUnitConversionDao.fetch(cropUnitConversionFactorId);
+            dto = cropUnitConversionDao.fetch(cropUnitDefaultId);
         } catch (DaoException e) {
             fail(e.getMessage());
             return;
@@ -99,13 +103,13 @@ public class CropUnitConversionDaoTest {
 
         dto.setInventoryItemCode("73");
         dto.setCropUnitCode("2");
-        dto.setConversionFactor(new BigDecimal("5.4321"));
-        dto.setTargetCropUnitCode("1");
+        dto.getConversionUnits().get(0).setConversionFactor(new BigDecimal("5.4321"));
+        dto.getConversionUnits().get(0).setTargetCropUnitCode("1");
 
         CropUnitConversionDto result = null;
         try {
             cropUnitConversionDao.update(dto, "testUser");
-            result = cropUnitConversionDao.fetch(cropUnitConversionFactorId);
+            result = cropUnitConversionDao.fetch(cropUnitDefaultId);
         } catch (DaoException e) {
             fail(e.getMessage());
             return;
@@ -115,16 +119,17 @@ public class CropUnitConversionDaoTest {
         assertThat(result.getInventoryItemDesc()).isEqualTo("Strawberries");
         assertThat(result.getCropUnitCode()).isEqualTo("2");
         assertThat(result.getCropUnitDesc()).isEqualTo("Tonnes");
-        assertThat(result.getConversionFactor()).isEqualByComparingTo(new BigDecimal("5.4321"));
-        assertThat(result.getTargetCropUnitCode()).isEqualTo("1");
-        assertThat(result.getTargetCropUnitDesc()).isEqualTo("Pounds");
+        assertThat(result.getConversionUnits().get(0).getConversionFactor())
+                .isEqualByComparingTo(new BigDecimal("5.4321"));
+        assertThat(result.getConversionUnits().get(0).getTargetCropUnitCode()).isEqualTo("1");
+        assertThat(result.getConversionUnits().get(0).getTargetCropUnitDesc()).isEqualTo("Pounds");
     }
 
     @Test
     @Order(4)
     public void testDelete() {
         assertThatNoException().isThrownBy(() -> {
-            cropUnitConversionDao.delete(cropUnitConversionFactorId);
+            cropUnitConversionDao.delete(cropUnitDefaultId);
         });
     }
 }

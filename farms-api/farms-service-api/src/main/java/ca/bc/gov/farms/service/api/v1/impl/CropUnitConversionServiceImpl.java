@@ -133,7 +133,7 @@ public class CropUnitConversionServiceImpl implements CropUnitConversionService 
             cropUnitConversionFactory.updateCropUnitConversion(dto, resource);
             cropUnitConversionDao.insert(dto, userId);
 
-            dto = cropUnitConversionDao.fetch(dto.getCropUnitConversionFactorId());
+            dto = cropUnitConversionDao.fetch(dto.getCropUnitDefaultId());
             result = cropUnitConversionFactory.getCropUnitConversion(dto, factoryContext);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
