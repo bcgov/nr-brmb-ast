@@ -19,5 +19,6 @@ public interface CropUnitConversionMapper {
     int updateCropUnitDefault(Map<String, Object> parameters);
     int updateCropUnitConversionFactor(Map<String, Object> parameters);
 
+    int deleteCropUnitDefault(Map<String, Object> parameters);
     int deleteCropUnitConversionFactor(Map<String, Object> parameters);
 }
