@@ -20,8 +20,8 @@ public interface CropUnitConversion extends Serializable {
     public String getCropUnitDesc();
     public void setCropUnitDesc(String cropUnitDesc);
 
-    public List<ConversionUnit> getConversionUnits();
-    public void setConversionUnits(List<ConversionUnit> conversionUnits);
+    public List<? extends ConversionUnit> getConversionUnits();
+    public void setConversionUnits(List<? extends ConversionUnit> conversionUnits);
 
     public String getUserEmail();
     public void setUserEmail(String userEmail);
