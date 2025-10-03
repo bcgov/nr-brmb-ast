@@ -1,12 +1,12 @@
 package ca.bc.gov.farms.model.v1;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.List;
 
 public interface CropUnitConversion extends Serializable {
 
-    public Long getCropUnitConversionFactorId();
-    public void setCropUnitConversionFactorId(Long cropUnitConversionFactorId);
+    public Long getCropUnitDefaultId();
+    public void setCropUnitDefaultId(Long cropUnitDefaultId);
 
     public String getInventoryItemCode();
     public void setInventoryItemCode(String inventoryItemCode);
@@ -20,14 +20,8 @@ public interface CropUnitConversion extends Serializable {
     public String getCropUnitDesc();
     public void setCropUnitDesc(String cropUnitDesc);
 
-    public BigDecimal getConversionFactor();
-    public void setConversionFactor(BigDecimal conversionFactor);
-
-    public String getTargetCropUnitCode();
-    public void setTargetCropUnitCode(String targetCropUnitCode);
-
-    public String getTargetCropUnitDesc();
-    public void setTargetCropUnitDesc(String targetCropUnitDesc);
+    public List<ConversionUnit> getConversionUnits();
+    public void setConversionUnits(List<ConversionUnit> conversionUnits);
 
     public String getUserEmail();
     public void setUserEmail(String userEmail);
