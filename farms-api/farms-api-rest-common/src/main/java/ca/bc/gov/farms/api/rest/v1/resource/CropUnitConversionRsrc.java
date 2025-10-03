@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.api.rest.v1.resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -24,7 +25,7 @@ public class CropUnitConversionRsrc extends BaseResource implements CropUnitConv
     private String inventoryItemDesc;
     private String cropUnitCode;
     private String cropUnitDesc;
-    private List<? extends ConversionUnit> conversionUnits;
+    private List<ConversionUnit> conversionUnits = new ArrayList<>();
     private String userEmail;
 
     @Override
@@ -78,12 +79,12 @@ public class CropUnitConversionRsrc extends BaseResource implements CropUnitConv
     }
 
     @Override
-    public List<? extends ConversionUnit> getConversionUnits() {
+    public List<ConversionUnit> getConversionUnits() {
         return conversionUnits;
     }
 
     @Override
-    public void setConversionUnits(List<? extends ConversionUnit> conversionUnits) {
+    public void setConversionUnits(List<ConversionUnit> conversionUnits) {
         this.conversionUnits = conversionUnits;
     }
 
