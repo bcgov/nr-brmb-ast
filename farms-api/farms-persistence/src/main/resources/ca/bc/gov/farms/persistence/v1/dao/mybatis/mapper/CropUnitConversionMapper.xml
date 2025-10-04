@@ -3,6 +3,13 @@
 
 <mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.CropUnitConversionMapper">
 
+    <resultMap id="ConversionUnitDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.ConversionUnitDto">
+        <id property="cropUnitConversionFactorId" column="crop_unit_conversion_factor_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+        <result property="conversionFactor" column="conversion_factor" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="targetCropUnitCode" column="target_crop_unit_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="targetCropUnitDesc" column="target_crop_unit_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </resultMap>
+
     <resultMap id="CropUnitConversionDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.CropUnitConversionDto">
         <id property="cropUnitDefaultId" column="crop_unit_default_id" javaType="java.lang.Long" jdbcType="BIGINT" />
 
@@ -17,12 +24,7 @@
         <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
         <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
 
-        <collection property="conversionUnits" ofType="ca.bc.gov.farms.persistence.v1.dto.ConversionUnitDto">
-            <id property="cropUnitConversionFactorId" column="crop_unit_conversion_factor_id" javaType="java.lang.Long" jdbcType="BIGINT" />
-            <result property="conversionFactor" column="conversion_factor" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
-            <result property="targetCropUnitCode" column="target_crop_unit_code" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <result property="targetCropUnitDesc" column="target_crop_unit_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
-        </collection>
+        <collection property="conversionUnits" ofType="ca.bc.gov.farms.persistence.v1.dto.ConversionUnitDto" resultMap="ConversionUnitDtoMap" />
     </resultMap>
 
     <sql id="selectColumns">
@@ -54,7 +56,8 @@
     <select id="fetchAll" resultMap="CropUnitConversionDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
-        order by lower(iic.description),
+        order by cud.crop_unit_default_id,
+                 lower(iic.description),
                  iic.inventory_item_code,
                  lower(tcuc.description),
                  tcuc.crop_unit_code
@@ -64,7 +67,8 @@
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         where cud.inventory_item_code = #{inventoryItemCode}
-        order by lower(iic.description),
+        order by cud.crop_unit_default_id,
+                 lower(iic.description),
                  iic.inventory_item_code,
                  lower(tcuc.description),
                  tcuc.crop_unit_code

@@ -40,9 +40,8 @@ public class CropUnitConversionDto extends BaseDto<CropUnitConversionDto> {
         this.cropUnitDesc = dto.cropUnitDesc;
 
         // deep copy conversionUnits
-        dto.conversionUnits.clear();
-        for (ConversionUnitDto conversionUnit : this.conversionUnits) {
-            dto.conversionUnits.add(new ConversionUnitDto(conversionUnit));
+        for (ConversionUnitDto conversionUnit : dto.conversionUnits) {
+            this.conversionUnits.add(new ConversionUnitDto(conversionUnit));
         }
 
         this.revisionCount = dto.revisionCount;
