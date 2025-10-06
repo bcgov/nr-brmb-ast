@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import ca.bc.gov.brmb.common.rest.resource.BaseResource;
 import ca.bc.gov.farms.api.rest.v1.resource.types.ResourceTypes;
@@ -25,6 +26,7 @@ public class CropUnitConversionRsrc extends BaseResource implements CropUnitConv
     private String inventoryItemDesc;
     private String cropUnitCode;
     private String cropUnitDesc;
+    @JsonDeserialize(as = ConversionUnitRsrc.class)
     private List<ConversionUnit> conversionUnits = new ArrayList<>();
     private String userEmail;
 
