@@ -26,7 +26,7 @@ public class CropUnitConversionRsrc extends BaseResource implements CropUnitConv
     private String inventoryItemDesc;
     private String cropUnitCode;
     private String cropUnitDesc;
-    @JsonDeserialize(as = ConversionUnitRsrc.class)
+    @JsonDeserialize(contentAs = ConversionUnitRsrc.class)
     private List<ConversionUnit> conversionUnits = new ArrayList<>();
     private String userEmail;
 
