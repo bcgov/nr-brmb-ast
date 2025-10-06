@@ -90,17 +90,17 @@ public class CropUnitConversionServiceImpl implements CropUnitConversionService 
     }
 
     @Override
-    public CropUnitConversion getCropUnitConversion(Long cropUnitConversionFactorId, FactoryContext factoryContext)
+    public CropUnitConversion getCropUnitConversion(Long cropUnitDefaultId, FactoryContext factoryContext)
             throws ServiceException, NotFoundException {
         logger.debug("<getCropUnitConversion");
 
         CropUnitConversion result = null;
 
         try {
-            CropUnitConversionDto dto = cropUnitConversionDao.fetch(cropUnitConversionFactorId);
+            CropUnitConversionDto dto = cropUnitConversionDao.fetch(cropUnitDefaultId);
 
             if (dto == null) {
-                throw new NotFoundException("Did not find the crop unit conversion: " + cropUnitConversionFactorId);
+                throw new NotFoundException("Did not find the crop unit conversion: " + cropUnitDefaultId);
             }
 
             result = cropUnitConversionFactory.getCropUnitConversion(dto, factoryContext);
@@ -133,7 +133,7 @@ public class CropUnitConversionServiceImpl implements CropUnitConversionService 
             cropUnitConversionFactory.updateCropUnitConversion(dto, resource);
             cropUnitConversionDao.insert(dto, userId);
 
-            dto = cropUnitConversionDao.fetch(dto.getCropUnitConversionFactorId());
+            dto = cropUnitConversionDao.fetch(dto.getCropUnitDefaultId());
             result = cropUnitConversionFactory.getCropUnitConversion(dto, factoryContext);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
@@ -144,7 +144,7 @@ public class CropUnitConversionServiceImpl implements CropUnitConversionService 
     }
 
     @Override
-    public CropUnitConversion updateCropUnitConversion(Long cropUnitConversionFactorId,
+    public CropUnitConversion updateCropUnitConversion(Long cropUnitDefaultId,
             CropUnitConversion cropUnitConversion,
             FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException, NotFoundException {
@@ -160,17 +160,17 @@ public class CropUnitConversionServiceImpl implements CropUnitConversionService 
                 throw new ValidationFailureException(errors);
             }
 
-            CropUnitConversionDto dto = cropUnitConversionDao.fetch(cropUnitConversionFactorId);
+            CropUnitConversionDto dto = cropUnitConversionDao.fetch(cropUnitDefaultId);
 
             if (dto == null) {
                 throw new NotFoundException("Did not find the crop unit conversion: "
-                        + cropUnitConversionFactorId);
+                        + cropUnitDefaultId);
             }
 
             cropUnitConversionFactory.updateCropUnitConversion(dto, cropUnitConversion);
             cropUnitConversionDao.update(dto, userId);
 
-            dto = cropUnitConversionDao.fetch(cropUnitConversionFactorId);
+            dto = cropUnitConversionDao.fetch(cropUnitDefaultId);
             result = cropUnitConversionFactory.getCropUnitConversion(dto, factoryContext);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
@@ -181,18 +181,18 @@ public class CropUnitConversionServiceImpl implements CropUnitConversionService 
     }
 
     @Override
-    public void deleteCropUnitConversion(Long cropUnitConversionFactorId)
+    public void deleteCropUnitConversion(Long cropUnitDefaultId)
             throws ServiceException, NotFoundException {
         logger.debug("<deleteCropUnitConversion");
 
         try {
-            CropUnitConversionDto dto = cropUnitConversionDao.fetch(cropUnitConversionFactorId);
+            CropUnitConversionDto dto = cropUnitConversionDao.fetch(cropUnitDefaultId);
 
             if (dto == null) {
-                throw new NotFoundException("Did not find the crop unit conversion: " + cropUnitConversionFactorId);
+                throw new NotFoundException("Did not find the crop unit conversion: " + cropUnitDefaultId);
             }
 
-            cropUnitConversionDao.delete(cropUnitConversionFactorId);
+            cropUnitConversionDao.delete(cropUnitDefaultId);
         } catch (DaoException e) {
             throw new ServiceException("DAO threw an exception", e);
         }

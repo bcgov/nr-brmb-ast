@@ -7,8 +7,8 @@
         <id property="fruitVegTypeCode" column="fruit_veg_type_code" javaType="java.lang.String" jdbcType="VARCHAR" />
 
         <result property="fruitVegTypeDesc" column="fruit_veg_type_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
-        <result property="establishedDate" column="established_date" javaType="java.util.Date" jdbcType="DATE" />
-        <result property="expiryDate" column="expiry_date" javaType="java.util.Date" jdbcType="DATE" />
+        <result property="establishedDate" column="established_date" javaType="java.time.LocalDate" jdbcType="DATE" />
+        <result property="expiryDate" column="expiry_date" javaType="java.time.LocalDate" jdbcType="DATE" />
         <result property="revenueVarianceLimit" column="revenue_variance_limit" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
 
         <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />

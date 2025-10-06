@@ -67,10 +67,10 @@ public interface CropUnitConversionEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
-    @Path("/{cropUnitConversionFactorId}")
+    @Path("/{cropUnitDefaultId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getCropUnitConversion(
-            @Parameter(description = "The identifier of the Crop Unit Conversion resource.") @PathParam("cropUnitConversionFactorId") Long cropUnitConversionFactorId);
+            @Parameter(description = "The identifier of the Crop Unit Conversion resource.") @PathParam("cropUnitDefaultId") Long cropUnitDefaultId);
 
     @Operation(operationId = "Create Crop Unit Conversion resource.", summary = "Create Crop Unit Conversion resource.", extensions = {
             @Extension(properties = {
@@ -115,9 +115,9 @@ public interface CropUnitConversionEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @DELETE
-    @Path("/{cropUnitConversionFactorId}")
+    @Path("/{cropUnitDefaultId}")
     public Response deleteCropUnitConversion(
-            @Parameter(description = "The identifier of the Crop Unit Conversion resource.") @PathParam("cropUnitConversionFactorId") Long cropUnitConversionFactorId);
+            @Parameter(description = "The identifier of the Crop Unit Conversion resource.") @PathParam("cropUnitDefaultId") Long cropUnitDefaultId);
 
     @Operation(operationId = "Update Crop Unit Conversion resource.", summary = "Update Crop Unit Conversion resource.", extensions = {
             @Extension(properties = {
@@ -137,11 +137,11 @@ public interface CropUnitConversionEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @PUT
-    @Path("/{cropUnitConversionFactorId}")
+    @Path("/{cropUnitDefaultId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response updateCropUnitConversion(
-            @Parameter(description = "The identifier of the Crop Unit Conversion resource.") @PathParam("cropUnitConversionFactorId") Long cropUnitConversionFactorId,
+            @Parameter(description = "The identifier of the Crop Unit Conversion resource.") @PathParam("cropUnitDefaultId") Long cropUnitDefaultId,
             @Parameter(name = "cropUnitConversionRsrc", description = "The Crop Unit Conversion resource containing the new values.", required = true) CropUnitConversionRsrc cropUnitConversionRsrc);
 
 }

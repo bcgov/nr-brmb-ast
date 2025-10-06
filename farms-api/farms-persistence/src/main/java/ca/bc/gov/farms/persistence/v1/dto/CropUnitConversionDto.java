@@ -1,7 +1,8 @@
 package ca.bc.gov.farms.persistence.v1.dto;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +16,12 @@ public class CropUnitConversionDto extends BaseDto<CropUnitConversionDto> {
 
     private static final Logger logger = LoggerFactory.getLogger(CropUnitConversionDto.class);
 
-    private Long cropUnitConversionFactorId;
+    private Long cropUnitDefaultId;
     private String inventoryItemCode;
     private String inventoryItemDesc;
     private String cropUnitCode;
     private String cropUnitDesc;
-    private BigDecimal conversionFactor;
-    private String targetCropUnitCode;
-    private String targetCropUnitDesc;
+    private List<ConversionUnitDto> conversionUnits = new ArrayList<>();
 
     private Integer revisionCount;
     private String createUser;
@@ -34,14 +33,16 @@ public class CropUnitConversionDto extends BaseDto<CropUnitConversionDto> {
     }
 
     public CropUnitConversionDto(CropUnitConversionDto dto) {
-        this.cropUnitConversionFactorId = dto.cropUnitConversionFactorId;
+        this.cropUnitDefaultId = dto.cropUnitDefaultId;
         this.inventoryItemCode = dto.inventoryItemCode;
         this.inventoryItemDesc = dto.inventoryItemDesc;
         this.cropUnitCode = dto.cropUnitCode;
         this.cropUnitDesc = dto.cropUnitDesc;
-        this.conversionFactor = dto.conversionFactor;
-        this.targetCropUnitCode = dto.targetCropUnitCode;
-        this.targetCropUnitDesc = dto.targetCropUnitDesc;
+
+        // deep copy conversionUnits
+        for (ConversionUnitDto conversionUnit : dto.conversionUnits) {
+            this.conversionUnits.add(new ConversionUnitDto(conversionUnit));
+        }
 
         this.revisionCount = dto.revisionCount;
         this.createUser = dto.createUser;
@@ -72,26 +73,32 @@ public class CropUnitConversionDto extends BaseDto<CropUnitConversionDto> {
         if (other != null) {
             result = true;
             DtoUtils dtoUtils = new DtoUtils(getLogger());
-            result = result && dtoUtils.equals("cropUnitConversionFactorId", this.cropUnitConversionFactorId,
-                    other.cropUnitConversionFactorId);
+            result = result && dtoUtils.equals("cropUnitDefaultId", this.cropUnitDefaultId, other.cropUnitDefaultId);
             result = result && dtoUtils.equals("inventoryItemCode", this.inventoryItemCode, other.inventoryItemCode);
             result = result && dtoUtils.equals("inventoryItemDesc", this.inventoryItemDesc, other.inventoryItemDesc);
             result = result && dtoUtils.equals("cropUnitCode", this.cropUnitCode, other.cropUnitCode);
             result = result && dtoUtils.equals("cropUnitDesc", this.cropUnitDesc, other.cropUnitDesc);
-            result = result && dtoUtils.equals("conversionFactor", this, other);
-            result = result && dtoUtils.equals("targetCropUnitCode", this.targetCropUnitCode, other.targetCropUnitCode);
-            result = result && dtoUtils.equals("targetCropUnitDesc", this.targetCropUnitDesc, other.targetCropUnitDesc);
+
+            if (this.conversionUnits.size() == other.conversionUnits.size()) {
+                for (int i = 0; i < this.conversionUnits.size(); i++) {
+                    ConversionUnitDto thisConversionUnit = this.conversionUnits.get(i);
+                    ConversionUnitDto otherConversionUnit = other.conversionUnits.get(i);
+                    result = result && thisConversionUnit.equalsAll(otherConversionUnit);
+                }
+            } else {
+                result = result && (this.conversionUnits.size() == other.conversionUnits.size());
+            }
         }
 
         return result;
     }
 
-    public Long getCropUnitConversionFactorId() {
-        return cropUnitConversionFactorId;
+    public Long getCropUnitDefaultId() {
+        return cropUnitDefaultId;
     }
 
-    public void setCropUnitConversionFactorId(Long cropUnitConversionFactorId) {
-        this.cropUnitConversionFactorId = cropUnitConversionFactorId;
+    public void setCropUnitDefaultId(Long cropUnitDefaultId) {
+        this.cropUnitDefaultId = cropUnitDefaultId;
     }
 
     public String getInventoryItemCode() {
@@ -126,28 +133,12 @@ public class CropUnitConversionDto extends BaseDto<CropUnitConversionDto> {
         this.cropUnitDesc = cropUnitDesc;
     }
 
-    public BigDecimal getConversionFactor() {
-        return conversionFactor;
+    public List<ConversionUnitDto> getConversionUnits() {
+        return conversionUnits;
     }
 
-    public void setConversionFactor(BigDecimal conversionFactor) {
-        this.conversionFactor = conversionFactor;
-    }
-
-    public String getTargetCropUnitCode() {
-        return targetCropUnitCode;
-    }
-
-    public void setTargetCropUnitCode(String targetCropUnitCode) {
-        this.targetCropUnitCode = targetCropUnitCode;
-    }
-
-    public String getTargetCropUnitDesc() {
-        return targetCropUnitDesc;
-    }
-
-    public void setTargetCropUnitDesc(String targetCropUnitDesc) {
-        this.targetCropUnitDesc = targetCropUnitDesc;
+    public void setConversionUnits(List<ConversionUnitDto> conversionUnits) {
+        this.conversionUnits = conversionUnits;
     }
 
     public Integer getRevisionCount() {

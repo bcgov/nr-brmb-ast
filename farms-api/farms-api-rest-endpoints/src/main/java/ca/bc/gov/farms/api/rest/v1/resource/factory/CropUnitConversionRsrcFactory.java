@@ -11,10 +11,13 @@ import ca.bc.gov.brmb.common.rest.resource.RelLink;
 import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.api.rest.v1.endpoints.CropUnitConversionEndpoints;
+import ca.bc.gov.farms.api.rest.v1.resource.ConversionUnitRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.CropUnitConversionListRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.CropUnitConversionRsrc;
+import ca.bc.gov.farms.model.v1.ConversionUnit;
 import ca.bc.gov.farms.model.v1.CropUnitConversion;
 import ca.bc.gov.farms.model.v1.CropUnitConversionList;
+import ca.bc.gov.farms.persistence.v1.dto.ConversionUnitDto;
 import ca.bc.gov.farms.persistence.v1.dto.CropUnitConversionDto;
 import ca.bc.gov.farms.service.api.v1.model.factory.CropUnitConversionFactory;
 
@@ -32,20 +35,27 @@ public class CropUnitConversionRsrcFactory extends BaseResourceFactory implement
         String eTag = getEtag(resource);
         resource.setETag(eTag);
 
-        setSelfLink(resource.getCropUnitConversionFactorId(), resource, baseUri);
+        setSelfLink(resource.getCropUnitDefaultId(), resource, baseUri);
 
         return resource;
     }
 
     private void populateDefaultResource(CropUnitConversionRsrc resource, CropUnitConversionDto dto) {
-        resource.setCropUnitConversionFactorId(dto.getCropUnitConversionFactorId());
+        resource.setCropUnitDefaultId(dto.getCropUnitDefaultId());
         resource.setInventoryItemCode(dto.getInventoryItemCode());
         resource.setInventoryItemDesc(dto.getInventoryItemDesc());
         resource.setCropUnitCode(dto.getCropUnitCode());
         resource.setCropUnitDesc(dto.getCropUnitDesc());
-        resource.setConversionFactor(dto.getConversionFactor());
-        resource.setTargetCropUnitCode(dto.getTargetCropUnitCode());
-        resource.setTargetCropUnitDesc(dto.getTargetCropUnitDesc());
+
+        resource.getConversionUnits().clear();
+        for (ConversionUnitDto conversionUnitDto : dto.getConversionUnits()) {
+            ConversionUnitRsrc conversionUnitRsrc = new ConversionUnitRsrc();
+            conversionUnitRsrc.setCropUnitConversionFactorId(conversionUnitDto.getCropUnitConversionFactorId());
+            conversionUnitRsrc.setConversionFactor(conversionUnitDto.getConversionFactor());
+            conversionUnitRsrc.setTargetCropUnitCode(conversionUnitDto.getTargetCropUnitCode());
+            conversionUnitRsrc.setTargetCropUnitDesc(conversionUnitDto.getTargetCropUnitDesc());
+            resource.getConversionUnits().add(conversionUnitRsrc);
+        }
     }
 
     @Override
@@ -61,7 +71,7 @@ public class CropUnitConversionRsrcFactory extends BaseResourceFactory implement
 
         for (CropUnitConversionDto dto : dtos) {
             CropUnitConversionRsrc resource = populate(dto);
-            setSelfLink(dto.getCropUnitConversionFactorId(), resource, baseUri);
+            setSelfLink(dto.getCropUnitDefaultId(), resource, baseUri);
             resources.add(resource);
         }
 
@@ -80,14 +90,21 @@ public class CropUnitConversionRsrcFactory extends BaseResourceFactory implement
 
         CropUnitConversionRsrc result = new CropUnitConversionRsrc();
 
-        result.setCropUnitConversionFactorId(dto.getCropUnitConversionFactorId());
+        result.setCropUnitDefaultId(dto.getCropUnitDefaultId());
         result.setInventoryItemCode(dto.getInventoryItemCode());
         result.setInventoryItemDesc(dto.getInventoryItemDesc());
         result.setCropUnitCode(dto.getCropUnitCode());
         result.setCropUnitDesc(dto.getCropUnitDesc());
-        result.setConversionFactor(dto.getConversionFactor());
-        result.setTargetCropUnitCode(dto.getTargetCropUnitCode());
-        result.setTargetCropUnitDesc(dto.getTargetCropUnitDesc());
+
+        result.getConversionUnits().clear();
+        for (ConversionUnitDto conversionUnitDto : dto.getConversionUnits()) {
+            ConversionUnitRsrc conversionUnitRsrc = new ConversionUnitRsrc();
+            conversionUnitRsrc.setCropUnitConversionFactorId(conversionUnitDto.getCropUnitConversionFactorId());
+            conversionUnitRsrc.setConversionFactor(conversionUnitDto.getConversionFactor());
+            conversionUnitRsrc.setTargetCropUnitCode(conversionUnitDto.getTargetCropUnitCode());
+            conversionUnitRsrc.setTargetCropUnitDesc(conversionUnitDto.getTargetCropUnitDesc());
+            result.getConversionUnits().add(conversionUnitRsrc);
+        }
 
         return result;
     }
@@ -119,13 +136,20 @@ public class CropUnitConversionRsrcFactory extends BaseResourceFactory implement
 
     @Override
     public void updateCropUnitConversion(CropUnitConversionDto dto, CropUnitConversion model) {
-        dto.setCropUnitConversionFactorId(model.getCropUnitConversionFactorId());
+        dto.setCropUnitDefaultId(model.getCropUnitDefaultId());
         dto.setInventoryItemCode(model.getInventoryItemCode());
         dto.setInventoryItemDesc(model.getInventoryItemDesc());
         dto.setCropUnitCode(model.getCropUnitCode());
         dto.setCropUnitDesc(model.getCropUnitDesc());
-        dto.setConversionFactor(model.getConversionFactor());
-        dto.setTargetCropUnitCode(model.getTargetCropUnitCode());
-        dto.setTargetCropUnitDesc(model.getTargetCropUnitDesc());
+
+        dto.getConversionUnits().clear();
+        for (ConversionUnit conversionUnit : model.getConversionUnits()) {
+            ConversionUnitDto conversionUnitDto = new ConversionUnitDto();
+            conversionUnitDto.setCropUnitConversionFactorId(conversionUnit.getCropUnitConversionFactorId());
+            conversionUnitDto.setConversionFactor(conversionUnit.getConversionFactor());
+            conversionUnitDto.setTargetCropUnitCode(conversionUnit.getTargetCropUnitCode());
+            conversionUnitDto.setTargetCropUnitDesc(conversionUnit.getTargetCropUnitDesc());
+            dto.getConversionUnits().add(conversionUnitDto);
+        }
     }
 }

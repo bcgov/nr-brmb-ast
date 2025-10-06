@@ -21,7 +21,7 @@ public interface CropUnitConversionService {
             throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    CropUnitConversion getCropUnitConversion(Long cropUnitConversionFactorId, FactoryContext factoryContext)
+    CropUnitConversion getCropUnitConversion(Long cropUnitDefaultId, FactoryContext factoryContext)
             throws ServiceException, NotFoundException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
@@ -29,11 +29,11 @@ public interface CropUnitConversionService {
             throws ServiceException, ValidationFailureException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    CropUnitConversion updateCropUnitConversion(Long cropUnitConversionFactorId, CropUnitConversion cropUnitConversion,
+    CropUnitConversion updateCropUnitConversion(Long cropUnitDefaultId, CropUnitConversion cropUnitConversion,
             FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException, NotFoundException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    void deleteCropUnitConversion(Long cropUnitConversionFactorId)
+    void deleteCropUnitConversion(Long cropUnitDefaultId)
             throws ServiceException, NotFoundException;
 }
