@@ -79,10 +79,14 @@ public class CropUnitConversionDto extends BaseDto<CropUnitConversionDto> {
             result = result && dtoUtils.equals("cropUnitCode", this.cropUnitCode, other.cropUnitCode);
             result = result && dtoUtils.equals("cropUnitDesc", this.cropUnitDesc, other.cropUnitDesc);
 
-            for (int i = 0; i < this.conversionUnits.size(); i++) {
-                ConversionUnitDto thisConversionUnit = this.conversionUnits.get(i);
-                ConversionUnitDto otherConversionUnit = other.conversionUnits.get(i);
-                result = result && thisConversionUnit.equalsAll(otherConversionUnit);
+            if (this.conversionUnits.size() == other.conversionUnits.size()) {
+                for (int i = 0; i < this.conversionUnits.size(); i++) {
+                    ConversionUnitDto thisConversionUnit = this.conversionUnits.get(i);
+                    ConversionUnitDto otherConversionUnit = other.conversionUnits.get(i);
+                    result = result && thisConversionUnit.equalsAll(otherConversionUnit);
+                }
+            } else {
+                result = result && (this.conversionUnits.size() == other.conversionUnits.size());
             }
         }
 
