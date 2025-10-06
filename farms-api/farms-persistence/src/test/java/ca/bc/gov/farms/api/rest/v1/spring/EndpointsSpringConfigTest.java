@@ -6,6 +6,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @Configuration
@@ -59,5 +60,24 @@ public class EndpointsSpringConfigTest {
                 .password(postgresContainer.getPassword())
                 .driverClassName(postgresContainer.getDriverClassName())
                 .build();
+    }
+
+    @Bean
+    public DataSource codeTableDataSource(PostgreSQLContainer<?> postgresContainer) {
+        DataSource result;
+
+        result = farmsDataSource(postgresContainer);
+
+        return result;
+    }
+
+    @Bean
+    public ResourceBundleMessageSource messageSource() {
+        ResourceBundleMessageSource result;
+
+        result = new ResourceBundleMessageSource();
+        result.setBasename("messages");
+
+        return result;
     }
 }

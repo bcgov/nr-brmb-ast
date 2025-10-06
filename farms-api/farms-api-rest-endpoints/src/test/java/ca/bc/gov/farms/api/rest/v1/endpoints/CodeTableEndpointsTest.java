@@ -13,8 +13,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import ca.bc.gov.brmb.common.api.rest.code.endpoints.impl.CodeTableEndpointsImpl;
+import ca.bc.gov.brmb.common.api.rest.code.endpoints.spring.CodeEndpointsSpringConfig;
 import ca.bc.gov.farms.api.rest.v1.spring.EndpointsSpringConfigTest;
-import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
+import ca.bc.gov.farms.api.rest.v1.spring.ResourceFactorySpringConfig;
+import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -32,7 +34,7 @@ public class CodeTableEndpointsTest extends JerseyTest {
 
         // Load Spring context manually
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(EndpointsSpringConfigTest.class,
-                PersistenceSpringConfig.class);
+                ServiceApiSpringConfig.class, ResourceFactorySpringConfig.class, CodeEndpointsSpringConfig.class);
 
         // Create Jersey ResourceConfig and integrate Spring context
         ResourceConfig config = new ResourceConfig();
