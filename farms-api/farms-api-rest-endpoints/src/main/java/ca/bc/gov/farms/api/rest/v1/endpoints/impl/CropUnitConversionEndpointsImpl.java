@@ -52,14 +52,14 @@ public class CropUnitConversionEndpointsImpl extends BaseEndpointsImpl implement
     }
 
     @Override
-    public Response getCropUnitConversion(Long cropUnitConversionId) {
+    public Response getCropUnitConversion(Long cropUnitDefaultId) {
         logger.debug("<getCropUnitConversion");
         Response response = null;
 
         logRequest();
 
         try {
-            CropUnitConversionRsrc result = (CropUnitConversionRsrc) service.getCropUnitConversion(cropUnitConversionId,
+            CropUnitConversionRsrc result = (CropUnitConversionRsrc) service.getCropUnitConversion(cropUnitDefaultId,
                     getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (NotFoundException e) {
@@ -99,7 +99,7 @@ public class CropUnitConversionEndpointsImpl extends BaseEndpointsImpl implement
     }
 
     @Override
-    public Response deleteCropUnitConversion(Long cropUnitConversionId) {
+    public Response deleteCropUnitConversion(Long cropUnitDefaultId) {
         logger.debug("<deleteCropUnitConversion");
 
         Response response = null;
@@ -107,7 +107,7 @@ public class CropUnitConversionEndpointsImpl extends BaseEndpointsImpl implement
         logRequest();
 
         try {
-            service.deleteCropUnitConversion(cropUnitConversionId);
+            service.deleteCropUnitConversion(cropUnitDefaultId);
             response = Response.status(Status.NO_CONTENT).build();
         } catch (NotFoundException e) {
             response = Response.status(Status.NOT_FOUND).build();
@@ -122,7 +122,7 @@ public class CropUnitConversionEndpointsImpl extends BaseEndpointsImpl implement
     }
 
     @Override
-    public Response updateCropUnitConversion(Long cropUnitConversionId, CropUnitConversionRsrc cropUnitConversionRsrc) {
+    public Response updateCropUnitConversion(Long cropUnitDefaultId, CropUnitConversionRsrc cropUnitConversionRsrc) {
         logger.debug("<updateCropUnitConversion");
 
         Response response = null;
@@ -131,7 +131,7 @@ public class CropUnitConversionEndpointsImpl extends BaseEndpointsImpl implement
 
         try {
             CropUnitConversionRsrc result = (CropUnitConversionRsrc) service
-                    .updateCropUnitConversion(cropUnitConversionId, cropUnitConversionRsrc, getFactoryContext());
+                    .updateCropUnitConversion(cropUnitDefaultId, cropUnitConversionRsrc, getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (ValidationFailureException e) {
             response = Response.status(Status.BAD_REQUEST).entity(new MessageListRsrc(e.getValidationErrors())).build();
