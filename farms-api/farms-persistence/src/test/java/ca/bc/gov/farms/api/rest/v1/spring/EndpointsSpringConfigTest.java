@@ -2,6 +2,7 @@ package ca.bc.gov.farms.api.rest.v1.spring;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,8 +24,9 @@ public class EndpointsSpringConfigTest {
                         "farms/extensions.sql",
                         "farms/sequences.sql",
                         "farms/tables/farms.farm_agristabilty_cmmdty_xref.sql",
-                        "farms/tables/farms.farm_benchmark_years.sql",
                         "farms/tables/farms.farm_benchmark_per_units.sql",
+                        "farms/tables/farms.farm_benchmark_years.sql",
+                        "farms/tables/farms.farm_chef_form_type_codes.sql",
                         "farms/tables/farms.farm_commodity_type_codes.sql",
                         "farms/tables/farms.farm_config_param_type_codes.sql",
                         "farms/tables/farms.farm_configuration_parameters.sql",
@@ -63,12 +65,8 @@ public class EndpointsSpringConfigTest {
     }
 
     @Bean
-    public DataSource codeTableDataSource(PostgreSQLContainer<?> postgresContainer) {
-        DataSource result;
-
-        result = farmsDataSource(postgresContainer);
-
-        return result;
+    public DataSource codeTableDataSource(@Qualifier("farmsDataSource") DataSource farmsDataSource) {
+        return farmsDataSource;
     }
 
     @Bean
