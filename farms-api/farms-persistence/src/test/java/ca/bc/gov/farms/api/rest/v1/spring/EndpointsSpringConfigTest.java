@@ -40,6 +40,7 @@ public class EndpointsSpringConfigTest {
                         "farms/tables/farms.farm_fair_market_values.sql",
                         "farms/tables/farms.farm_farm_type_codes.sql",
                         "farms/tables/farms.farm_federal_accounting_codes.sql",
+                        "farms/tables/farms.farm_federal_status_codes.sql",
                         "farms/tables/farms.farm_fruit_veg_type_codes.sql",
                         "farms/tables/farms.farm_fruit_veg_type_details.sql",
                         "farms/tables/farms.farm_inventory_class_codes.sql",
