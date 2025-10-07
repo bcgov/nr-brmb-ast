@@ -60,6 +60,7 @@ public class CodeTableEndpointsTest extends JerseyTest {
             "'farm_chef_submssn_status_codes', 'farm_chef_submssn_status_codes'",
             "'farm_commodity_type_codes', 'farm_commodity_type_codes'",
             "'farm_config_param_type_codes', 'farm_config_param_type_codes'",
+            "'farm_crm_entity_type_codes', 'farm_crm_entity_type_codes'",
             "'farm_crop_unit_codes', 'farm_crop_unit_codes'"
     })
     public void testGetCodeTable(String codeTableName, String codeTableDescriptiveName) throws Exception {

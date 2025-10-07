@@ -31,6 +31,7 @@ public class EndpointsSpringConfigTest {
                         "farms/tables/farms.farm_commodity_type_codes.sql",
                         "farms/tables/farms.farm_config_param_type_codes.sql",
                         "farms/tables/farms.farm_configuration_parameters.sql",
+                        "farms/tables/farms.farm_crm_entity_type_codes.sql",
                         "farms/tables/farms.farm_crop_unit_codes.sql",
                         "farms/tables/farms.farm_crop_unit_conversn_fctrs.sql",
                         "farms/tables/farms.farm_crop_unit_defaults.sql",
