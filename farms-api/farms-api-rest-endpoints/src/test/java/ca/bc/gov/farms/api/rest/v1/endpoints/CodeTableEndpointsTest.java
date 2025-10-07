@@ -80,7 +80,8 @@ public class CodeTableEndpointsTest extends JerseyTest {
             "'farm_participant_lang_codes', 'Participant Language'",
             "'farm_participant_profile_codes', 'Participant Profile'",
             "'farm_regional_office_codes', 'farm_regional_office_codes'",
-            "'farm_scenario_bpu_purpos_codes', 'farm_scenario_bpu_purpos_codes'"
+            "'farm_scenario_bpu_purpos_codes', 'farm_scenario_bpu_purpos_codes'",
+            "'farm_scenario_category_codes', 'farm_scenario_category_codes'"
     })
     public void testGetCodeTable(String codeTableName, String codeTableDescriptiveName) throws Exception {
         Response response = target("/codeTables/" + codeTableName).request().get();
