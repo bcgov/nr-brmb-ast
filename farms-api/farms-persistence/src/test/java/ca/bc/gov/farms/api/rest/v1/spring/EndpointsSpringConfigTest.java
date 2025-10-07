@@ -60,6 +60,7 @@ public class EndpointsSpringConfigTest {
                         "farms/tables/farms.farm_participant_profile_codes.sql",
                         "farms/tables/farms.farm_participnt_data_src_codes.sql",
                         "farms/tables/farms.farm_regional_office_codes.sql",
+                        "farms/tables/farms.farm_scenario_bpu_purpos_codes.sql",
                         "farms/tables/farms.farm_structure_group_attributs.sql",
                         "farms/tables/farms.farm_structure_group_codes.sql",
                         "farms/tables/farms.farm_year_configuration_params.sql",
