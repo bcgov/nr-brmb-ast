@@ -55,7 +55,8 @@ public class CodeTableEndpointsTest extends JerseyTest {
 
     @ParameterizedTest
     @CsvSource({
-            "'farm_chef_form_type_codes', 'farm_chef_form_type_codes'"
+            "'farm_chef_form_type_codes', 'farm_chef_form_type_codes'",
+            "'farm_chef_submssn_status_codes', 'farm_chef_submssn_status_codes'"
     })
     public void testGetCodeTable(String codeTableName, String codeTableDescriptiveName) throws Exception {
         Response response = target("/codeTables/" + codeTableName).request().get();
