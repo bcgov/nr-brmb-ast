@@ -70,7 +70,8 @@ public class CodeTableEndpointsTest extends JerseyTest {
             "'farm_import_class_codes', 'farm_import_class_codes'",
             "'farm_import_state_codes', 'farm_import_state_codes'",
             "'farm_inventory_class_codes', 'farm_inventory_class_codes'",
-            "'farm_inventory_group_codes', 'farm_inventory_group_codes'"
+            "'farm_inventory_group_codes', 'farm_inventory_group_codes'",
+            "'farm_inventory_item_codes', 'farm_inventory_item_codes'"
     })
     public void testGetCodeTable(String codeTableName, String codeTableDescriptiveName) throws Exception {
         Response response = target("/codeTables/" + codeTableName).request().get();
