@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -52,13 +53,18 @@ public class CodeTableEndpointsTest extends JerseyTest {
         return config;
     }
 
-    @Test
-    public void testGetCodeTable() throws Exception {
-        Response response = target("/codeTables/farm_chef_form_type_codes").request().get();
+    @ParameterizedTest
+    @CsvSource({
+            "'farm_chef_form_type_codes', 'farm_chef_form_type_codes'"
+    })
+    public void testGetCodeTable(String codeTableName, String codeTableDescriptiveName) throws Exception {
+        Response response = target("/codeTables/" + codeTableName).request().get();
         assertEquals(200, response.getStatus());
 
         String jsonString = response.readEntity(String.class);
         JSONObject jsonObject = new JSONObject(jsonString);
         assertEquals("http://common.brmb.nrs.gov.bc.ca/v1/codeTable", jsonObject.getString("@type"));
+        assertEquals(codeTableName, jsonObject.getString("codeTableName"));
+        assertEquals(codeTableDescriptiveName, jsonObject.getString("codeTableDescriptiveName"));
     }
 }
