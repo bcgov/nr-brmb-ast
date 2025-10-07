@@ -67,7 +67,8 @@ public class CodeTableEndpointsTest extends JerseyTest {
             "'farm_federal_accounting_codes', 'Federal Accounting'",
             "'farm_federal_status_codes', 'Federal Status'",
             "'farm_fruit_veg_type_codes', 'farm_fruit_veg_type_codes'",
-            "'farm_import_class_codes', 'farm_import_class_codes'"
+            "'farm_import_class_codes', 'farm_import_class_codes'",
+            "'farm_import_state_codes', 'farm_import_state_codes'"
     })
     public void testGetCodeTable(String codeTableName, String codeTableDescriptiveName) throws Exception {
         Response response = target("/codeTables/" + codeTableName).request().get();
