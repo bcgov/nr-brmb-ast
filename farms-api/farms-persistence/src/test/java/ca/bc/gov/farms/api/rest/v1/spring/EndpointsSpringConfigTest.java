@@ -65,6 +65,7 @@ public class EndpointsSpringConfigTest {
                         "farms/tables/farms.farm_scenario_class_codes.sql",
                         "farms/tables/farms.farm_scenario_state_codes.sql",
                         "farms/tables/farms.farm_sector_codes.sql",
+                        "farms/tables/farms.farm_sector_detail_codes.sql",
                         "farms/tables/farms.farm_structure_group_attributs.sql",
                         "farms/tables/farms.farm_structure_group_codes.sql",
                         "farms/tables/farms.farm_year_configuration_params.sql",
