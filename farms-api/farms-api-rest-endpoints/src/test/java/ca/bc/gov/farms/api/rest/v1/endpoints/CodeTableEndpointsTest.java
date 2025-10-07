@@ -39,6 +39,7 @@ public class CodeTableEndpointsTest extends JerseyTest {
 
         // Create Jersey ResourceConfig and integrate Spring context
         ResourceConfig config = new ResourceConfig();
+        config.register(ObjectMapperContextResolver.class);
         config.register(CodeTableEndpointsImpl.class);
         config.property("contextConfig", applicationContext);
 
@@ -56,7 +57,10 @@ public class CodeTableEndpointsTest extends JerseyTest {
     @ParameterizedTest
     @CsvSource({
             "'farm_chef_form_type_codes', 'farm_chef_form_type_codes'",
-            "'farm_chef_submssn_status_codes', 'farm_chef_submssn_status_codes'"
+            "'farm_chef_submssn_status_codes', 'farm_chef_submssn_status_codes'",
+            "'farm_commodity_type_codes', 'farm_commodity_type_codes'",
+            "'farm_config_param_type_codes', 'farm_config_param_type_codes'",
+            "'farm_crop_unit_codes', 'farm_crop_unit_codes'"
     })
     public void testGetCodeTable(String codeTableName, String codeTableDescriptiveName) throws Exception {
         Response response = target("/codeTables/" + codeTableName).request().get();
