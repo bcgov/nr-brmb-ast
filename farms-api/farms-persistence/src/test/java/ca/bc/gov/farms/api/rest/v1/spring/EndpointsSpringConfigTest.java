@@ -69,7 +69,10 @@ public class EndpointsSpringConfigTest {
                         "farms/tables/farms.farm_structural_change_codes.sql",
                         "farms/tables/farms.farm_structure_group_attributs.sql",
                         "farms/tables/farms.farm_structure_group_codes.sql",
+                        "farms/tables/farms.farm_subscription_status_codes.sql",
+                        "farms/tables/farms.farm_tip_rating_codes.sql",
                         "farms/tables/farms.farm_year_configuration_params.sql",
+                        "farms/tables/farms.farm_triage_queue_codes.sql",
                         "farms/tables/foreign_keys.sql",
                         "farms/tables/data.sql");
     }
