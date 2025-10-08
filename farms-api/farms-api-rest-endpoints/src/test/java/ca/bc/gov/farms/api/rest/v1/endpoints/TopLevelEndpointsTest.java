@@ -16,7 +16,6 @@ import ca.bc.gov.brmb.common.api.rest.code.endpoints.spring.CodeEndpointsSpringC
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.TopLevelEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.spring.EndpointsSpringConfigTest;
 import ca.bc.gov.farms.api.rest.v1.spring.ResourceFactorySpringConfig;
-import ca.bc.gov.farms.persistence.v1.spring.PersistenceSpringConfig;
 import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
