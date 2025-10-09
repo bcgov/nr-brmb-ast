@@ -94,15 +94,17 @@ public class CropUnitConversionDaoImpl extends BaseDao implements CropUnitConver
 
             parameters.put("dto", dto);
             parameters.put("userId", userId);
+            parameters.put("inventoryItemCode", dto.getInventoryItemCode());
             int count = this.mapper.insertCropUnitDefault(parameters);
-            if (count == 0) {
-                throw new DaoException("Record not inserted: " + count);
+
+            if (count == 1) {
+                cropUnitDefaultId = (Long) parameters.get("cropUnitDefaultId");
+                dto.setCropUnitDefaultId(cropUnitDefaultId);
+            } else {
+                List<CropUnitConversionDto> dtos = this.mapper.fetchBy(parameters);
+                dto.setCropUnitDefaultId(dtos.iterator().next().getCropUnitDefaultId());
             }
 
-            cropUnitDefaultId = (Long) parameters.get("cropUnitDefaultId");
-            dto.setCropUnitDefaultId(cropUnitDefaultId);
-
-            parameters.put("inventoryItemCode", dto.getInventoryItemCode());
             for (ConversionUnitDto conversionUnit : dto.getConversionUnits()) {
                 parameters.put("dto", conversionUnit);
                 count = this.mapper.insertCropUnitConversionFactor(parameters);

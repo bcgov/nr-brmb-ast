@@ -71,13 +71,8 @@ public class FruitVegTypeDetailDaoImpl extends BaseDao implements FruitVegTypeDe
 
             parameters.put("dto", dto);
             parameters.put("userId", userId);
-            int count = this.mapper.insertFruitVegTypeCode(parameters);
-
-            if (count == 0) {
-                throw new DaoException("Record not inserted: " + count);
-            }
-
-            count = this.mapper.insertFruitVegTypeDetail(parameters);
+            this.mapper.insertFruitVegTypeCode(parameters);
+            int count = this.mapper.insertFruitVegTypeDetail(parameters);
 
             if (count == 0) {
                 throw new DaoException("Record not inserted: " + count);
