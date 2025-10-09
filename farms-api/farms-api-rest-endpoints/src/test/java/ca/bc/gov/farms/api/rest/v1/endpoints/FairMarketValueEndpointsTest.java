@@ -240,4 +240,84 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         assertEquals(46.00, jsonObject.getDouble("period12Variance"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(4)
+    public void testUpdateFairMarketValue() throws Exception {
+        FairMarketValueRsrc fairMarketValue = new FairMarketValueRsrc();
+        fairMarketValue.setFairMarketValueId("2025_5560_41_1");
+        fairMarketValue.setProgramYear(2025);
+        fairMarketValue.setInventoryItemCode("5560");
+        fairMarketValue.setMunicipalityCode("41");
+        fairMarketValue.setCropUnitCode("1");
+        fairMarketValue.setDefaultCropUnitCode("2");
+        fairMarketValue.setPeriod01Price(new BigDecimal("1008.66"));
+        fairMarketValue.setPeriod02Price(new BigDecimal("1008.66"));
+        fairMarketValue.setPeriod03Price(new BigDecimal("1008.66"));
+        fairMarketValue.setPeriod04Price(new BigDecimal("1008.01"));
+        fairMarketValue.setPeriod05Price(new BigDecimal("1008.01"));
+        fairMarketValue.setPeriod06Price(new BigDecimal("1008.01"));
+        fairMarketValue.setPeriod07Price(new BigDecimal("1005.88"));
+        fairMarketValue.setPeriod08Price(new BigDecimal("1005.88"));
+        fairMarketValue.setPeriod09Price(new BigDecimal("1005.88"));
+        fairMarketValue.setPeriod10Price(new BigDecimal("1005.45"));
+        fairMarketValue.setPeriod11Price(new BigDecimal("1005.45"));
+        fairMarketValue.setPeriod12Price(new BigDecimal("1005.45"));
+        fairMarketValue.setPeriod01Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod02Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod03Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod04Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod05Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod06Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod07Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod08Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod09Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod10Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod11Variance(new BigDecimal("56.00"));
+        fairMarketValue.setPeriod12Variance(new BigDecimal("56.00"));
+        fairMarketValue.setUserEmail("jsmith@gmail.com");
+
+        Response response = target("/fairMarketValues/2025_5560_41_1").request().put(Entity.json(fairMarketValue));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("FairMarketValueRsrc", jsonObject.getString("@type"));
+        assertEquals("2025_5560_41_1", jsonObject.getString("fairMarketValueId"));
+        assertEquals(2025, jsonObject.getInt("programYear"));
+        assertEquals("5560", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Alfalfa Dehy", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("41", jsonObject.getString("municipalityCode"));
+        assertEquals("Cariboo", jsonObject.getString("municipalityDesc"));
+        assertEquals("1", jsonObject.getString("cropUnitCode"));
+        assertEquals("Pounds", jsonObject.getString("cropUnitDesc"));
+        assertEquals("2", jsonObject.getString("defaultCropUnitCode"));
+        assertEquals("Tonnes", jsonObject.getString("defaultCropUnitDesc"));
+        assertEquals(1008.66, jsonObject.getDouble("period01Price"));
+        assertEquals(1008.66, jsonObject.getDouble("period02Price"));
+        assertEquals(1008.66, jsonObject.getDouble("period03Price"));
+        assertEquals(1008.01, jsonObject.getDouble("period04Price"));
+        assertEquals(1008.01, jsonObject.getDouble("period05Price"));
+        assertEquals(1008.01, jsonObject.getDouble("period06Price"));
+        assertEquals(1005.88, jsonObject.getDouble("period07Price"));
+        assertEquals(1005.88, jsonObject.getDouble("period08Price"));
+        assertEquals(1005.88, jsonObject.getDouble("period09Price"));
+        assertEquals(1005.45, jsonObject.getDouble("period10Price"));
+        assertEquals(1005.45, jsonObject.getDouble("period11Price"));
+        assertEquals(1005.45, jsonObject.getDouble("period12Price"));
+        assertEquals(56.00, jsonObject.getDouble("period01Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period02Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period03Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period04Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period05Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period06Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period07Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period08Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period09Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period10Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period11Variance"));
+        assertEquals(56.00, jsonObject.getDouble("period12Variance"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
