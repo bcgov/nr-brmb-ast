@@ -143,4 +143,56 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         assertEquals(46.00, jsonObject.getDouble("period12Variance"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(2)
+    public void testGetFairMarketValuesByProgramYear() throws Exception {
+        Response response = target("/fairMarketValues").queryParam("programYear", 2025).request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("FairMarketValueListRsrc", jsonObject.getString("@type"));
+
+        JSONArray fairMarketValueList = jsonObject.getJSONArray("fairMarketValueList");
+        JSONObject fairMarketValue = fairMarketValueList.getJSONObject(0);
+
+        assertEquals("FairMarketValueRsrc", fairMarketValue.getString("@type"));
+        assertEquals("2025_5560_41_1", fairMarketValue.getString("fairMarketValueId"));
+        assertEquals(2025, fairMarketValue.getInt("programYear"));
+        assertEquals("5560", fairMarketValue.getString("inventoryItemCode"));
+        assertEquals("Alfalfa Dehy", fairMarketValue.getString("inventoryItemDesc"));
+        assertEquals("41", fairMarketValue.getString("municipalityCode"));
+        assertEquals("Cariboo", fairMarketValue.getString("municipalityDesc"));
+        assertEquals("1", fairMarketValue.getString("cropUnitCode"));
+        assertEquals("Pounds", fairMarketValue.getString("cropUnitDesc"));
+        assertEquals("2", fairMarketValue.getString("defaultCropUnitCode"));
+        assertEquals("Tonnes", fairMarketValue.getString("defaultCropUnitDesc"));
+        assertEquals(8.66, fairMarketValue.getDouble("period01Price"));
+        assertEquals(8.66, fairMarketValue.getDouble("period02Price"));
+        assertEquals(8.66, fairMarketValue.getDouble("period03Price"));
+        assertEquals(8.01, fairMarketValue.getDouble("period04Price"));
+        assertEquals(8.01, fairMarketValue.getDouble("period05Price"));
+        assertEquals(8.01, fairMarketValue.getDouble("period06Price"));
+        assertEquals(5.88, fairMarketValue.getDouble("period07Price"));
+        assertEquals(5.88, fairMarketValue.getDouble("period08Price"));
+        assertEquals(5.88, fairMarketValue.getDouble("period09Price"));
+        assertEquals(5.45, fairMarketValue.getDouble("period10Price"));
+        assertEquals(5.45, fairMarketValue.getDouble("period11Price"));
+        assertEquals(5.45, fairMarketValue.getDouble("period12Price"));
+        assertEquals(46.00, fairMarketValue.getDouble("period01Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period02Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period03Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period04Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period05Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period06Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period07Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period08Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period09Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period10Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period11Variance"));
+        assertEquals(46.00, fairMarketValue.getDouble("period12Variance"));
+        assertEquals("null", fairMarketValue.getString("userEmail"));
+    }
 }
