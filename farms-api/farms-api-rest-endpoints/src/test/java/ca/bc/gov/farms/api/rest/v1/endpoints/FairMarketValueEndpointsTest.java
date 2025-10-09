@@ -21,9 +21,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import ca.bc.gov.brmb.common.api.rest.code.endpoints.spring.CodeEndpointsSpringConfig;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.FairMarketValueEndpointsImpl;
-import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryItemDetailEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.resource.FairMarketValueRsrc;
-import ca.bc.gov.farms.api.rest.v1.resource.InventoryItemDetailRsrc;
 import ca.bc.gov.farms.api.rest.v1.spring.EndpointsSpringConfigTest;
 import ca.bc.gov.farms.api.rest.v1.spring.ResourceFactorySpringConfig;
 import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
@@ -194,5 +192,52 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         assertEquals(46.00, fairMarketValue.getDouble("period11Variance"));
         assertEquals(46.00, fairMarketValue.getDouble("period12Variance"));
         assertEquals("null", fairMarketValue.getString("userEmail"));
+    }
+
+    @Test
+    @Order(3)
+    public void testGetFairMarketValue() throws Exception {
+        Response response = target("/fairMarketValues/2025_5560_41_1").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("FairMarketValueRsrc", jsonObject.getString("@type"));
+        assertEquals("2025_5560_41_1", jsonObject.getString("fairMarketValueId"));
+        assertEquals(2025, jsonObject.getInt("programYear"));
+        assertEquals("5560", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Alfalfa Dehy", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("41", jsonObject.getString("municipalityCode"));
+        assertEquals("Cariboo", jsonObject.getString("municipalityDesc"));
+        assertEquals("1", jsonObject.getString("cropUnitCode"));
+        assertEquals("Pounds", jsonObject.getString("cropUnitDesc"));
+        assertEquals("2", jsonObject.getString("defaultCropUnitCode"));
+        assertEquals("Tonnes", jsonObject.getString("defaultCropUnitDesc"));
+        assertEquals(8.66, jsonObject.getDouble("period01Price"));
+        assertEquals(8.66, jsonObject.getDouble("period02Price"));
+        assertEquals(8.66, jsonObject.getDouble("period03Price"));
+        assertEquals(8.01, jsonObject.getDouble("period04Price"));
+        assertEquals(8.01, jsonObject.getDouble("period05Price"));
+        assertEquals(8.01, jsonObject.getDouble("period06Price"));
+        assertEquals(5.88, jsonObject.getDouble("period07Price"));
+        assertEquals(5.88, jsonObject.getDouble("period08Price"));
+        assertEquals(5.88, jsonObject.getDouble("period09Price"));
+        assertEquals(5.45, jsonObject.getDouble("period10Price"));
+        assertEquals(5.45, jsonObject.getDouble("period11Price"));
+        assertEquals(5.45, jsonObject.getDouble("period12Price"));
+        assertEquals(46.00, jsonObject.getDouble("period01Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period02Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period03Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period04Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period05Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period06Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period07Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period08Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period09Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period10Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period11Variance"));
+        assertEquals(46.00, jsonObject.getDouble("period12Variance"));
+        assertEquals("null", jsonObject.getString("userEmail"));
     }
 }
