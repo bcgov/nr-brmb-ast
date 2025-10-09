@@ -320,4 +320,11 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         assertEquals(56.00, jsonObject.getDouble("period12Variance"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(6)
+    public void testDeleteFairMarketValue() throws Exception {
+        Response response = target("/fairMarketValues/2025_5560_41_1").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
