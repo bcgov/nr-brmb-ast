@@ -326,3 +326,23 @@ insert into farms.farm_fruit_veg_type_codes (
     current_user,
     current_timestamp
 );
+
+insert into farms.farm_crop_unit_defaults (
+    crop_unit_default_id,
+    inventory_item_code,
+    crop_unit_code,
+    revision_count,
+    who_created,
+    when_created,
+    who_updated,
+    when_updated
+) values (
+    nextval('farms.farm_fmv_seq'),
+    '5560',
+    '2',
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+);
