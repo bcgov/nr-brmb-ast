@@ -184,4 +184,41 @@ public class CropUnitConversionEndpointsTest extends JerseyTest {
         assertEquals("1", conversionUnitJson.getString("targetCropUnitCode"));
         assertEquals("Pounds", conversionUnitJson.getString("targetCropUnitDesc"));
     }
+
+    @Test
+    @Order(5)
+    public void testUpdateCropUnitConversion() throws Exception {
+        CropUnitConversionRsrc cropUnitConversion = new CropUnitConversionRsrc();
+        cropUnitConversion.setCropUnitDefaultId(1681L);
+        cropUnitConversion.setInventoryItemCode("5560");
+        cropUnitConversion.setCropUnitCode("1");
+        List<ConversionUnit> conversionUnits = new ArrayList<>();
+        ConversionUnit conversionUnit = new ConversionUnitRsrc();
+        conversionUnit.setCropUnitConversionFactorId(1981L);
+        conversionUnit.setConversionFactor(new BigDecimal("3204.622600"));
+        conversionUnit.setTargetCropUnitCode("2");
+        conversionUnits.add(conversionUnit);
+        cropUnitConversion.setConversionUnits(conversionUnits);
+        cropUnitConversion.setUserEmail("jsmith@gmail.com");
+
+        Response response = target("/cropUnitConversions/1681").request().put(Entity.json(cropUnitConversion));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("CropUnitConversionRsrc", jsonObject.getString("@type"));
+        assertEquals(1681, jsonObject.getInt("cropUnitDefaultId"));
+        assertEquals("5560", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Alfalfa Dehy", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("1", jsonObject.getString("cropUnitCode"));
+        assertEquals("Pounds", jsonObject.getString("cropUnitDesc"));
+
+        JSONArray conversionUnitList = jsonObject.getJSONArray("conversionUnits");
+        JSONObject conversionUnitJson = conversionUnitList.getJSONObject(0);
+
+        assertEquals(1981, conversionUnitJson.getInt("cropUnitConversionFactorId"));
+        assertEquals(3204.622600, conversionUnitJson.getDouble("conversionFactor"));
+        assertEquals("2", conversionUnitJson.getString("targetCropUnitCode"));
+        assertEquals("Tonnes", conversionUnitJson.getString("targetCropUnitDesc"));
+    }
 }
