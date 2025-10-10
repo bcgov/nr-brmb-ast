@@ -221,4 +221,11 @@ public class CropUnitConversionEndpointsTest extends JerseyTest {
         assertEquals("2", conversionUnitJson.getString("targetCropUnitCode"));
         assertEquals("Tonnes", conversionUnitJson.getString("targetCropUnitDesc"));
     }
+
+    @Test
+    @Order(6)
+    public void testDeleteCropUnitConversion() throws Exception {
+        Response response = target("/cropUnitConversions/1681").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }

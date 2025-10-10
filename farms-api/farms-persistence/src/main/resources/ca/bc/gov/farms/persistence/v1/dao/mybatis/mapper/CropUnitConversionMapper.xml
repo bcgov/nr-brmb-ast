@@ -43,8 +43,8 @@
         from farms.farm_crop_unit_defaults cud
         join farms.farm_inventory_item_codes iic on cud.inventory_item_code = iic.inventory_item_code
         join farms.farm_crop_unit_codes cuc on cud.crop_unit_code = cuc.crop_unit_code
-        join farms.farm_crop_unit_conversn_fctrs cucf on cud.inventory_item_code = cucf.inventory_item_code
-        join farms.farm_crop_unit_codes tcuc on tcuc.crop_unit_code = cucf.target_crop_unit_code
+        left join farms.farm_crop_unit_conversn_fctrs cucf on cud.inventory_item_code = cucf.inventory_item_code
+        left join farms.farm_crop_unit_codes tcuc on tcuc.crop_unit_code = cucf.target_crop_unit_code
     </sql>
 
     <select id="fetch" resultMap="CropUnitConversionDtoMap">
