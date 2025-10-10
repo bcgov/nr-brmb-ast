@@ -29,6 +29,7 @@ import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -82,5 +83,26 @@ public class FruitVegTypeDetailEndpointsTest extends JerseyTest {
         assertEquals(LocalDate.now().toString(), jsonObject.getString("establishedDate"));
         assertEquals("9999-12-31", jsonObject.getString("expiryDate"));
         assertEquals(20.000, jsonObject.getDouble("revenueVarianceLimit"));
+    }
+
+    @Test
+    @Order(2)
+    public void testGetAllFruitVegTypeDetails() throws Exception {
+        Response response = target("/fruitVegTypeDetails").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("FruitVegTypeDetailListRsrc", jsonObject.getString("@type"));
+
+        JSONArray fruitVegTypeDetailList = jsonObject.getJSONArray("fruitVegTypeDetailList");
+        JSONObject fruitVegTypeDetail = fruitVegTypeDetailList.getJSONObject(0);
+        assertEquals("FruitVegTypeDetailRsrc", fruitVegTypeDetail.getString("@type"));
+        assertEquals("LYCHEE", fruitVegTypeDetail.getString("fruitVegTypeCode"));
+        assertEquals("Tropical Fruit", fruitVegTypeDetail.getString("fruitVegTypeDesc"));
+        assertEquals(LocalDate.now().toString(), fruitVegTypeDetail.getString("establishedDate"));
+        assertEquals("9999-12-31", fruitVegTypeDetail.getString("expiryDate"));
+        assertEquals(20.000, fruitVegTypeDetail.getDouble("revenueVarianceLimit"));
     }
 }
