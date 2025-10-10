@@ -121,4 +121,26 @@ public class FruitVegTypeDetailEndpointsTest extends JerseyTest {
         assertEquals("9999-12-31", jsonObject.getString("expiryDate"));
         assertEquals(20.000, jsonObject.getDouble("revenueVarianceLimit"));
     }
+
+    @Test
+    @Order(4)
+    public void testUpdateFruitVegTypeDetail() throws Exception {
+        FruitVegTypeDetailRsrc fruitVegTypeDetail = new FruitVegTypeDetailRsrc();
+        fruitVegTypeDetail.setFruitVegTypeCode("LYCHEE");
+        fruitVegTypeDetail.setFruitVegTypeDesc("King of Fruits");
+        fruitVegTypeDetail.setRevenueVarianceLimit(new BigDecimal("30.000"));
+        fruitVegTypeDetail.setUserEmail("jsmith@gmail.com");
+
+        Response response = target("/fruitVegTypeDetails/LYCHEE").request().put(Entity.json(fruitVegTypeDetail));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("FruitVegTypeDetailRsrc", jsonObject.getString("@type"));
+        assertEquals("LYCHEE", jsonObject.getString("fruitVegTypeCode"));
+        assertEquals("King of Fruits", jsonObject.getString("fruitVegTypeDesc"));
+        assertEquals(LocalDate.now().toString(), jsonObject.getString("establishedDate"));
+        assertEquals("9999-12-31", jsonObject.getString("expiryDate"));
+        assertEquals(30.000, jsonObject.getDouble("revenueVarianceLimit"));
+    }
 }
