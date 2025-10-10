@@ -102,4 +102,33 @@ public class CropUnitConversionEndpointsTest extends JerseyTest {
         assertEquals("1", conversionUnitJson.getString("targetCropUnitCode"));
         assertEquals("Pounds", conversionUnitJson.getString("targetCropUnitDesc"));
     }
+
+    @Test
+    @Order(2)
+    public void testGetAllCropUnitConversions() throws Exception {
+        Response response = target("/cropUnitConversions").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("CropUnitConversionListRsrc", jsonObject.getString("@type"));
+
+        JSONArray cropUnitConversionList = jsonObject.getJSONArray("cropUnitConversionList");
+        JSONObject cropUnitConversion = cropUnitConversionList.getJSONObject(0);
+        assertEquals("CropUnitConversionRsrc", cropUnitConversion.getString("@type"));
+        assertEquals(1681, cropUnitConversion.getInt("cropUnitDefaultId"));
+        assertEquals("5560", cropUnitConversion.getString("inventoryItemCode"));
+        assertEquals("Alfalfa Dehy", cropUnitConversion.getString("inventoryItemDesc"));
+        assertEquals("2", cropUnitConversion.getString("cropUnitCode"));
+        assertEquals("Tonnes", cropUnitConversion.getString("cropUnitDesc"));
+
+        JSONArray conversionUnitList = cropUnitConversion.getJSONArray("conversionUnits");
+        JSONObject conversionUnitJson = conversionUnitList.getJSONObject(0);
+
+        assertEquals(1981, conversionUnitJson.getInt("cropUnitConversionFactorId"));
+        assertEquals(2204.622600, conversionUnitJson.getDouble("conversionFactor"));
+        assertEquals("1", conversionUnitJson.getString("targetCropUnitCode"));
+        assertEquals("Pounds", conversionUnitJson.getString("targetCropUnitDesc"));
+    }
 }
