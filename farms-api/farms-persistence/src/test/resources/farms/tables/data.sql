@@ -337,7 +337,7 @@ insert into farms.farm_crop_unit_defaults (
     who_updated,
     when_updated
 ) values (
-    nextval('farms.farm_fmv_seq'),
+    nextval('farms.farm_cud_seq'),
     '5560',
     '2',
     1,
