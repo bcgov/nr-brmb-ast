@@ -143,4 +143,11 @@ public class FruitVegTypeDetailEndpointsTest extends JerseyTest {
         assertEquals("9999-12-31", jsonObject.getString("expiryDate"));
         assertEquals(30.000, jsonObject.getDouble("revenueVarianceLimit"));
     }
+
+    @Test
+    @Order(5)
+    public void testDeleteFruitVegTypeDetail() throws Exception {
+        Response response = target("/fruitVegTypeDetails/LYCHEE").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
