@@ -27,6 +27,7 @@ import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -103,5 +104,37 @@ public class LineItemEndpointsTest extends JerseyTest {
         assertEquals("null", jsonObject.getString("commodityTypeCode"));
         assertEquals("null", jsonObject.getString("fruitVegTypeCode"));
         assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(2)
+    public void testGetLineItemsByProgramYear() throws Exception {
+        Response response = target("/lineItems").queryParam("programYear", 2025).request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("LineItemListRsrc", jsonObject.getString("@type"));
+
+        JSONArray lineItemList = jsonObject.getJSONArray("lineItemList");
+        JSONObject lineItem = lineItemList.getJSONObject(0);
+        assertEquals("LineItemRsrc", lineItem.getString("@type"));
+        assertEquals(39909, lineItem.getInt("lineItemId"));
+        assertEquals(2025, lineItem.getInt("programYear"));
+        assertEquals(9798, lineItem.getInt("lineItem"));
+        assertEquals("Agricultural Contract work", lineItem.getString("description"));
+        assertEquals("BC", lineItem.getString("province"));
+        assertEquals("N", lineItem.getString("eligibilityInd"));
+        assertEquals("N", lineItem.getString("eligibilityForRefYearsInd"));
+        assertEquals("N", lineItem.getString("yardageInd"));
+        assertEquals("N", lineItem.getString("programPaymentInd"));
+        assertEquals("N", lineItem.getString("contractWorkInd"));
+        assertEquals("N", lineItem.getString("supplyManagedCommodityInd"));
+        assertEquals("N", lineItem.getString("excludeFromRevenueCalcInd"));
+        assertEquals("N", lineItem.getString("industryAverageExpenseInd"));
+        assertEquals("null", lineItem.getString("commodityTypeCode"));
+        assertEquals("null", lineItem.getString("fruitVegTypeCode"));
+        assertEquals("null", lineItem.getString("userEmail"));
     }
 }
