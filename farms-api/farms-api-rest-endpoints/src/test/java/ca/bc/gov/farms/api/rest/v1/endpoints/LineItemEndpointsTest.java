@@ -137,4 +137,31 @@ public class LineItemEndpointsTest extends JerseyTest {
         assertEquals("null", lineItem.getString("fruitVegTypeCode"));
         assertEquals("null", lineItem.getString("userEmail"));
     }
+
+    @Test
+    @Order(3)
+    public void testGetLineItem() throws Exception {
+        Response response = target("/lineItems/39909").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("LineItemRsrc", jsonObject.getString("@type"));
+        assertEquals(39909, jsonObject.getInt("lineItemId"));
+        assertEquals(2025, jsonObject.getInt("programYear"));
+        assertEquals(9798, jsonObject.getInt("lineItem"));
+        assertEquals("Agricultural Contract work", jsonObject.getString("description"));
+        assertEquals("BC", jsonObject.getString("province"));
+        assertEquals("N", jsonObject.getString("eligibilityInd"));
+        assertEquals("N", jsonObject.getString("eligibilityForRefYearsInd"));
+        assertEquals("N", jsonObject.getString("yardageInd"));
+        assertEquals("N", jsonObject.getString("programPaymentInd"));
+        assertEquals("N", jsonObject.getString("contractWorkInd"));
+        assertEquals("N", jsonObject.getString("supplyManagedCommodityInd"));
+        assertEquals("N", jsonObject.getString("excludeFromRevenueCalcInd"));
+        assertEquals("N", jsonObject.getString("industryAverageExpenseInd"));
+        assertEquals("null", jsonObject.getString("commodityTypeCode"));
+        assertEquals("null", jsonObject.getString("fruitVegTypeCode"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
