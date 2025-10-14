@@ -209,4 +209,11 @@ public class LineItemEndpointsTest extends JerseyTest {
         assertEquals("APPLE", jsonObject.getString("fruitVegTypeCode"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(5)
+    public void testDeleteLineItem() throws Exception {
+        Response response = target("/lineItems/39910").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
