@@ -164,4 +164,49 @@ public class LineItemEndpointsTest extends JerseyTest {
         assertEquals("null", jsonObject.getString("fruitVegTypeCode"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(4)
+    public void testUpdateLineItem() throws Exception {
+        LineItemRsrc lineItem = new LineItemRsrc();
+        lineItem.setLineItemId(39909L);
+        lineItem.setProgramYear(2025);
+        lineItem.setLineItem(9798);
+        lineItem.setDescription("Agricultural Contract works");
+        lineItem.setProvince("AB");
+        lineItem.setEligibilityInd("Y");
+        lineItem.setEligibilityForRefYearsInd("Y");
+        lineItem.setYardageInd("Y");
+        lineItem.setProgramPaymentInd("Y");
+        lineItem.setContractWorkInd("Y");
+        lineItem.setSupplyManagedCommodityInd("Y");
+        lineItem.setExcludeFromRevenueCalcInd("Y");
+        lineItem.setIndustryAverageExpenseInd("Y");
+        lineItem.setCommodityTypeCode("GRAIN");
+        lineItem.setFruitVegTypeCode("APPLE");
+        lineItem.setUserEmail("jsmith@gmail.com");
+
+        Response response = target("/lineItems/39909").request().put(Entity.json(lineItem));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("LineItemRsrc", jsonObject.getString("@type"));
+        assertEquals(39910, jsonObject.getInt("lineItemId"));
+        assertEquals(2025, jsonObject.getInt("programYear"));
+        assertEquals(9798, jsonObject.getInt("lineItem"));
+        assertEquals("Agricultural Contract works", jsonObject.getString("description"));
+        assertEquals("AB", jsonObject.getString("province"));
+        assertEquals("Y", jsonObject.getString("eligibilityInd"));
+        assertEquals("Y", jsonObject.getString("eligibilityForRefYearsInd"));
+        assertEquals("Y", jsonObject.getString("yardageInd"));
+        assertEquals("Y", jsonObject.getString("programPaymentInd"));
+        assertEquals("Y", jsonObject.getString("contractWorkInd"));
+        assertEquals("Y", jsonObject.getString("supplyManagedCommodityInd"));
+        assertEquals("Y", jsonObject.getString("excludeFromRevenueCalcInd"));
+        assertEquals("Y", jsonObject.getString("industryAverageExpenseInd"));
+        assertEquals("GRAIN", jsonObject.getString("commodityTypeCode"));
+        assertEquals("APPLE", jsonObject.getString("fruitVegTypeCode"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
