@@ -212,6 +212,38 @@ public class LineItemEndpointsTest extends JerseyTest {
 
     @Test
     @Order(5)
+    public void testCopyLineItems() throws Exception {
+        Response response = target("/lineItems/copy/2026").request().post(Entity.json("{}"));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("LineItemListRsrc", jsonObject.getString("@type"));
+
+        JSONArray lineItemList = jsonObject.getJSONArray("lineItemList");
+        JSONObject lineItem = lineItemList.getJSONObject(0);
+        assertEquals("LineItemRsrc", lineItem.getString("@type"));
+        assertEquals(39911, lineItem.getInt("lineItemId"));
+        assertEquals(2026, lineItem.getInt("programYear"));
+        assertEquals(9798, lineItem.getInt("lineItem"));
+        assertEquals("Agricultural Contract works", lineItem.getString("description"));
+        assertEquals("AB", lineItem.getString("province"));
+        assertEquals("Y", lineItem.getString("eligibilityInd"));
+        assertEquals("Y", lineItem.getString("eligibilityForRefYearsInd"));
+        assertEquals("Y", lineItem.getString("yardageInd"));
+        assertEquals("Y", lineItem.getString("programPaymentInd"));
+        assertEquals("Y", lineItem.getString("contractWorkInd"));
+        assertEquals("Y", lineItem.getString("supplyManagedCommodityInd"));
+        assertEquals("Y", lineItem.getString("excludeFromRevenueCalcInd"));
+        assertEquals("Y", lineItem.getString("industryAverageExpenseInd"));
+        assertEquals("GRAIN", lineItem.getString("commodityTypeCode"));
+        assertEquals("APPLE", lineItem.getString("fruitVegTypeCode"));
+        assertEquals("null", lineItem.getString("userEmail"));
+    }
+
+    @Test
+    @Order(6)
     public void testDeleteLineItem() throws Exception {
         Response response = target("/lineItems/39910").request().delete();
         assertEquals(204, response.getStatus());
