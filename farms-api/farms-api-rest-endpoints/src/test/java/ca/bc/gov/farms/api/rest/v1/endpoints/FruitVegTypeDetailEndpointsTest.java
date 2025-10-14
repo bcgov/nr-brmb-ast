@@ -78,11 +78,13 @@ public class FruitVegTypeDetailEndpointsTest extends JerseyTest {
 
         String jsonString = response.readEntity(String.class);
         JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("FruitVegTypeDetailRsrc", jsonObject.getString("@type"));
         assertEquals("LYCHEE", jsonObject.getString("fruitVegTypeCode"));
         assertEquals("Tropical Fruit", jsonObject.getString("fruitVegTypeDesc"));
         assertEquals(LocalDate.now().toString(), jsonObject.getString("establishedDate"));
         assertEquals("9999-12-31", jsonObject.getString("expiryDate"));
         assertEquals(20.000, jsonObject.getDouble("revenueVarianceLimit"));
+        assertEquals("null", jsonObject.getString("userEmail"));
     }
 
     @Test
@@ -104,6 +106,7 @@ public class FruitVegTypeDetailEndpointsTest extends JerseyTest {
         assertEquals(LocalDate.now().toString(), fruitVegTypeDetail.getString("establishedDate"));
         assertEquals("9999-12-31", fruitVegTypeDetail.getString("expiryDate"));
         assertEquals(20.000, fruitVegTypeDetail.getDouble("revenueVarianceLimit"));
+        assertEquals("null", fruitVegTypeDetail.getString("userEmail"));
     }
 
     @Test
@@ -120,6 +123,7 @@ public class FruitVegTypeDetailEndpointsTest extends JerseyTest {
         assertEquals(LocalDate.now().toString(), jsonObject.getString("establishedDate"));
         assertEquals("9999-12-31", jsonObject.getString("expiryDate"));
         assertEquals(20.000, jsonObject.getDouble("revenueVarianceLimit"));
+        assertEquals("null", jsonObject.getString("userEmail"));
     }
 
     @Test
@@ -142,6 +146,7 @@ public class FruitVegTypeDetailEndpointsTest extends JerseyTest {
         assertEquals(LocalDate.now().toString(), jsonObject.getString("establishedDate"));
         assertEquals("9999-12-31", jsonObject.getString("expiryDate"));
         assertEquals(30.000, jsonObject.getDouble("revenueVarianceLimit"));
+        assertEquals("null", jsonObject.getString("userEmail"));
     }
 
     @Test

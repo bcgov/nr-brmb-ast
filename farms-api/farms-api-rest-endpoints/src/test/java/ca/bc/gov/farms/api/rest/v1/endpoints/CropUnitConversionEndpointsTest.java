@@ -93,6 +93,7 @@ public class CropUnitConversionEndpointsTest extends JerseyTest {
         assertEquals("Alfalfa Dehy", jsonObject.getString("inventoryItemDesc"));
         assertEquals("2", jsonObject.getString("cropUnitCode"));
         assertEquals("Tonnes", jsonObject.getString("cropUnitDesc"));
+        assertEquals("null", jsonObject.getString("userEmail"));
 
         JSONArray conversionUnitList = jsonObject.getJSONArray("conversionUnits");
         JSONObject conversionUnitJson = conversionUnitList.getJSONObject(0);
@@ -122,6 +123,7 @@ public class CropUnitConversionEndpointsTest extends JerseyTest {
         assertEquals("Alfalfa Dehy", cropUnitConversion.getString("inventoryItemDesc"));
         assertEquals("2", cropUnitConversion.getString("cropUnitCode"));
         assertEquals("Tonnes", cropUnitConversion.getString("cropUnitDesc"));
+        assertEquals("null", cropUnitConversion.getString("userEmail"));
 
         JSONArray conversionUnitList = cropUnitConversion.getJSONArray("conversionUnits");
         JSONObject conversionUnitJson = conversionUnitList.getJSONObject(0);
@@ -151,6 +153,7 @@ public class CropUnitConversionEndpointsTest extends JerseyTest {
         assertEquals("Alfalfa Dehy", cropUnitConversion.getString("inventoryItemDesc"));
         assertEquals("2", cropUnitConversion.getString("cropUnitCode"));
         assertEquals("Tonnes", cropUnitConversion.getString("cropUnitDesc"));
+        assertEquals("null", cropUnitConversion.getString("userEmail"));
 
         JSONArray conversionUnitList = cropUnitConversion.getJSONArray("conversionUnits");
         JSONObject conversionUnitJson = conversionUnitList.getJSONObject(0);
@@ -175,6 +178,7 @@ public class CropUnitConversionEndpointsTest extends JerseyTest {
         assertEquals("Alfalfa Dehy", jsonObject.getString("inventoryItemDesc"));
         assertEquals("2", jsonObject.getString("cropUnitCode"));
         assertEquals("Tonnes", jsonObject.getString("cropUnitDesc"));
+        assertEquals("null", jsonObject.getString("userEmail"));
 
         JSONArray conversionUnitList = jsonObject.getJSONArray("conversionUnits");
         JSONObject conversionUnitJson = conversionUnitList.getJSONObject(0);
@@ -212,6 +216,7 @@ public class CropUnitConversionEndpointsTest extends JerseyTest {
         assertEquals("Alfalfa Dehy", jsonObject.getString("inventoryItemDesc"));
         assertEquals("1", jsonObject.getString("cropUnitCode"));
         assertEquals("Pounds", jsonObject.getString("cropUnitDesc"));
+        assertEquals("null", jsonObject.getString("userEmail"));
 
         JSONArray conversionUnitList = jsonObject.getJSONArray("conversionUnits");
         JSONObject conversionUnitJson = conversionUnitList.getJSONObject(0);
