@@ -29,6 +29,7 @@ import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -79,6 +80,7 @@ public class MarketRatePremiumEndpointsTest extends JerseyTest {
 
         String jsonString = response.readEntity(String.class);
         JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("MarketRatePremiumRsrc", jsonObject.getString("@type"));
         assertEquals(21, jsonObject.getInt("marketRatePremiumId"));
         assertEquals(0.00, jsonObject.getDouble("minTotalPremiumAmount"));
         assertEquals(1.00, jsonObject.getDouble("maxTotalPremiumAmount"));
@@ -86,5 +88,28 @@ public class MarketRatePremiumEndpointsTest extends JerseyTest {
         assertEquals(3.00, jsonObject.getDouble("riskChargePctPremium"));
         assertEquals(4.00, jsonObject.getDouble("adjustChargeFlatAmount"));
         assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(2)
+    public void testGetAllMarketRatePremiums() throws Exception {
+        Response response = target("/marketRatePremiums").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("MarketRatePremiumListRsrc", jsonObject.getString("@type"));
+
+        JSONArray marketRatePremiumList = jsonObject.getJSONArray("marketRatePremiumList");
+        JSONObject marketRatePremium = marketRatePremiumList.getJSONObject(0);
+        assertEquals("MarketRatePremiumRsrc", marketRatePremium.getString("@type"));
+        assertEquals(21, marketRatePremium.getInt("marketRatePremiumId"));
+        assertEquals(0.00, marketRatePremium.getDouble("minTotalPremiumAmount"));
+        assertEquals(1.00, marketRatePremium.getDouble("maxTotalPremiumAmount"));
+        assertEquals(2.00, marketRatePremium.getDouble("riskChargeFlatAmount"));
+        assertEquals(3.00, marketRatePremium.getDouble("riskChargePctPremium"));
+        assertEquals(4.00, marketRatePremium.getDouble("adjustChargeFlatAmount"));
+        assertEquals("null", marketRatePremium.getString("userEmail"));
     }
 }
