@@ -112,4 +112,22 @@ public class MarketRatePremiumEndpointsTest extends JerseyTest {
         assertEquals(4.00, marketRatePremium.getDouble("adjustChargeFlatAmount"));
         assertEquals("null", marketRatePremium.getString("userEmail"));
     }
+
+    @Test
+    @Order(3)
+    public void testGetMarketRatePremium() throws Exception {
+        Response response = target("/marketRatePremiums/21").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("MarketRatePremiumRsrc", jsonObject.getString("@type"));
+        assertEquals(21, jsonObject.getInt("marketRatePremiumId"));
+        assertEquals(0.00, jsonObject.getDouble("minTotalPremiumAmount"));
+        assertEquals(1.00, jsonObject.getDouble("maxTotalPremiumAmount"));
+        assertEquals(2.00, jsonObject.getDouble("riskChargeFlatAmount"));
+        assertEquals(3.00, jsonObject.getDouble("riskChargePctPremium"));
+        assertEquals(4.00, jsonObject.getDouble("adjustChargeFlatAmount"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
