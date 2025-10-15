@@ -157,4 +157,11 @@ public class MarketRatePremiumEndpointsTest extends JerseyTest {
         assertEquals(5.00, jsonObject.getDouble("adjustChargeFlatAmount"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(5)
+    public void testDeleteMarketRatePremium() throws Exception {
+        Response response = target("/marketRatePremiums/21").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
