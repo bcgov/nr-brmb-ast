@@ -27,6 +27,7 @@ import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -84,5 +85,28 @@ public class YearConfigurationParameterEndpointsTest extends JerseyTest {
         assertEquals("70", jsonObject.getString("parameterValue"));
         assertEquals("DECIMAL", jsonObject.getString("configParamTypeCode"));
         assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(2)
+    public void testGetAllYearConfigurationParameters() throws Exception {
+        Response response = target("/yearConfigurationParameters").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("YearConfigurationParameterListRsrc", jsonObject.getString("@type"));
+
+        JSONArray yearConfigurationParameterList = jsonObject.getJSONArray("yearConfigurationParameterList");
+        JSONObject yearConfigurationParameter = yearConfigurationParameterList.getJSONObject(0);
+        assertEquals("YearConfigurationParameterRsrc", yearConfigurationParameter.getString("@type"));
+        assertEquals(241, yearConfigurationParameter.getInt("yearConfigurationParameterId"));
+        assertEquals(2023, yearConfigurationParameter.getInt("programYear"));
+        assertEquals("Payment Limitation - Percentage of Total Margin Decline",
+                yearConfigurationParameter.getString("parameterName"));
+        assertEquals("70", yearConfigurationParameter.getString("parameterValue"));
+        assertEquals("DECIMAL", yearConfigurationParameter.getString("configParamTypeCode"));
+        assertEquals("null", yearConfigurationParameter.getString("userEmail"));
     }
 }
