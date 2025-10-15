@@ -152,4 +152,11 @@ public class YearConfigurationParameterEndpointsTest extends JerseyTest {
         assertEquals("DECIMAL", jsonObject.getString("configParamTypeCode"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(5)
+    public void testDeleteYearConfigurationParameter() throws Exception {
+        Response response = target("/yearConfigurationParameters/241").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
