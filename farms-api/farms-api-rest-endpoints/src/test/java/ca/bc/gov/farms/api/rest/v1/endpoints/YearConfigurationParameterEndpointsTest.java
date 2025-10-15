@@ -126,4 +126,30 @@ public class YearConfigurationParameterEndpointsTest extends JerseyTest {
         assertEquals("DECIMAL", jsonObject.getString("configParamTypeCode"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(4)
+    public void testUpdateYearConfigurationParameter() throws Exception {
+        YearConfigurationParameterRsrc yearConfigurationParameter = new YearConfigurationParameterRsrc();
+        yearConfigurationParameter.setYearConfigurationParameterId(241L);
+        yearConfigurationParameter.setProgramYear(2023);
+        yearConfigurationParameter.setParameterName("Payment Limitation - Percentage of Total Margin Decline");
+        yearConfigurationParameter.setParameterValue("700");
+        yearConfigurationParameter.setConfigParamTypeCode("DECIMAL");
+        yearConfigurationParameter.setUserEmail("jsmith@gmail.com");
+
+        Response response = target("/yearConfigurationParameters/241").request()
+                .put(Entity.json(yearConfigurationParameter));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("YearConfigurationParameterRsrc", jsonObject.getString("@type"));
+        assertEquals(241, jsonObject.getInt("yearConfigurationParameterId"));
+        assertEquals(2023, jsonObject.getInt("programYear"));
+        assertEquals("Payment Limitation - Percentage of Total Margin Decline", jsonObject.getString("parameterName"));
+        assertEquals("700", jsonObject.getString("parameterValue"));
+        assertEquals("DECIMAL", jsonObject.getString("configParamTypeCode"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
