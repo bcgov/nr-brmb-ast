@@ -109,4 +109,21 @@ public class YearConfigurationParameterEndpointsTest extends JerseyTest {
         assertEquals("DECIMAL", yearConfigurationParameter.getString("configParamTypeCode"));
         assertEquals("null", yearConfigurationParameter.getString("userEmail"));
     }
+
+    @Test
+    @Order(3)
+    public void testGetYearConfigurationParameter() throws Exception {
+        Response response = target("/yearConfigurationParameters/241").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("YearConfigurationParameterRsrc", jsonObject.getString("@type"));
+        assertEquals(241, jsonObject.getInt("yearConfigurationParameterId"));
+        assertEquals(2023, jsonObject.getInt("programYear"));
+        assertEquals("Payment Limitation - Percentage of Total Margin Decline", jsonObject.getString("parameterName"));
+        assertEquals("70", jsonObject.getString("parameterValue"));
+        assertEquals("DECIMAL", jsonObject.getString("configParamTypeCode"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
