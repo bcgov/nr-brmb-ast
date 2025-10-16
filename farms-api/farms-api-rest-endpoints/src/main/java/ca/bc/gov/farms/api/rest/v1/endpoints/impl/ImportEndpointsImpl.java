@@ -3,7 +3,7 @@ package ca.bc.gov.farms.api.rest.v1.endpoints.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
