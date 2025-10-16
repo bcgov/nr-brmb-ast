@@ -24,6 +24,12 @@
             <groupId>ca.bc.gov.brmb.common</groupId>
             <artifactId>brmb-common-rest-common</artifactId>
         </dependency>
+
+        <!-- Miscellaneous -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
