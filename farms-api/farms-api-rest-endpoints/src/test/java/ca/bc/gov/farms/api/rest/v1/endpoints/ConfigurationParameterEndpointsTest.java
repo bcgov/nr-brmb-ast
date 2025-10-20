@@ -172,4 +172,11 @@ public class ConfigurationParameterEndpointsTest extends JerseyTest {
         assertEquals("STRING", jsonObject.getString("configParamTypeCode"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(6)
+    public void testDeleteConfigurationParameter() throws Exception {
+        Response response = target("/configurationParameters/481").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
