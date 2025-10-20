@@ -2,9 +2,9 @@ package ca.bc.gov.farms.service.api.v1.validation.constraints;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import ca.bc.gov.farms.service.api.v1.validation.Errors;
 

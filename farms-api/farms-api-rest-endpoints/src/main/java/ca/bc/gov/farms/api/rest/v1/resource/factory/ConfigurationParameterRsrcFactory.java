@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import ca.bc.gov.brmb.common.rest.endpoints.resource.factory.BaseResourceFactory;
 import ca.bc.gov.brmb.common.rest.resource.RelLink;

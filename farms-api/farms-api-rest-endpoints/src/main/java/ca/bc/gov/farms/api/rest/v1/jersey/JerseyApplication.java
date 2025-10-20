@@ -1,7 +1,7 @@
 package ca.bc.gov.farms.api.rest.v1.jersey;
 
-import javax.servlet.ServletConfig;
-import javax.ws.rs.core.Context;
+import jakarta.servlet.ServletConfig;
+import jakarta.ws.rs.core.Context;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.slf4j.Logger;

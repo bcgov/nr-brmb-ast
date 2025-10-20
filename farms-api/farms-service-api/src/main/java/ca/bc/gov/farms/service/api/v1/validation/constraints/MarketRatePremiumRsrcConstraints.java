@@ -2,7 +2,7 @@ package ca.bc.gov.farms.service.api.v1.validation.constraints;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import ca.bc.gov.farms.service.api.v1.validation.Errors;
 
 public interface MarketRatePremiumRsrcConstraints {
