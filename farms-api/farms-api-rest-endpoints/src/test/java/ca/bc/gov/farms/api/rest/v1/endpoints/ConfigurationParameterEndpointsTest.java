@@ -147,4 +147,29 @@ public class ConfigurationParameterEndpointsTest extends JerseyTest {
         assertEquals("STRING", jsonObject.getString("configParamTypeCode"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(5)
+    public void testUpdateConfigurationParameter() throws Exception {
+        ConfigurationParameterRsrc configurationParameter = new ConfigurationParameterRsrc();
+        configurationParameter.setConfigurationParameterId(481L);
+        configurationParameter.setParameterName("CDOGS - Api Version");
+        configurationParameter.setParameterValue("3");
+        configurationParameter.setSensitiveDataInd("N");
+        configurationParameter.setConfigParamTypeCode("STRING");
+        configurationParameter.setUserEmail("jsmith@gmail.com");
+
+        Response response = target("/configurationParameters/481").request().put(Entity.json(configurationParameter));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("ConfigurationParameterRsrc", jsonObject.getString("@type"));
+        assertEquals(481, jsonObject.getInt("configurationParameterId"));
+        assertEquals("CDOGS - Api Version", jsonObject.getString("parameterName"));
+        assertEquals("3", jsonObject.getString("parameterValue"));
+        assertEquals("N", jsonObject.getString("sensitiveDataInd"));
+        assertEquals("STRING", jsonObject.getString("configParamTypeCode"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
