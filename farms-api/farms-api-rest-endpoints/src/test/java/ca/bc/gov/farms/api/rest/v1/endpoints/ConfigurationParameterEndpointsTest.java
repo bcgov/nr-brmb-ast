@@ -27,6 +27,7 @@ import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -84,5 +85,27 @@ public class ConfigurationParameterEndpointsTest extends JerseyTest {
         assertEquals("N", jsonObject.getString("sensitiveDataInd"));
         assertEquals("STRING", jsonObject.getString("configParamTypeCode"));
         assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(2)
+    public void testGetAllConfigurationParameters() throws Exception {
+        Response response = target("/configurationParameters").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("ConfigurationParameterListRsrc", jsonObject.getString("@type"));
+
+        JSONArray configurationParameterList = jsonObject.getJSONArray("configurationParameterList");
+        JSONObject configurationParameter = configurationParameterList.getJSONObject(0);
+        assertEquals("ConfigurationParameterRsrc", configurationParameter.getString("@type"));
+        assertEquals(481, configurationParameter.getInt("configurationParameterId"));
+        assertEquals("CDOGS - Api Version", configurationParameter.getString("parameterName"));
+        assertEquals("2", configurationParameter.getString("parameterValue"));
+        assertEquals("N", configurationParameter.getString("sensitiveDataInd"));
+        assertEquals("STRING", configurationParameter.getString("configParamTypeCode"));
+        assertEquals("null", configurationParameter.getString("userEmail"));
     }
 }
