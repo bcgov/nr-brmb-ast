@@ -60,4 +60,8 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Expected Production
 	public static final String EXPECTED_PRODUCTION_NAME = "expectedProduction";
 	public static final String EXPECTED_PRODUCTION_LIST_NAME = "expectedProductions";
+
+	// Productive Unit Code
+	public static final String PRODUCTIVE_UNIT_CODE_NAME = "productiveUnitCode";
+	public static final String PRODUCTIVE_UNIT_CODE_LIST_NAME = "productiveUnitCodes";
 }
