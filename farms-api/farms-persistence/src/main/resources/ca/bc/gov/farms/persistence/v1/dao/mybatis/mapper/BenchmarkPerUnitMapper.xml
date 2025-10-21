@@ -160,12 +160,19 @@
             (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
-                where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where current_date between iic.established_date::date and iic.expiry_date::date
+                and iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and iic.inventory_item_code not in (
+                    select structure_group_code
+                    from farms.farm_structure_group_codes
+                    where current_date between established_date::date and expiry_date::date
+                )
             ),
             (
                 select sgc.structure_group_code
                 from farms.farm_structure_group_codes sgc
-                where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where current_date between sgc.established_date::date and sgc.expiry_date::date
+                and sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             1,
             #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
@@ -212,12 +219,19 @@
             inventory_item_code = (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
-                where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where current_date between iic.established_date::date and iic.expiry_date::date
+                and iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and iic.inventory_item_code not in (
+                    select structure_group_code
+                    from farms.farm_structure_group_codes
+                    where current_date between established_date::date and expiry_date::date
+                )
             ),
             structure_group_code = (
                 select sgc.structure_group_code
                 from farms.farm_structure_group_codes sgc
-                where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where current_date between sgc.established_date::date and sgc.expiry_date::date
+                and sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
             ),
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
