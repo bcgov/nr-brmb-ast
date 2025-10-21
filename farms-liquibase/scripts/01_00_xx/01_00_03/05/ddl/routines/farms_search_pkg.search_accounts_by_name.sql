@@ -1,12 +1,14 @@
-create or replace function farms_search_pkg.search_accounts_by_rep(
-    in in_user_id farms.farm_agristability_represntves.userid%type
-)
-returns refcursor
+create or replace function farms_search_pkg.search_accounts_by_name(
+    in in_name farms.farm_persons.last_name%type,
+	in in_city farms.farm_persons.city%type,
+	in in_postal_code farms.farm_persons.postal_code%type
+) returns refcursor
 language plpgsql
 as
 $$
 declare
     v_cursor refcursor;
+    v_name varchar(100) := upper(in_name) || '%';
 begin
     open v_cursor for
         select ac.participant_pin pin,
@@ -20,11 +22,10 @@ begin
                ) address
         from farms.farm_agristability_clients ac
         join farms.farm_persons per on per.person_id = ac.person_id
-        join farms.farm_client_subscriptions subs on subs.agristability_client_id = ac.agristability_client_id
-        join farms.farm_agristability_represntves reps on reps.agristability_represntve_id = subs.agristability_represntve_id
-        where reps.userid = in_user_id
-        and subs.subscription_status_code = 'ACT'
+        where (upper(per.last_name) like v_name or upper(per.corp_name) like v_name)
+        and (coalesce(in_city::text, '') = '' or upper(in_city) = upper(per.city))
+        and (coalesce(in_postal_code::text, '') = '' or upper(in_postal_code) = upper(per.postal_code)) 
         order by name;
     return v_cursor;
-  end;
+end;
 $$;
