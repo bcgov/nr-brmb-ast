@@ -28,6 +28,7 @@ import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -116,5 +117,46 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         assertEquals(258.28, jsonObject.getDouble("yearMinus2Expense"));
         assertEquals(258.28, jsonObject.getDouble("yearMinus1Expense"));
         assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(2)
+    public void testGetBenchmarkPerUnitsByProgramYear() throws Exception {
+        Response response = target("/benchmarkPerUnits").queryParam("programYear", 2024).request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("BenchmarkPerUnitListRsrc", jsonObject.getString("@type"));
+
+        JSONArray benchmarkPerUnitList = jsonObject.getJSONArray("benchmarkPerUnitList");
+        JSONObject benchmarkPerUnit = benchmarkPerUnitList.getJSONObject(0);
+        assertEquals("BenchmarkPerUnitRsrc", benchmarkPerUnit.getString("@type"));
+        assertEquals(60584, benchmarkPerUnit.getInt("benchmarkPerUnitId"));
+        assertEquals(2024, benchmarkPerUnit.getInt("programYear"));
+        assertEquals("Alfalfa Dehy", benchmarkPerUnit.getString("unitComment"));
+        assertEquals("null", benchmarkPerUnit.getString("expiryDate"));
+        assertEquals("41", benchmarkPerUnit.getString("municipalityCode"));
+        assertEquals("Cariboo", benchmarkPerUnit.getString("municipalityDesc"));
+        assertEquals("5560", benchmarkPerUnit.getString("inventoryItemCode"));
+        assertEquals("Alfalfa Dehy", benchmarkPerUnit.getString("inventoryItemDesc"));
+        assertEquals("null", benchmarkPerUnit.getString("structureGroupCode"));
+        assertEquals("null", benchmarkPerUnit.getString("structureGroupDesc"));
+        assertEquals("5560", benchmarkPerUnit.getString("inventoryCode"));
+        assertEquals("Alfalfa Dehy", benchmarkPerUnit.getString("inventoryDesc"));
+        assertEquals(106.43, benchmarkPerUnit.getDouble("yearMinus6Margin"));
+        assertEquals(128.79, benchmarkPerUnit.getDouble("yearMinus5Margin"));
+        assertEquals(127.41, benchmarkPerUnit.getDouble("yearMinus4Margin"));
+        assertEquals(109.64, benchmarkPerUnit.getDouble("yearMinus3Margin"));
+        assertEquals(95.13, benchmarkPerUnit.getDouble("yearMinus2Margin"));
+        assertEquals(0.00, benchmarkPerUnit.getDouble("yearMinus1Margin"));
+        assertEquals(151.44, benchmarkPerUnit.getDouble("yearMinus6Expense"));
+        assertEquals(156.59, benchmarkPerUnit.getDouble("yearMinus5Expense"));
+        assertEquals(140.79, benchmarkPerUnit.getDouble("yearMinus4Expense"));
+        assertEquals(186.58, benchmarkPerUnit.getDouble("yearMinus3Expense"));
+        assertEquals(258.28, benchmarkPerUnit.getDouble("yearMinus2Expense"));
+        assertEquals(258.28, benchmarkPerUnit.getDouble("yearMinus1Expense"));
+        assertEquals("null", benchmarkPerUnit.getString("userEmail"));
     }
 }
