@@ -252,4 +252,11 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         assertEquals(1258.28, jsonObject.getDouble("yearMinus1Expense"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(5)
+    public void testDeleteBenchmarkPerUnit() throws Exception {
+        Response response = target("/benchmarkPerUnits/60584").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
