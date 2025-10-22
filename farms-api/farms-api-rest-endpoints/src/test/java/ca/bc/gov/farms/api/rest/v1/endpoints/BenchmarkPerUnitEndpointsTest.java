@@ -159,4 +159,40 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         assertEquals(258.28, benchmarkPerUnit.getDouble("yearMinus1Expense"));
         assertEquals("null", benchmarkPerUnit.getString("userEmail"));
     }
+
+    @Test
+    @Order(3)
+    public void testGetBenchmarkPerUnit() throws Exception {
+        Response response = target("/benchmarkPerUnits/60584").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("BenchmarkPerUnitRsrc", jsonObject.getString("@type"));
+        assertEquals(60584, jsonObject.getInt("benchmarkPerUnitId"));
+        assertEquals(2024, jsonObject.getInt("programYear"));
+        assertEquals("Alfalfa Dehy", jsonObject.getString("unitComment"));
+        assertEquals("null", jsonObject.getString("expiryDate"));
+        assertEquals("41", jsonObject.getString("municipalityCode"));
+        assertEquals("Cariboo", jsonObject.getString("municipalityDesc"));
+        assertEquals("5560", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Alfalfa Dehy", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("null", jsonObject.getString("structureGroupCode"));
+        assertEquals("null", jsonObject.getString("structureGroupDesc"));
+        assertEquals("5560", jsonObject.getString("inventoryCode"));
+        assertEquals("Alfalfa Dehy", jsonObject.getString("inventoryDesc"));
+        assertEquals(106.43, jsonObject.getDouble("yearMinus6Margin"));
+        assertEquals(128.79, jsonObject.getDouble("yearMinus5Margin"));
+        assertEquals(127.41, jsonObject.getDouble("yearMinus4Margin"));
+        assertEquals(109.64, jsonObject.getDouble("yearMinus3Margin"));
+        assertEquals(95.13, jsonObject.getDouble("yearMinus2Margin"));
+        assertEquals(0.00, jsonObject.getDouble("yearMinus1Margin"));
+        assertEquals(151.44, jsonObject.getDouble("yearMinus6Expense"));
+        assertEquals(156.59, jsonObject.getDouble("yearMinus5Expense"));
+        assertEquals(140.79, jsonObject.getDouble("yearMinus4Expense"));
+        assertEquals(186.58, jsonObject.getDouble("yearMinus3Expense"));
+        assertEquals(258.28, jsonObject.getDouble("yearMinus2Expense"));
+        assertEquals(258.28, jsonObject.getDouble("yearMinus1Expense"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
