@@ -195,4 +195,61 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         assertEquals(258.28, jsonObject.getDouble("yearMinus1Expense"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(4)
+    public void testUpdateBenchmarkPerUnit() throws Exception {
+        BenchmarkPerUnitRsrc benchmarkPerUnit = new BenchmarkPerUnitRsrc();
+        benchmarkPerUnit.setBenchmarkPerUnitId(60584L);
+        benchmarkPerUnit.setProgramYear(2024);
+        benchmarkPerUnit.setUnitComment("Greenfeed");
+        benchmarkPerUnit.setExpiryDate(null);
+        benchmarkPerUnit.setMunicipalityCode("43");
+        benchmarkPerUnit.setInventoryCode("5562");
+        benchmarkPerUnit.setYearMinus6Margin(new BigDecimal("1106.43"));
+        benchmarkPerUnit.setYearMinus5Margin(new BigDecimal("1128.79"));
+        benchmarkPerUnit.setYearMinus4Margin(new BigDecimal("1127.41"));
+        benchmarkPerUnit.setYearMinus3Margin(new BigDecimal("1109.64"));
+        benchmarkPerUnit.setYearMinus2Margin(new BigDecimal("1095.13"));
+        benchmarkPerUnit.setYearMinus1Margin(new BigDecimal("1000.00"));
+        benchmarkPerUnit.setYearMinus6Expense(new BigDecimal("1151.44"));
+        benchmarkPerUnit.setYearMinus5Expense(new BigDecimal("1156.59"));
+        benchmarkPerUnit.setYearMinus4Expense(new BigDecimal("1140.79"));
+        benchmarkPerUnit.setYearMinus3Expense(new BigDecimal("1186.58"));
+        benchmarkPerUnit.setYearMinus2Expense(new BigDecimal("1258.28"));
+        benchmarkPerUnit.setYearMinus1Expense(new BigDecimal("1258.28"));
+        benchmarkPerUnit.setUserEmail("jsmith@gmail.com");
+
+        Response response = target("/benchmarkPerUnits/60584").request().put(Entity.json(benchmarkPerUnit));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("BenchmarkPerUnitRsrc", jsonObject.getString("@type"));
+        assertEquals(60584, jsonObject.getInt("benchmarkPerUnitId"));
+        assertEquals(2024, jsonObject.getInt("programYear"));
+        assertEquals("Greenfeed", jsonObject.getString("unitComment"));
+        assertEquals("null", jsonObject.getString("expiryDate"));
+        assertEquals("43", jsonObject.getString("municipalityCode"));
+        assertEquals("Mount Waddington (Island part)", jsonObject.getString("municipalityDesc"));
+        assertEquals("5562", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Greenfeed", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("null", jsonObject.getString("structureGroupCode"));
+        assertEquals("null", jsonObject.getString("structureGroupDesc"));
+        assertEquals("5562", jsonObject.getString("inventoryCode"));
+        assertEquals("Greenfeed", jsonObject.getString("inventoryDesc"));
+        assertEquals(1106.43, jsonObject.getDouble("yearMinus6Margin"));
+        assertEquals(1128.79, jsonObject.getDouble("yearMinus5Margin"));
+        assertEquals(1127.41, jsonObject.getDouble("yearMinus4Margin"));
+        assertEquals(1109.64, jsonObject.getDouble("yearMinus3Margin"));
+        assertEquals(1095.13, jsonObject.getDouble("yearMinus2Margin"));
+        assertEquals(1000.00, jsonObject.getDouble("yearMinus1Margin"));
+        assertEquals(1151.44, jsonObject.getDouble("yearMinus6Expense"));
+        assertEquals(1156.59, jsonObject.getDouble("yearMinus5Expense"));
+        assertEquals(1140.79, jsonObject.getDouble("yearMinus4Expense"));
+        assertEquals(1186.58, jsonObject.getDouble("yearMinus3Expense"));
+        assertEquals(1258.28, jsonObject.getDouble("yearMinus2Expense"));
+        assertEquals(1258.28, jsonObject.getDouble("yearMinus1Expense"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
