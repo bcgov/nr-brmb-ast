@@ -175,4 +175,11 @@ public class ExpectedProductionEndpointsTest extends JerseyTest {
         assertEquals("Pounds", jsonObject.getString("cropUnitDesc"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(6)
+    public void testDeleteExpectedProduction() throws Exception {
+        Response response = target("/expectedProductions/341").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
