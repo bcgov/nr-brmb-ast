@@ -28,6 +28,7 @@ import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -84,5 +85,28 @@ public class ExpectedProductionEndpointsTest extends JerseyTest {
         assertEquals("1", jsonObject.getString("cropUnitCode"));
         assertEquals("Pounds", jsonObject.getString("cropUnitDesc"));
         assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(2)
+    public void testGetAllExpectedProductions() throws Exception {
+        Response response = target("/expectedProductions").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("ExpectedProductionListRsrc", jsonObject.getString("@type"));
+
+        JSONArray expectedProductionList = jsonObject.getJSONArray("expectedProductionList");
+        JSONObject expectedProduction = expectedProductionList.getJSONObject(0);
+        assertEquals("ExpectedProductionRsrc", expectedProduction.getString("@type"));
+        assertEquals(341, expectedProduction.getInt("expectedProductionId"));
+        assertEquals(0.907, expectedProduction.getDouble("expectedProductionPerProdUnit"));
+        assertEquals("73", expectedProduction.getString("inventoryItemCode"));
+        assertEquals("Strawberries", expectedProduction.getString("inventoryItemDesc"));
+        assertEquals("1", expectedProduction.getString("cropUnitCode"));
+        assertEquals("Pounds", expectedProduction.getString("cropUnitDesc"));
+        assertEquals("null", expectedProduction.getString("userEmail"));
     }
 }
