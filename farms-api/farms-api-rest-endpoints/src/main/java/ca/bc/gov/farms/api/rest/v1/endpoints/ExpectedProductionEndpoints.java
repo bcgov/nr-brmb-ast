@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public interface ExpectedProductionEndpoints {
 
-    @Operation(operationId = "Get all Expected Production resource by Inventory Item Code.", summary = "Get all Expected Production resource.", extensions = {
+    @Operation(operationId = "Get all Expected Production resource.", summary = "Get all Expected Production resource.", extensions = {
             @Extension(properties = {
                     @ExtensionProperty(name = "auth-type", value = "#{wso2.x-auth-type.app_and_app_user}"),
                     @ExtensionProperty(name = "throttling-tier", value = "Unlimited") }) })
