@@ -29,6 +29,7 @@ import ca.bc.gov.farms.service.api.v1.InventoryItemDetailService;
 import ca.bc.gov.farms.service.api.v1.InventoryTypeXrefService;
 import ca.bc.gov.farms.service.api.v1.LineItemService;
 import ca.bc.gov.farms.service.api.v1.MarketRatePremiumService;
+import ca.bc.gov.farms.service.api.v1.ProductiveUnitCodeService;
 import ca.bc.gov.farms.service.api.v1.StructureGroupAttributeService;
 import ca.bc.gov.farms.service.api.v1.YearConfigurationParameterService;
 import ca.bc.gov.farms.service.api.v1.impl.BenchmarkPerUnitServiceImpl;
@@ -47,6 +48,7 @@ import ca.bc.gov.farms.service.api.v1.impl.InventoryItemDetailServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.InventoryTypeXrefServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.LineItemServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.MarketRatePremiumServiceImpl;
+import ca.bc.gov.farms.service.api.v1.impl.ProductiveUnitCodeServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.StructureGroupAttributeServiceImpl;
 import ca.bc.gov.farms.service.api.v1.impl.YearConfigurationParameterServiceImpl;
 import ca.bc.gov.farms.service.api.v1.model.factory.BenchmarkPerUnitFactory;
@@ -60,6 +62,7 @@ import ca.bc.gov.farms.service.api.v1.model.factory.InventoryItemDetailFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.InventoryTypeXrefFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.LineItemFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.MarketRatePremiumFactory;
+import ca.bc.gov.farms.service.api.v1.model.factory.ProductiveUnitCodeFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.StructureGroupAttributeFactory;
 import ca.bc.gov.farms.service.api.v1.model.factory.YearConfigurationParameterFactory;
 import ca.bc.gov.farms.service.api.v1.validation.ModelValidator;
@@ -112,6 +115,8 @@ public class ServiceApiSpringConfig {
     private CropUnitConversionFactory cropUnitConversionFactory;
     @Autowired
     private ExpectedProductionFactory expectedProductionFactory;
+    @Autowired
+    private ProductiveUnitCodeFactory productiveUnitCodeFactory;
 
     // Imported Spring Config
     @Autowired
@@ -321,6 +326,21 @@ public class ServiceApiSpringConfig {
         result.setExpectedProductionFactory(expectedProductionFactory);
 
         result.setExpectedProductionDao(persistenceSpringConfig.expectedProductionDao());
+
+        return result;
+    }
+
+    @Bean
+    public ProductiveUnitCodeService productiveUnitCodeService() {
+        ProductiveUnitCodeServiceImpl result;
+
+        result = new ProductiveUnitCodeServiceImpl();
+        result.setModelValidator(modelValidator());
+        result.setApplicationProperties(applicationProperties);
+
+        result.setProductiveUnitCodeFactory(productiveUnitCodeFactory);
+
+        result.setProductiveUnitCodeDao(persistenceSpringConfig.productiveUnitCodeDao());
 
         return result;
     }
