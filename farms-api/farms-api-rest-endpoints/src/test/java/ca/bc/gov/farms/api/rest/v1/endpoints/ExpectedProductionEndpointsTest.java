@@ -132,4 +132,22 @@ public class ExpectedProductionEndpointsTest extends JerseyTest {
         assertEquals("Pounds", expectedProduction.getString("cropUnitDesc"));
         assertEquals("null", expectedProduction.getString("userEmail"));
     }
+
+    @Test
+    @Order(4)
+    public void testGetExpectedProduction() throws Exception {
+        Response response = target("/expectedProductions/341").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("ExpectedProductionRsrc", jsonObject.getString("@type"));
+        assertEquals(341, jsonObject.getInt("expectedProductionId"));
+        assertEquals(0.907, jsonObject.getDouble("expectedProductionPerProdUnit"));
+        assertEquals("73", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Strawberries", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("1", jsonObject.getString("cropUnitCode"));
+        assertEquals("Pounds", jsonObject.getString("cropUnitDesc"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
