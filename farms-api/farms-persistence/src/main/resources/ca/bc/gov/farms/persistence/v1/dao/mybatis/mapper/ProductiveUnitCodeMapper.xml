@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.ProductiveUnitCodeMapper">
+
+    <resultMap id="ProductiveUnitCodeDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.ProductiveUnitCodeDto">
+        <id property="code" column="code" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="description" column="description" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="fetchAll" resultMap="ProductiveUnitCodeDtoMap">
+        select iic.inventory_item_code code,
+               iic.description
+        from farms.farm_inventory_item_codes iic
+        join farms.farm_agristabilty_cmmdty_xref acx using (inventory_item_code)
+        where current_date between iic.established_date::date and iic.expiry_date::date
+        and acx.inventory_class_code in ('1','2')
+        and iic.inventory_item_code not in (
+            select structure_group_code
+	        from farm_structure_group_codes
+            where current_date between established_date::date and expiry_date::date
+        )
+        union all
+        select sgc.structure_group_code code,
+               sgc.description
+        from farms.farm_structure_group_codes sgc
+        where current_date between sgc.established_date::date and sgc.expiry_date::date
+        order by code
+    </select>
+</mapper>
