@@ -18,6 +18,7 @@ import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryItemDetailEndpointsIm
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryTypeXrefEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.LineItemEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.MarketRatePremiumEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ProductiveUnitCodeEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.StructureGroupAttributeEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.TopLevelEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.YearConfigurationParameterEndpointsImpl;
@@ -56,6 +57,7 @@ public class JerseyApplication extends JerseyResourceConfig {
         register(MarketRatePremiumEndpointsImpl.class);
         register(CropUnitConversionEndpointsImpl.class);
         register(ExpectedProductionEndpointsImpl.class);
+        register(ProductiveUnitCodeEndpointsImpl.class);
 
         register(MultiPartFeature.class);
         register(ImportEndpointsImpl.class);
