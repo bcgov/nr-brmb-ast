@@ -4,10 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -22,14 +18,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import ca.bc.gov.brmb.common.api.rest.code.endpoints.spring.CodeEndpointsSpringConfig;
-import ca.bc.gov.farms.api.rest.v1.endpoints.impl.CropUnitConversionEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryItemAttributeEndpointsImpl;
-import ca.bc.gov.farms.api.rest.v1.resource.ConversionUnitRsrc;
-import ca.bc.gov.farms.api.rest.v1.resource.CropUnitConversionRsrc;
 import ca.bc.gov.farms.api.rest.v1.resource.InventoryItemAttributeRsrc;
 import ca.bc.gov.farms.api.rest.v1.spring.EndpointsSpringConfigTest;
 import ca.bc.gov.farms.api.rest.v1.spring.ResourceFactorySpringConfig;
-import ca.bc.gov.farms.model.v1.ConversionUnit;
 import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
@@ -80,6 +72,40 @@ public class InventoryItemAttributeEndpointsTest extends JerseyTest {
 
         Response response = target("/inventoryItemAttributes").request().post(Entity.json(inventoryItemAttribute));
         assertEquals(201, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("InventoryItemAttributeRsrc", jsonObject.getString("@type"));
+        assertEquals(3961, jsonObject.getInt("inventoryItemAttributeId"));
+        assertEquals("73", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Strawberries", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("73", jsonObject.getString("rollupInventoryItemCode"));
+        assertEquals("Strawberries", jsonObject.getString("rollupInventoryItemDesc"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(2)
+    public void testGetInventoryItemAttributeByInventoryItemCode() throws Exception {
+        Response response = target("/inventoryItemAttributes").queryParam("inventoryItemCode", "73").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("InventoryItemAttributeRsrc", jsonObject.getString("@type"));
+        assertEquals(3961, jsonObject.getInt("inventoryItemAttributeId"));
+        assertEquals("73", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Strawberries", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("73", jsonObject.getString("rollupInventoryItemCode"));
+        assertEquals("Strawberries", jsonObject.getString("rollupInventoryItemDesc"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(3)
+    public void testGetInventoryItemAttribute() throws Exception {
+        Response response = target("/inventoryItemAttributes/3961").request().get();
+        assertEquals(200, response.getStatus());
 
         String jsonString = response.readEntity(String.class);
         JSONObject jsonObject = new JSONObject(jsonString);
