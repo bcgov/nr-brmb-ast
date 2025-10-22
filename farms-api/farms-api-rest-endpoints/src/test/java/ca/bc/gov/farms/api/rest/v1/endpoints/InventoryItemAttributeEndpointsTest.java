@@ -117,4 +117,34 @@ public class InventoryItemAttributeEndpointsTest extends JerseyTest {
         assertEquals("Strawberries", jsonObject.getString("rollupInventoryItemDesc"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(4)
+    public void testUpdateInventoryItemAttribute() throws Exception {
+        InventoryItemAttributeRsrc inventoryItemAttribute = new InventoryItemAttributeRsrc();
+        inventoryItemAttribute.setInventoryItemAttributeId(3961L);
+        inventoryItemAttribute.setInventoryItemCode("73");
+        inventoryItemAttribute.setRollupInventoryItemCode("5560");
+        inventoryItemAttribute.setUserEmail("jsmith@gmail.com");
+
+        Response response = target("/inventoryItemAttributes/3961").request().put(Entity.json(inventoryItemAttribute));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("InventoryItemAttributeRsrc", jsonObject.getString("@type"));
+        assertEquals(3961, jsonObject.getInt("inventoryItemAttributeId"));
+        assertEquals("73", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Strawberries", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("5560", jsonObject.getString("rollupInventoryItemCode"));
+        assertEquals("Alfalfa Dehy", jsonObject.getString("rollupInventoryItemDesc"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(5)
+    public void testDeleteInventoryItemAttribute() throws Exception {
+        Response response = target("/inventoryItemAttributes/3961").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
