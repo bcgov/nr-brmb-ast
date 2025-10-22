@@ -109,4 +109,27 @@ public class ExpectedProductionEndpointsTest extends JerseyTest {
         assertEquals("Pounds", expectedProduction.getString("cropUnitDesc"));
         assertEquals("null", expectedProduction.getString("userEmail"));
     }
+
+    @Test
+    @Order(3)
+    public void testGetAllExpectedProductions1() throws Exception {
+        Response response = target("/expectedProductions").queryParam("inventoryItemCode", "73").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("ExpectedProductionListRsrc", jsonObject.getString("@type"));
+
+        JSONArray expectedProductionList = jsonObject.getJSONArray("expectedProductionList");
+        JSONObject expectedProduction = expectedProductionList.getJSONObject(0);
+        assertEquals("ExpectedProductionRsrc", expectedProduction.getString("@type"));
+        assertEquals(341, expectedProduction.getInt("expectedProductionId"));
+        assertEquals(0.907, expectedProduction.getDouble("expectedProductionPerProdUnit"));
+        assertEquals("73", expectedProduction.getString("inventoryItemCode"));
+        assertEquals("Strawberries", expectedProduction.getString("inventoryItemDesc"));
+        assertEquals("1", expectedProduction.getString("cropUnitCode"));
+        assertEquals("Pounds", expectedProduction.getString("cropUnitDesc"));
+        assertEquals("null", expectedProduction.getString("userEmail"));
+    }
 }
