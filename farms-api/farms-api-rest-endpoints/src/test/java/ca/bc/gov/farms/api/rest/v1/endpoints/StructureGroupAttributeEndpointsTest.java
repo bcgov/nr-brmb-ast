@@ -139,4 +139,11 @@ public class StructureGroupAttributeEndpointsTest extends JerseyTest {
         assertEquals("Bovine", jsonObject.getString("rollupStructureGroupDesc"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(5)
+    public void testDeleteStructureGroupAttribute() throws Exception {
+        Response response = target("/structureGroupAttributes/21").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
