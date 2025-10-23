@@ -161,4 +161,11 @@ public class InventoryTypeXrefEndpointsTest extends JerseyTest {
         assertEquals("Accounts Payable", jsonObject.getString("inventoryClassDesc"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(5)
+    public void testDeleteInventoryTypeXref() throws Exception {
+        Response response = target("/inventoryTypeXrefs/233520").request().delete();
+        assertEquals(204, response.getStatus());
+    }
 }
