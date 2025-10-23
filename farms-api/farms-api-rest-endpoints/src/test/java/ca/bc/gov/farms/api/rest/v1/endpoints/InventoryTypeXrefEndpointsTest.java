@@ -133,4 +133,32 @@ public class InventoryTypeXrefEndpointsTest extends JerseyTest {
         assertEquals("Deferred Income and Receivables", jsonObject.getString("inventoryClassDesc"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(4)
+    public void testUpdateInventoryTypeXref() throws Exception {
+        InventoryTypeXrefRsrc inventoryTypeXref = new InventoryTypeXrefRsrc();
+        inventoryTypeXref.setAgristabilityCommodityXrefId(233520L);
+        inventoryTypeXref.setMarketCommodityInd("N");
+        inventoryTypeXref.setInventoryItemCode("5560");
+        inventoryTypeXref.setInventoryGroupCode("4");
+        inventoryTypeXref.setInventoryClassCode("5");
+        inventoryTypeXref.setUserEmail("jsmith@gmail.com");
+
+        Response response = target("/inventoryTypeXrefs/233520").request().put(Entity.json(inventoryTypeXref));
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("InventoryTypeXrefRsrc", jsonObject.getString("@type"));
+        assertEquals(233520, jsonObject.getInt("agristabilityCommodityXrefId"));
+        assertEquals("N", jsonObject.getString("marketCommodityInd"));
+        assertEquals("5560", jsonObject.getString("inventoryItemCode"));
+        assertEquals("Alfalfa Dehy", jsonObject.getString("inventoryItemDesc"));
+        assertEquals("4", jsonObject.getString("inventoryGroupCode"));
+        assertEquals("Buckwheat", jsonObject.getString("inventoryGroupDesc"));
+        assertEquals("5", jsonObject.getString("inventoryClassCode"));
+        assertEquals("Accounts Payable", jsonObject.getString("inventoryClassDesc"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
