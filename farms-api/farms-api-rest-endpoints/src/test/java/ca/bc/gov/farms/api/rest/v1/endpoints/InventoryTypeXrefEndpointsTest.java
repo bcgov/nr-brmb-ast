@@ -27,6 +27,7 @@ import ca.bc.gov.farms.service.api.v1.spring.ServiceApiSpringConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -86,5 +87,30 @@ public class InventoryTypeXrefEndpointsTest extends JerseyTest {
         assertEquals("4", jsonObject.getString("inventoryClassCode"));
         assertEquals("Deferred Income and Receivables", jsonObject.getString("inventoryClassDesc"));
         assertEquals("null", jsonObject.getString("userEmail"));
+    }
+
+    @Test
+    @Order(2)
+    public void testGetInventoryTypeXrefsByInventoryClassCode() throws Exception {
+        Response response = target("/inventoryTypeXrefs").queryParam("inventoryClassCode", "4").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals("InventoryTypeXrefListRsrc", jsonObject.getString("@type"));
+
+        JSONArray inventoryTypeXrefList = jsonObject.getJSONArray("inventoryTypeXrefList");
+        JSONObject inventoryTypeXref = inventoryTypeXrefList.getJSONObject(0);
+        assertEquals("InventoryTypeXrefRsrc", inventoryTypeXref.getString("@type"));
+        assertEquals(233520, inventoryTypeXref.getInt("agristabilityCommodityXrefId"));
+        assertEquals("Y", inventoryTypeXref.getString("marketCommodityInd"));
+        assertEquals("73", inventoryTypeXref.getString("inventoryItemCode"));
+        assertEquals("Strawberries", inventoryTypeXref.getString("inventoryItemDesc"));
+        assertEquals("3", inventoryTypeXref.getString("inventoryGroupCode"));
+        assertEquals("Berries", inventoryTypeXref.getString("inventoryGroupDesc"));
+        assertEquals("4", inventoryTypeXref.getString("inventoryClassCode"));
+        assertEquals("Deferred Income and Receivables", inventoryTypeXref.getString("inventoryClassDesc"));
+        assertEquals("null", inventoryTypeXref.getString("userEmail"));
     }
 }
