@@ -7,5 +7,6 @@ GRANT EXECUTE ON FUNCTION farms_calculator_pkg.read_operations_for_accrual_impor
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_all_sc_rev TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_calculator_pkg TO "app_farms_rest_proxy";
