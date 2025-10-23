@@ -3,8 +3,6 @@ package ca.bc.gov.farms.service.api.v1.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +25,6 @@ public class LineItemServiceImpl implements LineItemService {
 
     private static final Logger logger = LoggerFactory.getLogger(LineItemServiceImpl.class);
 
-    private Properties applicationProperties;
-
     private ModelValidator modelValidator;
 
     // factories
@@ -36,10 +32,6 @@ public class LineItemServiceImpl implements LineItemService {
 
     // daos
     private LineItemDao lineItemDao;
-
-    public void setApplicationProperties(Properties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
 
     public void setModelValidator(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;
