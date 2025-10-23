@@ -99,4 +99,21 @@ public class StructureGroupAttributeEndpointsTest extends JerseyTest {
         assertEquals("Other Livestock", jsonObject.getString("rollupStructureGroupDesc"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
+
+    @Test
+    @Order(3)
+    public void testGetStructureGroupAttribute() throws Exception {
+        Response response = target("/structureGroupAttributes/21").request().get();
+        assertEquals(200, response.getStatus());
+
+        String jsonString = response.readEntity(String.class);
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals("StructureGroupAttributeRsrc", jsonObject.getString("@type"));
+        assertEquals(21, jsonObject.getInt("structureGroupAttributeId"));
+        assertEquals("100", jsonObject.getString("structureGroupCode"));
+        assertEquals("Alpaca", jsonObject.getString("structureGroupDesc"));
+        assertEquals("120", jsonObject.getString("rollupStructureGroupCode"));
+        assertEquals("Other Livestock", jsonObject.getString("rollupStructureGroupDesc"));
+        assertEquals("null", jsonObject.getString("userEmail"));
+    }
 }
