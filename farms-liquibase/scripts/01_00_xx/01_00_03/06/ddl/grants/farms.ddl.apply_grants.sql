@@ -18,6 +18,7 @@ GRANT EXECUTE ON FUNCTION farms_types_pkg.invalid_ref_scenario_count_msg TO "app
 GRANT EXECUTE ON FUNCTION farms_types_pkg.pin_does_not_exist_num TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.pin_does_not_exist_msg TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.in_prog_scenario_not_exist_num TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_types_pkg.in_prog_scenario_not_exist_msg TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_calculator_pkg TO "app_farms_rest_proxy";
 GRANT USAGE ON SCHEMA farms_types_pkg TO "app_farms_rest_proxy";
