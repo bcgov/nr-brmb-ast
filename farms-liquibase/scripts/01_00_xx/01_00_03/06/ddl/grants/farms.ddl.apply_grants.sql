@@ -10,6 +10,7 @@ GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_re
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.revision_count_increment TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.invalid_revision_count_code TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_types_pkg.invalid_revision_count_msg TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_calculator_pkg TO "app_farms_rest_proxy";
 GRANT USAGE ON SCHEMA farms_types_pkg TO "app_farms_rest_proxy";
