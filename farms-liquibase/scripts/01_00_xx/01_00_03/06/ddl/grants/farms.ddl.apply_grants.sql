@@ -21,6 +21,7 @@ GRANT EXECUTE ON FUNCTION farms_types_pkg.in_prog_scenario_not_exist_num TO "app
 GRANT EXECUTE ON FUNCTION farms_types_pkg.in_prog_scenario_not_exist_msg TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.pin_already_in_comb_farm_num TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.pin_already_in_comb_farm_msg TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_types_pkg.xref_more_than_one_found_num TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_calculator_pkg TO "app_farms_rest_proxy";
 GRANT USAGE ON SCHEMA farms_types_pkg TO "app_farms_rest_proxy";
