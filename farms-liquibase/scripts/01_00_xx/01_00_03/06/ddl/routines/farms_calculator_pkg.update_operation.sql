@@ -62,5 +62,5 @@ begin
         raise exception '%', farms_types_pkg.invalid_revision_count_msg()
         using errcode = farms_types_pkg.invalid_revision_count_code()::text;
     end if;
-  end;
+end;
 $$;
