@@ -12,6 +12,7 @@ GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_client TO "app_farms_rest_
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_py TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_pyv TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.create_ops TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_scenario TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
