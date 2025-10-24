@@ -19,8 +19,8 @@ begin
 
     get diagnostics ora2pg_rowcount = row_count;
     if ora2pg_rowcount <> 1 then
-      raise exception '%', farms_types_pkg.invalid_revision_count_msg()
-      using errcode = farms_types_pkg.invalid_revision_count_code()::text;
+        raise exception '%', farms_types_pkg.invalid_revision_count_msg()
+        using errcode = farms_types_pkg.invalid_revision_count_code()::text;
     end if;
 end;
 $$;
