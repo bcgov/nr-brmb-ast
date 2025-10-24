@@ -8,6 +8,7 @@ GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_all_sc_rev TO "app_farms_
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_sc_rev TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_person TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_person TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_client TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
