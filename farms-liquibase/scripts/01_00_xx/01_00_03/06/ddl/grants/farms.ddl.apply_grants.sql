@@ -27,6 +27,7 @@ GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_parent_scenario TO "app_fa
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.copy_adjustments TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_ref_scenario TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.assign_to_user TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_cash_margins_ind TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
