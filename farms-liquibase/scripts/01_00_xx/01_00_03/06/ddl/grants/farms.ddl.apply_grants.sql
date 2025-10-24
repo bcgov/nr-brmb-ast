@@ -23,6 +23,7 @@ GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_operation TO "app_farms_r
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_pi TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_scenario TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.log_import_comments TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_parent_scenario TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
