@@ -15,6 +15,7 @@ GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.create_ops TO "app_farms_rest_pr
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_scenario TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_year TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_client TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_program_year_version TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
