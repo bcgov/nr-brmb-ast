@@ -44,7 +44,7 @@ begin
     ) alias1;
 
     if v_missing_from_old = 0 and v_missing_from_new = 0 then
-      v_result := 1;
+        v_result := 1;
     end if;
 
     return v_result;
