@@ -42,6 +42,7 @@ GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.save_bpu_xref TO "app_farms_rest
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.pin_exists TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.pin_checked_out_by_user TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.matching_sc_exists TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_calculator_pkg.cf_matches_verified TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
