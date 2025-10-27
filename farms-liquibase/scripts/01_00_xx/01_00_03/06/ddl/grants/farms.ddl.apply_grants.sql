@@ -51,6 +51,7 @@ GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.combined_farm_add TO "app_farms_
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.combined_farm_remove TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.combined_farm_update TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_pin_rev_counts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_py_local_received_dates TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
