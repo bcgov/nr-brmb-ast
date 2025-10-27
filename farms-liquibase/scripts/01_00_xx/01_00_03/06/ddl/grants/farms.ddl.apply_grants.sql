@@ -38,6 +38,7 @@ GRANT EXECUTE ON FUNCTION farms_calculator_pkg.update_sc_pyv TO "app_farms_rest_
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_op_schedule TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.sc_log TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_bpu_xrefs TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.save_bpu_xref TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
