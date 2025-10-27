@@ -45,6 +45,7 @@ GRANT EXECUTE ON FUNCTION farms_calculator_pkg.matching_sc_exists TO "app_farms_
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.cf_matches_verified TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.cf_get_sc_id_to_add TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.cf_has_accounting_code_error TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_calculator_pkg.cf_ref_years_mismatch_error TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
