@@ -33,6 +33,7 @@ GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_late_participant_ind TO "
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.save_scenario_as_new TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_pyv_copy_old TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_adj_pyv TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_adj_for_generated_ops TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
