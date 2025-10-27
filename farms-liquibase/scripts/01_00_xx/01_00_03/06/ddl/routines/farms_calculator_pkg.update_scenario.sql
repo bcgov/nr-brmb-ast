@@ -44,8 +44,8 @@ begin
     begin
         select sc.scenario_state_code,
                sc.scenario_category_code
-        into old_scenario_state_code,
-             old_scenario_category_code
+        into strict old_scenario_state_code,
+                    old_scenario_category_code
         from farms.farm_agristability_scenarios sc
         where sc.agristability_scenario_id = in_agristability_scenario_id;
     exception
