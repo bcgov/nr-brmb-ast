@@ -57,6 +57,7 @@ GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.create_enw_enrolment TO "app_far
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_enw_enrolment TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.create_partner TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_partner TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_partner TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
