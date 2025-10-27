@@ -60,6 +60,7 @@ GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.update_partner TO "app_farms_res
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_partner TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.read_all_partners TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.copy_scenario_pyv TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.upsert_scenario_config_param TO "app_farms_rest_proxy";
 
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_code TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_types_pkg.data_not_current_msg TO "app_farms_rest_proxy";
