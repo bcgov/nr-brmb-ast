@@ -8,11 +8,11 @@ as
 $$
 begin
 
-    update farms.farm_agristability_scenarios sc
-    set sc.participnt_data_src_code = in_participnt_data_src_code,
-        sc.who_updated = in_user,
-        sc.when_updated = current_timestamp
-    where sc.agristability_scenario_id = in_agristability_scenario_id;
+    update farms.farm_agristability_scenarios
+    set participnt_data_src_code = in_participnt_data_src_code,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where agristability_scenario_id = in_agristability_scenario_id;
 
 end;
 $$;

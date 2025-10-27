@@ -18,12 +18,12 @@ begin
     from farms.farm_scenarios_vw sv
     where sv.agristability_scenario_id = in_scenario_id;
 
-    update farms.farm_program_years py
-    set py.assigned_to_userid = in_user,
-        py.assigned_to_user_guid = in_user_guid,
-        py.who_updated = in_user,
-        py.when_updated = current_timestamp
-    where py.program_year_id = v_program_year_id;
+    update farms.farm_program_years
+    set assigned_to_userid = in_user,
+        assigned_to_user_guid = in_user_guid,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where program_year_id = v_program_year_id;
 
     call farms_calculator_pkg.update_all_sc_rev(in_scenario_id, in_scenario_revision_count, in_user);
 

@@ -8,15 +8,15 @@ as
 $$
 begin
 
-    update farms.farm_agristability_scenarios sc
-    set sc.scenario_category_code = in_scenario_category_code
-    where sc.agristability_scenario_id = in_agristability_scenario_id;
+    update farms.farm_agristability_scenarios
+    set scenario_category_code = in_scenario_category_code
+    where agristability_scenario_id = in_agristability_scenario_id;
 
-    update farms.farm_agristability_scenarios sc
-    set sc.scenario_category_code = in_scenario_category_code,
-        sc.who_updated = in_user,
-        sc.when_updated = current_timestamp
-    where sc.agristability_scenario_id in (
+    update farms.farm_agristability_scenarios
+    set scenario_category_code = in_scenario_category_code,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where agristability_scenario_id in (
         select rs.agristability_scenario_id
         from farms.farm_reference_scenarios rs
         where rs.for_agristability_scenario_id = in_agristability_scenario_id

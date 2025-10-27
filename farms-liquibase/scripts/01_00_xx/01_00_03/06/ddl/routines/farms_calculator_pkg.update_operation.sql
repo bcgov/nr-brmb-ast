@@ -29,33 +29,33 @@ $$
 declare
     ora2pg_rowcount int;
 begin
-    update farms.farm_farming_operations op
-    set op.operation_number = in_operation_number,
-        op.federal_accounting_code = in_federal_accounting_code,
-        op.fiscal_year_start = in_fiscal_year_start,
-        op.fiscal_year_end = in_fiscal_year_end,
-        op.partnership_pin = in_partnership_pin,
-        op.partnership_name = in_partnership_name,
-        op.partnership_percent = in_partnership_percent,
-        op.crop_disaster_ind = in_crop_disaster_ind,
-        op.crop_share_ind = in_crop_share_ind,
-        op.feeder_member_ind = in_feeder_member_ind,
-        op.landlord_ind = in_landlord_ind,
-        op.livestock_disaster_ind = in_livestock_disaster_ind,
-        op.business_use_home_expense = in_business_use_home_expense,
-        op.expenses = in_expenses,
-        op.gross_income = in_gross_income,
-        op.inventory_adjustments = in_inventory_adjustments,
-        op.net_farm_income = in_net_farm_income,
-        op.net_income_after_adj = in_net_income_after_adj,
-        op.net_income_before_adj = in_net_income_before_adj,
-        op.other_deductions = in_other_deductions,
-        op.locally_updated_ind = 'Y',
-        op.revision_count = op.revision_count + 1,
-        op.who_updated = in_user,
-        op.when_updated = current_timestamp
-    where op.farming_operation_id = in_farming_operation_id
-    and op.revision_count = in_revision_count;
+    update farms.farm_farming_operations
+    set operation_number = in_operation_number,
+        federal_accounting_code = in_federal_accounting_code,
+        fiscal_year_start = in_fiscal_year_start,
+        fiscal_year_end = in_fiscal_year_end,
+        partnership_pin = in_partnership_pin,
+        partnership_name = in_partnership_name,
+        partnership_percent = in_partnership_percent,
+        crop_disaster_ind = in_crop_disaster_ind,
+        crop_share_ind = in_crop_share_ind,
+        feeder_member_ind = in_feeder_member_ind,
+        landlord_ind = in_landlord_ind,
+        livestock_disaster_ind = in_livestock_disaster_ind,
+        business_use_home_expense = in_business_use_home_expense,
+        expenses = in_expenses,
+        gross_income = in_gross_income,
+        inventory_adjustments = in_inventory_adjustments,
+        net_farm_income = in_net_farm_income,
+        net_income_after_adj = in_net_income_after_adj,
+        net_income_before_adj = in_net_income_before_adj,
+        other_deductions = in_other_deductions,
+        locally_updated_ind = 'Y',
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where farming_operation_id = in_farming_operation_id
+    and revision_count = in_revision_count;
 
     get diagnostics ora2pg_rowcount = row_count;
     if ora2pg_rowcount <> 1 then

@@ -14,18 +14,18 @@ $$
 declare
     ora2pg_rowcount int;
 begin
-    update farms.farm_agristability_clients ac
-    set ac.participant_class_code = in_participant_class_code,
-        ac.participant_pin = in_participant_pin,
-        ac.sin = in_sin,
-        ac.business_number = in_business_number,
-        ac.trust_number = in_trust_number,
-        ac.locally_updated_ind = 'Y',
-        ac.revision_count = ac.revision_count + 1,
-        ac.who_updated = in_user,
-        ac.when_updated = current_timestamp
-    where ac.agristability_client_id = in_agristability_client_id
-    and ac.revision_count = in_revision_count;
+    update farms.farm_agristability_clients
+    set participant_class_code = in_participant_class_code,
+        participant_pin = in_participant_pin,
+        sin = in_sin,
+        business_number = in_business_number,
+        trust_number = in_trust_number,
+        locally_updated_ind = 'Y',
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where agristability_client_id = in_agristability_client_id
+    and revision_count = in_revision_count;
 
     get diagnostics ora2pg_rowcount = row_count;
     if ora2pg_rowcount <> 1 then

@@ -19,12 +19,12 @@ begin
     join farms.farm_program_year_versions pyv on pyv.program_year_version_id = s.program_year_version_id
     where s.agristability_scenario_id = in_scenario_id;
 
-    update farms.farm_program_years py
-    set py.late_participant_ind = in_late_participant_ind,
-        py.revision_count = py.revision_count + 1,
-        py.who_updated = in_user,
-        py.when_updated = current_timestamp
-    where py.program_year_id = v_program_year_id;
+    update farms.farm_program_years
+    set late_participant_ind = in_late_participant_ind,
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where program_year_id = v_program_year_id;
 
     call farms_calculator_pkg.update_all_sc_rev(in_scenario_id, in_scenario_revision_count, in_user);
 

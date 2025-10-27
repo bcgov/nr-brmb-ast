@@ -33,37 +33,37 @@ $$
 declare
     ora2pg_rowcount int;
 begin
-    update farms.farm_program_year_versions pyv
-    set pyv.municipality_code = in_municipality_code,
-        pyv.province_of_residence = in_province_of_residence,
-        pyv.province_of_main_farmstead = in_province_of_main_farmstead,
-        pyv.sole_proprietor_ind = in_sole_proprietor_ind,
-        pyv.corporate_shareholder_ind = in_corporate_shareholder_ind,
-        pyv.coop_member_ind = in_coop_member_ind,
-        pyv.partnership_member_ind = in_partnership_member_ind,
-        pyv.accrual_cash_conversion_ind = in_accrual_cash_conversion_ind,
-        pyv.combined_farm_ind = in_combined_farm_ind,
-        pyv.completed_prod_cycle_ind = in_completed_prod_cycle_ind,
-        pyv.disaster_ind = in_disaster_ind,
-        pyv.farm_years = in_farm_years,
-        pyv.last_year_farming_ind = in_last_year_farming_ind,
-        pyv.federal_status_code = in_federal_status_code,
-        pyv.common_share_total = in_common_share_total,
-        pyv.accrual_worksheet_ind = in_accrual_worksheet_ind,
-        pyv.cwb_worksheet_ind = in_cwb_worksheet_ind,
-        pyv.perishable_commodities_ind = in_perishable_commodities_ind,
-        pyv.receipts_ind = in_receipts_ind,
-        pyv.other_text = in_other_text,
-        pyv.can_send_cob_to_rep_ind = in_can_send_cob_to_rep_ind,
-        pyv.participant_profile_code = in_participant_profile_code,
-        pyv.post_mark_date = in_post_mark_date,
-        pyv.received_date = in_received_date,
-        pyv.locally_updated_ind = 'Y',
-        pyv.revision_count = pyv.revision_count + 1,
-        pyv.who_updated = in_user,
-        pyv.when_updated = current_timestamp
-    where pyv.program_year_version_id = in_program_year_version_id
-    and pyv.revision_count = in_revision_count;
+    update farms.farm_program_year_versions
+    set municipality_code = in_municipality_code,
+        province_of_residence = in_province_of_residence,
+        province_of_main_farmstead = in_province_of_main_farmstead,
+        sole_proprietor_ind = in_sole_proprietor_ind,
+        corporate_shareholder_ind = in_corporate_shareholder_ind,
+        coop_member_ind = in_coop_member_ind,
+        partnership_member_ind = in_partnership_member_ind,
+        accrual_cash_conversion_ind = in_accrual_cash_conversion_ind,
+        combined_farm_ind = in_combined_farm_ind,
+        completed_prod_cycle_ind = in_completed_prod_cycle_ind,
+        disaster_ind = in_disaster_ind,
+        farm_years = in_farm_years,
+        last_year_farming_ind = in_last_year_farming_ind,
+        federal_status_code = in_federal_status_code,
+        common_share_total = in_common_share_total,
+        accrual_worksheet_ind = in_accrual_worksheet_ind,
+        cwb_worksheet_ind = in_cwb_worksheet_ind,
+        perishable_commodities_ind = in_perishable_commodities_ind,
+        receipts_ind = in_receipts_ind,
+        other_text = in_other_text,
+        can_send_cob_to_rep_ind = in_can_send_cob_to_rep_ind,
+        participant_profile_code = in_participant_profile_code,
+        post_mark_date = in_post_mark_date,
+        received_date = in_received_date,
+        locally_updated_ind = 'Y',
+        revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where program_year_version_id = in_program_year_version_id
+    and revision_count = in_revision_count;
 
     get diagnostics ora2pg_rowcount = row_count;
     if ora2pg_rowcount <> 1 then

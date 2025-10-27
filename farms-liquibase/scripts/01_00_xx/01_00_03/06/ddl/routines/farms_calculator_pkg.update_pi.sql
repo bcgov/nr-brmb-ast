@@ -28,12 +28,12 @@ begin
     for pi_val in pi_cursor
     loop
         if (pi_val.old_pi_num is not null and pi_val.old_pi_num::text <> '') and (pi_val.new_pi_num is not null and pi_val.new_pi_num::text <> '') then
-            update farms.farm_production_insurances pi
-            set pi.locally_updated_ind = 'Y',
-                pi.revision_count = pi.revision_count + 1,
-                pi.when_updated = current_timestamp,
-                pi.who_updated = in_user
-            where pi.production_insurance_id = pi_val.production_insurance_id;
+            update farms.farm_production_insurances
+            set locally_updated_ind = 'Y',
+                revision_count = revision_count + 1,
+                when_updated = current_timestamp,
+                who_updated = in_user
+            where production_insurance_id = pi_val.production_insurance_id;
         else
             if (pi_val.old_pi_num is not null and pi_val.old_pi_num::text <> '') and coalesce(pi_val.new_pi_num::text, '') = '' then
                 delete from farms.farm_production_insurances pi

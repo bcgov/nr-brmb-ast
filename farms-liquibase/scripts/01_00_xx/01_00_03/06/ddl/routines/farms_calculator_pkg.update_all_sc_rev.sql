@@ -17,13 +17,13 @@ begin
     from farms.farm_scenarios_vw sv
     where sv.agristability_scenario_id = in_scenario_id;
 
-    update farms.farm_agristability_scenarios s
-    set s.revision_count = s.revision_count + 1,
-        s.who_updated = in_user,
-        s.when_updated = current_timestamp
-    where s.agristability_scenario_id != in_scenario_id
-    and s.scenario_class_code = 'USER'
-    and s.program_year_version_id in (
+    update farms.farm_agristability_scenarios
+    set revision_count = revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
+    where agristability_scenario_id != in_scenario_id
+    and scenario_class_code = 'USER'
+    and program_year_version_id in (
         select pyv.program_year_version_id
         from farms.farm_program_year_versions pyv
         where pyv.program_year_id = v_program_year_id

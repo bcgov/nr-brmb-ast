@@ -75,9 +75,9 @@ begin
                                                                 in_user);
             end loop;
 
-            update farms.farm_agristability_scenarios sc
-            set sc.default_ind = 'Y'
-            where sc.agristability_scenario_id = in_agristability_scenario_id;
+            update farms.farm_agristability_scenarios
+            set default_ind = 'Y'
+            where agristability_scenario_id = in_agristability_scenario_id;
         end if;
 
         call farms_calculator_pkg.update_scenario_state(in_agristability_scenario_id,
@@ -107,13 +107,13 @@ begin
         );
     end if;
 
-    update farms.farm_agristability_scenarios sc
-    set sc.description = in_description,
-        sc.default_ind = new_default_ind,
-        sc.verifier_user_id = in_verifier_user_id,
-        sc.when_updated = current_timestamp,
-        sc.who_updated = in_user
-    where sc.agristability_scenario_id = in_agristability_scenario_id;
+    update farms.farm_agristability_scenarios
+    set description = in_description,
+        default_ind = new_default_ind,
+        verifier_user_id = in_verifier_user_id,
+        when_updated = current_timestamp,
+        who_updated = in_user
+    where agristability_scenario_id = in_agristability_scenario_id;
 
 end;
 $$;
