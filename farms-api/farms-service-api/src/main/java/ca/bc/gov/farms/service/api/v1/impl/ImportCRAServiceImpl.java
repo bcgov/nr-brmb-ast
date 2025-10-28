@@ -105,7 +105,7 @@ public class ImportCRAServiceImpl extends BaseServiceImpl implements ImportCRASe
             vdao.uploadedVersion(
                     importVersionId,
                     ImportLogFormatter.formatStagingXml(errors, warnings, conn),
-                    new Boolean(!(errors.size() == 0) || !validated),
+                    Boolean.valueOf(!(errors.size() == 0) || !validated),
                     userId);
             logger.debug("Completed csv load");
         } catch (SQLException | DaoException e) {

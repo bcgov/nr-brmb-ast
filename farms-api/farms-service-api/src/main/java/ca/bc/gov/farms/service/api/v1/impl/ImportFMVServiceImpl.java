@@ -85,7 +85,7 @@ public class ImportFMVServiceImpl extends BaseServiceImpl implements ImportFMVSe
 
             // end
             String xml = ImportLogFormatter.createStagingXml(numRows, stagingErrors);
-            Boolean hasErrors = new Boolean(stagingErrors.size() != 0);
+            Boolean hasErrors = Boolean.valueOf(stagingErrors.size() != 0);
             vdao.uploadedVersion(importVersionId, xml, hasErrors, userId);
             connection.commit();
         } catch (Exception e) {

@@ -1,7 +1,5 @@
 package ca.bc.gov.farms.service.api.v1.spring;
 
-import java.util.Properties;
-
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -85,8 +83,6 @@ public class ServiceApiSpringConfig {
     // Beans provided by EndpointsSpringConfig
     @Autowired
     private ResourceBundleMessageSource messageSource;
-    @Autowired
-    private Properties applicationProperties;
 
     // Beans provided by ResourceFactorySpringConfig
     @Autowired
@@ -141,7 +137,6 @@ public class ServiceApiSpringConfig {
 
         result = new BenchmarkPerUnitServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setBenchmarkPerUnitFactory(benchmarkPerUnitFactory);
 
@@ -156,7 +151,6 @@ public class ServiceApiSpringConfig {
 
         result = new FairMarketValueServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setFairMarketValueFactory(fairMarketValueFactory);
 
@@ -171,7 +165,6 @@ public class ServiceApiSpringConfig {
 
         result = new InventoryItemDetailServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setInventoryItemDetailFactory(inventoryItemDetailFactory);
 
@@ -186,7 +179,6 @@ public class ServiceApiSpringConfig {
 
         result = new InventoryTypeXrefServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setInventoryTypeXrefFactory(inventoryTypeXrefFactory);
 
@@ -201,7 +193,6 @@ public class ServiceApiSpringConfig {
 
         result = new InventoryItemAttributeServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setInventoryItemAttributeFactory(inventoryItemAttributeFactory);
 
@@ -216,7 +207,6 @@ public class ServiceApiSpringConfig {
 
         result = new StructureGroupAttributeServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setStructureGroupAttributeFactory(structureGroupAttributeFactory);
 
@@ -231,7 +221,6 @@ public class ServiceApiSpringConfig {
 
         result = new ConfigurationParameterServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setConfigurationParameterFactory(configurationParameterFactory);
 
@@ -246,7 +235,6 @@ public class ServiceApiSpringConfig {
 
         result = new LineItemServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setLineItemFactory(lineItemFactory);
 
@@ -261,7 +249,6 @@ public class ServiceApiSpringConfig {
 
         result = new FruitVegTypeDetailServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setFruitVegTypeDetailFactory(fruitVegTypeDetailFactory);
 
@@ -276,7 +263,6 @@ public class ServiceApiSpringConfig {
 
         result = new YearConfigurationParameterServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setYearConfigurationParameterFactory(yearConfigurationParameterFactory);
 
@@ -291,7 +277,6 @@ public class ServiceApiSpringConfig {
 
         result = new MarketRatePremiumServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setMarketRatePremiumFactory(marketRatePremiumFactory);
 
@@ -306,7 +291,6 @@ public class ServiceApiSpringConfig {
 
         result = new CropUnitConversionServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setCropUnitConversionFactory(cropUnitConversionFactory);
 
@@ -321,7 +305,6 @@ public class ServiceApiSpringConfig {
 
         result = new ExpectedProductionServiceImpl();
         result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setExpectedProductionFactory(expectedProductionFactory);
 
@@ -335,8 +318,6 @@ public class ServiceApiSpringConfig {
         ProductiveUnitCodeServiceImpl result;
 
         result = new ProductiveUnitCodeServiceImpl();
-        result.setModelValidator(modelValidator());
-        result.setApplicationProperties(applicationProperties);
 
         result.setProductiveUnitCodeFactory(productiveUnitCodeFactory);
 

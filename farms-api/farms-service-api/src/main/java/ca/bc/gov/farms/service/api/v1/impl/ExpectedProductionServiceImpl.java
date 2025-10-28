@@ -1,8 +1,6 @@
 package ca.bc.gov.farms.service.api.v1.impl;
 
 import java.util.List;
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +23,6 @@ public class ExpectedProductionServiceImpl implements ExpectedProductionService 
 
     private static final Logger logger = LoggerFactory.getLogger(ExpectedProductionServiceImpl.class);
 
-    private Properties applicationProperties;
-
     private ModelValidator modelValidator;
 
     // factories
@@ -34,10 +30,6 @@ public class ExpectedProductionServiceImpl implements ExpectedProductionService 
 
     // daos
     private ExpectedProductionDao expectedProductionDao;
-
-    public void setApplicationProperties(Properties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
 
     public void setModelValidator(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;

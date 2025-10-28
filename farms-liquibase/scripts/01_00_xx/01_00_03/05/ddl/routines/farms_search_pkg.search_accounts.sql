@@ -12,11 +12,11 @@ declare
     v_cursor refcursor;
 begin
     if (in_pin is not null and in_pin::text <> '') then
-        v_cursor := farm_search_pkg_search_accounts_by_pin(in_pin);
+        v_cursor := farms_search_pkg.search_accounts_by_pin(in_pin);
     elsif (in_user_id is not null and in_user_id::text <> '') then
-        v_cursor := farm_search_pkg_search_accounts_by_rep(in_user_id);
+        v_cursor := farms_search_pkg.search_accounts_by_rep(in_user_id);
     else
-        v_cursor := farm_search_pkg_search_accounts_by_name(in_name, in_city, in_postal_code);
+        v_cursor := farms_search_pkg.search_accounts_by_name(in_name, in_city, in_postal_code);
     end if;
 
     return v_cursor;

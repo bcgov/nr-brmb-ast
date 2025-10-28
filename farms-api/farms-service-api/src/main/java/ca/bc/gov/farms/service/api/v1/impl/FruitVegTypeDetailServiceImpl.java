@@ -1,8 +1,6 @@
 package ca.bc.gov.farms.service.api.v1.impl;
 
 import java.util.List;
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +23,6 @@ public class FruitVegTypeDetailServiceImpl implements FruitVegTypeDetailService 
 
     private static final Logger logger = LoggerFactory.getLogger(FruitVegTypeDetailServiceImpl.class);
 
-    private Properties applicationProperties;
-
     private ModelValidator modelValidator;
 
     // factories
@@ -34,10 +30,6 @@ public class FruitVegTypeDetailServiceImpl implements FruitVegTypeDetailService 
 
     // daos
     private FruitVegTypeDetailDao fruitVegTypeDetailDao;
-
-    public void setApplicationProperties(Properties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
 
     public void setModelValidator(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;

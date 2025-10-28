@@ -89,6 +89,11 @@
             "include": {
                 "file": "scripts/01_00_xx/01_00_03/05/farms.01_00_03_05.ddl.json"
             }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/06/farms.01_00_03_06.ddl.json"
+            }
         }
     ]
 }

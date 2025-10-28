@@ -1,8 +1,6 @@
 package ca.bc.gov.farms.service.api.v1.impl;
 
 import java.util.List;
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +23,6 @@ public class YearConfigurationParameterServiceImpl implements YearConfigurationP
 
     private static final Logger logger = LoggerFactory.getLogger(YearConfigurationParameterServiceImpl.class);
 
-    private Properties applicationProperties;
-
     private ModelValidator modelValidator;
 
     // factories
@@ -34,10 +30,6 @@ public class YearConfigurationParameterServiceImpl implements YearConfigurationP
 
     // daos
     private YearConfigurationParameterDao yearConfigurationParameterDao;
-
-    public void setApplicationProperties(Properties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
 
     public void setModelValidator(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;
