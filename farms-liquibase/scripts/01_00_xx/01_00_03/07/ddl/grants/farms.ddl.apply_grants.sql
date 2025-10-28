@@ -25,3 +25,4 @@ GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_chef_submssn_status_codes TO "app
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_line_items TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_deduction_line_items TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_inventory_valid_items TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_scheduled_job TO "app_farms_rest_proxy";
