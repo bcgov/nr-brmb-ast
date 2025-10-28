@@ -8,26 +8,25 @@ declare
 
     v_encrypted bytea;
     v_decrypted bytea;
-    v_clean bytea;
     v_key text;
-    v_return_string text := null;
+    v_clean text;
 
 begin
     if in_string is not null and in_string <> '' then
-        -- Decode from base64 to binary
+        -- Decode base64 input to binary
         v_encrypted := decode(in_string, 'base64');
 
-        -- Get encryption key
+        -- Get your encryption key
         v_key := farms_webapp_pkg.get_encryption_key();
 
-        -- Decrypt (same algorithm as encrypt)
+        -- Decrypt (must match algorithm from encrypt)
         v_decrypted := farms_webapp_pkg.decrypt(v_encrypted, v_key::bytea, '3des');
 
-        -- Remove null bytes *at the binary level*
-        v_clean := regexp_replace(encode(v_decrypted, 'escape'), '\\\\000', '', 'g')::bytea;
+        -- Convert binary to escaped text, remove nulls and other padding
+        v_clean := replace(encode(v_decrypted, 'escape'), E'\\000', '');
 
-        -- Now safely convert to text
-        v_return_string := rtrim(convert_from(v_clean, 'LATIN1'));
+        -- Return readable text (escaped binary decoded back to normal string)
+        return convert_from(v_clean::bytea, 'UTF8');
     end if;
 
     return v_return_string;
