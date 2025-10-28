@@ -27,3 +27,4 @@ GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_deduction_line_items TO "app_farm
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_inventory_valid_items TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_scheduled_job TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.import_in_progress_check TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.cancel_import TO "app_farms_rest_proxy";
