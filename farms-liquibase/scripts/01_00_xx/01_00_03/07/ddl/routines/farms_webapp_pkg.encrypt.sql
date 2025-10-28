@@ -6,26 +6,30 @@ as
 $$
 declare
 
-    v_string text := in_string;
-    v_padded text := in_string;
     v_key text;
+    v_padded bytea;
     v_encrypted bytea;
-    v_return_string text := null;
+    v_return_string text;
+    v_mod int;
 
 begin
     if in_string is not null and in_string <> '' then
-        -- Pad to a multiple of 8 bytes (DES block size)
-        while length(v_padded) % 8 <> 0 loop
-            v_padded := v_padded || chr(0);
-        end loop;
+        -- Convert input to binary
+        v_padded := in_string::bytea;
 
-        -- Get encryption key (your key retrieval function)
+        -- Pad to a multiple of 8 bytes (DES/3DES block size)
+        v_mod := length(v_padded) % 8;
+        if v_mod <> 0 then
+            v_padded := v_padded || repeat(e'\\000', 8 - v_mod)::bytea;
+        end if;
+
+        -- Get encryption key
         v_key := farms_webapp_pkg.get_encryption_key();
 
-        -- Encrypt using DES algorithm (for compatibility with Oracle)
-        v_encrypted := farms_webapp_pkg.encrypt(v_padded::bytea, v_key::bytea, '3des');
+        -- Encrypt using 3DES
+        v_encrypted := farms_webapp_pkg.encrypt(v_padded, v_key::bytea, '3des');
 
-        -- Encode to base64 for storage or transmission
+        -- Return base64 text
         v_return_string := encode(v_encrypted, 'base64');
     end if;
 
