@@ -13,3 +13,4 @@ GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_farm_type_codes TO "app_farms_res
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_participant_class_codes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_participant_profile_codes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_scenario_state_codes TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_scenario_category_codes TO "app_farms_rest_proxy";
