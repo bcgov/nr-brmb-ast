@@ -31,3 +31,4 @@ GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.cancel_import TO "app_farms_rest_pro
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.confirm_import TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.retry_staging TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_import_version_blob TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_import_version_blob_upd TO "app_farms_rest_proxy";
