@@ -6,3 +6,4 @@ GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_inventory_group_codes TO "app_far
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_export_class_codes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_regional_office_codes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_import_version TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_federal_status_codes TO "app_farms_rest_proxy";
