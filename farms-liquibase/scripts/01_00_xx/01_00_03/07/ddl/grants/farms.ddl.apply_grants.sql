@@ -48,3 +48,4 @@ GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.delete_cob TO "app_farms_rest_proxy"
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_ref_year_claim TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.read_inbox TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_sc_rev_count TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.pyv_has_verified_sc TO "app_farms_rest_proxy";
