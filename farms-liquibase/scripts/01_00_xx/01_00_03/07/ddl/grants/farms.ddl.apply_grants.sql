@@ -39,3 +39,4 @@ GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.insert_subscription TO "app_farms_re
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_representative TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.insert_representative TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.activate_subscription TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_clients TO "app_farms_rest_proxy";
