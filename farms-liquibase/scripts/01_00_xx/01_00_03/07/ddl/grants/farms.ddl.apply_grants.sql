@@ -53,3 +53,4 @@ GRANT EXECUTE ON FUNCTION farms_webapp_pkg.read_contact_transfer TO "app_farms_r
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.read_contact_transfer_program_year_version TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_combined_farm_ip_sc TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_ip_sc_combined_farm_number TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_verifed_sc_cf_number TO "app_farms_rest_proxy";
