@@ -45,3 +45,4 @@ GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_cob_blob_upd TO "app_farms_rest_p
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.insert_cob TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.update_cob TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.delete_cob TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_ref_year_claim TO "app_farms_rest_proxy";
