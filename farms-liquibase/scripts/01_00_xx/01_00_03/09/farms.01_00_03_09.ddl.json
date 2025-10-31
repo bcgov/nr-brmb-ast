@@ -1,0 +1,45 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "22",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/schema/farms.ddl.create_farms_negative_margin_pkg_schema.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_negative_margin_pkg.calculate_negative_margins.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_negative_margin_pkg.get_negative_margins.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_negative_margin_pkg.update_negative_margin.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/grants/farms.ddl.apply_grants.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
