@@ -109,6 +109,11 @@
             "include": {
                 "file": "scripts/01_00_xx/01_00_03/09/farms.01_00_03_09.ddl.json"
             }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/10/farms.01_00_03_10.ddl.json"
+            }
         }
     ]
 }
