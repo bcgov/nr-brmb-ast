@@ -6,5 +6,6 @@ GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_reasonability_fruit_
 GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_reasonability_test_messages TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_reasonability_grain_production_test TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_g_f_fs_invn_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_g_f_fs_incm_rslts TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_reasonability_read_pkg TO "app_farms_rest_proxy";
