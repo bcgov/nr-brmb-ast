@@ -8,5 +8,6 @@ GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_rsnblty_prdctn_f
 GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_farm_rsnblty_prdctn_grain_rslts TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_farm_rsnblty_rev_g_f_fs_invn_rslts TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_farm_rsnblty_rev_g_f_fs_incm_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_rsn_forage_consumers TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_reasonability_write_pkg TO "app_farms_rest_proxy";
