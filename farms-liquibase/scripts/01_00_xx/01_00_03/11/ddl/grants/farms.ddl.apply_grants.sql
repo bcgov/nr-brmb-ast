@@ -3,5 +3,6 @@ GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.flag_reasonability_test
 GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.create_farm_rsnblty_bnft_rsk_pu TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_farm_rsnblty_prdctn_forage_rslts TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.create_rsnblty_test_message TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_rsn_prdctn_frut_invntries TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_reasonability_write_pkg TO "app_farms_rest_proxy";
