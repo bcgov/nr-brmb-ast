@@ -5,5 +5,6 @@ GRANT EXECUTE ON FUNCTION farms_write_pkg.write_final_verification_notes TO "app
 GRANT EXECUTE ON FUNCTION farms_write_pkg.write_interim_verification_notes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_write_pkg.write_adjustment_verification_notes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_write_pkg.write_reference_scenario TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_write_pkg.write_calc_version TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_write_pkg TO "app_farms_rest_proxy";
