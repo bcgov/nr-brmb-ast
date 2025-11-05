@@ -13,5 +13,6 @@ GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_farm_rsnblty_rev
 GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_farm_rsnblty_rev_fruit_veg_results TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_farm_rsnblty_rev_nrsry_results TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_farm_rsnblty_rev_nrsry_incomes TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_reasonability_write_pkg.update_farm_rsnblty_rev_nrsry_invntries TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_reasonability_write_pkg TO "app_farms_rest_proxy";
