@@ -20,6 +20,7 @@ begin
             passing xml(iv.import_audit_info)
             columns
                 num_total varchar(20) path 'NUM_NEW/text()',
+                num_new varchar(20) PATH 'NUM_NEW/text()',
                 num_updates varchar(20) path 'NUM_UPDATED/text()',
                 num_value_updates varchar(20) path 'NUM_VALUES_UPDATED/text()'
         ) temp_table
