@@ -3,5 +3,6 @@ GRANT EXECUTE ON FUNCTION farms_enrolment_read_pkg.read_staging_results TO "app_
 GRANT EXECUTE ON FUNCTION farms_enrolment_read_pkg.read_staging TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_enrolment_read_pkg.read_csv TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_enrolment_read_pkg.read_transfer TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_enrolment_read_pkg.read_transfer_partners TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_enrolment_read_pkg TO "app_farms_rest_proxy";
