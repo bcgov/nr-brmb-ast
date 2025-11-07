@@ -18,7 +18,7 @@ begin
            '//IMPORT_LOG/ERROR'
            passing xml(iv.import_audit_info)
            columns
-               file_number varchar(20) path '@rowNumber',
+               file_number varchar(20) path '@fileNumber',
                line_number varchar(20) path '@rowNumber',
                message varchar(2000) path 'text()'
         ) temp_table
