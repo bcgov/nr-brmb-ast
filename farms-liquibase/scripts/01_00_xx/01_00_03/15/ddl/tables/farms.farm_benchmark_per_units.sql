@@ -108,3 +108,6 @@ ALTER TABLE farms.farm_benchmark_years ADD CONSTRAINT farm_bpuy_farm_bpu_fk FORE
 ALTER TABLE farms.farm_scenario_bpu_xref ADD CONSTRAINT farm_bpux_farm_bpu_fk FOREIGN KEY (benchmark_per_unit_id) REFERENCES farms.farm_benchmark_per_units(benchmark_per_unit_id) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE farms.farm_benchmark_per_units ADD CONSTRAINT farm_bpu_farm_url_fk FOREIGN KEY (url_id) REFERENCES farms.farm_urls(url_id) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
+
+-- grant permissions
+GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_benchmark_per_units TO "app_farms_rest_proxy";
