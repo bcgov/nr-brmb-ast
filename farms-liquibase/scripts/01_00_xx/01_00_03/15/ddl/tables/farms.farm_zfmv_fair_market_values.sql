@@ -66,7 +66,7 @@ FROM farms.farm_zfmv_fair_market_values;
 -- drop indexes
 
 -- drop constraints
-ALTER TABLE farms.farm_zfmv_fair_market_values DROP CONSTRAINT farm_zfmv_pk;
+ALTER TABLE farms.farm_zfmv_fair_market_values DROP CONSTRAINT IF EXISTS farm_zfmv_pk;
 
 -- drop old table
 DROP TABLE farms.farm_zfmv_fair_market_values;

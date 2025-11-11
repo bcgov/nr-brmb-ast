@@ -54,7 +54,7 @@ FROM farms.farm_zivpr_iv_premium_rates;
 -- drop indexes
 
 -- drop constraints
-ALTER TABLE farms.farm_zivpr_iv_premium_rates DROP CONSTRAINT farm_zivpr_pk;
+ALTER TABLE farms.farm_zivpr_iv_premium_rates DROP CONSTRAINT IF EXISTS farm_zivpr_pk;
 
 -- drop old table
 DROP TABLE farms.farm_zivpr_iv_premium_rates;

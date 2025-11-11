@@ -68,12 +68,12 @@ DROP INDEX farm_bpu_import_i;
 DROP INDEX farm_bpu_year_i;
 
 -- drop constraints
-ALTER TABLE farms.farm_benchmark_per_units DROP CONSTRAINT farm_bpu_farm_ic_fk;
-ALTER TABLE farms.farm_benchmark_per_units DROP CONSTRAINT farm_bpu_farm_mc_fk;
-ALTER TABLE farms.farm_benchmark_per_units DROP CONSTRAINT farm_bpu_farm_sgc_fk;
-ALTER TABLE farms.farm_benchmark_years DROP CONSTRAINT farm_bpuy_farm_bpu_fk;
-ALTER TABLE farms.farm_scenario_bpu_xref DROP CONSTRAINT farm_bpux_farm_bpu_fk;
-ALTER TABLE farms.farm_benchmark_per_units DROP CONSTRAINT farm_bpu_pk;
+ALTER TABLE farms.farm_benchmark_per_units DROP CONSTRAINT IF EXISTS farm_bpu_farm_ic_fk;
+ALTER TABLE farms.farm_benchmark_per_units DROP CONSTRAINT IF EXISTS farm_bpu_farm_mc_fk;
+ALTER TABLE farms.farm_benchmark_per_units DROP CONSTRAINT IF EXISTS farm_bpu_farm_sgc_fk;
+ALTER TABLE farms.farm_benchmark_years DROP CONSTRAINT IF EXISTS farm_bpuy_farm_bpu_fk;
+ALTER TABLE farms.farm_scenario_bpu_xref DROP CONSTRAINT IF EXISTS farm_bpux_farm_bpu_fk;
+ALTER TABLE farms.farm_benchmark_per_units DROP CONSTRAINT IF EXISTS farm_bpu_pk;
 
 -- drop old table
 DROP TABLE farms.farm_benchmark_per_units;

@@ -76,10 +76,10 @@ DROP INDEX farm_fmv_import_i;
 DROP INDEX farm_fmv_year_i;
 
 -- drop constraints
-ALTER TABLE farms.farm_fair_market_values DROP CONSTRAINT farm_fmv_farm_cuc_fk;
-ALTER TABLE farms.farm_fair_market_values DROP CONSTRAINT farm_fmv_farm_ic_fk;
-ALTER TABLE farms.farm_fair_market_values DROP CONSTRAINT farm_fmv_farm_mc_fk;
-ALTER TABLE farms.farm_fair_market_values DROP CONSTRAINT farm_fmv_pk;
+ALTER TABLE farms.farm_fair_market_values DROP CONSTRAINT IF EXISTS farm_fmv_farm_cuc_fk;
+ALTER TABLE farms.farm_fair_market_values DROP CONSTRAINT IF EXISTS farm_fmv_farm_ic_fk;
+ALTER TABLE farms.farm_fair_market_values DROP CONSTRAINT IF EXISTS farm_fmv_farm_mc_fk;
+ALTER TABLE farms.farm_fair_market_values DROP CONSTRAINT IF EXISTS farm_fmv_pk;
 
 -- drop old table
 DROP TABLE farms.farm_fair_market_values;

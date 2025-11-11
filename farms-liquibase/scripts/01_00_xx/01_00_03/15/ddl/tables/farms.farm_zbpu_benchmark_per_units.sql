@@ -102,7 +102,7 @@ FROM farms.farm_zbpu_benchmark_per_units;
 -- drop indexes
 
 -- drop constraints
-ALTER TABLE farms.farm_zbpu_benchmark_per_units DROP CONSTRAINT farm_zbpu_pk;
+ALTER TABLE farms.farm_zbpu_benchmark_per_units DROP CONSTRAINT IF EXISTS farm_zbpu_pk;
 
 -- drop old table
 DROP TABLE farms.farm_zbpu_benchmark_per_units;

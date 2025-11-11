@@ -81,13 +81,13 @@ DROP INDEX farm_iid_farm_mscc_fk_i;
 DROP INDEX farm_iid_line_item_i;
 
 -- drop constraints
-ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT farm_iid_farm_ctc_fk;
-ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT farm_iid_farm_fvtc_fk;
-ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT farm_iid_farm_ic_fk;
-ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT farm_iid_farm_mscc_fk;
-ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT farm_iid_pk;
-ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT farm_iid_uk;
-ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT farm_iid_elig_chk;
+ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT IF EXISTS farm_iid_farm_ctc_fk;
+ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT IF EXISTS farm_iid_farm_fvtc_fk;
+ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT IF EXISTS farm_iid_farm_ic_fk;
+ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT IF EXISTS farm_iid_farm_mscc_fk;
+ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT IF EXISTS farm_iid_pk;
+ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT IF EXISTS farm_iid_uk;
+ALTER TABLE farms.farm_inventory_item_details DROP CONSTRAINT IF EXISTS farm_iid_elig_chk;
 
 -- drop old table
 DROP TABLE farms.farm_inventory_item_details;
