@@ -23,6 +23,7 @@ public class ImportBPUDto implements Serializable {
     private BigDecimal yearMinus3Expense;
     private BigDecimal yearMinus2Expense;
     private BigDecimal yearMinus1Expense;
+    private String fileLocation;
 
     public Integer getProgramYear() {
         return programYear;
@@ -150,5 +151,13 @@ public class ImportBPUDto implements Serializable {
 
     public void setYearMinus1Expense(BigDecimal yearMinus1Expense) {
         this.yearMinus1Expense = yearMinus1Expense;
+    }
+
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 }

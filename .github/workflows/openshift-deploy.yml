@@ -114,6 +114,9 @@ jobs:
           TOMCAT_PORT: ${{ vars.TOMCAT_PORT }}
           TIME_ZONE: ${{ vars.TIME_ZONE }}
 
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+
 
           #DB/Liquibase variables:
           POSTGRES_MAXACTIVE: '10'

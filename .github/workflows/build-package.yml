@@ -61,7 +61,7 @@ jobs:
           export NODE_OPTIONS="--max-old-space-size=4096"
           export RELEASE_URL=${{ vars.RELEASE_URL }}
           export SNAPSHOT_URL=${{ vars.SNAPSHOT_URL }}
-          mvn --settings=settings.xml --batch-mode --update-snapshots -f ${{ inputs.MICROSERVICE_NAME }}/pom.xml -Drepo.login=${{ secrets.IDIR_AS_EMAIL }} -Drepo.password=${{ secrets.IDIR_PASSWORD }}  -DopenshiftRepo.login=${{ secrets.OPENSHIFT_ACCOUNT }} -DopenshiftRepo.password=${{ secrets.OPENSHIFT_PASSWORD }} -Dclient.id=${{ secrets.CLIENT_ID }} -Dtenant.id=${{ secrets.TENANT_ID }} deploy
+          mvn --settings=settings.xml --batch-mode --update-snapshots -f ${{ inputs.MICROSERVICE_NAME }}/pom.xml -Drepo.login=${{ secrets.IDIR_AS_EMAIL }} -Drepo.password=${{ secrets.IDIR_PASSWORD }}  -DopenshiftRepo.login=${{ secrets.OPENSHIFT_ACCOUNT }} -DopenshiftRepo.password=${{ secrets.OPENSHIFT_PASSWORD }} deploy
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
