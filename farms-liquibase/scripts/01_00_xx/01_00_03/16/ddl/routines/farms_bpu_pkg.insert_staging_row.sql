@@ -1,3 +1,24 @@
+drop procedure if exists farms_bpu_pkg.insert_staging_row(
+    bigint,
+    smallint,
+    varchar,
+    varchar,
+    varchar,
+    numeric,
+    numeric,
+    numeric,
+    numeric,
+    numeric,
+    numeric,
+    numeric,
+    numeric,
+    numeric,
+    numeric,
+    numeric,
+    numeric,
+    varchar
+);
+
 create or replace procedure farms_bpu_pkg.insert_staging_row(
    in in_line_number farms.farm_zbpu_benchmark_per_units.line_number%type,
    in in_program_year farms.farm_zbpu_benchmark_per_units.program_year%type,
