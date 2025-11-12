@@ -50,7 +50,8 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
             callableStatement.setBigDecimal(15, dto.getYearMinus3Expense());
             callableStatement.setBigDecimal(16, dto.getYearMinus2Expense());
             callableStatement.setBigDecimal(17, dto.getYearMinus1Expense());
-            callableStatement.setString(18, userId);
+            callableStatement.setString(18, dto.getFileLocation());
+            callableStatement.setString(19, userId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
             handleException(e);

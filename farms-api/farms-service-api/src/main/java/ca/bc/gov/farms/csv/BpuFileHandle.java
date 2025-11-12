@@ -34,6 +34,7 @@ public class BpuFileHandle extends FileHandle<ImportBPUDto> {
         dto.setYearMinus3Expense(ParseUtils.parseBigDecimal(cols[index++].trim()));
         dto.setYearMinus2Expense(ParseUtils.parseBigDecimal(cols[index++].trim()));
         dto.setYearMinus1Expense(ParseUtils.parseBigDecimal(cols[index++].trim()));
+        dto.setFileLocation(cols[index++].trim());
 
         return dto;
     }
@@ -58,6 +59,7 @@ public class BpuFileHandle extends FileHandle<ImportBPUDto> {
                 add("YEAR_MINUS_3_EXPENSE");
                 add("YEAR_MINUS_2_EXPENSE");
                 add("YEAR_MINUS_1_EXPENSE");
+                add("FILE_LOCATION");
             }
         };
     }
