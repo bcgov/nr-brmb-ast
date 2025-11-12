@@ -196,3 +196,5 @@ begin
     where import_version_id = in_import_version_id;
 end;
 $$;
+
+CREATE INDEX farm_bpu_farm_url_fk_i ON farms.farm_benchmark_per_units (url_id);
