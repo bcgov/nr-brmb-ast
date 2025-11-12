@@ -17,7 +17,3 @@ COMMENT ON COLUMN farms.farm_urls.who_created IS E'WHO CREATED indicates the use
 COMMENT ON COLUMN farms.farm_urls.who_updated IS E'WHO UPDATED indicates the user that updated the physical record in the database.';
 ALTER TABLE farms.farm_urls ADD CONSTRAINT farm_url_as_uk UNIQUE (url);
 ALTER TABLE farms.farm_urls ADD CONSTRAINT farm_url_pk PRIMARY KEY (url_id);
-
-CREATE SEQUENCE farms.farm_url_seq INCREMENT 1 MINVALUE 1 NO MAXVALUE START 1 CACHE 20;
-
-GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_urls TO "app_farms_rest_proxy";

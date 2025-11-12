@@ -39,6 +39,8 @@ public class BenchmarkPerUnitDto extends BaseDto<BenchmarkPerUnitDto> {
     private BigDecimal yearMinus3Expense;
     private BigDecimal yearMinus2Expense;
     private BigDecimal yearMinus1Expense;
+    private Long urlId;
+    private String url;
 
     private Integer revisionCount;
     private String createUser;
@@ -126,6 +128,8 @@ public class BenchmarkPerUnitDto extends BaseDto<BenchmarkPerUnitDto> {
             result = result && dtoUtils.equals("yearMinus3Expense", this, other);
             result = result && dtoUtils.equals("yearMinus2Expense", this, other);
             result = result && dtoUtils.equals("yearMinus1Expense", this, other);
+            result = result && dtoUtils.equals("urlId", urlId, other.urlId);
+            result = result && dtoUtils.equals("url", url, other.url);
         }
 
         return result;
@@ -321,6 +325,22 @@ public class BenchmarkPerUnitDto extends BaseDto<BenchmarkPerUnitDto> {
 
     public void setYearMinus1Expense(BigDecimal yearMinus1Expense) {
         this.yearMinus1Expense = yearMinus1Expense;
+    }
+
+    public Long getUrlId() {
+        return urlId;
+    }
+
+    public void setUrlId(Long urlId) {
+        this.urlId = urlId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Integer getRevisionCount() {
