@@ -32,7 +32,7 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
-                        "call farms_bpu_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                        "call farms_bpu_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             callableStatement.setInt(1, rowNum);
             callableStatement.setInt(2, dto.getProgramYear());
             callableStatement.setString(3, dto.getMunicipalityCode());
