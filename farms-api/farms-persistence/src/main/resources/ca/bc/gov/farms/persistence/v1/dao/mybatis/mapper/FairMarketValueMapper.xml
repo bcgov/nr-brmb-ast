@@ -84,8 +84,8 @@
                pvt.period_10_variance,
                pvt.period_11_variance,
                pvt.period_12_variance,
-               u.url_id,
-               u.url
+               t.url_id,
+               t.url
     </sql>
 
     <sql id="fromClause">
@@ -94,8 +94,8 @@
                 fmv.inventory_item_code || '_' ||
                 fmv.municipality_code || '_' ||
                 fmv.crop_unit_code as group_id,
-            'period_' || to_char(period, '00') || '_price' as period_str,
-            fmv.average_price
+                'period_' || to_char(period, '00') || '_price' as period_str,
+                fmv.average_price
             from farms.farm_fair_market_values fmv
             where fmv.program_year = ${programYear}
             order by 1, 2
@@ -118,8 +118,8 @@
                 fmv.inventory_item_code || '_' ||
                 fmv.municipality_code || '_' ||
                 fmv.crop_unit_code as group_id,
-            'period_' || to_char(period, '00') || '_variance' as period_str,
-            fmv.percent_variance
+                'period_' || to_char(period, '00') || '_variance' as period_str,
+                fmv.percent_variance
             from farms.farm_fair_market_values fmv
             where fmv.program_year = ${programYear}
             order by 1, 2
@@ -142,7 +142,23 @@
         join farms.farm_crop_unit_codes cuc on split_part(apt.group_id, '_', 4) = cuc.crop_unit_code
         left join farms.farm_crop_unit_defaults cud using (inventory_item_code)
         left join farms.farm_crop_unit_codes cudc on cud.crop_unit_code = cudc.crop_unit_code
-        left join farms.farm_urls u using (url_id)
+        left join (
+            select distinct on (fmv.inventory_item_code, fmv.municipality_code, fmv.crop_unit_code)
+                   u.url_id,
+                   u.url,
+                   fmv.inventory_item_code,
+                   fmv.municipality_code,
+                   fmv.crop_unit_code
+            from farms.farm_fair_market_values fmv
+            left join farms.farm_urls u using (url_id)
+            where fmv.program_year = ${programYear}
+            order by fmv.inventory_item_code,
+                     fmv.municipality_code,
+                     fmv.crop_unit_code,
+                     fmv.period
+        ) t on t.inventory_item_code = iic.inventory_item_code
+            and t.municipality_code = mc.municipality_code
+            and t.crop_unit_code = cuc.crop_unit_code
     </sql>
 
     <select id="fetch" resultMap="FairMarketValueResultDtoMap">
