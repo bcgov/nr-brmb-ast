@@ -236,7 +236,7 @@
             url_id = (
                 select u.url_id
                 from farms.farm_urls u
-                where u.url_id = #{dto.urlId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+                where u.url_id = #{urlId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
             ),
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
