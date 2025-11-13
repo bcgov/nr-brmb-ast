@@ -106,7 +106,7 @@ begin
         select nextval('farms.farm_url_seq')
         into v_url_id;
 
-        insert into farms.farm_url (
+        insert into farms.farm_urls (
             url_id,
             url,
             revision_count,
