@@ -6,6 +6,7 @@ CREATE TABLE farms.farm_benchmark_per_units (
 	municipality_code varchar(10) NOT NULL,
 	inventory_item_code varchar(10),
 	structure_group_code varchar(10),
+	url_id bigint,
 	revision_count integer NOT NULL DEFAULT 1,
 	who_created varchar(30) NOT NULL,
 	when_created timestamp(0) NOT NULL DEFAULT statement_timestamp(),
@@ -25,11 +26,13 @@ COMMENT ON COLUMN farms.farm_benchmark_per_units.when_created IS E'WHEN CREATED 
 COMMENT ON COLUMN farms.farm_benchmark_per_units.when_updated IS E'WHEN UPDATED indicates when the physical record was updated in the database.';
 COMMENT ON COLUMN farms.farm_benchmark_per_units.who_created IS E'WHO CREATED indicates the user that created the physical record in the database.';
 COMMENT ON COLUMN farms.farm_benchmark_per_units.who_updated IS E'WHO UPDATED indicates the user that updated the physical record in the database.';
+COMMENT ON COLUMN farms.farm_benchmark_per_units.url_id IS E'URL ID is a foreign key to FARM_URLS.';
 CREATE INDEX farm_bpu_farm_ic_fk_i ON farms.farm_benchmark_per_units (inventory_item_code);
 CREATE INDEX farm_bpu_farm_mc_fk_i ON farms.farm_benchmark_per_units (municipality_code);
 CREATE INDEX farm_bpu_farm_sgc_fk_i ON farms.farm_benchmark_per_units (structure_group_code);
 CREATE INDEX farm_bpu_import_i ON farms.farm_benchmark_per_units (program_year, inventory_item_code, municipality_code);
 CREATE INDEX farm_bpu_year_i ON farms.farm_benchmark_per_units (program_year);
+CREATE INDEX farm_bpu_farm_url_fk_i ON farms.farm_benchmark_per_units (url_id);
 ALTER TABLE farms.farm_benchmark_per_units ADD CONSTRAINT farm_bpu_pk PRIMARY KEY (benchmark_per_unit_id);
 ALTER TABLE farms.farm_benchmark_per_units ALTER COLUMN benchmark_per_unit_id SET NOT NULL;
 ALTER TABLE farms.farm_benchmark_per_units ALTER COLUMN program_year SET NOT NULL;

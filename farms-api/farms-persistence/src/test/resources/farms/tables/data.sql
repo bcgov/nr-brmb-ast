@@ -346,3 +346,29 @@ insert into farms.farm_crop_unit_defaults (
     current_user,
     current_timestamp
 );
+
+insert into farms.farm_urls (
+    url_id,
+    url,
+    revision_count,
+    who_created,
+    when_created,
+    who_updated,
+    when_updated
+) values (
+    nextval('farms.farm_url_seq'),
+    'https://google.com',
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+), (
+    nextval('farms.farm_url_seq'),
+    'https://microsoft.com',
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+);

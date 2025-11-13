@@ -84,6 +84,7 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         benchmarkPerUnit.setYearMinus3Expense(new BigDecimal("186.58"));
         benchmarkPerUnit.setYearMinus2Expense(new BigDecimal("258.28"));
         benchmarkPerUnit.setYearMinus1Expense(new BigDecimal("258.28"));
+        benchmarkPerUnit.setUrlId(1L);
         benchmarkPerUnit.setUserEmail("jsmith@gmail.com");
 
         Response response = target("/benchmarkPerUnits").request().post(Entity.json(benchmarkPerUnit));
@@ -116,6 +117,8 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         assertEquals(186.58, jsonObject.getDouble("yearMinus3Expense"));
         assertEquals(258.28, jsonObject.getDouble("yearMinus2Expense"));
         assertEquals(258.28, jsonObject.getDouble("yearMinus1Expense"));
+        assertEquals(1, jsonObject.getInt("urlId"));
+        assertEquals("https://google.com", jsonObject.getString("url"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
 
@@ -157,6 +160,8 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         assertEquals(186.58, benchmarkPerUnit.getDouble("yearMinus3Expense"));
         assertEquals(258.28, benchmarkPerUnit.getDouble("yearMinus2Expense"));
         assertEquals(258.28, benchmarkPerUnit.getDouble("yearMinus1Expense"));
+        assertEquals(1, benchmarkPerUnit.getInt("urlId"));
+        assertEquals("https://google.com", benchmarkPerUnit.getString("url"));
         assertEquals("null", benchmarkPerUnit.getString("userEmail"));
     }
 
@@ -193,6 +198,8 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         assertEquals(186.58, jsonObject.getDouble("yearMinus3Expense"));
         assertEquals(258.28, jsonObject.getDouble("yearMinus2Expense"));
         assertEquals(258.28, jsonObject.getDouble("yearMinus1Expense"));
+        assertEquals(1, jsonObject.getInt("urlId"));
+        assertEquals("https://google.com", jsonObject.getString("url"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
 
@@ -218,6 +225,7 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         benchmarkPerUnit.setYearMinus3Expense(new BigDecimal("1186.58"));
         benchmarkPerUnit.setYearMinus2Expense(new BigDecimal("1258.28"));
         benchmarkPerUnit.setYearMinus1Expense(new BigDecimal("1258.28"));
+        benchmarkPerUnit.setUrlId(2L);
         benchmarkPerUnit.setUserEmail("jsmith@gmail.com");
 
         Response response = target("/benchmarkPerUnits/60584").request().put(Entity.json(benchmarkPerUnit));
@@ -250,6 +258,8 @@ public class BenchmarkPerUnitEndpointsTest extends JerseyTest {
         assertEquals(1186.58, jsonObject.getDouble("yearMinus3Expense"));
         assertEquals(1258.28, jsonObject.getDouble("yearMinus2Expense"));
         assertEquals(1258.28, jsonObject.getDouble("yearMinus1Expense"));
+        assertEquals(2, jsonObject.getInt("urlId"));
+        assertEquals("https://microsoft.com", jsonObject.getString("url"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
 

@@ -62,6 +62,8 @@ public class BenchmarkPerUnitRsrcFactory extends BaseResourceFactory implements 
         resource.setYearMinus3Expense(dto.getYearMinus3Expense());
         resource.setYearMinus2Expense(dto.getYearMinus2Expense());
         resource.setYearMinus1Expense(dto.getYearMinus1Expense());
+        resource.setUrlId(dto.getUrlId());
+        resource.setUrl(dto.getUrl());
     }
 
     @Override
@@ -119,6 +121,8 @@ public class BenchmarkPerUnitRsrcFactory extends BaseResourceFactory implements 
         result.setYearMinus3Expense(dto.getYearMinus3Expense());
         result.setYearMinus2Expense(dto.getYearMinus2Expense());
         result.setYearMinus1Expense(dto.getYearMinus1Expense());
+        result.setUrlId(dto.getUrlId());
+        result.setUrl(dto.getUrl());
 
         return result;
     }
@@ -171,5 +175,7 @@ public class BenchmarkPerUnitRsrcFactory extends BaseResourceFactory implements 
         dto.setYearMinus3Expense(model.getYearMinus3Expense());
         dto.setYearMinus2Expense(model.getYearMinus2Expense());
         dto.setYearMinus1Expense(model.getYearMinus1Expense());
+        dto.setUrlId(model.getUrlId());
+        dto.setUrl(model.getUrl());
     }
 }
