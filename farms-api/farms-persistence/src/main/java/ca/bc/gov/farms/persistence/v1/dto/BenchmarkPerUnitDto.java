@@ -76,6 +76,8 @@ public class BenchmarkPerUnitDto extends BaseDto<BenchmarkPerUnitDto> {
         this.yearMinus3Expense = dto.yearMinus3Expense;
         this.yearMinus2Expense = dto.yearMinus2Expense;
         this.yearMinus1Expense = dto.yearMinus1Expense;
+        this.urlId = dto.urlId;
+        this.url = dto.url;
 
         this.revisionCount = dto.revisionCount;
         this.createUser = dto.createUser;

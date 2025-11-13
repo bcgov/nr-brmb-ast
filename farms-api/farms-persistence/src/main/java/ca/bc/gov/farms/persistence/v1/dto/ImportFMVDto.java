@@ -14,6 +14,7 @@ public class ImportFMVDto implements Serializable {
     private String municipalityCode;
     private String cropUnitCode;
     private String inventoryItemCode;
+    private String fileLocation;
 
     public Integer getProgramYear() {
         return programYear;
@@ -69,5 +70,13 @@ public class ImportFMVDto implements Serializable {
 
     public void setInventoryItemCode(String inventoryItemCode) {
         this.inventoryItemCode = inventoryItemCode;
+    }
+
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 }

@@ -65,6 +65,7 @@ public class FairMarketValueDaoTest {
         dto.setPeriod10Variance(new BigDecimal("45.00"));
         dto.setPeriod11Variance(new BigDecimal("45.00"));
         dto.setPeriod12Variance(new BigDecimal("45.00"));
+        dto.setUrlId(1L);
 
         FairMarketValueDto result = null;
         try {
@@ -107,6 +108,8 @@ public class FairMarketValueDaoTest {
         assertThat(result.getPeriod10Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
         assertThat(result.getPeriod11Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
         assertThat(result.getPeriod12Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(result.getUrlId()).isEqualTo(1);
+        assertThat(result.getUrl()).isEqualTo("https://google.com");
     }
 
     @Test
@@ -155,6 +158,8 @@ public class FairMarketValueDaoTest {
         assertThat(dto.getPeriod10Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
         assertThat(dto.getPeriod11Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
         assertThat(dto.getPeriod12Variance()).isEqualByComparingTo(new BigDecimal("45.00"));
+        assertThat(dto.getUrlId()).isEqualTo(1);
+        assertThat(dto.getUrl()).isEqualTo("https://google.com");
     }
 
     @Test
@@ -197,6 +202,7 @@ public class FairMarketValueDaoTest {
         dto.setPeriod10Variance(new BigDecimal("55.00"));
         dto.setPeriod11Variance(new BigDecimal("55.00"));
         dto.setPeriod12Variance(new BigDecimal("55.00"));
+        dto.setUrlId(2L);
 
         FairMarketValueDto result = null;
         try {
@@ -238,6 +244,8 @@ public class FairMarketValueDaoTest {
         assertThat(result.getPeriod10Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
         assertThat(result.getPeriod11Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
         assertThat(result.getPeriod12Variance()).isEqualByComparingTo(new BigDecimal("55.00"));
+        assertThat(result.getUrlId()).isEqualTo(2);
+        assertThat(result.getUrl()).isEqualTo("https://microsoft.com");
     }
 
     @Test
