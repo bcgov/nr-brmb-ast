@@ -37,7 +37,6 @@ declare
     v_structure_group_code varchar(10);
     v_number_margin_updates integer := 0;
     v_number_expense_updates integer := 0;
-    v_url_id bigint;
 begin
     select count(line_number)
     into v_num_staging_rows
@@ -103,9 +102,6 @@ begin
             v_inventory_item_code := v_staging.inventory_item_code;
         end if;
 
-        select nextval('farms.farm_url_seq')
-        into v_url_id;
-
         insert into farms.farm_urls (
             url_id,
             url,
@@ -115,7 +111,7 @@ begin
             who_updated,
             when_updated
         ) values (
-            v_url_id,
+            nextval('farms.farm_url_seq'),
             v_staging.file_location,
             1,
             in_user,
@@ -146,7 +142,11 @@ begin
             v_staging.municipality_code,
             v_inventory_item_code,
             v_structure_group_code,
-            v_url_id,
+            (
+                select u.url_id
+                from farms.farm_urls u
+                where u.url = v_staging.file_location
+            ),
             1,
             in_user,
             current_timestamp,
