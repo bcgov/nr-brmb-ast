@@ -32,6 +32,8 @@ public class InventoryItemDetailRsrc extends BaseResource implements InventoryIt
     private String fruitVegTypeDesc;
     private String multiStageCommdtyCode;
     private String multiStageCommdtyDesc;
+    private Long urlId;
+    private String url;
     private String userEmail;
 
     @Override
@@ -172,6 +174,26 @@ public class InventoryItemDetailRsrc extends BaseResource implements InventoryIt
     @Override
     public void setMultiStageCommdtyDesc(String multiStageCommdtyDesc) {
         this.multiStageCommdtyDesc = multiStageCommdtyDesc;
+    }
+
+    @Override
+    public Long getUrlId() {
+        return urlId;
+    }
+
+    @Override
+    public void setUrlId(Long urlId) {
+        this.urlId = urlId;
+    }
+
+    @Override
+    public String getUrl() {
+        return url;
+    }
+
+    @Override
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

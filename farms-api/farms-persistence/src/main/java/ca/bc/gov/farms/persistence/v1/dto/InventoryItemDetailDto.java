@@ -29,6 +29,8 @@ public class InventoryItemDetailDto extends BaseDto<InventoryItemDetailDto> {
     private String fruitVegTypeDesc;
     private String multiStageCommdtyCode;
     private String multiStageCommdtyDesc;
+    private Long urlId;
+    private String url;
 
     private Integer revisionCount;
     private String createUser;
@@ -54,6 +56,8 @@ public class InventoryItemDetailDto extends BaseDto<InventoryItemDetailDto> {
         this.fruitVegTypeDesc = dto.fruitVegTypeDesc;
         this.multiStageCommdtyCode = dto.multiStageCommdtyCode;
         this.multiStageCommdtyDesc = dto.multiStageCommdtyDesc;
+        this.urlId = dto.urlId;
+        this.url = dto.url;
 
         this.revisionCount = dto.revisionCount;
         this.createUser = dto.createUser;
@@ -101,6 +105,8 @@ public class InventoryItemDetailDto extends BaseDto<InventoryItemDetailDto> {
                     && dtoUtils.equals("multiStageCommdtyCode", multiStageCommdtyCode, other.multiStageCommdtyCode);
             result = result
                     && dtoUtils.equals("multiStageCommdtyDesc", multiStageCommdtyDesc, other.multiStageCommdtyDesc);
+            result = result && dtoUtils.equals("urlId", urlId, other.urlId);
+            result = result && dtoUtils.equals("url", url, other.url);
         }
 
         return result;
@@ -216,6 +222,22 @@ public class InventoryItemDetailDto extends BaseDto<InventoryItemDetailDto> {
 
     public void setMultiStageCommdtyDesc(String multiStageCommdtyDesc) {
         this.multiStageCommdtyDesc = multiStageCommdtyDesc;
+    }
+
+    public Long getUrlId() {
+        return urlId;
+    }
+
+    public void setUrlId(Long urlId) {
+        this.urlId = urlId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Integer getRevisionCount() {
