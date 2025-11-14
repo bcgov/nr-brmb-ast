@@ -25,6 +25,7 @@ public class FmvFileHandle extends FileHandle<ImportFMVDto> {
         dto.setCropUnitCode(cols[index++].trim());
         dto.setAveragePrice(ParseUtils.parseBigDecimal(cols[index++].trim()));
         dto.setPercentVariance(ParseUtils.parseBigDecimal(cols[index++].trim()));
+        dto.setFileLocation(cols[index++].trim());
 
         return dto;
     }
@@ -40,6 +41,7 @@ public class FmvFileHandle extends FileHandle<ImportFMVDto> {
                 add("UNIT_CODE");
                 add("VALUE");
                 add("PERCENT_VARIANCE");
+                add("FILE_LOCATION");
             }
         };
     }

@@ -97,6 +97,7 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         fairMarketValue.setPeriod10Variance(new BigDecimal("46.00"));
         fairMarketValue.setPeriod11Variance(new BigDecimal("46.00"));
         fairMarketValue.setPeriod12Variance(new BigDecimal("46.00"));
+        fairMarketValue.setUrlId(1L);
         fairMarketValue.setUserEmail("jsmith@gmail.com");
 
         Response response = target("/fairMarketValues").request().post(Entity.json(fairMarketValue));
@@ -139,6 +140,8 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         assertEquals(46.00, jsonObject.getDouble("period10Variance"));
         assertEquals(46.00, jsonObject.getDouble("period11Variance"));
         assertEquals(46.00, jsonObject.getDouble("period12Variance"));
+        assertEquals(1, jsonObject.getInt("urlId"));
+        assertEquals("https://google.com", jsonObject.getString("url"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
 
@@ -191,6 +194,8 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         assertEquals(46.00, fairMarketValue.getDouble("period10Variance"));
         assertEquals(46.00, fairMarketValue.getDouble("period11Variance"));
         assertEquals(46.00, fairMarketValue.getDouble("period12Variance"));
+        assertEquals(1, fairMarketValue.getInt("urlId"));
+        assertEquals("https://google.com", fairMarketValue.getString("url"));
         assertEquals("null", fairMarketValue.getString("userEmail"));
     }
 
@@ -238,6 +243,8 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         assertEquals(46.00, jsonObject.getDouble("period10Variance"));
         assertEquals(46.00, jsonObject.getDouble("period11Variance"));
         assertEquals(46.00, jsonObject.getDouble("period12Variance"));
+        assertEquals(1, jsonObject.getInt("urlId"));
+        assertEquals("https://google.com", jsonObject.getString("url"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
 
@@ -275,6 +282,7 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         fairMarketValue.setPeriod10Variance(new BigDecimal("56.00"));
         fairMarketValue.setPeriod11Variance(new BigDecimal("56.00"));
         fairMarketValue.setPeriod12Variance(new BigDecimal("56.00"));
+        fairMarketValue.setUrlId(2L);
         fairMarketValue.setUserEmail("jsmith@gmail.com");
 
         Response response = target("/fairMarketValues/2025_5560_41_1").request().put(Entity.json(fairMarketValue));
@@ -318,6 +326,8 @@ public class FairMarketValueEndpointsTest extends JerseyTest {
         assertEquals(56.00, jsonObject.getDouble("period10Variance"));
         assertEquals(56.00, jsonObject.getDouble("period11Variance"));
         assertEquals(56.00, jsonObject.getDouble("period12Variance"));
+        assertEquals(2, jsonObject.getInt("urlId"));
+        assertEquals("https://microsoft.com", jsonObject.getString("url"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
 

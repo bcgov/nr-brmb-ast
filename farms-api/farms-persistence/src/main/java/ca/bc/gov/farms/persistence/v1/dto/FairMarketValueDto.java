@@ -49,6 +49,8 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
     private BigDecimal period10Variance;
     private BigDecimal period11Variance;
     private BigDecimal period12Variance;
+    private Long urlId;
+    private String url;
 
     private Integer revisionCount;
     private String createUser;
@@ -94,6 +96,8 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
         this.period10Variance = dto.period10Variance;
         this.period11Variance = dto.period11Variance;
         this.period12Variance = dto.period12Variance;
+        this.urlId = dto.urlId;
+        this.url = dto.url;
 
         this.revisionCount = dto.revisionCount;
         this.createUser = dto.createUser;
@@ -160,6 +164,8 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
             result = result && dtoUtils.equals("period10Variance", this, other);
             result = result && dtoUtils.equals("period11Variance", this, other);
             result = result && dtoUtils.equals("period12Variance", this, other);
+            result = result && dtoUtils.equals("urlId", urlId, other.urlId);
+            result = result && dtoUtils.equals("url", url, other.url);
         }
 
         return result;
@@ -435,6 +441,22 @@ public class FairMarketValueDto extends BaseDto<FairMarketValueDto> {
 
     public void setPeriod12Variance(BigDecimal period12Variance) {
         this.period12Variance = period12Variance;
+    }
+
+    public Long getUrlId() {
+        return urlId;
+    }
+
+    public void setUrlId(Long urlId) {
+        this.urlId = urlId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Integer getRevisionCount() {

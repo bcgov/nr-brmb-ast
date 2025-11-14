@@ -39,6 +39,8 @@
         <result property="period10Variance" column="period_10_variance" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
         <result property="period11Variance" column="period_11_variance" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
         <result property="period12Variance" column="period_12_variance" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="urlId" column="url_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+        <result property="url" column="url" javaType="java.lang.String" jdbcType="VARCHAR" />
 
         <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
         <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -81,7 +83,9 @@
                pvt.period_09_variance,
                pvt.period_10_variance,
                pvt.period_11_variance,
-               pvt.period_12_variance
+               pvt.period_12_variance,
+               t.url_id,
+               t.url
     </sql>
 
     <sql id="fromClause">
@@ -90,8 +94,8 @@
                 fmv.inventory_item_code || '_' ||
                 fmv.municipality_code || '_' ||
                 fmv.crop_unit_code as group_id,
-            'period_' || to_char(period, '00') || '_price' as period_str,
-            fmv.average_price
+                'period_' || to_char(period, '00') || '_price' as period_str,
+                fmv.average_price
             from farms.farm_fair_market_values fmv
             where fmv.program_year = ${programYear}
             order by 1, 2
@@ -114,8 +118,8 @@
                 fmv.inventory_item_code || '_' ||
                 fmv.municipality_code || '_' ||
                 fmv.crop_unit_code as group_id,
-            'period_' || to_char(period, '00') || '_variance' as period_str,
-            fmv.percent_variance
+                'period_' || to_char(period, '00') || '_variance' as period_str,
+                fmv.percent_variance
             from farms.farm_fair_market_values fmv
             where fmv.program_year = ${programYear}
             order by 1, 2
@@ -138,6 +142,23 @@
         join farms.farm_crop_unit_codes cuc on split_part(apt.group_id, '_', 4) = cuc.crop_unit_code
         left join farms.farm_crop_unit_defaults cud using (inventory_item_code)
         left join farms.farm_crop_unit_codes cudc on cud.crop_unit_code = cudc.crop_unit_code
+        left join (
+            select distinct on (fmv.inventory_item_code, fmv.municipality_code, fmv.crop_unit_code)
+                   u.url_id,
+                   u.url,
+                   fmv.inventory_item_code,
+                   fmv.municipality_code,
+                   fmv.crop_unit_code
+            from farms.farm_fair_market_values fmv
+            left join farms.farm_urls u using (url_id)
+            where fmv.program_year = ${programYear}
+            order by fmv.inventory_item_code,
+                     fmv.municipality_code,
+                     fmv.crop_unit_code,
+                     fmv.period
+        ) t on t.inventory_item_code = iic.inventory_item_code
+            and t.municipality_code = mc.municipality_code
+            and t.crop_unit_code = cuc.crop_unit_code
     </sql>
 
     <select id="fetch" resultMap="FairMarketValueResultDtoMap">
@@ -179,6 +200,7 @@
             inventory_item_code,
             municipality_code,
             crop_unit_code,
+            url_id,
             revision_count,
             who_created,
             when_created,
@@ -194,6 +216,11 @@
             #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             #{dto.municipalityCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             #{dto.cropUnitCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            (
+                select u.url_id
+                from farms.farm_urls u
+                where u.url_id = #{dto.urlId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+            ),
             1,
             #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             now(),
@@ -206,6 +233,11 @@
         update farms.farm_fair_market_values
         set average_price = #{averagePrice, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             percent_variance = #{percentVariance, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            url_id = (
+                select u.url_id
+                from farms.farm_urls u
+                where u.url_id = #{urlId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+            ),
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             when_updated = now()

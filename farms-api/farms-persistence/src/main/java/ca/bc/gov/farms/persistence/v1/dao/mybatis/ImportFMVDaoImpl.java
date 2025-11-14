@@ -48,7 +48,7 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
-                        "call farms_fmv_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                        "call farms_fmv_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             callableStatement.setLong(1, rowNum);
             callableStatement.setObject(2, dto.getProgramYear() == null ? null : dto.getProgramYear().shortValue(),
                     Types.SMALLINT);
@@ -59,7 +59,8 @@ public class ImportFMVDaoImpl extends BaseDao implements ImportFMVDao {
             callableStatement.setString(6, dto.getMunicipalityCode());
             callableStatement.setString(7, dto.getCropUnitCode());
             callableStatement.setString(8, dto.getInventoryItemCode());
-            callableStatement.setString(9, userId);
+            callableStatement.setString(9, dto.getFileLocation());
+            callableStatement.setString(10, userId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
             handleException(e);
