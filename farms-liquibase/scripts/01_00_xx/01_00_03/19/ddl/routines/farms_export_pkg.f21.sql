@@ -145,7 +145,7 @@ begin
                end livestock_head_cnt_adj
         from (
             select s.participant_pin,
-                   s.year prior_year,
+                   s."Year" prior_year,
                    op.operation_number,
                    ri.crop_unit_code,
                    xref.inventory_item_code,
