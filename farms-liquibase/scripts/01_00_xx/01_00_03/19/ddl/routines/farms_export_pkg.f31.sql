@@ -91,9 +91,9 @@ begin
         join farms.farm_program_year_versions pyv on pyv.program_year_id = py.program_year_id
         join (
             select r.*
-                from ranked r
-                join chosen c on r.program_year_id = c.program_year_id
-                              and r.agristability_scenario_id = c.latest_sc_id
+            from ranked r
+            join chosen c on r.program_year_id = c.program_year_id
+                          and r.agristability_scenario_id = c.latest_sc_id
         ) t on pyv.program_year_version_id = t.program_year_version_id
             and (t.scenario_state_audit_id = t.verified_state_id or coalesce(t.verified_state_id::text, '') = '')
         join farms.farm_agristability_scenarios sc on sc.agristability_scenario_id = t.agristability_scenario_id
