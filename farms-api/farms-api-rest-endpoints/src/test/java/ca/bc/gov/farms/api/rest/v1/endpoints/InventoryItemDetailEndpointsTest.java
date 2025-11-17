@@ -77,6 +77,7 @@ public class InventoryItemDetailEndpointsTest extends JerseyTest {
         inventoryItemDetail.setCommodityTypeCode("GRAIN");
         inventoryItemDetail.setFruitVegTypeCode("APPLE");
         inventoryItemDetail.setMultiStageCommdtyCode(null);
+        inventoryItemDetail.setUrlId(1L);
         inventoryItemDetail.setUserEmail("jsmith@gmail.com");
 
         Response response = target("/inventoryItemDetails").request().post(Entity.json(inventoryItemDetail));
@@ -99,6 +100,8 @@ public class InventoryItemDetailEndpointsTest extends JerseyTest {
         assertEquals("Apples", jsonObject.getString("fruitVegTypeDesc"));
         assertEquals("null", jsonObject.getString("multiStageCommdtyCode"));
         assertEquals("null", jsonObject.getString("multiStageCommdtyDesc"));
+        assertEquals(1, jsonObject.getInt("urlId"));
+        assertEquals("https://google.com", jsonObject.getString("url"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
 
@@ -131,6 +134,8 @@ public class InventoryItemDetailEndpointsTest extends JerseyTest {
         assertEquals("Apples", inventoryItemDetail.getString("fruitVegTypeDesc"));
         assertEquals("null", inventoryItemDetail.getString("multiStageCommdtyCode"));
         assertEquals("null", inventoryItemDetail.getString("multiStageCommdtyDesc"));
+        assertEquals(1, inventoryItemDetail.getInt("urlId"));
+        assertEquals("https://google.com", inventoryItemDetail.getString("url"));
         assertEquals("null", inventoryItemDetail.getString("userEmail"));
     }
 
@@ -158,6 +163,8 @@ public class InventoryItemDetailEndpointsTest extends JerseyTest {
         assertEquals("Apples", jsonObject.getString("fruitVegTypeDesc"));
         assertEquals("null", jsonObject.getString("multiStageCommdtyCode"));
         assertEquals("null", jsonObject.getString("multiStageCommdtyDesc"));
+        assertEquals(1, jsonObject.getInt("urlId"));
+        assertEquals("https://google.com", jsonObject.getString("url"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
 
@@ -175,6 +182,7 @@ public class InventoryItemDetailEndpointsTest extends JerseyTest {
         inventoryItemDetail.setCommodityTypeCode("FORAGE");
         inventoryItemDetail.setFruitVegTypeCode("APRICOT");
         inventoryItemDetail.setMultiStageCommdtyCode(null);
+        inventoryItemDetail.setUrlId(2L);
         inventoryItemDetail.setUserEmail("jsmith@gmail.com");
 
         Response response = target("/inventoryItemDetails/55361").request().put(Entity.json(inventoryItemDetail));
@@ -198,6 +206,8 @@ public class InventoryItemDetailEndpointsTest extends JerseyTest {
         assertEquals("Apricots", jsonObject.getString("fruitVegTypeDesc"));
         assertEquals("null", jsonObject.getString("multiStageCommdtyCode"));
         assertEquals("null", jsonObject.getString("multiStageCommdtyDesc"));
+        assertEquals(2, jsonObject.getInt("urlId"));
+        assertEquals("https://microsoft.com", jsonObject.getString("url"));
         assertEquals("null", jsonObject.getString("userEmail"));
     }
 

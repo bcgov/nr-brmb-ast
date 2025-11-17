@@ -48,14 +48,15 @@ public class ImportIVPRDaoImpl extends BaseDao implements ImportIVPRDao {
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
-                        "call farms_ivpr_pkg.insert_staging_row(?, ?, ?, ?, ?, ?)")) {
+                        "call farms_ivpr_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?)")) {
             callableStatement.setLong(1, rowNum);
             callableStatement.setObject(2, dto.getProgramYear() == null ? null : dto.getProgramYear().shortValue(),
                     Types.SMALLINT);
             callableStatement.setString(3, dto.getInventoryItemCode());
             callableStatement.setBigDecimal(4, dto.getInsurableValue());
             callableStatement.setBigDecimal(5, dto.getPremiumRate());
-            callableStatement.setString(6, userId);
+            callableStatement.setString(6, dto.getFileLocation());
+            callableStatement.setString(7, userId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
             handleException(e);

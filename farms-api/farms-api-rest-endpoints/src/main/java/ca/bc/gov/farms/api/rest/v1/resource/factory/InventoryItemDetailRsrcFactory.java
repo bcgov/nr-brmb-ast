@@ -52,6 +52,8 @@ public class InventoryItemDetailRsrcFactory extends BaseResourceFactory implemen
         resource.setFruitVegTypeDesc(dto.getFruitVegTypeDesc());
         resource.setMultiStageCommdtyCode(dto.getMultiStageCommdtyCode());
         resource.setMultiStageCommdtyDesc(dto.getMultiStageCommdtyDesc());
+        resource.setUrlId(dto.getUrlId());
+        resource.setUrl(dto.getUrl());
     }
 
     @Override
@@ -99,6 +101,8 @@ public class InventoryItemDetailRsrcFactory extends BaseResourceFactory implemen
         resource.setFruitVegTypeDesc(dto.getFruitVegTypeDesc());
         resource.setMultiStageCommdtyCode(dto.getMultiStageCommdtyCode());
         resource.setMultiStageCommdtyDesc(dto.getMultiStageCommdtyDesc());
+        resource.setUrlId(dto.getUrlId());
+        resource.setUrl(dto.getUrl());
 
         return resource;
     }
@@ -144,6 +148,8 @@ public class InventoryItemDetailRsrcFactory extends BaseResourceFactory implemen
         dto.setFruitVegTypeDesc(model.getFruitVegTypeDesc());
         dto.setMultiStageCommdtyCode(model.getMultiStageCommdtyCode());
         dto.setMultiStageCommdtyDesc(model.getMultiStageCommdtyDesc());
+        dto.setUrlId(model.getUrlId());
+        dto.setUrl(model.getUrl());
     }
 
 }
