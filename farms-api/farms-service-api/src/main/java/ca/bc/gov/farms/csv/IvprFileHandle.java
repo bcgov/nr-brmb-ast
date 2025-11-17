@@ -37,7 +37,7 @@ public class IvprFileHandle extends FileHandle<ImportIVPRDto> {
                 add("Description");
                 add("IV");
                 add("PR");
-                add("FILE_LOCATION");
+                add("FileLocation");
             }
         };
     }
