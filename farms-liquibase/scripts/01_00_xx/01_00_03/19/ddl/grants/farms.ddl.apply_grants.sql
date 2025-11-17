@@ -8,5 +8,6 @@ GRANT EXECUTE ON FUNCTION farms_export_pkg.f21 TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_export_pkg.f25 TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_export_pkg.f26 TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_export_pkg.f30 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f31 TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_export_pkg TO "app_farms_rest_proxy";
