@@ -73,7 +73,8 @@ begin
                max(clm.program_year_margin) program_year_margin,
                max(
                    case
-                       when whole.whole_farm_combined_pin is not null and whole.whole_farm_combined_pin::text <> '' then 'Y' else 'N'
+                       when whole.whole_farm_combined_pin is not null and whole.whole_farm_combined_pin::text <> '' then 'Y'
+                       else 'N'
                    end
                ) whole_farm_ind,
                max(case when clm.structural_change_code in ('RATIO', 'ADD') then 'Y' else 'N' end) structural_change_ind
