@@ -11,34 +11,31 @@ declare
 begin
 
     open cur for
-        with scenarios as (
-            select t.agristability_scenario_id,
-                   t.program_year_version_id,
-                   t.participant_pin,
-                   t.program_year "Year"
-            from (
+        with ranked as (
                 /* this subquery is duplicated in F01, F02, F03, F20, F21, F30, F31, F40, F60.
                  * if it is modified here, it should be modified there as well.
                  */
                 select m.program_year_version_id,
                        sc.agristability_scenario_id,
+                       m.program_year_id,
                        m.participant_pin,
                        m.year program_year,
                        sc.combined_farm_number,
                        ssa.scenario_state_audit_id,
-                       min(sc.agristability_scenario_id) keep(dense_rank first order by
-                           case
-                               when sc.scenario_class_code = 'USER'
-                                    and m.year = 2013 then 2
-                               when sc.scenario_class_code = 'REF'
-                                    and m_parent.year = 2013 then 1
-                               else 0
-                           end desc,
-                           ssa.when_created desc,
-                           case when(sc.scenario_state_code = 'COMP') then 0 else 1 end,
-                           case when(sc.scenario_state_code = 'AMEND') then 0 else 1 end,
-                           sc.scenario_number desc
-                       ) over (partition by m.program_year_id) latest_sc_id,
+                       dense_rank() over(
+                           partition by m.program_year_id
+                           order by case
+                                        when sc.scenario_class_code = 'USER'
+                                             and m.year = 2013 then 2
+                                        when sc.scenario_class_code = 'REF'
+                                             and m_parent.year = 2013 then 1
+                                        else 0
+                                    end desc,
+                                    ssa.when_created desc,
+                                    case when(sc.scenario_state_code = 'COMP') then 0 else 1 end,
+                                    case when(sc.scenario_state_code = 'AMEND') then 0 else 1 end,
+                                    sc.scenario_number desc
+                       ) as rnk,
                        first_value(ssa.scenario_state_audit_id) over (
                            partition by sc.agristability_scenario_id
                            order by ssa.when_created desc nulls last
@@ -58,9 +55,25 @@ begin
                 and sc.scenario_class_code in ('USER', 'REF')
                 and sc.scenario_state_code in ('COMP', 'AMEND')
                 and sc.scenario_category_code in ('FIN','AADJ','PADJ')
+        ), chosen as (
+            select distinct on (program_year_id)
+                   program_year_id,
+                   min(agristability_scenario_id) as latest_sc_id
+            from ranked
+            where rnk = 1
+            group by program_year_id
+        ), scenarios as (
+            select t.agristability_scenario_id,
+                   t.program_year_version_id,
+                   t.participant_pin,
+                   t.program_year "Year"
+            from (
+                select r.*
+                from ranked r
+                join chosen c on r.program_year_id = c.program_year_id
+                              and r.agristability_scenario_id = c.latest_sc_id
             ) t
-            where t.agristability_scenario_id = t.latest_sc_id
-            and (t.scenario_state_audit_id = t.verified_state_id or coalesce(t.verified_state_id::text, '') = '')
+            where (t.scenario_state_audit_id = t.verified_state_id or coalesce(t.verified_state_id::text, '') = '')
             and t.non_participant_ind = 'N'
         )
         select i.participant_pin,
@@ -136,7 +149,7 @@ begin
                end productive_capacity_amount
         from (
             select s.participant_pin,
-                   s.year prior_year,
+                   s."Year" prior_year,
                    op.operation_number,
                    ri.crop_unit_code,
                    xref.inventory_item_code,
@@ -199,7 +212,7 @@ begin
             )
             union all
             select s.participant_pin,
-                   s.year prior_year,
+                   s."Year" prior_year,
                    op.operation_number,
                    null crop_unit_code,
                    ca.inventory_item_code,
