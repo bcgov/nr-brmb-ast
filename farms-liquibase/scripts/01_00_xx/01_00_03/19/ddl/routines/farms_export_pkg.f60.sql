@@ -85,7 +85,8 @@ begin
                bc.accrual_adjs_purchased_inputs,
                clm.prod_insur_deemed_benefit,
                case
-                   when (t.combined_farm_number is not null and t.combined_farm_number::text <> '') then clm.applied_benefit_percent * 100
+                   when t.combined_farm_number is not null
+                        and t.combined_farm_number::text <> '' then clm.applied_benefit_percent * 100
                end combined_farm_percentage
         from farms.farm_agristability_clients ac
         join farms.farm_program_years py on py.agristability_client_id = ac.agristability_client_id
