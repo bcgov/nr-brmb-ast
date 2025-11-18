@@ -72,14 +72,16 @@ begin
                py2.year prior_year,
                ttls.unadjusted_production_margin,
                case
-                   when cl.structural_change_code != 'NONE' and ttls.structural_change_notable_ind = 'Y' then ttls.structural_change_adjs
+                   when cl.structural_change_code != 'NONE'
+                        and ttls.structural_change_notable_ind = 'Y' then ttls.structural_change_adjs
                    else 0
                end structural_change_adjs,
                ttls.production_marg_aft_str_changs,
                ttls.production_marg_accr_adjs,
                ttls.expense_accr_adjs total_eligible_expense,
                case
-                   when cl.expense_structural_change_code != 'NONE' and ttls.structural_change_notable_ind = 'Y' then ttls.expense_structural_chg_adjs
+                   when cl.expense_structural_change_code != 'NONE'
+                        and ttls.structural_change_notable_ind = 'Y' then ttls.expense_structural_chg_adjs
                    else 0
                end expense_structural_chg_adjs, -- ratio/additive method expense structural adjustment
                case
