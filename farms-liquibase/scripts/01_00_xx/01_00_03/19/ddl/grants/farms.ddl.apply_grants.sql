@@ -1,3 +1,5 @@
+GRANT SELECT ON farms.farm_chef_statement_a_years_vw TO "app_farms_rest_proxy";
+
 GRANT EXECUTE ON FUNCTION farms_export_pkg.f01 TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_export_pkg.f02 TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_export_pkg.f03 TO "app_farms_rest_proxy";
