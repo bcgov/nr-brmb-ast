@@ -9,7 +9,7 @@ declare
 
     py_id_rec record;
     py_id_ref_cursor refcursor := null;
-    target_scenario_year bigint := in_enrolment_year - 2;
+    target_scenario_year smallint := in_enrolment_year - 2;
     scenario_id farms.farm_agristability_scenarios.agristability_scenario_id%type;
 
 begin
@@ -18,7 +18,7 @@ begin
 
     fetch py_id_ref_cursor into py_id_rec;
 
-    if py_id_ref_cursor%found then
+    if found then
         if py_id_rec.program_year = target_scenario_year then
             scenario_id := py_id_rec.agristability_scenario_id;
         end if;
