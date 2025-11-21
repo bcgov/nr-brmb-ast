@@ -8,5 +8,6 @@ GRANT EXECUTE ON PROCEDURE farms_chefs_pkg.add_puc TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_chefs_pkg.add_income_expense TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_chefs_pkg.add_inv TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_chefs_pkg.create_crm_entity TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_chefs_pkg.read_crm_entity_guids_by_submission_guid TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_chefs_pkg TO "app_farms_rest_proxy";
