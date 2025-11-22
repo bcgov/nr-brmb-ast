@@ -1,4 +1,4 @@
-GRANT EXECUTE ON FUNCTION farms_fifo_pkg.read_fifo_status_by TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_fifo_pkg.read_fifo_status_by_year TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_fifo_pkg.read_fifo_calculation_items TO "app_farms_rest_proxy";
 
 GRANT USAGE ON SCHEMA farms_fifo_pkg TO "app_farms_rest_proxy";
