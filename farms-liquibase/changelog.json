@@ -184,6 +184,11 @@
             "include": {
                 "file": "scripts/01_00_xx/01_00_04/01/farms.01_00_04_01.ddl.json"
             }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_04/02/farms.01_00_04_02.ddl.json"
+            }
         }
     ]
 }

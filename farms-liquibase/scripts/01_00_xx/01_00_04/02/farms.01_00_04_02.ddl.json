@@ -1,0 +1,39 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "38",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_import_pkg.reported_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_staging_pkg.insert_z21.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "ddl/routines/farms_staging_pkg.insert_z40.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/grants/farms.ddl.apply_grants.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
