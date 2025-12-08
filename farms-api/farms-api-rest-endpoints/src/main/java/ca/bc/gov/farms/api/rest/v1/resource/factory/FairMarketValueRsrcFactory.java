@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import ca.bc.gov.brmb.common.rest.endpoints.resource.factory.BaseResourceFactory;
 import ca.bc.gov.brmb.common.rest.resource.RelLink;
@@ -72,6 +72,8 @@ public class FairMarketValueRsrcFactory extends BaseResourceFactory implements F
         resource.setPeriod10Variance(dto.getPeriod10Variance());
         resource.setPeriod11Variance(dto.getPeriod11Variance());
         resource.setPeriod12Variance(dto.getPeriod12Variance());
+        resource.setUrlId(dto.getUrlId());
+        resource.setUrl(dto.getUrl());
     }
 
     @Override
@@ -139,6 +141,8 @@ public class FairMarketValueRsrcFactory extends BaseResourceFactory implements F
         result.setPeriod10Variance(dto.getPeriod10Variance());
         result.setPeriod11Variance(dto.getPeriod11Variance());
         result.setPeriod12Variance(dto.getPeriod12Variance());
+        result.setUrlId(dto.getUrlId());
+        result.setUrl(dto.getUrl());
 
         return result;
     }
@@ -204,6 +208,8 @@ public class FairMarketValueRsrcFactory extends BaseResourceFactory implements F
         dto.setPeriod10Variance(model.getPeriod10Variance());
         dto.setPeriod11Variance(model.getPeriod11Variance());
         dto.setPeriod12Variance(model.getPeriod12Variance());
+        dto.setUrlId(model.getUrlId());
+        dto.setUrl(model.getUrl());
     }
 
 }

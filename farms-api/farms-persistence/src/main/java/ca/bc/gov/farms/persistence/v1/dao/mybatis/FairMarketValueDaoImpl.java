@@ -136,6 +136,7 @@ public class FairMarketValueDaoImpl extends BaseDao implements FairMarketValueDa
             try {
                 Map<String, Object> parameters = new HashMap<>();
                 parameters.put("fairMarketValueId", dto.getFairMarketValueId());
+                parameters.put("urlId", dto.getUrlId());
                 parameters.put("userId", userId);
 
                 BigDecimal[] averagePrices = { dto.getPeriod01Price(), dto.getPeriod02Price(), dto.getPeriod03Price(),

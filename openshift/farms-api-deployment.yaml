@@ -91,6 +91,16 @@ spec:
                 configMapKeyRef:
                   name: farms-api-config-#{ENV}#
                   key: LOG_LEVEL
+            - name: CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: CLIENT_ID
+            - name: TENANT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: farms-api-config-#{ENV}#
+                  key: TENANT_ID
           livenessProbe:
             httpGet:
               path: /farms-api/v1/checkHealth?callstack=test

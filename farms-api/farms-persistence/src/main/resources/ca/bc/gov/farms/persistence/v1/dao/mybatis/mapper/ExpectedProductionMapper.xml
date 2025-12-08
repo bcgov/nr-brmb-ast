@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.ExpectedProductionMapper">
+
+    <resultMap id="ExpectedProductionDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.ExpectedProductionDto">
+        <id property="expectedProductionId" column="expected_production_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="expectedProductionPerProdUnit" column="expected_prodctn_per_prod_unit" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="inventoryItemCode" column="inventory_item_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryItemDesc" column="inventory_item_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="cropUnitCode" column="crop_unit_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="cropUnitDesc" column="crop_unit_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select ep.expected_production_id,
+               ep.expected_prodctn_per_prod_unit,
+               iic.inventory_item_code,
+               iic.description as inventory_item_desc,
+               cuc.crop_unit_code,
+               cuc.description as crop_unit_desc
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_expected_productions ep
+        join farms.farm_inventory_item_codes iic using (inventory_item_code)
+        join farms.farm_crop_unit_codes cuc using(crop_unit_code)
+    </sql>
+
+    <select id="fetch" resultMap="ExpectedProductionDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where ep.expected_production_id = #{expectedProductionId}
+    </select>
+
+    <select id="fetchByInventoryItemCode" resultMap="ExpectedProductionDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where iic.inventory_item_code = #{inventoryItemCode}
+    </select>
+
+    <select id="fetchAll" resultMap="ExpectedProductionDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        order by iic.description
+    </select>
+
+    <insert id="insertExpectedProduction">
+        <selectKey keyProperty="expectedProductionId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_ep_seq')
+        </selectKey>
+        insert into farms.farm_expected_productions (
+            expected_production_id,
+            expected_prodctn_per_prod_unit,
+            inventory_item_code,
+            crop_unit_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{expectedProductionId},
+            #{dto.expectedProductionPerProdUnit, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select cuc.crop_unit_code
+                from farms.farm_crop_unit_codes cuc
+                where cuc.crop_unit_code = #{dto.cropUnitCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateExpectedProduction">
+        update farms.farm_expected_productions
+        set expected_prodctn_per_prod_unit = #{dto.expectedProductionPerProdUnit, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            inventory_item_code = (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            crop_unit_code = (
+                select cuc.crop_unit_code
+                from farms.farm_crop_unit_codes cuc
+                where cuc.crop_unit_code = #{dto.cropUnitCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where expected_production_id = #{dto.expectedProductionId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteExpectedProduction">
+        delete from farms.farm_expected_productions
+        where expected_production_id = #{expectedProductionId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </delete>
+</mapper>

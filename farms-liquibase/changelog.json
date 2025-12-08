@@ -84,6 +84,111 @@
             "include": {
                 "file": "scripts/01_00_xx/01_00_03/04/farms.01_00_03_04.ddl.json"
             }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/05/farms.01_00_03_05.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/06/farms.01_00_03_06.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/07/farms.01_00_03_07.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/08/farms.01_00_03_08.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/09/farms.01_00_03_09.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/10/farms.01_00_03_10.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/11/farms.01_00_03_11.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/12/farms.01_00_03_12.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/13/farms.01_00_03_13.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/14/farms.01_00_03_14.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/15/farms.01_00_03_15.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/16/farms.01_00_03_16.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/17/farms.01_00_03_17.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/18/farms.01_00_03_18.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/19/farms.01_00_03_19.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/20/farms.01_00_03_20.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/21/farms.01_00_03_21.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_03/22/farms.01_00_03_22.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_04/00/farms.01_00_04_00.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_04/01/farms.01_00_04_01.ddl.json"
+            }
+        },
+        {
+            "include": {
+                "file": "scripts/01_00_xx/01_00_04/02/farms.01_00_04_02.ddl.json"
+            }
         }
     ]
 }

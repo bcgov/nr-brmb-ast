@@ -11,6 +11,8 @@ public interface ConfigurationParameterMapper {
 
     List<ConfigurationParameterDto> fetchAll();
 
+    List<ConfigurationParameterDto> fetchBy(Map<String, Object> parameters);
+
     int insertConfigurationParameter(Map<String, Object> parameters);
 
     int updateConfigurationParameter(Map<String, Object> parameters);

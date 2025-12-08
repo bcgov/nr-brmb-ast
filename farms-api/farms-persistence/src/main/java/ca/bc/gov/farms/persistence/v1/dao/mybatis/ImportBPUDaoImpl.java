@@ -32,9 +32,10 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
 
         try (CallableStatement callableStatement = this.conn
                 .prepareCall(
-                        "call farms_bpu_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            callableStatement.setInt(1, rowNum);
-            callableStatement.setInt(2, dto.getProgramYear());
+                        "call farms_bpu_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            callableStatement.setLong(1, rowNum);
+            callableStatement.setObject(2, dto.getProgramYear() == null ? null : dto.getProgramYear().shortValue(),
+                    Types.SMALLINT);
             callableStatement.setString(3, dto.getMunicipalityCode());
             callableStatement.setString(4, dto.getInventoryItemCode());
             callableStatement.setString(5, dto.getUnitComment());
@@ -50,7 +51,8 @@ public class ImportBPUDaoImpl extends BaseDao implements ImportBPUDao {
             callableStatement.setBigDecimal(15, dto.getYearMinus3Expense());
             callableStatement.setBigDecimal(16, dto.getYearMinus2Expense());
             callableStatement.setBigDecimal(17, dto.getYearMinus1Expense());
-            callableStatement.setString(18, userId);
+            callableStatement.setString(18, dto.getFileLocation());
+            callableStatement.setString(19, userId);
             callableStatement.execute();
         } catch (RuntimeException | SQLException e) {
             handleException(e);

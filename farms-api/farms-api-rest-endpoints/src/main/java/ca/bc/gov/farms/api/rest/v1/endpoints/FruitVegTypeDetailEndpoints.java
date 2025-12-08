@@ -1,15 +1,15 @@
 package ca.bc.gov.farms.api.rest.v1.endpoints;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import ca.bc.gov.brmb.common.rest.resource.HeaderConstants;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
@@ -65,10 +65,10 @@ public interface FruitVegTypeDetailEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @GET
-    @Path("/{fruitVegTypeDetailId}")
+    @Path("/{fruitVegTypeCode}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getFruitVegTypeDetail(
-            @Parameter(description = "The identifier of the Fruit and Vegetable Type Detail resource.") @PathParam("fruitVegTypeDetailId") Long fruitVegTypeDetailId);
+            @Parameter(description = "The identifier of the Fruit and Vegetable Type Detail resource.") @PathParam("fruitVegTypeCode") String fruitVegTypeCode);
 
     @Operation(operationId = "Create Fruit and Vegetable Type Detail resource.", summary = "Create Fruit and Vegetable Type Detail resource.", extensions = {
             @Extension(properties = {
@@ -113,9 +113,9 @@ public interface FruitVegTypeDetailEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @DELETE
-    @Path("/{fruitVegTypeDetailId}")
+    @Path("/{fruitVegTypeCode}")
     public Response deleteFruitVegTypeDetail(
-            @Parameter(description = "The identifier of the Fruit and Vegetable Type Detail resource.") @PathParam("fruitVegTypeDetailId") Long fruitVegTypeDetailId);
+            @Parameter(description = "The identifier of the Fruit and Vegetable Type Detail resource.") @PathParam("fruitVegTypeCode") String fruitVegTypeCode);
 
     @Operation(operationId = "Update Fruit and Vegetable Type Detail resource.", summary = "Update Fruit and Vegetable Type Detail resource.", extensions = {
             @Extension(properties = {
@@ -135,11 +135,11 @@ public interface FruitVegTypeDetailEndpoints {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
     @PUT
-    @Path("/{fruitVegTypeDetailId}")
+    @Path("/{fruitVegTypeCode}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response updateFruitVegTypeDetail(
-            @Parameter(description = "The identifier of the Fruit and Vegetable Type Detail resource.") @PathParam("fruitVegTypeDetailId") Long fruitVegTypeDetailId,
+            @Parameter(description = "The identifier of the Fruit and Vegetable Type Detail resource.") @PathParam("fruitVegTypeCode") String fruitVegTypeCode,
             @Parameter(name = "fruitVegTypeDetailRsrc", description = "The Fruit and Vegetable Type Detail resource containing the new values.", required = true) FruitVegTypeDetailRsrc fruitVegTypeDetailRsrc);
 
 }

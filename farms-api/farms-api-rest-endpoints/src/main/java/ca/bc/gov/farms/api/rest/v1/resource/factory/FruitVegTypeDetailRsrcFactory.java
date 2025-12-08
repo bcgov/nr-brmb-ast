@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import ca.bc.gov.brmb.common.rest.endpoints.resource.factory.BaseResourceFactory;
 import ca.bc.gov.brmb.common.rest.resource.RelLink;
@@ -32,15 +32,17 @@ public class FruitVegTypeDetailRsrcFactory extends BaseResourceFactory implement
         String eTag = getEtag(resource);
         resource.setETag(eTag);
 
-        setSelfLink(resource.getFruitVegTypeDetailId(), resource, baseUri);
+        setSelfLink(resource.getFruitVegTypeCode(), resource, baseUri);
 
         return resource;
     }
 
     private void populateDefaultResource(FruitVegTypeDetailRsrc resource, FruitVegTypeDetailDto dto) {
-        resource.setFruitVegTypeDetailId(dto.getFruitVegTypeDetailId());
-        resource.setRevenueVarianceLimit(dto.getRevenueVarianceLimit());
         resource.setFruitVegTypeCode(dto.getFruitVegTypeCode());
+        resource.setFruitVegTypeDesc(dto.getFruitVegTypeDesc());
+        resource.setEstablishedDate(dto.getEstablishedDate());
+        resource.setExpiryDate(dto.getExpiryDate());
+        resource.setRevenueVarianceLimit(dto.getRevenueVarianceLimit());
     }
 
     @Override
@@ -55,7 +57,7 @@ public class FruitVegTypeDetailRsrcFactory extends BaseResourceFactory implement
 
         for (FruitVegTypeDetailDto dto : dtos) {
             FruitVegTypeDetailRsrc resource = populate(dto);
-            setSelfLink(dto.getFruitVegTypeDetailId(), resource, baseUri);
+            setSelfLink(dto.getFruitVegTypeCode(), resource, baseUri);
             resources.add(resource);
         }
 
@@ -74,25 +76,27 @@ public class FruitVegTypeDetailRsrcFactory extends BaseResourceFactory implement
 
         FruitVegTypeDetailRsrc result = new FruitVegTypeDetailRsrc();
 
-        result.setFruitVegTypeDetailId(dto.getFruitVegTypeDetailId());
-        result.setRevenueVarianceLimit(dto.getRevenueVarianceLimit());
         result.setFruitVegTypeCode(dto.getFruitVegTypeCode());
+        result.setFruitVegTypeDesc(dto.getFruitVegTypeDesc());
+        result.setEstablishedDate(dto.getEstablishedDate());
+        result.setExpiryDate(dto.getExpiryDate());
+        result.setRevenueVarianceLimit(dto.getRevenueVarianceLimit());
 
         return result;
     }
 
-    public static void setSelfLink(Long fruitVegTypeDetailId, FruitVegTypeDetailRsrc resource, URI baseUri) {
+    public static void setSelfLink(String fruitVegTypeCode, FruitVegTypeDetailRsrc resource, URI baseUri) {
 
-        String selfUri = getFruitVegTypeDetailSelfUri(fruitVegTypeDetailId, baseUri);
+        String selfUri = getFruitVegTypeDetailSelfUri(fruitVegTypeCode, baseUri);
 
         resource.getLinks().add(new RelLink(BaseResourceTypes.SELF, selfUri, "GET"));
     }
 
-    public static String getFruitVegTypeDetailSelfUri(Long fruitVegTypeDetailId, URI baseUri) {
+    public static String getFruitVegTypeDetailSelfUri(String fruitVegTypeCode, URI baseUri) {
 
         String result = UriBuilder.fromUri(baseUri)
                 .path(FruitVegTypeDetailEndpoints.class)
-                .build(fruitVegTypeDetailId).toString();
+                .build(fruitVegTypeCode).toString();
 
         return result;
     }
@@ -108,8 +112,10 @@ public class FruitVegTypeDetailRsrcFactory extends BaseResourceFactory implement
 
     @Override
     public void updateFruitVegTypeDetail(FruitVegTypeDetailDto dto, FruitVegTypeDetail model) {
-        dto.setFruitVegTypeDetailId(model.getFruitVegTypeDetailId());
-        dto.setRevenueVarianceLimit(model.getRevenueVarianceLimit());
         dto.setFruitVegTypeCode(model.getFruitVegTypeCode());
+        dto.setFruitVegTypeDesc(model.getFruitVegTypeDesc());
+        dto.setEstablishedDate(model.getEstablishedDate());
+        dto.setExpiryDate(model.getExpiryDate());
+        dto.setRevenueVarianceLimit(model.getRevenueVarianceLimit());
     }
 }

@@ -9,7 +9,7 @@ import ca.bc.gov.farms.persistence.v1.dto.FruitVegTypeDetailDto;
 
 public interface FruitVegTypeDetailDao extends Serializable {
 
-    FruitVegTypeDetailDto fetch(Long fruitVegTypeDetailId) throws DaoException;
+    FruitVegTypeDetailDto fetch(String fruitVegTypeCode) throws DaoException;
 
     List<FruitVegTypeDetailDto> fetchAll() throws DaoException;
 
@@ -17,5 +17,5 @@ public interface FruitVegTypeDetailDao extends Serializable {
 
     void update(FruitVegTypeDetailDto dto, String userId) throws DaoException, NotFoundDaoException;
 
-    void delete(Long fruitVegTypeDetailId) throws DaoException, NotFoundDaoException;
+    void delete(String fruitVegTypeCode) throws DaoException, NotFoundDaoException;
 }

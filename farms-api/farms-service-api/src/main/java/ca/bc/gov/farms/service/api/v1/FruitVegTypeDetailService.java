@@ -16,7 +16,7 @@ public interface FruitVegTypeDetailService {
             throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    FruitVegTypeDetail getFruitVegTypeDetail(Long fruitVegTypeDetailId, FactoryContext factoryContext)
+    FruitVegTypeDetail getFruitVegTypeDetail(String fruitVegTypeCode, FactoryContext factoryContext)
             throws ServiceException, NotFoundException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
@@ -25,11 +25,11 @@ public interface FruitVegTypeDetailService {
             throws ServiceException, ValidationFailureException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    FruitVegTypeDetail updateFruitVegTypeDetail(Long fruitVegTypeDetailId,
+    FruitVegTypeDetail updateFruitVegTypeDetail(String fruitVegTypeCode,
             FruitVegTypeDetail fruitVegTypeDetail, FactoryContext factoryContext)
             throws ServiceException, ValidationFailureException, NotFoundException;
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    void deleteFruitVegTypeDetail(Long fruitVegTypeDetailId)
+    void deleteFruitVegTypeDetail(String fruitVegTypeCode)
             throws ServiceException, NotFoundException;
 }

@@ -44,4 +44,24 @@ public class ResourceTypes extends BaseResourceTypes {
 	// Fruit Veg Type Detail
 	public static final String FRUIT_VEG_TYPE_DETAIL_NAME = "fruitVegTypeDetail";
 	public static final String FRUIT_VEG_TYPE_DETAIL_LIST_NAME = "fruitVegTypeDetails";
+
+	// Year Configuration Parameter
+	public static final String YEAR_CONFIGURATION_PARAMETER_NAME = "yearConfigurationParameter";
+	public static final String YEAR_CONFIGURATION_PARAMETER_LIST_NAME = "yearConfigurationParameters";
+
+	// Market Rate Premium
+	public static final String MARKET_RATE_PREMIUM_NAME = "marketRatePremium";
+	public static final String MARKET_RATE_PREMIUM_LIST_NAME = "marketRatePremiums";
+
+	// Crop Unit Conversion
+	public static final String CROP_UNIT_CONVERSION_NAME = "cropUnitConversion";
+	public static final String CROP_UNIT_CONVERSION_LIST_NAME = "cropUnitConversions";
+
+	// Expected Production
+	public static final String EXPECTED_PRODUCTION_NAME = "expectedProduction";
+	public static final String EXPECTED_PRODUCTION_LIST_NAME = "expectedProductions";
+
+	// Productive Unit Code
+	public static final String PRODUCTIVE_UNIT_CODE_NAME = "productiveUnitCode";
+	public static final String PRODUCTIVE_UNIT_CODE_LIST_NAME = "productiveUnitCodes";
 }

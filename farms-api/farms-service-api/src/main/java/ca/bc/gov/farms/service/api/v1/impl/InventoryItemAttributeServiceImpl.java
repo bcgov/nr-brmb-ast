@@ -1,8 +1,6 @@
 package ca.bc.gov.farms.service.api.v1.impl;
 
 import java.util.List;
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +22,6 @@ public class InventoryItemAttributeServiceImpl implements InventoryItemAttribute
 
     private static final Logger logger = LoggerFactory.getLogger(InventoryItemAttributeServiceImpl.class);
 
-    private Properties applicationProperties;
-
     private ModelValidator modelValidator;
 
     // factories
@@ -33,10 +29,6 @@ public class InventoryItemAttributeServiceImpl implements InventoryItemAttribute
 
     // daos
     private InventoryItemAttributeDao inventoryItemAttributeDao;
-
-    public void setApplicationProperties(Properties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
 
     public void setModelValidator(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;
@@ -51,9 +43,9 @@ public class InventoryItemAttributeServiceImpl implements InventoryItemAttribute
     }
 
     @Override
-    public InventoryItemAttribute getInventoryItemAttributesByInventoryItemCode(
+    public InventoryItemAttribute getInventoryItemAttributeByInventoryItemCode(
             String inventoryItemCode, FactoryContext factoryContext) throws ServiceException {
-        logger.debug("<getInventoryItemAttributesByInventoryItemCode");
+        logger.debug("<getInventoryItemAttributeByInventoryItemCode");
 
         InventoryItemAttribute result = null;
 
@@ -65,7 +57,7 @@ public class InventoryItemAttributeServiceImpl implements InventoryItemAttribute
             throw new ServiceException("DAO threw an exception", e);
         }
 
-        logger.debug(">getInventoryItemAttributesByInventoryItemCode");
+        logger.debug(">getInventoryItemAttributeByInventoryItemCode");
         return result;
     }
 

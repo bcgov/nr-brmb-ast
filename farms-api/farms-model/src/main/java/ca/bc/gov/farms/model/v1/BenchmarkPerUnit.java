@@ -78,6 +78,12 @@ public interface BenchmarkPerUnit extends Serializable {
     public BigDecimal getYearMinus1Expense();
     public void setYearMinus1Expense(BigDecimal yearMinus1Expense);
 
+    public Long getUrlId();
+    public void setUrlId(Long urlId);
+
+    public String getUrl();
+    public void setUrl(String url);
+
     public String getUserEmail();
     public void setUserEmail(String userEmail);
 }

@@ -4,10 +4,12 @@
 <mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.FruitVegTypeDetailMapper">
 
     <resultMap id="FruitVegTypeDetailDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.FruitVegTypeDetailDto">
-        <id property="fruitVegTypeDetailId" column="fruit_veg_type_detail_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+        <id property="fruitVegTypeCode" column="fruit_veg_type_code" javaType="java.lang.String" jdbcType="VARCHAR" />
 
+        <result property="fruitVegTypeDesc" column="fruit_veg_type_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="establishedDate" column="established_date" javaType="java.time.LocalDate" jdbcType="DATE" />
+        <result property="expiryDate" column="expiry_date" javaType="java.time.LocalDate" jdbcType="DATE" />
         <result property="revenueVarianceLimit" column="revenue_variance_limit" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
-        <result property="fruitVegTypeCode" column="fruit_veg_type_code" javaType="java.lang.String" jdbcType="VARCHAR" />
 
         <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
         <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -17,9 +19,11 @@
     </resultMap>
 
     <sql id="selectColumns">
-        select fvtd.fruit_veg_type_detail_id,
+        select fvtc.fruit_veg_type_code,
+               fvtc.description fruit_veg_type_desc,
+               fvtc.established_date,
+               fvtc.expiry_date,
                fvtd.revenue_variance_limit,
-               fvtd.fruit_veg_type_code,
                fvtd.revision_count,
                fvtd.who_created,
                fvtd.when_created,
@@ -28,19 +32,44 @@
     </sql>
 
     <sql id="fromClause">
-        from farms.farm_fruit_veg_type_details fvtd
+        from farms.farm_fruit_veg_type_codes fvtc
+        join farms.farm_fruit_veg_type_details fvtd on fvtc.fruit_veg_type_code = fvtd.fruit_veg_type_code
     </sql>
 
     <select id="fetch" resultMap="FruitVegTypeDetailDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
-        where fvtd.fruit_veg_type_detail_id = #{fruitVegTypeDetailId}
+        where fvtc.fruit_veg_type_code = #{fruitVegTypeCode}
     </select>
 
     <select id="fetchAll" resultMap="FruitVegTypeDetailDtoMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
     </select>
+
+    <insert id="insertFruitVegTypeCode">
+        insert into farms.farm_fruit_veg_type_codes (
+            fruit_veg_type_code,
+            description,
+            established_date,
+            expiry_date,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            #{dto.fruitVegTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            '9999-12-31 23:59:59',
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        ) on conflict (fruit_veg_type_code) do nothing;
+    </insert>
 
     <insert id="insertFruitVegTypeDetail">
         <selectKey keyProperty="fruitVegTypeDetailId" resultType="java.lang.Long" order="BEFORE">
@@ -67,18 +96,27 @@
         )
     </insert>
 
-    <update id="updateFruitVegTypeDetail">
-        update farms.farm_fruit_veg_type_details
-        set revenue_variance_limit = #{dto.revenueVarianceLimit, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
-            fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+    <update id="updateFruitVegTypeCode">
+        update farms.farm_fruit_veg_type_codes
+        set description = #{dto.fruitVegTypeDesc, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             when_updated = now()
-        where fruit_veg_type_detail_id = #{dto.fruitVegTypeDetailId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+        where fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+    </update>
+
+    <update id="updateFruitVegTypeDetail">
+        update farms.farm_fruit_veg_type_details
+        set revenue_variance_limit = #{dto.revenueVarianceLimit, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where fruit_veg_type_code = #{dto.fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
     </update>
 
     <delete id="deleteFruitVegTypeDetail">
-        delete from farms.farm_fruit_veg_type_details
-        where fruit_veg_type_detail_id = #{fruitVegTypeDetailId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+        update farms.farm_fruit_veg_type_codes
+        set expiry_date = now()
+        where fruit_veg_type_code = #{fruitVegTypeCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
     </delete>
 </mapper>

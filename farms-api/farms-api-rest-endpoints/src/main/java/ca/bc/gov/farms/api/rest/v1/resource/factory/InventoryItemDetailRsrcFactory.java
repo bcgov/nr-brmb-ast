@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import ca.bc.gov.brmb.common.rest.endpoints.resource.factory.BaseResourceFactory;
 import ca.bc.gov.brmb.common.rest.resource.RelLink;
@@ -52,6 +52,8 @@ public class InventoryItemDetailRsrcFactory extends BaseResourceFactory implemen
         resource.setFruitVegTypeDesc(dto.getFruitVegTypeDesc());
         resource.setMultiStageCommdtyCode(dto.getMultiStageCommdtyCode());
         resource.setMultiStageCommdtyDesc(dto.getMultiStageCommdtyDesc());
+        resource.setUrlId(dto.getUrlId());
+        resource.setUrl(dto.getUrl());
     }
 
     @Override
@@ -99,6 +101,8 @@ public class InventoryItemDetailRsrcFactory extends BaseResourceFactory implemen
         resource.setFruitVegTypeDesc(dto.getFruitVegTypeDesc());
         resource.setMultiStageCommdtyCode(dto.getMultiStageCommdtyCode());
         resource.setMultiStageCommdtyDesc(dto.getMultiStageCommdtyDesc());
+        resource.setUrlId(dto.getUrlId());
+        resource.setUrl(dto.getUrl());
 
         return resource;
     }
@@ -144,6 +148,8 @@ public class InventoryItemDetailRsrcFactory extends BaseResourceFactory implemen
         dto.setFruitVegTypeDesc(model.getFruitVegTypeDesc());
         dto.setMultiStageCommdtyCode(model.getMultiStageCommdtyCode());
         dto.setMultiStageCommdtyDesc(model.getMultiStageCommdtyDesc());
+        dto.setUrlId(model.getUrlId());
+        dto.setUrl(model.getUrl());
     }
 
 }

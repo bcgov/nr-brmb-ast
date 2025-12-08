@@ -1,8 +1,6 @@
 package ca.bc.gov.farms.service.api.v1.impl;
 
 import java.util.List;
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +23,6 @@ public class ConfigurationParameterServiceImpl implements ConfigurationParameter
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationParameterServiceImpl.class);
 
-    private Properties applicationProperties;
-
     private ModelValidator modelValidator;
 
     // factories
@@ -34,10 +30,6 @@ public class ConfigurationParameterServiceImpl implements ConfigurationParameter
 
     // daos
     private ConfigurationParameterDao configurationParameterDao;
-
-    public void setApplicationProperties(Properties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
 
     public void setModelValidator(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;
@@ -52,7 +44,8 @@ public class ConfigurationParameterServiceImpl implements ConfigurationParameter
     }
 
     @Override
-    public ConfigurationParameterList<? extends ConfigurationParameter> getAllConfigurationParameters(FactoryContext factoryContext) throws ServiceException {
+    public ConfigurationParameterList<? extends ConfigurationParameter> getAllConfigurationParameters(
+            FactoryContext factoryContext) throws ServiceException {
         logger.debug("<getAllConfigurationParameters");
 
         ConfigurationParameterList<? extends ConfigurationParameter> result = null;
@@ -66,6 +59,26 @@ public class ConfigurationParameterServiceImpl implements ConfigurationParameter
         }
 
         logger.debug(">getAllConfigurationParameters");
+        return result;
+    }
+
+    @Override
+    public ConfigurationParameterList<? extends ConfigurationParameter> getConfigurationParametersByParameterNamePrefix(
+            String parameterNamePrefix, FactoryContext factoryContext) throws ServiceException {
+        logger.debug("<getConfigurationParametersByParameterNamePrefix");
+
+        ConfigurationParameterList<? extends ConfigurationParameter> result = null;
+
+        try {
+            List<ConfigurationParameterDto> dtos = configurationParameterDao
+                    .fetchByParameterNamePrefix(parameterNamePrefix);
+
+            result = configurationParameterFactory.getConfigurationParameterList(dtos, factoryContext);
+        } catch (Exception e) {
+            throw new ServiceException("DAO threw an exception", e);
+        }
+
+        logger.debug(">getConfigurationParametersByParameterNamePrefix");
         return result;
     }
 

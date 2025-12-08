@@ -54,6 +54,7 @@ public class BenchmarkPerUnitDaoTest {
         dto.setYearMinus3Expense(new BigDecimal("186.58"));
         dto.setYearMinus2Expense(new BigDecimal("258.28"));
         dto.setYearMinus1Expense(new BigDecimal("258.28"));
+        dto.setUrlId(1L);
 
         BenchmarkPerUnitDto result = null;
         try {
@@ -88,6 +89,8 @@ public class BenchmarkPerUnitDaoTest {
         assertThat(result.getYearMinus3Expense()).isEqualByComparingTo(new BigDecimal("186.58"));
         assertThat(result.getYearMinus2Expense()).isEqualByComparingTo(new BigDecimal("258.28"));
         assertThat(result.getYearMinus1Expense()).isEqualByComparingTo(new BigDecimal("258.28"));
+        assertThat(result.getUrlId()).isEqualTo(1);
+        assertThat(result.getUrl()).isEqualTo("https://google.com");
     }
 
     @Test
@@ -128,6 +131,8 @@ public class BenchmarkPerUnitDaoTest {
         assertThat(dto.getYearMinus3Expense()).isEqualByComparingTo(new BigDecimal("186.58"));
         assertThat(dto.getYearMinus2Expense()).isEqualByComparingTo(new BigDecimal("258.28"));
         assertThat(dto.getYearMinus1Expense()).isEqualByComparingTo(new BigDecimal("258.28"));
+        assertThat(dto.getUrlId()).isEqualTo(1);
+        assertThat(dto.getUrl()).isEqualTo("https://google.com");
     }
 
     @Test
@@ -159,6 +164,7 @@ public class BenchmarkPerUnitDaoTest {
         dto.setYearMinus3Expense(new BigDecimal("1186.58"));
         dto.setYearMinus2Expense(new BigDecimal("1258.28"));
         dto.setYearMinus1Expense(new BigDecimal("1258.28"));
+        dto.setUrlId(2L);
 
         BenchmarkPerUnitDto result = null;
         try {
@@ -192,6 +198,8 @@ public class BenchmarkPerUnitDaoTest {
         assertThat(result.getYearMinus3Expense()).isEqualByComparingTo(new BigDecimal("1186.58"));
         assertThat(result.getYearMinus2Expense()).isEqualByComparingTo(new BigDecimal("1258.28"));
         assertThat(result.getYearMinus1Expense()).isEqualByComparingTo(new BigDecimal("1258.28"));
+        assertThat(result.getUrlId()).isEqualTo(2);
+        assertThat(result.getUrl()).isEqualTo("https://microsoft.com");
     }
 
     @Test

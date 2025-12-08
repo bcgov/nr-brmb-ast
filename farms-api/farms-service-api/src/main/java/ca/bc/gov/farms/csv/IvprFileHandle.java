@@ -23,6 +23,7 @@ public class IvprFileHandle extends FileHandle<ImportIVPRDto> {
         dto.setInventoryItemDesc(cols[index++].trim());
         dto.setInsurableValue(ParseUtils.parseBigDecimal(cols[index++].trim()));
         dto.setPremiumRate(ParseUtils.parseBigDecimal(cols[index++].trim()));
+        dto.setFileLocation(cols[index++].trim());
 
         return dto;
     }
@@ -36,6 +37,7 @@ public class IvprFileHandle extends FileHandle<ImportIVPRDto> {
                 add("Description");
                 add("IV");
                 add("PR");
+                add("FileLocation");
             }
         };
     }

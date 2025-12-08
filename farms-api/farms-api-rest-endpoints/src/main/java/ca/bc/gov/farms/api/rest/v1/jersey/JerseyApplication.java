@@ -1,13 +1,15 @@
 package ca.bc.gov.farms.api.rest.v1.jersey;
 
-import javax.servlet.ServletConfig;
-import javax.ws.rs.core.Context;
+import jakarta.servlet.ServletConfig;
+import jakarta.ws.rs.core.Context;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.BenchmarkPerUnitEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ConfigurationParameterEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.CropUnitConversionEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ExpectedProductionEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.FairMarketValueEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.FruitVegTypeDetailEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ImportEndpointsImpl;
@@ -15,8 +17,11 @@ import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryItemAttributeEndpoint
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryItemDetailEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.InventoryTypeXrefEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.LineItemEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.MarketRatePremiumEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.ProductiveUnitCodeEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.StructureGroupAttributeEndpointsImpl;
 import ca.bc.gov.farms.api.rest.v1.endpoints.impl.TopLevelEndpointsImpl;
+import ca.bc.gov.farms.api.rest.v1.endpoints.impl.YearConfigurationParameterEndpointsImpl;
 import ca.bc.gov.brmb.common.api.rest.code.endpoints.impl.CodeEndpointsImpl;
 import ca.bc.gov.brmb.common.api.rest.code.endpoints.impl.CodeTableEndpointsImpl;
 import ca.bc.gov.brmb.common.api.rest.code.endpoints.impl.CodeTableListEndpointsImpl;
@@ -48,6 +53,11 @@ public class JerseyApplication extends JerseyResourceConfig {
         register(ConfigurationParameterEndpointsImpl.class);
         register(LineItemEndpointsImpl.class);
         register(FruitVegTypeDetailEndpointsImpl.class);
+        register(YearConfigurationParameterEndpointsImpl.class);
+        register(MarketRatePremiumEndpointsImpl.class);
+        register(CropUnitConversionEndpointsImpl.class);
+        register(ExpectedProductionEndpointsImpl.class);
+        register(ProductiveUnitCodeEndpointsImpl.class);
 
         register(MultiPartFeature.class);
         register(ImportEndpointsImpl.class);

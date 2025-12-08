@@ -19,15 +19,16 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.EntityTag;
+import jakarta.ws.rs.core.GenericEntity;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -354,7 +355,7 @@ public abstract class BaseEndpointsImpl implements BaseEndpoints {
         logger.info("> evaluatePreconditions: Resource ETag " + eTag.getValue());
         // Check for weak eTag, then ignore
         String requestIfMatch = httpServletRequest.getHeader(HeaderConstants.IF_MATCH_HEADER);
-        EntityTag requestETag = EntityTag.valueOf(requestIfMatch);
+        EntityTag requestETag = RuntimeDelegate.getInstance().createHeaderDelegate(EntityTag.class).fromString(requestIfMatch);
         logger.info("> evaluatePreconditions: Request ETag " + requestETag.getValue());
         logger.info("> evaluatePreconditions: request ETag weak? " + requestETag.isWeak());
         // Check request.getValue against etag.getValue. DO NOT remove W\, as its

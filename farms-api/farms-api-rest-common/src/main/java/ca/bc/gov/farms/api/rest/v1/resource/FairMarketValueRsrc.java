@@ -2,8 +2,8 @@ package ca.bc.gov.farms.api.rest.v1.resource;
 
 import java.math.BigDecimal;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -52,6 +52,8 @@ public class FairMarketValueRsrc extends BaseResource implements FairMarketValue
     private BigDecimal period10Variance;
     private BigDecimal period11Variance;
     private BigDecimal period12Variance;
+    private Long urlId;
+    private String url;
     private String userEmail;
 
     @Override
@@ -392,6 +394,26 @@ public class FairMarketValueRsrc extends BaseResource implements FairMarketValue
     @Override
     public void setPeriod12Variance(BigDecimal period12Variance) {
         this.period12Variance = period12Variance;
+    }
+
+    @Override
+    public Long getUrlId() {
+        return urlId;
+    }
+
+    @Override
+    public void setUrlId(Long urlId) {
+        this.urlId = urlId;
+    }
+
+    @Override
+    public String getUrl() {
+        return url;
+    }
+
+    @Override
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

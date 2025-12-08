@@ -12,13 +12,17 @@ import ca.bc.gov.farms.model.v1.FairMarketValue;
 import ca.bc.gov.farms.service.api.v1.util.CachedCodeTables;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.BenchmarkPerUnitRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.ConfigurationParameterRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.CropUnitConversionRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.ExpectedProductionRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.FairMarketValueRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.FruitVegTypeDetailRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemAttributeRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryItemDetailRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.InventoryTypeXrefRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.LineItemRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.MarketRatePremiumRsrcConstraints;
 import ca.bc.gov.farms.service.api.v1.validation.constraints.StructureGroupAttributeRsrcConstraints;
+import ca.bc.gov.farms.service.api.v1.validation.constraints.YearConfigurationParameterRsrcConstraints;
 import ca.bc.gov.brmb.common.model.Message;
 import ca.bc.gov.brmb.common.persistence.code.dto.CodeDto;
 import ca.bc.gov.brmb.common.persistence.dao.DaoException;
@@ -159,6 +163,42 @@ public class ModelValidator extends BaseValidator {
         List<Message> results = this.validate(resource, FruitVegTypeDetailRsrcConstraints.class);
 
         logger.debug(">validateFruitVegTypeDetail " + results.size());
+        return results;
+    }
+
+    public List<Message> validateYearConfigurationParameter(Object resource) {
+        logger.debug("<validateYearConfigurationParameter");
+
+        List<Message> results = this.validate(resource, YearConfigurationParameterRsrcConstraints.class);
+
+        logger.debug(">validateYearConfigurationParameter " + results.size());
+        return results;
+    }
+
+    public List<Message> validateMarketRatePremium(Object resource) {
+        logger.debug("<validateMarketRatePremium");
+
+        List<Message> results = this.validate(resource, MarketRatePremiumRsrcConstraints.class);
+
+        logger.debug(">validateMarketRatePremium " + results.size());
+        return results;
+    }
+
+    public List<Message> validateCropUnitConversion(Object resource) {
+        logger.debug("<validateCropUnitConversion");
+
+        List<Message> results = this.validate(resource, CropUnitConversionRsrcConstraints.class);
+
+        logger.debug(">validateCropUnitConversion " + results.size());
+        return results;
+    }
+
+    public List<Message> validateExpectedProduction(Object resource) {
+        logger.debug("<validateExpectedProduction");
+
+        List<Message> results = this.validate(resource, ExpectedProductionRsrcConstraints.class);
+
+        logger.debug(">validateExpectedProduction " + results.size());
         return results;
     }
 }

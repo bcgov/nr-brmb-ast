@@ -193,72 +193,72 @@ public class ArchiveFormatValidator {
             l.add(p.getExtractFileNumber());
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_01_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_01_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_01_NUMBER,
                     "File 01 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_02_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_02_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_02_NUMBER,
                     "File 02 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_03_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_03_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_03_NUMBER,
                     "File 03 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_04_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_04_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_04_NUMBER,
                     "File 04 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_05_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_05_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_05_NUMBER,
                     "File 05 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_21_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_21_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_21_NUMBER,
                     "File 21 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_22_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_22_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_22_NUMBER,
                     "File 22 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_23_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_23_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_23_NUMBER,
                     "File 23 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_28_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_28_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_28_NUMBER,
                     "File 28 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_29_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_29_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_29_NUMBER,
                     "File 29 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_40_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_40_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_40_NUMBER,
                     "File 40 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_42_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_42_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_42_NUMBER,
                     "File 42 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_50_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_50_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_50_NUMBER,
                     "File 50 not found in File 99"));
         }
 
-        if (!l.remove(new Integer(FileCacheManager.FIPD_51_NUMBER))) {
+        if (!l.remove(Integer.valueOf(FileCacheManager.FIPD_51_NUMBER))) {
             addError(new CSVParserException(0, FileCacheManager.FIPD_51_NUMBER,
                     "File 51 not found in File 99"));
         }

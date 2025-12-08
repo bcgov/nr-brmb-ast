@@ -1,7 +1,6 @@
 package ca.bc.gov.farms.service.api.v1.impl;
 
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.PatternSyntaxException;
 
 import org.slf4j.Logger;
@@ -27,8 +26,6 @@ public class FairMarketValueServiceImpl implements FairMarketValueService {
 
     private static final Logger logger = LoggerFactory.getLogger(FairMarketValueServiceImpl.class);
 
-    private Properties applicationProperties;
-
     private ModelValidator modelValidator;
 
     // factories
@@ -36,10 +33,6 @@ public class FairMarketValueServiceImpl implements FairMarketValueService {
 
     // daos
     private FairMarketValueDao fairMarketValueDao;
-
-    public void setApplicationProperties(Properties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
 
     public void setModelValidator(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;

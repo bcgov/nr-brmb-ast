@@ -9,6 +9,7 @@ CREATE TABLE farms.farm_inventory_item_details (
 	commodity_type_code varchar(10),
 	fruit_veg_type_code varchar(10),
 	multi_stage_commdty_code varchar(10),
+	url_id bigint,
 	revision_count integer NOT NULL DEFAULT 1,
 	who_created varchar(30) NOT NULL,
 	when_created timestamp(0) NOT NULL DEFAULT statement_timestamp(),
@@ -31,12 +32,14 @@ COMMENT ON COLUMN farms.farm_inventory_item_details.when_created IS E'WHEN CREAT
 COMMENT ON COLUMN farms.farm_inventory_item_details.when_updated IS E'WHEN UPDATED indicates when the physical record was updated in the database.';
 COMMENT ON COLUMN farms.farm_inventory_item_details.who_created IS E'WHO CREATED indicates the user that created the physical record in the database.';
 COMMENT ON COLUMN farms.farm_inventory_item_details.who_updated IS E'WHO UPDATED indicates the user that updated the physical record in the database.';
+COMMENT ON COLUMN farms.farm_inventory_item_details.url_id IS E'URL ID is a foreign key to FARM_URLS.';
 CREATE INDEX farm_iid_elig_ind_i ON farms.farm_inventory_item_details (program_year, eligibility_ind);
 CREATE INDEX farm_iid_farm_ctc_fk_i ON farms.farm_inventory_item_details (commodity_type_code);
 CREATE INDEX farm_iid_farm_fvtc_fk_i ON farms.farm_inventory_item_details (fruit_veg_type_code);
 CREATE INDEX farm_iid_farm_ic_fk_i ON farms.farm_inventory_item_details (inventory_item_code);
 CREATE INDEX farm_iid_farm_mscc_fk_i ON farms.farm_inventory_item_details (multi_stage_commdty_code);
 CREATE INDEX farm_iid_line_item_i ON farms.farm_inventory_item_details (program_year, line_item);
+CREATE INDEX farm_iid_farm_url_fk_i ON farms.farm_inventory_item_details (url_id);
 ALTER TABLE farms.farm_inventory_item_details ADD CONSTRAINT farm_iid_pk PRIMARY KEY (inventory_item_detail_id);
 ALTER TABLE farms.farm_inventory_item_details ADD CONSTRAINT farm_iid_uk UNIQUE (program_year,inventory_item_code);
 ALTER TABLE farms.farm_inventory_item_details ADD CONSTRAINT farm_iid_elig_chk CHECK (eligibility_ind in ('N', 'Y'));

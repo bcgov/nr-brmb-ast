@@ -12,6 +12,7 @@ public class ImportIVPRDto implements Serializable {
     private String inventoryItemDesc;
     private BigDecimal insurableValue;
     private BigDecimal premiumRate;
+    private String fileLocation;
 
     public Integer getProgramYear() {
         return programYear;
@@ -51,5 +52,13 @@ public class ImportIVPRDto implements Serializable {
 
     public void setPremiumRate(BigDecimal premiumRate) {
         this.premiumRate = premiumRate;
+    }
+
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 }

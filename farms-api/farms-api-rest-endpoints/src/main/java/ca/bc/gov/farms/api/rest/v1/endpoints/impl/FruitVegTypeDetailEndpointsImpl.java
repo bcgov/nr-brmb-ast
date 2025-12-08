@@ -1,7 +1,7 @@
 package ca.bc.gov.farms.api.rest.v1.endpoints.impl;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class FruitVegTypeDetailEndpointsImpl extends BaseEndpointsImpl
     }
 
     @Override
-    public Response getFruitVegTypeDetail(Long fruitVegTypeDetailId) {
+    public Response getFruitVegTypeDetail(String fruitVegTypeCode) {
         logger.debug("<getFruitVegTypeDetail");
         Response response = null;
 
@@ -54,7 +54,7 @@ public class FruitVegTypeDetailEndpointsImpl extends BaseEndpointsImpl
 
         try {
             FruitVegTypeDetailRsrc result = (FruitVegTypeDetailRsrc) service.getFruitVegTypeDetail(
-                    fruitVegTypeDetailId,
+                    fruitVegTypeCode,
                     getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (NotFoundException e) {
@@ -94,7 +94,7 @@ public class FruitVegTypeDetailEndpointsImpl extends BaseEndpointsImpl
     }
 
     @Override
-    public Response deleteFruitVegTypeDetail(Long fruitVegTypeDetailId) {
+    public Response deleteFruitVegTypeDetail(String fruitVegTypeCode) {
         logger.debug("<deleteFruitVegTypeDetail");
 
         Response response = null;
@@ -102,7 +102,7 @@ public class FruitVegTypeDetailEndpointsImpl extends BaseEndpointsImpl
         logRequest();
 
         try {
-            service.deleteFruitVegTypeDetail(fruitVegTypeDetailId);
+            service.deleteFruitVegTypeDetail(fruitVegTypeCode);
             response = Response.status(Status.NO_CONTENT).build();
         } catch (NotFoundException e) {
             response = Response.status(Status.NOT_FOUND).build();
@@ -117,7 +117,7 @@ public class FruitVegTypeDetailEndpointsImpl extends BaseEndpointsImpl
     }
 
     @Override
-    public Response updateFruitVegTypeDetail(Long fruitVegTypeDetailId,
+    public Response updateFruitVegTypeDetail(String fruitVegTypeCode,
             FruitVegTypeDetailRsrc fruitVegTypeDetailRsrc) {
         logger.debug("<updateFruitVegTypeDetail");
 
@@ -127,7 +127,7 @@ public class FruitVegTypeDetailEndpointsImpl extends BaseEndpointsImpl
 
         try {
             FruitVegTypeDetailRsrc result = (FruitVegTypeDetailRsrc) service
-                    .updateFruitVegTypeDetail(fruitVegTypeDetailId, fruitVegTypeDetailRsrc,
+                    .updateFruitVegTypeDetail(fruitVegTypeCode, fruitVegTypeDetailRsrc,
                             getFactoryContext());
             response = Response.ok(result).tag(result.getUnquotedETag()).build();
         } catch (ValidationFailureException e) {

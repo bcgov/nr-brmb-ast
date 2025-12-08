@@ -12,7 +12,12 @@ import ca.bc.gov.farms.model.v1.ConfigurationParameterList;
 public interface ConfigurationParameterService {
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    ConfigurationParameterList<? extends ConfigurationParameter> getAllConfigurationParameters(FactoryContext factoryContext) throws ServiceException;
+    ConfigurationParameterList<? extends ConfigurationParameter> getAllConfigurationParameters(
+            FactoryContext factoryContext) throws ServiceException;
+
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    ConfigurationParameterList<? extends ConfigurationParameter> getConfigurationParametersByParameterNamePrefix(
+            String parameterNamePrefix, FactoryContext factoryContext) throws ServiceException;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     ConfigurationParameter getConfigurationParameter(Long configurationParameterId, FactoryContext factoryContext)

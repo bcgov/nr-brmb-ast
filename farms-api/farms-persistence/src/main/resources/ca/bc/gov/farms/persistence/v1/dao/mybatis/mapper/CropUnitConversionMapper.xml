@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.persistence.v1.dao.mybatis.mapper.CropUnitConversionMapper">
+
+    <resultMap id="ConversionUnitDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.ConversionUnitDto">
+        <id property="cropUnitConversionFactorId" column="crop_unit_conversion_factor_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+        <result property="conversionFactor" column="conversion_factor" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="targetCropUnitCode" column="target_crop_unit_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="targetCropUnitDesc" column="target_crop_unit_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="CropUnitConversionDtoMap" type="ca.bc.gov.farms.persistence.v1.dto.CropUnitConversionDto">
+        <id property="cropUnitDefaultId" column="crop_unit_default_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="inventoryItemCode" column="inventory_item_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryItemDesc" column="inventory_item_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="cropUnitCode" column="crop_unit_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="cropUnitDesc" column="crop_unit_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+
+        <collection property="conversionUnits" ofType="ca.bc.gov.farms.persistence.v1.dto.ConversionUnitDto" resultMap="ConversionUnitDtoMap" />
+    </resultMap>
+
+    <sql id="selectColumns">
+        select cud.crop_unit_default_id,
+               iic.inventory_item_code,
+               iic.description as inventory_item_desc,
+               cuc.crop_unit_code,
+               cuc.description as crop_unit_desc,
+               cucf.crop_unit_conversion_factor_id,
+               cucf.conversion_factor,
+               tcuc.crop_unit_code as target_crop_unit_code,
+               tcuc.description as target_crop_unit_desc
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_crop_unit_defaults cud
+        join farms.farm_inventory_item_codes iic on cud.inventory_item_code = iic.inventory_item_code
+        join farms.farm_crop_unit_codes cuc on cud.crop_unit_code = cuc.crop_unit_code
+        left join farms.farm_crop_unit_conversn_fctrs cucf on cud.inventory_item_code = cucf.inventory_item_code
+        left join farms.farm_crop_unit_codes tcuc on tcuc.crop_unit_code = cucf.target_crop_unit_code
+    </sql>
+
+    <select id="fetch" resultMap="CropUnitConversionDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where cud.crop_unit_default_id = #{cropUnitDefaultId}
+    </select>
+
+    <select id="fetchAll" resultMap="CropUnitConversionDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        order by cud.crop_unit_default_id,
+                 lower(iic.description),
+                 iic.inventory_item_code,
+                 lower(tcuc.description),
+                 tcuc.crop_unit_code
+    </select>
+
+    <select id="fetchBy" resultMap="CropUnitConversionDtoMap">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where cud.inventory_item_code = #{inventoryItemCode}
+        order by cud.crop_unit_default_id,
+                 lower(iic.description),
+                 iic.inventory_item_code,
+                 lower(tcuc.description),
+                 tcuc.crop_unit_code
+    </select>
+
+    <insert id="insertCropUnitDefault">
+        <selectKey keyProperty="cropUnitDefaultId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_cud_seq')
+        </selectKey>
+        insert into farms.farm_crop_unit_defaults (
+            crop_unit_default_id,
+            inventory_item_code,
+            crop_unit_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{cropUnitDefaultId},
+            (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select cuc.crop_unit_code
+                from farms.farm_crop_unit_codes cuc
+                where cuc.crop_unit_code = #{dto.cropUnitCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        ) on conflict (inventory_item_code) do nothing;
+    </insert>
+
+    <insert id="insertCropUnitConversionFactor">
+        <selectKey keyProperty="cropUnitConversionFactorId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_cucf_seq')
+        </selectKey>
+        insert into farms.farm_crop_unit_conversn_fctrs (
+            crop_unit_conversion_factor_id,
+            conversion_factor,
+            inventory_item_code,
+            target_crop_unit_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{cropUnitConversionFactorId},
+            #{dto.conversionFactor, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select cuc.crop_unit_code
+                from farms.farm_crop_unit_codes cuc
+                where cuc.crop_unit_code = #{dto.targetCropUnitCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateCropUnitDefault">
+        update farms.farm_crop_unit_defaults
+        set crop_unit_code = (
+                select cuc.crop_unit_code
+                from farms.farm_crop_unit_codes cuc
+                where cuc.crop_unit_code = #{dto.cropUnitCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where crop_unit_default_id = #{dto.cropUnitDefaultId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <update id="updateCropUnitConversionFactor">
+        update farms.farm_crop_unit_conversn_fctrs
+        set conversion_factor = #{dto.conversionFactor, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
+            inventory_item_code = (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            target_crop_unit_code = (
+                select cuc.crop_unit_code
+                from farms.farm_crop_unit_codes cuc
+                where cuc.crop_unit_code = #{dto.targetCropUnitCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where crop_unit_conversion_factor_id = #{dto.cropUnitConversionFactorId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteCropUnitDefault">
+        delete from farms.farm_crop_unit_defaults
+        where crop_unit_default_id = #{cropUnitDefaultId}
+    </delete>
+
+    <delete id="deleteCropUnitConversionFactor">
+        delete from farms.farm_crop_unit_conversn_fctrs
+        where crop_unit_conversion_factor_id = #{cropUnitConversionFactorId}
+    </delete>
+</mapper>

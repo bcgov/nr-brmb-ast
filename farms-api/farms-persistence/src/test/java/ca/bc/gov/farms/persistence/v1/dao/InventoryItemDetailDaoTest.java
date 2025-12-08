@@ -46,6 +46,7 @@ public class InventoryItemDetailDaoTest {
         dto.setCommodityTypeCode(null);
         dto.setFruitVegTypeCode(null);
         dto.setMultiStageCommdtyCode(null);
+        dto.setUrlId(1L);
 
         InventoryItemDetailDto result = null;
         try {
@@ -70,6 +71,8 @@ public class InventoryItemDetailDaoTest {
         assertThat(result.getFruitVegTypeDesc()).isNull();
         assertThat(result.getMultiStageCommdtyCode()).isNull();
         assertThat(result.getMultiStageCommdtyDesc()).isNull();
+        assertThat(result.getUrlId()).isEqualTo(1);
+        assertThat(result.getUrl()).isEqualTo("https://google.com");
     }
 
     @Test
@@ -100,6 +103,8 @@ public class InventoryItemDetailDaoTest {
         assertThat(fetchedDto.getFruitVegTypeDesc()).isNull();
         assertThat(fetchedDto.getMultiStageCommdtyCode()).isNull();
         assertThat(fetchedDto.getMultiStageCommdtyDesc()).isNull();
+        assertThat(fetchedDto.getUrlId()).isEqualTo(1);
+        assertThat(fetchedDto.getUrl()).isEqualTo("https://google.com");
     }
 
     @Test
@@ -123,6 +128,7 @@ public class InventoryItemDetailDaoTest {
         dto.setCommodityTypeCode(null);
         dto.setFruitVegTypeCode(null);
         dto.setMultiStageCommdtyCode(null);
+        dto.setUrlId(2L);
 
         InventoryItemDetailDto result = null;
         try {
@@ -146,6 +152,8 @@ public class InventoryItemDetailDaoTest {
         assertThat(result.getFruitVegTypeDesc()).isNull();
         assertThat(result.getMultiStageCommdtyCode()).isNull();
         assertThat(result.getMultiStageCommdtyDesc()).isNull();
+        assertThat(result.getUrlId()).isEqualTo(2);
+        assertThat(result.getUrl()).isEqualTo("https://microsoft.com");
     }
 
     @Test

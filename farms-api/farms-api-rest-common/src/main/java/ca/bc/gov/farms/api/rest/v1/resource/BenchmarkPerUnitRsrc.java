@@ -3,8 +3,8 @@ package ca.bc.gov.farms.api.rest.v1.resource;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -43,6 +43,8 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
     private BigDecimal yearMinus3Expense;
     private BigDecimal yearMinus2Expense;
     private BigDecimal yearMinus1Expense;
+    private Long urlId;
+    private String url;
     private String userEmail;
 
     @Override
@@ -283,6 +285,26 @@ public class BenchmarkPerUnitRsrc extends BaseResource implements BenchmarkPerUn
     @Override
     public void setYearMinus1Expense(BigDecimal yearMinus1Expense) {
         this.yearMinus1Expense = yearMinus1Expense;
+    }
+
+    @Override
+    public Long getUrlId() {
+        return urlId;
+    }
+
+    @Override
+    public void setUrlId(Long urlId) {
+        this.urlId = urlId;
+    }
+
+    @Override
+    public String getUrl() {
+        return url;
+    }
+
+    @Override
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

@@ -29,6 +29,8 @@
         <result property="yearMinus3Expense" column="year_minus_3_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
         <result property="yearMinus2Expense" column="year_minus_2_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
         <result property="yearMinus1Expense" column="year_minus_1_expense" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="urlId" column="url_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+        <result property="url" column="url" javaType="java.lang.String" jdbcType="VARCHAR" />
 
         <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
         <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -61,7 +63,9 @@
                et.year_minus_4_expense,
                et.year_minus_3_expense,
                et.year_minus_2_expense,
-               et.year_minus_1_expense
+               et.year_minus_1_expense,
+               u.url_id,
+               u.url
     </sql>
 
     <sql id="fromClause">
@@ -115,6 +119,7 @@
               "year_minus_4_expense" numeric,
               "year_minus_5_expense" numeric,
               "year_minus_6_expense" numeric) USING (benchmark_per_unit_id)
+        left join farms.farm_urls u using (url_id)
     </sql>
 
     <select id="fetch" resultMap="BenchmarkPerUnitDtoMap">
@@ -142,6 +147,7 @@
             municipality_code,
             inventory_item_code,
             structure_group_code,
+            url_id,
             revision_count,
             who_created,
             when_created,
@@ -160,12 +166,24 @@
             (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
-                where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where current_date between iic.established_date::date and iic.expiry_date::date
+                and iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and iic.inventory_item_code not in (
+                    select structure_group_code
+                    from farms.farm_structure_group_codes
+                    where current_date between established_date::date and expiry_date::date
+                )
             ),
             (
                 select sgc.structure_group_code
                 from farms.farm_structure_group_codes sgc
-                where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where current_date between sgc.established_date::date and sgc.expiry_date::date
+                and sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select u.url_id
+                from farms.farm_urls u
+                where u.url_id = #{dto.urlId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
             ),
             1,
             #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
@@ -212,12 +230,24 @@
             inventory_item_code = (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
-                where iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where current_date between iic.established_date::date and iic.expiry_date::date
+                and iic.inventory_item_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                and iic.inventory_item_code not in (
+                    select structure_group_code
+                    from farms.farm_structure_group_codes
+                    where current_date between established_date::date and expiry_date::date
+                )
             ),
             structure_group_code = (
                 select sgc.structure_group_code
                 from farms.farm_structure_group_codes sgc
-                where sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+                where current_date between sgc.established_date::date and sgc.expiry_date::date
+                and sgc.structure_group_code = #{dto.inventoryCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            url_id = (
+                select u.url_id
+                from farms.farm_urls u
+                where u.url_id = #{dto.urlId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
             ),
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},

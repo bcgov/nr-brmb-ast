@@ -19,4 +19,4 @@ jobs:
       TAG: ${{ inputs.tag }}
       ENVIRONMENT: DEV
       MICROSERVICE_NAME: farms-api
-      JAVA_VERSION: 17
+      JAVA_VERSION: 21

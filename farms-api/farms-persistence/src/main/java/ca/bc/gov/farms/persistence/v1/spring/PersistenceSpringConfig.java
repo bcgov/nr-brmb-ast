@@ -28,22 +28,32 @@ import ca.bc.gov.brmb.common.persistence.dao.mybatis.LocalTimeTypeHandler;
 import ca.bc.gov.brmb.common.persistence.dao.mybatis.ResetDirtyInterceptor;
 import ca.bc.gov.farms.persistence.v1.dao.BenchmarkPerUnitDao;
 import ca.bc.gov.farms.persistence.v1.dao.ConfigurationParameterDao;
+import ca.bc.gov.farms.persistence.v1.dao.CropUnitConversionDao;
+import ca.bc.gov.farms.persistence.v1.dao.ExpectedProductionDao;
 import ca.bc.gov.farms.persistence.v1.dao.FairMarketValueDao;
 import ca.bc.gov.farms.persistence.v1.dao.FruitVegTypeDetailDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryItemAttributeDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryItemDetailDao;
 import ca.bc.gov.farms.persistence.v1.dao.InventoryTypeXrefDao;
 import ca.bc.gov.farms.persistence.v1.dao.LineItemDao;
+import ca.bc.gov.farms.persistence.v1.dao.MarketRatePremiumDao;
+import ca.bc.gov.farms.persistence.v1.dao.ProductiveUnitCodeDao;
 import ca.bc.gov.farms.persistence.v1.dao.StructureGroupAttributeDao;
+import ca.bc.gov.farms.persistence.v1.dao.YearConfigurationParameterDao;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.BenchmarkPerUnitDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.ConfigurationParameterDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.CropUnitConversionDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.ExpectedProductionDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.FairMarketValueDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.FruitVegTypeDetailDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryItemAttributeDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryItemDetailDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.InventoryTypeXrefDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.LineItemDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.MarketRatePremiumDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.ProductiveUnitCodeDaoImpl;
 import ca.bc.gov.farms.persistence.v1.dao.mybatis.StructureGroupAttributeDaoImpl;
+import ca.bc.gov.farms.persistence.v1.dao.mybatis.YearConfigurationParameterDaoImpl;
 
 @Configuration
 @EnableTransactionManagement
@@ -139,5 +149,30 @@ public class PersistenceSpringConfig {
     @Bean
     public FruitVegTypeDetailDao fruitVegTypeDetailDao() {
         return new FruitVegTypeDetailDaoImpl();
+    }
+
+    @Bean
+    public YearConfigurationParameterDao yearConfigurationParameterDao() {
+        return new YearConfigurationParameterDaoImpl();
+    }
+
+    @Bean
+    public MarketRatePremiumDao marketRatePremiumDao() {
+        return new MarketRatePremiumDaoImpl();
+    }
+
+    @Bean
+    public CropUnitConversionDao cropUnitConversionDao() {
+        return new CropUnitConversionDaoImpl();
+    }
+
+    @Bean
+    public ExpectedProductionDao expectedProductionDao() {
+        return new ExpectedProductionDaoImpl();
+    }
+
+    @Bean
+    public ProductiveUnitCodeDao productiveUnitCodeDao() {
+        return new ProductiveUnitCodeDaoImpl();
     }
 }
