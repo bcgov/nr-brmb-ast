@@ -1,0 +1,47 @@
+{
+  "data": {
+    "email": "OBLX.AJZIEU@farm.ca",
+    "origin": "internal",
+    "submit": true,
+    "lateEntry": false,
+    "sinNumber": "999999999",
+    "telephone": "(579) 344-1852",
+    "environment": "DEV",
+    "otherDetails": "testing",
+    "yearsToAdjust": {
+      "2017": false,
+      "2018": true,
+      "2019": false,
+      "2020": false,
+      "2021": false,
+      "2022": false,
+      "2023": true
+    },
+    "adjustmentGrid": [
+      {
+        "lineCode": 4555,
+        "description": "blueberry",
+        "revisedAmount": 454,
+        "previousAmount": 12,
+        "sectionOnTheForm": "crop",
+        "descriptionOfTheItemToBeAdjusted": ""
+      }
+    ],
+    "externalMethod": "chefsForm",
+    "internalMethod": "verification",
+    "participantName": "OBLX AJZIEU",
+    "agriStabilityPin": 3778842,
+    "businessStructure": "individual",
+    "businessTaxNumberBn": "",
+    "identifyTheInformationYouAreSending": {
+      "aResponseToARequestFromTheAdministration": false,
+      "anAdjustmentToInformationPreviouslySubmittedOnProgramForms": true,
+      "additionalInformationSubmittedAtTheSameTimeAsYourProgramForms": true
+    }
+  },
+   "options": {
+    "convertTo": "pdf",
+    "overwrite": true,
+    "reportName": "test_adjustment_form_{d.agriStabilityAgriInvestPin}.pdf"
+  }
+}

@@ -1,0 +1,69 @@
+<%@ include file="/WEB-INF/jsp/common/include.jsp" %>
+
+<w:ifUserCanPerformAction action="editCodes">
+  <c:set var="canEdit" value="true"/>
+</w:ifUserCanPerformAction>
+
+<h1>
+  <c:choose>
+    <c:when test="${!canEdit}">
+      <fmt:message key="View"/>
+    </c:when>
+    <c:when test="${form.new}">
+      <fmt:message key="Create.New"/>
+    </c:when>
+    <c:otherwise>
+      <fmt:message key="Edit"/>
+    </c:otherwise>
+  </c:choose>
+  <fmt:message key="Farm.Type"/> <fmt:message key="Code"/>
+</h1> 
+<p></p>
+
+<html:form action="saveSectorCode" styleId="codeForm" method="post">
+  <html:hidden property="new"/>
+  <html:hidden property="revisionCount"/>
+
+  <fieldset style="width:70%">
+    <table class="formInput" style="width:100%">
+      <tr>
+        <th style="width:100px"><fmt:message key="Code"/>:</th>
+        <td>
+          <c:choose>
+            <c:when test="${form.new}">
+              <div style="float:left;width:100px">
+                <html:text property="code" size="30" maxlength="10"/>
+              </div>
+            </c:when>
+            <c:otherwise>
+              <html:hidden property="code"/>
+              <c:out value="${form.code}"/>
+            </c:otherwise>
+          </c:choose>
+        </td>
+      </tr>
+      <tr>
+        <th style="width:100px"><fmt:message key="Description"/>:</th>
+        <td>
+          <c:choose>
+            <c:when test="${canEdit}">
+              <html:text property="description" size="80" maxlength="256"/>
+            </c:when>
+            <c:otherwise>
+              <c:out value="${form.description}"/>
+            </c:otherwise>
+          </c:choose>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+
+  <div style="text-align:right;width:70%">
+    <w:ifUserCanPerformAction action="editCodes">
+      <u:yuiButton buttonId="saveButton" buttonLabel="Save" formId="codeForm"/>
+      <u:dirtyFormCheck formId="codeForm"/>
+    </w:ifUserCanPerformAction>
+    <u:yuiButton buttonId="cancelButton" buttonLabel="Cancel" action="farm772"/>
+  </div>
+
+</html:form>

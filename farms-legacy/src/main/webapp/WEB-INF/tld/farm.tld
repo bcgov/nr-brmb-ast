@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib PUBLIC
+          "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+          "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>FARM Utility Tag Library</short-name>
+  <uri>http://gov.bc.ca/struts/tags/farm</uri>
+  <display-name>FARM Utility Tag Library</display-name>
+  <description>FARM Utility Tag Library</description>
+
+  <tag>
+    <name>warnings</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.WarningsTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>Output Warnings</display-name>
+    <description>Output Warnings</description>
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>bundle</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>locale</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>header</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>footer</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>message</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>getForm</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.GetFormTag</tag-class>
+    <display-name>Store Struts Form</display-name>
+    <description>Store Struts Form</description>
+    <attribute>
+      <name>var</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The name of the scripting variable to put the value in</description>
+    </attribute>
+    <attribute>
+      <name>scope</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The scope</description>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>getApplicationCache</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.GetApplicationCacheTag</tag-class>
+    <display-name>Store Struts Form</display-name>
+    <description>Store Struts Form</description>
+    <attribute>
+      <name>var</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The name of the scripting variable to put the value in</description>
+    </attribute>
+    <attribute>
+      <name>scope</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The scope</description>
+    </attribute>
+    <attribute>
+      <name>key</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The application cache key</description>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>warningsPresent</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.WarningsPresentTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>message</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>id</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.IdentifierTag</tag-class>
+    <display-name>Generate Identifier</display-name>
+    <description>Generate Identifier</description>
+    <attribute>
+      <name>var</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The name of the scripting variable to put the set of identifiers in</description>
+    </attribute>
+    <attribute>
+      <name>prefix</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The prefix for the identifier</description>
+    </attribute>
+    <attribute>
+      <name>scope</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The scope</description>
+    </attribute>
+  </tag>
+
+
+  <tag>
+    <name>programYearSelect</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.ProgramYearSelectTag</tag-class>
+    <display-name>Display Program Year Select Box Tag</display-name>
+    <description>Writes Program Year select box.</description>
+      <attribute>
+        <name>year</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The Program Year</description>
+      </attribute>
+      <attribute>
+        <name>action</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The URL to hit when a program year is selected.</description>
+      </attribute>
+      <attribute>
+        <name>additionalFieldIds</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The IDs of the form fields that should have their values appended to the URL.</description>
+      </attribute>
+      <attribute>
+        <name>urlParams</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>A string containing parameters to be appended to the action URL.</description>
+      </attribute>
+  </tag>
+
+
+  <tag>
+    <name>menuSelect</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.MenuSelectGenericTag</tag-class>
+    <display-name>Display a Menu Select Box Tag</display-name>
+    <description>Writes menu select box.</description>
+      <attribute>
+        <name>name</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the widget</description>
+      </attribute>
+      <attribute>
+        <name>toolTip</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The popup help text for this widget</description>
+      </attribute>
+      <attribute>
+        <name>action</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The URL to hit when something is selected.</description>
+      </attribute>
+      <attribute>
+        <name>paramName</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the parameter to append to the URL with the selected value.</description>
+      </attribute>
+      <attribute>
+        <name>additionalFieldIds</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The IDs of the form fields that should have their values appended to the URL.</description>
+      </attribute>
+      <attribute>
+        <name>urlParams</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>A string containing parameters to be appended to the action URL.</description>
+      </attribute>
+      <attribute>
+        <name>selectedValue</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The currently selected value for this select box.</description>
+      </attribute>
+      <attribute>
+        <name>options</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The currently selected value for this select box.</description>
+      </attribute>
+  </tag>
+
+
+  <tag>
+    <name>dirtyFormCheck</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.DirtyFormCheckTag</tag-class>
+    <display-name>Dirty Form Check Tag</display-name>
+    <description>Generate javascript to register the form for a dirty check.</description>
+      <attribute>
+        <name>formId</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The ID of the form.</description>
+      </attribute>
+  </tag>
+
+
+  <tag>
+    <name>yuiButton</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.YUIButtonTag</tag-class>
+    <display-name>YUI Button Tag</display-name>
+    <description>Writes a YUI Button.</description>
+      <attribute>
+        <name>buttonId</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The ID of the button.</description>
+      </attribute>
+      <attribute>
+        <name>buttonLabel</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The message key of the button's label.</description>
+      </attribute>
+      <attribute>
+        <name>formId</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The ID of the form.</description>
+      </attribute>
+      <attribute>
+        <name>action</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The URL to hit when the button is clicked.</description>
+      </attribute>
+      <attribute>
+        <name>function</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The javascript function to call when the button is clicked.</description>
+      </attribute>
+      <attribute>
+        <name>disabled</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>If true, the button is greyed out and clicking it has no effect.</description>
+      </attribute>
+      <attribute>
+        <name>urlParams</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>A string containing parameters to be appended to the action URL.</description>
+      </attribute>
+      <attribute>
+        <name>urlParamsMap</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>
+          A string to be evaluated as the name of a map containing parameters
+          to be appended to the action URL.
+        </description>
+      </attribute>
+      <attribute>
+        <name>tooltip</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The message key of the tooltip that will be displayed on button mouseover.</description>
+      </attribute>
+      <attribute>
+        <name>confirmMessage</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The message key of the confirmation message that will be used to prompt the user when the button is clicked.</description>
+      </attribute>
+  </tag>
+
+
+  <tag>
+    <name>yuiTooltip</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.YUITooltipTag</tag-class>
+    <display-name>YUI Tooltip Tag</display-name>
+    <description>Writes a YUI Tooltip.</description>
+      <attribute>
+        <name>targetId</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The ID of the object for which to display the tooltip.</description>
+      </attribute>
+      <attribute>
+        <name>messageKey</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The message key of the tooltip that will be displayed on mouseover.</description>
+      </attribute>
+      <attribute>
+        <name>messageText</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The message of the tooltip that will be displayed on mouseover.</description>
+      </attribute>
+  </tag>
+
+
+  <tag>
+    <name>datePicker</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.DatePickerTag</tag-class>
+    <display-name>Display Date Picker Button Tag</display-name>
+    <description>Writes a Date Picker button.</description>
+      <attribute>
+        <name>fieldId</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The id textfield containing the selected date.</description>
+      </attribute>
+      <attribute>
+        <name>onUpdateFunc</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The function that will be called when the text field is updated.</description>
+      </attribute>
+      <attribute>
+        <name>initialDate</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The month/year representing the current visible Calendar date (mm/yyyy).</description>
+      </attribute>
+  </tag>
+  
+  
+  <tag>
+      <name>getClientList</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.GetClientListTag</tag-class>
+      <display-name>Get Client List</display-name>
+      <description>Retrieve and store Client List</description>
+      <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the scripting variable to put the value in</description>
+      </attribute>
+      <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The scope</description>
+      </attribute>
+  </tag>
+  
+  <tag>
+      <name>getAccount</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.GetAccountTag</tag-class>
+      <display-name>Get Account</display-name>
+      <description>Retrieve and store Account bean</description>
+      <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the scripting variable to put the value in</description>
+      </attribute>
+      <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The scope</description>
+      </attribute>
+  </tag>
+  
+  <tag>
+      <name>getScenario</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.GetScenarioTag</tag-class>
+      <display-name>Get Scenario</display-name>
+      <description>Retrieve and store Scenario bean by the supplied Pin, Year, and Scenario Number</description>
+      <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the scripting variable to put the value in</description>
+      </attribute>
+      <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The scope</description>
+      </attribute>
+      <attribute>
+        <name>pin</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The PIN</description>
+      </attribute>
+      <attribute>
+        <name>year</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The Program Year</description>
+      </attribute>
+      <attribute>
+        <name>scenarioNumber</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The Scenario Number</description>
+      </attribute>
+  </tag>
+
+  <tag>
+      <name>getImport</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.GetImportTag</tag-class>
+      <display-name>Get Account</display-name>
+      <description>Retrieve and store ImportVersion bean</description>
+      <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the scripting variable to put the value in</description>
+      </attribute>
+      <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The scope</description>
+      </attribute>
+  </tag>
+  
+  <tag>
+    <name>formatBoolean</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.FormatBooleanTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>Format Boolean</display-name>
+    <description>Format a boolean value with custom true and false values</description>
+    <attribute>
+      <name>var</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The name of the scripting variable to put the boolean value in</description>
+    </attribute>
+    <attribute>
+      <name>scope</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The scope of the scripting variable to put the boolean value in</description>
+    </attribute>
+    <attribute>
+      <name>test</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>The boolean value to format</description>
+    </attribute>
+    <attribute>
+      <name>trueValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+      <description>The result if the test evaluates to true. The default true value is "Yes".</description>
+    </attribute>
+    <attribute>
+      <name>falseValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+      <description>The result if the test evaluates to true. The default false value is "No".</description>
+    </attribute>
+  </tag>
+  
+  
+  <tag>
+      <name>getCodeDescription</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.GetCodeDescriptionTag</tag-class>
+      <body-content>empty</body-content>
+      <display-name>Get Code Description</display-name>
+      <description>Get the description for a code</description>
+      <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the scripting variable to put the boolean value in</description>
+      </attribute>
+      <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The scope of the scripting variable to put the boolean value in</description>
+      </attribute>
+      <attribute>
+        <name>code</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The code to look for</description>
+      </attribute>
+      <attribute>
+        <name>list</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The list (or array) of CodeListView</description>
+      </attribute>
+  </tag>
+  
+  
+  <tag>
+    <name>getStagingResults</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.GetStagingResultsTag</tag-class>
+    <display-name>Get Staging Results</display-name>
+    <description>Retrieve and store StagingResults bean</description>
+    <attribute>
+      <name>var</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The name of the scripting variable to put the value in</description>
+    </attribute>
+    <attribute>
+      <name>scope</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The scope</description>
+    </attribute>
+  </tag>
+  
+  <tag>
+      <name>getImportResults</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.GetImportResultsTag</tag-class>
+      <display-name>Get Import Results</display-name>
+      <description>Retrieve and store ImportResults bean</description>
+      <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the scripting variable to put the value in</description>
+      </attribute>
+      <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The scope</description>
+      </attribute>
+  </tag>
+  
+  <tag>
+      <name>getImportVersion</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.GetImportVersionTag</tag-class>
+      <display-name>Get Import Version</display-name>
+      <description>Retrieve and store ImportVersion bean</description>
+      <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the scripting variable to put the value in</description>
+      </attribute>
+      <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The scope</description>
+      </attribute>
+  </tag>
+  
+  
+  <tag>
+      <name>screenHelpUrl</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.HelpTag</tag-class>
+      <display-name>Screen Help Tag</display-name>
+      <description>Screen Help Tag</description>
+      <attribute>
+        <name>screenNumber</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+      </attribute>
+  </tag>
+  
+  
+  <tag>
+      <name>getFirstProvAdminYear</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.GetFirstProvAdminYearTag</tag-class>
+      <display-name>Get FirstProvAdminYear</display-name>
+      <description>Get the year BC took over administration of the farm claims</description>
+      <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The name of the scripting variable to put the value in</description>
+      </attribute>
+      <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+        <description>The scope</description>
+      </attribute>
+  </tag>
+  
+  <tag>
+      <name>signOut</name>
+      <tag-class>ca.bc.gov.srm.farm.ui.tag.SignOutTag</tag-class>
+      <display-name>Display Sign Out Link</display-name>
+      <description>Display Sign Out Link</description>
+  </tag>
+  
+  <tag>
+    <name>importParticipantLog</name>
+    <tag-class>ca.bc.gov.srm.farm.ui.tag.GetImportParticipantLogTag</tag-class>
+    <display-name>GetImportParticipantLogTag</display-name>
+    <description>GetImportParticipantLogTag</description>
+    <attribute>
+      <name>pin</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>var</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The name of the scripting variable to put the value in</description>
+    </attribute>
+  </tag>
+</taglib>

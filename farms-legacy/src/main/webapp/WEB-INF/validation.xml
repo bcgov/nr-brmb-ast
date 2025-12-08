@@ -1,0 +1,1383 @@
+<!DOCTYPE form-validation PUBLIC
+          "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1.3//EN"
+          "dtd/validator_1_1_3.dtd">
+
+<form-validation>
+  <formset>
+
+    <form name="reportForm">
+      <field property="year" depends="required,integer,intRange">
+        <arg0 key="Program.Year"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>1950</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>2100</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="exportForm">
+      <field property="year" depends="required,integer,intRange">
+        <arg0 key="Program.Year"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>1950</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>2100</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="importForm">
+      <field property="importClassCode" depends="required">
+        <arg0 key="Type"/>
+      </field>
+      <field property="file.fileName" depends="required">
+        <arg0 key="Import.File"/>
+      </field>
+    </form>
+
+    <form name="accountSearchForm">
+      <field property="pin" depends="integer">
+        <arg0 key="PIN"/>
+      </field>
+    </form>
+
+    <form name="enrolmentsForm">
+      <field property="regionalOfficeCode" depends="required">
+        <arg0 key="Regional.Office"/>
+      </field>
+      <field property="pins" depends="required">
+        <arg0 key="PIN"/>
+      </field>
+    </form>
+
+    <form name="pinsImportForm">
+      <field property="file.fileName" depends="required">
+        <arg0 key="Import.File"/>
+      </field>
+    </form>
+
+    <form name="calculatorSearchForm">
+      <field property="searchType" depends="required">
+        <arg0 key="Search.Type"/>
+      </field>
+      <field property="searchString" depends="required">
+        <arg0 key="Search.String"/>
+      </field>
+    </form>
+
+    <form name="scenariosForm">
+      <field property="scenarioStateCode" depends="required">
+        <arg0 key="Scenario.State"/>
+      </field>
+    </form>
+
+    <form name="participantForm">
+      <field property="pin" depends="required">
+        <arg0 key="PIN"/>
+      </field>
+      <field property="year" depends="required">
+        <arg0 key="Year"/>
+      </field>
+      <field property="scenarioNumber" depends="required">
+        <arg0 key="Scenario.Number"/>
+      </field>
+      <field property="owner.firstName" depends="maxlength">
+        <arg0 key="Participant.First.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="owner.lastName" depends="maxlength">
+        <arg0 key="Participant.Last.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="owner.corpName" depends="maxlength">
+        <arg0 key="Participant.Corporation.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="sin" depends="integer,intRange">
+        <arg0 key="Social.Insurance.Number"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>999999999</var-value>
+        </var>
+      </field>
+      <field property="sin" depends="validwhen">
+        <arg0 key="SIN"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>(((owner.firstName == null) and (owner.lastName == null)) or (*this* != null))</var-value>
+        </var>
+      </field>
+      <field property="businessNumber" depends="maxlength">
+        <arg0 key="Business.Number.BN"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>15</var-value>
+        </var>
+      </field>
+      <field property="trustNumber" depends="maxlength">
+        <arg0 key="Trust.Number.CTN"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>9</var-value>
+        </var>
+      </field>
+      <field property="trustNumber" depends="validwhen">
+        <arg0 key="Business.Number.or.Trust.Number"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>((owner.corpName == null) or ((businessNumber != null) or (*this* != null)))</var-value>
+        </var>
+      </field>
+      <field property="owner.addressLine1" depends="required,maxlength">
+        <arg0 key="Participant.Address.1"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="owner.addressLine2" depends="maxlength">
+        <arg0 key="Participant.Address.2"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="owner.city" depends="required,maxlength">
+        <arg0 key="Participant.City"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="owner.postalCode" depends="required,minlength,maxlength">
+        <arg0 key="Participant.Postal.Code"/>
+        <arg1 name="minlength" key="${var:minlength}" resource="false"/>
+        <var>
+          <var-name>minlength</var-name>
+          <var-value>6</var-value>
+        </var>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>6</var-value>
+        </var>
+      </field>
+      <field property="owner.provinceState" depends="maxlength">
+        <arg0 key="Participant.Province"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>2</var-value>
+        </var>
+      </field>
+      <field property="owner.country" depends="maxlength">
+        <arg0 key="Participant.Country"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>3</var-value>
+        </var>
+      </field>
+      <field property="owner.daytimePhone" depends="maxlength">
+        <arg0 key="Participant.Phone.Day"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="owner.eveningPhone" depends="maxlength">
+        <arg0 key="Participant.Phone.Evening"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="owner.faxNumber" depends="maxlength">
+        <arg0 key="Participant.Phone.FAX"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="owner.emailAddress" depends="maxlength">
+        <arg0 key="Participant.Email.Address"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>150</var-value>
+        </var>
+      </field>
+      <field property="contact.firstName" depends="maxlength">
+        <arg0 key="Contact.First.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="contact.lastName" depends="maxlength">
+        <arg0 key="Contact.Last.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="contact.corpName" depends="maxlength">
+        <arg0 key="Contact.Business.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="contact.addressLine1" depends="maxlength">
+        <arg0 key="Contact.Address.1"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="contact.addressLine2" depends="maxlength">
+        <arg0 key="Contact.Address.2"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="contact.city" depends="maxlength">
+        <arg0 key="Contact.City"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="contact.postalCode" depends="maxlength">
+        <arg0 key="Contact.Postal.Code"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>6</var-value>
+        </var>
+      </field>
+      <field property="contact.provinceState" depends="maxlength">
+        <arg0 key="Contact.Province.of.Residence"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>2</var-value>
+        </var>
+      </field>
+      <field property="contact.country" depends="maxlength">
+        <arg0 key="Participant.Country"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>3</var-value>
+        </var>
+      </field>
+      <field property="contact.daytimePhone" depends="maxlength">
+        <arg0 key="Contact.Phone"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="contact.faxNumber" depends="maxlength">
+        <arg0 key="Contact.Phone.FAX"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="contact.emailAddress" depends="maxlength">
+        <arg0 key="Contact.Email.Address"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>150</var-value>
+        </var>
+      </field>
+      <field property="participantClassCode" depends="required">
+        <arg0 key="Participant.Type"/>
+      </field>
+      <field property="participantClassCode" depends="validwhen">
+        <arg0 key="Participant.First.and.Last.Name.for.Participant.Type.Individual"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>(((owner.firstName != null) and (owner.lastName != null)) or (*this* != '1'))</var-value>
+        </var>
+      </field>
+      <field property="participantClassCode" depends="validwhen">
+        <arg0 key="Participant.Corporation.Name.for.Participant.Type.Corporation"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>((owner.corpName != null) or (*this* != '3'))</var-value>
+        </var>
+      </field>
+      <field property="clientRevisionCount" depends="required,integer">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="owner.revisionCount" depends="required,integer">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="contact.revisionCount" depends="required,integer">
+        <arg0 key="Revision.Count"/>
+      </field>
+    </form>
+
+    <form name="farmDetailForm">
+      <field property="pin" depends="required">
+        <arg0 key="PIN"/>
+      </field>
+      <field property="programYearVersionRevisionCount" depends="required,integer">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="agristabFedStsCode" depends="required">
+        <arg0 key="Federal.Status"/>
+      </field>
+      <field property="participantProfileCode" depends="required">
+        <arg0 key="Participant.Profile"/>
+      </field>
+      <field property="farmYears" depends="integer,intRange">
+        <arg0 key="Number.of.Years.Farming"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>99</var-value>
+        </var>
+      </field>
+      <field property="provinceOfResidence" depends="maxlength">
+        <arg0 key="Province.of.Residence"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>2</var-value>
+        </var>
+      </field>
+      <field property="provinceOfMainFarmstead" depends="maxlength">
+        <arg0 key="Province.of.Main.Farmstead"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>2</var-value>
+        </var>
+      </field>
+      <field property="otherText" depends="maxlength">
+        <arg0 key="Other.Text"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="commonShareTotal" depends="integer,intRange">
+        <arg0 key="Common.Share.Total"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>99999999</var-value>
+        </var>
+      </field>
+      <field property="localSupplementalReceivedDate" depends="date">
+        <arg0 key="Local.Supplemental.Date"/>
+        <arg1 key="${var:datePattern}" resource="false"/>
+        <var>
+          <var-name>datePattern</var-name>
+          <var-value>yyyy-MM-dd</var-value>
+        </var>
+      </field>
+      <field property="localStatementAReceivedDate" depends="date">
+        <arg0 key="Local.Statement.A.Received.Date"/>
+        <arg1 key="${var:datePattern}" resource="false"/>
+        <var>
+          <var-name>datePattern</var-name>
+          <var-value>yyyy-MM-dd</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="farmingOperationForm">
+      <field property="pin" depends="required">
+        <arg0 key="PIN"/>
+      </field>
+      <field property="schedule" depends="required">
+        <arg0 key="Schedule"/>
+      </field>
+      <field property="operationRevisionCount" depends="validwhen,integer">
+        <arg0 key="Revision.Count"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>((new == 'true') or (*this* != null))</var-value>
+        </var>
+      </field>
+      <field property="operationNumber" depends="validwhen,integer">
+        <arg0 key="Operation"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>((new == 'true') or (*this* != null))</var-value>
+        </var>
+      </field>
+      <field property="partnershipPin" depends="required,integer,intRange">
+        <arg0 key="Partnership.PIN"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>999999999</var-value>
+        </var>
+      </field>
+      <field property="partnershipName" depends="maxlength">
+        <arg0 key="Partnership.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>42</var-value>
+        </var>
+      </field>
+      <field property="partnershipPercent" depends="required,double,doubleRange">
+        <arg0 key="Partnership.Percent"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="fiscalYearStart" depends="date">
+        <arg0 key="Fiscal.Start"/>
+        <arg1 key="${var:datePattern}" resource="false"/>
+        <var>
+          <var-name>datePattern</var-name>
+          <var-value>yyyy-MM-dd</var-value>
+        </var>
+      </field>
+      <field property="fiscalYearEnd" depends="date">
+        <arg0 key="Fiscal.End"/>
+        <arg1 key="${var:datePattern}" resource="false"/>
+        <var>
+          <var-name>datePattern</var-name>
+          <var-value>yyyy-MM-dd</var-value>
+        </var>
+      </field>
+      <field property="expenses" depends="double,doubleRange">
+        <arg0 key="Expenses"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>-9999999999999</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>9999999999999</var-value>
+        </var>
+      </field>
+      <field property="grossIncome" depends="double,doubleRange">
+        <arg0 key="Gross.Income"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>-9999999999999</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>9999999999999</var-value>
+        </var>
+      </field>
+      <field property="businessUseHomeExpense" depends="double,doubleRange">
+        <arg0 key="Business.Use.Home.Expense"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>-9999999999999</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>9999999999999</var-value>
+        </var>
+      </field>
+      <field property="netFarmIncome" depends="double,doubleRange">
+        <arg0 key="Net.Farm.Income"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>-9999999999999</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>9999999999999</var-value>
+        </var>
+      </field>
+      <field property="otherDeductions" depends="double,doubleRange">
+        <arg0 key="Other.Deductions"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>-9999999999999</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>9999999999999</var-value>
+        </var>
+      </field>
+      <field property="netIncomeBeforeAdj" depends="double,doubleRange">
+        <arg0 key="Net.Income.Before.Adj."/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>-9999999999999</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>9999999999999</var-value>
+        </var>
+      </field>
+      <field property="inventoryAdjustments" depends="double,doubleRange">
+        <arg0 key="Inventory.Adjustments"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>-9999999999999</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>9999999999999</var-value>
+        </var>
+      </field>
+      <field property="netIncomeAfterAdj" depends="double,doubleRange">
+        <arg0 key="Net.Income.After.Adj."/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>-9999999999999</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>9999999999999</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="diffReportForm">
+      <field property="diffYear" depends="required,integer">
+        <arg0 key="Diff.Year"/>
+      </field>
+      <field property="formData.newPyvNumber" depends="required,integer">
+        <arg0 key="New.Program.Year.Version.Number"/>
+      </field>
+    </form>
+
+    <form name="benefitForm">
+      <field property="insuranceBenefit" depends="double">  
+        <arg0 key="Production.Insurance.Deemed.Benefit"/>
+      </field>
+      <field property="appliedBenefitPercent" depends="double,doubleRange">
+        <arg0 key="Applied.Benefit.Percentage"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="interimBenefitPercent" depends="double,doubleRange">
+        <arg0 key="Interim.Benefit.Percentage"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="genericCodesForm">
+      <field property="revisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="code" depends="required,maxlength">
+        <arg0 key="Code"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>10</var-value>
+        </var>
+      </field>
+      <field property="description" depends="required,maxlength">
+        <arg0 key="Description"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>256</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="lineItemCodesForm">
+      <field property="revisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="lineItem" depends="required,integer,maxlength">
+        <arg0 key="Line.Item"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>4</var-value>
+        </var>
+      </field>
+      <field property="description" depends="required,maxlength">
+        <arg0 key="Description"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>256</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="lineItemCopyYearForm">
+      <field property="yearFilter" depends="required">
+        <arg0 key="Year"/>
+      </field>
+    </form>
+
+    <form name="municipalityCodesForm">
+      <field property="revisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="code" depends="required,maxlength">
+        <arg0 key="Code"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>10</var-value>
+        </var>
+      </field>
+      <field property="description" depends="required,maxlength">
+        <arg0 key="Description"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>256</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="fmvsForm">
+      <field property="inventoryItemCode" depends="required">
+        <arg0 key="Inventory.Code"/>
+      </field>
+      <field property="municipalityCode" depends="required">
+        <arg0 key="Municipality"/>
+      </field>
+      <field property="cropUnitCode" depends="validwhen">
+        <arg0 key="Crop.Unit"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>((inventoryType == '2') or (*this* != null))</var-value>
+        </var>
+      </field>
+    </form>
+    
+    <form name="bpusForm">
+      <field property="invSgCode" depends="required">
+        <arg0 key="Inventory.Code"/>
+      </field>
+      <field property="municipalityCode" depends="required">
+        <arg0 key="Municipality"/>
+      </field>
+    </form>
+
+    <form name="inventoryItemCodesForm">
+      <field property="revisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="code" depends="required,maxlength">
+        <arg0 key="Code"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>10</var-value>
+        </var>
+      </field>
+      <field property="description" depends="required,maxlength">
+        <arg0 key="Description"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>256</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="inventoryXrefsForm">
+      <field property="revisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="inventoryClassCode" depends="required">
+        <arg0 key="Inventory.Class.Code"/>
+      </field>
+      <field property="inventoryItemCode" depends="required">
+        <arg0 key="Inventory.Item.Code"/>
+      </field>
+      <field property="inventoryGroupCode" depends="required">
+        <arg0 key="Inventory.Group"/>
+      </field>
+    </form>
+
+    <form name="marketRatePremiumsForm">
+      <field property="revisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="minTotalPremiumAmount" depends="required,integer,intRange">
+        <arg0 key="Min.Total.Premium.Amount"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>1000000</var-value>
+        </var>
+      </field>
+      <field property="maxTotalPremiumAmount" depends="required,integer,intRange">
+        <arg0 key="Max.Total.Premium.Amount"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>1000000</var-value>
+        </var>
+      </field>
+      <field property="riskChargeFlatAmount" depends="required,integer,intRange">
+        <arg0 key="Risk.Charge.Flat.Amount"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>1000</var-value>
+        </var>
+      </field>
+      <field property="riskChargePercentagePremium" depends="required,integer,intRange">
+        <arg0 key="Risk.Charge.Percentage.Premium"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="adjustChargeFlatAmount" depends="required,integer,intRange">
+        <arg0 key="Adjust.Charge.Flat.Amount"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>1000</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="structureGroupCodesForm">
+      <field property="revisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="code" depends="required,maxlength">
+        <arg0 key="Code"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>10</var-value>
+        </var>
+      </field>
+      <field property="description" depends="required,maxlength">
+        <arg0 key="Description"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>256</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="combinedForm">
+      <field property="scenarioRevisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="pinToAdd" depends="integer,maxlength">
+        <arg0 key="PIN"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>9</var-value>
+        </var>
+      </field>
+    </form>
+    
+    <form name="expectedProductionForm">
+      <field property="inventoryItemCode" depends="required">
+        <arg0 key="Inventory.Code"/>
+      </field>
+      <field property="cropUnitCode" depends="validwhen">
+        <arg0 key="Crop.Unit"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>((inventoryType == '2') or (*this* != null))</var-value>
+        </var>
+      </field>
+    </form>
+    
+    <form name="fruitVegForm">
+      <field property="name" depends="required">
+        <arg0 key="Fruit.Veg.Code"/>
+      </field>
+      <field property="description" depends="required">
+        <arg0 key="Description"/>
+      </field>
+      <field property="varianceLimit" depends="required">
+        <arg0 key="Variance"/>
+      </field>
+    </form>        
+
+    <form name="newParticipantForm">
+      <field property="participant.participantPin" depends="required,integer,intRange">
+        <arg0 key="Participant.Identification.Number.PIN"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>999999999</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.firstName" depends="maxlength">
+        <arg0 key="Participant.First.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.lastName" depends="maxlength">
+        <arg0 key="Participant.Last.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.corpName" depends="maxlength">
+        <arg0 key="Participant.Corporation.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.corpName" depends="validwhen">
+        <arg0 key="Participant.Corporation.Name.or.First.and.Last.Name"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>(((participant.owner.firstName != null) and (participant.owner.lastName != null)) or (*this* != null))</var-value>
+        </var>
+      </field>
+      <field property="participant.sin" depends="integer,intRange">
+        <arg0 key="Social.Insurance.Number"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>999999999</var-value>
+        </var>
+      </field>
+      <field property="participant.sin" depends="validwhen">
+        <arg0 key="SIN"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>(((participant.owner.firstName == null) and (participant.owner.lastName == null)) or (*this* != null))</var-value>
+        </var>
+      </field>
+      <field property="participant.businessNumber" depends="maxlength">
+        <arg0 key="Business.Number.BN"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>15</var-value>
+        </var>
+      </field>
+      <field property="participant.trustNumber" depends="maxlength">
+        <arg0 key="Trust.Number.CTN"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>9</var-value>
+        </var>
+      </field>
+      <field property="participant.trustNumber" depends="validwhen">
+        <arg0 key="Business.Number.or.Trust.Number"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>((participant.owner.corpName == null) or ((participant.businessNumber != null) or (*this* != null)))</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.addressLine1" depends="required,maxlength">
+        <arg0 key="Participant.Address.1"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.addressLine2" depends="maxlength">
+        <arg0 key="Participant.Address.2"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.city" depends="required,maxlength">
+        <arg0 key="Participant.City"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.postalCode" depends="required,minlength,maxlength">
+        <arg0 key="Participant.Postal.Code"/>
+        <arg1 name="minlength" key="${var:minlength}" resource="false"/>
+        <var>
+          <var-name>minlength</var-name>
+          <var-value>6</var-value>
+        </var>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>6</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.provinceState" depends="maxlength">
+        <arg0 key="Participant.Province"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>2</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.daytimePhone" depends="maxlength">
+        <arg0 key="Participant.Phone.Day"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.eveningPhone" depends="maxlength">
+        <arg0 key="Participant.Phone.Evening"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.faxNumber" depends="maxlength">
+        <arg0 key="Participant.Phone.FAX"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="participant.owner.emailAddress" depends="maxlength">
+        <arg0 key="Participant.Email.Address"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>150</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.firstName" depends="maxlength">
+        <arg0 key="Contact.First.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.lastName" depends="maxlength">
+        <arg0 key="Contact.Last.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.corpName" depends="maxlength">
+        <arg0 key="Contact.Business.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.addressLine1" depends="maxlength">
+        <arg0 key="Contact.Address.1"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.addressLine2" depends="maxlength">
+        <arg0 key="Contact.Address.2"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.city" depends="maxlength">
+        <arg0 key="Contact.City"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>80</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.postalCode" depends="maxlength">
+        <arg0 key="Contact.Postal.Code"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>6</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.provinceState" depends="maxlength">
+        <arg0 key="Contact.Province.of.Residence"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>2</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.daytimePhone" depends="maxlength">
+        <arg0 key="Contact.Phone"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.faxNumber" depends="maxlength">
+        <arg0 key="Contact.Phone.FAX"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>20</var-value>
+        </var>
+      </field>
+      <field property="participant.contact.emailAddress" depends="maxlength">
+        <arg0 key="Contact.Email.Address"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>150</var-value>
+        </var>
+      </field>
+      
+      <field property="participant.programYear" depends="required,integer,intRange">
+        <arg0 key="Program.Year"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>2009</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>9999</var-value>
+        </var>
+      </field>
+      <field property="participant.municipalityCode" depends="required">
+        <arg0 key="Municipality"/>
+      </field>
+      
+      <field property="partnershipPin" indexedListProperty="participant.operations" depends="integer,intRange">
+        <arg0 key="Partnership.PIN"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>999999999</var-value>
+        </var>
+      </field>
+      <field property="partnershipName" indexedListProperty="participant.operations" depends="maxlength">
+        <arg0 key="Partnership.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>42</var-value>
+        </var>
+      </field>
+      <field property="partnershipPercent" indexedListProperty="participant.operations" depends="double,doubleRange">
+        <arg0 key="Partnership.Percent"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="accountingCode" indexedListProperty="participant.operations" depends="required">
+        <arg0 key="Accounting.Code"/>
+      </field>
+      <field property="fiscalStartDate" indexedListProperty="participant.operations" depends="date">
+        <arg0 key="Fiscal.Start"/>
+        <arg1 key="${var:datePattern}" resource="false"/>
+        <var>
+          <var-name>datePattern</var-name>
+          <var-value>yyyy-MM-dd</var-value>
+        </var>
+      </field>
+      <field property="fiscalEndDate" indexedListProperty="participant.operations" depends="date">
+        <arg0 key="Fiscal.End"/>
+        <arg1 key="${var:datePattern}" resource="false"/>
+        <var>
+          <var-name>datePattern</var-name>
+          <var-value>yyyy-MM-dd</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="partnersForm">
+      <field property="operationSchedule" indexedListProperty="formData.partners" depends="required,maxlength">
+        <arg0 key="Operation"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>1</var-value>
+        </var>
+      </field>
+      <field property="participantPin" indexedListProperty="formData.partners" depends="required,integer,intRange">
+        <arg0 key="Participant.PIN"/>
+        <arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>999999999</var-value>
+        </var>
+      </field>
+      <field property="partnerPercent" indexedListProperty="formData.partners" depends="required,double,doubleRange">
+        <arg0 key="Partnership.Percent"/>
+        <arg1 name="doubleRange" key="${var:min}" resource="false"/>
+        <arg2 name="doubleRange" key="${var:max}" resource="false"/>
+        <var>
+          <var-name>min</var-name>
+          <var-value>0</var-value>
+        </var>
+        <var>
+          <var-name>max</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="firstName" indexedListProperty="formData.partners" depends="maxlength">
+        <arg0 key="First.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="lastName" indexedListProperty="formData.partners" depends="maxlength">
+        <arg0 key="Last.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="corpName" indexedListProperty="formData.partners" depends="maxlength">
+        <arg0 key="Corporation.Name"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>100</var-value>
+        </var>
+      </field>
+      <field property="corpName" indexedListProperty="formData.partners" depends="validwhen">
+        <arg0 key="Partner.Corporation.Name.or.First.and.Last.Name"/>
+        <var>
+          <var-name>test</var-name>
+          <var-value>(((formData.partners[].firstName != null) and (formData.partners[].lastName != null)) or (*this* != null))</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="sectorCodesForm">
+      <field property="revisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="code" depends="required,maxlength">
+        <arg0 key="Code"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>10</var-value>
+        </var>
+      </field>
+      <field property="description" depends="required,maxlength">
+        <arg0 key="Description"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>256</var-value>
+        </var>
+      </field>
+    </form>
+
+    <form name="sectorDetailCodesForm">
+      <field property="revisionCount" depends="required">
+        <arg0 key="Revision.Count"/>
+      </field>
+      <field property="sectorCode" depends="required,maxlength">
+        <arg0 key="Farm.Type"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>10</var-value>
+        </var>
+      </field>
+      <field property="sectorDetailCode" depends="required,maxlength">
+        <arg0 key="Farm.Type.Detailed.Code"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>10</var-value>
+        </var>
+      </field>
+      <field property="sectorDetailCode" depends="required,maxlength">
+        <arg0 key="Farm.Type.Detailed.Description"/>
+        <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+        <var>
+          <var-name>maxlength</var-name>
+          <var-value>256</var-value>
+        </var>
+      </field>
+    </form>
+    
+  </formset>
+</form-validation>

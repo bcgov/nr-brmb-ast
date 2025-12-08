@@ -1,0 +1,77 @@
+{
+  "data": {
+    "email": "johnny@farm.ca",
+    "origin": "internal",
+    "perils": {
+      "heat": false,
+      "rain": false,
+      "snow": false,
+      "wind": false,
+      "flood": true,
+      "frost": false,
+      "other": false,
+      "Freeze": false,
+      "drought": false,
+      "hailRain": false,
+      "moisture": false,
+      "wildlife": false,
+      "landslide": false
+    },
+    "submit": true,
+    "perils2": {
+      "heat": false,
+      "rain": false,
+      "snow": false,
+      "wind": false,
+      "flood": false,
+      "frost": false,
+      "other": false,
+      "Freeze": false,
+      "drought": true,
+      "hailRain": false,
+      "moisture": false,
+      "wildlife": false,
+      "landslide": false
+    },
+    "lateEntry": false,
+    "sinNumber": "987654321",
+    "dateOfEvent": "03/01/2023",
+    "environment": "DEV",
+    "phoneNumber": "(435) 435-4354",
+    "programYear": 2023,
+    "dateOfEvent2": "01/04/2024",
+    "businessNumber": "2343 44444",
+    "extentOfDamage": "total devastation ",
+    "internalMethod": "interim",
+    "extentOfDamage2": "big loss",
+    "participantType": "individual",
+    "agriStabilityPin": 546456546,
+    "eventCauseOfLoss": "flood ",
+    "eventCauseOfLoss2": "another disaster",
+    "locationOfTheLand": "somewhere in BC",
+    "locationOfTheLand2": "dry, very dry",
+    "submitToCheckboxes": {
+      "submitToAgriStability": true,
+      "submitToProductionInsurance": true
+    },
+    "cropPlantTypeDamaged": ["apple tree", "pears"],
+    "cropPlantTypeDamaged2": ["cherry trees", "grapes"],
+    "growerCorporationName": "dsfds",
+    "incomeDecreaseDetails": "flood and drought",
+    "expenseIncreaseDetails": "Flood",
+    "primaryFarmingActivity": "treefruit",
+    "submitAnAdditionalNolForm": true,
+    "observationOfDamageRemarks": "environmental conditions",
+    "incomeBelowThresholdCheckboxes": {
+      "no": false,
+      "yes": true
+    },
+    "productionInsurancePolicyNumber": 565656,
+    "productionInsurancePolicyNumber2": 111111111
+  },
+  "options": {
+    "convertTo": "pdf",
+    "overwrite": true,
+    "reportName": "test_nol_form_{d.agriStabilityAgriInvestPin}.pdf"
+}
+}

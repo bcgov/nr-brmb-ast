@@ -1,0 +1,940 @@
+<!DOCTYPE tiles-definitions PUBLIC
+          "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+          "dtd/tiles-config_1_1.dtd">
+
+<!-- Definitions for Tiles documentation   -->
+
+<tiles-definitions>
+
+    <!-- =======================================================  -->
+    <!-- Master definitions                                        -->
+    <!-- =======================================================  -->
+
+    <!-- Main page layout used as a root for other pages definition.
+    -->
+    <definition name=".default" path="/WEB-INF/jsp/layout/layout.jsp">
+        <put name="body" value="/WEB-INF/jsp/common/blank.jsp" />
+        <put name="screenNumber" value="000" />
+    </definition>
+
+    <definition name=".popup"
+        path="/WEB-INF/jsp/layout/popupLayout.jsp">
+        <put name="body" value="/WEB-INF/jsp/common/blank.jsp" />
+        <put name="screenNumber" value="000" />
+    </definition>
+
+    <definition name=".popup2"
+        path="/WEB-INF/jsp/layout/popupLayout2.jsp">
+        <put name="body" value="/WEB-INF/jsp/common/blank.jsp" />
+        <put name="screenNumber" value="000" />
+    </definition>
+
+    <definition name=".editorPopup"
+        path="/WEB-INF/jsp/layout/editorPopupLayout.jsp">
+        <put name="body" value="/WEB-INF/jsp/common/blank.jsp" />
+        <put name="screenNumber" value="000" />
+    </definition>
+
+    <!-- =======================================================  -->
+    <!-- Common Definitions                                       -->
+    <!-- =======================================================  -->
+
+
+    <!-- =======================================================  -->
+    <!-- Definitions                                              -->
+    <!-- =======================================================  -->
+
+    <definition name="blank" path="/WEB-INF/jsp/common/blank.jsp">
+    </definition>
+
+    <!-- Account Details -->
+
+    <definition name=".accountDetails"
+        path="/WEB-INF/jsp/account/accountDetails.jsp">
+        <put name="subtab" value="" />
+    </definition>
+
+    <definition name=".accountStatus" extends=".accountDetails">
+        <put name="subtab"
+            value="/WEB-INF/jsp/account/details/status.jsp" />
+    </definition>
+    
+    <!-- Benefit Overview -->
+
+    <definition name=".accountBenefitOverview"
+        path="/WEB-INF/jsp/account/benefitOverview.jsp">
+        <put name="subtab" value="" />
+    </definition>
+
+    <definition name=".accountMarginSummary" extends=".accountBenefitOverview">
+        <put name="subtab" value="/WEB-INF/jsp/account/overview/marginSummary.jsp" />
+    </definition>
+
+    <definition name=".accountIncomeExpenses" extends=".accountBenefitOverview">
+        <put name="subtab" value="/WEB-INF/jsp/account/overview/incomeExpenses.jsp" />
+    </definition>
+
+    <definition name=".accountInventory" extends=".accountBenefitOverview">
+        <put name="subtab" value="/WEB-INF/jsp/account/overview/inventory.jsp" />
+    </definition>
+    
+    <definition name=".accountAccruals" extends=".accountBenefitOverview">
+        <put name="subtab" value="/WEB-INF/jsp/account/overview/accruals.jsp" />
+    </definition>
+    <definition name=".accountProductiveCapacity" extends=".accountBenefitOverview">
+        <put name="subtab" value="/WEB-INF/jsp/account/overview/productiveCapacity.jsp" />
+    </definition>
+
+    <!-- ========== Application pages ========= -->
+
+    <!-- Welcome -->
+
+    <definition name="page.farm100" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/welcome/welcome.jsp" />
+        <put name="screenNumber" value="100" />
+    </definition>
+
+    <definition name="page.farm101" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/welcome/bceidWelcome.jsp" />
+        <put name="screenNumber" value="101" />
+    </definition>
+
+    <!--
+        Welcome screen that has links to bceidWelcome and agent screen
+    -->
+    <definition name="page.farm102" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/welcome/welcome2.jsp" />
+        <put name="screenNumber" value="102" />
+    </definition>
+
+    <!-- Import -->
+
+    <definition name="page.farm200" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/import/import.jsp" />
+        <put name="screenNumber" value="200" />
+    </definition>
+
+    <definition name="page.farm205" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/import/inProgress.jsp" />
+        <put name="screenNumber" value="205" />
+    </definition>
+
+    <definition name="page.farm210" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/import/resultStaging.jsp" />
+        <put name="screenNumber" value="210" />
+    </definition>
+
+    <definition name="page.farm230" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/import/resultImport.jsp" />
+        <put name="screenNumber" value="230" />
+    </definition>
+
+    <definition name="page.farm240Busy" extends=".popup">
+        <put name="body"
+            value="/WEB-INF/jsp/import/resultParticipantBusy.jsp" />
+        <put name="screenNumber" value="240" />
+    </definition>
+
+    <definition name="page.farm240" extends=".popup">
+        <put name="body"
+            value="/WEB-INF/jsp/import/resultParticipant.jsp" />
+        <put name="screenNumber" value="240" />
+    </definition>
+
+    <definition name="page.farm250" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/import/list.jsp" />
+        <put name="screenNumber" value="250" />
+    </definition>
+    
+     <!-- CHEFS -->
+    
+    <definition name="page.farm256" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/chefs/chefsMain.jsp" />
+        <put name="screenNumber" value="256" />
+    </definition>
+    
+    <definition name="page.farm257" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/chefs/chefsResult.jsp" />
+        <put name="screenNumber" value="257" />
+    </definition>
+    
+    <definition name="page.uploadSuccess" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/chefs/chefsUploadSuccess.jsp" />
+        <put name="screenNumber" value="257" />
+    </definition>
+    
+    <definition name="page.uploadFailure" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/chefs/chefsUploadFailure.jsp" />
+        <put name="screenNumber" value="257" />
+    </definition>
+    
+    <!-- FIFO -->
+    
+    <definition name=".fifo" path="/WEB-INF/jsp/fifo/fifoLayout.jsp">
+        <put name="body" value="/WEB-INF/jsp/fifo/fifoSubTabs.jsp" />
+        <put name="subTabs" value="/WEB-INF/jsp/fifo/noSubTabs.jsp" />
+        <put name="screenNumber" value="000" />
+    </definition>
+    
+    <definition name=".fifo.farm.status" extends=".fifo">
+        <put name="tabName" value="status" />
+    </definition>
+    
+    <definition name="page.farm258" extends=".fifo.farm.status">
+        <put name="subTabBody" value="/WEB-INF/jsp/fifo/fifoStatus.jsp" />
+        <put name="screenNumber" value="258" />
+    </definition>
+    
+     <definition name=".fifo.farm.jobs" extends=".fifo">
+        <put name="tabName" value="jobs" />
+    </definition>
+    
+    <definition name="page.farm259" extends=".fifo.farm.jobs">
+        <put name="subTabBody" value="/WEB-INF/jsp/fifo/fifoJobs.jsp" />
+        <put name="screenNumber" value="259" />
+    </definition>
+    
+     <definition name="page.farm254" extends=".fifo.farm.jobs">
+        <put name="subTabBody" value="/WEB-INF/jsp/fifo/fifoJobInProgress.jsp" />
+        <put name="screenNumber" value="254" />
+    </definition>
+    
+    <definition name="page.farm253" extends=".fifo.farm.jobs">
+        <put name="subTabBody" value="/WEB-INF/jsp/fifo/fifoJobResult.jsp" />
+        <put name="screenNumber" value="253" />
+    </definition>
+
+    <!-- Account Details -->
+
+    <definition name="page.farm300" extends=".default">
+        <put name="body" value=".accountStatus" />
+        <put name="screenNumber" value="300" />
+    </definition>
+
+    <!-- Account Search / List  -->
+
+    <definition name="page.farm310" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/account/list.jsp" />
+        <put name="screenNumber" value="310" />
+    </definition>
+
+    <!-- Benefit History -->
+
+    <definition name="page.farm400" extends=".default">
+        <put name="body"
+            value="/WEB-INF/jsp/account/benefitHistory.jsp" />
+        <put name="screenNumber" value="400" />
+    </definition>
+
+    <!-- Benefit Overview -->
+
+    <definition name="page.farm500" extends=".default">
+        <put name="body" value=".accountMarginSummary" />
+        <put name="screenNumber" value="500" />
+    </definition>
+
+    <definition name="page.farm510" extends=".default">
+        <put name="body" value=".accountIncomeExpenses" />
+        <put name="screenNumber" value="510" />
+    </definition>
+
+    <definition name="page.farm520" extends=".default">
+        <put name="body" value=".accountInventory" />
+        <put name="screenNumber" value="520" />
+    </definition>
+    
+    <definition name="page.farm525" extends=".default">
+        <put name="body" value=".accountAccruals" />
+        <put name="screenNumber" value="525" />
+    </definition>
+    
+    <definition name="page.farm530" extends=".default">
+        <put name="body" value=".accountProductiveCapacity" />
+        <put name="screenNumber" value="530" />
+    </definition>
+
+    <!-- Reports -->
+
+    <definition name="page.farm610" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/reports/criteria610.jsp" />
+        <put name="screenNumber" value="610" />
+    </definition>
+
+    <definition name="page.farm620" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/reports/criteria620.jsp" />
+        <put name="screenNumber" value="620" />
+    </definition>
+
+    <definition name="page.farm630" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/reports/criteria630.jsp" />
+        <put name="screenNumber" value="630" />
+    </definition>
+
+    <definition name="page.farm640" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/reports/criteria640.jsp" />
+        <put name="screenNumber" value="640" />
+    </definition>
+
+    <definition name="page.farm650" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/reports/criteria650.jsp" />
+        <put name="screenNumber" value="650" />
+    </definition>
+
+    <definition name="page.farm655" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/reports/criteria655.jsp" />
+        <put name="screenNumber" value="655" />
+    </definition>
+
+    <definition name="page.farm690" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/reports/backgroundReportView.jsp" />
+        <put name="screenNumber" value="690" />
+    </definition>
+    
+    <!-- TIP Report -->
+    <definition name="page.farm660" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/tip/tipReports.jsp" />
+        <put name="screenNumber" value="660" />
+    </definition>
+    
+    <definition name="page.farm661" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/tip/tipReportJobs.jsp" />
+        <put name="screenNumber" value="661" />
+    </definition>
+    
+    <definition name="page.farm662" extends=".popup">
+        <put name="body" value="/WEB-INF/jsp/tip/tipReportError.jsp" />
+        <put name="screenNumber" value="662" />
+    </definition>
+
+    <!-- Exports -->
+
+    <definition name="page.farm600" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/export/export600.jsp" />
+        <put name="screenNumber" value="600" />
+    </definition>
+    
+    <definition name="page.farm601" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/export/export601.jsp" />
+        <put name="screenNumber" value="601" />
+    </definition>
+
+    <definition name="page.farm719" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/export/export719.jsp" />
+        <put name="screenNumber" value="719" />
+    </definition>
+
+
+    <definition name="page.farm720" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/export/export720.jsp" />
+        <put name="screenNumber" value="720" />
+    </definition>
+
+    <definition name="page.farm721" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/export/export721.jsp" />
+        <put name="screenNumber" value="721" />
+    </definition>
+
+    <!-- Agent -->
+
+    <definition name="page.agentStatus" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/agent/agentStatus.jsp" />
+        <put name="screenNumber" value="620" />
+    </definition>
+
+
+    <!-- Enrolments -->
+
+    <definition name="page.enrolments" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/enrolment/enrolments.jsp" />
+        <put name="screenNumber" value="360" />
+    </definition>
+
+    <definition name="javascript.enrolmentDisplayData" path="/WEB-INF/jsp/javascript/enrolmentDisplayData.jsp">
+    </definition>
+
+    <definition name="page.farm361" extends=".default">
+        <put name="body" value="/WEB-INF/jsp/enrolment/importPins.jsp" />
+        <put name="screenNumber" value="361" />
+    </definition>
+
+    <!-- Calculator Layouts -->
+
+    <definition name=".calculator" path="/WEB-INF/jsp/calculator/calculatorLayout.jsp">
+        <put name="body" value="/WEB-INF/jsp/common/blank.jsp" />
+        <put name="screenNumber" value="000" />
+    </definition>
+
+    <definition name=".calculator.main" extends=".calculator">
+        <put name="body" value="/WEB-INF/jsp/calculator/calculatorMain.jsp" />
+    </definition>
+
+    <definition name=".calculator.accountDetails" extends=".calculator.main">
+        <put name="tabName" value="accountDetails" />
+        <put name="subTabs" value="/WEB-INF/jsp/calculator/accountDetails.jsp" />
+    </definition>
+
+    <definition name=".calculator.benefitCalculation" extends=".calculator.main">
+        <put name="tabName" value="benefitCalculation" />
+        <put name="subTabs" value="/WEB-INF/jsp/calculator/benefitCalculation.jsp" />
+    </definition>
+    
+    <definition name=".calculator.blank" extends=".calculator">
+        <put name="body" value="/WEB-INF/jsp/calculator/blank.jsp" />
+    </definition>
+
+
+    <!-- Calculator Pages -->
+
+    <definition name="page.farm900" extends=".calculator">
+        <put name="body" value="/WEB-INF/jsp/calculator/calculatorInbox.jsp" />
+        <put name="screenNumber" value="900" />
+    </definition>
+
+    <definition name="page.farm910" extends=".calculator">
+        <put name="body" value="/WEB-INF/jsp/calculator/calculatorSearch.jsp" />
+        <put name="screenNumber" value="910" />
+    </definition>
+
+    <definition name="page.farm800" extends=".calculator.accountDetails">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/status.jsp" />
+        <put name="screenNumber" value="800" />
+    </definition>
+
+    <definition name="page.farm805" extends=".popup2">
+        <put name="body" value="/WEB-INF/jsp/calculator/diffReport.jsp" />
+        <put name="screenNumber" value="805" />
+    </definition>
+
+    <definition name="page.farm810" extends=".calculator.accountDetails">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/participant.jsp" />
+        <put name="screenNumber" value="810" />
+    </definition>
+
+    <definition name="page.farm340" extends=".calculator.accountDetails">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/subscriptions.jsp" />
+        <put name="screenNumber" value="340" />
+    </definition>
+
+    <definition name="page.farm820" extends=".calculator.accountDetails">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/farmDetail.jsp" />
+        <put name="screenNumber" value="820" />
+    </definition>
+
+    <definition name="page.farm825" extends=".calculator.accountDetails">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/farmingOperation.jsp" />
+        <put name="screenNumber" value="825" />
+    </definition>
+
+    <definition name="page.farm827" extends=".calculator.accountDetails">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/partners.jsp" />
+        <put name="screenNumber" value="827" />
+    </definition>
+
+    <definition name="javascript.partnersList" path="/WEB-INF/jsp/javascript/partnersJavaScriptList.jsp">
+    </definition>
+
+    <definition name="page.farm950" extends=".calculator.accountDetails">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/operationAlignment.jsp" />
+        <put name="screenNumber" value="950" />
+    </definition>
+
+    <definition name="page.farm920" extends=".calculator.accountDetails">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/combinedFarm.jsp" />
+        <put name="screenNumber" value="920" />
+    </definition>
+
+    <definition name="page.farm960" extends=".calculator.accountDetails">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/preVerification.jsp" />
+        <put name="screenNumber" value="960" />
+    </definition>
+
+    <definition name="page.farm830" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/scenarios.jsp" />
+        <put name="screenNumber" value="830" />
+    </definition>
+    
+    <definition name="page.farm830.invalid" extends=".calculator.blank">
+       <put name="screenNumber" value="830" />
+    </definition>
+
+    <definition name="page.farm890" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/productiveUnits.jsp" />
+        <put name="screenNumber" value="890" />
+    </definition>
+
+    <definition name="javascript.productiveUnitLists" path="/WEB-INF/jsp/javascript/productiveUnitLists.jsp">
+    </definition>
+
+    <definition name="page.farm870" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/incomeExpenses.jsp" />
+        <put name="screenNumber" value="870" />
+    </definition>
+
+    <definition name="javascript.incomeExpenseLists" path="/WEB-INF/jsp/javascript/incomeExpenseLists.jsp">
+    </definition>
+    
+    <definition name="javascript.lineItemLists" path="/WEB-INF/jsp/javascript/lineItemList.jsp">
+    </definition>
+
+    <definition name="page.farm875" extends=".popup2">
+        <put name="body" value="/WEB-INF/jsp/calculator/deductionLineItems.jsp" />
+        <put name="screenNumber" value="875" />
+    </definition>
+
+    <definition name="page.farm880" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/inventory.jsp" />
+        <put name="screenNumber" value="880" />
+    </definition>
+
+    <definition name="javascript.inventoryItemLists" path="/WEB-INF/jsp/javascript/inventoryItemLists.jsp">
+    </definition>
+
+    <definition name="page.farm940" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/accruals.jsp" />
+        <put name="screenNumber" value="940" />
+    </definition>
+
+    <definition name="javascript.accrualItemLists" path="/WEB-INF/jsp/javascript/accrualItemLists.jsp">
+    </definition>
+
+    <definition name="page.farm850" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/benefit.jsp" />
+        <put name="screenNumber" value="850" />
+    </definition>
+    
+    <definition name="page.farm855" extends=".popup2">
+        <put name="body" value="/WEB-INF/jsp/calculator/benefitAccrTypeInfo.jsp" />
+        <put name="screenNumber" value="855" />
+    </definition>
+
+    <definition name="page.farm840" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/reasonability/reasonabilityTests.jsp" />
+        <put name="screenNumber" value="840" />
+    </definition>
+
+    <definition name="page.farm860" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/enwEnrolment.jsp" />
+        <put name="screenNumber" value="860" />
+    </definition>
+
+    <definition name="page.farm817" extends=".editorPopup">
+        <put name="body" value="/WEB-INF/jsp/calculator/verificationNotes.jsp" />
+        <put name="screenNumber" value="817" />
+    </definition>
+
+    <definition name="page.farm818" extends=".popup2">
+        <put name="body" value="/WEB-INF/jsp/calculator/auditLog.jsp" />
+        <put name="screenNumber" value="818" />
+    </definition>
+    
+    <!-- TIP Management -->
+    <definition name=".tips" path="/WEB-INF/jsp/codes/tips/tipAdministrationLayout.jsp">
+        <put name="body" value="/WEB-INF/jsp/codes/tips/tipsSubTabs.jsp" />
+        <put name="subTabs" value="/WEB-INF/jsp/codes/noSubTabs.jsp" />
+     	<put name="screenNumber" value="000" />
+    </definition>
+    
+    <definition name=".tip.farm.type" extends=".tips">
+        <put name="tabName" value="farmType3" />
+    </definition>
+    
+    <definition name="page.farm480" extends=".tip.farm.type">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipsFarmType3List.jsp" />
+        <put name="screenNumber" value="480" />
+    </definition>
+    
+    <definition name="page.farm485" extends=".tip.farm.type">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipsFarmType3Item.jsp" />
+        <put name="screenNumber" value="485" />
+    </definition>
+    
+    <definition name=".tip.farm.type.a" extends=".tips">
+        <put name="tabName" value="farmType2" />
+    </definition>
+
+    <definition name="page.farm490" extends=".tip.farm.type.a">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipsFarmType2List.jsp" />
+        <put name="screenNumber" value="490" />
+    </definition>
+    
+    <definition name="page.farm495" extends=".tip.farm.type.a">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipsFarmType2Item.jsp" />
+        <put name="screenNumber" value="495" />
+    </definition>
+    
+    <definition name=".tip.farm.type.b" extends=".tips">
+        <put name="tabName" value="farmType1" />
+    </definition>
+    
+    <definition name="page.farm535" extends=".tip.farm.type.b">
+     	<put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipsFarmType1List.jsp" />
+        <put name="screenNumber" value="535" />
+    </definition>
+    
+    <definition name="page.farm540" extends=".tip.farm.type.b">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipsFarmType1Item.jsp" />
+        <put name="screenNumber" value="540" />
+    </definition>
+    
+    <definition name=".tip.default.income.range" extends=".tips">
+        <put name="tabName" value="defaultIncomeRange" />
+    </definition>
+    
+    <definition name="page.farm555" extends=".tip.default.income.range">
+     	<put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipFarmTypeDefaultIncomeRange.jsp" />
+        <put name="screenNumber" value="555" />
+    </definition>
+    
+    <definition name=".tip.line.items" extends=".tips">
+        <put name="tabName" value="lineItems" />
+    </definition>
+    
+    <definition name="page.farm545" extends=".tip.line.items">
+     	<put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipLineItemList.jsp" />
+        <put name="screenNumber" value="545" />
+    </definition>
+    
+    <definition name="page.farm550" extends=".tip.line.items">
+     	  <put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipLineItem.jsp" />
+        <put name="screenNumber" value="550" />
+    </definition>
+    
+    <definition name="page.farm546" extends=".tips">
+        <put name="tabName" value="tipBenchmarks" />
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipBenchmarks.jsp" />
+        <put name="screenNumber" value="545" />
+    </definition>
+    
+    <definition name="page.farm560" extends=".tips">
+        <put name="tabName" value="tipBenchmarkReports" />
+     	  <put name="subTabBody" value="/WEB-INF/jsp/codes/tips/tipsBenchmarkReports.jsp" />
+        <put name="screenNumber" value="560" />
+    </definition>
+
+
+    <!-- Code Management -->
+
+    <definition name=".codes" path="/WEB-INF/jsp/codes/codesLayout.jsp">
+        <put name="body" value="/WEB-INF/jsp/codes/codesMain.jsp" />
+        <put name="subTabs" value="/WEB-INF/jsp/codes/noSubTabs.jsp" />
+        <put name="screenNumber" value="000" />
+    </definition>
+
+    <definition name=".generic.codes" extends=".codes">
+        <put name="tabName" value="generic" />
+    </definition> 
+
+    <definition name=".line.items" extends=".codes">
+        <put name="tabName" value="lineItems" />
+    </definition>
+
+    <definition name=".municipality.codes" extends=".codes">
+        <put name="tabName" value="municipalities" />
+    </definition>
+
+    <definition name=".fmvs" extends=".codes">
+        <put name="tabName" value="fmvs" />
+    </definition>
+    
+    <definition name=".bpus" extends=".codes">
+        <put name="tabName" value="bpus" />
+    </definition>
+
+    <definition name=".structure.group" extends=".codes">
+        <put name="tabName" value="structureGroup" />
+    </definition>
+
+    <definition name=".cropUnitConversions" extends=".codes">
+        <put name="tabName" value="cropUnitConversions" />
+    </definition>
+
+    <definition name=".inventory" extends=".codes">
+        <put name="tabName" value="inventory" />
+        <put name="subTabs" value="/WEB-INF/jsp/codes/inventory/inventorySubTabs.jsp" />
+    </definition>
+    
+    <definition name=".reasonability" extends=".codes">
+        <put name="tabName" value="reasonability" />
+        <put name="subTabs" value="/WEB-INF/jsp/codes/reasonability/reasonabilitySubTabs.jsp" />
+    </definition>
+    
+    <definition name=".parameters" extends=".codes">
+        <put name="tabName" value="parameters" />
+        <put name="subTabs" value="/WEB-INF/jsp/codes/parameters/parametersSubTabs.jsp" />
+    </definition>
+    
+    <definition name=".documentTemplates" extends=".codes">
+        <put name="tabName" value="documentTemplates" />
+    </definition>
+    
+    <definition name=".sectors" extends=".codes">
+        <put name="tabName" value="sectors" />
+        <put name="subTabs" value="/WEB-INF/jsp/codes/sectors/sectorsSubTabs.jsp" />
+    </definition>
+    
+    <definition name=".users" extends=".codes">
+        <put name="tabName" value="users" />
+    </definition>
+
+    <definition name=".mrps" extends=".codes">
+        <put name="tabName" value="mrps" />
+    </definition>
+
+    <definition name="page.farm265" extends=".generic.codes">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/genericCodeList.jsp" />
+        <put name="screenNumber" value="265" />
+    </definition>
+
+    <definition name="page.farm270" extends=".generic.codes">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/genericCode.jsp" />
+        <put name="screenNumber" value="270" />
+    </definition>
+
+    <definition name="page.farm280" extends=".line.items">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/lineItemList.jsp" />
+        <put name="screenNumber" value="280" />
+    </definition>
+
+    <definition name="page.farm285" extends=".line.items">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/lineItem.jsp" />
+        <put name="screenNumber" value="285" />
+    </definition>
+
+    <definition name="page.farm255" extends=".municipality.codes">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/municipalityCodeList.jsp" />
+        <put name="screenNumber" value="255" />
+    </definition>
+
+    <definition name="page.farm260" extends=".municipality.codes">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/municipalityCode.jsp" />
+        <put name="screenNumber" value="260" />
+    </definition>
+
+    <definition name="page.farm286" extends=".fmvs">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/fmvList.jsp" />
+        <put name="screenNumber" value="286" />
+    </definition>
+
+    <definition name="page.farm287" extends=".fmvs">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/fmv.jsp" />
+        <put name="screenNumber" value="287" />
+    </definition>
+
+    <definition name="page.farm288" extends=".cropUnitConversions">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/cropUnitConversionList.jsp" />
+        <put name="screenNumber" value="288" />
+    </definition>
+
+    <definition name="page.farm289" extends=".cropUnitConversions">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/cropUnitConversion.jsp" />
+        <put name="screenNumber" value="289" />
+    </definition>
+    
+    <definition name="page.farm290" extends=".bpus">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/bpuList.jsp" />
+        <put name="screenNumber" value="290" />
+    </definition>
+    
+    <definition name="page.farm291" extends=".bpus">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/bpu.jsp" />
+        <put name="screenNumber" value="291" />
+    </definition>
+
+    <definition name="javascript.structureGroupCodeList" path="/WEB-INF/jsp/javascript/structureGroupCodeList.jsp">
+    </definition>
+
+    <definition name="page.farm292" extends=".structure.group">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/structureGroupCodeList.jsp" />
+        <put name="screenNumber" value="292" />
+    </definition>
+
+    <definition name="page.farm293" extends=".structure.group">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/structureGroupCode.jsp" />
+        <put name="screenNumber" value="293" />
+    </definition>
+
+    <definition name="javascript.inventoryItemCodeList" path="/WEB-INF/jsp/javascript/inventoryItemCodeList.jsp">
+    </definition>
+
+    <definition name="page.farm420" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/inventoryItemCodeList.jsp" />
+        <put name="screenNumber" value="420" />
+    </definition>
+
+    <definition name="page.farm425" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/inventoryItemCode.jsp" />
+        <put name="screenNumber" value="425" />
+    </definition>
+
+    <definition name="page.farm430" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/cropXrefList.jsp" />
+        <put name="screenNumber" value="430" />
+    </definition>
+
+    <definition name="page.farm435" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/cropXref.jsp" />
+        <put name="screenNumber" value="435" />
+    </definition>
+
+    <definition name="page.farm440" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/livestockXrefList.jsp" />
+        <put name="screenNumber" value="440" />
+    </definition>
+
+    <definition name="page.farm445" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/livestockXref.jsp" />
+        <put name="screenNumber" value="445" />
+    </definition>
+
+    <definition name="page.farm450" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/accrualXrefList.jsp" />
+        <put name="screenNumber" value="450" />
+    </definition>
+
+    <definition name="page.farm455" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/accrualXref.jsp" />
+        <put name="screenNumber" value="455" />
+    </definition>
+
+    <definition name="page.farm460" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/accrualXrefList.jsp" />
+        <put name="screenNumber" value="460" />
+    </definition>
+
+    <definition name="page.farm465" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/accrualXref.jsp" />
+        <put name="screenNumber" value="465" />
+    </definition>
+
+    <definition name="page.farm470" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/accrualXrefList.jsp" />
+        <put name="screenNumber" value="470" />
+    </definition>
+
+    <definition name="page.farm475" extends=".inventory">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/inventory/accrualXref.jsp" />
+        <put name="screenNumber" value="475" />
+    </definition>
+    
+    <definition name="page.farm730" extends=".reasonability">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/reasonability/fruitVegCodeList.jsp" />
+        <put name="screenNumber" value="730" />
+    </definition>
+    
+    <definition name="page.farm735" extends=".reasonability">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/reasonability/fruitVegCodeItem.jsp" />
+        <put name="screenNumber" value="735" />
+    </definition>
+    
+    <definition name="page.farm740" extends=".reasonability">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/reasonability/expectedProductionList.jsp" />
+        <put name="screenNumber" value="740" />
+    </definition>
+    
+    <definition name="page.farm745" extends=".reasonability">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/reasonability/expectedProductionItem.jsp" />
+        <put name="screenNumber" value="745" />
+    </definition>
+    
+    <definition name="page.farm750" extends=".parameters">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/parameters/configurationParameterList.jsp" />
+        <put name="screenNumber" value="750" />
+    </definition>
+    
+    <definition name="page.farm755" extends=".parameters">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/parameters/configurationParameter.jsp" />
+        <put name="screenNumber" value="755" />
+    </definition>
+    
+    <definition name="page.farm756" extends=".parameters">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/parameters/yearConfigurationParamList.jsp" />
+        <put name="screenNumber" value="756" />
+    </definition>
+    
+    <definition name="page.farm757" extends=".parameters">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/parameters/yearConfigurationParam.jsp" />
+        <put name="screenNumber" value="757" />
+    </definition>
+    
+    <definition name="page.farm760" extends=".documentTemplates">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/documentTemplateList.jsp" />
+        <put name="screenNumber" value="760" />
+    </definition>
+    
+    <definition name="page.farm765" extends=".documentTemplates">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/documentTemplate.jsp" />
+        <put name="screenNumber" value="765" />
+    </definition>
+    
+    <definition name="page.farm772" extends=".sectors">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/sectors/sectorCodeList.jsp" />
+        <put name="screenNumber" value="772" />
+    </definition>
+    
+    <definition name="page.farm773" extends=".sectors">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/sectors/sectorCode.jsp" />
+        <put name="screenNumber" value="773" />
+    </definition>
+    
+    <definition name="page.farm774" extends=".sectors">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/sectors/sectorDetailCodeList.jsp" />
+        <put name="screenNumber" value="774" />
+    </definition>
+    
+    <definition name="page.farm775" extends=".sectors">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/sectors/sectorDetailCode.jsp" />
+        <put name="screenNumber" value="775" />
+    </definition>
+    
+    <definition name="page.farm776" extends=".users">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/userList.jsp" />
+        <put name="screenNumber" value="776" />
+    </definition>
+
+    <definition name="page.farm777" extends=".users">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/user.jsp" />
+        <put name="screenNumber" value="777" />
+    </definition>
+
+    <definition name="page.farm778" extends=".mrps">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/mrpList.jsp" />
+        <put name="screenNumber" value="778" />
+    </definition>
+
+    <definition name="page.farm779" extends=".mrps">
+        <put name="subTabBody" value="/WEB-INF/jsp/codes/mrp.jsp" />
+        <put name="screenNumber" value="779" />
+    </definition>
+
+    <definition name="javascript.cropLivestockList" path="/WEB-INF/jsp/javascript/cropLivestockList.jsp">
+    </definition>
+
+    <definition name="javascript.cropList" path="/WEB-INF/jsp/javascript/cropList.jsp">
+    </definition>
+    
+    <definition name="page.farm930" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/structuralChange.jsp" />
+        <put name="screenNumber" value="930" />
+    </definition>
+
+    <definition name="page.farm970" extends=".calculator.benefitCalculation">
+        <put name="subTabBody" value="/WEB-INF/jsp/calculator/negativeMargin.jsp" />
+        <put name="screenNumber" value="970" />
+    </definition>
+
+
+    <definition name=".newParticipantLayout" path="/WEB-INF/jsp/newParticipant/newParticipantLayout.jsp">
+        <put name="screenNumber" value="000" />
+    </definition>
+    
+    <definition name="page.farm770" extends=".newParticipantLayout">
+        <put name="body" value="/WEB-INF/jsp/newParticipant/newParticipant.jsp" />
+        <put name="screenNumber" value="770" />
+    </definition>
+    
+    <definition name="page.farm771" extends=".newParticipantLayout">
+        <put name="body" value="/WEB-INF/jsp/newParticipant/newParticipantCreated.jsp" />
+        <put name="screenNumber" value="771" />
+    </definition>
+
+</tiles-definitions>
