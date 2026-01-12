@@ -211,18 +211,18 @@ public class StagingDaoImpl extends BaseDaoImpl implements StagingDao {
                 .prepareCall(
                         "call farms_staging_pkg.insert_z05(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getPartnerInfoKey()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getParticipantPin()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getProgramYear()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getOperationNumber()));
+            callableStatement.setObject(i++, toLong(obj.getPartnerInfoKey()), Types.BIGINT);
+            callableStatement.setObject(i++, obj.getParticipantPin(), Types.INTEGER);
+            callableStatement.setObject(i++, toShort(obj.getProgramYear()), Types.SMALLINT);
+            callableStatement.setObject(i++, toShort(obj.getOperationNumber()), Types.SMALLINT);
 
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getPartnershipPin()));
+            callableStatement.setObject(i++, obj.getPartnershipPin(), Types.INTEGER);
             callableStatement.setString(i++, obj.getPartnerFirstName());
             callableStatement.setString(i++, obj.getPartnerLastName());
             callableStatement.setString(i++, obj.getPartnerCorpName());
             callableStatement.setString(i++, obj.getPartnerSinCtnBn());
             callableStatement.setBigDecimal(i++, toBigDecimal(obj.getPartnerPercent()));
-            callableStatement.setBigDecimal(i++, toBigDecimal(obj.getPartnerPin()));
+            callableStatement.setObject(i++, obj.getPartnerPin(), Types.INTEGER);
             callableStatement.setString(i++, userId);
 
             callableStatement.execute();
