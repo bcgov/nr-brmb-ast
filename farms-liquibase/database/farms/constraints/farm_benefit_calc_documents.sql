@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_benefit_calc_documents ADD CONSTRAINT farm_bcd_farm_as_fk FOREIGN KEY (agristability_scenario_id) REFERENCES farms.farm_agristability_scenarios(agristability_scenario_id) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;

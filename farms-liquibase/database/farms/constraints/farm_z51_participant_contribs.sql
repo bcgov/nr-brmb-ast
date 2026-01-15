@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_z51_participant_contribs ADD CONSTRAINT farm_z51_farm_z02_fk FOREIGN KEY (participant_pin,program_year) REFERENCES farms.farm_z02_partpnt_farm_infos(participant_pin,program_year) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
