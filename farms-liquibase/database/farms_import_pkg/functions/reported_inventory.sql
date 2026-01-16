@@ -1,0 +1,188 @@
+create or replace function farms_import_pkg.reported_inventory(
+    in in_program_year_version_id farms.farm_program_year_versions.program_year_version_id%type,
+    in in_user varchar
+)
+returns varchar
+language plpgsql
+as $$
+declare
+    Unknown constant varchar := '-1';
+    inv_insert_cursor cursor for
+        select z21.inventory_code::varchar inventory_item_code,
+               z21.inventory_type_code::varchar inventory_class_code,
+               z21.crop_unit_type::varchar crop_unit_code,
+               z21.crop_qty_produced quantity_produced,
+               z21.crop_on_farm_acres on_farm_acres,
+               z21.crop_unseedable_acres unseedable_acres,
+               z21.quantity_end quantity_end,
+               null price_end,
+               null price_start,
+               null start_of_year_amount,
+               z21.end_of_year_amount end_of_year_amount,
+               null quantity_start,
+               z21.end_of_year_price end_year_producer_price,
+               'N' accept_producer_price_ind,
+               null aarm_reference_p1_price,
+               null aarm_reference_p2_price,
+               op.farming_operation_id,
+               (case
+                   when x.agristabilty_cmmdty_xref_id is not null then null
+                   else z21.inventory_code || ' ' || z21.inventory_type_code
+               end) import_comment,
+               coalesce(x.agristabilty_cmmdty_xref_id, x2.agristabilty_cmmdty_xref_id) agristabilty_cmmdty_xref_id
+        from farms.farm_z21_participant_suppls z21
+        left outer join farms.farm_agristabilty_cmmdty_xref x on z21.inventory_code::varchar = x.inventory_item_code
+                                                            and z21.inventory_type_code::varchar = x.inventory_class_code
+        left outer join farms.farm_agristabilty_cmmdty_xref x2 on x2.inventory_class_code = z21.inventory_type_code::varchar
+                                                            and x2.inventory_item_code = Unknown
+        join farms.farm_agristability_clients ac on z21.participant_pin = ac.participant_pin
+        join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
+                                   and z21.program_year = py.year
+        join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+        join farms.farm_farming_operations op on pyv.program_year_version_id = op.program_year_version_id
+                                        and op.operation_number = z21.operation_number
+        where pyv.program_year_version_id = in_program_year_version_id
+        union all
+        select zz.inventory_code::varchar inventory_item_code,
+               zz.inventory_type_code::varchar inventory_class_code,
+               zz.production_unit::varchar crop_unit_code,
+               zz.crop_qty_produced quantity_produced,
+               zz.crop_on_farm_acres on_farm_acres,
+               null unseedable_acres,
+               zz.quantity_end,
+               zz.end_year_price price_end,
+               zz.starting_price price_start,
+               zz.quantity_start start_of_year_amount,
+               zz.quantity_end end_of_year_amount,
+               zz.quantity_start,
+               zz.end_year_producer_price,
+               zz.accept_producer_price_ind,
+               zz.aarm_reference_p1_price,
+               zz.aarm_reference_p2_price,
+               op.farming_operation_id,
+               (case
+                   when x.agristabilty_cmmdty_xref_id is not null then null
+                   else zz.inventory_code || ' ' || zz.inventory_type_code
+               end) import_comment,
+               coalesce(x.agristabilty_cmmdty_xref_id, x2.agristabilty_cmmdty_xref_id) agristabilty_cmmdty_xref_id
+        from (
+            select z40.*
+            from farms.farm_z40_prtcpnt_ref_supl_dtls z40
+            left outer join farms.farm_aarm_margins aarm on aarm.participant_pin = z40.participant_pin
+                                                   and aarm.program_year = z40.program_year
+                                                   and aarm.operation_number = z40.operation_number
+                                                   and aarm.inventory_type_code = z40.inventory_type_code
+                                                   and aarm.inventory_code = z40.inventory_code
+                                                   and (aarm.production_unit = z40.production_unit
+                                                        or (aarm.production_unit is null and z40.production_unit is null))
+            where aarm.aarm_margin_id is null
+        ) zz
+        left outer join farms.farm_agristabilty_cmmdty_xref x on zz.inventory_code::varchar = x.inventory_item_code
+                                                            and zz.inventory_type_code::varchar = x.inventory_class_code
+        left outer join farms.farm_agristabilty_cmmdty_xref x2 on x2.inventory_class_code = zz.inventory_type_code::varchar
+                                                             and x2.inventory_item_code = Unknown
+        join farms.farm_agristability_clients ac on zz.participant_pin = ac.participant_pin
+        join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
+                                   and zz.program_year = py.year
+        join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
+        join farms.farm_farming_operations op on pyv.program_year_version_id = op.program_year_version_id
+                                        and op.operation_number = zz.operation_number
+        where pyv.program_year_version_id = in_program_year_version_id;
+    inv_insert_val record;
+
+    ri_id farms.farm_reported_inventories.reported_inventory_id%type;
+
+    v_inventory_item_code farms.farm_agristabilty_cmmdty_xref.inventory_item_code%type := null;
+    v_inventory_class_code farms.farm_agristabilty_cmmdty_xref.inventory_class_code%type := null;
+    v_crop_unit_code farms.farm_reported_inventories.crop_unit_code%type := null;
+    v_farming_operation_id farms.farm_reported_inventories.farming_operation_id%type := null;
+begin
+
+    call farms_import_pkg.setup_unknown_codes();
+
+    for inv_insert_val in inv_insert_cursor
+    loop
+        v_inventory_item_code := inv_insert_val.inventory_item_code;
+        v_inventory_class_code := inv_insert_val.inventory_class_code;
+        v_crop_unit_code := inv_insert_val.crop_unit_code;
+        v_farming_operation_id := inv_insert_val.farming_operation_id;
+
+        if v_inventory_class_code is null or inv_insert_val.agristabilty_cmmdty_xref_id is null then
+            return farms_import_pkg.scrub(farms_error_pkg.codify_reported_inventory(
+                'INV_CLS_CD',
+                v_inventory_item_code,
+                v_inventory_class_code,
+                v_crop_unit_code,
+                v_farming_operation_id
+            ));
+        end if;
+
+        select nextval('farms.farm_ri_seq')
+        into ri_id;
+
+        insert into farms.farm_reported_inventories (
+            reported_inventory_id,
+            price_start,
+            price_end,
+            end_year_producer_price,
+            quantity_end,
+            start_of_year_amount,
+            end_of_year_amount,
+            quantity_produced,
+            on_farm_acres,
+            unseedable_acres,
+            quantity_start,
+            accept_producer_price_ind,
+            aarm_reference_p1_price,
+            aarm_reference_p2_price,
+            import_comment,
+            agristabilty_cmmdty_xref_id,
+            crop_unit_code,
+            farming_operation_id,
+            agristability_scenario_id,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            ri_id,
+            inv_insert_val.price_start,
+            inv_insert_val.price_end,
+            inv_insert_val.end_year_producer_price,
+            inv_insert_val.quantity_end,
+            inv_insert_val.start_of_year_amount,
+            inv_insert_val.end_of_year_amount,
+            inv_insert_val.quantity_produced,
+            inv_insert_val.on_farm_acres,
+            inv_insert_val.unseedable_acres,
+            inv_insert_val.quantity_start,
+            inv_insert_val.accept_producer_price_ind,
+            inv_insert_val.aarm_reference_p1_price,
+            inv_insert_val.aarm_reference_p2_price,
+            inv_insert_val.import_comment,
+            inv_insert_val.agristabilty_cmmdty_xref_id,
+            inv_insert_val.crop_unit_code,
+            inv_insert_val.farming_operation_id,
+            null,
+            1,
+            in_user,
+            current_timestamp,
+            in_user,
+            current_timestamp
+        );
+
+    end loop;
+
+    return null;
+exception
+    when others then
+        return farms_import_pkg.scrub(farms_error_pkg.codify_reported_inventory(
+            sqlerrm,
+            v_inventory_item_code,
+            v_inventory_class_code,
+            v_crop_unit_code,
+            v_farming_operation_id
+        ));
+end;
+$$;
