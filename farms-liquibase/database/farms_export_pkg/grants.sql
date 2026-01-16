@@ -1,0 +1,41 @@
+-- schema
+GRANT ALL ON SCHEMA "farms_export_pkg" TO "app_farms";
+GRANT ALL ON SCHEMA "farms_export_pkg" TO postgres;
+GRANT USAGE ON SCHEMA "farms_export_pkg" TO "app_farms_rest_proxy";
+
+-- functions
+GRANT EXECUTE ON FUNCTION farms_export_pkg.detailed_scenario_extract TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f01_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f01_statement_a TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f01 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f02_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f02_statement_a TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f02 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f03_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f03_statement_a TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f03 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f04_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f04_statement_a TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f04 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f05_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f05_statement_a TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f05 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f07_statement_a TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f08_statement_a TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f09_statement_a TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f20_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f20 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f21_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f21 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f25_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f25 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f26_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f26 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f30_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f30 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f31_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f31 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f40_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f40 TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f60_ade TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_export_pkg.f60 TO "app_farms_rest_proxy";
