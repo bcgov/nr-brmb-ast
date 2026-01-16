@@ -1,0 +1,25 @@
+-- schema
+GRANT ALL ON SCHEMA "farms_reasonability_read_pkg" TO "app_farms";
+GRANT ALL ON SCHEMA "farms_reasonability_read_pkg" TO postgres;
+GRANT USAGE ON SCHEMA "farms_reasonability_read_pkg" TO "app_farms_rest_proxy";
+
+-- functions
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsn_forage_consumers TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_fruit_veg_inventory TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_fruit_veg_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_g_f_fs_incm_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_g_f_fs_invn_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_hogs_invn_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_hogs_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_nrsry_incm_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_nrsry_invn_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_nrsry_results TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_pltry_brl_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_farm_rsnblty_rev_pltry_egg_rslts TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_production_fruit_veg_inventory TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_reasonability_benefit_risk_pu TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_reasonability_forage_production_test TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_reasonability_fruit_veg_production_test TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_reasonability_grain_production_test TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_reasonability_test_messages TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_reasonability_read_pkg.read_reasonability_tests TO "app_farms_rest_proxy";
