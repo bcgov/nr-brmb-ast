@@ -1,0 +1,16 @@
+-- schema
+GRANT ALL ON SCHEMA "farms_write_pkg" TO "app_farms";
+GRANT ALL ON SCHEMA "farms_write_pkg" TO postgres;
+GRANT USAGE ON SCHEMA "farms_write_pkg" TO "app_farms_rest_proxy";
+
+-- functions
+GRANT EXECUTE ON FUNCTION farms_write_pkg.write_adjustment_verification_notes TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_write_pkg.write_final_verification_notes TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_write_pkg.write_interim_verification_notes TO "app_farms_rest_proxy";
+
+-- procedures
+GRANT EXECUTE ON PROCEDURE farms_write_pkg.write_calc_version TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_write_pkg.write_claim TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_write_pkg.write_margin_total TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_write_pkg.write_margin TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_write_pkg.write_reference_scenario TO "app_farms_rest_proxy";
