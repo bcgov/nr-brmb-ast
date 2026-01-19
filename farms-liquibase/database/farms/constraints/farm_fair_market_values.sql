@@ -3,3 +3,5 @@ ALTER TABLE farms.farm_fair_market_values ADD CONSTRAINT farm_fmv_farm_cuc_fk FO
 ALTER TABLE farms.farm_fair_market_values ADD CONSTRAINT farm_fmv_farm_ic_fk FOREIGN KEY (inventory_item_code) REFERENCES farms.farm_inventory_item_codes(inventory_item_code) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE farms.farm_fair_market_values ADD CONSTRAINT farm_fmv_farm_mc_fk FOREIGN KEY (municipality_code) REFERENCES farms.farm_municipality_codes(municipality_code) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE farms.farm_fair_market_values ADD CONSTRAINT farm_fmv_farm_url_fk FOREIGN KEY (url_id) REFERENCES farms.farm_urls(url_id) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;

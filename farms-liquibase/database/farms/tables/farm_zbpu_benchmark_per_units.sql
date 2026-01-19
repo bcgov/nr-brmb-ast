@@ -16,6 +16,7 @@ CREATE TABLE farms.farm_zbpu_benchmark_per_units (
 	year_minus_3_expense decimal(13,2),
 	year_minus_2_expense decimal(13,2),
 	year_minus_1_expense decimal(13,2),
+	file_location varchar(256),
 	revision_count integer NOT NULL DEFAULT 1,
 	who_created varchar(30) NOT NULL,
 	when_created timestamp(0) NOT NULL DEFAULT statement_timestamp(),
@@ -44,6 +45,7 @@ COMMENT ON COLUMN farms.farm_zbpu_benchmark_per_units.year_minus_5_expense IS E'
 COMMENT ON COLUMN farms.farm_zbpu_benchmark_per_units.year_minus_5_margin IS E'YEAR MINUS 5 MARGIN is the average margin for the PROGRAM YEAR minus 5 years.';
 COMMENT ON COLUMN farms.farm_zbpu_benchmark_per_units.year_minus_6_expense IS E'YEAR MINUS 6 EXPENSE is the average expense for the PROGRAM YEAR minus six years. Used only for 2013 scenarios and forward. Required for 2013 forward.';
 COMMENT ON COLUMN farms.farm_zbpu_benchmark_per_units.year_minus_6_margin IS E'YEAR MINUS 6 MARGIN is the average margin for the PROGRAM YEAR minus six years.';
+COMMENT ON COLUMN farms.farm_zbpu_benchmark_per_units.file_location IS E'FILE LOCATION is the URL of the file in SharePoint Online.';
 ALTER TABLE farms.farm_zbpu_benchmark_per_units ADD CONSTRAINT farm_zbpu_pk PRIMARY KEY (line_number);
 ALTER TABLE farms.farm_zbpu_benchmark_per_units ALTER COLUMN line_number SET NOT NULL;
 ALTER TABLE farms.farm_zbpu_benchmark_per_units ALTER COLUMN program_year SET NOT NULL;

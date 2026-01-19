@@ -116,6 +116,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_tip_report_documents TO "app_
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_tip_report_expenses TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_tip_report_results TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_triage_queue_codes TO "app_farms_rest_proxy";
+GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_urls TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_users TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_whole_farm_participants TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_year_configuration_params TO "app_farms_rest_proxy";

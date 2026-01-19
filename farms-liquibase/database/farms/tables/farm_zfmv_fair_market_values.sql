@@ -7,6 +7,7 @@ CREATE TABLE farms.farm_zfmv_fair_market_values (
 	municipality_code varchar(10) NOT NULL,
 	crop_unit_code varchar(10) NOT NULL,
 	inventory_item_code varchar(240) NOT NULL,
+	file_location varchar(256),
 	revision_count integer NOT NULL DEFAULT 1,
 	who_created varchar(30) NOT NULL,
 	when_created timestamp(0) NOT NULL DEFAULT statement_timestamp(),
@@ -26,6 +27,7 @@ COMMENT ON COLUMN farms.farm_zfmv_fair_market_values.when_created IS E'WHEN CREA
 COMMENT ON COLUMN farms.farm_zfmv_fair_market_values.when_updated IS E'WHEN UPDATED indicates when the physical record was updated in the database.';
 COMMENT ON COLUMN farms.farm_zfmv_fair_market_values.who_created IS E'WHO CREATED indicates the user that created the physical record in the database.';
 COMMENT ON COLUMN farms.farm_zfmv_fair_market_values.who_updated IS E'WHO UPDATED indicates the user that updated the physical record in the database.';
+COMMENT ON COLUMN farms.farm_zfmv_fair_market_values.file_location IS E'FILE LOCATION is the URL of the file in SharePoint Online.';
 ALTER TABLE farms.farm_zfmv_fair_market_values ADD CONSTRAINT farm_zfmv_pk PRIMARY KEY (line_number);
 ALTER TABLE farms.farm_zfmv_fair_market_values ALTER COLUMN line_number SET NOT NULL;
 ALTER TABLE farms.farm_zfmv_fair_market_values ALTER COLUMN program_year SET NOT NULL;
