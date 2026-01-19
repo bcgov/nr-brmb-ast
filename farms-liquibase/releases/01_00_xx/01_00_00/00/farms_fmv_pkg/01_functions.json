@@ -7,7 +7,7 @@
                 "changes": [
                     {
                         "sqlFile": {
-                            "relativeToChangeLog": "true",
+                            "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
                             "path": "../../../../../database/farms_fmv_pkg/functions/delete_staging_errors.sql"
                         }
