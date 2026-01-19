@@ -1,0 +1,26 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_negative_margin_pkg/procedures",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_negative_margin_pkg/procedures/calculate_negative_margins.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_negative_margin_pkg/procedures/update_negative_margin.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
