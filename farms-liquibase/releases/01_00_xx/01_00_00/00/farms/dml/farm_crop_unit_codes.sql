@@ -11,3 +11,6 @@ set description = 'Square Metres',
     who_updated = 'FARM_02_43_00',
     when_updated = current_timestamp
 where crop_unit_code = '15';
+
+delete from farms.farm_crop_unit_codes
+where crop_unit_code in ('67', '70');
