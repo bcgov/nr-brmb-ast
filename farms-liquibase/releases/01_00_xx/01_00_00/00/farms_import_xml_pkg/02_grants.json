@@ -1,0 +1,18 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_import_xml_pkg/grants",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms_import_xml_pkg/grants.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
