@@ -1,0 +1,18 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_chefs_pkg/schema",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms_chefs_pkg/schema.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
