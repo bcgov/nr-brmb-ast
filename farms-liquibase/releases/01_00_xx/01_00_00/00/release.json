@@ -1,0 +1,166 @@
+{
+    "databaseChangeLog": [
+        {
+            "includeAll": {
+                "path": "farms",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_adjustment_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_bpu_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_calculator_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_chefs_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_codes_read_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_codes_write_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_enrolment_read_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_enrolment_write_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_error_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_export_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_fifo_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_fmv_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_import_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_import_xml_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_ivpr_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_negative_margin_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_read_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_reasonability_read_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_reasonability_write_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_report_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_search_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_staging_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_types_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_version_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_webapp_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
+                "path": "farms_write_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        }
+    ]
+}
