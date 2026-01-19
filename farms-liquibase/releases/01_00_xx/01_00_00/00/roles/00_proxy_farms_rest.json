@@ -1,0 +1,18 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/roles",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/roles/proxy_farms_rest.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

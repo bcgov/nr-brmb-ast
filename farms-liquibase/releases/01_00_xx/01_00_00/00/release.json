@@ -161,6 +161,12 @@
                 "path": "farms_write_pkg",
                 "relativeToChangeLogFile": "true"
             }
+        },
+        {
+            "includeAll": {
+                "path": "roles",
+                "relativeToChangeLogFile": "true"
+            }
         }
     ]
 }
