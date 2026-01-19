@@ -1,0 +1,19 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_fmv_pkg/functions",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLog": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_fmv_pkg/functions/delete_staging_errors.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
