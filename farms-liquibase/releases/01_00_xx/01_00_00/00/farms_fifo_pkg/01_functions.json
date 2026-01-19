@@ -1,0 +1,26 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_fifo_pkg/functions",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_fifo_pkg/functions/read_fifo_calculation_items.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_fifo_pkg/functions/read_fifo_status_by_year.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
