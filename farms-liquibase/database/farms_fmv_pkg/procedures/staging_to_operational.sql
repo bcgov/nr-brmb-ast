@@ -169,5 +169,3 @@ begin
     );
 end;
 $$;
-
-CREATE INDEX farm_fmv_farm_url_fk_i ON farms.farm_fair_market_values (url_id);

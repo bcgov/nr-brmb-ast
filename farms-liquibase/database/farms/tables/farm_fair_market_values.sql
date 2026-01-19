@@ -36,6 +36,7 @@ CREATE INDEX farm_fmv_farm_ic_fk_i ON farms.farm_fair_market_values (inventory_i
 CREATE INDEX farm_fmv_farm_mc_fk_i ON farms.farm_fair_market_values (municipality_code);
 CREATE INDEX farm_fmv_import_i ON farms.farm_fair_market_values (program_year, period, inventory_item_code, municipality_code, crop_unit_code);
 CREATE INDEX farm_fmv_year_i ON farms.farm_fair_market_values (program_year);
+CREATE INDEX farm_fmv_farm_url_fk_i ON farms.farm_fair_market_values (url_id);
 ALTER TABLE farms.farm_fair_market_values ADD CONSTRAINT farm_fmv_pk PRIMARY KEY (fair_market_value_id);
 ALTER TABLE farms.farm_fair_market_values ALTER COLUMN fair_market_value_id SET NOT NULL;
 ALTER TABLE farms.farm_fair_market_values ALTER COLUMN program_year SET NOT NULL;

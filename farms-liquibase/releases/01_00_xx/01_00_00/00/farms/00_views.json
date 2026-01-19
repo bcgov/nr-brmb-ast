@@ -8,6 +8,12 @@
                     {
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms/views/farm_scenarios_vw.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
                             "path": "../../../../../database/farms/views/farm_agri_scenarios_vw.sql"
                         }
                     },
@@ -21,12 +27,6 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "path": "../../../../../database/farms/views/farm_operations_vw.sql"
-                        }
-                    },
-                    {
-                        "sqlFile": {
-                            "relativeToChangeLogFile": "true",
-                            "path": "../../../../../database/farms/views/farm_scenarios_vw.sql"
                         }
                     }
                 ]

@@ -42,4 +42,5 @@ insert into farms.farm_year_configuration_params (
     current_timestamp,
     'FARM_02_43_00-00',
     current_timestamp
-);
+)
+ON CONFLICT (program_year, parameter_name) DO NOTHING;
