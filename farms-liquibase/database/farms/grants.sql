@@ -140,6 +140,27 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zfmv_fair_market_values TO "a
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zivpr_iv_premium_rates TO "app_farms_rest_proxy";
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zprogram_enrolments TO "app_farms_rest_proxy";
 
+-- tables (truncate)
+GRANT TRUNCATE ON TABLE farms.farm_zbpu_benchmark_per_units TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_zfmv_fair_market_values TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_zivpr_iv_premium_rates TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_import_logs TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z99_extract_file_ctls TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z51_participant_contribs TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z50_participnt_bnft_calcs TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z42_participant_ref_years TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z40_prtcpnt_ref_supl_dtls TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z23_livestock_prod_cpcts TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z22_production_insurances TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z21_participant_suppls TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z28_prod_insurance_refs TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z29_inventory_code_refs TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z05_partner_infos TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z04_income_exps_dtls TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z03_statement_infos TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z02_partpnt_farm_infos TO "app_farms_rest_proxy";
+GRANT TRUNCATE ON TABLE farms.farm_z01_participant_infos TO "app_farms_rest_proxy";
+
 -- views
 GRANT SELECT ON farms.farm_agri_scenarios_vw TO "app_farms_rest_proxy";
 GRANT SELECT ON farms.farm_chef_statement_a_years_vw TO "app_farms_rest_proxy";
