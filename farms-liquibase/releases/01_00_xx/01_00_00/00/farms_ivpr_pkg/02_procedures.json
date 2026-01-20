@@ -1,0 +1,61 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_ivpr_pkg/procedures",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_ivpr_pkg/procedures/clear_staging.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_ivpr_pkg/procedures/delete_staging_errors.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_ivpr_pkg/procedures/insert_error.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_ivpr_pkg/procedures/insert_staging_row.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_ivpr_pkg/procedures/staging_to_operational.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_ivpr_pkg/procedures/validate_inventory.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_ivpr_pkg/procedures/validate_staging.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

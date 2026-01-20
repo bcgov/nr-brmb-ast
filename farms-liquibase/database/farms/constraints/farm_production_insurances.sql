@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_production_insurances ADD CONSTRAINT farm_pi_farm_fo_fk FOREIGN KEY (farming_operation_id) REFERENCES farms.farm_farming_operations(farming_operation_id) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;

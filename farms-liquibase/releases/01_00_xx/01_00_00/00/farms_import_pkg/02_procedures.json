@@ -1,0 +1,110 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_import_pkg/procedures",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/append_imp1.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/benefit_update_transfer.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/clear_log.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/close_global_log.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/contact_transfer.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/create_config_data.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/inventory_details.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/line_items.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/queue_fifo_calculation.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/setup_unknown_codes.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/update_imp.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/update_status_non_autonomous.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/update_status.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_import_pkg/procedures/year_configuration_params.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

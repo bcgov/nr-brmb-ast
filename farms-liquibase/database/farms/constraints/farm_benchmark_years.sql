@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_benchmark_years ADD CONSTRAINT farm_bpuy_farm_bpu_fk FOREIGN KEY (benchmark_per_unit_id) REFERENCES farms.farm_benchmark_per_units(benchmark_per_unit_id) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;

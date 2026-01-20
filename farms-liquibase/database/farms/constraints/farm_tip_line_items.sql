@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_tip_line_items ADD CONSTRAINT farm_tli_farm_tft1l_fk FOREIGN KEY (tip_farm_type_1_lookup_id) REFERENCES farms.farm_tip_farm_type_1_lookups(tip_farm_type_1_lookup_id) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;

@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_tip_benchmark_years ADD CONSTRAINT farm_tby_farm_tby_fk FOREIGN KEY (parent_tip_benchmark_year_id) REFERENCES farms.farm_tip_benchmark_years(tip_benchmark_year_id) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;

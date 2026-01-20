@@ -1,0 +1,22 @@
+-- schema
+GRANT ALL ON SCHEMA "farms_fmv_pkg" TO "app_farms";
+GRANT ALL ON SCHEMA "farms_fmv_pkg" TO postgres;
+GRANT USAGE ON SCHEMA "farms_fmv_pkg" TO "app_farms_rest_proxy";
+
+-- procedures
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.clear_staging TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.delete_staging_errors TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.insert_error TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.insert_staging_row TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.staging_to_operational TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_defaults TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_inventory TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_municipality TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_one_unit_per_inventry TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_period TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_program_year TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_staging TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_uniqueness TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_unit TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_variance TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_fmv_pkg.validate_xref_exists TO "app_farms_rest_proxy";

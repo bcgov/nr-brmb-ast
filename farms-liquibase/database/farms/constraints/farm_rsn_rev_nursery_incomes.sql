@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_rsn_rev_nursery_incomes ADD CONSTRAINT farm_rrnir_farm_rrnr_fk FOREIGN KEY (rsn_rev_nursery_result_id) REFERENCES farms.farm_rsn_rev_nursery_results(rsn_rev_nursery_result_id) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;

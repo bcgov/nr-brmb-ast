@@ -1,0 +1,36 @@
+-- schema
+GRANT ALL ON SCHEMA "farms_read_pkg" TO "app_farms";
+GRANT ALL ON SCHEMA "farms_read_pkg" TO postgres;
+GRANT USAGE ON SCHEMA "farms_read_pkg" TO "app_farms_rest_proxy";
+
+-- functions
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_bpu_all TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_bpu_xref TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_client TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_cob_gen_date TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_combined_farm_clients TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_crop_unit_conversions TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_enrolment TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_enw_enrolment TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_farm_type TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_ie TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_inv TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_fmv_prev_year TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_fmv TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_part TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_pi TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_op_single_fmv TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_puc TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_py_id_by_client_id TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_py_id TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_py_meta TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_pyv_op TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_pyv_sc TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_pyv_wf TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_pyv TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_sc_clm TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_sc_logs TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_sc_mgn TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_sc_state_audits TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_sc_tot_mgn TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_read_pkg.read_verification_notes TO "app_farms_rest_proxy";

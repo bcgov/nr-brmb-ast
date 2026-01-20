@@ -1,0 +1,96 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_webapp_pkg/procedures",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/activate_subscription.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/cancel_import.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/confirm_import.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/delete_cob.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/import_in_progress_check.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/insert_cob.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/insert_import_version.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/insert_representative.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/insert_subscription.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/retry_staging.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/update_cob.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/update_subscription_status.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

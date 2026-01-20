@@ -1,0 +1,1 @@
+ALTER TABLE farms.farm_fruit_veg_type_details ADD CONSTRAINT farm_fvtd_farm_fvtc_fk FOREIGN KEY (fruit_veg_type_code) REFERENCES farms.farm_fruit_veg_type_codes(fruit_veg_type_code) ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;

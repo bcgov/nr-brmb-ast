@@ -1,0 +1,36 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms/views",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms/views/farm_scenarios_vw.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms/views/farm_agri_scenarios_vw.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms/views/farm_chef_statement_a_years_vw.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms/views/farm_operations_vw.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

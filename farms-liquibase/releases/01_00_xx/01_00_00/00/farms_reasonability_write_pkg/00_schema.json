@@ -1,0 +1,18 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_reasonability_write_pkg/schema",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms_reasonability_write_pkg/schema.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

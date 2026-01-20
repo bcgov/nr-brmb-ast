@@ -1,0 +1,54 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms_report_pkg/functions",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_report_pkg/functions/analytical_surveillance_strategy.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_report_pkg/functions/get_farm_type_detailed_codes.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_report_pkg/functions/get_latest_status.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_report_pkg/functions/get_sector_and_detail.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_report_pkg/functions/get_sector_detail_code.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_report_pkg/functions/national_surveillance_strategy.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
