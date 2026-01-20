@@ -247,5 +247,6 @@ GRANT USAGE ON SEQUENCE farms.farm_trd_seq TO "app_farms_rest_proxy";
 GRANT USAGE ON SEQUENCE farms.farm_tre_seq TO "app_farms_rest_proxy";
 GRANT USAGE ON SEQUENCE farms.farm_trr_seq TO "app_farms_rest_proxy";
 GRANT USAGE ON SEQUENCE farms.farm_u_seq TO "app_farms_rest_proxy";
+GRANT USAGE ON SEQUENCE farms.farm_url_seq TO "app_farms_rest_proxy";
 GRANT USAGE ON SEQUENCE farms.farm_wfp_seq TO "app_farms_rest_proxy";
 GRANT USAGE ON SEQUENCE farms.farm_ycp_seq TO "app_farms_rest_proxy";
