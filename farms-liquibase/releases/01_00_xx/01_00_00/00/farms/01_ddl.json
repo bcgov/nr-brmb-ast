@@ -8,12 +8,6 @@
                     {
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
-                            "path": "ddl/tables/farm_urls.sql"
-                        }
-                    },
-                    {
-                        "sqlFile": {
-                            "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farm_benchmark_per_units.sql"
                         }
                     },
