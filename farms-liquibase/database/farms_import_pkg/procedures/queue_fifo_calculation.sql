@@ -1,5 +1,5 @@
 create or replace procedure farms_import_pkg.queue_fifo_calculation(
-   in in_cra_version_id numeric,
+   in in_cra_version_id bigint,
    in in_user varchar
 )
 language plpgsql
