@@ -91,4 +91,4 @@ ALTER TABLE farms.farm_zfmv_fair_market_values ALTER COLUMN who_created SET NOT 
 ALTER TABLE farms.farm_zfmv_fair_market_values ALTER COLUMN when_created SET NOT NULL;
 
 -- grant permissions
-GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zfmv_fair_market_values TO "app_farms_rest_proxy";
+GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE ON farms.farm_zfmv_fair_market_values TO "app_farms_rest_proxy";

@@ -76,4 +76,4 @@ ALTER TABLE farms.farm_zivpr_iv_premium_rates ALTER COLUMN who_created SET NOT N
 ALTER TABLE farms.farm_zivpr_iv_premium_rates ALTER COLUMN when_created SET NOT NULL;
 
 -- grant permissions
-GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zivpr_iv_premium_rates TO "app_farms_rest_proxy";
+GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE ON farms.farm_zivpr_iv_premium_rates TO "app_farms_rest_proxy";
