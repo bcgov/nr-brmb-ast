@@ -163,7 +163,7 @@ begin
         '</NUM_UPDATED></IMPORT_LOG>';
 
     call farms_version_pkg.import_complete(
-        in_import_version_id,
+        in_import_version_id::bigint,
         v_xml,
         in_user
     );
