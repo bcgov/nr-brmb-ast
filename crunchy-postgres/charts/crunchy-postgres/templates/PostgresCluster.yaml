@@ -88,6 +88,9 @@ spec:
       {{ if .Values.pgBackRest.image }}
       image: {{ .Values.pgBackRest.image }}
       {{ end }}
+      configuration:
+        - secret:
+            name: {{ .Values.pgBackRest.repos.configuration.secretName }}
       global:
         # hardcoding repo1 until we solution allowing multiple repos
         repo1-retention-full: {{ .Values.pgBackRest.retentionFull | quote }}
