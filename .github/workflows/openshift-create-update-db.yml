@@ -52,6 +52,8 @@ jobs:
           DB_REPLICAS: ${{ vars.DB_INSTANCE_HA_REPLICAS }}
           DB_BACKUP_VOLUME_SIZE: ${{ vars.DB_BACKUP_VOLUME_SIZE }}
           BOUNCER_REPLICAS: ${{ vars.DB_LOADBALANCER_HA_REPLICAS}}
+          S3_ENVIRONMENT: ${{ inputs.ENVIRONMENT_NAME == 'tools' && 'dev' || (inputs.ENVIRONMENT_NAME == 'dlvr' && 'dev' || (inputs.ENVIRONMENT_NAME == 'test' && 'tst' || (inputs.ENVIRONMENT_NAME == 'prod' && 'prd' || inputs.ENVIRONMENT_NAME))) }}
+          S3_BUCKET: ${{ vars.S3_BUCKET }}
       
       - name: install helm
         run: |
