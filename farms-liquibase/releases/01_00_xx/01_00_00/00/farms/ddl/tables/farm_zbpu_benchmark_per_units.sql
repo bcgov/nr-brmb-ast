@@ -129,4 +129,4 @@ ALTER TABLE farms.farm_zbpu_benchmark_per_units ALTER COLUMN who_created SET NOT
 ALTER TABLE farms.farm_zbpu_benchmark_per_units ALTER COLUMN when_created SET NOT NULL;
 
 -- grant permissions
-GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zbpu_benchmark_per_units TO "app_farms_rest_proxy";
+GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE ON farms.farm_zbpu_benchmark_per_units TO "app_farms_rest_proxy";
