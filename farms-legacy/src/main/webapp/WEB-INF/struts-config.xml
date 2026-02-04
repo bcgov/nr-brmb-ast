@@ -1,0 +1,2790 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "dtd/struts-config_1_2.dtd">
+<struts-config>
+  <!-- ========== Form Bean Definitions =================================== -->
+  <form-beans>
+    <!--  converted forms  -->
+    <form-bean name="defaultForm" type="org.apache.struts.action.DynaActionForm" />
+    <form-bean name="importForm" type="ca.bc.gov.srm.farm.ui.struts.dataimport.ImportForm" />
+    <form-bean name="importSearchForm" type="ca.bc.gov.srm.farm.ui.struts.dataimport.ImportSearchForm" />
+    <form-bean name="resultsImportForm" type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsImportForm" />
+    <form-bean name="resultsParticipantForm" type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsParticipantForm" />
+    <form-bean name="resultsPYVForm" type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsPYVForm" />
+    <form-bean name="accountForm" type="ca.bc.gov.srm.farm.ui.struts.account.AccountForm" />
+    <form-bean name="subscriptionForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.subscription.SubscriptionForm" />
+    <form-bean name="reportForm" type="ca.bc.gov.srm.farm.ui.struts.report.ReportForm" />
+    <form-bean name="exportForm" type="ca.bc.gov.srm.farm.ui.struts.export.ExportForm" />
+    <form-bean name="agentForm" type="ca.bc.gov.srm.farm.ui.struts.agent.AgentForm" />
+    <form-bean name="enrolmentsForm" type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.EnrolmentsForm" />
+    <form-bean name="pinsImportForm" type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.PinsImportForm" />
+    <form-bean name="calculatorForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.CalculatorForm" />
+    <form-bean name="calculatorSearchForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.search.CalculatorSearchForm" />
+    <form-bean name="calculatorStatusForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.status.CalculatorStatusForm" />
+    <form-bean name="diffReportForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.diff.DiffReportForm" />
+    <form-bean name="participantForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.participant.ParticipantForm" />
+    <form-bean name="farmDetailForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.farmdetail.FarmDetailForm" />
+    <form-bean name="farmingOperationForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.farmingoperation.FarmingOperationForm" />
+    <form-bean name="operationAlignmentForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.operationalignment.OperationAlignmentForm" />
+    <form-bean name="calculatorInboxForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.inbox.CalculatorInboxForm" />
+    <form-bean name="scenariosForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.scenarios.ScenariosForm" />
+    <form-bean name="productiveUnitsForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.productiveunits.ProductiveUnitsForm" />
+    <form-bean name="incomeExpensesForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.incomeexpenses.IncomeExpensesForm" />
+    <form-bean name="inventoryForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.inventory.InventoryForm" />
+    <form-bean name="accrualsForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.accruals.AccrualsForm" />
+    <form-bean name="reasonabilityTestsForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.reasonability.ReasonabilityTestsForm" />
+    <form-bean name="benefitForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.benefit.BenefitForm" />
+    <form-bean name="benefitAccrTypeInfoForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.benefit.BenefitAccrTypeInfoForm" />
+    <form-bean name="negativeMarginsForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.negativemargin.NegativeMarginsForm" />
+    <form-bean name="structuralChangeForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.sc.StructuralChangeForm" />
+    <form-bean name="verificationNotesForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.notes.VerificationNotesForm" />
+    <form-bean name="combinedForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.combined.CombinedFarmForm" />
+    <form-bean name="preverificationForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.preverification.PreVerificationForm" />
+    <form-bean name="genericCodesForm" type="ca.bc.gov.srm.farm.ui.struts.codes.generic.CodesForm" />
+    <form-bean name="municipalityCodesForm" type="ca.bc.gov.srm.farm.ui.struts.codes.municipalities.MunicipalityCodesForm" />
+    <form-bean name="lineItemCodesForm" type="ca.bc.gov.srm.farm.ui.struts.codes.lineitems.LineItemsForm" />
+    <form-bean name="lineItemCopyYearForm" type="ca.bc.gov.srm.farm.ui.struts.codes.lineitems.LineItemsForm" />
+    <form-bean name="fmvsForm" type="ca.bc.gov.srm.farm.ui.struts.codes.fmv.FMVsForm" />
+    <form-bean name="bpusForm" type="ca.bc.gov.srm.farm.ui.struts.codes.bpu.BPUsForm" />
+    <form-bean name="inventoryItemCodesForm" type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.itemcodes.InventoryItemCodesForm" />
+    <form-bean name="marketRatePremiumsForm" type="ca.bc.gov.srm.farm.ui.struts.codes.mrp.MarketRatePremiumsForm" />
+    <form-bean name="inventoryXrefsForm" type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefsForm" />
+    <form-bean name="structureGroupCodesForm" type="ca.bc.gov.srm.farm.ui.struts.codes.structuregroup.StructureGroupCodesForm" />
+    <form-bean name="cropUnitConversionsForm" type="ca.bc.gov.srm.farm.ui.struts.codes.crop.unit.conversion.CropUnitConversionsForm" />
+    <form-bean name="fruitVegForm" type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.FruitVegCodeForm" />
+    <form-bean name="expectedProductionForm" type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.expectedproductions.ExpectedProductionsForm" />
+    <form-bean name="configurationParameterForm" type="ca.bc.gov.srm.farm.ui.struts.codes.parameters.ConfigurationParametersForm" />
+    <form-bean name="yearConfigurationParameterForm" type="ca.bc.gov.srm.farm.ui.struts.codes.year.parameters.YearConfigurationParametersForm" />
+    <form-bean name="tipBenchmarksForm" type="ca.bc.gov.srm.farm.ui.struts.codes.tips.benchmarks.TipBenchmarksForm" />
+    <form-bean name="tipsFarmType3Form" type="ca.bc.gov.srm.farm.ui.struts.codes.tips.TipsFarmType3Form" />
+    <form-bean name="tipsFarmSubtypeForm" type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmSubtypeForm" />
+    <form-bean name="tipLineItemForm" type="ca.bc.gov.srm.farm.ui.struts.codes.tips.lineitems.TipLineItemForm" />
+    <form-bean name="tipReportForm" type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportForm" />
+    <form-bean name="tipDefaultIncomeRangeForm" type="ca.bc.gov.srm.farm.ui.struts.codes.tips.TipFarmTypeDefaultIncomeRangeForm" />
+    <form-bean name="tipBencmarkReportsForm" type="ca.bc.gov.srm.farm.ui.struts.codes.tips.benchmarkreports.TipBencmarkReportsForm" />
+    <form-bean name="documentTemplateForm" type="ca.bc.gov.srm.farm.ui.struts.codes.document.templates.DocumentTemplateForm" />
+    <form-bean name="enwEnrolmentForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.enw.enrolment.EnwEnrolmentForm" />
+    <form-bean name="newParticipantForm" type="ca.bc.gov.srm.farm.ui.struts.newparticipant.NewParticipantForm" />
+    <form-bean name="partnersForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.partners.PartnersForm" />
+    <form-bean name="partnersJavaScriptListForm" type="ca.bc.gov.srm.farm.ui.struts.calculator.partners.PartnersJavaScriptListForm" />
+    <form-bean name="sectorCodesForm" type="ca.bc.gov.srm.farm.ui.struts.codes.sectors.SectorCodesForm" />
+    <form-bean name="sectorDetailCodesForm" type="ca.bc.gov.srm.farm.ui.struts.codes.sector.details.SectorDetailCodesForm" />
+    <form-bean name="chefsSubmissionSearchForm" type="ca.bc.gov.srm.farm.ui.struts.chefs.ChefsSubmissionSearchForm" />
+    <form-bean name="chefsSubmissionResultForm" type="ca.bc.gov.srm.farm.ui.struts.chefs.ChefsSubmissionResultForm" />
+    <form-bean name="fifoJobsForm" type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoJobsForm" />
+    <form-bean name="fifoStatusForm" type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoStatusForm" />
+    <form-bean name="fifoResultForm" type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoResultForm" />
+    <form-bean name="userForm" type="ca.bc.gov.srm.farm.ui.struts.codes.users.UserForm" />
+
+  </form-beans>
+  
+  <global-exceptions>
+      <exception key="error.security.not.used"
+                 type="java.lang.SecurityException"
+                 path="/WEB-INF/jsp/common/securityException.jsp" />
+      <exception key="error.general.not.used"
+                 type="java.lang.Exception"
+                 path="/WEB-INF/jsp/common/exception.jsp" />
+  </global-exceptions>
+  
+  <global-forwards>
+    <forward name="home" path="page.farm100" />
+  </global-forwards>
+
+  <!-- ========== Action Mapping Definitions ============================== -->
+  <action-mappings type="ca.bc.gov.srm.farm.ui.struts.SecureActionMapping">
+    <!-- page transition actions -->
+    
+    <action path="/welcome" 
+            type="ca.bc.gov.srm.farm.ui.struts.welcome.WelcomeAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="welcome"/> 
+      <forward name="success" path="page.farm100" />
+    </action>
+
+<!--
+  Welcome screen that has links to bceidWelcome and agent screen
+-->
+    <action path="/welcome2" 
+            type="ca.bc.gov.srm.farm.ui.struts.welcome.WelcomeAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="welcome"/> 
+      <forward name="success" path="page.farm102" />
+    </action>
+    
+    <action path="/bceidWelcome" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="welcome"/> 
+      <forward name="success" path="page.farm101" />
+    </action>
+    
+    <action path="/farm200" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ViewImportScreenAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="importData"/>      
+      <forward name="success" path="page.farm200" />
+    </action>
+    
+    <action path="/importData" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ImportAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false"
+            input="page.farm200">
+      <set-property property="secureAction" value="importData"/>
+      <forward name="success" path="/farm250.do" redirect="true" />
+      <forward name="failure" path="page.farm200" />
+    </action>
+    
+    <action path="/farm205" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.InProgressAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="importData"/>      
+      <forward name="success" path="page.farm205" /> 
+      <forward name="stagingResults" path="/farm210.do" /> 
+      <forward name="importResults" path="/farm230.do" /> 
+    </action>
+    
+    <action path="/farm206" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.InProgressAction"
+            name="importForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="generateEnrolments"/>      
+      <forward name="success" path="page.farm205" /> 
+      <forward name="stagingResults" path="/farm211.do" /> 
+      <forward name="importResults" path="/farm231.do" /> 
+    </action>
+    
+    <action path="/farm207" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.InProgressAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="manageTransfers"/>      
+      <forward name="success" path="page.farm205" /> 
+      <forward name="stagingResults" path="/farm212.do" /> 
+      <forward name="importResults" path="/farm232.do" /> 
+    </action>
+    
+    <action path="/farm208" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.InProgressAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="generateTipReports"/>      
+      <forward name="success" path="page.farm205" /> 
+      <forward name="stagingResults" path="/farm213.do" /> 
+      <forward name="importResults" path="/farm233.do" /> 
+    </action>
+    
+    <action path="/farm210" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsStagingAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="importData"/>      
+      <forward name="success" path="page.farm210" />      
+    </action>
+    
+    <action path="/farm211" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsStagingAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="generateEnrolments"/>      
+      <forward name="success" path="page.farm210" />      
+    </action>
+    
+    <action path="/farm212" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsStagingAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="manageTransfers"/>      
+      <forward name="success" path="page.farm210" />      
+    </action>
+    
+    <action path="/farm213" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsStagingAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="generateTipReports"/>      
+      <forward name="success" path="page.farm210" />      
+    </action>
+    
+    <action path="/cancelImport" 
+                type="ca.bc.gov.srm.farm.ui.struts.dataimport.CancelImportAction" 
+                name="importForm" 
+                scope="request" 
+                validate="false"
+                input="page.farm210">
+      <set-property property="secureAction" value="importData"/>
+      <forward name="success" path="/farm250.do" redirect="true" />
+      <forward name="failure" path="page.farm210" />
+    </action>
+    
+    <action path="/confirmImport" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ConfirmImportAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false"
+            input="page.farm210">
+      <set-property property="secureAction" value="importData"/>
+      <forward name="success" path="/farm250.do" redirect="true" />
+      <forward name="failure" path="page.farm210" />
+    </action>
+    
+    <action path="/cancelEnrolmentImport" 
+                type="ca.bc.gov.srm.farm.ui.struts.dataimport.CancelImportAction" 
+                name="importForm" 
+                scope="request" 
+                validate="false"
+                input="page.farm210">
+      <set-property property="secureAction" value="generateEnrolments"/>
+      <forward name="success" path="/farm251.do" redirect="true" />
+      <forward name="failure" path="page.farm210" />
+    </action>
+    
+    <action path="/confirmEnrolmentImport" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ConfirmImportAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false"
+            input="page.farm210">
+      <set-property property="secureAction" value="generateEnrolments"/>
+      <forward name="success" path="/farm251.do" redirect="true" />
+      <forward name="failure" path="page.farm210" />
+    </action>
+   
+    <action path="/farm230" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsImportAction" 
+            name="resultsImportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="importData"/>
+      <forward name="success" path="page.farm230" />
+    </action>
+    
+    <action path="/farm231" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsImportAction" 
+            name="resultsImportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="generateEnrolments"/>
+      <forward name="success" path="page.farm230" />
+    </action>
+    
+    <action path="/farm232" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsImportAction" 
+            name="resultsImportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="manageTransfers"/>
+      <forward name="success" path="page.farm230" />
+    </action>
+    
+    <action path="/farm233" 
+            type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportBatchResultsAction" 
+            name="resultsImportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="generateTipReports"/>
+      <forward name="success" path="page.farm230" />
+    </action>
+    
+    <action path="/farm240Busy" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="resultsParticipantForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="importData"/>
+      <forward name="success" path="page.farm240Busy" />
+    </action>
+    
+    <action path="/farm240" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ResultsParticipantAction" 
+            name="resultsParticipantForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="importData"/>
+      <forward name="success" path="page.farm240" />
+    </action>
+    
+    <action path="/farm250" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.ImportSearchAction" 
+            name="importSearchForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="importData"/>
+      <forward name="success" path="page.farm250" />
+    </action>
+    
+    <action path="/farm251" 
+            type="ca.bc.gov.srm.farm.ui.struts.enrolment.EnrolmentBatchSearchAction" 
+            name="importSearchForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="generateEnrolments"/>
+      <forward name="success" path="page.farm250" />
+    </action>
+    
+    <action path="/farm252" 
+            type="ca.bc.gov.srm.farm.ui.struts.transfer.TransferSearchAction" 
+            name="importSearchForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="manageTransfers"/>
+      <forward name="success" path="page.farm250" />
+    </action>
+    
+    <action path="/farm256" 
+            type="ca.bc.gov.srm.farm.ui.struts.chefs.ChefsSearchAction" 
+            name="chefsSubmissionSearchForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="chefsManagement"/>
+      <forward name="success" path="page.farm256" />
+      <forward name="failure" path="page.farm256" />
+    </action>
+    
+    <action path="/farm257" 
+            type="ca.bc.gov.srm.farm.ui.struts.chefs.ChefsResultAction" 
+            name="chefsSubmissionResultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="chefsManagement"/>
+      <forward name="success" path="page.farm257" />
+      <forward name="failure" path="page.farm257" />
+    </action>
+    
+    <action path="/chefsUpdateForm" 
+            type="ca.bc.gov.srm.farm.ui.struts.chefs.ChefsUpdateFormAction" 
+            name="chefsSubmissionResultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="chefsManagement"/>
+      <forward name="success" path="page.farm257" />
+      <forward name="failure" path="page.farm257" />
+    </action>
+    
+    <action path="/chefsUploadForm" 
+            type="ca.bc.gov.srm.farm.ui.struts.chefs.ChefsUploadFormAction" 
+            name="chefsSubmissionResultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="chefsManagement"/>
+      <forward name="success" path="page.uploadSuccess" />
+      <forward name="failure" path="page.uploadFailure" />
+    </action>
+    
+    <action path="/farm258" 
+            type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoStatusAction" 
+            name="fifoStatusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="fifoView"/>
+      <forward name="success" path="page.farm258" />
+      <forward name="failure" path="page.farm258" />
+    </action>
+    
+    <action path="/farm259" 
+            type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoJobsAction" 
+            name="fifoJobsForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="fifoView"/>
+      <forward name="success" path="page.farm259" />
+      <forward name="failure" path="page.farm259" />
+    </action>
+    
+    <action path="/farm254" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.InProgressAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="fifoView"/>      
+      <forward name="success" path="page.farm254" />
+      <forward name="importResults" path="/farm253.do" redirect="true" />
+    </action>
+    
+    <action path="/farm253" 
+            type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoResultAction"
+            name="fifoResultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="fifoView"/>      
+      <forward name="success" path="page.farm253" /> 
+    </action>
+    
+    <action path="/retryTransfer" 
+            type="ca.bc.gov.srm.farm.ui.struts.dataimport.RetryStagingAction" 
+            name="importForm" 
+            scope="request" 
+            validate="false"
+            input="page.farm210">
+      <set-property property="secureAction" value="manageTransfers"/>
+      <forward name="success" path="/farm252.do" redirect="true" />
+      <forward name="failure" path="page.farm210" />
+    </action>
+    
+    <action path="/clearSuccessfulTransfers" 
+            type="ca.bc.gov.srm.farm.ui.struts.transfer.ClearSuccessfulTransfersAction" 
+            name="importSearchForm" 
+            scope="request" 
+            validate="false"
+            input="page.farm252">
+      <set-property property="secureAction" value="manageTransfers"/>
+      <forward name="success" path="/farm252.do" redirect="true" />
+    </action>
+    
+    <action path="/farm300" 
+            type="ca.bc.gov.srm.farm.ui.struts.account.AccountStatusAction" 
+            name="calculatorStatusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewAccount"/>
+      <forward name="success" path="page.farm300" />
+    </action>
+    
+    <action path="/farm310" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="accountForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewAccount"/>
+      <forward name="success" path="page.farm310" />
+    </action>
+    
+    <action path="/accounts" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="accountForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="searchAccounts"/>
+      <forward name="success" path="page.farm320" />
+    </action>
+    
+    
+    <action path="/farm340" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.subscription.ViewSubscriptionsAction" 
+            name="subscriptionForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editInvitation"/>
+      <forward name="success" path="page.farm340" />
+    </action>
+    
+    <action path="/generateSubscription" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.subscription.GenerateSubscriptionAction" 
+            name="subscriptionForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editInvitation"/>
+      <forward name="success" path="page.farm340" />
+      <forward name="failure" path="page.farm340" />
+    </action>
+    
+    <action path="/invalidateSubscription" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.subscription.InvalidateSubscriptionAction" 
+            name="subscriptionForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editInvitation"/>
+      <forward name="success" path="page.farm340" />
+    </action>
+    
+    <action path="/activateSubscription" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.subscription.ActivateSubscriptionAction" 
+            name="subscriptionForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="welcome"/>
+      <forward name="success" path="/welcome.do" redirect="true" />
+      <forward name="failure" path="page.farm100" />
+    </action>
+    
+    <action path="/revokeSubscription" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.subscription.RevokeSubscriptionAction" 
+            name="subscriptionForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editInvitation"/>
+      <forward name="success" path="page.farm340" />
+      <forward name="failure" path="page.farm340" />
+    </action>
+    
+    <action path="/farm400" 
+            type="ca.bc.gov.srm.farm.ui.struts.account.AccountBenefitHistoryAction" 
+            name="calculatorForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewAccount"/>
+      <forward name="success" path="page.farm400" />
+    </action>
+    
+    <action path="/farm500" 
+            type="ca.bc.gov.srm.farm.ui.struts.account.AccountSummaryAction" 
+            name="calculatorForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewAccount"/>
+      <forward name="success" path="page.farm500" />
+    </action>
+    
+    <action path="/farm510" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.incomeexpenses.IncomeExpensesViewAction" 
+            name="incomeExpensesForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewAccount"/>
+      <forward name="success" path="page.farm510" />
+    </action>
+    
+    <action path="/farm520" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.inventory.InventoryViewAction" 
+            name="inventoryForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewAccount"/>
+      <forward name="success" path="page.farm520" />
+    </action>
+    
+    <action path="/farm525" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.accruals.AccrualsViewAction" 
+            name="accrualsForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewAccount"/>
+      <forward name="success" path="page.farm525" />
+    </action>
+    
+    <action path="/farm530" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.productiveunits.ProductiveUnitsViewAction" 
+            name="productiveUnitsForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewAccount"/>
+      <forward name="success" path="page.farm530" />
+    </action>
+    
+    <action path="/farm600" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.ExportCriteriaAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm600" />
+    </action>
+    
+    <action path="/export600" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.ExportGenerateAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm600" />
+      <forward name="failure" path="page.farm600" />
+    </action>
+    
+    <action path="/farm601" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.ExportCriteriaAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm601" />
+    </action>
+    
+    <action path="/export601" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.ExportGenerateAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm601" />
+      <forward name="failure" path="page.farm601" />
+    </action>
+    
+    <action path="/farm610" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.ReportCriteriaAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm610" />
+    </action>
+    
+    <action path="/report610" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.ReportGenerateAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm610" />
+      <forward name="failure" path="page.farm610" />
+    </action>
+    
+    <action path="/farm620" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.ReportCriteriaAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm620" />
+    </action>
+    
+    <action path="/report620" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.ReportGenerateAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm620" />
+      <forward name="failure" path="page.farm620" />
+    </action>
+    
+    <action path="/farm630" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.ReportCriteriaAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm630" />
+    </action>
+    
+    <action path="/report630" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.BackgroundReportPrepAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm630" />
+      <forward name="failure" path="page.farm630" />
+    </action>
+    
+    <action path="/farm640" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.ReportCriteriaAction"
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm640" />
+    </action>
+    
+    <action path="/report640" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.ReportGenerateAction"
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm640" />
+      <forward name="failure" path="page.farm640" />
+    </action>
+    
+    <action path="/farm650" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.ReportCriteriaAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm650" />
+    </action>
+    
+    <action path="/report650" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.BackgroundReportPrepAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm650" />
+      <forward name="failure" path="page.farm650" />
+    </action>
+    
+    <action path="/farm655" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.ReportCriteriaAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm655" />
+    </action>
+    
+    <action path="/report655" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.BackgroundReportPrepAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm655" />
+      <forward name="failure" path="page.farm655" />
+    </action>
+    
+    <action path="/farm660" 
+            type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportsViewAction"
+            name="tipReportForm"
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="generateTipReports"/>
+      <forward name="success" path="page.farm660" />
+    </action>
+
+    <action path="/saveTipReportsContext" 
+                type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportsSaveContextAction" 
+                name="tipReportForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="generateTipReports"/>
+       <forward name="failure" path="page.farm660" />
+    </action>
+    
+    <action path="/viewTipReport" 
+            type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportViewAction" 
+            name="tipReportForm"
+            scope="request"
+            validate="false">
+      <set-property property="secureAction" value="generateTipReports"/>
+    </action>
+    
+    <action path="/downloadTipBatch" 
+            type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportDownloadBatchAction" 
+            name="tipReportForm"
+            scope="request"
+            validate="false">
+      <set-property property="secureAction" value="generateTipReports"/>
+    </action>
+    
+    <action path="/downloadTipReports" 
+            type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportDownloadReportsAction" 
+            name="tipReportForm"
+            scope="request"
+            validate="false">
+      <set-property property="secureAction" value="generateTipReports"/>
+    </action>
+    
+    <action path="/farm661" 
+            type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportBatchSearchAction" 
+            name="importSearchForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="generateTipReports"/>
+      <forward name="success" path="page.farm661" />
+    </action>
+    
+    <action path="/generateTipReport"
+                type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportGenerateSingleAction" 
+                name="tipReportForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="generateTipReports"/>
+    </action>
+    
+    <action path="/generateTipReports" 
+                type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportGenerateMultipleAction" 
+                name="tipReportForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="generateTipReports"/>
+       <forward name="success" path="/farm661.do" redirect="true" />
+       <forward name="failure" path="/farm660.do" />
+    </action>
+    
+    <action path="/generateTipReportBenchmarkData" 
+                type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportGenerateBenchmarksAction" 
+                name="tipReportForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="generateTipBenchmarks"/>
+       <forward name="success" path="/farm546.do" redirect="true" />
+       <forward name="failure" path="/farm546.do" />
+    </action>
+    
+    <action path="/updateTipParticipantFlag"
+                type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportUpdateTipParticipantFlagAction" 
+                name="tipReportForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="generateTipReports"/>
+    </action>
+    
+    <action path="/tipReportError"
+                type="ca.bc.gov.srm.farm.ui.struts.tipreport.TipReportErrorAction" 
+                name="tipReportForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="generateTipReports"/>
+       <forward name="success" path="page.farm662" />
+    </action>
+    
+    <action path="/backgroundReportView" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.BackgroundReportFileViewAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm690" />
+    </action>
+    
+    <action path="/backgroundReportGenerate" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.BackgroundReportGenerateAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="failure" path="page.farm690" />
+    </action>
+    
+    <action path="/backgroundReportDownload" 
+            type="ca.bc.gov.srm.farm.ui.struts.report.BackgroundReportDownloadAction" 
+            name="reportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+    </action>
+    
+    <action path="/farm719" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.ExportCriteriaAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm719" />
+    </action>
+    
+    <action path="/farm720" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.ExportCriteriaAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm720" />
+    </action>
+    
+    <action path="/farm721" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.AafmExtractFileViewAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm721" />
+    </action>
+    
+    <action path="/export719" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.ExportGenerateAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm719" />
+      <forward name="failure" path="page.farm719" />
+    </action>
+    
+    <action path="/export720" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.ExportGenerateAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm720" />
+      <forward name="failure" path="page.farm720" />
+    </action>
+
+    <action path="/aafmaExtract" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.AafmExtractAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm719" />
+      <forward name="failure" path="page.farm719" />
+    </action>
+
+    
+    <action path="/aafmExtract" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.AafmExtractAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm720" />
+      <forward name="failure" path="page.farm720" />
+    </action>
+
+    <action path="/aafmaExtractDownload" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.AafmExtractFileDownloadAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+    </action>
+
+    <action path="/aafmExtractDownload" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.AafmExtractFileDownloadAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+    </action>
+
+    <action path="/detailedScenarioExtract" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.DetailedScenarioExtractAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm600" />
+      <forward name="failure" path="page.farm600" />
+    </action>
+    
+    <action path="/statementAExtract" 
+            type="ca.bc.gov.srm.farm.ui.struts.export.StatementAExtractAction" 
+            name="exportForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="exportData"/>
+      <forward name="success" path="page.farm601" />
+      <forward name="failure" path="page.farm601" />
+    </action>
+    
+    <action path="/agentStatus" 
+                type="ca.bc.gov.srm.farm.ui.struts.agent.AgentStatusAction" 
+                name="agentForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="importData"/>
+       <forward name="success" path="page.agentStatus" />
+    </action>
+    
+    <action path="/agentStop" 
+                type="ca.bc.gov.srm.farm.ui.struts.agent.AgentStopAction" 
+                name="agentForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="importData"/>
+       <forward name="success" path="/agentStatus.do" redirect="true" />
+    </action>
+    
+    <action path="/agentStart" 
+                type="ca.bc.gov.srm.farm.ui.struts.agent.AgentStartAction" 
+                name="agentForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="importData"/>
+       <forward name="success" path="/agentStatus.do" redirect="true" />
+    </action>
+
+
+    <action path="/calculatorSearch"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.search.CalculatorSearchAction"
+            name="calculatorSearchForm" scope="request" validate="false">
+      <set-property property="secureAction" value="searchScenario" />
+      <forward name="success" path="page.farm910" />
+      <forward name="failure" path="page.farm910" />
+    </action>
+
+    <action path="/farm900"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.inbox.CalculatorInboxViewAction"
+            name="calculatorInboxForm" scope="request" validate="false">
+      <set-property property="secureAction" value="calculatorInbox" />
+      <forward name="success" path="page.farm900" />
+    </action>
+
+    <action path="/farm800"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.CalculatorStatusViewAction"
+            name="calculatorStatusForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm800" />
+    </action>
+
+    <action path="/statusCheckOut"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.StatusCheckOutAction"
+            name="calculatorStatusForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm800" />
+      <forward name="failure" path="page.farm800" />
+    </action>
+
+    <action path="/createMissingYear"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.CreateMissingYearAction"
+            name="calculatorStatusForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm800" />
+      <forward name="failure" path="page.farm800" />
+    </action>
+    
+    <action path="/generateBenefitDocument" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.BenefitDocumentGenerateAction" 
+            name="calculatorStatusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReport"/>
+      <forward name="success" path="page.farm800" />
+    </action>
+    
+    <action path="/regenerateBenefitDocument" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.BenefitDocumentRegenerateAction" 
+            name="calculatorStatusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="regenerateCob"/>
+      <forward name="success" path="page.farm800" />
+    </action>
+    
+    <action path="/viewBenefitDocument" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.BenefitDocumentViewAction" 
+            name="calculatorStatusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+    </action>
+  
+    <action path="/saveFarmType"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.SaveFarmTypeAction"
+            name="calculatorStatusForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm800" />
+      <forward name="failure" path="page.farm800" />
+    </action>
+
+    <action path="/saveNonParticipantInd"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.SaveNonParticipantIndAction"
+            name="calculatorStatusForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm800" />
+      <forward name="failure" path="page.farm800" />
+    </action>
+
+    <action path="/saveLateParticipantInd"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.SaveLateParticipantIndAction"
+            name="calculatorStatusForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm800" />
+      <forward name="failure" path="page.farm800" />
+    </action>
+    
+    <action path="/saveDateReceived"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.status.SaveDateReceivedAction"
+            name="calculatorStatusForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm800" />
+      <forward name="failure" path="page.farm800" />
+    </action>
+
+    <action path="/farm805"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.diff.DiffReportViewAction"
+            name="diffReportForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm805" />
+    </action>
+
+    <action path="/updateToLatestPyVersion"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.diff.UpdateToLatestPyVersionAction"
+            name="diffReportForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm805" />
+      <forward name="failure" path="page.farm805" />
+    </action>
+
+    <action path="/farm810"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.participant.ParticipantViewAction"
+            name="participantForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm810" />
+    </action>
+
+    <action path="/saveParticipant"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.participant.ParticipantSaveAction"
+            name="participantForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm810" />
+      <forward name="failure" path="page.farm810" />
+    </action>
+
+    <action path="/farm820"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.farmdetail.FarmDetailViewAction"
+            name="farmDetailForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm820" />
+    </action>
+
+    <action path="/saveFarmDetail"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.farmdetail.FarmDetailSaveAction"
+            name="farmDetailForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm820" />
+      <forward name="failure" path="page.farm820" />
+    </action>
+
+    <action path="/farm825"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.farmingoperation.FarmingOperationViewAction"
+            name="farmingOperationForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm825" />
+    </action>
+
+    <action path="/saveFarmingOperation"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.farmingoperation.FarmingOperationSaveAction"
+            name="farmingOperationForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm825" />
+      <forward name="failure" path="page.farm825" />
+    </action>
+
+    <action path="/newFarmingOperation"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.farmingoperation.FarmingOperationNewAction"
+            name="farmingOperationForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm825" />
+    </action>
+
+    <action path="/deleteFarmingOperation"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.farmingoperation.FarmingOperationDeleteAction"
+            name="farmingOperationForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm825" />
+      <forward name="failure" path="page.farm825" />
+    </action>
+    
+    
+    <action path="/farm827" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.partners.PartnersViewAction" 
+            name="partnersForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="page.farm827" />
+    </action>
+    
+    <action path="/savePartners" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.partners.PartnersSaveAction" 
+            name="partnersForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editScenario"/>
+      <forward name="success" path="page.farm827" />
+      <forward name="failure" path="page.farm827" />
+    </action>
+    
+    <action path="/partnersJavaScriptList"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.partners.PartnersJavaScriptListAction"
+            name="partnersJavaScriptListForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.partnersList" />
+    </action>
+
+    <action path="/farm950"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.operationalignment.OperationAlignmentViewAction"
+            name="operationAlignmentForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm950" />
+    </action>
+
+    <action path="/saveOperationAlignment"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.operationalignment.OperationAlignmentSaveAction"
+            name="operationAlignmentForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm950" />
+      <forward name="failure" path="page.farm950" />
+    </action>
+
+    <action path="/farm830"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.scenarios.ScenariosViewAction"
+            name="scenariosForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm830" />
+      <forward name="failure" path="page.farm830" />
+      <forward name="invalid" path="page.farm830.invalid" />
+    </action>
+
+    <action path="/saveScenario"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.scenarios.ScenariosSaveAction"
+            name="scenariosForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm830" />
+      <forward name="failure" path="page.farm830" />
+    </action>
+
+    <action path="/createNewScenario"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.scenarios.CreateNewScenarioAction"
+            name="scenariosForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm830" />
+      <forward name="failure" path="page.farm830" />
+    </action>
+
+    <action path="/saveAsNewScenario"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.scenarios.SaveAsNewScenarioAction"
+            name="scenariosForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm830" />
+      <forward name="failure" path="page.farm830" />
+    </action>
+
+    <action path="/scenariosCheckOut"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.scenarios.ScenariosCheckOutAction"
+            name="scenariosForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm830" />
+      <forward name="failure" path="page.farm830" />
+    </action>
+
+    <action path="/copyProgramYearVersion"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.scenarios.CopyProgramYearVersionAction"
+            name="scenariosForm" scope="request" validate="false">
+      <set-property property="secureAction" value="copyProgramYearVersion" />
+      <forward name="success" path="page.farm830" />
+      <forward name="failure" path="page.farm830" />
+    </action>
+
+
+    <action path="/farm890"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.productiveunits.ProductiveUnitsViewAction"
+            name="productiveUnitsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm890" />
+      <forward name="failure" path="page.farm890" />
+    </action>
+    
+    <action path="/importProductiveUnits"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.productiveunits.ProductiveUnitsImportAction"
+            name="productiveUnitsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm890" />
+      <forward name="failure" path="page.farm890" />
+    </action>
+    
+    <action path="/updateDataSetUsed"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.productiveunits.UpdateDataSetUsedAction"
+            name="productiveUnitsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+    </action>
+
+    <action path="/addNewProductiveUnits"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.productiveunits.ProductiveUnitsAddNewAction"
+            name="productiveUnitsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm890" />
+      <forward name="failure" path="page.farm890" />
+    </action>
+
+    <action path="/saveProductiveUnits"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.productiveunits.ProductiveUnitsSaveAction"
+            name="productiveUnitsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm890" />
+      <forward name="failure" path="page.farm890" />
+    </action>
+    
+	<action path="/outputProductiveUnits"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.productiveunits.ProductiveUnitsOutputCsvAction"
+            name="productiveUnitsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+    </action>
+    
+    
+    
+    <action path="/productiveUnitLists" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="productiveUnitsForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.productiveUnitLists" />
+    </action>
+
+
+    <action path="/farm870"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.incomeexpenses.IncomeExpensesViewAction"
+            name="incomeExpensesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm870" />
+      <forward name="failure" path="page.farm870" />
+    </action>
+
+    <action path="/addNewIncomeExpenses"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.incomeexpenses.IncomeExpensesAddNewAction"
+            name="incomeExpensesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm870" />
+      <forward name="failure" path="page.farm870" />
+    </action>
+
+    <action path="/saveIncomeExpenses"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.incomeexpenses.IncomeExpensesSaveAction"
+            name="incomeExpensesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm870" />
+      <forward name="failure" path="page.farm870" />
+    </action>
+    
+    <action path="/incomeExpenseLists" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.incomeexpenses.IncomeExpensesListsAction" 
+            name="incomeExpensesForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.incomeExpenseLists" />
+    </action>
+    
+    <action path="/outputIncomeExpenses"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.incomeexpenses.IncomeExpensesOutputCsvAction"
+            name="incomeExpensesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+    </action>
+
+    <action path="/farm875"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.incomeexpenses.DeductionLineItemsViewAction"
+            name="incomeExpensesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm875" />
+      <forward name="failure" path="page.farm875" />
+    </action>
+
+
+    <action path="/farm880"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.inventory.InventoryViewAction"
+            name="inventoryForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm880" />
+      <forward name="failure" path="page.farm880" />
+    </action>
+
+    <action path="/addNewInventory"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.inventory.InventoryAddNewAction"
+            name="inventoryForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm880" />
+      <forward name="failure" path="page.farm880" />
+    </action>
+
+    <action path="/saveInventory"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.inventory.InventorySaveAction"
+            name="inventoryForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm880" />
+      <forward name="failure" path="page.farm880" />
+    </action>
+    
+    <action path="/inventoryItemLists" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.inventoryItemLists" />
+    </action>
+
+    <action path="/outputInventory"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.inventory.InventoryOutputCsvAction"
+            name="inventoryForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+    </action>
+    
+    <action path="/importInventory"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.inventory.InventoryImportAction"
+            name="inventoryForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm880" />
+      <forward name="failure" path="page.farm880" />
+    </action>
+
+    
+    <action path="/farm940"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.accruals.AccrualsViewAction"
+            name="accrualsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm940" />
+      <forward name="failure" path="page.farm940" />
+    </action>
+
+    <action path="/addNewAccruals"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.accruals.AccrualsAddNewAction"
+            name="accrualsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm940" />
+      <forward name="failure" path="page.farm940" />
+    </action>
+
+    <action path="/saveAccruals"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.accruals.AccrualsSaveAction"
+            name="accrualsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm940" />
+      <forward name="failure" path="page.farm940" />
+    </action>
+    
+    <action path="/accrualItemLists" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.accrualItemLists" />
+    </action>
+
+    <action path="/outputAccruals"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.accruals.AccrualsOutputCsvAction"
+            name="accrualsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+    </action>
+    
+    <action path="/importAccruals"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.accruals.AccrualsImportAction"
+            name="accrualsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm940" />
+      <forward name="failure" path="page.farm940" />
+    </action>
+
+    
+    <action path="/farm850"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.benefit.BenefitViewAction"
+            name="benefitForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm850" />
+      <forward name="failure" path="page.farm850" />
+    </action>
+    
+    <action path="/farm855"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.benefit.BenefitAccrTypeInfoViewAction"
+            name="benefitAccrTypeInfoForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm855" />
+      <forward name="failure" path="page.farm855" />
+    </action>
+    
+    <action path="/saveBenefit"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.benefit.BenefitSaveAction"
+            name="benefitForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm850" />
+      <forward name="failure" path="page.farm850" />
+    </action>
+
+
+    <action path="/farm970"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.negativemargin.NegativeMarginsViewAction"
+            name="negativeMarginsForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm970" />
+      <forward name="failure" path="page.farm970" />
+    </action>
+
+    <action path="/saveNegativeMargins"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.negativemargin.NegativeMarginsSaveAction"
+            name="negativeMarginsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm970" />
+      <forward name="failure" path="page.farm970" />
+    </action>
+
+    <action path="/farm840" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.reasonability.ReasonabilityTestsViewAction" 
+            name="reasonabilityTestsForm"
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReasonabilityTests"/>
+      <forward name="success" path="page.farm840" />
+    </action>
+    
+    <action path="/run840" 
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.reasonability.ReasonabilityTestsRunAction" 
+            name="reasonabilityTestsForm"
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewReasonabilityTests"/>
+      <forward name="success" path="page.farm840" />
+      <forward name="failure" path="page.farm840" />
+    </action>
+    
+    <action path="/farm860"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.enw.enrolment.EnwEnrolmentViewAction"
+            name="enwEnrolmentForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm860" />
+      <forward name="failure" path="page.farm860" />
+    </action>
+    
+    <action path="/saveEnwEnrolment"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.enw.enrolment.EnwEnrolmentSaveAction"
+            name="enwEnrolmentForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm860" />
+      <forward name="failure" path="page.farm860" />
+    </action>
+    
+    <action path="/farm360" 
+                type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.EnrolmentsViewAction" 
+                name="enrolmentsForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="viewEnrolments"/>
+       <forward name="success" path="page.enrolments" />
+    </action>
+    
+    <action path="/enrolmentDisplayData" 
+            type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.EnrolmentDisplayDataAction" 
+            name="enrolmentsForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.enrolmentDisplayData" />
+    </action>
+
+    <action path="/farm361"
+            type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.ViewPinsImportScreenAction"
+            name="defaultForm"
+            scope="request"
+            validate="false">
+      <set-property property="secureAction" value="generateEnrolments"/>
+      <forward name="success" path="page.farm361" />
+    </action>
+
+    <action path="/importPins"
+            type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.PinsImportAction"
+            name="pinsImportForm"
+            scope="request"
+            validate="false"
+            input="page.farm361">
+      <set-property property="secureAction" value="generateEnrolments"/>
+      <forward name="success" path="/farm251.do" redirect="true" />
+      <forward name="failure" path="page.farm361" />
+    </action>
+
+    <action path="/generateEnrolments" 
+                type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.GenerateEnrolmentsAction" 
+                name="enrolmentsForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="generateEnrolments"/>
+       <forward name="success" path="/farm251.do" redirect="true" />
+       <forward name="failure" path="page.enrolments" />
+    </action>
+    
+    <action path="/enrolmentCSV" 
+                type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.ExportEnrolmentsCsvPrepAction" 
+                name="enrolmentsForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="viewEnrolments"/>
+       <forward name="success" path="page.enrolments" />
+       <forward name="failure" path="page.enrolments" />
+    </action>
+    
+    <action path="/exportEnrolmentCsv" 
+                type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.ExportEnrolmentsCsvAction" 
+                name="enrolmentsForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="viewEnrolments"/>
+       <forward name="success" path="blank" />
+       <forward name="failure" path="blank" />
+    </action>
+
+    <action path="/saveEnrolmentContext" 
+                type="ca.bc.gov.srm.farm.ui.struts.enrolment.enrolments.EnrolmentsSaveContextAction" 
+                name="enrolmentsForm" 
+                scope="request" 
+                validate="false">
+       <set-property property="secureAction" value="viewEnrolments"/>
+       <forward name="failure" path="page.enrolments" />
+    </action>
+    
+    <action path="/farm930"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.sc.StructuralChangeViewAction"
+            name="structuralChangeForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm930" />
+      <forward name="failure" path="page.farm930" />
+    </action>
+    
+    <action path="/saveStructuralChange"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.sc.StructuralChangeSaveAction"
+            name="structuralChangeForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm930" />
+      <forward name="failure" path="page.farm930" />
+    </action>
+
+    
+    <action path="/farm817"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.notes.VerificationNotesViewAction"
+            name="verificationNotesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm817" />
+      <forward name="failure" path="page.farm817" />
+    </action>
+
+    <action path="/saveVerificationNotes"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.notes.VerificationNotesSaveAction"
+            name="verificationNotesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+    </action>
+    
+    <action path="/farm818"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.log.ScenarioLogViewAction"
+            name="calculatorForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm818" />
+    </action>
+
+    
+    <action path="/farm920"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.combined.CombinedFarmViewAction"
+            name="combinedForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm920" />
+      <forward name="failure" path="page.farm920" />
+    </action>
+
+    <action path="/saveCombined"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.combined.CombinedFarmSaveAction"
+            name="combinedForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editScenario" />
+      <forward name="success" path="page.farm920" />
+      <forward name="failure" path="page.farm920" />
+    </action>
+
+    
+    <action path="/farm960"
+            type="ca.bc.gov.srm.farm.ui.struts.calculator.preverification.PreVerificationViewAction"
+            name="preverificationForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewScenario" />
+      <forward name="success" path="page.farm960" />
+      <forward name="failure" path="page.farm960" />
+    </action>
+
+
+    <action path="/farm265"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.generic.CodeTableViewAction"
+            name="genericCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm265" />
+    </action>
+
+    <action path="/farm270"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.generic.CodeViewAction"
+            name="genericCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm270" />
+    </action>
+
+    <action path="/newCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.generic.CodeNewAction"
+            name="genericCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm270" />
+    </action>
+
+    <action path="/saveCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.generic.CodeSaveAction"
+            name="genericCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm265.do" />
+      <forward name="failure" path="page.farm270" />
+    </action>
+
+    <action path="/deleteCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.generic.CodeDeleteAction"
+            name="genericCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm265.do" />
+      <forward name="failure" path="page.farm270" />
+    </action>
+
+    <action path="/farm280"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.lineitems.LineItemListViewAction"
+            name="lineItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm280" />
+    </action>
+
+    <action path="/farm285"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.lineitems.LineItemViewAction"
+            name="lineItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm285" />
+    </action>
+
+    <action path="/newLineItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.lineitems.LineItemNewAction"
+            name="lineItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm285" />
+    </action>
+
+    <action path="/saveLineItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.lineitems.LineItemSaveAction"
+            name="lineItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm280.do" redirect="true" />
+      <forward name="failure" path="page.farm285" />
+    </action>
+
+    <action path="/deleteLineItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.lineitems.LineItemDeleteAction"
+            name="lineItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm280.do" redirect="true" />
+      <forward name="failure" path="page.farm285" />
+    </action>
+
+    <action path="/copyYearLineItems"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.lineitems.LineItemCopyYearAction"
+            name="lineItemCopyYearForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm280.do" redirect="true" />
+      <forward name="failure" path="/farm280.do" redirect="true" />
+    </action>
+    
+    <action path="/farm255"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.municipalities.MunicipalityCodeListViewAction"
+            name="municipalityCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm255" />
+    </action>
+
+    <action path="/farm260"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.municipalities.MunicipalityCodeViewAction"
+            name="municipalityCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm260" />
+    </action>
+
+    <action path="/newMunicipalityCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.municipalities.MunicipalityCodeNewAction"
+            name="municipalityCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm260" />
+    </action>
+
+    <action path="/saveMunicipalityCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.municipalities.MunicipalityCodeSaveAction"
+            name="municipalityCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm255.do" redirect="true" />
+      <forward name="failure" path="page.farm260" />
+    </action>
+
+    <action path="/deleteMunicipalityCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.municipalities.MunicipalityCodeDeleteAction"
+            name="municipalityCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm255.do" redirect="true" />
+      <forward name="failure" path="page.farm260" />
+    </action>
+
+
+    <action path="/farm286"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.fmv.FMVListViewAction"
+            name="fmvsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm286" />
+    </action>
+
+    <action path="/farm287"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.fmv.FMVViewAction"
+            name="fmvsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm287" />
+    </action>
+
+    <action path="/newFMV"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.fmv.FMVNewAction"
+            name="fmvsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm287" />
+    </action>
+
+    <action path="/saveFMV"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.fmv.FMVSaveAction"
+            name="fmvsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm286.do" redirect="true" />
+      <forward name="failure" path="page.farm287" />
+    </action>
+
+    <action path="/deleteFMV"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.fmv.FMVDeleteAction"
+            name="fmvsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm286.do" redirect="true" />
+      <forward name="failure" path="page.farm287" />
+    </action>
+
+    <action path="/exportFMVs"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.fmv.FMVExportCsvAction"
+            name="fmvsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="blank" />
+      <forward name="failure" path="blank" />
+    </action>
+
+    <action path="/exportMissingFMVs"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.fmv.FMVExportMissingCsvAction"
+            name="fmvsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="blank" />
+      <forward name="failure" path="blank" />
+    </action>
+
+
+    <action path="/farm288"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.crop.unit.conversion.CropUnitConversionListViewAction"
+            name="cropUnitConversionsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm288" />
+    </action>
+
+    <action path="/farm289"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.crop.unit.conversion.CropUnitConversionViewAction"
+            name="cropUnitConversionsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm289" />
+    </action>
+
+    <action path="/newCropUnitConversion"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.crop.unit.conversion.CropUnitConversionNewAction"
+            name="cropUnitConversionsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm289" />
+    </action>
+
+    <action path="/saveCropUnitConversion"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.crop.unit.conversion.CropUnitConversionSaveAction"
+            name="cropUnitConversionsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm288.do" redirect="true" />
+      <forward name="failure" path="page.farm289" />
+    </action>
+
+    <action path="/deleteCropUnitConversion"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.crop.unit.conversion.CropUnitConversionDeleteAction"
+            name="cropUnitConversionsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm288.do" redirect="true" />
+      <forward name="failure" path="page.farm289" />
+    </action>
+    
+    
+    
+    <action path="/farm290"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.bpu.BPUListViewAction"
+            name="bpusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm290" />
+    </action>
+    
+    <action path="/farm291"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.bpu.BPUViewAction"
+            name="bpusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm291" />
+    </action>
+    
+    <action path="/newBPU"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.bpu.BPUNewAction"
+            name="bpusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm291" />
+    </action>
+    
+    <action path="/saveBPU"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.bpu.BPUSaveAction"
+            name="bpusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm290.do" redirect="true" />
+      <forward name="failure" path="page.farm291" />
+    </action>
+    
+    <action path="/deleteBPU"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.bpu.BPUDeleteAction"
+            name="bpusForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm290.do" redirect="true" />
+      <forward name="failure" path="page.farm291" />
+    </action>
+
+    <action path="/exportBPUs"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.bpu.BPUExportCsvAction"
+            name="bpusForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="blank" />
+      <forward name="failure" path="blank" />
+    </action>
+
+    <action path="/exportMissingBPUs"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.bpu.BPUExportMissingCsvAction"
+            name="bpusForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="blank" />
+      <forward name="failure" path="blank" />
+    </action>
+    
+    
+    
+    <action path="/structureGroupCodeList" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.structureGroupCodeList" />
+    </action>
+
+    <action path="/farm292"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.structuregroup.StructureGroupCodeListViewAction"
+            name="structureGroupCodesForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm292" />
+    </action>
+
+    <action path="/farm293"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.structuregroup.StructureGroupCodeViewAction"
+            name="structureGroupCodesForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm293" />
+    </action>
+
+    <action path="/newStructureGroupCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.structuregroup.StructureGroupCodeNewAction"
+            name="structureGroupCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm293" />
+    </action>
+
+    <action path="/saveStructureGroupCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.structuregroup.StructureGroupCodeSaveAction"
+            name="structureGroupCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm292.do" redirect="true" />
+      <forward name="failure" path="page.farm293" />
+    </action>
+
+    <action path="/deleteStructureGroupCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.structuregroup.StructureGroupCodeDeleteAction"
+            name="structureGroupCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm292.do" redirect="true" />
+      <forward name="failure" path="page.farm293" />
+    </action>
+
+    <action path="/inventoryItemCodeList" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.inventoryItemCodeList" />
+    </action>
+    
+    <action path="/farm420"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.itemcodes.InventoryItemCodeListViewAction"
+            name="inventoryItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm420" />
+    </action>
+
+    <action path="/farm425"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.itemcodes.InventoryItemCodeViewAction"
+            name="inventoryItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm425" />
+    </action>
+
+    <action path="/newInventoryItemCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.itemcodes.InventoryItemCodeNewAction"
+            name="inventoryItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm425" />
+    </action>
+
+    <action path="/saveInventoryItemCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.itemcodes.InventoryItemCodeSaveAction"
+            name="inventoryItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm420.do" redirect="true" />
+      <forward name="failure" path="page.farm425" />
+    </action>
+
+    <action path="/deleteInventoryItemCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.itemcodes.InventoryItemCodeDeleteAction"
+            name="inventoryItemCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm420.do" redirect="true" />
+      <forward name="failure" path="page.farm425" />
+    </action>
+
+    
+    <action path="/farm430"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.CropXrefListViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm430" />
+    </action>
+
+    <action path="/farm435"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm435" />
+    </action>
+
+    <action path="/newCropXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.CropXrefNewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm435" />
+    </action>
+
+    <action path="/saveCropXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefSaveAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm430.do" redirect="true" />
+      <forward name="failure" path="page.farm435" />
+    </action>
+
+    <action path="/deleteCropXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefDeleteAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm430.do" redirect="true" />
+      <forward name="failure" path="page.farm435" />
+    </action>
+
+    
+    <action path="/farm440"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.LivestockXrefListViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm440" />
+    </action>
+
+    <action path="/farm445"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm445" />
+    </action>
+
+    <action path="/newLivestockXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.LivestockXrefNewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm445" />
+    </action>
+
+    <action path="/saveLivestockXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefSaveAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm440.do" redirect="true" />
+      <forward name="failure" path="page.farm445" />
+    </action>
+
+    <action path="/deleteLivestockXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefDeleteAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm440.do" redirect="true" />
+      <forward name="failure" path="page.farm445" />
+    </action>
+
+    
+    <action path="/farm450"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InputXrefListViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm450" />
+    </action>
+
+    <action path="/farm455"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm455" />
+    </action>
+
+    <action path="/newInputXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InputXrefNewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm455" />
+    </action>
+
+    <action path="/saveInputXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefSaveAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm450.do" redirect="true" />
+      <forward name="failure" path="page.farm455" />
+    </action>
+
+    <action path="/deleteInputXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefDeleteAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm450.do" redirect="true" />
+      <forward name="failure" path="page.farm455" />
+    </action>
+
+    
+    <action path="/farm460"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.ReceivableXrefListViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm460" />
+    </action>
+
+    <action path="/farm465"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm465" />
+    </action>
+
+    <action path="/newReceivableXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.ReceivableXrefNewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm465" />
+    </action>
+
+    <action path="/saveReceivableXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefSaveAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm460.do" redirect="true" />
+      <forward name="failure" path="page.farm465" />
+    </action>
+
+    <action path="/deleteReceivableXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefDeleteAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm460.do" redirect="true" />
+      <forward name="failure" path="page.farm465" />
+    </action>
+
+    
+    <action path="/farm470"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.PayableXrefListViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm470" />
+    </action>
+
+    <action path="/farm475"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefViewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm475" />
+    </action>
+
+    <action path="/farm480"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.TipsFarmType3ListViewAction"
+            name="tipsFarmType3Form" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm480" />
+    </action>
+    
+    <action path="/newFarmTypeItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.TipsFarmType3NewAction"
+            name="tipsFarmType3Form" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="page.farm485" />
+    </action>
+    
+    <action path="/saveFarmTypeItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.TipsFarmType3SaveAction"
+            name="tipsFarmType3Form" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="/farm480.do" redirect="true" />
+      <forward name="failure" path="page.farm485" />
+    </action>
+    
+    <action path="/farm485"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.TipsFarmType3ViewAction"
+            name="tipsFarmType3Form" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm485" />
+    </action>
+    
+    <action path="/deleteFarmTypeItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.TipsFarmType3DeleteAction"
+            name="tipsFarmType3Form" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="/farm480.do" redirect="true" />
+      <forward name="failure" path="page.farm485" />
+    </action>
+    
+    <action path="/farm490"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType2ViewAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm490" />
+    </action>
+    
+    <action path="/newFarmSubtypeItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType2NewAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="page.farm495" />
+    </action>
+    
+    <action path="/saveFarmSubtypeItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType2SaveAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="/farm490.do" redirect="true" />
+      <forward name="failure" path="page.farm495" />
+    </action>
+    
+    <action path="/deleteFarmSubtypeItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType2DeleteAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="/farm490.do" redirect="true" />
+      <forward name="failure" path="page.farm495" />
+    </action>    
+    
+    <action path="/farm495"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType2ItemViewAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm495" />
+    </action>
+    
+    <action path="/farm535"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType1ViewAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm535" />
+    </action>
+    
+    <action path="/newFarmSubtypeBItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType1NewAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="page.farm540" />
+    </action>
+    
+    <action path="/saveFarmSubtypeBItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType1SaveAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="/farm535.do" redirect="true" />
+      <forward name="failure" path="page.farm540" />
+    </action>    
+    
+    <action path="/farm540"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType1ItemViewAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm540" />
+    </action>
+    
+    <action path="/deleteFarmSubtypeBItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.subtypes.TipsFarmType1DeleteAction"
+            name="tipsFarmSubtypeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="/farm535.do" redirect="true" />
+      <forward name="failure" path="page.farm540" />
+    </action>
+    
+    <action path="/farm545"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.lineitems.TipLineItemListViewAction"
+            name="tipLineItemForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm545" />
+    </action>
+    
+    <action path="/farm550"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.lineitems.TipLineItemViewAction"
+            name="tipLineItemForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm550" />
+    </action>
+    
+    <action path="/farm555"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.TipFarmTypeDefaultIncomeRangeViewAction"
+            name="tipDefaultIncomeRangeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm555" />
+    </action>
+    
+    <action path="/saveTipFarmTypeDefaultIncomeRange"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.TipFarmTypeDefaultIncomeRangeSaveAction"
+            name="tipDefaultIncomeRangeForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="/farm555.do" redirect="true" />
+      <forward name="failure" path="page.farm555" />
+    </action>
+    
+    <action path="/saveTipLineItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.lineitems.TipLineItemSaveAction"
+            name="tipLineItemForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="/farm545.do" redirect="true" />
+      <forward name="failure" path="page.farm550" />
+    </action>
+    
+    <action path="/deleteTipLineItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.lineitems.TipLineItemDeleteAction"
+            name="tipLineItemForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="/farm545.do" redirect="true" />
+      <forward name="failure" path="page.farm550" />
+    </action>
+    
+    <action path="/newTipLineItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.lineitems.TipLineItemNewAction"
+            name="tipLineItemForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editTipCodes" />
+      <forward name="success" path="page.farm550" />
+    </action>
+    
+    <action path="/farm560"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.benchmarkreports.TipBencmarkReportsViewAction"
+            name="tipBencmarkReportsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm560" />
+    </action>
+    
+    <action path="/runAndOpenBenchmarkReport"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.benchmarkreports.TipRunAndOpenBenchmarkReportAction"
+            name="tipBencmarkReportsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+    </action>
+    
+    <action path="/runBackgroundTipBenchmarkReport"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.benchmarkreports.TipBackgroundReportGenerateAction"
+            name="tipBencmarkReportsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+    </action>
+    
+    <action path="/tipBenchmarkReportStatus"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.benchmarkreports.TipBenchmarkReportStatusAction"
+            name="tipBencmarkReportsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+    </action>
+    
+    <action path="/downloadTipBenchmarkReport" 
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.benchmarkreports.TipBenchmarkReportDownloadAction" 
+            name="tipBencmarkReportsForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewTipCodes"/>
+      <forward name="success" path="page.farm560" />
+      <forward name="failure" path="page.farm560" />
+    </action>
+    
+    <action path="/farm546"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.tips.benchmarks.TipBenchmarksViewAction"
+            name="tipBenchmarksForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewTipCodes" />
+      <forward name="success" path="page.farm546" />
+    </action>
+    
+    <action path="/lineItemLists" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="editTipCodes"/>
+      <forward name="success" path="javascript.lineItemLists" />
+    </action>
+
+    <action path="/newPayableXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.PayableXrefNewAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm475" />
+    </action>
+
+    <action path="/savePayableXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefSaveAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm470.do" redirect="true" />
+      <forward name="failure" path="page.farm475" />
+    </action>
+
+    <action path="/deletePayableXref"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.inventory.xref.InventoryXrefDeleteAction"
+            name="inventoryXrefsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm470.do" redirect="true" />
+      <forward name="failure" path="page.farm475" />
+    </action>
+    
+    
+    <action path="/cropLivestockList" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.cropLivestockList" />
+    </action>
+    
+    <action path="/cropList" 
+            type="ca.bc.gov.srm.farm.ui.struts.SecureForwardAction" 
+            name="defaultForm" 
+            scope="request" 
+            validate="false">
+      <set-property property="secureAction" value="viewScenario"/>
+      <forward name="success" path="javascript.cropList" />
+    </action>
+    
+    <action path="/farm730"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.FruitVegCodeViewAction"
+            name="fruitVegForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm730" />
+    </action>
+
+    <action path="/farm735"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.FruitVegCodeItemViewAction"
+            name="fruitVegForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm735" />
+    </action>
+    
+    <action path="/saveFruitVegCodeItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.FruitVegCodeSaveAction"
+            name="fruitVegForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm730.do" redirect="true" />
+      <forward name="failure" path="page.farm735" />
+    </action>
+    
+    <action path="/newFruitVegCodeItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.FruitVegCodeNewAction"
+            name="fruitVegForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm735" />
+    </action>
+    
+    <action path="/deleteFruitVegCodeItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.FruitVegCodeDeleteAction"
+            name="fruitVegForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm730.do" redirect="true" />
+      <forward name="failure" path="page.farm735" />
+    </action>
+    
+    
+    <!-- Expected Production -->
+    <action path="/farm740"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.expectedproductions.ExpectedProductionListViewAction"
+            name="expectedProductionForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm740" />
+    </action>
+    
+    <action path="/farm745"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.expectedproductions.ExpectedProductionViewAction"
+            name="expectedProductionForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm745" />
+    </action>
+    
+    <action path="/saveExpectedProductionItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.expectedproductions.ExpectedProductionSaveAction"
+            name="expectedProductionForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm740.do" redirect="true" />
+      <forward name="failure" path="page.farm745" />
+    </action>
+    
+    <action path="/newExpectedProductionItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.expectedproductions.ExpectedProductionNewAction"
+            name="expectedProductionForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm745" />
+    </action>
+    
+    <action path="/deleteExpectedProductionItem"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.reasonability.expectedproductions.ExpectedProductionDeleteAction"
+            name="expectedProductionForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="/farm740.do" redirect="true" />
+      <forward name="failure" path="page.farm745" />
+    </action>    
+    
+    
+    <!-- Configuration Parameters -->
+    <action path="/farm750"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.parameters.ConfigurationParameterListViewAction"
+            name="configurationParameterForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm750" />
+    </action>
+    
+    <action path="/farm755"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.parameters.ConfigurationParameterViewAction"
+            name="configurationParameterForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm755" />
+    </action>
+    
+    <action path="/saveConfigParam"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.parameters.ConfigurationParameterSaveAction"
+            name="configurationParameterForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="/farm750.do" redirect="true" />
+      <forward name="failure" path="page.farm755" />
+    </action>
+    
+    
+    <!-- Year Configuration Parameters -->
+    <action path="/farm756"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.year.parameters.YearConfigurationParameterListViewAction"
+            name="yearConfigurationParameterForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm756" />
+    </action>
+    
+    <action path="/farm757"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.year.parameters.YearConfigurationParameterViewAction"
+            name="yearConfigurationParameterForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm757" />
+    </action>
+    
+    <action path="/saveYearConfigParam"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.year.parameters.YearConfigurationParameterSaveAction"
+            name="yearConfigurationParameterForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="/farm756.do" redirect="true" />
+      <forward name="failure" path="page.farm757" />
+    </action>
+    
+    
+    <!-- Document Templates -->
+    <action path="/farm760"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.document.templates.DocumentTemplateListViewAction"
+            name="documentTemplateForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm760" />
+    </action>
+    
+    <action path="/farm765"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.document.templates.DocumentTemplateViewAction"
+            name="documentTemplateForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm765" />
+    </action>    
+    
+    <action path="/saveDocumentTemplate"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.document.templates.DocumentTemplateSaveAction"
+            name="documentTemplateForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm760.do" redirect="true" />
+      <forward name="failure" path="page.farm765" />
+    </action>    
+    
+    <action path="/farm770"
+            type="ca.bc.gov.srm.farm.ui.struts.newparticipant.NewParticipantAction"
+            name="newParticipantForm" scope="request" validate="false">
+      <set-property property="secureAction" value="newParticipant" />
+      <forward name="success" path="page.farm770" />
+    </action>    
+    
+    <action path="/saveNewParticipant"
+            type="ca.bc.gov.srm.farm.ui.struts.newparticipant.NewParticipantSaveAction"
+            name="newParticipantForm" scope="request" validate="false">
+      <set-property property="secureAction" value="newParticipant" />
+      <forward name="success" path="page.farm771" />
+      <forward name="failure" path="page.farm770" />
+    </action>    
+
+
+    <!-- Sector Codes -->
+    <action path="/farm772"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.sectors.SectorCodeListViewAction"
+            name="sectorCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm772" />
+    </action>
+    
+    <action path="/farm773"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.sectors.SectorCodeViewAction"
+            name="sectorCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm773" />
+    </action>
+    
+    <action path="/saveSectorCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.sectors.SectorCodeSaveAction"
+            name="sectorCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="/farm772.do" redirect="true" />
+      <forward name="failure" path="page.farm773" />
+    </action>
+
+
+    <!-- Sector Detail Codes -->
+    <action path="/farm774"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.sector.details.SectorDetailCodeListViewAction"
+            name="sectorDetailCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm774" />
+    </action>
+    
+    <action path="/farm775"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.sector.details.SectorDetailCodeViewAction"
+            name="sectorDetailCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm775" />
+    </action>
+    
+    <action path="/saveSectorDetailCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.sector.details.SectorDetailCodeSaveAction"
+            name="sectorDetailCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="/farm774.do" redirect="true" />
+      <forward name="failure" path="page.farm775" />
+    </action>
+    
+    <action path="/newSectorDetailCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.sector.details.SectorDetailCodeNewAction"
+            name="sectorDetailCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm775" redirect="true" />
+      <forward name="failure" path="page.farm775" />
+    </action>
+
+    <action path="/deleteSectorDetailCode"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.sector.details.SectorDetailCodeDeleteAction"
+            name="sectorDetailCodesForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm774.do" redirect="true" />
+      <forward name="failure" path="page.farm775" />
+    </action>
+    
+    <!--  Users Verifiers  -->
+    <action path="/farm776"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.users.UserListViewAction"
+            name="userForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm776" />
+    </action>
+
+    <action path="/farm777"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.users.UserViewAction"
+            name="userForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm777" />
+    </action>
+
+    <action path="/saveUser"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.users.UserSaveAction"
+            name="userForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm776.do" redirect="true" />
+      <forward name="failure" path="page.farm777" />
+    </action>
+
+    <!--  Market Rate Premiums  -->
+    <action path="/farm778"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.mrp.MarketRatePremiumListViewAction"
+            name="marketRatePremiumsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm778" />
+    </action>
+
+    <action path="/farm779"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.mrp.MarketRatePremiumViewAction"
+            name="marketRatePremiumsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="viewCodes" />
+      <forward name="success" path="page.farm779" />
+    </action>
+
+    <action path="/newMarketRatePremium"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.mrp.MarketRatePremiumNewAction"
+            name="marketRatePremiumsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="page.farm779" />
+    </action>
+
+    <action path="/saveMarketRatePremium"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.mrp.MarketRatePremiumSaveAction"
+            name="marketRatePremiumsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm778.do" redirect="true" />
+      <forward name="failure" path="page.farm779" />
+    </action>
+
+    <action path="/deleteMarketRatePremium"
+            type="ca.bc.gov.srm.farm.ui.struts.codes.mrp.MarketRatePremiumDeleteAction"
+            name="marketRatePremiumsForm" scope="request" validate="false">
+      <set-property property="secureAction" value="editCodes" />
+      <forward name="success" path="/farm778.do" redirect="true" />
+      <forward name="failure" path="page.farm779" />
+    </action>
+
+  </action-mappings>
+
+  <controller nocache="true" processorClass="org.apache.struts.tiles.TilesRequestProcessor"/>
+  
+  <!-- Messages Configuration -->
+  <message-resources parameter="config.applicationResources" null="false" />
+
+  <!-- Tiles Configuration -->
+  <plug-in className="org.apache.struts.tiles.TilesPlugin">
+    <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
+    <set-property property="moduleAware" value="false" />
+    <set-property property="definitions-parser-validate" value="true" />
+  </plug-in>
+  
+  <!-- Validator Configuration -->
+  <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+    <set-property property="pathnames" value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml" />
+    <set-property property="stopOnFirstError" value="false" />
+  </plug-in>
+
+</struts-config>

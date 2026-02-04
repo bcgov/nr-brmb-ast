@@ -1,4 +1,4 @@
-name: Build .war files
+name: Build farms-api.war files
 
 on:
   workflow_dispatch:

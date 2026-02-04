@@ -74,6 +74,8 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+!**/src/main/java/**/coverage
+!**/src/test/java/**/coverage
 *.lcov
 lcov.*
 

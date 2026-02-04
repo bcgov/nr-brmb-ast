@@ -1,0 +1,177 @@
+{
+  "data": {
+    "date": "03/02/2024",
+    "email": "admin@apples.ca",
+    "origin": "external",
+    "submit": true,
+    "lateEntry": false,
+    "telephone": "(604) 617-3472",
+    "incomeGrid": [
+      {
+        "incomeCategories": {
+          "label": "Cattle raised from birth - Feeder cattle - 710",
+          "value": "710"
+        },
+        "estimatedTotalReceived": 12
+      },
+      {
+        "incomeCategories": {
+          "label": "Cattle Purebred Breeding - 722",
+          "value": "722"
+        },
+        "estimatedTotalReceived": 44
+      },
+      {
+        "incomeCategories": {
+          "label": "Cattle raised from birth - Feeder cattle - 710",
+          "value": "710"
+        },
+        "estimatedTotalReceived": 5
+      }
+    ],
+    "environment": "DEV",
+    "expenseGrid": [
+      {
+        "expenseCategories": 135,
+        "increaseOrDecrease": "increase",
+        "estimatedTotalExpenseAmount": 22
+      },
+      {
+        "expenseCategories": 264,
+        "increaseOrDecrease": "decrease",
+        "estimatedTotalExpenseAmount": 5
+      },
+      {
+        "expenseCategories": 9764,
+        "increaseOrDecrease": "undetermined",
+        "estimatedTotalExpenseAmount": 7
+      },
+      {
+        "expenseCategories": 9799,
+        "increaseOrDecrease": "decrease",
+        "estimatedTotalExpenseAmount": 8
+      }
+    ],
+    "grainNursery": "yes",
+    "fiscalYearEnd": "2023-12-31T00:00:00-07:00",
+    "externalMethod": "chefsForm",
+    "productionGrid": [
+      {
+        "crop": {
+          "label": "4800 - Apples; Planting year",
+          "value": "4800"
+        },
+        "units": "AC",
+        "cropUnit": {
+          "label": "Acres",
+          "value": "14"
+        },
+        "productiveArea": 12,
+        "unseedableAcres": 1,
+        "openingInventoryUnits": "10",
+        "estimatedTotalProduction": 13,
+        "estimatedEndingInventoryUnits": "12",
+        "estimatedProductionIntendedForSale": 14
+      },
+      {
+        "crop": {
+          "label": "5044 - Kiwi Fruit",
+          "value": "5044"
+        },
+        "units": "",
+        "cropUnit": {
+          "label": "Acres",
+          "value": "14"
+        },
+        "productiveArea": 6,
+        "unseedableAcres": 3,
+        "openingInventoryUnits": "5",
+        "estimatedTotalProduction": 8,
+        "estimatedEndingInventoryUnits": "5",
+        "estimatedProductionIntendedForSale": 9
+      },
+      {
+        "crop": {
+          "label": "5000 - Blackberries",
+          "value": "5000"
+        },
+        "units": "m2",
+        "cropUnit": {
+          "label": "Bushels",
+          "value": "4"
+        },
+        "productiveArea": 100,
+        "unseedableAcres": 0,
+        "openingInventoryUnits": "0",
+        "estimatedTotalProduction": 2,
+        "estimatedEndingInventoryUnits": "5",
+        "estimatedProductionIntendedForSale": 7
+      }
+    ],
+    "fiscalYearStart": "2023-01-01T00:00:00-07:00",
+    "participantName": "Agri Corp",
+    "municipalityCode": {
+      "label": "Central Coast",
+      "value": "45"
+    },
+    "businessStructure": "corporation",
+    "commoditiesFarmed": {
+      "crops": true,
+      "livestock": true
+    },
+    "businessTaxNumberBn": "9990 12346",
+    "inventoryGridLivestock": [
+      {
+        "cropUnit": {},
+        "commodity": {
+          "label": "7554 - Llama; Breeding; Males",
+          "value": "7554"
+        },
+        "openingInventoryUnits": "12",
+        "estimatedTotalProduction": 1333,
+        "estimatedEndingInventoryUnits": "22"
+      },
+      {
+        "commodity": {
+          "label": "7612 - Honey Bees; Producing (Hives)",
+          "value": "7612"
+        },
+        "openingInventoryUnits": "10",
+        "estimatedTotalProduction": 444,
+        "estimatedEndingInventoryUnits": "10"
+      },
+      {
+        "commodity": {
+          "label": "7667 - Chickens; Chicks",
+          "value": "7667"
+        },
+        "openingInventoryUnits": "0",
+        "estimatedTotalProduction": 1334,
+        "estimatedEndingInventoryUnits": "100"
+      }
+    ],
+    "doYouHaveUninsuredAcres": "yes",
+    "productiveCapacityLC104": 1,
+    "productiveCapacityLC105": 6,
+    "productiveCapacityLC106": 7,
+    "productiveCapacityLC108": 10,
+    "productiveCapacityLC109": 11,
+    "productiveCapacityLC123": 5,
+    "productiveCapacityLC141": 3,
+    "productiveCapacityLC142": 4,
+    "productiveCapacityLC143": 8,
+    "productiveCapacityLC144": 9,
+    "productiveCapacityLC145": 2,
+    "agriStabilityAgriInvestPin": 31415927,
+    "whyAreYouApplyingForAnInterimPayment": "testing form",
+    "doYouHaveProductionInsuranceForTheProgramYear": "no",
+    "hasYourProductiveCapacityChangedDuringTheProgramYear": "no",
+    "haveYouSubmittedACompleteAgriStabilityApplicationForThePreviousYear": "no",
+    "haveYouCompletedAProductionCycleAndSixMonthsOfFarmingActivityThisFiscalYear": "yes"
+  },
+  "options": {
+    "convertTo": "pdf",
+    "overwrite": true,
+    "reportName": "test_interim_form_{d.agriStabilityAgriInvestPin}.pdf"
+  }
+}

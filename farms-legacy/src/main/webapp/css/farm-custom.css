@@ -1,0 +1,175 @@
+/* CSS Document 
+  Custom CSS for Search Results
+*/
+
+div.searchresulttitle {
+  font-weight:bold;
+  color:#660000;
+  background-color:transparent;
+}
+div.searchresulttitle ul {
+  margin:0px 0px 0px 0px;
+  padding:0px 0px 0px 0px;
+  border:none;
+  display:inline;
+  color:#666666;
+  background-color:transparent;
+}
+div.searchresulttitle ul li {
+  font-weight:normal;
+  margin-left:0;
+  padding-left:2px;
+  border:none;
+  list-style:none;
+  display:inline;
+  color:#666666;
+}
+div.searchresulttitle a {
+  color:#666666;
+  cursor: pointer;
+  text-decoration:underline;
+}
+.nowrap {
+  white-space:nowrap;
+}
+
+.searchresults {
+    text-align: center;
+}
+.searchresults .yui-dt table {
+    margin-left:auto; margin-right:auto;
+}
+.searchresults, .searchresults .yui-dt-loading {
+    text-align: center; background-color: transparent;
+}
+.searchresults .yui-dt table {
+    width:99.9%;
+}
+table.codeManagementMain {
+  width: 1250px;
+  border-spacing: 20px;
+}
+.codeManagementMain td {
+  padding: 20px;
+}
+td.tdCenter {
+  text-align: center !important;
+}
+td.tdLeft {
+  text-align: left !important;
+}
+td.tdRight {
+  text-align: right !important;
+}
+.yui-skin-sam .yui-dt-label a {
+  font-weight:bold !important;
+  color:#FFFFFF !important;
+  font-family: Helvetica, sans-serif !important;
+}
+.yui-skin-sam .yui-dt-label {
+  font-weight:bold !important;
+  color:#FFFFFF !important;
+  font-family: Helvetica, sans-serif !important;
+}
+.yui-skin-sam .yui-dt th {
+  background:#6699CC;
+}
+.yui-skin-sam .yui-dt th .yui-dt-liner {
+  background-color:#6699CC;
+}
+.disabled {
+color:#00f;
+background-color:#ddd;
+}
+input[disabled='disabled'] {
+color:#00f;
+background-color:#ddd;
+}
+.statuscode {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 12px;
+	font-weight: bold;
+}
+.textBoxSmall {
+	width: 25px !important;; 
+}
+.rowSpacer {
+	background-color: #666666 !important;
+}
+.cellWhite {
+	background-color: #FFFFFF !important;
+}
+.recalcRequired{
+	color:#666666 !important;
+	font-style: italic !important;
+}
+.readonly {
+  background-color:#D3D3D3;
+}
+.adjustmentExists {
+	color:#000000 !important;
+	font-weight:bold !important;
+	background-color:#FFFF99;
+}
+.adjustmentExistsError {
+	color:#FFFFFF !important;
+	font-weight:bold !important;
+	background-color:#990000;
+	background-image: url(../images/bcgov_warning.gif);
+	background-repeat: no-repeat;
+}
+.priceOutsideFmvVariance {
+	color:#FFFFFF !important;
+	font-weight:bold !important;
+	background-color:#D2691E;
+	background-image: url(../images/bcgov_warning.gif);
+	background-repeat: no-repeat;
+}
+.adjustedPriceOutsideFmvVariance {
+	color:#000000 !important;
+	font-weight:bold !important;
+	background-color:#FFCC00;
+	background-image: url(../images/bcgov_warning.gif);
+	background-repeat: no-repeat;
+}
+.totalAmount{
+	color:#333333 !important;
+	font-weight:bold !important;
+}
+.negativeAmount{
+	color:#FF0000 !important;
+}
+.refYearColumn{
+	border: 1px dotted #333333;
+	background-color: #FF00FF;
+}
+
+.yui-dt-paginator:first-child {
+    display:none;
+}
+
+table.scenario-table th {
+  color: #FFFFFF;
+  background-color:#6699CC;
+  font-family:Arial, Helvetica, sans-serif;
+  font-weight:bold;
+}
+
+table.scenario-table tr {
+	text-align: center;
+  background-color:#DFDFDF;
+}
+
+table.scenario-table tr:hover {
+  background-color:#c0c0c1;
+}
+
+table.scenario-table td {
+  padding:3px;
+}
+
+td.select-scenario-button {
+	line-height: 1.5;
+	margin-left: 42px;
+}
+

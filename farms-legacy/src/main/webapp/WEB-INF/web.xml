@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  <!-- WebADE application code. This is how this application is identified in WebADE -->
+  <context-param>
+    <param-name>webade.application.acronym</param-name>
+    <param-value>FARM</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+    <param-value>config.applicationResources</param-value>
+  </context-param>
+
+  <!-- WebADE Filter for authenticating user -->
+  <filter>
+    <filter-name>WebADE Filter</filter-name>
+    <filter-class>ca.bc.gov.webade.j2ee.WebADEFilter</filter-class>
+  </filter>
+  
+  <!-- Data Service Filter for initializing the current user and user cache -->
+  <filter>
+    <filter-name>DataServiceFilter</filter-name>
+    <filter-class>ca.bc.gov.srm.farm.ui.j2ee.DataServiceSessionFilter</filter-class>
+  </filter>
+
+  <!-- Host restrict filter for the web service -->
+  <filter>
+    <filter-name>RestrictHostFilter</filter-name>
+    <filter-class>ca.bc.gov.srm.farm.ui.j2ee.RestrictHostFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>CompressionFilter</filter-name>
+    <filter-class>ca.bc.gov.srm.farm.ui.j2ee.CompressionFilter</filter-class>
+    <init-param>
+      <param-name>exclusions</param-name>
+      <param-value>
+        exportEnrolmentCsv.do
+        aafmExtractDownload.do
+        aafmaExtractDownload.do
+        export600.do
+        export601.do
+        exportFMVs.do
+        exportMissingFMVs.do
+        exportBPUs.do
+        exportMissingBPUs.do
+        backgroundReportDownload.do
+        viewCob.do
+        outputIncomeExpenses.do
+        outputInventory.do
+        outputAccruals.do
+        outputProductiveUnits.do
+        detailedScenarioExtract.do
+        viewTipReport.do
+        generateTipFarmTypeCounts.do
+        downloadTipBatch.do
+        downloadTipReports.do
+        runAndOpenBenchmarkReport.do
+        downloadTipBenchmarkReport.do
+        saveVerificationNotes.do
+      </param-value>
+    </init-param>
+  </filter>
+  
+  <filter>
+    <filter-name>Browser Compatibility Filter</filter-name>
+    <filter-class>ca.bc.gov.srm.farm.web.filters.BrowserCompatibilityFilter</filter-class>
+  </filter>
+  
+  <filter>
+    <filter-name>Security Headers Filter</filter-name>
+    <filter-class>ca.bc.gov.srm.farm.web.filters.SecurityHeadersFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>WebADE Filter</filter-name>
+    <servlet-name>action</servlet-name>
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>DataServiceFilter</filter-name>
+    <servlet-name>action</servlet-name>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CompressionFilter</filter-name>
+    <servlet-name>action</servlet-name>
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>WebADE Filter</filter-name>
+    <servlet-name>AxisServlet</servlet-name>
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>Browser Compatibility Filter</filter-name>
+    <servlet-name>action</servlet-name>
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>Security Headers Filter</filter-name>
+    <servlet-name>action</servlet-name>
+  </filter-mapping>
+
+  <!-- WebADE Servlet Context Listener for initializing WebADE -->
+  <listener>
+    <listener-class>ca.bc.gov.webade.j2ee.WebADEServletContextListener</listener-class>
+  </listener>
+  <!-- Data Service Context listener for initializing data services -->
+  <listener>
+    <listener-class>ca.bc.gov.srm.farm.ui.j2ee.DataServiceContextListener</listener-class>
+  </listener>
+  <!-- Data Service Session listener for removing user cache on session destroyed -->
+  <listener>
+    <listener-class>ca.bc.gov.srm.farm.ui.j2ee.DataServiceSessionListener</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>action</servlet-name>
+    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+    <init-param>
+      <param-name>config</param-name>
+      <param-value>/WEB-INF/struts-config.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>AxisServlet</servlet-name>
+    <display-name>Apache-Axis Servlet</display-name>
+    <servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>action</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+    
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  
+</web-app>
+
