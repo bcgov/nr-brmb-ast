@@ -442,10 +442,6 @@
             <artifactId>content-type</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.security</groupId>
-            <artifactId>jaas</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
