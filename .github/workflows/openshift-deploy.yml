@@ -9,6 +9,7 @@ on:
         type: choice
         options: 
           - farms-api
+          - farms-legacy
       ENVIRONMENT_NAME:
         required: true
         type: choice
@@ -130,6 +131,46 @@ jobs:
           LOCAL_CHECKTOKEN_ENDPOINT: ${{ vars.LOCAL_CHECKTOKEN_ENDPOINT }}
 
           WEB_PATH: ${{ vars.WEB_PATH }}
+
+          #Legacy variables
+          IMPORT_VIRUS_SCAN_DIR: ${{ vars.IMPORT_VIRUS_SCAN_DIR }}
+          IMPORT_STAGING_WINDOW_START: ${{ vars.IMPORT_STAGING_WINDOW_START }}
+          IMPORT_STAGING_WINDOW_END: ${{ vars.IMPORT_STAGING_WINDOW_END }}
+          IMPORT_IMPORT_WINDOW_START: ${{ vars.IMPORT_IMPORT_WINDOW_START }}
+          IMPORT_IMPORT_WINDOW_END: ${{ vars.IMPORT_IMPORT_WINDOW_END }}
+          IMPORT_TIMER_FREQUENCY: ${{ vars.IMPORT_TIMER_FREQUENCY }}
+          WEBAPP_FIRST_BC_ADMIN_YEAR: ${{ vars.WEBAPP_FIRST_BC_ADMIN_YEAR }}
+          WEBAPP_SIGN_OUT_URL: ${{ vars.WEBAPP_SIGN_OUT_URL }}
+          REPORTS_ORACLE_REPORTS_SERVER: ${{ vars.REPORTS_ORACLE_REPORTS_SERVER }}
+          ENROLMENT_START_YEAR: ${{ vars.ENROLMENT_START_YEAR }}
+          ENROLMENT_YEARS_AHEAD: ${{ vars.ENROLMENT_YEARS_AHEAD }}
+          BCEID_WEB_SERVICE_URL: ${{ vars.BCEID_WEB_SERVICE_URL }}
+          BCEID_USER_ID: ${{ secrets.BCEID_USER_ID }}
+          BCEID_USER_PASSWORD: ${{ secrets.BCEID_USER_PASSWORD }}
+          BCEID_ONLINE_SERVICE_ID: ${{ vars.BCEID_ONLINE_SERVICE_ID }}
+          BCEID_EXPIRY_PERIOD: ${{ vars.BCEID_EXPIRY_PERIOD }}
+          HELP_URL: ${{ vars.HELP_URL }}
+          HELP_FILE_PREFIX: ${{ vars.HELP_FILE_PREFIX }}
+          HELP_FILE_SUFFIX: ${{ vars.HELP_FILE_SUFFIX }}
+          WEBSERVICE_ALLOWABLE_IP_REGEX: ${{ vars.WEBSERVICE_ALLOWABLE_IP_REGEX }}
+          REPORTS_JAVA_REPORTS_SERVER: ${{ vars.REPORTS_JAVA_REPORTS_SERVER }}
+          IMPORT_BUSINESS_WINDOW_START: ${{ vars.IMPORT_BUSINESS_WINDOW_START }}
+          IMPORT_BUSINESS_WINDOW_END: ${{ vars.IMPORT_BUSINESS_WINDOW_END }}
+          CRM_ENROLMENT_FEE_MODIFIED_BY_USER_OVERRIDE: ${{ vars.CRM_ENROLMENT_FEE_MODIFIED_BY_USER_OVERRIDE }}
+          CRM_DYNAMICS_URL: ${{ vars.CRM_DYNAMICS_URL }}
+          CRM_API_VERSION: ${{ vars.CRM_API_VERSION }}
+          CRM_AUTHORITY_URL: ${{ vars.CRM_AUTHORITY_URL }}
+          CRM_CLIENT_ID: ${{ secrets.CRM_CLIENT_ID }}
+          CRM_CLIENT_SECRET: ${{ secrets.CRM_CLIENT_SECRET }}
+          CHEFS_AGENT_ENABLED: ${{ vars.CHEFS_AGENT_ENABLED }}
+          CHEFS_API_URL: ${{ vars.CHEFS_API_URL }}
+          CHEFS_API_VERSION: ${{ vars.CHEFS_API_VERSION }}
+          CHEFS_FORM_KEYS_NOL: ${{ vars.CHEFS_FORM_KEYS_NOL }}
+          FIFO_AGENT_ENABLED: ${{ vars.FIFO_AGENT_ENABLED }}
+          REPORTS_JASPER_REST_URL: ${{ vars.REPORTS_JASPER_REST_URL }}
+          REPORTS_JASPER_USER_NAME: ${{ secrets.REPORTS_JASPER_USER_NAME }}
+          REPORTS_JASPER_USER_PASSWORD: ${{ secrets.REPORTS_JASPER_USER_PASSWORD }}
+          REPORTS_JASPER_REPORTS_PATH: ${{ vars.REPORTS_JASPER_REPORTS_PATH }}
 
       #Explicit install of oc cli tool
       - name: Install oc
