@@ -9,6 +9,7 @@ on:
         type: choice
         options: 
           - farms-api
+          - farms-legacy
       ENVIRONMENT_NAME:
         required: true
         type: choice
