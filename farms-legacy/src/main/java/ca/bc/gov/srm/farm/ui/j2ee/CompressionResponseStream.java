@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -346,6 +347,16 @@ public class CompressionResponseStream extends ServletOutputStream {
 
     return (this.closed);
 
+  }
+
+  @Override
+  public boolean isReady() {
+    return true; // always ready (blocking IO)
+  }
+
+  @Override
+  public void setWriteListener(WriteListener arg0) {
+    // no-op: async IO not supported
   }
 
 }

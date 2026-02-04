@@ -189,8 +189,13 @@
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.3</version>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>javax.servlet.jsp-api</artifactId>
+                <version>2.3.3</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.spec.ee</groupId>
@@ -491,7 +496,13 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.ow2.spec.ee</groupId>
@@ -588,28 +599,6 @@
         <dependency>
             <groupId>xsdlib</groupId>
             <artifactId>xsdlib</artifactId>
-        </dependency>
-
-        <!-- WebADE -->
-        <dependency>
-            <groupId>ca.bc.gov.webade</groupId>
-            <artifactId>webade-core-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ca.bc.gov.webade</groupId>
-            <artifactId>webade-core-user</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ca.bc.gov.webade</groupId>
-            <artifactId>webade-core-encrypt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ca.bc.gov.webade</groupId>
-            <artifactId>webade-core-developer-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
         </dependency>
 
         <!-- Miscellaneous -->
