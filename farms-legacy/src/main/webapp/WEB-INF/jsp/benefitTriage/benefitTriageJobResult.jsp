@@ -6,7 +6,7 @@
 <c:set var="importStateCode" value="${details.importVersion.importStateCode}"/>
 
 <h1>
-  <fmt:message key="Fifo.Jobs.Result"/>
+  <fmt:message key="Benefit.Triage.Job.Result"/>
 </h1> 
 
 <table class="details"> 
@@ -32,12 +32,12 @@
   </tr>
   <tr> 
     <th><fmt:message key="Number.of.Participants"/>:</th> 
-    <td><fmt:formatNumber type="number" value="${form.numFifoItemResults}"/></td>
+    <td><fmt:formatNumber type="number" value="${form.numTriageItemResults}"/></td>
   </tr>
-  <c:if test="${! empty form.fifoResults.unexpectedError}">
+  <c:if test="${! empty form.triageResults.unexpectedError}">
    <tr> 
     <th><fmt:message key="Unexpected.Error"/>:</th> 
-    <td><c:out value="${form.fifoResults.unexpectedError}"/></td>
+    <td><c:out value="${form.triageResults.unexpectedError}"/></td>
   </tr>
   </c:if>
 </table>
@@ -57,7 +57,7 @@
   
 </script> 
 <p></p> 
-<c:if test="${form.numFifoItemResults > 0}">
+<c:if test="${form.numTriageItemResults > 0}">
 
     <div class="searchresults">
       <div id="searchresults"></div>
@@ -65,14 +65,14 @@
 
     <script type="text/javascript">
      var data = {
-          "recordsReturned": <c:out value="${form.numFifoItemResults}"/>,
-          "totalRecords": <c:out value="${form.numFifoItemResults}"/>,
+          "recordsReturned": <c:out value="${form.numTriageItemResults}"/>,
+          "totalRecords": <c:out value="${form.numTriageItemResults}"/>,
           "startIndex":0,
           "sort":null,
           "dir":"asc",
           "pageSize": 10,
           "records":[
-            <c:forEach varStatus="loop" var="result" items="${form.fifoResults.fifoItemResults}">
+            <c:forEach varStatus="loop" var="result" items="${form.triageResults.triageItemResults}">
               {
                 "clientName":"<c:out value="${result.clientName}"/>",  
                 "participantPin":"<c:out value="${result.participantPin}"/>",
@@ -80,8 +80,8 @@
                 "estimatedBenefit":"<c:out value="${result.estimatedBenefit}"/>",
                 "scenarioStateCodeDesc":"<c:out value="${result.scenarioStateCodeDesc}"/>",
                 "scenarioNumber":"<c:out value="${result.scenarioNumber}"/>",
-                "errorMessages":"<c:forEach var="err" items="${result.errorMessages}"><c:out value="${err}" /><br/></c:forEach>",
-              }<c:if test="${loop.index < (form.numFifoItemResults-1)}">,</c:if>
+                "errorMessages":"<c:forEach var="err" items="${result.errorMessages}"><c:out value="${err}" /><br/></c:forEach><c:forEach var="msg" items="${result.failMessages}"><c:out value="${msg}" /><br/></c:forEach>",
+              }<c:if test="${loop.index < (form.numTriageItemResults-1)}">,</c:if>
             </c:forEach> 
           ]
        };
@@ -93,7 +93,7 @@
             {key:"participantPin", label:"<fmt:message key="PIN"/>", sortable:false},
             {key:"programYear", label:"<fmt:message key="Year"/>", sortable:false},
             {key:"estimatedBenefit", label:"<fmt:message key="Estimated.Benefit"/>", sortable:false},
-            {key:"errorMessages", label:"<fmt:message key="Error.Messages"/>", sortable:false},
+            {key:"errorMessages", label:"<fmt:message key="Messages"/>", sortable:false},
             {key:"scenarioStateCodeDesc", label:"<fmt:message key="Status"/>", sortable:false}
         ];
   

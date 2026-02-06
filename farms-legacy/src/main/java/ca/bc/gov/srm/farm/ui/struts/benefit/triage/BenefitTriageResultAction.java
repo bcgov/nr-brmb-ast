@@ -1,26 +1,26 @@
-package ca.bc.gov.srm.farm.ui.struts.fifo;
+package ca.bc.gov.srm.farm.ui.struts.benefit.triage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.cache.Cache;
 import ca.bc.gov.srm.farm.cache.CacheFactory;
 import ca.bc.gov.srm.farm.cache.CacheKeys;
 import ca.bc.gov.srm.farm.domain.ImportVersion;
-import ca.bc.gov.srm.farm.domain.fifo.FifoResults;
+import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageResults;
 import ca.bc.gov.srm.farm.service.ImportService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.ui.domain.dataimport.ImportResults;
 import ca.bc.gov.srm.farm.ui.struts.ActionConstants;
 import ca.bc.gov.srm.farm.ui.struts.SecureAction;
 
-public class FifoResultAction extends SecureAction {
+public class BenefitTriageResultAction extends SecureAction {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -28,9 +28,9 @@ public class FifoResultAction extends SecureAction {
   protected ActionForward doExecute(final ActionMapping mapping, final ActionForm actionForm, final HttpServletRequest request,
       final HttpServletResponse response) throws Exception {
 
-    logger.debug("FIFO result...");
+    logger.debug("Benefit Triage result...");
 
-    FifoResultForm form = (FifoResultForm) actionForm;
+    BenefitTriageResultForm form = (BenefitTriageResultForm) actionForm;
     logger.debug("importVersionId " + form.toString());
     Integer importVersionId = new Integer(form.getImportVersionId());
     String key = CacheKeys.IMPORT_RESULTS;
@@ -51,8 +51,8 @@ public class FifoResultAction extends SecureAction {
     ImportVersion iv = service.getImportVersion(importVersionId);
     CacheFactory.getUserCache().addItem(CacheKeys.IMPORT_VERSION, iv);
 
-    FifoResults result = service.getFifoResults(iv);
-    form.setFifoResults(result);
+    BenefitTriageResults result = service.getTriageResults(iv);
+    form.setTriageResults(result);
 
     return mapping.findForward(ActionConstants.SUCCESS);
   }

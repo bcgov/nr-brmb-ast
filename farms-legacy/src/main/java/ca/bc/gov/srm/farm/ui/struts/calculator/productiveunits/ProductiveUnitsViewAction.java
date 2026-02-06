@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +43,7 @@ import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.ui.struts.ActionConstants;
 import ca.bc.gov.srm.farm.ui.struts.calculator.CalculatorAction;
 import ca.bc.gov.srm.farm.ui.struts.calculator.CalculatorForm;
+import ca.bc.gov.srm.farm.ui.struts.message.MessageConstants;
 import ca.bc.gov.srm.farm.util.MathUtils;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
 import ca.bc.gov.srm.farm.util.StringUtils;
@@ -73,12 +76,22 @@ public class ProductiveUnitsViewAction extends CalculatorAction {
     ActionForward forward = mapping.findForward(ActionConstants.SUCCESS);
     
     ProductiveUnitsForm form = (ProductiveUnitsForm) actionForm;
+    ActionMessages errors = new ActionMessages();
     
     Scenario scenario = getScenario(form);
     
     populateForm(form, scenario, true);
     
     setReadOnlyFlag(request, form, scenario);
+    
+    boolean missingSupplementalDates = ScenarioUtils.isMissingSupplementalDates(scenario);
+    if(missingSupplementalDates && ! form.isWholeFarmView() && ! form.isReadOnly()) {
+      errors.add("", new ActionMessage(MessageConstants.ERRORS_PROVINCIAL_SUPPLEMENTAL_RECEIVED_DATE_ADJUSTMENT_SCREENS));
+    }
+    
+    if( ! errors.isEmpty() ) {
+      saveErrors(request, errors);
+    }
 
     return forward;
   }
@@ -99,10 +112,12 @@ public class ProductiveUnitsViewAction extends CalculatorAction {
     if(setAdjustedValues) {
       form.clear();
     }
-    
+
+    form.setIsBaseData(scenario.isBaseData());
+
     if(StringUtils.isBlank(form.getFinancialViewRadio())) {
       form.setUnitsViewRadio(ProductiveUnitsForm.UNITS_VIEW_ROLLUP);
-      if(scenario.isUserScenario() || scenario.isFifoScenario()) {
+      if(scenario.isUserScenario() || scenario.isBenefitTriageScenario()) {
         form.setFinancialViewRadio(ProductiveUnitsForm.FINANCIAL_VIEW_ADJUSTED);
       } else {
         form.setFinancialViewRadio(ProductiveUnitsForm.FINANCIAL_VIEW_CRA);
@@ -115,7 +130,7 @@ public class ProductiveUnitsViewAction extends CalculatorAction {
     
     syncFarmViewCacheWithForm(form);
     
-    if(form.getFarmView().equals(CalculatorForm.FARM_VIEW_WHOLE)) {
+    if(form.isWholeFarmView()) {
       populateFormForWholeFarm(form, scenario);
       populateFormForRolledUpWholeFarm(form, scenario);
     } else {

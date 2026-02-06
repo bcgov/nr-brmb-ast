@@ -328,6 +328,7 @@ public class ProductiveUnitsSaveAction extends ProductiveUnitsViewAction {
       }
       
       if(hasSupplemental) {
+        errors.add("", new ActionMessage(MessageConstants.ERRORS_CHANGES_NOT_SAVED));
         errors.add("", new ActionMessage(MessageConstants.ERRORS_PROVINCIAL_SUPPLEMENTAL_RECEIVED_DATE_ADJUSTMENT_SCREENS));
       }
     }

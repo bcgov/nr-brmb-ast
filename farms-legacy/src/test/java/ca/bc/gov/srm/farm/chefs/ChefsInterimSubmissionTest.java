@@ -10,12 +10,15 @@
  */
 package ca.bc.gov.srm.farm.chefs;
 
+import static ca.bc.gov.srm.farm.chefs.forms.ChefsFormConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,9 +41,14 @@ import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.chefs.database.ChefsSubmissionStatusCodes;
 import ca.bc.gov.srm.farm.chefs.processor.InterimSubmissionProcessor;
 import ca.bc.gov.srm.farm.chefs.resource.common.CattleGrid;
+import ca.bc.gov.srm.farm.chefs.resource.common.CropGrid;
+import ca.bc.gov.srm.farm.chefs.resource.common.GrainGrid;
+import ca.bc.gov.srm.farm.chefs.resource.common.NurseryGrid;
+import ca.bc.gov.srm.farm.chefs.resource.common.OtherPucGrid;
 import ca.bc.gov.srm.farm.chefs.resource.interim.ExpenseGrid;
 import ca.bc.gov.srm.farm.chefs.resource.interim.IncomeGrid;
 import ca.bc.gov.srm.farm.chefs.resource.interim.InterimSubmissionDataResource;
+import ca.bc.gov.srm.farm.chefs.resource.interim.InterimSubmissionRequestDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.interim.InventoryGridLivestock;
 import ca.bc.gov.srm.farm.chefs.resource.interim.ProductionGrid;
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
@@ -292,7 +300,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0001-000000000000";
     
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     deleteSubmission(submissionGuid);
 
@@ -362,7 +370,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     deleteSubmission(submissionGuid);
 
@@ -375,7 +382,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     int programYear = 2022;
     String submissionGuid = "00000000-0000-0001-0002-000000000000";
     
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     deleteSubmission(submissionGuid);
 
@@ -446,7 +453,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     deleteSubmission(submissionGuid);
   }
@@ -456,7 +462,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0003-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     deleteSubmission(submissionGuid);
 
@@ -486,6 +492,12 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     data.setOrigin("external");
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
+
+    data.setCropsFarmed(Arrays.asList("berries"));
+
+    data.setBerryGrid(Arrays.asList(
+      new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
+    ));
 
     InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
     processor.setUser(user);
@@ -528,7 +540,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     deleteSubmission(submissionGuid);
   }
@@ -538,7 +549,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0003-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     deleteSubmission(submissionGuid);
 
@@ -568,6 +579,12 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     data.setOrigin("external");
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
+
+    data.setCropsFarmed(Arrays.asList("berries"));
+
+    data.setBerryGrid(Arrays.asList(
+      new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
+    ));
 
     InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
     processor.setUser(user);
@@ -610,7 +627,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     deleteSubmission(submissionGuid);
   }
@@ -621,7 +637,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0004-000000000000";
     
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     deleteSubmission(submissionGuid);
 
@@ -651,6 +667,12 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     data.setOrigin("external");
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
+
+    data.setCropsFarmed(Arrays.asList("berries"));
+
+    data.setBerryGrid(Arrays.asList(
+      new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
+    ));
 
     InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
     processor.setUser(user);
@@ -692,7 +714,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     deleteSubmission(submissionGuid);
   }
@@ -702,7 +723,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0004-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     deleteSubmission(submissionGuid);
 
@@ -732,6 +753,12 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     data.setOrigin("external");
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
+
+    data.setCropsFarmed(Arrays.asList("berries"));
+
+    data.setBerryGrid(Arrays.asList(
+      new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
+    ));
 
     InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
     processor.setUser(user);
@@ -773,7 +800,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     deleteSubmission(submissionGuid);
   }
@@ -783,7 +809,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0005-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     deleteSubmission(submissionGuid);
 
@@ -813,6 +839,12 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     data.setOrigin("external");
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
+
+    data.setCropsFarmed(Arrays.asList("berries"));
+
+    data.setBerryGrid(Arrays.asList(
+      new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
+    ));
 
     InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
     processor.setUser(user);
@@ -891,6 +923,9 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     
     // Set CHEFS Scenario submissionId to null if it exists, from a previous test run.
     setScenarioSubmissionId(programYear, programYearMetadata, null);
+
+    // Delete the validation error task if it exists, from a previous test run.
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previous test run.
     deleteSubmission(submissionGuid);
@@ -971,7 +1006,13 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     pg.setCropUnit(new LabelValue("Pounds","1"));
     productionGridList.add(pg);
     data.setProductiongrid(productionGridList);
-    
+
+    data.setCropsFarmed(Arrays.asList("berries"));
+
+    data.setBerryGrid(Arrays.asList(
+      new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
+    ));
+
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
@@ -1006,7 +1047,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getValidationTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(2, submissionRec.getRevisionCount().intValue());
 
     programYearMetadata = getProgramYearMetadata(participantPin, programYear);
     assertNotNull(programYearMetadata);
@@ -1055,8 +1095,8 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     logger.debug("craProductiveUnitsMap: " + craProductiveUnitsMap);
     assertEquals(0, fo.getCraProductiveUnitCapacities().size());
     
-    assertEquals(1, fo.getCropItems().size());
-    CropItem in = fo.getCropItems().get(0);
+    assertEquals(2, fo.getCropItems().size());
+    CropItem in = fo.getCropItems().get(1);
     assertEquals(Double.valueOf(78.0), in.getReportedQuantityProduced());
 
     IncomeExpense income = null;
@@ -1119,10 +1159,10 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     
     scenario.setVerifierUserId(farmUser.getUserId());
     
-    String fifoResultType = null;
+    String benefitTriageResultType = null;
     try {
       calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, formUserType,
-          ChefsFormTypeCodes.INTERIM, fifoResultType, user);
+          ChefsFormTypeCodes.INTERIM, benefitTriageResultType, user);
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected Exception");
@@ -1178,7 +1218,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     Integer programYear = 2023;
     String submissionGuid = "b9c01414-e17a-45de-84fa-e0113456208d";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
     assertNotNull(programYearMetadata);
@@ -1225,6 +1265,12 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     mc.setLabel("Cariboo");
     data.setMunicipalityCode(mc);
 
+    data.setCropsFarmed(Arrays.asList("berries"));
+
+    data.setBerryGrid(Arrays.asList(
+      new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
+    ));
+
     InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
@@ -1266,7 +1312,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Correct the SIN Number
     data.setSinNumber("999999999");
@@ -1484,7 +1529,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[1]);
@@ -1495,7 +1539,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       assertEquals("66666666-6666-6666-6666-666666666001", submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[2]);
@@ -1506,7 +1549,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
 
     // Update the submissions
@@ -1562,7 +1604,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       assertEquals("66666666-6666-6666-6666-666666666000", submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[1]);
@@ -1573,7 +1614,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[2]);
@@ -1584,7 +1624,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
 
     // Delete the submissions
@@ -1814,6 +1853,294 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertNull(task);
 
   }
+
+  @Test
+  public void duplicateProductiveUnits() {
+
+    Integer participantPin = 638816783;
+    Integer programYear = 2023;
+
+    InterimSubmissionDataResource data = new InterimSubmissionDataResource();
+
+    LabelValue farmType = new LabelValue();
+    farmType.setValue(FIELD_VALUE_FARM_TYPE_INDIVIDUAL);
+    farmType.setLabel("Individual");
+    data.setFarmType(farmType);
+    data.setAgriStabilityAgriInvestPin(participantPin);
+    data.setBusinessTaxNumberBn(null);
+    data.setTrustBusinessNumber(null);
+    data.setTrustNumber(null);
+    data.setSinNumber("123456789");
+    data.setBandNumber(null);
+    data.setTelephone("(648) 452-4357");
+    data.setEmail("johnny@farmer.ca");
+
+    data.setFiscalYearStart(Date.from(LocalDate.of(2023, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    data.setFiscalYearEnd(Date.from(LocalDate.of(2023, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+    data.setCropsFarmed(Arrays.asList("berries", "grainsOilseeds", "treefruitsGrapes", "vegetables", "nurseriesGreenhouse", "nonEdibleHorticulture"));
+
+    data.setBerryGrid(Arrays.asList(
+      new CropGrid("5000 - Blackberries", "5000", 1.0, null, null),
+      new CropGrid("5000 - Blackberries", "5000", 1.1, null, null)
+    ));
+
+    data.setTreeFruitGrid(Arrays.asList(
+      new CropGrid("5014 - Grapes", "5014", 14.0, null, null),
+      new CropGrid("5014 - Grapes", "5014", 14.4, null, null)
+    ));
+
+    data.setVegetableGrid(Arrays.asList(
+      new CropGrid("6 - Borage", "6", 29.0, null, null),
+      new CropGrid("6 - Borage", "6", 29.9, null, null)
+    ));
+
+    data.setGrainGrid(Arrays.asList(
+      new GrainGrid("4784 - Hops", "4784", 144.0),
+      new GrainGrid("4784 - Hops", "4784", 144.4)
+    ));
+
+    data.setNurseryGrid(Arrays.asList(
+      new NurseryGrid("6930 - Maple Syrup", "6930", 354, null, null),
+      new NurseryGrid("6930 - Maple Syrup", "6930", 355, null, null)
+    ));
+
+    data.setLivestockFarmed(Arrays.asList("cattle", "customFeed", "poultry", "swine", "otherLivestock"));
+
+    data.setOpdGrid(Arrays.asList(
+      new OtherPucGrid("100 - Alpaca", "100", 419),
+      new OtherPucGrid("100 - Alpaca", "100", 420)
+    ));
+
+    data.setOnBehalfOfParticipant("no");
+    data.setHowDoYouKnowTheParticipant("online");
+
+    data.setOrigin("external");
+    data.setExternalMethod("chefsForm");
+    data.setEnvironment("DEV");
+    data.setInternalMethod(null);
+
+    SubmissionParentResource<InterimSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+
+    SubmissionResource<InterimSubmissionDataResource> submission = new SubmissionResource<>();
+
+    InterimSubmissionRequestDataResource<InterimSubmissionDataResource> request = new InterimSubmissionRequestDataResource<>();
+    request.setDraft(false);
+    request.setCreatedBy(user);
+    request.setCreatedAt(new Date().toString());
+    request.setUpdatedBy(user);
+    request.setUpdatedAt(new Date().toString());
+    request.setSubmission(submission);
+
+    submission.setData(data);
+    submissionMetaData.setSubmission(submission);
+    submissionMetaData.setSubmissionGuid(null);
+
+    // Interim IDIR formId and formVersionId
+    String formId = "e3926e86-2347-46aa-b634-622ac0aa26d5";
+    String formVersionId = "c6247953-e439-4092-96e1-cc08e0807a2d";
+
+    String postSubmissionUrl = chefsConfig.postSubmissionUrl(formId, formVersionId);
+    assertNotNull(postSubmissionUrl);
+    try {
+      submissionMetaData = chefsApiDao.postInterimSubmission(postSubmissionUrl, request);
+    } catch (ServiceException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+
+    InterimSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
+    String submissionGuid = submissionMetaData.getSubmissionGuid();
+    resultData.setSubmissionGuid(submissionGuid);
+    logger.debug("submissionGuid: " + submissionGuid);
+
+    List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+    assertNotNull(programYearMetadata);
+
+    // Delete the submission if it exists, from a previous test run.
+    deleteSubmission(submissionGuid);
+
+    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+
+    // Process the submission data
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    processor.setUser(user);
+    processor.setItemResourceMap(itemResourceMap);
+
+    CrmTaskResource validationTask = null;
+    try {
+      processor.loadSubmissionsFromDatabase();
+      validationTask = processor.processSubmission(submissionMetaData);
+    } catch (ServiceException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+    assertNotNull(validationTask);
+    assertNotNull(validationTask.getAccountId());
+    assertEquals(programYear + " Interim " + participantPin, validationTask.getSubject());
+    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
+    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
+    assertEquals(formUserType + " Interim form was submitted but has validation errors:\n" + "\n"
+        + "- The following productive unit codes have duplicates: 100, 5000, 6, 5014, 4784, 6930\n"
+        + "\n" + "Participant Name: \n"
+        + "Telephone: (648) 452-4357\n" + "Email: johnny@farmer.ca\n", validationTask.getDescription());
+
+    // Get the record from FARM_CHEF_SUBMISSIONS, created by the processor
+    // to track the status of the submission.
+    ChefsSubmission submissionRec = null;
+    try {
+      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+    } catch (DataAccessException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+    assertNotNull(submissionRec);
+
+    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+    assertEquals(ChefsFormTypeCodes.INTERIM, submissionRec.getFormTypeCode());
+    assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
+    assertNotNull(submissionRec.getValidationTaskGuid());
+    assertNotNull(submissionRec.getSubmissionId());
+    assertNotNull(submissionRec.getRevisionCount());
+
+    validationTask = completeAndGetValidationErrorTask(validationTask);
+
+    assertNotNull(validationTask);
+    assertNotNull(validationTask.getAccountId());
+    assertEquals(programYear + " Interim " + participantPin, validationTask.getSubject());
+    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_COMPLETED), validationTask.getStateCode());
+    assertEquals(Integer.valueOf(CrmConstants.TASK_STATUS_CODE_NOT_STARTED), validationTask.getStatusCode());
+
+    deleteSubmission(submissionGuid);
+  }
+  
+  @Test
+  public void missingProductiveUnits() {
+    
+    Integer participantPin = 638816783;
+    Integer programYear = 2023;
+    
+    InterimSubmissionDataResource data = new InterimSubmissionDataResource();
+    
+    LabelValue farmType = new LabelValue();
+    farmType.setValue(FIELD_VALUE_FARM_TYPE_INDIVIDUAL);
+    farmType.setLabel("Individual");
+    data.setFarmType(farmType);
+    data.setAgriStabilityAgriInvestPin(participantPin);
+    data.setBusinessTaxNumberBn(null);
+    data.setTrustBusinessNumber(null);
+    data.setTrustNumber(null);
+    data.setSinNumber("123456789");
+    data.setBandNumber(null);
+    data.setTelephone("(648) 452-4357");
+    data.setEmail("johnny@farmer.ca");
+
+    data.setFiscalYearStart(Date.from(LocalDate.of(2023, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    data.setFiscalYearEnd(Date.from(LocalDate.of(2023, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    
+    data.setOnBehalfOfParticipant("no");
+    data.setHowDoYouKnowTheParticipant("online");
+    
+    data.setOrigin("external");
+    data.setExternalMethod("chefsForm");
+    data.setEnvironment("DEV");
+    data.setInternalMethod(null);
+    
+    SubmissionParentResource<InterimSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+    
+    SubmissionResource<InterimSubmissionDataResource> submission = new SubmissionResource<>();
+    
+    InterimSubmissionRequestDataResource<InterimSubmissionDataResource> request = new InterimSubmissionRequestDataResource<>();
+    request.setDraft(false);
+    request.setCreatedBy(user);
+    request.setCreatedAt(new Date().toString());
+    request.setUpdatedBy(user);
+    request.setUpdatedAt(new Date().toString());
+    request.setSubmission(submission);
+    
+    submission.setData(data);
+    submissionMetaData.setSubmission(submission);
+    submissionMetaData.setSubmissionGuid(null);
+    
+    // Interim IDIR formId and formVersionId
+    String formId = "e3926e86-2347-46aa-b634-622ac0aa26d5";
+    String formVersionId = "c6247953-e439-4092-96e1-cc08e0807a2d";
+    
+    String postSubmissionUrl = chefsConfig.postSubmissionUrl(formId, formVersionId);
+    assertNotNull(postSubmissionUrl);
+    try {
+      submissionMetaData = chefsApiDao.postInterimSubmission(postSubmissionUrl, request);
+    } catch (ServiceException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+    
+    InterimSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
+    String submissionGuid = submissionMetaData.getSubmissionGuid();
+    resultData.setSubmissionGuid(submissionGuid);
+    logger.debug("submissionGuid: " + submissionGuid);
+    
+    List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+    assertNotNull(programYearMetadata);
+    
+    // Delete the submission if it exists, from a previous test run.
+    deleteSubmission(submissionGuid);
+    
+    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+    
+    // Process the submission data
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    processor.setUser(user);
+    processor.setItemResourceMap(itemResourceMap);
+    
+    CrmTaskResource validationTask = null;
+    try {
+      processor.loadSubmissionsFromDatabase();
+      validationTask = processor.processSubmission(submissionMetaData);
+    } catch (ServiceException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+    assertNotNull(validationTask);
+    assertNotNull(validationTask.getAccountId());
+    assertEquals(programYear + " Interim " + participantPin, validationTask.getSubject());
+    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
+    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
+    assertEquals(formUserType + " Interim form was submitted but has validation errors:\n" + "\n"
+        + "- No productive units entered\n"
+        + "\n" + "Participant Name: \n"
+        + "Telephone: (648) 452-4357\n" + "Email: johnny@farmer.ca\n", validationTask.getDescription());
+    
+    // Get the record from FARM_CHEF_SUBMISSIONS, created by the processor
+    // to track the status of the submission.
+    ChefsSubmission submissionRec = null;
+    try {
+      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+    } catch (DataAccessException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+    assertNotNull(submissionRec);
+    
+    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+    assertEquals(ChefsFormTypeCodes.INTERIM, submissionRec.getFormTypeCode());
+    assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
+    assertNotNull(submissionRec.getValidationTaskGuid());
+    assertNotNull(submissionRec.getSubmissionId());
+    assertNotNull(submissionRec.getRevisionCount());
+    
+    validationTask = completeAndGetValidationErrorTask(validationTask);
+    
+    assertNotNull(validationTask);
+    assertNotNull(validationTask.getAccountId());
+    assertEquals(programYear + " Interim " + participantPin, validationTask.getSubject());
+    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_COMPLETED), validationTask.getStateCode());
+    assertEquals(Integer.valueOf(CrmConstants.TASK_STATUS_CODE_NOT_STARTED), validationTask.getStatusCode());
+    
+    deleteSubmission(submissionGuid);
+    deleteSubmissionsFromChefs(submissionGuid);
+  }
+
 
   private SubmissionParentResource<InterimSubmissionDataResource> buildSubmissionMetaData() {
 

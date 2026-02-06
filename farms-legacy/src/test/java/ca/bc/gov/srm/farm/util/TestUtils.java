@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
@@ -19,10 +20,17 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import ca.bc.gov.srm.farm.cache.CacheFactory;
 import ca.bc.gov.srm.farm.cache.CacheKeys;
+import ca.bc.gov.srm.farm.dao.CalculatorDAO;
+import ca.bc.gov.srm.farm.dao.ReadDAO;
 import ca.bc.gov.srm.farm.domain.Scenario;
+import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
+import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
+import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
+import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.factory.ObjectFactory;
 import ca.bc.gov.srm.farm.security.BusinessAction;
+import ca.bc.gov.srm.farm.service.ImportService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.transaction.TransactionProvider;
 import ca.bc.gov.srm.farm.webade.WebADERequest;
@@ -181,5 +189,91 @@ public final class TestUtils {
         logger.debug("Message: [" + msg.getKey() + "], values: " + Arrays.toString(msg.getValues()));
       }
     }
+  }
+
+  
+  public static void runQueuedImport(Connection conn) {
+    runQueuedImports(conn, 1);
+  }
+  
+  public static void runQueuedImports(Connection conn, int executions) {
+    
+    for(int i = 0; i < executions; i++) {
+    
+      try {
+        
+        ImportService service = ServiceFactory.getImportService();
+        
+        service.checkForScheduledImport(conn);
+        conn.commit();
+        
+      } catch(Exception ex) {
+        ex.printStackTrace();
+        fail(ex.getMessage());
+      }
+      
+    }
+  }
+
+  public static void deleteFinalScenarios(Integer participantPin, Integer programYear, Connection connection) {
+    deleteScenarios(participantPin, programYear, ScenarioCategoryCodes.FINAL, ScenarioTypeCodes.USER, connection);
+  }
+
+  public static void deleteBenefitTriageScenarios(Integer participantPin, Integer programYear, Connection connection) {
+    deleteScenarios(participantPin, programYear, ScenarioCategoryCodes.TRIAGE, ScenarioTypeCodes.TRIAGE, connection);
+  }
+
+  public static void deleteScenarios(Integer participantPin, Integer programYear, String scenarioCategoryCode,
+      String scenarioTypeCode, Connection connection) {
+    
+    List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear, connection);
+    
+    CalculatorDAO calculatorDao = new CalculatorDAO();
+    
+    // Delete the TRIAGE scenarios
+    List<ScenarioMetaData> triageScenarios =
+        ScenarioUtils.findScenariosByCategory(programYearMetadata, programYear, scenarioCategoryCode, scenarioTypeCode);
+    for(ScenarioMetaData scenarioMetadata : triageScenarios) {
+      Integer triageScenario = scenarioMetadata.getScenarioId();
+      assertNotNull(triageScenario);
+  
+      try {
+        calculatorDao.deleteUserScenario(connection, triageScenario);
+        connection.commit();
+      } catch (DataAccessException | SQLException e) {
+        e.printStackTrace();
+        try {
+          connection.rollback();
+        } catch (SQLException e1) {
+          e1.printStackTrace();
+          fail("Unexpected Exception");
+        }
+        fail("Unexpected Exception");
+      }
+    }
+  }
+
+
+  public static List<ScenarioMetaData> getProgramYearMetadata(Integer participantPin, Integer programYear, Connection connection) {
+    // Get the list of scenarios for the program year
+    List<ScenarioMetaData> programYearMetadata = null;
+    
+    ReadDAO readDAO = new ReadDAO(connection);
+    
+    try {
+      programYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      try {
+        connection.rollback();
+      } catch (SQLException e1) {
+        e1.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      fail("Unexpected Exception");
+    }
+    assertNotNull(programYearMetadata);
+    assertFalse(programYearMetadata.isEmpty());
+    return programYearMetadata;
   }
 }

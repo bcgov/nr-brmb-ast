@@ -52,7 +52,7 @@
     <th width="80"><fmt:message key="IV"/></th>
     <th width="80"><fmt:message key="IV.Purchased"/></th>
     <th width="80"><fmt:message key="Reported"/> (qty unit)</th>
-    <th width="80"><fmt:message key="Guaranteed.Prod.Value"/> (qty unit)</th>
+    <th width="80"><fmt:message key="Total.Probable.Yield"/> (qty unit)</th>
     <th width="80"><fmt:message key="Premiums.Paid"/></th>
     <th width="80"><fmt:message key="Claims.Received"/></th>
     <th width="80" class="refColumn"><fmt:message key="Deemed.Received"/></th>

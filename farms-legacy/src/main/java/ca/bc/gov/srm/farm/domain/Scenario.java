@@ -911,11 +911,11 @@ public class Scenario extends ReferenceScenario {
   }
   
   /**
-   * @return true if this is a scenario of type FIFO
+   * @return true if this is a scenario of type TRIAGE
    */
   @JsonIgnore
-  public boolean isFifoScenario() {
-    return ScenarioTypeCodes.FIFO.equals(getScenarioTypeCode());
+  public boolean isBenefitTriageScenario() {
+    return ScenarioTypeCodes.TRIAGE.equals(getScenarioTypeCode());
   }
   
   /**

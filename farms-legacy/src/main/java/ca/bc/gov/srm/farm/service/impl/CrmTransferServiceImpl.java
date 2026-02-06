@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import ca.bc.gov.srm.farm.crm.resource.CrmBenefitUpdateResource;
 import ca.bc.gov.srm.farm.crm.transform.BenefitUpdateTransformer;
 import ca.bc.gov.srm.farm.dao.ChefsDatabaseDAO;
 import ca.bc.gov.srm.farm.dao.CrmTransferDAO;
+import ca.bc.gov.srm.farm.dao.ImportDAO;
 import ca.bc.gov.srm.farm.dao.StagingDAO;
 import ca.bc.gov.srm.farm.dao.VersionDAO;
 import ca.bc.gov.srm.farm.domain.Client;
@@ -56,6 +58,7 @@ import ca.bc.gov.srm.farm.domain.codes.ImportClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.ImportStateCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
 import ca.bc.gov.srm.farm.domain.enrolment.Enrolment;
+import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.service.BaseService;
 import ca.bc.gov.srm.farm.service.CdogsService;
@@ -80,7 +83,7 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
   
   private final BenefitUpdateTransformer benefitTransformer = new BenefitUpdateTransformer();
   
-  private final CrmRestApiDao restApiDao = new CrmRestApiDao();
+  private final CrmRestApiDao crmDao = new CrmRestApiDao();
   
   private final CrmConfigurationUtil crmConfig = CrmConfigurationUtil.getInstance();
   
@@ -103,11 +106,11 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
   @SuppressWarnings("resource")
   @Override
   public void scheduleBenefitTransfer(Scenario scenario, String userEmail, String userId,
-      String chefsFormNotes, String formUserType, String chefsFormType, String fifoResultType, Transaction transaction)
+      String chefsFormNotes, String formUserType, String chefsFormType, String benefitTriageResultType, Transaction transaction)
   throws Exception {
     
     Date stateChangeDate = new Date(); // now
-    String csvLine = benefitTransformer.generateCsv(scenario, stateChangeDate, userEmail, chefsFormNotes, formUserType, chefsFormType, fifoResultType);
+    String csvLine = benefitTransformer.generateCsv(scenario, stateChangeDate, userEmail, chefsFormNotes, formUserType, chefsFormType, benefitTriageResultType);
     
     String transferDescriptionTemplate = "State Change Transfer for %d PIN: %d, State: %s, Category: %s";
     String transferDescription = String.format(
@@ -155,6 +158,47 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
     
   }
 
+  
+  @Override
+  public void immediateBenefitTransfer(Scenario scenario, String userEmail, String userId,
+      String chefsFormNotes, String formUserType, String chefsFormType, String benefitTriageResultType, Connection connection)
+  throws ServiceException {
+    
+    try {
+      ImportDAO dao = new ImportDAO();
+      
+      Date stateChangeDate = new Date(); // now
+      String csvLine = benefitTransformer.generateCsv(scenario, stateChangeDate, userEmail, chefsFormNotes, formUserType, chefsFormType, benefitTriageResultType);
+      StringReader stringReader = new StringReader(csvLine);
+      CSVReader csvReader = new CSVReader(stringReader);
+      String[] fields = csvReader.readNext();
+      
+      postBenefitTransfer(connection, fields, userId);
+      
+      String importClassCode = ImportClassCodes.XSTATE;
+      String importStateCode = ImportStateCodes.IMPORT_COMPLETE;
+      final String transferDescriptionTemplate = "State Change Transfer for %d PIN: %d, State: %s, Category: %s";
+      String transferDescription = String.format(
+          transferDescriptionTemplate,
+          scenario.getYear(),
+          scenario.getClient().getParticipantPin(),
+          scenario.getScenarioStateCodeDescription(),
+          scenario.getScenarioCategoryCodeDescription());
+      
+      dao.createEmptyTransferRecord(userId, connection, importClassCode, importStateCode, transferDescription);
+      connection.commit();
+    } catch (DataAccessException e) {
+      logger.error("DataAccessException: ", e);
+      throw new ServiceException(e);
+    } catch (IOException e) {
+      logger.error("IOException: ", e);
+      throw new ServiceException(e);
+    } catch (SQLException e) {
+      logger.error("SQLException: ", e);
+      throw new ServiceException(e);
+    }
+  }
+
 
   @Override
   public void transferBenefitUpdate(final Connection connection,
@@ -174,35 +218,26 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
       connection.commit();
       sdao.status(importVersionId, "Started");
       
-      if(crmConfig.isBenefitUrlConfigured()) {
-
-        try(FileReader fileReader = new FileReader(transferFile)) {
-          CSVReader reader = new CSVReader(fileReader);
-          
-          int lineNum = 0;
-          String[] fields = reader.readNext();
-          while(fields != null) {
-            try {
-              postBenefitTransfer(connection, fields, user);
-            } catch(Exception e) {
-              String message = "Error processing line " + lineNum + ": " + e;
-              logger.error(message);
-              throw new ServiceException(message);
-            }
-            fields = reader.readNext();
-            lineNum++;
+      try(FileReader fileReader = new FileReader(transferFile)) {
+        CSVReader reader = new CSVReader(fileReader);
+        
+        int lineNum = 0;
+        String[] fields = reader.readNext();
+        while(fields != null) {
+          try {
+            postBenefitTransfer(connection, fields, user);
+          } catch(Exception e) {
+            String message = "Error processing line " + lineNum + ": " + e;
+            logger.error(message);
+            throw new ServiceException(message);
           }
-
-          int numTransferred = lineNum;
-          transferCompleted(connection, importVersionId, user, vdao, numTransferred);
-          sdao.status(importVersionId, numTransferred + " State Change Events transferred to CRM.");
+          fields = reader.readNext();
+          lineNum++;
         }
-      } else {
-        String xml = ImportLogFormatter.createEmptyImportXml();
-        sdao.status(importVersionId,
-            "CRM Web Service is not configured. No State Change Events transferred to CRM.");
-        vdao.importFailed(importVersionId, xml, user);
-        connection.commit();
+
+        int numTransferred = lineNum;
+        transferCompleted(connection, importVersionId, user, vdao, numTransferred);
+        sdao.status(importVersionId, numTransferred + " State Change Events transferred to CRM.");
       }
 
     } catch (Throwable t) {
@@ -226,7 +261,6 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
   throws ServiceException {
     logger.debug("<postBenefitTransfer");
 
-    CrmRestApiDao crmDao = new CrmRestApiDao();
     CrmBenefitUpdateResource resource = crmDao.createBenefitUpdate(fields);
 
     String submissionGuid = CrmTransferFormatUtil.getFieldValue(fields, SUBMISSIONGUID_INDEX);
@@ -328,52 +362,43 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
       vdao.startImport(importVersionId, user);
       connection.commit();
       sdao.status(importVersionId, "Started");
-      
-      if(crmConfig.isTaskUrlConfigured()) {
 
-        List<Integer> clientIds = new ArrayList<>();
-        Map<Integer, String> submissionGuidMap = new HashMap<>();
-        Map<Integer, String> formUserTypedMap = new HashMap<>();
-        try(FileReader fileReader = new FileReader(transferFile)) {
-          CSVReader reader = new CSVReader(fileReader);
-          String[] idStrings = reader.readNext();
-          String[] submissionGuidStrings = reader.readNext();
-          String[] formUserTypeStrings = reader.readNext();
-          if(reader.readNext() != null) {
-            throw new IllegalArgumentException("Expected no more lines");
+      List<Integer> clientIds = new ArrayList<>();
+      Map<Integer, String> submissionGuidMap = new HashMap<>();
+      Map<Integer, String> formUserTypedMap = new HashMap<>();
+      try(FileReader fileReader = new FileReader(transferFile)) {
+        CSVReader reader = new CSVReader(fileReader);
+        String[] idStrings = reader.readNext();
+        String[] submissionGuidStrings = reader.readNext();
+        String[] formUserTypeStrings = reader.readNext();
+        if(reader.readNext() != null) {
+          throw new IllegalArgumentException("Expected no more lines");
+        }
+        for (int ii = 0; ii < idStrings.length; ii++) {
+          Integer curId = new Integer(idStrings[ii]);
+          clientIds.add(curId);
+          if (submissionGuidStrings != null && ii < submissionGuidStrings.length) {
+            submissionGuidMap.put(curId, submissionGuidStrings[ii]);
           }
-          for (int ii = 0; ii < idStrings.length; ii++) {
-            Integer curId = new Integer(idStrings[ii]);
-            clientIds.add(curId);
-            if (submissionGuidStrings != null && ii < submissionGuidStrings.length) {
-              submissionGuidMap.put(curId, submissionGuidStrings[ii]);
-            }
-            if (formUserTypeStrings != null && ii < formUserTypeStrings.length) {
-              formUserTypedMap.put(curId, formUserTypeStrings[ii]);
-            }
+          if (formUserTypeStrings != null && ii < formUserTypeStrings.length) {
+            formUserTypedMap.put(curId, formUserTypeStrings[ii]);
           }
         }
-        
-        List<Client> transferList = tdao.getContactInformation(connection, clientIds);
-        Map<Integer, FarmingYear> farmingYears = tdao.getFarmingYears(connection, clientIds);
-        
-        for (Client client : transferList) {
-          FarmingYear farmingYear = farmingYears.get(client.getClientId());
-          handleAccountUpdate(client, farmingYear, submissionGuidMap.get(client.getClientId()),
-              formUserTypedMap.get(client.getClientId()));
-        }
-
-        int numTransferred = clientIds.size();
-        transferCompleted(connection, importVersionId, user, vdao, numTransferred);
-        sdao.status(importVersionId,
-            "Updated Contact Info transferred to CRM for " + numTransferred + " Participants.");
-      } else {
-        String xml = ImportLogFormatter.createEmptyImportXml();
-        sdao.status(importVersionId,
-            "CRM Web Service is not configured. No Updated Contact Info transferred to CRM.");
-        vdao.importFailed(importVersionId, xml, user);
-        connection.commit();
       }
+      
+      List<Client> transferList = tdao.getContactInformation(connection, clientIds);
+      Map<Integer, FarmingYear> farmingYears = tdao.getFarmingYears(connection, clientIds);
+      
+      for (Client client : transferList) {
+        FarmingYear farmingYear = farmingYears.get(client.getClientId());
+        handleAccountUpdate(client, farmingYear, submissionGuidMap.get(client.getClientId()),
+            formUserTypedMap.get(client.getClientId()));
+      }
+
+      int numTransferred = clientIds.size();
+      transferCompleted(connection, importVersionId, user, vdao, numTransferred);
+      sdao.status(importVersionId,
+          "Updated Contact Info transferred to CRM for " + numTransferred + " Participants.");
 
     } catch (Throwable t) {
       String message = "Error processing account update: " + t;
@@ -396,7 +421,6 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
 
 
   private void handleAccountUpdate(Client client, FarmingYear farmingYear, String submissionGuid, String formUserType) throws ServiceException {
-    CrmRestApiDao crmDao = new CrmRestApiDao();
     
     CrmAccountResource crmAccount = crmDao.getAccountByPin(client.getParticipantPin());
 
@@ -417,7 +441,7 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
       }
       
       if(updateAccount) {
-        restApiDao.updateAccount(crmAccount);
+        crmDao.updateAccount(crmAccount);
       }
 
       // If handling a CHEFS form then upload the PDF of the form.
@@ -438,7 +462,6 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
       throws Exception {
     logger.debug("<postEnrolment");
 
-    CrmRestApiDao crmDao = new CrmRestApiDao();
     crmDao.createEnrolmentUpdate(e, importVersionId, user);
     
     logger.debug(">postEnrolment");
@@ -546,7 +569,7 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
     }
 
     try {
-      restApiDao.post(benefitAnnotation, crmConfig.getAnnotationUrl(), CrmConstants.HEADER_ENTITY_URL);
+      crmDao.post(benefitAnnotation, crmConfig.getAnnotationUrl(), CrmConstants.HEADER_ENTITY_URL);
     } catch (ServiceException e) {
       logger.error("Error uploading CHEFS Interim or Adjustment form to CRM: ", e);
       throw new ServiceException(e);
@@ -559,14 +582,14 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
   public void uploadFileToNote(File file, String crmEntityGuid, String formType) throws ServiceException {
 
       CrmBenefitAnnotationResource CrmBenefitEntity = createCrmBenefitAnnotation(file, crmEntityGuid, formType);
-      restApiDao.uploadFileToNote(CrmBenefitEntity);
+      crmDao.uploadFileToNote(CrmBenefitEntity);
   }
 
   @Override
   public void uploadFileToAccount(File file, Integer participantPin, String formType) throws ServiceException {
 
     CrmAccountAnnotationResource crmAccountEntity = createCrmAccountAnnotation(file, participantPin, formType);
-    restApiDao.uploadFileToNote(crmAccountEntity);
+    crmDao.uploadFileToNote(crmAccountEntity);
   }
 
   private CrmBenefitAnnotationResource createCrmBenefitAnnotation(File file, String crmEntityGuid, String formType) throws ServiceException {
@@ -589,7 +612,7 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
   private CrmAccountAnnotationResource createCrmAccountAnnotation(File file, Integer participantPin, String formType) throws ServiceException {
     CrmAccountResource account = null;
     try {
-      account = restApiDao.getAccountByPin(participantPin);
+      account = crmDao.getAccountByPin(participantPin);
       if (account == null) {
         throw new ServiceException("account not found for participantPin: " + participantPin);
       }
@@ -624,8 +647,8 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
       Map<Integer, FarmingYear> farmingYears = tdao.getFarmingYears(connection, Collections.singletonList(client.getClientId()));
       FarmingYear farmingYear = farmingYears.get(client.getClientId());
 
-      // Note that restApiDao.createAccount also calls restApiDao.uploadNppFormToCrm()
-      result = restApiDao.createAccount(client, farmingYear, submissionGuid, formUserType);
+      // Note that crmDao.createAccount also calls crmDao.uploadNppFormToCrm()
+      result = crmDao.createAccount(client, farmingYear, submissionGuid, formUserType);
     } else {
       boolean updateAccount = false;
       if (StringUtils.isBlank(crmAccount.getVsi_businessnumber())) {
@@ -638,14 +661,14 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
         updateAccount |= true;
       }
       if (chefsFormTypeCode.equals(ChefsFormTypeCodes.NPP)) {
-        restApiDao.uploadNppFormToCrm(crmAccount, submissionGuid, formUserType);
+        crmDao.uploadNppFormToCrm(crmAccount, submissionGuid, formUserType);
       }
       if (chefsFormTypeCode.equals(ChefsFormTypeCodes.CM)) { // Updates Cash Margin flag and date only
         updateAccount = true;
       }
       
       if(updateAccount) {
-        result = restApiDao.updateAccount(crmAccount);
+        result = crmDao.updateAccount(crmAccount);
       }
     }
     return result;

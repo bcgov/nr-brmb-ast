@@ -125,7 +125,7 @@
       <td id="bcgov-content"><!-- START BREADCRUMB -->
         <div id="bcgov-breadcrumb">
           <p id="bcgov-screen-number"><w:currentAccountName/></p>
-          <h1><fmt:message key="Fifo.Title"/></h1>
+          <h1><fmt:message key="Benefit.Triage"/></h1>
         </div>
         <!-- END BREADCRUMB -->
         <!-- START BODY CONTENT -->

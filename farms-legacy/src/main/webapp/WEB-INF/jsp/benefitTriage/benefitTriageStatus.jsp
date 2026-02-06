@@ -21,7 +21,7 @@
 
 <c:if test="${form.numStatusResults == 0}">
 	<p>
-		<fmt:message key="There.are.no.Fifo.Status.for" /> <c:out value="${form.year}" />.
+		<fmt:message key="There.are.no.Benefit.Triage.Status.items.for" /> <c:out value="${form.year}" />.
 	</p>
 	<html:form action="farm258">
 		<html:hidden property="pinFilter" styleId="pinFilter" />

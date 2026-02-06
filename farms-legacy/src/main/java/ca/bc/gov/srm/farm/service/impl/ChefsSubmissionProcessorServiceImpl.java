@@ -38,6 +38,7 @@ import ca.bc.gov.srm.farm.chefs.resource.interim.IncomeGrid;
 import ca.bc.gov.srm.farm.chefs.resource.interim.InterimSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.interim.InventoryGridLivestock;
 import ca.bc.gov.srm.farm.chefs.resource.interim.ProductionGrid;
+import ca.bc.gov.srm.farm.chefs.resource.npp.NppCommodityGrid;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppCropGrid;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppNurseryGrid;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppSubmissionDataResource;
@@ -49,6 +50,7 @@ import ca.bc.gov.srm.farm.dao.ChefsDatabaseDAO;
 import ca.bc.gov.srm.farm.dao.ReadDAO;
 import ca.bc.gov.srm.farm.domain.CropItem;
 import ca.bc.gov.srm.farm.domain.FarmingOperation;
+import ca.bc.gov.srm.farm.domain.FarmingOperationPartner;
 import ca.bc.gov.srm.farm.domain.FarmingYear;
 import ca.bc.gov.srm.farm.domain.IncomeExpense;
 import ca.bc.gov.srm.farm.domain.InputItem;
@@ -71,6 +73,7 @@ import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsSubmissionProcessorService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.transaction.Transaction;
+import ca.bc.gov.srm.farm.util.OracleUtils;
 
 public class ChefsSubmissionProcessorServiceImpl extends BaseService implements ChefsSubmissionProcessorService {
 
@@ -183,10 +186,11 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
   @Override
   public Integer createNppSupplementalData(NppSubmissionDataResource data, Integer clientId, Integer programYear,
-      String applicationVersion, boolean createdParticipant, String user) throws ServiceException {
+      String applicationVersion, boolean createdParticipant, Integer submissionId, List<FarmingOperation> farmingOperations, String user) throws ServiceException {
 
     logMethodStart(logger);
     CalculatorDAO calculatorDAO = new CalculatorDAO();
+    ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
     Transaction transaction = null;
     Integer chefsScenarioId = null;
 
@@ -210,14 +214,25 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
         }
         Integer programYearVersionId = calculatorDAO.createProgramYearVersion(transaction, programYearId, data.getMunicipalityCode(), user);
 
-        farmingOperation = createFarmingOperation(data.getFiscalYearStart(), data.getFiscalYearEnd(), programYearVersionId);
+        farmingOperation = farmingOperations.get(0);
+        FarmingYear farmingYear = new FarmingYear();
+        farmingYear.setProgramYearVersionId(programYearVersionId);
+        farmingOperation.setFarmingYear(farmingYear);
         calculatorDAO.createFarmingOperation(transaction, farmingOperation, user);
+        
+        List<FarmingOperationPartner> partners = farmingOperation.getFarmingOperationPartners();
+        calculatorDAO.createPartners(transaction, partners, user);
 
         chefsScenarioId = calculatorDAO.createScenario(transaction, programYearVersionId, ScenarioTypeCodes.CHEF, ScenarioCategoryCodes.CHEF_NPP,
             user);
+
       }
       List<ProductiveUnitCapacity> pucList = createPucList(data, farmingOperation);
       createProductiveUnitCapacities(transaction, pucList, user);
+      
+      @SuppressWarnings("resource")
+      Connection connection = OracleUtils.getOracleConnection(transaction);
+      chefsDatabaseDao.updateScenarioSubmissionId(connection, chefsScenarioId, submissionId, user);
       
       logger.debug("scenario: " + chefsScenarioId);
 
@@ -648,6 +663,7 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
       FarmingOperation farmingOperation) {
 
     Map<String, Double> productiveCapacityMap = getProductiveCapacityMap(data);
+    productiveCapacityMap.putAll(getProductiveCapacityMapForNppDecember2025Version(data));
 
     List<ProductiveUnitCapacity> productiveUnitCapacityList = new ArrayList<>();
 
@@ -835,7 +851,158 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     return productiveCapacityMap;
   }
+
+  private static Map<String, Double> getProductiveCapacityMapForNppDecember2025Version(NppSubmissionDataResource data) {
+    Map<String, Double> productiveCapacityMap = new HashMap<>();
+
+    if (data.getBerryGrid() != null) {
+      for (NppCommodityGrid berry : data.getBerryGrid()) {
+        if (berry.getCommodity() != null && berry.getCommodity().getLabel() != null) {
+
+          Double acres = 0.0;
+          if (berry.getAcres() != null) {
+            acres = berry.getAcres();
+          }
+
+          if (acres > 0) {
+            String value = berry.getCommodity().getValue();
+            productiveCapacityMap.put(value, acres);
+          }
+        }
+      }
+    }
+
+    if (data.getTreeFruitGrid() != null) {
+      for (NppCommodityGrid treeFruit : data.getTreeFruitGrid()) {
+        if (treeFruit.getCommodity() != null && treeFruit.getCommodity().getLabel() != null) {
+
+          Double acres = 0.0;
+          if (treeFruit.getAcres() != null) {
+            acres = treeFruit.getAcres();
+          }
+
+          if (acres > 0) {
+            String value = treeFruit.getCommodity().getValue();
+            productiveCapacityMap.put(value, acres);
+          }
+        }
+      }
+    }
+
+    if (data.getVegetableGrid() != null) {
+      for (NppCommodityGrid vegetable : data.getVegetableGrid()) {
+        if (vegetable.getCommodity() != null && vegetable.getCommodity().getLabel() != null) {
+
+          Double acres = 0.0;
+          if (vegetable.getAcres() != null) {
+            acres = vegetable.getAcres();
+          }
+
+          if (acres > 0) {
+            String value = vegetable.getCommodity().getValue();
+            productiveCapacityMap.put(value, acres);
+          }
+        }
+      }
+    }
+
+    if (data.getGrainGrid() != null) {
+      for (NppCommodityGrid grain : data.getGrainGrid()) {
+        if (grain.getCommodity() != null && grain.getCommodity().getLabel() != null) {
+
+          Double acres = 0.0;
+          if (grain.getAcres() != null) {
+            acres = grain.getAcres();
+          }
+
+          if (acres > 0) {
+            String value = grain.getCommodity().getValue();
+            productiveCapacityMap.put(value, acres);
+          }
+        }
+      }
+    }
+
+    if (data.getForageBasketGrid() != null) {
+      for (NppCropGrid forageBasket : data.getForageBasketGrid()) {
+        if (forageBasket.getCrop() != null && forageBasket.getCrop().length() >= 4) {
+
+          Double acres = 0.0;
+          if (forageBasket.getAcres() != null) {
+            acres = forageBasket.getAcres();
+          }
+
+          if (acres > 0) {
+            String value = forageBasket.getCrop().substring(0, 4);
+            productiveCapacityMap.put(value, acres);
+          }
+        }
+      }
+    }
+
+    if (data.getForageSeedGrid() != null) {
+      for (NppCropGrid forageSeed : data.getForageSeedGrid()) {
+        if (forageSeed.getCrop() != null && forageSeed.getCrop().length() >= 4) {
   
+          Double acres = 0.0;
+          if (forageSeed.getAcres() != null) {
+            acres = forageSeed.getAcres();
+          }
+
+          if (acres > 0) {
+            String value = forageSeed.getCrop().substring(0, 4);
+            productiveCapacityMap.put(value, acres);
+          }
+        }
+      }
+    }
+
+    if (data.getNeCattleGrid() != null) {
+      for (NppCommodityGrid neCattle : data.getNeCattleGrid()) {
+        if (neCattle.getCommodity() != null && neCattle.getCommodity().getLabel() != null) {
+
+          Double numberOfAnimals = 0.0;
+          if (neCattle.getNumberOfAnimals() != null) {
+            numberOfAnimals = neCattle.getNumberOfAnimals();
+          }
+
+          if (numberOfAnimals > 0) {
+            String value = neCattle.getCommodity().getValue();
+            productiveCapacityMap.put(value, numberOfAnimals);
+          }
+        }
+      }
+    }
+
+    productiveCapacityMap.put("108", data.getLayersEggsForHatching_108());
+    productiveCapacityMap.put("109", data.getLayersEggsForConsumption_109());
+    productiveCapacityMap.put("143", data.getBroilersChickens_143());
+    productiveCapacityMap.put("144", data.getBroilersTurkeys_144());
+
+    productiveCapacityMap.put("123", data.getProductiveCapacityLC123());
+    productiveCapacityMap.put("124", data.getFeederHogsFedOver50Lbs_124());
+    productiveCapacityMap.put("125", data.getFeederHogsFedUpTo50Lbs_125());
+
+    if (data.getOpdGrid() != null) {
+      for (NppCommodityGrid opd : data.getOpdGrid()) {
+        if (opd.getCommodity() != null && opd.getCommodity().getLabel() != null) {
+
+          Double numberOfAnimals = 0.0;
+          if (opd.getNumberOfAnimals() != null) {
+            numberOfAnimals = opd.getNumberOfAnimals();
+          }
+
+          if (numberOfAnimals > 0) {
+            String value = opd.getCommodity().getValue();
+            productiveCapacityMap.put(value, numberOfAnimals);
+          }
+        }
+      }
+    }
+
+    return productiveCapacityMap;
+  }
+
   private void createProductiveUnitCapacities(Transaction transaction, List<ProductiveUnitCapacity> pucList, String user)
       throws DataAccessException {
     

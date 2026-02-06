@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import ca.bc.gov.srm.farm.calculator.BenefitNullFixer;
 import ca.bc.gov.srm.farm.calculator.BenefitValidator;
 import ca.bc.gov.srm.farm.calculator.CalculatorFactory;
-import ca.bc.gov.srm.farm.crm.CrmConfigurationUtil;
 import ca.bc.gov.srm.farm.dao.EnrolmentReadDAO;
 import ca.bc.gov.srm.farm.dao.EnrolmentWriteDAO;
 import ca.bc.gov.srm.farm.dao.StagingDAO;
@@ -297,7 +296,7 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
     
     Integer pin = scenario.getClient().getParticipantPin();
     AdjustmentService adjustmentService = ServiceFactory.getAdjustmentService();
-    adjustmentService.makeInventoryValuationAdjustments(scenario, false, false);
+    adjustmentService.makeInventoryValuationAdjustments(scenario, false);
     
     BenefitNullFixer nullFixer = CalculatorFactory.getBenefitNullFixer(scenario);
     nullFixer.fixNulls(scenario);
@@ -615,41 +614,30 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
       connection.commit();
       sdao.status(importVersionId, "Started");
       
-      CrmConfigurationUtil crmConfig = CrmConfigurationUtil.getInstance();
-      
-      if(crmConfig.isEnrolmentUrlConfigured()) {
-  
-        String yearString;
-        String pinsString;
-        try(BufferedReader reader = new BufferedReader(new FileReader(enrolmentFile));) {
-          yearString = reader.readLine();
-          pinsString = reader.readLine();
-        }
-        Integer enrolmentYear = new Integer(yearString);
-    
-        List<Integer> pins = extractPinsFromCsv(pinsString);
-        
-        List<Enrolment> transferList = erdao.getEnrolmentsForTransfer(connection, enrolmentYear, pins);
-        
-        CrmTransferService transferService = ServiceFactory.getCrmTransferService();
-        
-        for(Enrolment e : transferList) {
-          transferService.postEnrolment(e, importVersionId, user);
-        }
-
-        int numTransferred = transferList.size();
-        String stagingXml = ImportLogFormatter.createStagingXml(numTransferred, new ArrayList<>());
-        Boolean hasErrors = Boolean.FALSE;
-        vdao.uploadedVersion(importVersionId, stagingXml, hasErrors, user);
-        importCompleted(connection, importVersionId, user, vdao, true);
-        sdao.status(importVersionId, numTransferred + " Enrolments transferred to CRM.");
-      } else {
-        String xml = ImportLogFormatter.createEmptyImportXml();
-        sdao.status(importVersionId,
-            "CRM Web Service is not configured. No Enrolments transferred to CRM.");
-        vdao.importFailed(importVersionId, xml, user);
-        connection.commit();
+      String yearString;
+      String pinsString;
+      try(BufferedReader reader = new BufferedReader(new FileReader(enrolmentFile));) {
+        yearString = reader.readLine();
+        pinsString = reader.readLine();
       }
+      Integer enrolmentYear = new Integer(yearString);
+  
+      List<Integer> pins = extractPinsFromCsv(pinsString);
+      
+      List<Enrolment> transferList = erdao.getEnrolmentsForTransfer(connection, enrolmentYear, pins);
+      
+      CrmTransferService transferService = ServiceFactory.getCrmTransferService();
+      
+      for(Enrolment e : transferList) {
+        transferService.postEnrolment(e, importVersionId, user);
+      }
+
+      int numTransferred = transferList.size();
+      String stagingXml = ImportLogFormatter.createStagingXml(numTransferred, new ArrayList<>());
+      Boolean hasErrors = Boolean.FALSE;
+      vdao.uploadedVersion(importVersionId, stagingXml, hasErrors, user);
+      importCompleted(connection, importVersionId, user, vdao, true);
+      sdao.status(importVersionId, numTransferred + " Enrolments transferred to CRM.");
 
     } catch (Throwable t) {
       String message = "Error processing account update: " + t;

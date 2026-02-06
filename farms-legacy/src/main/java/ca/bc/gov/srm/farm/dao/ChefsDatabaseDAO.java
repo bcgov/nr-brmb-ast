@@ -163,16 +163,17 @@ public class ChefsDatabaseDAO extends OracleDAO {
       String submissionGuid)
   throws DataAccessException {
     
-    Collection<String> submissionGuids = new ArrayList<>();
-    submissionGuids.add(submissionGuid);
-    deleteSubmissions(connection, submissionGuids);
+    deleteSubmissions(connection, submissionGuid);
   }
 
 
   public void deleteSubmissions(Connection connection,
       String... submissionGuids)
   throws DataAccessException {
-    deleteSubmissions(connection, Arrays.asList(submissionGuids));
+
+    if(submissionGuids != null) {
+      deleteSubmissions(connection, Arrays.asList(submissionGuids));
+    }
   }
   
 
@@ -180,24 +181,32 @@ public class ChefsDatabaseDAO extends OracleDAO {
       Collection<String> submissionGuids)
   throws DataAccessException {
     
+    if(submissionGuids == null || submissionGuids.isEmpty()) {
+      return;
+    }
+    
     final int paramCount = 1;
     
     try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + DELETE_SUBMISSION_PROC, paramCount, false); ) {
 
+      int guidCount = 0;
       for (String submissionGuid : submissionGuids) {
         
-        int param = 1;
-        proc.setString(param++, submissionGuid);
-        
-        if(submissionGuids.size() > 1) {
-          proc.addBatch();
-        } else {
-          proc.execute();
+        if(submissionGuid != null) {
+          guidCount++;
+          int param = 1;
+          proc.setString(param++, submissionGuid);
+          
+          if(submissionGuids.size() > 1) {
+            proc.addBatch();
+          } else {
+            proc.execute();
+          }
         }
       }
       
-      if(submissionGuids.size() > 1) {
+      if(guidCount > 1) {
         proc.executeBatch();
       }
       
@@ -323,6 +332,17 @@ public class ChefsDatabaseDAO extends OracleDAO {
   }
 
 
+  public void updateScenarioSubmissionId(Transaction transaction,
+      Integer scenarioId,
+      Integer submissionId,
+      String user)
+          throws DataAccessException {
+
+    @SuppressWarnings("resource")
+    Connection connection = getConnection(transaction);
+    updateScenarioSubmissionId(connection, scenarioId, submissionId, user);
+  }
+    
   public void updateScenarioSubmissionId(Connection connection,
       Integer scenarioId,
       Integer submissionId,

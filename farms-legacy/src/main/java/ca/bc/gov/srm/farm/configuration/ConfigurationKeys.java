@@ -128,7 +128,7 @@ public final class ConfigurationKeys {
       "app.config/chefs/agent.enabled";
   
   
-  public static final String FIFO_AGENT_ENABLED =
+  public static final String BENEFIT_TRIAGE_AGENT_ENABLED =
       "app.config/fifo/agent.enabled";
   
   public static final String REPORTS_JASPER_URL =
@@ -336,14 +336,6 @@ public final class ConfigurationKeys {
   public static final String CRM_QUEUES_NPP_INDIVIDUAL = "CRM - Queues - NPP Individual";
 
   public static final String CRM_QUEUES_NPP_VALIDATION = "CRM - Queues - NPP Validation";
-
-  public static final String CRM_QUEUES_FIFO_ZERO_CORPORATE = "CRM - Queues - FIFO Zero Corp";
-  
-  public static final String CRM_QUEUES_FIFO_ZERO_INDIVIDUAL = "CRM - Queues - FIFO Zero Individual";
-  
-  public static final String CRM_QUEUES_FIFO_PAYMENT_INDIVIDUAL = "CRM - Queues - FIFO Payment Individual";
-  
-  public static final String CRM_QUEUES_FIFO_PAYMENT_CORPORATE = "CRM - Queues - FIFO Payment Corp";
   
   /************** CHEFS ********************/
   public static final String CHEFS_UI_URL = "CHEFS - UI URL";
@@ -444,6 +436,8 @@ public final class ConfigurationKeys {
 
   public static final String CDOGS_NPP_TEMPLATE_GUID = "CDOGS - NPP - Template GUID";
 
+  public static final String CDOGS_NPP_TEMPLATE_GUID_V2 = "CDOGS - NPP - Template GUID V2";
+
   public static final String CDOGS_ADJUSTMENT_TEMPLATE_GUID = "CDOGS - Adjustment - Template GUID";
 
   public static final String CDOGS_SUPPLEMENTAL_TEMPLATE_GUID = "CDOGS - Supplemental - Template GUID";
@@ -493,8 +487,8 @@ public final class ConfigurationKeys {
   public static final String NEGATIVE_MARGIN_PAYMENT_PERCENTAGE =
       "Negative Margin Payment Percentage";
 
-  public static final String FIFO_VERIFIER_USER_EMAIL =
-      "FIFO - Verifier User Email";
+  public static final String BENEFIT_TRIAGE_VERIFIER_USER_EMAIL =
+      "Benefit Triage - Verifier User Email";
   
   public static final List<String> BENEFIT_CALCULATION_PARAMETERS =
       Arrays.asList(

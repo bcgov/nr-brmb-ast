@@ -11,7 +11,7 @@ import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
 
 public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
-  
+
   private Boolean existingAccount;
   private Boolean lateParticipant;
   private String firstName;
@@ -20,7 +20,6 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
   private String address;
   private String province;
   private String email;
-  private String businessStructure;
   private LabelValue farmType;
   private String corporationName;
   private String firstNameCorporateContact;
@@ -37,6 +36,7 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
   private Date fiscalYearStart;
   private Date fiscalYearEnd;
   private Integer agriStabilityAgriInvestPin;
+  private Boolean noPin;
 
   private String authorizeThirdParty;
   private String thirdPartyPostalCode;
@@ -53,15 +53,28 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
 
   private List<Integer> productionInsuranceGrowerNumber = new ArrayList<>();
   private List<NppNurseryGrid> nurseryGrid = new ArrayList<>();
+  private Double totalNurserySquareMeters;
   private List<VeggieGrid> veggieGrid = new ArrayList<>();
   private List<NppCropGrid> forageSeedGrid = new ArrayList<>();
+  private Double totalForageSeedAcres;
   private List<NppCropGrid> forageBasketGrid = new ArrayList<>();
+  private Double totalForageBasketAcres;
   private List<NppCropGrid> cropBasketTypeGrid = new ArrayList<>();
   private List<PartnershipInformation> partnershipInformation = new ArrayList<>();
+
+  private String onBehalfOfParticipant;
+  private String signature;
+  private String signFirstName;
+  private String signLastName;
   private Date signDate;
+  private String howDoYouKnowTheParticipant;
+
+  private String signature2;
+  private Date signatureDate2;
 
   private Boolean agreeToTheTermsAndConditions;
   private String doYouHaveMultipleOperations;
+  private String unableToCompleteBecauseOfDisaster;
   private String didYouCompleteAProductionCycle;
   private String whatIsYourMainFarmingActivity;
   private String specifyOther;
@@ -73,7 +86,7 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
   private Double ChristmasTreesEstablishmentAcres2;
   private Double ChristmasTreesEstablishmentAcres3;
   private Double ChristmasTreesEstablishmentAcres4;
-  
+
   private List<String> commoditiesFarmed;
   private TreeFruitsFarmed treefruitsFarmed;
 
@@ -138,6 +151,24 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
   private Double lowDensityCherries1stAnd2ndYearProductionAcres_4950;
   private Double lowDensityCherries3rdAnd4thYearProductionAcres_4951;
   private Double lowDensityCherries5thAnd6thYearProductionAcres_4952;
+
+  /* New fields for NPP Draft */
+  private List<String> cropsFarmed;
+  private List<NppCommodityGrid> berryGrid;
+  private Double totalBerryAcres;
+  private List<NppCommodityGrid> treeFruitGrid;
+  private Double totalTreeFruitAcres;
+  private List<NppCommodityGrid> vegetableGrid;
+  private Double totalVegetableAcres;
+  private List<NppCommodityGrid> grainGrid;
+  private Double totalGrainAcres;
+
+  private List<String> livestockFarmed;
+  private List<NppCommodityGrid> neCattleGrid;
+
+  private Double productiveCapacityLC123;
+
+  private List<NppCommodityGrid> opdGrid;
 
   @JsonIgnore
   private String pattern = "yyyy-MM-dd";
@@ -206,14 +237,6 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
 
   public void setEmail(String email) {
     this.email = email;
-  }
-
-  public String getBusinessStructure() {
-    return businessStructure;
-  }
-
-  public void setBusinessStructure(String businessStructure) {
-    this.businessStructure = businessStructure;
   }
 
   public String getCorporationName() {
@@ -310,6 +333,14 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
 
   public void setAgriStabilityAgriInvestPin(Integer agriStabilityAgriInvestPin) {
     this.agriStabilityAgriInvestPin = agriStabilityAgriInvestPin;
+  }
+
+  public Boolean getNoPin() {
+    return noPin;
+  }
+
+  public void setNoPin(Boolean noPin) {
+    this.noPin = noPin;
   }
 
   public String getAuthorizeThirdParty() {
@@ -424,6 +455,14 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
     this.nurseryGrid = nurseryGrid;
   }
 
+  public Double getTotalNurserySquareMeters() {
+    return totalNurserySquareMeters;
+  }
+
+  public void setTotalNurserySquareMeters(Double totalNurserySquareMeters) {
+    this.totalNurserySquareMeters = totalNurserySquareMeters;
+  }
+
   public List<VeggieGrid> getVeggieGrid() {
     return veggieGrid;
   }
@@ -440,12 +479,28 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
     this.forageSeedGrid = forageSeedGrid;
   }
 
+  public Double getTotalForageSeedAcres() {
+    return totalForageSeedAcres;
+  }
+
+  public void setTotalForageSeedAcres(Double totalForageSeedAcres) {
+    this.totalForageSeedAcres = totalForageSeedAcres;
+  }
+
   public List<NppCropGrid> getForageBasketGrid() {
     return forageBasketGrid;
   }
 
   public void setForageBasketGrid(List<NppCropGrid> forageBasketGrid) {
     this.forageBasketGrid = forageBasketGrid;
+  }
+
+  public Double getTotalForageBasketAcres() {
+    return totalForageBasketAcres;
+  }
+
+  public void setTotalForageBasketAcres(Double totalForageBasketAcres) {
+    this.totalForageBasketAcres = totalForageBasketAcres;
   }
 
   public List<NppCropGrid> getCropBasketTypeGrid() {
@@ -456,12 +511,68 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
     this.cropBasketTypeGrid = cropBasketTypeGrid;
   }
 
+  public String getOnBehalfOfParticipant() {
+    return onBehalfOfParticipant;
+  }
+
+  public void setOnBehalfOfParticipant(String onBehalfOfParticipant) {
+    this.onBehalfOfParticipant = onBehalfOfParticipant;
+  }
+
+  public String getSignature() {
+    return signature;
+  }
+
+  public void setSignature(String signature) {
+    this.signature = signature;
+  }
+
+  public String getSignFirstName() {
+    return signFirstName;
+  }
+
+  public void setSignFirstName(String signFirstName) {
+    this.signFirstName = signFirstName;
+  }
+
+  public String getSignLastName() {
+    return signLastName;
+  }
+
+  public void setSignLastName(String signLastName) {
+    this.signLastName = signLastName;
+  }
+
   public Date getSignDate() {
     return signDate;
   }
 
   public void setSignDate(Date signDate) {
     this.signDate = signDate;
+  }
+
+  public String getHowDoYouKnowTheParticipant() {
+    return howDoYouKnowTheParticipant;
+  }
+
+  public void setHowDoYouKnowTheParticipant(String howDoYouKnowTheParticipant) {
+    this.howDoYouKnowTheParticipant = howDoYouKnowTheParticipant;
+  }
+
+  public String getSignature2() {
+    return signature2;
+  }
+
+  public void setSignature2(String signature2) {
+    this.signature2 = signature2;
+  }
+
+  public Date getSignatureDate2() {
+    return signatureDate2;
+  }
+
+  public void setSignatureDate2(Date signatureDate2) {
+    this.signatureDate2 = signatureDate2;
   }
 
   public Boolean getAgreeToTheTermsAndConditions() {
@@ -997,6 +1108,110 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
     this.lowDensityCherries5thAnd6thYearProductionAcres_4952 = lowDensityCherries5thAnd6thYearProductionAcres_4952;
   }
 
+  public List<String> getCropsFarmed() {
+    return cropsFarmed;
+  }
+
+  public void setCropsFarmed(List<String> cropsFarmed) {
+    this.cropsFarmed = cropsFarmed;
+  }
+
+  public List<NppCommodityGrid> getBerryGrid() {
+    return berryGrid;
+  }
+
+  public void setBerryGrid(List<NppCommodityGrid> berryGrid) {
+    this.berryGrid = berryGrid;
+  }
+
+  public Double getTotalBerryAcres() {
+    return totalBerryAcres;
+  }
+
+  public void setTotalBerryAcres(Double totalBerryAcres) {
+    this.totalBerryAcres = totalBerryAcres;
+  }
+
+  public List<NppCommodityGrid> getTreeFruitGrid() {
+    return treeFruitGrid;
+  }
+
+  public void setTreeFruitGrid(List<NppCommodityGrid> treeFruitGrid) {
+    this.treeFruitGrid = treeFruitGrid;
+  }
+
+  public Double getTotalTreeFruitAcres() {
+    return totalTreeFruitAcres;
+  }
+
+  public void setTotalTreeFruitAcres(Double totalTreeFruitAcres) {
+    this.totalTreeFruitAcres = totalTreeFruitAcres;
+  }
+
+  public List<NppCommodityGrid> getVegetableGrid() {
+    return vegetableGrid;
+  }
+
+  public void setVegetableGrid(List<NppCommodityGrid> vegetableGrid) {
+    this.vegetableGrid = vegetableGrid;
+  }
+
+  public Double getTotalVegetableAcres() {
+    return totalVegetableAcres;
+  }
+
+  public void setTotalVegetableAcres(Double totalVegetableAcres) {
+    this.totalVegetableAcres = totalVegetableAcres;
+  }
+
+  public List<NppCommodityGrid> getGrainGrid() {
+    return grainGrid;
+  }
+
+  public void setGrainGrid(List<NppCommodityGrid> grainGrid) {
+    this.grainGrid = grainGrid;
+  }
+
+  public Double getTotalGrainAcres() {
+    return totalGrainAcres;
+  }
+
+  public void setTotalGrainAcres(Double totalGrainAcres) {
+    this.totalGrainAcres = totalGrainAcres;
+  }
+
+  public List<String> getLivestockFarmed() {
+    return livestockFarmed;
+  }
+
+  public void setLivestockFarmed(List<String> livestockFarmed) {
+    this.livestockFarmed = livestockFarmed;
+  }
+
+  public List<NppCommodityGrid> getNeCattleGrid() {
+    return neCattleGrid;
+  }
+
+  public void setNeCattleGrid(List<NppCommodityGrid> neCattleGrid) {
+    this.neCattleGrid = neCattleGrid;
+  }
+
+  public Double getProductiveCapacityLC123() {
+    return productiveCapacityLC123;
+  }
+
+  public void setProductiveCapacityLC123(Double productiveCapacityLC123) {
+    this.productiveCapacityLC123 = productiveCapacityLC123;
+  }
+
+  public List<NppCommodityGrid> getOpdGrid() {
+    return opdGrid;
+  }
+
+  public void setOpdGrid(List<NppCommodityGrid> opdGrid) {
+    this.opdGrid = opdGrid;
+  }
+
   public Double getPlantingYearAcres_4980() {
     return plantingYearAcres_4980;
   }
@@ -1035,6 +1250,14 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
 
   public void setDoYouHaveMultipleOperations(String doYouHaveMultipleOperations) {
     this.doYouHaveMultipleOperations = doYouHaveMultipleOperations;
+  }
+
+  public String getUnableToCompleteBecauseOfDisaster() {
+    return unableToCompleteBecauseOfDisaster;
+  }
+
+  public void setUnableToCompleteBecauseOfDisaster(String unableToCompleteBecauseOfDisaster) {
+    this.unableToCompleteBecauseOfDisaster = unableToCompleteBecauseOfDisaster;
   }
 
   public Double getBredCow_104() {

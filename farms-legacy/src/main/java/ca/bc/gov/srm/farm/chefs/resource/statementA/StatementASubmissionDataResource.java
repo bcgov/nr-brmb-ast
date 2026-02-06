@@ -104,6 +104,7 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   private String thirdPartyFax;
   private String thirdPartyEmail;
   private String copyOfCOB;
+  private String taxesProgramYear;
 
   @JsonIgnore
   private String pattern = "yyyy-MM-dd";
@@ -700,6 +701,14 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
 
   public void setCopyOfCOB(String copyOfCOB) {
     this.copyOfCOB = copyOfCOB;
+  }
+
+  public String getTaxesProgramYear() {
+    return taxesProgramYear;
+  }
+
+  public void setTaxesProgramYear(String taxesProgramYear) {
+    this.taxesProgramYear = taxesProgramYear;
   }
 
   public String getPattern() {

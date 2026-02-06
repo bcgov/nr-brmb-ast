@@ -30,6 +30,8 @@ public class RevenueRiskTest extends ReasonabilityTest {
       "FMV not found for crop: {0} - {1}.";
   public static final String ERROR_PRODUCTIVE_UNIT_MISSING_FMV =
       "FMV not found for Productive Unit Code: {0}.";
+  public static final String ERROR_MISSING_FISCAL_YEAR_DATES =
+      "Farming Operation {0} is missing Fiscal Year Start or End Date.";
 
   private void initializeTestResult(RevenueRiskTestResult result, Scenario scenario) {
     

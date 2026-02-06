@@ -17,7 +17,6 @@
             <html:option value="FMV">Fair Market Value</html:option>
 			    </w:ifUserCanPerformAction>
 			    <w:ifUserCanPerformAction action="importCRA">
-            <html:option value="AARM">Accrual Adjusted Reference Margin</html:option>
             <html:option value="BCCRA">BC Generated CRA</html:option>
 			    </w:ifUserCanPerformAction>
         </html:select>

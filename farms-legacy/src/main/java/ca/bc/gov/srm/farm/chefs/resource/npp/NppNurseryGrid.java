@@ -20,6 +20,18 @@ public class NppNurseryGrid extends ChefsResource {
 	private Integer numberOfPlants;
 	private Double squareMeters;
 
+	public NppNurseryGrid() {
+		super();
+	}
+
+	public NppNurseryGrid(String label, String value, String unitType, Integer numberOfPlants, Double squareMeters) {
+		super();
+		this.commodity = new LabelValue(label, value);
+		this.unitType = unitType;
+		this.numberOfPlants = numberOfPlants;
+		this.squareMeters = squareMeters;
+	}
+
 	public LabelValue getCommodity() {
 		return commodity;
 	}
