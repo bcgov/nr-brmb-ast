@@ -20,6 +20,16 @@ public class OtherPucGrid extends ChefsResource {
   private LabelValue selectOtherLivestock;
   private Integer otherLivestockNumber;
 
+  public OtherPucGrid() {
+    super();
+  }
+
+  public OtherPucGrid(String label, String value, Integer otherLivestockNumber) {
+    super();
+    this.selectOtherLivestock = new LabelValue(label, value);
+    this.otherLivestockNumber = otherLivestockNumber;
+  }
+
   public LabelValue getSelectOtherLivestock() {
     return selectOtherLivestock;
   }

@@ -3,7 +3,7 @@
 <u:getImportVersion var="importVersion" scope="request"/>
 
 <h1>
-  <fmt:message key="Fifo.Jobs.Result"/>
+  <fmt:message key="Benefit.Triage.Job.Result"/>
 </h1> 
 
 <table class="details"> 

@@ -148,54 +148,48 @@ public class CoverageSubmissionProcessor extends ChefsSubmissionProcessor<Covera
       submissionRec = newSubmissionRecord(submissionGuid);
     }
 
-    try {
-      Client client = null;
-      CrmAccountResource crmAccount = null;
-      if (participantPin != null) {
-        client = getClientByParticipantPin(participantPin);
-        crmAccount = getCrmAccountByParticipantPin(participantPin);
-      }
+    Client client = null;
+    CrmAccountResource crmAccount = null;
+    if (participantPin != null) {
+      client = getClientByParticipantPin(participantPin);
+      crmAccount = getCrmAccountByParticipantPin(participantPin);
+    }
 
-      List<String> validationErrors = validate(data, client, crmAccount);
-      boolean hasErrors = !validationErrors.isEmpty();
+    List<String> validationErrors = validate(data, client, crmAccount);
+    boolean hasErrors = !validationErrors.isEmpty();
 
-      if (hasErrors) {
-        CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionId(submissionGuid);
-        if (existingValidationErrorTask == null) {
+    if (hasErrors) {
+      CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
+      if (existingValidationErrorTask == null) {
+        newTask = createValidationErrorTask(crmAccount, data, validationErrors);
+      } else {
+        logger.debug("Validation error task already exists: " + existingValidationErrorTask.toString());
+        if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
           newTask = createValidationErrorTask(crmAccount, data, validationErrors);
         } else {
-          logger.debug("Validation error task already exists: " + existingValidationErrorTask.toString());
-          if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
-            newTask = createValidationErrorTask(crmAccount, data, validationErrors);
-          } else {
-            newTask = existingValidationErrorTask;
-          }
+          newTask = existingValidationErrorTask;
         }
-        submissionRec.setSubmissionStatusCode(INVALID);
-        submissionRec.setValidationTaskGuid(newTask.getActivityId());
-        submissionRec = createOrUpdateSubmission(submissionRec);
-
-      } else {
-        // Validation passed
-
-        logger.debug("Creating valid Coverage task...");
-        newTask = createValidCoverageTask(data, participantPin, crmAccount);
-        
-        uploadCoverageFileToAccount(submissionGuid, newTask.getAccountId());
-        
-        submissionRec.setSubmissionStatusCode(ChefsSubmissionStatusCodes.PROCESSED);
-        submissionRec.setMainTaskGuid(newTask.getActivityId());
-        submissionRec = createOrUpdateSubmission(submissionRec);
-        
-        logger.debug("Creating Coverage scenario...");
-        assert client != null;
-        Integer coverageScenarioNumber = createCoverageScenarios(data, client, programYear, submissionRec);
-        logger.debug("coverageScenarioNumber = " + coverageScenarioNumber);
       }
+      submissionRec.setSubmissionStatusCode(INVALID);
+      submissionRec.setValidationTaskGuid(newTask.getActivityId());
+      submissionRec = createOrUpdateSubmission(submissionRec);
 
-    } catch (SQLException e) {
-      logger.error("Unexpected error: ", e);
-      throw new ServiceException(e);
+    } else {
+      // Validation passed
+
+      logger.debug("Creating valid Coverage task...");
+      newTask = createValidCoverageTask(data, participantPin, crmAccount);
+      
+      uploadCoverageFileToAccount(submissionGuid, newTask.getAccountId());
+      
+      submissionRec.setSubmissionStatusCode(ChefsSubmissionStatusCodes.PROCESSED);
+      submissionRec.setMainTaskGuid(newTask.getActivityId());
+      submissionRec = createOrUpdateSubmission(submissionRec);
+      
+      logger.debug("Creating Coverage scenario...");
+      assert client != null;
+      Integer coverageScenarioNumber = createCoverageScenarios(data, client, programYear, submissionRec);
+      logger.debug("coverageScenarioNumber = " + coverageScenarioNumber);
     }
 
     logMethodEnd(logger);

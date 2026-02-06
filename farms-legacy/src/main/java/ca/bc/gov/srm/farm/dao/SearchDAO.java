@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -90,14 +91,14 @@ public class SearchDAO extends OracleDAO {
   
   @SuppressWarnings("resource")
   public final List<ImportSearchResult> searchImports(final Transaction transaction,
-      final List<String> importTypes)
+      final List<String> importTypes, Date createdAfterDate)
     throws DataAccessException {
     String procName = PACKAGE_NAME + "." + IMPORTS_PROC;
     List<ImportSearchResult> items = new ArrayList<>();
     Connection connection = getOracleConnection(transaction);
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
-    final int paramCount = 2;
+    final int paramCount = 3;
 
     try {
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
@@ -111,6 +112,7 @@ public class SearchDAO extends OracleDAO {
       int c = 1;
       proc.setIndicator(c++, searchByImportClass);
       proc.setArray(c++, oracleArrayInventoryCodes);
+      proc.setDate(c++, createdAfterDate);
       proc.execute();
       resultSet = proc.getResultSet();
 

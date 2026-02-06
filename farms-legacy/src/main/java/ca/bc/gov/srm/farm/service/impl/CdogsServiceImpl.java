@@ -298,7 +298,6 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, formUserType);
     chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
-    String templateGuid = cdogsConfig.getNppTemplateGuid();
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
 
     SubmissionWrapperResource<NppSubmissionDataResource> submissionWrapper;
@@ -309,6 +308,8 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
 
     NppSubmissionDataResource data = submission.getData();
     populateSubmissionMetaData(submissionMetaData, data);
+
+    String templateGuid = cdogsConfig.getNppTemplateGuid(data.getNoPin() == null ? null : 2);
 
     String fileName = StringUtils.formatWithNullAsEmptyString(PDF_FILENAME_FORMAT,
         DateUtils.getYearFromDate(data.getFiscalYearEnd()), NppFormConstants.FORM_SHORT_NAME, data.getAgriStabilityAgriInvestPin());

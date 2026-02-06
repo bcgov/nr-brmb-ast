@@ -80,7 +80,10 @@ public class CdogsConfigurationUtil {
 		return configUtil.getValue(ConfigurationKeys.CDOGS_NOL_TEMPLATE_GUID);
 	}
 	
-	public String getNppTemplateGuid() {
+	public String getNppTemplateGuid(Integer version) {
+		if (version != null && version == 2) {
+			return configUtil.getValue(ConfigurationKeys.CDOGS_NPP_TEMPLATE_GUID_V2);
+		}
 		return configUtil.getValue(ConfigurationKeys.CDOGS_NPP_TEMPLATE_GUID);
 	}
 	

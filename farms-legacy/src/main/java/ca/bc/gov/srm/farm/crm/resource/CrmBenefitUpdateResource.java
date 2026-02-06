@@ -54,6 +54,7 @@ public class CrmBenefitUpdateResource extends CrmResource {
   private Boolean vsi_cashmarginsoptin;
   private String vsi_cashmarginsoptindate;
   private String vsi_farmtypedetailedexpanded;
+  private Double vsi_combinedfarmstotal;
 
   public String getVsi_batchnumber() {
     return vsi_batchnumber;
@@ -357,6 +358,14 @@ public class CrmBenefitUpdateResource extends CrmResource {
 
   public void setVsi_farmtypedetailedexpanded(String vsi_farmtypedetailedexpanded) {
     this.vsi_farmtypedetailedexpanded = vsi_farmtypedetailedexpanded;
+  }
+
+  public Double getVsi_combinedfarmstotal() {
+    return vsi_combinedfarmstotal;
+  }
+
+  public void setVsi_combinedfarmstotal(Double vsi_combinedfarmstotal) {
+    this.vsi_combinedfarmstotal = vsi_combinedfarmstotal;
   }
 
   public Boolean getVsi_fifozeropass() {

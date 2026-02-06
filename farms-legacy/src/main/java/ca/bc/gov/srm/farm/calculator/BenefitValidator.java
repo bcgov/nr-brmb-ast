@@ -32,7 +32,7 @@ import ca.bc.gov.srm.farm.domain.Scenario;
  */
 public abstract class BenefitValidator {
   
-  private static final Collection<String> BPU_CODES_ALLOWING_ZEROES = Arrays.asList(new String[]{"17","18","19"});
+  public static final Collection<String> BPU_CODES_ALLOWING_ZEROES = Arrays.asList(new String[]{"17","18","19"});
   
   private Set<String> refYearMissingBpuInventoryCodes = new HashSet<>();
   private Set<String> refYearMissingBpuStructureGroupCodes = new HashSet<>();

@@ -185,6 +185,9 @@ public class CalculatorDAO extends OracleDAO {
   private static final int COPY_FORWARD_YEAR_CONFIG_PARAM = 2;
   
   private static final String DELETE_USER_SCENARIO_PROC = "DELETE_USER_SCENARIO";
+  
+  private static final String DELETE_PIN_PROC = "DELETE_PIN";
+  
   public void updateClient(final Transaction transaction,
       final Client client,
       final String user)
@@ -2419,6 +2422,30 @@ public class CalculatorDAO extends OracleDAO {
       
       int param = 1;
       proc.setInt(param++, scenarioId);
+      proc.execute();
+      
+    } catch (SQLException e) {
+      logSqlException(e);
+      handleException(e);
+    }
+  }
+  
+  
+  /**
+   * Deletes a PIN / AgriStability Client
+   * Only to be used by Unit Tests.
+   */
+  public void deletePin(
+      final Connection connection,
+      final Integer participantPin)
+  throws DataAccessException {
+    
+    final int paramCount = 1;
+    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + DELETE_PIN_PROC, paramCount, false); ) {
+      
+      int param = 1;
+      proc.setInt(param++, participantPin);
       proc.execute();
       
     } catch (SQLException e) {

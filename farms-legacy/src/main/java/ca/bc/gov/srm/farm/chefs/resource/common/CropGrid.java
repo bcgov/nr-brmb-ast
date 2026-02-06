@@ -23,6 +23,18 @@ public class CropGrid extends ChefsResource {
   protected Double quantityProduced;
   protected Double quantitySold;
 
+  public CropGrid() {
+    super();
+  }
+
+  public CropGrid(String label, String value, Double acres, Double quantityProduced, Double quantitySold) {
+    super();
+    this.commodity = new LabelValue(label, value);
+    this.acres = acres;
+    this.quantityProduced = quantityProduced;
+    this.quantitySold = quantitySold;
+  }
+
   public LabelValue getCommodity() {
     return commodity;
   }

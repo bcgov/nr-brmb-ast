@@ -17,9 +17,10 @@ import ca.bc.gov.srm.farm.crm.CrmTransferFormatUtil;
 
 public class CrmValidationErrorQueueItemResource extends CrmQueueItemResource {
 
-	@JsonProperty("objectid_vsi_validationerrortask@odata.bind")
+	@Override
+  @JsonProperty("objectid_vsi_validationerrortask@odata.bind")
   public String getObjectIdTaskDataBind() {
-    return CrmTransferFormatUtil.formatNavigationPropertyValue(CrmConstants.VALIDATION_ERROR_ENDPOINT, activityIdParameter);
+    return CrmTransferFormatUtil.formatNavigationPropertyValue(CrmConstants.VALIDATION_ERROR_TASK_ENDPOINT, activityIdParameter);
   }
 
 }

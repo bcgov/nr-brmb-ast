@@ -136,12 +136,12 @@ public class CashMarginsSubmissionProcessor extends ChefsSubmissionProcessor<Cas
     }
     
     
-    submissionRec = chefsSubmissionProcessData.getChefsSubmission();
-    if(submissionRec == null) {
-      submissionRec = newSubmissionRecord(submissionGuid);
-    }
-
     try {
+      submissionRec = chefsSubmissionProcessData.getChefsSubmission();
+      if(submissionRec == null) {
+        submissionRec = newSubmissionRecord(submissionGuid);
+      }
+      
       Client client = null;
       CrmAccountResource crmAccount = null;
       if (participantPin != null) {
@@ -153,7 +153,7 @@ public class CashMarginsSubmissionProcessor extends ChefsSubmissionProcessor<Cas
       boolean hasErrors = !validationErrors.isEmpty();
 
       if (hasErrors) {
-        CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionId(submissionGuid);
+        CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
         if (existingValidationErrorTask == null) {
           logger.debug("Creating validation error task...");
           newTask = createValidationErrorTask(crmAccount, data, validationErrors);

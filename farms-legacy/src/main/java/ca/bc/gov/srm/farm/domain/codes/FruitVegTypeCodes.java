@@ -24,6 +24,7 @@ public final class FruitVegTypeCodes {
   }
 
   public static final String APPLE = "APPLE";
+  public static final String CHERRY = "CHERRY";
   public static final String BEAN = "BEAN";
   public static final String PEACH = "PEACH";
 

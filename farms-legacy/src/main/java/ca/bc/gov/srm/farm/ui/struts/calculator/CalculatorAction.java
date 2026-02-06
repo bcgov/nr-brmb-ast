@@ -446,7 +446,6 @@ public abstract class CalculatorAction extends SecureAction {
     if(scenario.getRevisionCount().equals(form.getScenarioRevisionCount())) {
 
       boolean createUserScenario = !ScenarioUtils.hasUserScenario(scenario);
-      boolean createFromCra = false;
       try {
         if(createUserScenario) {
           ScenarioMetaData latest = ScenarioUtils.getLatestBaseScenario(scenario, scenario.getYear());
@@ -456,9 +455,6 @@ public abstract class CalculatorAction extends SecureAction {
           Integer newScenarioNumber = calculatorService.saveScenarioAsNew(scenarioId,
               ScenarioTypeCodes.USER, UNKNOWN, programYear, getUserId());
           form.setScenarioNumber(newScenarioNumber);
-          if(latest.getScenarioTypeCode().equals(ScenarioTypeCodes.CRA)) {
-            createFromCra = true;
-          }
           resultScenario = refreshScenario(form);
         } else {
           resultScenario = scenario;
@@ -469,19 +465,18 @@ public abstract class CalculatorAction extends SecureAction {
             CurrentUser.getUser().getGuid(),
             getUserId());
         
-        if(createFromCra) {
+        if(createUserScenario) {
           AdjustmentService adjService = ServiceFactory.getAdjustmentService();
           adjService.makeInventoryValuationAdjustments(resultScenario);
-        }
+          resultScenario = refreshScenario(form);
 
-        resultScenario = refreshScenario(form);
-
-        if(createUserScenario) {
           BenefitService benefitService = ServiceFactory.getBenefitService();
           // ignore error messages returned
           benefitService.calculateBenefit(resultScenario, getUserId());
-          resultScenario = refreshScenario(form);
         }
+        
+        resultScenario = refreshScenario(form);
+        
       } catch(InvalidRevisionCountException irce) {
         handleInvalidRevisionCount(request);
       }

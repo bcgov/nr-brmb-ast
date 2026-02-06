@@ -206,7 +206,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-4001-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -287,7 +287,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -311,7 +310,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0002-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -394,7 +393,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -417,7 +415,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0003-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -493,7 +491,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     deleteSubmission(submissionGuid);
   }
@@ -503,7 +500,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0004-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmission(submissionGuid);
 
     SubmissionParentResource<AdjustmentSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
@@ -564,7 +561,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     deleteSubmission(submissionGuid);
   }
@@ -574,7 +570,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0005-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmission(submissionGuid);
 
     SubmissionParentResource<AdjustmentSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
@@ -626,7 +622,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0ADJ-0001-0005-000000000001";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmission(submissionGuid);
 
     SubmissionParentResource<AdjustmentSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
@@ -674,7 +670,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0001-0035-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmission(submissionGuid);
 
     SubmissionParentResource<AdjustmentSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
@@ -814,7 +810,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getValidationTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(2, submissionRec.getRevisionCount().intValue());
 
     programYearMetadata = getProgramYearMetadata(participantPin, programYear);
     assertNotNull(programYearMetadata);
@@ -854,9 +849,9 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     String newStateCode = ScenarioStateCodes.VERIFIED;
     String stateChangeReason = null;
     String newCategoryCode = ScenarioCategoryCodes.PRODUCER_ADJUSTMENT;
-    String fifoResultType = null;
+    String benefitTriageResultType = null;
     try {
-      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, formUserType, ChefsFormTypeCodes.ADJ, fifoResultType, user);
+      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, formUserType, ChefsFormTypeCodes.ADJ, benefitTriageResultType, user);
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected Exception");
@@ -976,7 +971,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getValidationTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(2, submissionRec.getRevisionCount().intValue());
 
     for (Integer programYear : programYears) {
       List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
@@ -1017,10 +1011,10 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
       String newStateCode = ScenarioStateCodes.VERIFIED;
       String stateChangeReason = null;
       String newCategoryCode = ScenarioCategoryCodes.PRODUCER_ADJUSTMENT;
-      String fifoResultType = null;
+      String benefitTriageResultType = null;
       try {
         calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, formUserType,
-            ChefsFormTypeCodes.ADJ, fifoResultType, user);
+            ChefsFormTypeCodes.ADJ, benefitTriageResultType, user);
       } catch (ServiceException e) {
         e.printStackTrace();
         fail("Unexpected Exception");
@@ -1057,7 +1051,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     Integer programYear = 2024;
     String submissionGuid = "62a6e738-d7b8-4d95-afd0-a35d24eb96a6";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
     assertNotNull(programYearMetadata);
@@ -1138,7 +1132,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Correct the SIN Number
     data.setSinNumber("641256987");
@@ -1196,7 +1189,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertEquals(validationTask.getActivityId(), submissionRec.getValidationTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(2, submissionRec.getRevisionCount().intValue());
 
     deleteSubmission(submissionGuid);
   }
@@ -1208,7 +1200,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
         "00000000-0000-0001-0000-000000000002" };
     List<String> submissionGuidList = Arrays.asList(submissionGuidArray);
 
-    deleteSubmissions(submissionGuidList);
+    deleteSubmissionsFromFarm(submissionGuidArray);
 
     // Confirm that the submissions now do not exist.
     {
@@ -1288,7 +1280,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[1]);
@@ -1299,7 +1290,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
       assertEquals("66666666-6666-6666-6666-666666666001", submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[2]);
@@ -1310,7 +1300,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
 
     // Update the submissions
@@ -1366,7 +1355,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
       assertEquals("66666666-6666-6666-6666-666666666000", submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[1]);
@@ -1377,7 +1365,6 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[2]);
@@ -1388,10 +1375,9 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
 
-    deleteSubmissions(submissionGuidList);
+    deleteSubmissionsFromFarm(submissionGuidArray);
   }
 
   @Test

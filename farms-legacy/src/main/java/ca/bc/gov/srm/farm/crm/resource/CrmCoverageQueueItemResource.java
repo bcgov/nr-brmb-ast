@@ -20,7 +20,7 @@ public class CrmCoverageQueueItemResource extends CrmQueueItemResource {
   @Override
   @JsonProperty("objectid_vsi_coveragenoticetask@odata.bind")
   public String getObjectIdTaskDataBind() {
-    return CrmTransferFormatUtil.formatNavigationPropertyValue(CrmConstants.COVERAGE_TASK_ENDPOINT, activityIdParameter);
+    return CrmTransferFormatUtil.formatNavigationPropertyValue(CrmConstants.COVERAGE_NOTICE_TASK_ENDPOINT, activityIdParameter);
   }
 
 }

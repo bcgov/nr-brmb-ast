@@ -1,5 +1,7 @@
 package ca.bc.gov.srm.farm.agent;
 
+import static ca.bc.gov.srm.farm.log.LoggingUtils.*;
+
 import java.sql.Connection;
 import java.util.Date;
 
@@ -58,22 +60,22 @@ public final class ChefsAgent implements NotificationListener {
 
 
   public void initialize(Application app) throws Exception {
-    logger.debug("> initialize");
+    logMethodStart(logger);
 
     application = app;
     startTimer();
 
-    logger.debug("< initialize");
+    logMethodEnd(logger);
   }
   
   
   
   public void shutdown() throws Exception {
-    logger.info("> shutdown");
+    logMethodStart(logger);
 
     stopTimer();
 
-    logger.info("< shutdown");
+    logMethodEnd(logger);
   }
 
 
@@ -86,17 +88,17 @@ public final class ChefsAgent implements NotificationListener {
    */
   @Override
   public void handleNotification(Notification notification, Object data) {
-    logger.debug("> handleNotification: ");
+    logMethodStart(logger);
 
     processSubmissions();
 
-    logger.debug("< handleNotification");
+    logMethodEnd(logger);
   }
 
 
   /** See if there is an scheduled import job to process. */
   private void processSubmissions() {
-    logger.debug("> processSubmissions");
+    logMethodStart(logger);
 
     ChefsService service = ServiceFactory.getChefsService();
 
@@ -121,7 +123,7 @@ public final class ChefsAgent implements NotificationListener {
       }
     }
 
-    logger.debug("< processSubmissions");
+    logMethodEnd(logger);
   }
 
 
@@ -134,7 +136,7 @@ public final class ChefsAgent implements NotificationListener {
    * @throws  Exception  on exception
    */
   private void startTimer() throws Exception {
-    logger.debug("> startTimer");
+    logMethodStart(logger);
 
     final String domain = "ChefsDomain";
     MBeanServer server = MBeanServerFactory.createMBeanServer(domain);
@@ -156,7 +158,7 @@ public final class ChefsAgent implements NotificationListener {
     server.addNotificationListener(timerName, this, null, null);
     timer.start();
 
-    logger.debug("< startTimer");
+    logMethodEnd(logger);
   }
   
   

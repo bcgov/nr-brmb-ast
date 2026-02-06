@@ -70,9 +70,9 @@
     <form-bean name="sectorDetailCodesForm" type="ca.bc.gov.srm.farm.ui.struts.codes.sector.details.SectorDetailCodesForm" />
     <form-bean name="chefsSubmissionSearchForm" type="ca.bc.gov.srm.farm.ui.struts.chefs.ChefsSubmissionSearchForm" />
     <form-bean name="chefsSubmissionResultForm" type="ca.bc.gov.srm.farm.ui.struts.chefs.ChefsSubmissionResultForm" />
-    <form-bean name="fifoJobsForm" type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoJobsForm" />
-    <form-bean name="fifoStatusForm" type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoStatusForm" />
-    <form-bean name="fifoResultForm" type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoResultForm" />
+    <form-bean name="benefitTriageJobsForm" type="ca.bc.gov.srm.farm.ui.struts.benefit.triage.BenefitTriageJobsForm" />
+    <form-bean name="benefitTriageStatusForm" type="ca.bc.gov.srm.farm.ui.struts.benefit.triage.BenefitTriageStatusForm" />
+    <form-bean name="benefitTriageResultForm" type="ca.bc.gov.srm.farm.ui.struts.benefit.triage.BenefitTriageResultForm" />
     <form-bean name="userForm" type="ca.bc.gov.srm.farm.ui.struts.codes.users.UserForm" />
 
   </form-beans>
@@ -390,8 +390,8 @@
     </action>
     
     <action path="/farm258" 
-            type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoStatusAction" 
-            name="fifoStatusForm" 
+            type="ca.bc.gov.srm.farm.ui.struts.benefit.triage.BenefitTriageStatusAction" 
+            name="benefitTriageStatusForm" 
             scope="request" 
             validate="false">
       <set-property property="secureAction" value="fifoView"/>
@@ -400,8 +400,8 @@
     </action>
     
     <action path="/farm259" 
-            type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoJobsAction" 
-            name="fifoJobsForm" 
+            type="ca.bc.gov.srm.farm.ui.struts.benefit.triage.BenefitTriageJobsAction" 
+            name="benefitTriageJobsForm" 
             scope="request" 
             validate="false">
       <set-property property="secureAction" value="fifoView"/>
@@ -420,8 +420,8 @@
     </action>
     
     <action path="/farm253" 
-            type="ca.bc.gov.srm.farm.ui.struts.fifo.FifoResultAction"
-            name="fifoResultForm" 
+            type="ca.bc.gov.srm.farm.ui.struts.benefit.triage.BenefitTriageResultAction"
+            name="benefitTriageResultForm" 
             scope="request" 
             validate="false">
       <set-property property="secureAction" value="fifoView"/>      

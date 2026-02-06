@@ -182,4 +182,18 @@ public final class MathUtils {
     }
     return null;
   }
+  
+  /**
+   * @return true if non-null and non-zero
+   */
+  public static boolean isNonZero(Double d) {
+    return d != null && d != 0.0;
+  }
+  
+  /**
+   * @return true if non-null and non-zero
+   */
+  public static boolean isNonZero(Integer i) {
+    return i != null && i != 0;
+  }
 }

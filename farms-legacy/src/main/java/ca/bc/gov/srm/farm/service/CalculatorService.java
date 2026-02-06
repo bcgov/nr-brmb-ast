@@ -110,7 +110,7 @@ public interface CalculatorService {
       final String chefsFormNotes,
       final String formUserType,
       final String chefsFormType,
-      final String fifoResultType,
+      final String benefitTriageResultType,
       final String user)
   throws ServiceException;
 
@@ -483,7 +483,7 @@ public interface CalculatorService {
       final String chefsFormNotes,
       final String formUserType, 
       final String chefsFormType,
-      final String fifoResultType)
+      final String benefitTriageResultType)
           throws ServiceException;
   
   void updateProgramYearLocalReceivedDates(
@@ -553,5 +553,7 @@ public interface CalculatorService {
       Integer excludedProgramYearVersionNumber) throws ServiceException;
 
   boolean isAssignedToCurrentUser(Scenario scenario);
+
+  void updateScenarioChefsSubmissionId(Integer scenarioId, Integer chefsSubmissionId, String user) throws ServiceException;
 
 }

@@ -37,9 +37,8 @@ public final class ScenarioTypeCodes {
   /** CHEFS Form */
   public static final String CHEF = "CHEF";
 
-  /** First In First Out benefit calculation
-   *  scenarios auto-generated on CRA import */
-  public static final String FIFO = "FIFO";
+  /** Benefit Triage scenarios auto-generated on CRA import */
+  public static final String TRIAGE = "TRIAGE";
   
   /**
    * Base data is the initially reported data witout any adjustments by verifiers.

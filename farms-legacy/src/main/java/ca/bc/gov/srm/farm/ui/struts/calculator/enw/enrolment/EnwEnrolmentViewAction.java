@@ -14,12 +14,12 @@ package ca.bc.gov.srm.farm.ui.struts.calculator.enw.enrolment;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -70,14 +70,11 @@ public class EnwEnrolmentViewAction extends CalculatorAction {
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
       
       try {
-        try {
-          errors = benefitService.calculateBenefit(scenario, userId);
-          if(errors.isEmpty()) {
-            calculatorService.updateScenarioRevisionCount(scenario, getUserId());
-          }
-        } catch(NullPointerException npe) {
-          logger.error("Caught NullPointerException (1)", npe);
-          throw npe;
+        errors = benefitService.calculateBenefit(scenario, userId);
+        if(errors.isEmpty()) {
+          calculatorService.updateScenarioRevisionCount(scenario, getUserId());
+        } else {
+          saveErrors(request, errors);
         }
       } catch(InvalidRevisionCountException irce) {
           handleInvalidRevisionCount(request);
@@ -85,32 +82,18 @@ public class EnwEnrolmentViewAction extends CalculatorAction {
       }
     }
     
-    if (!errors.isEmpty()) {
-      saveErrors(request, errors);
-    }
-    
-    boolean benefitCalculated = errors.isEmpty();
     EnwEnrolmentCalculator enwEnrolmentCalculator = EnrolmentCalculatorFactory.getEnwEnrolmentCalculator();
     
     if(!form.isReadOnly() && scenario.isInProgress()) {
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
       
-      try {
-        calculatorService.calculateEnwEnrolment(scenario, benefitCalculated, getUserId());
-      } catch(NullPointerException npe) {
-        logger.error("Caught NullPointerException (2)", npe);
-        throw npe;
-      }
+      boolean benefitCalculated = errors.isEmpty();
+      calculatorService.calculateEnwEnrolment(scenario, benefitCalculated, getUserId());
 
       scenario = refreshScenario(form);
       errors = benefitService.calculateBenefit(scenario, getUserId(), false, true, false);
       
-      try {
-        enwEnrolmentCalculator.initNonEditableFields(scenario);
-      } catch(NullPointerException npe) {
-        logger.error("Caught NullPointerException (3)", npe);
-        throw npe;
-      }
+      enwEnrolmentCalculator.initNonEditableFields(scenario);
       
     } else {
       enwEnrolmentCalculator.initNonEditableFields(scenario);

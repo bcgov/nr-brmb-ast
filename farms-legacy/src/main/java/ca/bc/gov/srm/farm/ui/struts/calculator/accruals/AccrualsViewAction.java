@@ -139,7 +139,7 @@ public class AccrualsViewAction extends CalculatorAction {
     if(StringUtils.isBlank(form.getFinancialViewRadio())) {
       form.setItemTypeRadio("input");
       form.setEligibilityRadio(Boolean.TRUE.toString());
-      if(scenario.isUserScenario() || scenario.isFifoScenario()) {
+      if(scenario.isUserScenario() || scenario.isBenefitTriageScenario()) {
         form.setFinancialViewRadio("adjusted");
       } else {
         form.setFinancialViewRadio("cra");

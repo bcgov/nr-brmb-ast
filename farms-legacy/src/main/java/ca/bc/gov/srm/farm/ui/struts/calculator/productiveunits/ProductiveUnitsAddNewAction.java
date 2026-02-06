@@ -19,12 +19,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.domain.Scenario;
 import ca.bc.gov.srm.farm.domain.codes.ParticipantDataSrcCodes;
 import ca.bc.gov.srm.farm.ui.struts.ActionConstants;
+import ca.bc.gov.srm.farm.ui.struts.message.MessageConstants;
+import ca.bc.gov.srm.farm.util.ScenarioUtils;
 
 /**
  * @author awilkinson
@@ -56,10 +60,21 @@ public class ProductiveUnitsAddNewAction extends ProductiveUnitsViewAction {
     ProductiveUnitsForm form = (ProductiveUnitsForm) actionForm;
     Scenario scenario = getScenario(form);
     form.setParticipantDataSrcCode(scenario.getParticipantDataSrcCode());
+    ActionMessages errors = new ActionMessages();
     
     setReadOnlyFlag(request, form, scenario);
     populateForm(form, scenario, false);
-    addNew(form, scenario);
+    
+    boolean missingSupplementalDates = ScenarioUtils.isMissingSupplementalDates(scenario);
+    if(missingSupplementalDates) {
+      errors.add("", new ActionMessage(MessageConstants.ERRORS_PROVINCIAL_SUPPLEMENTAL_RECEIVED_DATE_ADJUSTMENT_SCREENS));
+    }
+    
+    if( ! errors.isEmpty() ) {
+      saveErrors(request, errors);
+    } else {
+      addNew(form, scenario);
+    }
 
     return forward;
   }

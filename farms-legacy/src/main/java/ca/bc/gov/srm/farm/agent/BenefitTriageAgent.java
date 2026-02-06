@@ -1,5 +1,7 @@
 package ca.bc.gov.srm.farm.agent;
 
+import static ca.bc.gov.srm.farm.log.LoggingUtils.*;
+
 import java.sql.Connection;
 import java.util.Date;
 
@@ -26,10 +28,10 @@ import ca.bc.gov.webade.Application;
 
 
 /**
- * Object called by a JMX timer to run FIFO benefit calculations
+ * Object called by a JMX timer to run Benefit Triage calculations
  * on CRA data after it is imported.
  */
-public final class FifoAgent implements NotificationListener {
+public final class BenefitTriageAgent implements NotificationListener {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -37,18 +39,18 @@ public final class FifoAgent implements NotificationListener {
 
   private Timer timer = new Timer();
 
-  private static FifoAgent instance = new FifoAgent();
+  private static BenefitTriageAgent instance = new BenefitTriageAgent();
 
-  private FifoAgent() {
+  private BenefitTriageAgent() {
   }
 
   /**
    * Use a static instance so that there is always an listener available for the
    * timer.
    *
-   * @return  FifoAgent
+   * @return  BenefitTriageAgent
    */
-  public static FifoAgent getInstance() {
+  public static BenefitTriageAgent getInstance() {
     return instance;
   }
 
@@ -59,22 +61,22 @@ public final class FifoAgent implements NotificationListener {
 
 
   public void initialize(Application app) throws Exception {
-    logger.debug("> initialize");
+    logMethodStart(logger);
 
     application = app;
     startTimer();
 
-    logger.debug("< initialize");
+    logMethodEnd(logger);
   }
   
   
   
   public void shutdown() throws Exception {
-    logger.info("> shutdown");
+    logMethodStart(logger);
 
     stopTimer();
 
-    logger.info("< shutdown");
+    logMethodEnd(logger);
   }
 
 
@@ -87,23 +89,23 @@ public final class FifoAgent implements NotificationListener {
    */
   @Override
   public void handleNotification(Notification notification, Object data) {
-    logger.debug("> handleNotification: ");
+    logMethodStart(logger);
 
-    runFifoCalculations();
+    runBenefitTriage();
 
-    logger.debug("< handleNotification");
+    logMethodEnd(logger);
   }
 
 
   /** See if there is an scheduled job to process. */
-  private void runFifoCalculations() {
-    logger.debug("> runFifoCalculations");
+  private void runBenefitTriage() {
+    logMethodStart(logger);
 
     ImportService service = ServiceFactory.getImportService();
 
     try(Connection connection = openConnection();) {
       try {
-        service.checkForScheduledJob(connection, ImportService.JOB_TYPE_FIFO);
+        service.checkForScheduledJob(connection, ImportService.JOB_TYPE_TRIAGE);
         connection.commit();
       } catch (Exception ex) {
         rollbackConnection(connection);
@@ -122,7 +124,7 @@ public final class FifoAgent implements NotificationListener {
       }
     }
 
-    logger.debug("< runFifoCalculations");
+    logMethodEnd(logger);
   }
 
 
@@ -135,9 +137,9 @@ public final class FifoAgent implements NotificationListener {
    * @throws  Exception  on exception
    */
   private void startTimer() throws Exception {
-    logger.debug("> startTimer");
+    logMethodStart(logger);
 
-    final String domain = "FifoDomain";
+    final String domain = "BenefitTriageDomain";
     MBeanServer server = MBeanServerFactory.createMBeanServer(domain);
 
     final long freq = getTimerFrequency();
@@ -157,7 +159,7 @@ public final class FifoAgent implements NotificationListener {
     server.addNotificationListener(timerName, this, null, null);
     timer.start();
 
-    logger.debug("< startTimer");
+    logMethodEnd(logger);
   }
   
   

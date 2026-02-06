@@ -8,20 +8,16 @@
  * without the express written consent of the Government of British
  * Columbia, Canada.
  */
-package ca.bc.gov.srm.farm.domain.fifo;
+package ca.bc.gov.srm.farm.domain.benefit.triage;
 
-import java.util.List;
-
-public class FifoItemResult {
+public class BenefitTriageStatus {
 
   private Integer participantPin;
-  private Integer programYear;
   private String clientName;
   private String scenarioStateCodeDesc;
   private Double estimatedBenefit;
-  private Boolean isPaymentFile;
+  private String isPaymentFile;
   private Integer scenarioNumber;
-  private List<String> errorMessages;
 
   public Integer getParticipantPin() {
     return participantPin;
@@ -29,14 +25,6 @@ public class FifoItemResult {
 
   public void setParticipantPin(Integer participantPin) {
     this.participantPin = participantPin;
-  }
-
-  public Integer getProgramYear() {
-    return programYear;
-  }
-
-  public void setProgramYear(Integer programYear) {
-    this.programYear = programYear;
   }
 
   public String getClientName() {
@@ -63,11 +51,11 @@ public class FifoItemResult {
     this.estimatedBenefit = estimatedBenefit;
   }
 
-  public Boolean getIsPaymentFile() {
+  public String getIsPaymentFile() {
     return isPaymentFile;
   }
 
-  public void setIsPaymentFile(Boolean isPaymentFile) {
+  public void setIsPaymentFile(String isPaymentFile) {
     this.isPaymentFile = isPaymentFile;
   }
 
@@ -79,19 +67,10 @@ public class FifoItemResult {
     this.scenarioNumber = scenarioNumber;
   }
 
-  public List<String> getErrorMessages() {
-    return errorMessages;
-  }
-
-  public void setErrorMessages(List<String> errorMessages) {
-    this.errorMessages = errorMessages;
-  }
-
   @Override
   public String toString() {
-    return "FifoResult [participantPin=" + participantPin + ", programYear=" + programYear + ", clientName=" + clientName + ", scenarioStateCodeDesc="
-        + scenarioStateCodeDesc + ", estimatedBenefit=" + estimatedBenefit + ", isPaymentFile=" + isPaymentFile + ", scenarioNumber=" + scenarioNumber
-        + ", errorMessages=" + errorMessages + "]";
+    return "BenefitTriageStatus [participantPin=" + participantPin + ", clientName=" + clientName + ", scenarioStateCodeDesc=" + scenarioStateCodeDesc
+        + ", estimatedBenefit=" + estimatedBenefit + ", isPaymentFile=" + isPaymentFile + ", scenarioNumber=" + scenarioNumber + "]";
   }
 
 }

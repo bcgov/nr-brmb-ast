@@ -53,17 +53,18 @@ public final class ReasonabilityTestUtils {
   public static void addMessage(List<ReasonabilityTestResultMessage> messages,
       String messageTypeCode, String message, Object... parameters) {
     
+    ReasonabilityTestResultMessage newMsg = new ReasonabilityTestResultMessage(message, messageTypeCode, parameters);
+    
     boolean found = false;
-    for(ReasonabilityTestResultMessage msg : messages) {
-      if(msg.getMessage().equals(message)) {
+    for(ReasonabilityTestResultMessage existingMsg : messages) {
+      if(existingMsg.equals(newMsg)) {
         found = true;
         break;
       }
     }
     
     if(!found) {
-      ReasonabilityTestResultMessage msg = new ReasonabilityTestResultMessage(message, messageTypeCode, parameters);
-      messages.add(msg);
+      messages.add(newMsg);
     }
   }
   
