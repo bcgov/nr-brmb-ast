@@ -2,6 +2,9 @@ package ca.bc.gov.webade.json;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JsonApplicationConfiguration {
     private String applicationAcronym;
     private Integer custodianNumber;
