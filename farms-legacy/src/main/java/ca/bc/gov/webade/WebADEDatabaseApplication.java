@@ -60,8 +60,7 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
 
     @Override
     public String getApplicationEnvironment() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getApplicationEnvironment'");
+        return "DEV";
     }
 
     @Override
