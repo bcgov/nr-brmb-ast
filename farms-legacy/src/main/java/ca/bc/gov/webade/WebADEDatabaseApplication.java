@@ -21,14 +21,14 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
 
     protected WebADEDatabaseApplication(WebADEDatastore ds) throws WebADEException {
         this.datastore = ds;
+        this.infoService = new ApplicationUserInfoService(this.datastore);
 
         this.roles = new AppRoles(ds.getApplicationRoles());
     }
 
     @Override
     public UserInfoService getUserInfoService() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUserInfoService'");
+        return this.infoService;
     }
 
     @Override
