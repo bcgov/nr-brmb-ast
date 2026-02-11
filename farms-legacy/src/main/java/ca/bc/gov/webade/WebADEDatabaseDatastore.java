@@ -13,6 +13,7 @@ import ca.bc.gov.webade.json.JsonAction;
 import ca.bc.gov.webade.json.JsonApplicationConfiguration;
 import ca.bc.gov.webade.json.JsonApplicationPreference;
 import ca.bc.gov.webade.json.JsonRole;
+import ca.bc.gov.webade.json.JsonWdePreference;
 import ca.bc.gov.webade.preferences.DefaultWebADEPreference;
 import ca.bc.gov.webade.preferences.DefaultWebADEPreferenceSet;
 import ca.bc.gov.webade.preferences.DefaultWebADEPreferences;
@@ -93,7 +94,30 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
     }
 
     WebADEPreferences getWebADEPreferences() throws WebADEException {
+        List<JsonWdePreference> wdePreferences = applicationConfiguration.getWdePreferences();
         WebADEPreferences preferences = new DefaultWebADEPreferences(WebADEPreferenceTypeFactory.WEBADE);
+
+        // loop through the application preferences and populate the WebADEPreferences
+        // object
+        for (JsonWdePreference wdePreference : wdePreferences) {
+
+            // extract the relevant information from the wdePreference object
+            String preferenceSubType = wdePreference.getSubTypeCode();
+            String preferenceSetName = wdePreference.getSetName();
+            String prefName = wdePreference.getName();
+            WebADEPreference preference = new DefaultWebADEPreference(prefName);
+            String prefValue = wdePreference.getValue();
+            preference.setPreferenceValue(prefValue);
+
+            // add the preference to the appropriate preference set in the WebADEPreferences
+            // object
+            WebADEPreferenceSet prefSet = preferences.getPreferenceSet(preferenceSubType, preferenceSetName);
+            if (prefSet == null) {
+                prefSet = new DefaultWebADEPreferenceSet(preferenceSetName);
+                preferences.addPreferenceSet(preferenceSubType, prefSet);
+            }
+            prefSet.addPreference(preference);
+        }
         return preferences;
     }
 

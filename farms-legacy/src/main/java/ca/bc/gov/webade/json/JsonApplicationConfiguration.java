@@ -18,6 +18,7 @@ public class JsonApplicationConfiguration {
     private String reportedWebadeVersion;
     private List<JsonAction> actions;
     private List<JsonRole> roles;
+    private List<JsonWdePreference> wdePreferences;
     private List<JsonApplicationPreference> applicationPreferences;
     private List<JsonProfile> profiles;
     private List<JsonGroupAuthorization> groupAuthorizations;
@@ -116,6 +117,14 @@ public class JsonApplicationConfiguration {
 
     public void setRoles(List<JsonRole> roles) {
         this.roles = roles;
+    }
+
+    public List<JsonWdePreference> getWdePreferences() {
+        return wdePreferences;
+    }
+
+    public void setWdePreferences(List<JsonWdePreference> wdePreferences) {
+        this.wdePreferences = wdePreferences;
     }
 
     public List<JsonApplicationPreference> getApplicationPreferences() {
