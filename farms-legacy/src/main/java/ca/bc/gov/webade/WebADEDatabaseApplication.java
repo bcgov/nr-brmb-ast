@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import ca.bc.gov.webade.j2ee.WebADEFilter;
 import ca.bc.gov.webade.j2ee.WebAppRequestProcessingUtils;
 import ca.bc.gov.webade.preferences.WebADEPreferences;
@@ -12,14 +16,24 @@ import ca.bc.gov.webade.user.GUID;
 import ca.bc.gov.webade.user.UserCredentials;
 import ca.bc.gov.webade.user.WebADEUserPermissions;
 import ca.bc.gov.webade.user.service.UserInfoService;
+import oracle.jdbc.OracleConnection;
 
 public final class WebADEDatabaseApplication implements Application, Serializable {
+
+    private DataSource dataSource;
 
     private WebADEDatastore datastore;
     private UserInfoService infoService;
     private AppRoles roles;
 
     protected WebADEDatabaseApplication(WebADEDatastore ds) throws WebADEException {
+        try {
+            InitialContext ctx = new InitialContext();
+            this.dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/farms_rest");
+        } catch (NamingException ex) {
+            throw new WebADEException(ex);
+        }
+
         this.datastore = ds;
         this.infoService = new ApplicationUserInfoService(this.datastore);
 
@@ -147,21 +161,20 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
     @Override
     public Connection getConnection(WebADEUserPermissions userAuthorizations, Role role)
             throws WebADEException, SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getConnection'");
+        return this.dataSource.getConnection();
     }
 
     @Override
     public Connection getConnectionByAction(WebADEUserPermissions userAuthorizations, Action action)
             throws WebADEException, SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getConnectionByAction'");
+        return this.dataSource.getConnection();
     }
 
     @Override
     public Connection getConnectionByPriviledgedAction(Action action) throws WebADEException, SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getConnectionByPriviledgedAction'");
+        Connection connection = this.dataSource.getConnection();
+        String className = connection.getClass().getName();
+        return connection.unwrap(OracleConnection.class);
     }
 
     @Override
