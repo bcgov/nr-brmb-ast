@@ -548,7 +548,7 @@
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "/apps_data/farm"
+            "value": "\\\\app6\\apps\\data\\farm\\dev"
         },
         {
             "subTypeCode": "app-config",
