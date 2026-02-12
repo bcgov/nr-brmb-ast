@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.util.JsonUtils;
 import ca.bc.gov.webade.config.ApplicationConfig;
+import ca.bc.gov.webade.database.DatabaseUserCredentials;
 import ca.bc.gov.webade.json.JsonAction;
 import ca.bc.gov.webade.json.JsonApplicationConfiguration;
 import ca.bc.gov.webade.json.JsonApplicationPreference;
@@ -28,14 +29,20 @@ import ca.bc.gov.webade.preferences.WebADEPreference;
 import ca.bc.gov.webade.preferences.WebADEPreferenceSet;
 import ca.bc.gov.webade.preferences.WebADEPreferenceTypeFactory;
 import ca.bc.gov.webade.preferences.WebADEPreferences;
+import ca.bc.gov.webade.security.WebADESecurityManager;
+import ca.bc.gov.webade.user.DefaultWebADEUserPermissions;
 import ca.bc.gov.webade.user.UserCredentials;
 import ca.bc.gov.webade.user.UserTypeCode;
+import ca.bc.gov.webade.user.WebADEUserPermissions;
+import ca.bc.gov.webade.user.WebADEUserUtils;
 import ca.bc.gov.webade.user.provider.WebADEUserProvider;
 import ca.bc.gov.webade.user.provider.WebADEUserProviderException;
 
 public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serializable {
 
     private JsonApplicationConfiguration applicationConfiguration = new JsonApplicationConfiguration();
+
+    protected static final long NULL_EUSER_ID = 0;
 
     private static final Logger log = LoggerFactory.getLogger(WebADEDatabaseDatastore.class);
 
@@ -313,5 +320,208 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
         }
 
         return this.roles.toArray(new Role[this.roles.size()]);
+    }
+
+    @Override
+    public final WebADEUserPermissions getWebADEUserPermissions(
+            UserCredentials givenCredentials) throws WebADEException {
+        return getWebADEUserPermissions(givenCredentials, false, false);
+    }
+
+    @Override
+    public WebADEUserPermissions getWebADEUserPermissions(UserCredentials givenCredentials, boolean ignoreSessionCache)
+            throws WebADEException {
+        return getWebADEUserPermissions(givenCredentials, ignoreSessionCache, false);
+    }
+
+    public WebADEUserPermissions getWebADEUserPermissions(UserCredentials givenCredentials, boolean ignoreSessionCache,
+            boolean isAnonymous) throws WebADEException {
+        log.trace("> getWebADEUserPermissions");
+        isInitialized();
+
+        WebADEUserPermissions perms;
+        // Don't compare creds, if instructed to ignore the session cache object.
+        boolean credsMatch = (ignoreSessionCache) ? false : compareCredsToCurrentUser(givenCredentials);
+        UserCredentials currentUser = fetchCurrentUserCredentials();
+        if (credsMatch && currentUser != null) {
+            perms = WebADESecurityManager.getWebADESecurityManager(this.appCode).getCurrentUserPermissions();
+        } else if (UserCredentials.UNAUTHENTICATED_USER_CREDENTIALS.equals(givenCredentials)) {
+            perms = getPublicWebADEPermissions();
+        } else {
+            UserCredentials loadedCredentials = givenCredentials;
+            if (loadedCredentials == null) {
+                log.trace("Could not locate user for given credentials '"
+                        + givenCredentials + "'.");
+                perms = null;
+            } else {
+                log.trace("Loading user '" + loadedCredentials
+                        + "' permissions from database.");
+                perms = loadWebADEUserPermissions(loadedCredentials);
+            }
+        }
+        log.trace("< getWebADEUserPermissions");
+        return perms;
+    }
+
+    protected final boolean isInitialized() throws WebADEException {
+        if (this.appCode == null) {
+            throw new WebADEException(
+                    "WebADEDatabaseDatastore class not properly initialized.  Missing application code value.");
+        }
+        return true;
+    }
+
+    private boolean compareCredsToCurrentUser(UserCredentials givenCredentials) {
+        boolean credsMatch;
+        UserCredentials currentCreds = fetchCurrentUserCredentials();
+        if (givenCredentials == null || currentCreds == null) {
+            credsMatch = false;
+        } else {
+            credsMatch = currentCreds.equals(givenCredentials);
+        }
+        return credsMatch;
+    }
+
+    private UserCredentials fetchCurrentUserCredentials() {
+        WebADESecurityManager manager = WebADESecurityManager.getWebADESecurityManager(this.appCode);
+        UserCredentials requestingCreds = manager.getCurrentUserCredentials();
+        return requestingCreds;
+    }
+
+    @Override
+    public final WebADEUserPermissions getPublicWebADEPermissions()
+            throws WebADEException {
+        isInitialized();
+        WebADEUserPermissions permissions = new DefaultWebADEUserPermissions(
+                UserCredentials.UNAUTHENTICATED_USER_CREDENTIALS,
+                new ArrayList<Role>(), new HashMap<Organization, ArrayList<Role>>());
+        return permissions;
+    }
+
+    private WebADEUserPermissions loadWebADEUserPermissions(
+            UserCredentials credentials) throws WebADEException {
+        ArrayList<WebADEUserPermissions> userAuths = new ArrayList<WebADEUserPermissions>();
+
+        if (credentials instanceof DatabaseUserCredentials
+                && ((DatabaseUserCredentials) credentials).getEUserId() != NULL_EUSER_ID) {
+            WebADEUserPermissions personalAuths = loadUserPersonalPermissions((DatabaseUserCredentials) credentials);
+            userAuths.add(personalAuths);
+        } else {
+            // Adding an empty permissions object ensures that the user's
+            // credentials get added to the merged permissions object.
+            WebADEUserPermissions personalAuths = new DefaultWebADEUserPermissions(
+                    credentials, new ArrayList<Role>(), new HashMap<Organization, ArrayList<Role>>());
+            userAuths.add(personalAuths);
+        }
+
+        WebADEUserPermissions auths = WebADEUserUtils
+                .mergeWebADEUserPermissions(userAuths
+                        .toArray(new WebADEUserPermissions[userAuths.size()]));
+        auths.getUserCredentials().setReadOnly();
+        return auths;
+    }
+
+    private WebADEUserPermissions loadUserPersonalPermissions(
+            DatabaseUserCredentials credentials) throws WebADEException {
+        // build role map
+        Role[] appRoles = getApplicationRoles();
+        Map<String, Role> roleMap = new HashMap<>();
+        for (Role role : appRoles) {
+            roleMap.put(role.getName(), role);
+        }
+
+        // build user role map
+        Map<Long, ArrayList<Role>> userRoleMap = new HashMap<Long, ArrayList<Role>>() {
+            {
+                put(6L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("ADMIN"));
+                        add(roleMap.get("TIP_REPORT_ADMIN"));
+                    }
+                });
+                put(7L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("INBOX_VIEWER"));
+                        add(roleMap.get("SENIOR_VERIFIER"));
+                    }
+                });
+                put(8L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("VERIFIER"));
+                        add(roleMap.get("CLIENT"));
+                        add(roleMap.get("TIP_REPORT_ADMIN"));
+                        add(roleMap.get("INBOX_VIEWER"));
+                        add(roleMap.get("SENIOR_VERIFIER"));
+                    }
+                });
+                put(9L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("VERIFIER"));
+                        add(roleMap.get("INBOX_VIEWER"));
+                    }
+                });
+                put(10L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("VERIFIER"));
+                        add(roleMap.get("INBOX_VIEWER"));
+                    }
+                });
+                put(11L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("TIP_REPORT_USER"));
+                    }
+                });
+                put(12L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("PROGRAM_ANALYST"));
+                        add(roleMap.get("NEW_PARTICIPANT_ADMIN"));
+                    }
+                });
+                put(13L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("INBOX_VIEWER"));
+                        add(roleMap.get("DATA_ADMIN"));
+                    }
+                });
+                put(14L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("STAFF"));
+                        add(roleMap.get("INBOX_VIEWER"));
+                    }
+                });
+                put(15L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("STAFF"));
+                        add(roleMap.get("INBOX_VIEWER"));
+                    }
+                });
+                put(17L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("TIP_REPORT_ADMIN"));
+                    }
+                });
+                put(30L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("STAFF"));
+                    }
+                });
+                put(503L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("CLIENT"));
+                    }
+                });
+                put(504L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("CLIENT"));
+                    }
+                });
+            }
+        };
+
+        ArrayList<Role> rolesNonSecured = userRoleMap.get(credentials.getEUserId());
+        HashMap<Organization, ArrayList<Role>> userRolesWithOrgs = new HashMap<Organization, ArrayList<Role>>();
+        WebADEUserPermissions auths = new DefaultWebADEUserPermissions(
+                credentials, rolesNonSecured, userRolesWithOrgs);
+        return auths;
     }
 }

@@ -90,15 +90,13 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
 
     @Override
     public WebADEUserPermissions getWebADEUserPermissions(UserCredentials userCredentials) throws WebADEException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWebADEUserPermissions'");
+        return this.datastore.getWebADEUserPermissions(userCredentials, false);
     }
 
     @Override
     public WebADEUserPermissions getWebADEUserPermissions(UserCredentials userCredentials, boolean ignoreSessionCache)
             throws WebADEException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWebADEUserPermissions'");
+        return this.datastore.getWebADEUserPermissions(userCredentials, ignoreSessionCache);
     }
 
     @Override
@@ -161,19 +159,20 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
     @Override
     public Connection getConnection(WebADEUserPermissions userAuthorizations, Role role)
             throws WebADEException, SQLException {
-        return this.dataSource.getConnection();
+        Connection connection = this.dataSource.getConnection();
+        return connection.unwrap(OracleConnection.class);
     }
 
     @Override
     public Connection getConnectionByAction(WebADEUserPermissions userAuthorizations, Action action)
             throws WebADEException, SQLException {
-        return this.dataSource.getConnection();
+        Connection connection = this.dataSource.getConnection();
+        return connection.unwrap(OracleConnection.class);
     }
 
     @Override
     public Connection getConnectionByPriviledgedAction(Action action) throws WebADEException, SQLException {
         Connection connection = this.dataSource.getConnection();
-        String className = connection.getClass().getName();
         return connection.unwrap(OracleConnection.class);
     }
 
@@ -241,11 +240,12 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
 
     /**
      * Returns the WebADE preferences for the application.
+     * 
      * @return A WebADEPreferences instance.
      * @throws WebADEException
      */
     public WebADEPreferences getWebADEPreferences() throws WebADEException {
-        Class<?>[] PERMITTED_CALLING_CLASSES = new Class[] {WebADEFilter.class, WebAppRequestProcessingUtils.class};
+        Class<?>[] PERMITTED_CALLING_CLASSES = new Class[] { WebADEFilter.class, WebAppRequestProcessingUtils.class };
         StackTraceElement[] stack = new Throwable().getStackTrace();
         boolean result = SecurityUtils.checkStackCallAccess(stack, PERMITTED_CALLING_CLASSES);
         if (!result) {
@@ -253,7 +253,7 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
                     + "' is not an instance of a class that is "
                     + "authorized to call this method.");
         }
-        return ((WebADEDatabaseDatastore)this.datastore).getWebADEPreferences();
+        return ((WebADEDatabaseDatastore) this.datastore).getWebADEPreferences();
     }
 
 }

@@ -2,6 +2,7 @@ package ca.bc.gov.webade;
 
 import ca.bc.gov.webade.preferences.WebADEPreferences;
 import ca.bc.gov.webade.user.UserCredentials;
+import ca.bc.gov.webade.user.WebADEUserPermissions;
 
 public interface WebADEDatastore {
 
@@ -52,4 +53,45 @@ public interface WebADEDatastore {
      *             information from the datastore.
      */
     public Role[] getApplicationRoles() throws WebADEException;
+
+    /**
+     * Returns the public permissions from the datastore. If no user can be
+     * identified with the request, this method will be userd to return a set of
+     * public authorizations.
+     * @return A WebADEUserPermissions object for the public unauthenticated
+     *         user.
+     * @throws WebADEException
+     */
+    public WebADEUserPermissions getPublicWebADEPermissions()
+            throws WebADEException;
+
+    /**
+     * Loads the target user's permissions from the datastore, or returns null
+     * if the user is not found.  Will return the session user's cached permissions
+     * object, if the given credentials match the current user's credentials.
+     * 
+     * @param userCredentials
+     *            The user's identifying credentials.
+     * 
+     * @return A WebADEUserPermissions object for the target user.
+     * @throws WebADEException
+     */
+    public WebADEUserPermissions getWebADEUserPermissions(UserCredentials userCredentials)
+            throws WebADEException;
+
+    /**
+     * Loads the target user's permissions from the datastore, or returns null
+     * if the user is not found.
+     * 
+     * @param userCredentials
+     *            The user's identifying credentials.
+     * @param ignoreSessionCache 
+     *            A flag indicating whether to ignore the session user permissions 
+     *            object, should it match the given user credentials.
+     * 
+     * @return A WebADEUserPermissions object for the target user.
+     * @throws WebADEException
+     */
+    public WebADEUserPermissions getWebADEUserPermissions(UserCredentials userCredentials, boolean ignoreSessionCache)
+            throws WebADEException;
 }
