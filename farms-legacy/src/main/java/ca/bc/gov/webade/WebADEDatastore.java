@@ -104,4 +104,13 @@ public interface WebADEDatastore {
      */
     public SecurityConfiguration getSecurityConfiguration() throws WebADEException;
 
+    /**
+     * Checks the enabled flag for the application.
+     * @return Returns true if the application is enabled.
+     * @throws WebADEException
+     *             Thrown when an error occurs while trying to retrieve the
+     *             information from the datastore.
+     */
+    public boolean isApplicationEnabled() throws WebADEException;
+
 }

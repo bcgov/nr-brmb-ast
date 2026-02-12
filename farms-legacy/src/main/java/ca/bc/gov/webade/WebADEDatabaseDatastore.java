@@ -541,4 +541,9 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
 
         return result;
     }
+
+    @Override
+    public final boolean isApplicationEnabled() throws WebADEException {
+        return true;
+    }
 }

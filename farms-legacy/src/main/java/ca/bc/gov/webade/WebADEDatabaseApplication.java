@@ -134,14 +134,11 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
 
     @Override
     public boolean isDisabled() throws WebADEException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isDisabled'");
+        return !this.datastore.isApplicationEnabled();
     }
 
     @Override
     public void setDisabled(boolean disable) throws WebADEException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDisabled'");
     }
 
     @Override
