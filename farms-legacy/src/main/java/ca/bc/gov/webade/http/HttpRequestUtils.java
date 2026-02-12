@@ -19,10 +19,43 @@ public class HttpRequestUtils {
      */
     public static final String WEBADE_APPLICATION = WebAppInitializationUtils.WEBADE_APPLICATION;
     /**
+     * The attribute name for the <code>UserInfoService</code> object in the
+     * <code>HttpSession</code>
+     */
+    public static final String WEBADE_USER_INFO_SERVICE = WebAppInitializationUtils.WEBADE_USER_INFO_SERVICE;
+    /**
+     * The attribute name for the <code>WebADEUserPermissions</code> object in
+     * the <code>HttpSession</code>
+     */
+    public static final String CURRENT_WEBADE_USER_PERMISSIONS = WebAppRequestProcessingUtils.CURRENT_WEBADE_USER_PERMISSIONS;
+    /**
      * The attribute name for the <code>WebADEUserInfo</code> object in the
      * <code>HttpSession</code>
      */
     public static final String CURRENT_WEBADE_USER_INFO = WebAppRequestProcessingUtils.CURRENT_WEBADE_USER_INFO;
+    /**
+     * The attribute name for the flag used by the tag
+     * <code>FlowControlTag</code> to prevent users from calling JSPs
+     * directly.
+     */
+    public static final String WEBADE_FLOW_CONTROL_FLAG = "webade.via.controller";
+    /**
+     * The request attribute name for the flag indicating the WebADE has
+     * pre-processed this request.
+     */
+    public static final String WEBADE_HAS_PREPROCESSED_REQUEST = WebAppRequestProcessingUtils.WEBADE_HAS_PREPROCESSED_REQUEST;
+    
+    /**
+     * Using this constant will hide bugs that may exist in legacy code because 
+     * it implies that a <code>User</code> object can be retrieved from the 
+     * <code>HttpSession</code> when that is not the case.  The legacy code 
+     * that I have seen that references this constant works only because the 
+     * reference is not used.
+     * 
+     * @deprecated Update the application to use WebadeUserInfo objects instead. 
+     */
+    @Deprecated
+    public static final String WEBADE_USER = "webade.user.singleton";
 
     private static final Logger log = LoggerFactory.getLogger(HttpRequestUtils.class);
 

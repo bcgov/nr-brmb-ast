@@ -15,6 +15,7 @@ import ca.bc.gov.webade.security.SecurityUtils;
 import ca.bc.gov.webade.user.GUID;
 import ca.bc.gov.webade.user.UserCredentials;
 import ca.bc.gov.webade.user.WebADEUserPermissions;
+import ca.bc.gov.webade.user.security.enterprise.SecurityConfiguration;
 import ca.bc.gov.webade.user.service.UserInfoService;
 import oracle.jdbc.OracleConnection;
 
@@ -256,4 +257,22 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
         return ((WebADEDatabaseDatastore) this.datastore).getWebADEPreferences();
     }
 
+    @Override
+    public SecurityConfiguration getSecurityConfiguration() throws WebADEException {
+
+        SecurityConfiguration result = null;
+
+        Class<?>[] PERMITTED_CALLING_CLASSES = new Class[] { WebAppRequestProcessingUtils.class };
+        StackTraceElement[] stack = new Throwable().getStackTrace();
+        boolean checkStackCallAccess = SecurityUtils.checkStackCallAccess(stack, PERMITTED_CALLING_CLASSES);
+        if (!checkStackCallAccess) {
+            throw new SecurityException("Calling class '" + stack[1].getClassName()
+                    + "' is not an instance of a class that is "
+                    + "authorized to call this method.");
+        }
+
+        result = this.datastore.getSecurityConfiguration();
+
+        return result;
+    }
 }

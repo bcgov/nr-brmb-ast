@@ -3,6 +3,7 @@ package ca.bc.gov.webade;
 import ca.bc.gov.webade.preferences.WebADEPreferences;
 import ca.bc.gov.webade.user.UserCredentials;
 import ca.bc.gov.webade.user.WebADEUserPermissions;
+import ca.bc.gov.webade.user.security.enterprise.SecurityConfiguration;
 
 public interface WebADEDatastore {
 
@@ -94,4 +95,13 @@ public interface WebADEDatastore {
      */
     public WebADEUserPermissions getWebADEUserPermissions(UserCredentials userCredentials, boolean ignoreSessionCache)
             throws WebADEException;
+    
+    /**
+     * Get the SecurityConfiguration.  This method is used by the WebAppRequestPrecessingUtils.
+     * 
+     * @return SecurityConfiguration as configured by webade preferences.
+     * @throws WebADEException
+     */
+    public SecurityConfiguration getSecurityConfiguration() throws WebADEException;
+
 }

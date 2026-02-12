@@ -11,6 +11,7 @@ import ca.bc.gov.webade.preferences.WebADEPreferences;
 import ca.bc.gov.webade.user.GUID;
 import ca.bc.gov.webade.user.UserCredentials;
 import ca.bc.gov.webade.user.WebADEUserPermissions;
+import ca.bc.gov.webade.user.security.enterprise.SecurityConfiguration;
 import ca.bc.gov.webade.user.service.UserInfoService;
 
 /**
@@ -503,5 +504,13 @@ public interface Application extends ApplicationMBean {
      *             SecurityException is thrown.
      */
     public void shutdown() throws SecurityException;
+    
+    /**
+     * Get the SecurityConfiguration.  This method is used by the WebAppRequestPrecessingUtils.
+     * 
+     * @return SecurityConfiguration as configured by webade preferences.
+     * @throws WebADEException
+     */
+    public SecurityConfiguration getSecurityConfiguration() throws WebADEException;
 
 }

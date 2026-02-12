@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,8 @@ import ca.bc.gov.webade.user.WebADEUserPermissions;
 import ca.bc.gov.webade.user.WebADEUserUtils;
 import ca.bc.gov.webade.user.provider.WebADEUserProvider;
 import ca.bc.gov.webade.user.provider.WebADEUserProviderException;
+import ca.bc.gov.webade.user.security.enterprise.AuthAndUnauthSiteminderConfiguration;
+import ca.bc.gov.webade.user.security.enterprise.SecurityConfiguration;
 
 public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serializable {
 
@@ -523,5 +526,19 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
         WebADEUserPermissions auths = new DefaultWebADEUserPermissions(
                 credentials, rolesNonSecured, userRolesWithOrgs);
         return auths;
+    }
+
+    @Override
+    public SecurityConfiguration getSecurityConfiguration() throws WebADEException {
+
+        SecurityConfiguration result = null;
+
+        WebADEPreferences wdePrefs = this.getWebADEPreferences();
+        Properties properties = wdePrefs.getPreferencePropertiesBySubType(WebADEPreferences.SECURITY_PROVIDER_SUB_TYPE);
+
+        result = new AuthAndUnauthSiteminderConfiguration(properties);
+        result.initialize();
+
+        return result;
     }
 }
