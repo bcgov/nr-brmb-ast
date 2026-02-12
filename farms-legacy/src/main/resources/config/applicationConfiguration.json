@@ -388,6 +388,33 @@
     ],
     "wdePreferences": [
         {
+            "subTypeCode": "app-config",
+            "setName": null,
+            "name": "anonymous-user",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "BCEID\\WEBADE_ANONYMOUS"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": null,
+            "name": "group-max-cache-time",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "86400000"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": null,
+            "name": "user-max-cache-time",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "86400000"
+        },
+        {
             "subTypeCode": "dynamic-filter",
             "setName": "webade-developer-filter",
             "name": "chain-order",
@@ -701,6 +728,87 @@
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
             "value": "true"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "BUP-user-type-domain",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "BCEID"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "GOV-user-type-domain",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "IDIR"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "UIN-user-type-domain",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "MYID"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "VIN-user-type-domain",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "VFDID"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "class-name",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "ca.bc.gov.webade.developer.user.provider.WebADEDeveloperUserProvider"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "enabled",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "supported-user-types",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "GOV,BUP,UIN,VIN"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "user-info-file-location",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "\\\\app6\\userInfoFileLocation\\ora2-webade-user-info.xml"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "user-info-response-delay",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "300"
         }
     ],
     "applicationPreferences": [
