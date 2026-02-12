@@ -61,6 +61,8 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
         this.appCode = applicationCode.trim().toUpperCase();
 
         this.roles = null; // Reset the roles cache.
+        this.userProviderMapByUserType = new HashMap<UserTypeCode, WebADEUserProvider>();
+        this.userProviderMapBySourceDirectory = new HashMap<String, WebADEUserProvider>();
         WebADEPreferences wdePrefs = getWebADEPreferences();
         this.appConfig = new ApplicationConfig(wdePrefs);
 
