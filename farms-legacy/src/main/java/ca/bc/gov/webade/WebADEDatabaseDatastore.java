@@ -31,9 +31,11 @@ import ca.bc.gov.webade.preferences.WebADEPreferenceSet;
 import ca.bc.gov.webade.preferences.WebADEPreferenceTypeFactory;
 import ca.bc.gov.webade.preferences.WebADEPreferences;
 import ca.bc.gov.webade.security.WebADESecurityManager;
+import ca.bc.gov.webade.user.DefaultGovernmentUserInfo;
 import ca.bc.gov.webade.user.DefaultWebADEUserPermissions;
 import ca.bc.gov.webade.user.UserCredentials;
 import ca.bc.gov.webade.user.UserTypeCode;
+import ca.bc.gov.webade.user.WebADEUserInfo;
 import ca.bc.gov.webade.user.WebADEUserPermissions;
 import ca.bc.gov.webade.user.WebADEUserUtils;
 import ca.bc.gov.webade.user.provider.WebADEUserProvider;
@@ -545,5 +547,142 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
     @Override
     public final boolean isApplicationEnabled() throws WebADEException {
         return true;
+    }
+
+    @Override
+    public final WebADEUserInfo getWebADEUserInfo(UserCredentials givenCredentials)
+            throws WebADEException {
+        return getWebADEUserInfo(givenCredentials, false, false);
+    }
+
+    @Override
+    public final WebADEUserInfo getWebADEUserInfo(UserCredentials givenCredentials, boolean ignoreSessionCache)
+            throws WebADEException {
+        return getWebADEUserInfo(givenCredentials, ignoreSessionCache, false);
+    }
+
+    private final WebADEUserInfo getWebADEUserInfo(UserCredentials givenCredentials, boolean ignoreSessionCache,
+            boolean isAnonymous)
+            throws WebADEException {
+        if (givenCredentials instanceof DatabaseUserCredentials) {
+            Long eUserId = ((DatabaseUserCredentials) givenCredentials).getEUserId();
+            DefaultGovernmentUserInfo info = new DefaultGovernmentUserInfo();
+            if (eUserId == 6L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Anthony");
+                info.setLastName("Hopkins");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 7L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Betty");
+                info.setLastName("Grable");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 8L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Brad");
+                info.setLastName("Pitt");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 9L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Clint");
+                info.setLastName("Eastwood");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 10L) {
+                info.setEmployeeId("N");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("David");
+                info.setLastName("Letterman");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 11L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Demi");
+                info.setLastName("Moore");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 12L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Elizabeth");
+                info.setLastName("Taylor");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 13L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Fred");
+                info.setLastName("Astaire");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 14L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Greta");
+                info.setLastName("Garbo");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 15L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Harrison");
+                info.setLastName("Ford");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 17L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Jackie");
+                info.setLastName("Chan");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 30L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Uma");
+                info.setLastName("Thurman");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 503L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Oauth");
+                info.setLastName("Gov");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 504L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("Oauth");
+                info.setLastName("Gov");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            }
+            return info;
+        }
+
+        return null;
     }
 }

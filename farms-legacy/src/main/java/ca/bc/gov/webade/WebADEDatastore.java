@@ -2,6 +2,7 @@ package ca.bc.gov.webade;
 
 import ca.bc.gov.webade.preferences.WebADEPreferences;
 import ca.bc.gov.webade.user.UserCredentials;
+import ca.bc.gov.webade.user.WebADEUserInfo;
 import ca.bc.gov.webade.user.WebADEUserPermissions;
 import ca.bc.gov.webade.user.security.enterprise.SecurityConfiguration;
 
@@ -112,5 +113,33 @@ public interface WebADEDatastore {
      *             information from the datastore.
      */
     public boolean isApplicationEnabled() throws WebADEException;
+
+    /**
+     * Loads the target user's personal information from the datastore, or
+     * returns null if the user is not found.  Will return the session user's cached info
+     * object, if the given credentials match the current user's credentials.
+     * 
+     * @param userCredentials
+     *            The user's identifying credentials.
+     * 
+     * @return A WebADEUserInfo object for the target user.
+     * @throws WebADEException
+     */
+    public WebADEUserInfo getWebADEUserInfo(UserCredentials userCredentials) throws WebADEException;
+
+    /**
+     * Loads the target user's personal information from the datastore, or
+     * returns null if the user is not found.
+     * 
+     * @param userCredentials
+     *            The user's identifying credentials.
+     * @param ignoreSessionCache 
+     *            A flag indicating whether to ignore the session user info 
+     *            object, should it match the given user credentials.
+     * 
+     * @return A WebADEUserInfo object for the target user.
+     * @throws WebADEException
+     */
+    public WebADEUserInfo getWebADEUserInfo(UserCredentials userCredentials, boolean ignoreSessionCache) throws WebADEException;
 
 }

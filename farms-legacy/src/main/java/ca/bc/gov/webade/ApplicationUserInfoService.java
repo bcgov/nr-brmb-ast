@@ -63,15 +63,19 @@ final class ApplicationUserInfoService implements UserInfoService, Serializable 
 
     @Override
     public WebADEUserInfo getWebADEUserInfo(UserCredentials userCredentials) throws UserInfoServiceException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWebADEUserInfo'");
+        return getWebADEUserInfo(userCredentials, false);
     }
 
     @Override
     public WebADEUserInfo getWebADEUserInfo(UserCredentials userCredentials, boolean ignoreSessionCache)
             throws UserInfoServiceException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWebADEUserInfo'");
+        WebADEUserInfo userInfo;
+        try {
+            userInfo = this.datastore.getWebADEUserInfo(userCredentials, ignoreSessionCache);
+        } catch (WebADEException e) {
+            throw new UserInfoServiceException(e);
+        }
+        return userInfo;
     }
 
     @Override
