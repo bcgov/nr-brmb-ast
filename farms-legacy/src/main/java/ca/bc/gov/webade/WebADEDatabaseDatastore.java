@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +34,7 @@ import ca.bc.gov.webade.preferences.WebADEPreferences;
 import ca.bc.gov.webade.security.WebADESecurityManager;
 import ca.bc.gov.webade.user.DefaultGovernmentUserInfo;
 import ca.bc.gov.webade.user.DefaultWebADEUserPermissions;
+import ca.bc.gov.webade.user.GUID;
 import ca.bc.gov.webade.user.UserCredentials;
 import ca.bc.gov.webade.user.UserTypeCode;
 import ca.bc.gov.webade.user.WebADEUserInfo;
@@ -353,7 +355,7 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
         } else if (UserCredentials.UNAUTHENTICATED_USER_CREDENTIALS.equals(givenCredentials)) {
             perms = getPublicWebADEPermissions();
         } else {
-            UserCredentials loadedCredentials = givenCredentials;
+            UserCredentials loadedCredentials = loadUserCredentialsFromDatabase(givenCredentials);
             if (loadedCredentials == null) {
                 log.trace("Could not locate user for given credentials '"
                         + givenCredentials + "'.");
@@ -401,6 +403,50 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
                 UserCredentials.UNAUTHENTICATED_USER_CREDENTIALS,
                 new ArrayList<Role>(), new HashMap<Organization, ArrayList<Role>>());
         return permissions;
+    }
+
+    private UserCredentials loadUserCredentialsFromDatabase(UserCredentials credentials)
+            throws WebADEException {
+        DatabaseUserCredentials databaseUserCredentials = new DatabaseUserCredentials();
+        databaseUserCredentials.setUserTypeCode(credentials.getUserTypeCode());
+        databaseUserCredentials.setEUserId(NULL_EUSER_ID);
+        databaseUserCredentials.setAccountName(credentials.getAccountName());
+        databaseUserCredentials.setSourceDirectory(credentials.getSourceDirectory());
+        databaseUserCredentials.setUserGuid(credentials.getUserGuid());
+        databaseUserCredentials.setUpdatedDate(new Date());
+
+        GUID userGuid = databaseUserCredentials.getUserGuid();
+        if (userGuid.equals(new GUID("AHOPKINS000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(6L);
+        } else if (userGuid.equals(new GUID("BGRABLE0000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(7L);
+        } else if (userGuid.equals(new GUID("BPITT000000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(8L);
+        } else if (userGuid.equals(new GUID("CEASTWOOD00000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(9L);
+        } else if (userGuid.equals(new GUID("DLETTERMAN0000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(10L);
+        } else if (userGuid.equals(new GUID("DMOORE00000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(11L);
+        } else if (userGuid.equals(new GUID("ETAYLOR0000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(12L);
+        } else if (userGuid.equals(new GUID("FASTAIRE000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(13L);
+        } else if (userGuid.equals(new GUID("GGARBO00000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(14L);
+        } else if (userGuid.equals(new GUID("HFORD000000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(15L);
+        } else if (userGuid.equals(new GUID("JCHAN000000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(17L);
+        } else if (userGuid.equals(new GUID("UTHRUMAN000000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(30L);
+        } else if (userGuid.equals(new GUID("OAUTHGOV100000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(503L);
+        } else if (userGuid.equals(new GUID("OAUTHGOV200000000000000000000000"))) {
+            databaseUserCredentials.setEUserId(504L);
+        }
+
+        return databaseUserCredentials;
     }
 
     private WebADEUserPermissions loadWebADEUserPermissions(
