@@ -16,23 +16,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.bc.gov.srm.farm.domain.fifo.FifoCalculationItem;
-import ca.bc.gov.srm.farm.domain.fifo.FifoStatus;
+import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageCalculationItem;
+import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageStatus;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.transaction.Transaction;
 import ca.bc.gov.webade.dbpool.WrapperConnection;
 
-public class FifoDAO extends OracleDAO {
+public class BenefitTriageDAO extends OracleDAO {
 
   private static final String PACKAGE_NAME = "FARM_FIFO_PKG";
   private static final String READ_FIFO_STATUS_BY_YEAR_PROC = "READ_FIFO_STATUS_BY_YEAR";
   private static final String READ_FIFO_CALCULATION_ITEMS_PROC = "READ_FIFO_CALCULATION_ITEMS";
 
   @SuppressWarnings("resource")
-  public List<FifoStatus> readFifoStatusByYear(final Transaction transaction, final int year) throws DataAccessException {
+  public List<BenefitTriageStatus> readTriageStatusByYear(final Transaction transaction, final int year) throws DataAccessException {
 
     final int paramCount = 1;
-    List<FifoStatus> fifoStatusList = new ArrayList<>();
+    List<BenefitTriageStatus> triageStatusList = new ArrayList<>();
     Connection connection = getOracleConnection(transaction);
 
     try (DAOStoredProcedure proc = new DAOStoredProcedure(
@@ -45,15 +45,15 @@ public class FifoDAO extends OracleDAO {
       try (ResultSet rs = proc.getResultSet();) {
 
         while (rs.next()) {
-          FifoStatus fifoStatus = new FifoStatus();
-          fifoStatus.setParticipantPin(getInteger(rs, "participant_pin"));
-          fifoStatus.setClientName(getString(rs, "client_name"));
-          fifoStatus.setScenarioStateCodeDesc(getString(rs, "scenario_state_code_desc"));
-          fifoStatus.setEstimatedBenefit(getDouble(rs, "estimated_benefit"));
-          fifoStatus.setIsPaymentFile(getString(rs, "is_payment_file"));
-          fifoStatus.setScenarioNumber(getInteger(rs, "scenario_number"));
+          BenefitTriageStatus triageStatus = new BenefitTriageStatus();
+          triageStatus.setParticipantPin(getInteger(rs, "participant_pin"));
+          triageStatus.setClientName(getString(rs, "client_name"));
+          triageStatus.setScenarioStateCodeDesc(getString(rs, "scenario_state_code_desc"));
+          triageStatus.setEstimatedBenefit(getDouble(rs, "estimated_benefit"));
+          triageStatus.setIsPaymentFile(getString(rs, "is_payment_file"));
+          triageStatus.setScenarioNumber(getInteger(rs, "scenario_number"));
 
-          fifoStatusList.add(fifoStatus);
+          triageStatusList.add(triageStatus);
         }
       }
 
@@ -62,15 +62,15 @@ public class FifoDAO extends OracleDAO {
       handleException(e);
     }
 
-    return fifoStatusList;
+    return triageStatusList;
   }
 
 
   @SuppressWarnings("resource")
-  public List<FifoCalculationItem> readFifoCalculationItems(final Connection conn) throws DataAccessException {
+  public List<BenefitTriageCalculationItem> readTriageCalculationItems(final Connection conn) throws DataAccessException {
 
     final int paramCount = 0;
-    List<FifoCalculationItem> fifoCalculationItemList = new ArrayList<>();
+    List<BenefitTriageCalculationItem> triageCalculationItemList = new ArrayList<>();
     
     Connection connection = getWrappedConnection(conn);
 
@@ -82,18 +82,14 @@ public class FifoDAO extends OracleDAO {
       try (ResultSet rs = proc.getResultSet();) {
 
         while (rs.next()) {
-          FifoCalculationItem fifoStatus = new FifoCalculationItem();
-          fifoStatus.setParticipantPin(getInteger(rs, "Participant_Pin"));
-          fifoStatus.setProgramYear(getInteger(rs, "Program_Year"));
-          fifoStatus.setCraProgramYearVersionId(getInteger(rs, "Cra_Pyv_Id"));
-          fifoStatus.setCraScenarioId(getInteger(rs, "Cra_Scenario_Id"));
-          fifoStatus.setCraScenarioNumber(getInteger(rs, "Cra_Scenario_Number"));
-          fifoStatus.setFifoScenarioId(getInteger(rs, "Fifo_Scenario_Id"));
-          fifoStatus.setFifoScenarioNumber(getInteger(rs, "Fifo_Scenario_Number"));
-          fifoStatus.setFifoProgramYearVersionId(getInteger(rs, "Fifo_Pyv_Id"));
-          fifoStatus.setFifoScenarioStateCode(getString(rs, "Fifo_Scenario_State_Code"));
+          BenefitTriageCalculationItem triageStatus = new BenefitTriageCalculationItem();
+          triageStatus.setParticipantPin(getInteger(rs, "Participant_Pin"));
+          triageStatus.setProgramYear(getInteger(rs, "Program_Year"));
+          triageStatus.setCraProgramYearVersionId(getInteger(rs, "Cra_Pyv_Id"));
+          triageStatus.setCraScenarioId(getInteger(rs, "Cra_Scenario_Id"));
+          triageStatus.setCraScenarioNumber(getInteger(rs, "Cra_Scenario_Number"));
 
-          fifoCalculationItemList.add(fifoStatus);
+          triageCalculationItemList.add(triageStatus);
         }
       }
 
@@ -102,7 +98,7 @@ public class FifoDAO extends OracleDAO {
       handleException(e);
     }
 
-    return fifoCalculationItemList;
+    return triageCalculationItemList;
   }
 
   

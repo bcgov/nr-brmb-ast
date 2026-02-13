@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
@@ -125,8 +126,8 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
-    CrmRestApiDao restApiDao = new CrmRestApiDao();
-    CrmAccountResource accountResource = restApiDao.getAccountByPin(client.getParticipantPin());
+    CrmRestApiDao crmDao = new CrmRestApiDao();
+    CrmAccountResource accountResource = crmDao.getAccountByPin(client.getParticipantPin());
 
     try {
       transaction = openTransaction();
@@ -153,7 +154,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         accountResource.setBusinessNumberFromClient(client);
         // If we got a Business Number from the client, so it's no longer blank
         if(StringUtils.isNotBlank(accountResource.getVsi_businessnumber())) {
-          restApiDao.updateAccount(accountResource);
+          crmDao.updateAccount(accountResource);
         }
       }
     } catch (InvalidRevisionCountException e) {
@@ -521,7 +522,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final String chefsFormNotes,
       final String formUserType,
       final String chefsFormType,
-      final String fifoResultType,
+      final String benefitTriageResultType,
       final String user)
   throws ServiceException {
 
@@ -610,7 +611,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
 
           Scenario nolScenario = loadScenario(scenario.getClient().getParticipantPin(), programYear, nolScenarioMetadata.getScenarioNumber());
           List<ActionMessage> nolErrors = updateScenario(nolScenario, COMPLETED, "", NOL, userEmail,
-              chefsFormNotes, formUserType, chefsFormType, fifoResultType, user);
+              chefsFormNotes, formUserType, chefsFormType, benefitTriageResultType, user);
           errors.addAll(nolErrors);
         }
       }
@@ -682,7 +683,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
           && isRealBenefit && !isPreVerificationZeroPaymentPass;
       boolean stateTransferForCategoryChange = categoryChanged && wasUnknownCategory && isRealBenefit; 
       if(stateTransferForStateChange || stateTransferForCategoryChange) {
-        transferState(user, userEmail, scenarios, chefsFormNotes, formUserType, chefsFormType, fifoResultType, transaction);
+        transferState(user, userEmail, scenarios, chefsFormNotes, formUserType, chefsFormType, benefitTriageResultType, transaction);
       }
       
       transaction.commit();
@@ -975,13 +976,13 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       String chefsFormNotes,
       String formUserType,
       String chefsFormType,
-      String fifoResultType,
+      String benefitTriageResultType,
       Transaction transaction)
       throws Exception {
     CrmTransferService transferService = ServiceFactory.getCrmTransferService();
     
     for(Scenario curScenario : scenarios) {
-      transferService.scheduleBenefitTransfer(curScenario, userEmail, user, chefsFormNotes, formUserType, chefsFormType, fifoResultType, transaction);
+      transferService.scheduleBenefitTransfer(curScenario, userEmail, user, chefsFormNotes, formUserType, chefsFormType, benefitTriageResultType, transaction);
     }
   }
   
@@ -1949,6 +1950,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     if(bpus != null) {
       List<Integer> bpuIds = bpus.values().stream()
           .map(b -> b.getBasePricePerUnitId())
+          .filter(Objects::nonNull)
           .collect(Collectors.toList());
       bpusIdSet.addAll(bpuIds);
     }
@@ -2768,7 +2770,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       Integer participantPin = scenario.getClient().getParticipantPin();
       Integer programYear = scenario.getYear();
       String transferDescription = String.format("Enrolment transfer for %d PIN: %d", participantPin, programYear);
-      String fileName = "none";
+      final String fileName = "none";
 
       ImportVersion importVersion = new ImportVersion();
       importVersion.setImportClassCode(ImportClassCodes.XENROL);
@@ -2832,7 +2834,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final String chefsFormNotes,
       final String formUserType, 
       final String chefsFormType,
-      final String fifoResultType)
+      final String benefitTriageResultType)
           throws ServiceException {
     Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
@@ -2864,7 +2866,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       CrmTransferService transferService = ServiceFactory.getCrmTransferService();
       try {
         transferService.scheduleBenefitTransfer(scenarioForBenefitUpdate, email, user, chefsFormNotes, formUserType, chefsFormType,
-            fifoResultType, transaction);
+            benefitTriageResultType, transaction);
       } catch (Exception e) {
         throw new ServiceException(e);
       }
@@ -3277,6 +3279,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
           newOp.setFarmingYear(farmingYear);
           
           dao.createFarmingOperation(transaction, newOp, user);
+          
+          List<FarmingOperationPartner> partners = pyOp.getFarmingOperationPartners();
+          newOp.setFarmingOperationPartners(partners); // to give them the farmingOperationId
+          dao.createPartners(transaction, partners, user);
         }
       }
       
@@ -3677,6 +3683,41 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     String assignedToGuid = scenario.getAssignedToUserGuid();
     boolean assignedTo = guid.equalsIgnoreCase(assignedToGuid);
     return assignedTo;
+  }
+  
+  
+  @Override
+  public void updateScenarioChefsSubmissionId(Integer scenarioId,
+      Integer chefsSubmissionId, String user)
+  throws ServiceException {
+    
+    logger.debug(String.format("Unexpected error linking scenarioId: %d to chefsSubmissionId: %d", scenarioId, chefsSubmissionId));
+    
+    Transaction transaction = null;
+    ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
+    
+    try {
+      transaction = openTransaction();
+      transaction.begin();
+      
+      chefsDatabaseDao.updateScenarioSubmissionId(transaction, scenarioId, chefsSubmissionId, user);
+      
+      transaction.commit();
+    } catch (InvalidRevisionCountException e) {
+      logger.warn("Optimistic locking exception: ", e);
+      rollback(transaction);
+      throw e;
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error(String.format("Unexpected error linking scenarioId: %d to chefsSubmissionId: %d", scenarioId, chefsSubmissionId), e);
+      rollback(transaction);
+      if(e instanceof ServiceException) {
+        throw (ServiceException) e;
+      }
+      throw new ServiceException(e);
+    } finally {
+      closeTransaction(transaction);
+    }
   }
 
 }

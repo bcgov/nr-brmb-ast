@@ -24,7 +24,6 @@ public final class CacheUtils {
     ListService listService = ServiceFactory.getListService();
     
     listService.refreshCodeTableList(CodeTables.INVENTORY_ITEM);
-    listService.refreshCodeTableList(CodeTables.LINE_ITEMS);
     
     ServiceFactory.getConfigurationService().loadYearConfigurationParameters();
     

@@ -248,7 +248,7 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
       final Scenario scenario)
   throws ServiceException {
 
-    makeInventoryValuationAdjustments(scenario, true, false);
+    makeInventoryValuationAdjustments(scenario, true);
   }
 
 
@@ -259,8 +259,7 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
    */
   @Override
   public void makeInventoryValuationAdjustments(
-      final Scenario scenario, final boolean saveAdjustments,
-      final boolean makeFifoAdjustments)
+      final Scenario scenario, final boolean saveAdjustments)
   throws ServiceException {
     
     logger.debug("<makeInventoryValuationAdjustments - Auto-adjusting Inventories based on inventory valuation rules");
@@ -271,110 +270,8 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
     addAdjusmtentsForExistingItems(scenario, adjAddList, adjUpdateList);
     addAdjusmtentsForMissingItems(scenario, adjAddList);
     
-    if(makeFifoAdjustments) {
-      makeInventoryEndEqualStart(scenario, adjAddList, adjUpdateList);
-      makeApplesReceivableEndEqualStart(scenario, adjAddList, adjUpdateList);
-    }
-    
     if(saveAdjustments) {
       processInventoryAdjustments(scenario, adjAddList, adjUpdateList);
-    }
-    
-    logMethodEnd(logger);
-  }
-
-
-  /**
-   * For inventory, if there is a start value with no end (quantity or price) set the end value to the start value. 
-   */
-  private void makeInventoryEndEqualStart(
-      Scenario scenario, List<InventoryItem> adjAddList, List<InventoryItem> adjUpdateList) {
-    logMethodStart(logger);
-
-    for(ReferenceScenario refScenario : scenario.getAllScenarios()) {
-      if(refScenario != null && refScenario.getFarmingYear() != null && refScenario.getFarmingYear().getFarmingOperations() != null) {
-        for(FarmingOperation fo : refScenario.getFarmingYear().getFarmingOperations()) {
-          for(ProducedItem item : fo.getProducedItems()) {
-
-            boolean adjust = false;
-            
-            Double qs = item.getTotalQuantityStart();
-            Double qe = item.getTotalQuantityEnd();
-            Double ps = item.getTotalPriceStart();
-            Double pe = item.getTotalPriceEnd();
-            
-            Double qeAdj = item.getAdjQuantityEnd();
-            Double peAdj = item.getAdjPriceEnd();
-            
-            if(qe == null && qs != null) {
-              qeAdj = qs;
-              item.setAdjQuantityEnd(qeAdj);
-              adjust = true;
-            }
-            
-            if(pe == null && ps != null) {
-              peAdj = ps;
-              item.setAdjPriceEnd(peAdj);
-              adjust = true;
-            }
-             
-            if(adjust) {
-              if(item.getAdjInventoryId() == null) {
-                if( ! containsItem(adjAddList, item) ) {
-                  adjAddList.add(item);
-                }
-              } else if( ! containsItem(adjUpdateList, item) ) {
-                adjUpdateList.add(item);
-              }
-            }
-    
-          }
-        }
-      }
-    }
-    
-    logMethodEnd(logger);
-  }  
-
-
-  /**
-   * For apples receivables, if there is a start value with no end, set the end value to the start value. 
-   */
-  private void makeApplesReceivableEndEqualStart(
-      Scenario scenario, List<InventoryItem> adjAddList, List<InventoryItem> adjUpdateList) {
-    logMethodStart(logger);
-
-    for(ReferenceScenario refScenario : scenario.getAllScenarios()) {
-      if(refScenario != null && refScenario.getFarmingYear() != null && refScenario.getFarmingYear().getFarmingOperations() != null) {
-        for(FarmingOperation fo : refScenario.getFarmingYear().getFarmingOperations()) {
-          for(ReceivableItem item : fo.getReceivableItems()) {
-
-            boolean adjust = false;
-            
-            Double startAmount = item.getTotalStartOfYearAmount();
-            Double endAmount = item.getTotalEndOfYearAmount();
-            
-            Double endAdj = item.getAdjEndOfYearAmount();
-            
-            if(endAmount == null && startAmount != null) {
-              endAdj = startAmount;
-              item.setAdjEndOfYearAmount(endAdj);
-              adjust = true;
-            }
-             
-            if(adjust) {
-              if(item.getAdjInventoryId() == null) {
-                if( ! containsItem(adjAddList, item) ) {
-                  adjAddList.add(item);
-                }
-              } else if( ! containsItem(adjUpdateList, item) ) {
-                adjUpdateList.add(item);
-              }
-            }
-    
-          }
-        }
-      }
     }
     
     logMethodEnd(logger);

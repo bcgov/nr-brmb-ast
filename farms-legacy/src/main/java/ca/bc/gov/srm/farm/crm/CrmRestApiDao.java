@@ -34,6 +34,7 @@ import ca.bc.gov.srm.farm.crm.resource.CrmAccountAnnotationResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmAccountResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmBenefitResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmBenefitUpdateResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmCoreConfigurationResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmCoverageTaskResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmEnrolmentResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmEnrolmentUpdateResource;
@@ -374,16 +375,16 @@ public class CrmRestApiDao extends RestApiDao {
     return getFirstResource(url, CrmQueueItemResource.class);
   }
 
-  public CrmValidationErrorResource getValidationErrorBySubmissionId(String submissionId) throws ServiceException {
+  public CrmValidationErrorResource getValidationErrorBySubmissionGuid(String submissionGuid) throws ServiceException {
     
-    String url = crmConfig.getValidationErrorLookupUrl(submissionId);
+    String url = crmConfig.getValidationErrorLookupUrl(submissionGuid, true);
     
     return getFirstResource(url, CrmValidationErrorResource.class);
   }
   
-  public CrmListResource<CrmValidationErrorResource> getValidationErrorListBySubmissionId(String submissionId) throws ServiceException, IOException {
+  public CrmListResource<CrmValidationErrorResource> getValidationErrorListBySubmissionGuid(String submissionGuid, boolean activeOnly) throws ServiceException, IOException {
     
-    String url = crmConfig.getValidationErrorLookupUrl(submissionId);
+    String url = crmConfig.getValidationErrorLookupUrl(submissionGuid, activeOnly);
     
     return getListResource(url, CrmValidationErrorResource.class);
   }
@@ -417,6 +418,21 @@ public class CrmRestApiDao extends RestApiDao {
     } catch (ServiceException e) {
       throw new ServiceException(e);
     }
+  }
+  
+  public void deleteCoverageTask(String activityId) throws ServiceException {
+    String endpointUrl = crmConfig.getCoverageTaskUrl() + "(" + activityId + ")";
+    delete(endpointUrl);
+  }
+  
+  public void deleteNolTask(String activityId) throws ServiceException {
+    String endpointUrl = crmConfig.getNolTaskUrl() + "(" + activityId + ")";
+    delete(endpointUrl);
+  }
+  
+  public void deleteNppTask(String activityId) throws ServiceException {
+    String endpointUrl = crmConfig.getNppTaskUrl() + "(" + activityId + ")";
+    delete(endpointUrl);
   }
   
   public void deleteValidationErrorTask(String activityId) throws ServiceException {
@@ -464,6 +480,13 @@ public class CrmRestApiDao extends RestApiDao {
 
       post(routeToQueueResource, crmConfig.getRouteToUrl());
     }
+  }
+
+  public CrmCoreConfigurationResource getCoreConfiguration() throws ServiceException {
+    
+    String url = crmConfig.getCoreConfigUrl();
+    
+    return getFirstResource(url, CrmCoreConfigurationResource.class);
   }
 
 }

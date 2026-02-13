@@ -35,7 +35,7 @@ import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.service.CalculatorService;
-import ca.bc.gov.srm.farm.service.FifoService;
+import ca.bc.gov.srm.farm.service.BenefitTriageService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.util.DataParseUtils;
 import ca.bc.gov.srm.farm.util.DateUtils;
@@ -63,7 +63,7 @@ public class BenefitUpdateTransformer {
       String chefsFormNotes,
       String formUserType,
       String chefsFormType,
-      String fifoResultType) throws ServiceException {
+      String benefitTriageResultType) throws ServiceException {
     logMethodStart(logger);
     
     DecimalFormat dollarFormat = new DecimalFormat(DOLLAR_FORMAT_STRING);
@@ -98,6 +98,7 @@ public class BenefitUpdateTransformer {
     String negativeMarginBenefitString = "";
     String prodInsurDeemedBenefitString = "";
     String bcFundedBenefitAmountString = "";
+    String combinedFarmsTotalString = "";
     String lateEnrolmentPenaltyAmountString = "";
     String verifierEmail = userEmail;
     
@@ -175,6 +176,14 @@ public class BenefitUpdateTransformer {
         double percentage = ratio * hundred;
         interimBenefitPercentString = String.valueOf(percentage);
       }
+
+      Double combinedFarmsTotal;
+      if(CalculatorConfig.hasEnhancedBenefits(programYear)) {
+        combinedFarmsTotal = benefit.getEnhancedTotalBenefit();
+      } else {
+        combinedFarmsTotal = benefit.getTotalBenefit();
+      }
+      combinedFarmsTotalString = StringUtils.formatDouble(combinedFarmsTotal, dollarFormat);
     }
     
     boolean expectingPayment = false;
@@ -182,11 +191,11 @@ public class BenefitUpdateTransformer {
     CalculatorService calculatorService = ServiceFactory.getCalculatorService();
     
     List<ScenarioMetaData> scenarioMetaDataList = scenario.getScenarioMetaDataList();
-    List<ScenarioMetaData> fifoScenariosMetaData = ScenarioUtils.findCompletedFifoScenarios(scenarioMetaDataList, programYear);
+    List<ScenarioMetaData> triageScenariosMetaData = ScenarioUtils.findCompletedTriageScenarios(scenarioMetaDataList, programYear);
     
-    for (ScenarioMetaData smd : fifoScenariosMetaData) {
-      Scenario fifoScenario = calculatorService.loadScenario(pin, programYear, smd.getScenarioNumber());
-      Benefit benefit = fifoScenario.getFarmingYear().getBenefit();
+    for (ScenarioMetaData smd : triageScenariosMetaData) {
+      Scenario triageScenario = calculatorService.loadScenario(pin, programYear, smd.getScenarioNumber());
+      Benefit benefit = triageScenario.getFarmingYear().getBenefit();
       if (benefit != null && benefit.getTotalBenefit() > 1.0) {
         expectingPayment = true;
         break;
@@ -306,7 +315,9 @@ public class BenefitUpdateTransformer {
     sb.append(",");
     sb.append(convertForCsv(farmTypeDetailedCodesString));
     sb.append(",");
-    sb.append(convertForCsv(fifoResultType));
+    sb.append(convertForCsv(benefitTriageResultType));
+    sb.append(",");
+    sb.append(convertForCsv(combinedFarmsTotalString));
 
     return sb.toString();
   }
@@ -374,8 +385,9 @@ public class BenefitUpdateTransformer {
     String cashMarginsOptInString = getFieldValue(fields, f++);
     String cashMarginsOptInDateString = getFieldValue(fields, f++);
     String farmTypeDetailedCodesString = getFieldValue(fields, f++);
-    String fifoResultType = getFieldValue(fields, f++);
-    
+    String benefitTriageResultType = getFieldValue(fields, f++);
+    String combinedFarmsTotalString = getFieldValue(fields, f++);
+
     Double benefitAmountDouble = DataParseUtils.parseDoubleObject(benefitAmountString);
     Double allocatedReferenceMarginDouble = DataParseUtils.parseDoubleObject(allocatedReferenceMarginString);
     Boolean partnershipInd = getIndicator(partnershipIndString);
@@ -410,6 +422,7 @@ public class BenefitUpdateTransformer {
     Double negativeMarginBenefit = DataParseUtils.parseDoubleObject(negativeMarginBenefitString);
     Boolean lateParticipant = getIndicator(lateParticipantString);
     Double bcFundedBenefitAmount = DataParseUtils.parseDoubleObject(bcFundedBenefitAmountString);
+    Double combinedFarmsTotal = DataParseUtils.parseDoubleObject(combinedFarmsTotalString);
     Double prodInsurDeemedBenefit = DataParseUtils.parseDoubleObject(prodInsurDeemedBenefitString);
     Double lateEnrolmentPenalty = DataParseUtils.parseDoubleObject(lateEnrolmentPenaltyAmountString);
     Boolean sendCopyToContactPerson = getIndicator(sendCopyToContactPersonString);
@@ -428,7 +441,7 @@ public class BenefitUpdateTransformer {
       farmTypeDetailedCodes = farmTypeDetailedCodesString.replace(oldDelimiter, newDelimiter);
     }
     
-    boolean zeroPass = FifoService.FIFO_RESULT_TYPE_ZERO_PASS.equals(fifoResultType);
+    boolean zeroPass = BenefitTriageService.TRIAGE_RESULT_TYPE_ZERO_PASS.equals(benefitTriageResultType);
     
     CrmBenefitUpdateResource msg = new CrmBenefitUpdateResource();
     
@@ -456,6 +469,7 @@ public class BenefitUpdateTransformer {
     msg.setVsi_pin(pinString);
     msg.setVsi_programyear(yearString);
     msg.setVsi_provinciallyfundedamount(bcFundedBenefitAmount);
+    msg.setVsi_combinedfarmstotal(combinedFarmsTotal);
     msg.setVsi_provincialsupplementalreceiveddate(CrmTransferFormatUtil.formatDate(localSupplementalReceivedDate));
     msg.setVsi_referencemarginforbenefitcalculation(allocatedReferenceMarginDouble);
     msg.setVsi_scenarionumber(scenarioNumberString);

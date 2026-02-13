@@ -12,28 +12,33 @@ package ca.bc.gov.srm.farm.chefs.resource.npp;
 
 import java.util.Objects;
 
-public class PartnershipInformation {
+import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
 
-	// this variable is not use but is in the dataset
-	private String parntershipPin;
+public class PartnershipInformation extends ChefsResource {
+
 	private String partnershipPin;
 	private String partnershipName;
 	private Double partnershipPercentage;
 	
-	
+	private String partnershipCorporationName;
+	private String partnershipFirstName;
+	private String partnershipLastName;
 
 	public PartnershipInformation() {
 		super();
 	}
 
-	public PartnershipInformation(String partnershipPin, String partnershipName, Double partnershipPercentage) {
-		super();
-		this.partnershipPin = partnershipPin;
-		this.partnershipName = partnershipName;
-		this.partnershipPercentage = partnershipPercentage;
-	}
+  public PartnershipInformation(String partnershipPin, String partnershipCorporationName, String partnershipFirstName, String partnershipLastName,
+      Double partnershipPercentage) {
+    super();
+    this.partnershipPin = partnershipPin;
+    this.partnershipCorporationName = partnershipCorporationName;
+    this.partnershipFirstName = partnershipFirstName;
+    this.partnershipLastName = partnershipLastName;
+    this.partnershipPercentage = partnershipPercentage;
+  }
 
-	public String getPartnershipPin() {
+  public String getPartnershipPin() {
 		return partnershipPin;
 	}
 
@@ -57,15 +62,31 @@ public class PartnershipInformation {
 		this.partnershipPercentage = partnershipPercentage;
 	}
 
-	public String getParntershipPin() {
-		return parntershipPin;
-	}
+	public String getPartnershipCorporationName() {
+    return partnershipCorporationName;
+  }
 
-	public void setParntershipPin(String parntershipPin) {
-		this.parntershipPin = parntershipPin;
-	}
+  public void setPartnershipCorporationName(String partnershipCorporationName) {
+    this.partnershipCorporationName = partnershipCorporationName;
+  }
 
-	@Override
+  public String getPartnershipFirstName() {
+    return partnershipFirstName;
+  }
+
+  public void setPartnershipFirstName(String partnershipFirstName) {
+    this.partnershipFirstName = partnershipFirstName;
+  }
+
+  public String getPartnershipLastName() {
+    return partnershipLastName;
+  }
+
+  public void setPartnershipLastName(String partnershipLastName) {
+    this.partnershipLastName = partnershipLastName;
+  }
+
+  @Override
 	public int hashCode() {
 		return Objects.hash(partnershipName, partnershipPercentage, partnershipPin);
 	}
@@ -79,9 +100,18 @@ public class PartnershipInformation {
 		if (getClass() != obj.getClass())
 			return false;
 		PartnershipInformation other = (PartnershipInformation) obj;
-		return Objects.equals(partnershipName, other.partnershipName)
-		    && Objects.equals(partnershipPercentage, other.partnershipPercentage)
+		return Objects.equals(partnershipCorporationName, other.partnershipCorporationName)
+		    && Objects.equals(partnershipFirstName, other.partnershipFirstName)
+        && Objects.equals(partnershipLastName, other.partnershipLastName)
+        && Objects.equals(partnershipPercentage, other.partnershipPercentage)
 		    && Objects.equals(partnershipPin, other.partnershipPin);
 	}
+
+  @Override
+  public String toString() {
+    return "PartnershipInformation [partnershipPin=" + partnershipPin + ", partnershipPercentage="
+        + partnershipPercentage + ", partnershipCorporationName=" + partnershipCorporationName + ", partnershipFirstName=" + partnershipFirstName
+        + ", partnershipLastName=" + partnershipLastName + "]";
+  }
 
 }

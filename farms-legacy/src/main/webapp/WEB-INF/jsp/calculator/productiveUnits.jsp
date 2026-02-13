@@ -483,7 +483,7 @@
           </logic-el:iterate>
         </tr>
 
-        <logic-el:iterate name="form" property="rolledUpLineKeys" id="rolledUpLineKey">
+        <logic-el:iterate name="form" property="rolledUpLineKeysCra" id="rolledUpLineKey">
           <tr>
             <th class="row"><c:out value="${form.rolledUpItems[rolledUpLineKey].lineCode}"/></th>
             <th class="row"><c:out value="${form.rolledUpItems[rolledUpLineKey].lineCodeDescription}"/></th>
@@ -514,7 +514,7 @@
         </logic-el:iterate>
       </tr>
 
-      <logic-el:iterate name="form" property="lineKeys" id="lineKey">
+      <logic-el:iterate name="form" property="lineKeysCra" id="lineKey">
         <c:if test="${form.items[lineKey].new == false}">
           <tr>
             <th class="row"><c:out value="${form.items[lineKey].lineCode}"/></th>

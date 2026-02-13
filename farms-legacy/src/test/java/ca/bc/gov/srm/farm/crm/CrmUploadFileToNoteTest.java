@@ -210,7 +210,7 @@ public class CrmUploadFileToNoteTest {
   @Test
   public void uploadNppFormToAccountNote() {
 
-    String nppTemplateUid = cdogsConfig.getNppTemplateGuid();
+    String nppTemplateUid = cdogsConfig.getNppTemplateGuid(null);
 
     String jsonInputString = TestUtils.loadFileAsString("data/chefs/npp_form_data.json");
 

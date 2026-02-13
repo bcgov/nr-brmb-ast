@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import ca.bc.gov.srm.farm.domain.CropItem;
+import ca.bc.gov.srm.farm.domain.FarmingOperation;
 import ca.bc.gov.srm.farm.domain.IncomeExpense;
 import ca.bc.gov.srm.farm.domain.InventoryItem;
 import ca.bc.gov.srm.farm.domain.LineItem;
@@ -216,6 +217,7 @@ public class FruitVegRevenueRiskSubTest {
     double totalQuantityProduced = 0;
     
     for(CropItem item : itemsForThisInventoryCode) {
+      FarmingOperation farmingOperation = item.getFarmingOperation();
       Double curQuantityProduced = MathUtils.getPrimitiveValue(item.getTotalQuantityProduced());
       
       if(!item.getCropUnitCode().equals(TARGET_UNIT)) {
@@ -227,12 +229,12 @@ public class FruitVegRevenueRiskSubTest {
       }
  
       if(curQuantityProduced != null) {
-        totalQuantityProduced += MathUtils.round(curQuantityProduced * ScenarioUtils.getPartnershipPercent(item.getFarmingOperation()), 3);
+        totalQuantityProduced += MathUtils.round(curQuantityProduced * ScenarioUtils.getPartnershipPercent(farmingOperation), 3);
       }
       
       Double fmv;
       if(isApple) {
-        fmv = item.getFarmingOperation().getGalaAppleFmvPrice();
+        fmv = farmingOperation.getAppleFmvPrice();
       } else {
         fmv = item.getFmvEnd();
       }
@@ -242,7 +244,13 @@ public class FruitVegRevenueRiskSubTest {
       }
       
       if (fmv == null) {
-        ReasonabilityTestUtils.addErrorMessage(errors, ERROR_INVENTORY_MISSING_FMV, item.getInventoryItemCode(), item.getInventoryItemCodeDescription());
+        // If the fiscal year dates are missing then the FMV cannot be found,
+        // so only show the missing FMV message if the operation has the dates.
+        if(farmingOperation.getFiscalYearStart() == null || farmingOperation.getFiscalYearEnd() == null) {
+          ReasonabilityTestUtils.addErrorMessage(errors, ERROR_MISSING_FISCAL_YEAR_DATES, farmingOperation.getSchedule());
+        } else {
+          ReasonabilityTestUtils.addErrorMessage(errors, ERROR_INVENTORY_MISSING_FMV, item.getInventoryItemCode(), item.getInventoryItemCodeDescription());
+        }
       } else if (inventoryResult.getFmvPrice() == null || item.getCropUnitCode().equals(TARGET_UNIT)) { // If inventoryResult has a converted price it will be overwritten by the price per pound.
         fmv = MathUtils.roundCurrency(fmv);
         inventoryResult.setFmvPrice(fmv);
@@ -270,7 +278,7 @@ public class FruitVegRevenueRiskSubTest {
     
     boolean isApple = fruitVegTypeCode.equals(FruitVegTypeCodes.APPLE);
     Double reportedRevenue = 0.0;
-    if(isApple) { // Inventory is not required for Apples. Instead, receivable end value is required.
+    if(isApple) { // Income is not required for Apples. Instead, receivable end value is required.
       for(String inventoryItemCode : receivablesIncludingNoChangeInValue.keySet()) {
         InventoryItem receivableItem = receivablesIncludingNoChangeInValue.get(inventoryItemCode);
         if(fruitVegTypeCode.equals(receivableItem.getFruitVegTypeCode())) {

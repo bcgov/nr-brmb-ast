@@ -107,29 +107,33 @@ public class ImportDAO extends OracleDAO {
   	final Transaction transaction,
     final Integer importVersionId) 
   throws DataAccessException {
+    
+    Connection connection = getConnection(transaction);
+    
+    return getImportVersion(connection, importVersionId);
+  }
+
+
+  public ImportVersion getImportVersion(Connection connection, final Integer importVersionId) throws DataAccessException {
     String procName = PACKAGE_NAME + "." + GET_PROC;
     ImportVersion iv = null;
-    Connection connection = getConnection(transaction);
-    ResultSet rs = null;
-    DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
-    try {
-      proc = new DAOStoredProcedure(connection, procName, paramCount, true);
+    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true); ) {
 
       proc.setInt(paramCount, importVersionId);
       proc.execute();
-      rs = proc.getResultSet();
+      
+      try (ResultSet rs = proc.getResultSet(); ) {
 
-      if (rs.next()) {
-        iv = createImportVersion(rs);
+        if (rs.next()) {
+          iv = createImportVersion(rs);
+        }
       }
 
     } catch (SQLException e) {
       getLog().error("Unexpected error: ", e);
       handleException(e);
-    } finally {
-      close(rs, proc);
     }
 
     return iv;
@@ -264,6 +268,23 @@ public class ImportDAO extends OracleDAO {
     } finally {
       close(proc);
     }
+  }
+
+
+  public ImportVersion createEmptyTransferRecord(String userId, Connection connection, String importClassCode, String importStateCode,
+      String transferDescription) throws DataAccessException {
+    final String fileName = "none";
+
+    ImportVersion importVersion = new ImportVersion();
+    importVersion.setImportClassCode(importClassCode);
+    importVersion.setImportStateCode(importStateCode);
+    importVersion.setDescription(transferDescription);
+    importVersion.setImportedByUser(userId);
+    importVersion.setImportFileName(fileName);
+
+    insertImportVersion(connection , importVersion);
+    
+    return importVersion;
   }
 
 

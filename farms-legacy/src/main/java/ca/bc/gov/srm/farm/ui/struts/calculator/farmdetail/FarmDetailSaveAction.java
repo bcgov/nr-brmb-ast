@@ -207,9 +207,9 @@ public class FarmDetailSaveAction extends FarmDetailViewAction {
 
       } else if(scenario.getCraStatementAReceivedDate() == null && newLocalStmtADate == null) {
 
-        boolean hasSupplemental = ScenarioUtils.hasProgramYearIncomeExpenses(scenario);
+        boolean hasIncomeOrExpenses = ScenarioUtils.hasProgramYearIncomeExpenses(scenario);
 
-        if(hasSupplemental && !isInterim) {
+        if(hasIncomeOrExpenses && !isInterim) {
           errors.add("",
               new ActionMessage(MessageConstants.ERRORS_FARM_DETAIL_PROVINCIAL_STATEMENT_A_RECEIVED_DATE_REQUIRED));
         }

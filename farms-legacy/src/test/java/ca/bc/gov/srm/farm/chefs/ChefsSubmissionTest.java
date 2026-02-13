@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -72,7 +72,7 @@ public abstract class ChefsSubmissionTest {
     System.setProperty("generate.cob.enabled", "N");
 
     chefsConfig = ChefsConfigurationUtil.getInstance();
-    formCredentials = chefsConfig.getFormCredentials(getChefsFormType(), formUserType);
+    formCredentials = chefsConfig.getFormCredentials(getChefsFormType(), getFormUserType());
     chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
     submissionsUrl = chefsConfig.getSubmissionsUrl(formCredentials.getFormId());
     crmConfig = CrmConfigurationUtil.getInstance();
@@ -100,19 +100,29 @@ public abstract class ChefsSubmissionTest {
 
     return itemResourceMap;
   }
+  
+  protected void deleteValidationErrorTasksBySubmissionGuid(String... submissionGuids) {
+    deleteValidationErrorTasksBySubmissionGuids(submissionGuids);
+  }
 
-  protected void deleteValidationErrorTasksBySubmissionId(String submissionGuid) {
+  protected void deleteValidationErrorTasksBySubmissionGuids(String... submissionGuids) {
 
     try {
-      CrmListResource<CrmValidationErrorResource> list = null;
-      list = crmDao.getValidationErrorListBySubmissionId(submissionGuid);
-      if (list != null) {
-        for (CrmValidationErrorResource v : list.getList()) {
-          crmDao.deleteValidationErrorTask(v.getActivityId());
+      
+      for (String submissionGuid : submissionGuids) {
+        
+        CrmListResource<CrmValidationErrorResource> list = crmDao.getValidationErrorListBySubmissionGuid(submissionGuid, false);
+        if (list != null) {
+          for (CrmValidationErrorResource v : list.getList()) {
+            crmDao.deleteValidationErrorTask(v.getActivityId());
+          }
         }
+        
       }
+      
     } catch (ServiceException | IOException e) {
       e.printStackTrace();
+      fail("Error deleting validation error tasks");
     }
   }
 
@@ -146,7 +156,7 @@ public abstract class ChefsSubmissionTest {
   }
 
   protected CrmTaskResource getValidationErrorBySubmissionId(String submissionGuid) throws ServiceException {
-    return crmDao.getValidationErrorBySubmissionId(submissionGuid);
+    return crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
   }
 
   protected CrmTaskResource completeAndGetTask(String validationErrorUrl, String activityId) throws ServiceException {
@@ -165,9 +175,11 @@ public abstract class ChefsSubmissionTest {
   }
 
   protected List<ScenarioMetaData> getProgramYearMetadata(Integer participantPin, Integer programYear) {
-    List<ScenarioMetaData> programYearMetadata = null;
+    List<ScenarioMetaData> programYearMetadata = new ArrayList<>();
     try {
-      programYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
+      if(participantPin != null && programYear != null) {
+        programYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       try {
@@ -180,11 +192,22 @@ public abstract class ChefsSubmissionTest {
     }
     return programYearMetadata;
   }
+  
+  
+  protected void deleteSubmissions(String... submissionGuids) {
+    deleteSubmissionsFromFarm(submissionGuids);
+    deleteSubmissionsFromChefs(submissionGuids);
+  }
 
-  protected void deleteSubmissions(List<String> submissionGuidList) {
-    // Delete the submissions if they exist, from a previously failed test run.
+
+  protected void deleteSubmissionsFromFarm(String... submissionGuids) {
+    
+    if(submissionGuids == null) {
+      return;
+    }
+    
     try {
-      chefsDatabaseDao.deleteSubmissions(conn, submissionGuidList);
+      chefsDatabaseDao.deleteSubmissions(conn, submissionGuids);
       conn.commit();
     } catch (DataAccessException | SQLException e) {
       e.printStackTrace();
@@ -199,33 +222,45 @@ public abstract class ChefsSubmissionTest {
   }
 
   protected void deleteSubmission(String submissionGuid) {
-    deleteSubmissions(Collections.singletonList(submissionGuid));
+    if(submissionGuid != null) {
+      deleteSubmissionsFromFarm(submissionGuid);
+    }
   }
-
+  
+  
+  protected void deleteSubmissionsFromChefs(String... submissionGuidList) {
+    try {
+      for (String submissionGuid : submissionGuidList) {
+        if(submissionGuid != null) {
+          chefsApiDao.deleteSubmission(submissionGuid);
+        }
+      }
+    } catch (ServiceException e) {
+      e.printStackTrace();
+      try {
+        conn.rollback();
+      } catch (SQLException e1) {
+        e1.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      fail("Unexpected Exception");
+    }
+  }
+  
   protected void deleteUserScenarios(String submissionGuid, List<ScenarioMetaData> programYearMetadata) {
     List<ScenarioMetaData> scenariosLinkedToSubmission;
     scenariosLinkedToSubmission = ScenarioUtils.findScenariosByChefSubmissionGuid(programYearMetadata, submissionGuid);
     for (ScenarioMetaData scenarioMetadata : scenariosLinkedToSubmission) {
-      Integer linkedScenario = scenarioMetadata.getScenarioId();
-      assertNotNull(linkedScenario);
+      Integer scenarioId = scenarioMetadata.getScenarioId();
+      assertNotNull(scenarioId);
 
       if (scenarioMetadata.getScenarioTypeCode().equals(ScenarioTypeCodes.USER)) {
-        try {
-          calculatorDao.deleteUserScenario(conn, linkedScenario);
-          conn.commit();
-        } catch (DataAccessException | SQLException e) {
-          e.printStackTrace();
-          try {
-            conn.rollback();
-          } catch (SQLException e1) {
-            e1.printStackTrace();
-            fail("Unexpected Exception");
-          }
-          fail("Unexpected Exception");
-        }
+        
+        deleteUserScenario(scenarioId);
+        
       } else {
         try {
-          chefsDatabaseDao.updateScenarioSubmissionId(conn, linkedScenario, null, user);
+          chefsDatabaseDao.updateScenarioSubmissionId(conn, scenarioId, null, user);
           conn.commit();
         } catch (DataAccessException | SQLException e) {
           e.printStackTrace();
@@ -241,11 +276,32 @@ public abstract class ChefsSubmissionTest {
     }
   }
 
-  protected void deleteUserScenario(int scenarioId) {
+  protected void deleteUserScenario(Integer scenarioId) {
 
     try {
-      calculatorDao.deleteUserScenario(conn, scenarioId);
-      conn.commit();
+      if(scenarioId != null) {
+        calculatorDao.deleteUserScenario(conn, scenarioId);
+        conn.commit();
+      }
+    } catch (DataAccessException | SQLException e) {
+      e.printStackTrace();
+      try {
+        conn.rollback();
+      } catch (SQLException e1) {
+        e1.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      fail("Unexpected Exception");
+    }
+  }
+
+  protected void deletePin(Integer participantPin) {
+
+    try {
+      if(participantPin != null) {
+        calculatorDao.deletePin(conn, participantPin);
+        conn.commit();
+      }
     } catch (DataAccessException | SQLException e) {
       e.printStackTrace();
       try {
@@ -260,4 +316,22 @@ public abstract class ChefsSubmissionTest {
   
   protected abstract String getChefsFormType();
 
+  protected String getFormUserType() {
+    return ChefsConstants.USER_TYPE_IDIR;
+  }
+
+
+  protected void logErrorMessages(List<String> errorMessages) {
+    logger.debug("Error messages:");
+    for (String msg : errorMessages) {
+      logger.debug(msg);
+    }
+  }
+  
+  protected void logFailMessages(List<String> errorMessages) {
+    logger.debug("Fail messages:");
+    for (String msg : errorMessages) {
+      logger.debug(msg);
+    }
+  }
 }

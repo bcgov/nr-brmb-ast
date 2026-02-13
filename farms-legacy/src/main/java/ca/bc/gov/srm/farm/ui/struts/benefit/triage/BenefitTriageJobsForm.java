@@ -1,4 +1,4 @@
-package ca.bc.gov.srm.farm.ui.struts.fifo;
+package ca.bc.gov.srm.farm.ui.struts.benefit.triage;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.apache.struts.validator.ValidatorForm;
 
 import ca.bc.gov.srm.farm.ui.domain.dataimport.ImportSearchResult;
 
-public class FifoJobsForm extends ValidatorForm {
+public class BenefitTriageJobsForm extends ValidatorForm {
 
   private static final long serialVersionUID = 3976250657323431735L;
   

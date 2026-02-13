@@ -3,8 +3,10 @@ package ca.bc.gov.srm.farm.util;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -195,6 +197,11 @@ public final class DateUtils {
   }
   
   
+  public static Date oneYearAgo() {
+    return subtractYears(todayAtStartOfDay(), 1);
+  }
+  
+  
   public static Date getNeverExpiresDate() {
     Date result = null;
     
@@ -228,5 +235,14 @@ public final class DateUtils {
 
   public static Date convertToDate(LocalDate dateToConvert) {
     return Date.from(dateToConvert.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+  }
+  
+  public static Date todayAtStartOfDay() {
+    ZoneId zoneId = ZoneId.systemDefault();
+    ZonedDateTime midnightTodayZoned = LocalDate.now(zoneId).atStartOfDay(zoneId);
+    Instant midnightInstant = midnightTodayZoned.toInstant();
+    Date midnightDate = Date.from(midnightInstant);
+
+    return midnightDate;
   }
 }

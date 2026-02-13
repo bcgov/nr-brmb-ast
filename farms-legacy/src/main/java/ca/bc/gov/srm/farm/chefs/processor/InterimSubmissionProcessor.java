@@ -19,10 +19,14 @@ import static ca.bc.gov.srm.farm.log.LoggingUtils.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +35,10 @@ import com.fasterxml.jackson.core.JacksonException;
 
 import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.chefs.forms.ChefsFarmTypeCodes;
+import ca.bc.gov.srm.farm.chefs.resource.common.CropGrid;
+import ca.bc.gov.srm.farm.chefs.resource.common.CustomFeedGrid;
+import ca.bc.gov.srm.farm.chefs.resource.common.NurseryGrid;
+import ca.bc.gov.srm.farm.chefs.resource.common.OtherPucGrid;
 import ca.bc.gov.srm.farm.chefs.resource.interim.InterimSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionParentResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionResource;
@@ -56,6 +64,7 @@ import ca.bc.gov.srm.farm.service.ChefsSubmissionProcessorService;
 import ca.bc.gov.srm.farm.service.CrmTransferService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.util.DateUtils;
+import ca.bc.gov.srm.farm.util.MathUtils;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
 import ca.bc.gov.srm.farm.util.StringUtils;
 
@@ -67,6 +76,10 @@ public class InterimSubmissionProcessor extends ChefsSubmissionProcessor<Interim
 
   private static final String INVALID_FORM_TASK_DESCRIPTION_PREFIX_FORMAT = "%s %s form was submitted but has validation errors:\n\n"
       + "%s\n" + "Participant Name: %s\n" + "Telephone: %s\n" + "Email: %s\n";
+
+  private static final String DUPLICATE_PRODUCTIVE_UNIT_CODE = "The following productive unit codes have duplicates: %s";
+
+  private static final String MISSING_PRODUCTIVE_UNITS = "No productive units entered";
 
   public InterimSubmissionProcessor(Connection connection, String formUserType) {
     super(ChefsFormTypeCodes.INTERIM, FORM_SHORT_NAME, FORM_LONG_NAME, formUserType, connection);
@@ -132,43 +145,37 @@ public class InterimSubmissionProcessor extends ChefsSubmissionProcessor<Interim
       submissionRec = newSubmissionRecord(submissionGuid);
     }
 
-    try {
-      Client client = null;
-      CrmAccountResource crmAccount = null;
-      if (participantPin != null) {
-        client = getClientByParticipantPin(participantPin);
-        crmAccount = getCrmAccountByParticipantPin(participantPin);
-      }
+    Client client = null;
+    CrmAccountResource crmAccount = null;
+    if (participantPin != null) {
+      client = getClientByParticipantPin(participantPin);
+      crmAccount = getCrmAccountByParticipantPin(participantPin);
+    }
 
-      List<String> validationErrors = validate(data, client, crmAccount);
-      boolean hasErrors = !validationErrors.isEmpty();
+    List<String> validationErrors = validate(data, client, crmAccount);
+    boolean hasErrors = !validationErrors.isEmpty();
 
-      if (hasErrors) {
-        CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionId(submissionGuid);
-        if (existingValidationErrorTask == null) {
+    if (hasErrors) {
+      CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
+      if (existingValidationErrorTask == null) {
+        newTask = createValidationErrorTask(crmAccount, data, validationErrors);
+      } else {
+        logger.debug("Validation error task already exists: " + existingValidationErrorTask.toString());
+        if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
           newTask = createValidationErrorTask(crmAccount, data, validationErrors);
         } else {
-          logger.debug("Validation error task already exists: " + existingValidationErrorTask.toString());
-          if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
-            newTask = createValidationErrorTask(crmAccount, data, validationErrors);
-          } else {
-            newTask = existingValidationErrorTask;
-          }
+          newTask = existingValidationErrorTask;
         }
-        submissionRec.setSubmissionStatusCode(INVALID);
-        submissionRec.setValidationTaskGuid(newTask.getActivityId());
-        submissionRec = createOrUpdateSubmission(submissionRec);
-
-      } else {
-        // Validation passed
-
-        assert client != null;
-        createScenarios(data, client, programYear, submissionRec);
       }
+      submissionRec.setSubmissionStatusCode(INVALID);
+      submissionRec.setValidationTaskGuid(newTask.getActivityId());
+      submissionRec = createOrUpdateSubmission(submissionRec);
 
-    } catch (SQLException e) {
-      logger.error("Unexpected error: ", e);
-      throw new ServiceException(e);
+    } else {
+      // Validation passed
+
+      assert client != null;
+      createScenarios(data, client, programYear, submissionRec);
     }
 
     logMethodEnd(logger);
@@ -281,7 +288,9 @@ public class InterimSubmissionProcessor extends ChefsSubmissionProcessor<Interim
       if (data.getFarmType() != null && 
          (ChefsFarmTypeCodes.COMMUNAL_ORGANIZATION.equals(data.getFarmType().getValue()) || ChefsFarmTypeCodes.TRUST.equals(data.getFarmType().getValue()))) {
         validateTrustNumbersMatch(data.getTrustNumber(), client.getTrustNumber(), validationErrors);
-      } 
+      }
+
+      validateProductiveUnits(data, validationErrors);
     }
 
     logMethodEnd(logger);
@@ -420,6 +429,109 @@ public class InterimSubmissionProcessor extends ChefsSubmissionProcessor<Interim
     if (value == null) {
       validationErrors.add(requiredFieldError(field));
     }
+  }
+
+  private void validateProductiveUnits(InterimSubmissionDataResource data, List<String> validationErrors) {
+
+    List<String> berryGrid = extractCodesFromCropGrid(data.getBerryGrid());
+    List<String> treeFruitGrid = extractCodesFromCropGrid(data.getTreeFruitGrid());
+    List<String> vegetableGrid = extractCodesFromCropGrid(data.getVegetableGrid());
+    List<String> grainGrid = extractCodesFromCropGrid(data.getGrainGrid());
+    List<String> nurseryGrid = extractCodesFromNurseryGrid(data.getNurseryGrid());
+    List<String> neHorticultureGrid = extractCodesFromCropGrid(data.getNeHorticultureGrid());
+    List<String> customFedGrid = extractCodesFromCustomFeedGrid(data.getCustomFedGrid());
+    List<String> opdGrid = extractCodesFromOtherPucGrid(data.getOpdGrid());
+
+    List<String> allCodes = new ArrayList<>();
+    allCodes.addAll(berryGrid);
+    allCodes.addAll(treeFruitGrid);
+    allCodes.addAll(vegetableGrid);
+    allCodes.addAll(grainGrid);
+    allCodes.addAll(nurseryGrid);
+    allCodes.addAll(neHorticultureGrid);
+    allCodes.addAll(customFedGrid);
+    allCodes.addAll(opdGrid);
+
+    List<String> duplicateCodes =
+        allCodes.stream()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        .entrySet().stream()
+        .filter(e -> e.getValue() > 1)                 // keep only those occurring > 1
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
+
+    boolean hasSingleFieldLivestockPucs = 
+        MathUtils.isNonZero(data.getProductiveCapacityLC104())
+        || MathUtils.isNonZero(data.getProductiveCapacityLC105())
+        || MathUtils.isNonZero(data.getProductiveCapacityLC106())
+        || MathUtils.isNonZero(data.getProductiveCapacityLC108())
+        || MathUtils.isNonZero(data.getProductiveCapacityLC109())
+        || MathUtils.isNonZero(data.getProductiveCapacityLC143())
+        || MathUtils.isNonZero(data.getProductiveCapacityLC144())
+        || MathUtils.isNonZero(data.getProductiveCapacityLC123())
+        || MathUtils.isNonZero(data.getProductiveCapacityLC124())
+        || MathUtils.isNonZero(data.getProductiveCapacityLC125());
+
+    if( allCodes.isEmpty() && !hasSingleFieldLivestockPucs) {
+      validationErrors.add(MISSING_PRODUCTIVE_UNITS);
+    }
+
+    if( ! duplicateCodes.isEmpty() ) {
+      String duplicateCodesString = StringUtils.toCsv(duplicateCodes);
+      validationErrors.add(String.format(DUPLICATE_PRODUCTIVE_UNIT_CODE, duplicateCodesString));
+    }
+  }
+
+  private List<String> extractCodesFromCropGrid(List<? extends CropGrid> grid) {
+    @SuppressWarnings("unchecked")
+    List<String> emptyList = Collections.EMPTY_LIST;
+    return grid == null ? emptyList :
+      grid.stream()
+        .filter(p -> p.getCommodity() != null
+            && StringUtils.isNotBlank(p.getCommodity().getValue())
+            && (p.getAcres() != null && p.getAcres() > 0)
+        )
+        .map(p -> p.getCommodity().getValue())
+        .collect(Collectors.toList());
+  }
+
+  private List<String> extractCodesFromNurseryGrid(List<? extends NurseryGrid> grid) {
+    @SuppressWarnings("unchecked")
+    List<String> emptyList = Collections.EMPTY_LIST;
+    return grid == null ? emptyList :
+      grid.stream()
+        .filter(p -> p.getCommodity() != null
+            && StringUtils.isNotBlank(p.getCommodity().getValue())
+            && (p.getSquareMeters() != null && p.getSquareMeters() > 0)
+        )
+        .map(p -> p.getCommodity().getValue())
+        .collect(Collectors.toList());
+  }
+
+  private List<String> extractCodesFromCustomFeedGrid(List<CustomFeedGrid> grid) {
+    @SuppressWarnings("unchecked")
+    List<String> emptyList = Collections.EMPTY_LIST;
+    return grid == null ? emptyList :
+      grid.stream()
+        .filter(p -> p.getTypeOfAnimalCustomFed() != null
+          && StringUtils.isNotBlank(p.getTypeOfAnimalCustomFed().getValue())
+          && (p.getNumberOfAnimalsCustomFed() != null && p.getNumberOfAnimalsCustomFed() > 0)
+        )
+        .map(p -> p.getTypeOfAnimalCustomFed().getValue())
+        .collect(Collectors.toList());
+  }
+
+  private List<String> extractCodesFromOtherPucGrid(List<OtherPucGrid> grid) {
+    @SuppressWarnings("unchecked")
+    List<String> emptyList = Collections.EMPTY_LIST;
+    return grid == null ? emptyList :
+      grid.stream()
+        .filter(p -> p.getSelectOtherLivestock() != null
+          && StringUtils.isNotBlank(p.getSelectOtherLivestock().getValue())
+          && (p.getOtherLivestockNumber() != null && p.getOtherLivestockNumber() > 0)
+        )
+        .map(p -> p.getSelectOtherLivestock().getValue())
+        .collect(Collectors.toList());
   }
 
   private String requiredFieldError(String field) {

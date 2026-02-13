@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.agent.ChefsAgent;
-import ca.bc.gov.srm.farm.agent.FifoAgent;
+import ca.bc.gov.srm.farm.agent.BenefitTriageAgent;
 import ca.bc.gov.srm.farm.agent.ImportAgent;
 import ca.bc.gov.srm.farm.cache.CacheFactory;
 import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
@@ -52,9 +52,9 @@ public class DataServiceContextListener implements ServletContextListener {
         ChefsAgent.getInstance().shutdown();
       }
       
-      boolean fifoAgentEnabled = isFifoAgentEnabled();
-      if(fifoAgentEnabled) {
-        FifoAgent.getInstance().shutdown();
+      boolean benefitTriageAgentEnabled = isBenefitTriageAgentEnabled();
+      if(benefitTriageAgentEnabled) {
+        BenefitTriageAgent.getInstance().shutdown();
       }
       
   	} catch (Throwable e) {
@@ -102,7 +102,7 @@ public class DataServiceContextListener implements ServletContextListener {
       
       boolean importAgentEnabled = isImportAgentEnabled();
       boolean chefsAgentEnabled = isChefsAgentEnabled();
-      boolean fifoAgentEnabled = isFifoAgentEnabled();
+      boolean benefitTriageAgentEnabled = isBenefitTriageAgentEnabled();
       
       if(importAgentEnabled) {
         ImportAgent.getInstance().initialize(app);
@@ -112,8 +112,8 @@ public class DataServiceContextListener implements ServletContextListener {
         ChefsAgent.getInstance().initialize(app);
       }
 
-      if(fifoAgentEnabled) {
-        FifoAgent.getInstance().initialize(app);
+      if(benefitTriageAgentEnabled) {
+        BenefitTriageAgent.getInstance().initialize(app);
       }
 
     } catch (Throwable e) {
@@ -140,9 +140,9 @@ public class DataServiceContextListener implements ServletContextListener {
   }
 
 
-  private boolean isFifoAgentEnabled() {
+  private boolean isBenefitTriageAgentEnabled() {
     ConfigurationUtility configUtil = ConfigurationUtility.getInstance();
-    boolean chefsAgentEnabled = configUtil.getBoolean(ConfigurationKeys.FIFO_AGENT_ENABLED);
+    boolean chefsAgentEnabled = configUtil.getBoolean(ConfigurationKeys.BENEFIT_TRIAGE_AGENT_ENABLED);
     return chefsAgentEnabled;
   }
 }

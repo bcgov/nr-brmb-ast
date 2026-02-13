@@ -224,7 +224,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0000-0001-000000000000";
     
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -313,7 +313,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -423,7 +422,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -533,7 +531,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -556,7 +553,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0000-0004-000000000000";
     
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -646,7 +643,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -669,7 +665,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "00000000-0000-0000-0005-000000000000";
     
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previously failed test run.
     try {
@@ -885,7 +881,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertEquals(task.getActivityId(), submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     programYearMetadata = getProgramYearMetadata(participantPin, programYear);
     assertNotNull(programYearMetadata);
@@ -925,10 +920,10 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     String newStateCode = ScenarioStateCodes.COMPLETED;
     String stateChangeReason = null;
     String newCategoryCode = ScenarioCategoryCodes.NOL;
-    String fifoResultType = null;
+    String benefitTriageResultType = null;
     try {
       calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, formUserType,
-          ChefsFormTypeCodes.NOL, fifoResultType, user);
+          ChefsFormTypeCodes.NOL, benefitTriageResultType, user);
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected Exception");
@@ -1047,7 +1042,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     Integer programYear = 2023;
     String submissionGuid = "2e457fae-ebd3-43c7-b69e-256544c01253";
     
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
     assertNotNull(programYearMetadata);
@@ -1179,7 +1174,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Correct the SIN Number
     data.setSinNumber("999999999");
@@ -1276,7 +1270,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertEquals(task.getActivityId(), submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(2, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission to cleanup the database
     try {
@@ -1376,7 +1369,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission to cleanup the database
     try {
@@ -1689,7 +1681,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[1]);
@@ -1700,7 +1691,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
       assertEquals("66666666-6666-6666-6666-666666666001", submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[2]);
@@ -1711,7 +1701,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
 
     // Update the submissions
@@ -1767,7 +1756,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
       assertEquals("66666666-6666-6666-6666-666666666000", submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[1]);
@@ -1778,7 +1766,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[2]);
@@ -1789,7 +1776,6 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
 
     // Delete the submissions

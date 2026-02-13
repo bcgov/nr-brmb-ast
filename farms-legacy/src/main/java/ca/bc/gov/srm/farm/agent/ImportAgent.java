@@ -1,5 +1,20 @@
 package ca.bc.gov.srm.farm.agent;
 
+import static ca.bc.gov.srm.farm.log.LoggingUtils.*;
+
+import java.sql.Connection;
+import java.util.Date;
+
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.Notification;
+import javax.management.NotificationListener;
+import javax.management.ObjectName;
+import javax.management.timer.Timer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
 import ca.bc.gov.srm.farm.configuration.ConfigurationUtility;
 import ca.bc.gov.srm.farm.security.BusinessAction;
@@ -10,20 +25,6 @@ import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.util.DateUtils;
 import ca.bc.gov.webade.Action;
 import ca.bc.gov.webade.Application;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.Connection;
-
-import java.util.Date;
-
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import javax.management.Notification;
-import javax.management.NotificationListener;
-import javax.management.ObjectName;
-import javax.management.timer.Timer;
 
 
 /**
@@ -67,13 +68,13 @@ public final class ImportAgent implements NotificationListener {
    * @throws  Exception  on exception
    */
   public void initialize(Application app) throws Exception {
-    logger.debug("> initialize");
+    logMethodStart(logger);
 
     application = app;
     checkForInProgessImports();
     startTimer();
 
-    logger.debug("< initialize");
+    logMethodEnd(logger);
   }
   
   
@@ -83,11 +84,11 @@ public final class ImportAgent implements NotificationListener {
    * @throws  Exception  on exception
    */
   public void shutdown() throws Exception {
-    logger.info("> shutdown");
+    logger.info("< shutdown");
 
     stopTimer();
 
-    logger.info("< shutdown");
+    logger.info("> shutdown");
   }
 
 
@@ -100,17 +101,17 @@ public final class ImportAgent implements NotificationListener {
    */
   @Override
   public void handleNotification(Notification notification, Object data) {
-    logger.debug("> handleNotification: ");
+    logMethodStart(logger);
 
     checkForScheduledImport();
 
-    logger.debug("< handleNotification");
+    logMethodEnd(logger);
   }
 
 
   /** See if there is an scheduled import job to process. */
   private void checkForScheduledImport() {
-    logger.debug("> checkForScheduledImport");
+    logMethodStart(logger);
 
     ImportService service = ServiceFactory.getImportService();
 
@@ -135,13 +136,13 @@ public final class ImportAgent implements NotificationListener {
       }
     }
 
-    logger.debug("< checkForScheduledImport");
+    logMethodEnd(logger);
   }
 
 
   /** Upon startup look for imports that are stuck in an "In Progress" state. */
   private void checkForInProgessImports() {
-    logger.debug("> checkForInProgessImports");
+    logMethodStart(logger);
 
     ImportService service = ServiceFactory.getImportService();
 
@@ -157,7 +158,7 @@ public final class ImportAgent implements NotificationListener {
       logger.error("Unexpected error: ", e);
     }
 
-    logger.debug("< checkForInProgessImports");
+    logMethodEnd(logger);
   }
 
 
@@ -170,7 +171,7 @@ public final class ImportAgent implements NotificationListener {
    * @throws  Exception  on exception
    */
   private void startTimer() throws Exception {
-    logger.debug("> startTimer");
+    logMethodStart(logger);
 
     //
     // OAS forces us to use the OAS application name as the domain. It
@@ -198,7 +199,7 @@ public final class ImportAgent implements NotificationListener {
     server.addNotificationListener(timerName, this, null, null);
     timer.start();
 
-    logger.debug("< startTimer");
+    logMethodEnd(logger);
   }
   
   

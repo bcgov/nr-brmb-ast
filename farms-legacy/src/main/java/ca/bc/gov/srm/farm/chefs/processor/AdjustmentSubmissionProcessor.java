@@ -113,53 +113,49 @@ public class AdjustmentSubmissionProcessor extends ChefsSubmissionProcessor<Adju
     ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuid);
 
     ChefsSubmissionProcessData chefsSubmissionProcessData = shouldProcessSubmission(submissionGuid, data, submissionRec);
+
+    if ( ! chefsSubmissionProcessData.getProcess() ) {
+      newTask = chefsSubmissionProcessData.getValidationErrorTask();
+      return newTask;
+    }
+
+    submissionRec = chefsSubmissionProcessData.getChefsSubmission();
+    if (submissionRec == null) {
+      submissionRec = newSubmissionRecord(submissionGuid);
+    }
     
-    if(chefsSubmissionProcessData.getProcess()) {
-      
-      submissionRec = chefsSubmissionProcessData.getChefsSubmission();
-      if (submissionRec == null) {
-        submissionRec = newSubmissionRecord(submissionGuid);
-      }
+    Integer participantPin = data.getAgriStabilityPin();
+    
+    Client client = null;
+    CrmAccountResource crmAccount = null;
+    if (participantPin != null) {
+      client = getClientByParticipantPin(participantPin);
+      crmAccount = getCrmAccountByParticipantPin(participantPin);
+    }
 
-      Integer participantPin = data.getAgriStabilityPin();
+    List<String> validationErrors = validate(data, client, crmAccount);
+    boolean hasErrors = !validationErrors.isEmpty();
 
-      try {
-        Client client = null;
-        CrmAccountResource crmAccount = null;
-        if (participantPin != null) {
-          client = getClientByParticipantPin(participantPin);
-          crmAccount = getCrmAccountByParticipantPin(participantPin);
-        }
-
-        List<String> validationErrors = validate(data, client, crmAccount);
-        boolean hasErrors = !validationErrors.isEmpty();
-
-        if (hasErrors) {
-          CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionId(submissionGuid);
-          if (existingValidationErrorTask == null) {
-            newTask = createValidationErrorTask(crmAccount, data, validationErrors);
-          } else {
-            logger.debug("Validation error task already exists: " + existingValidationErrorTask.toString());
-            if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
-              newTask = createValidationErrorTask(crmAccount, data, validationErrors);
-            } else {
-              newTask = existingValidationErrorTask;
-            }
-          }
-          submissionRec.setSubmissionStatusCode(INVALID);
-          submissionRec.setValidationTaskGuid(newTask.getActivityId());
-          submissionRec = createOrUpdateSubmission(submissionRec);
-
+    if (hasErrors) {
+      CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
+      if (existingValidationErrorTask == null) {
+        newTask = createValidationErrorTask(crmAccount, data, validationErrors);
+      } else {
+        logger.debug("Validation error task already exists: " + existingValidationErrorTask.toString());
+        if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
+          newTask = createValidationErrorTask(crmAccount, data, validationErrors);
         } else {
-          // Validation passed
-
-          createScenarios(data, client, submissionRec);
+          newTask = existingValidationErrorTask;
         }
-
-      } catch (SQLException e) {
-        logger.error("SQLException: ", e);
-        throw new ServiceException(e);
       }
+      submissionRec.setSubmissionStatusCode(INVALID);
+      submissionRec.setValidationTaskGuid(newTask.getActivityId());
+      submissionRec = createOrUpdateSubmission(submissionRec);
+
+    } else {
+      // Validation passed
+
+      createScenarios(data, client, submissionRec);
     }
 
     logMethodEnd(logger);
@@ -173,23 +169,18 @@ public class AdjustmentSubmissionProcessor extends ChefsSubmissionProcessor<Adju
 
     ChefsSubmission submissionRec = submissionRecParam;
     submissionRec.setSubmissionStatusCode(SUBMITTED);
-    try {
-      if(submissionRec.getSubmissionId() == null) {
-          submissionRec = createOrUpdateSubmission(submissionRec);
-      }
     
-      for (int programYear : SelectedYears) {
-        logger.debug("Selected Program year:" + SelectedYears);
-        createAdjustmentForProgramYear(data, client, programYear, submissionRec);
-      }
-      
-      submissionRec.setSubmissionStatusCode(PROCESSED);
-      submissionRec = createOrUpdateSubmission(submissionRec);
-
-    } catch (SQLException e) {
-      logger.error("SQLException: ", e);
-      throw new ServiceException(e);
+    if(submissionRec.getSubmissionId() == null) {
+        submissionRec = createOrUpdateSubmission(submissionRec);
     }
+  
+    for (int programYear : SelectedYears) {
+      logger.debug("Selected Program year:" + SelectedYears);
+      createAdjustmentForProgramYear(data, client, programYear, submissionRec);
+    }
+    
+    submissionRec.setSubmissionStatusCode(PROCESSED);
+    submissionRec = createOrUpdateSubmission(submissionRec);
 
   }
 

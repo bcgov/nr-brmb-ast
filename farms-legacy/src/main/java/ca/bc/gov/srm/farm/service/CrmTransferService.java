@@ -32,13 +32,17 @@ public interface CrmTransferService {
       throws Exception;
   
   void scheduleBenefitTransfer(Scenario scenario, String userEmail, String userId, String chefsFormNotes, String formUserType,
-      String chefsFormType, String fifoResultType, Transaction transaction)
+      String chefsFormType, String benefitTriageResultType, Transaction transaction)
   throws Exception;
 
   void transferBenefitUpdate(final Connection connection,
       final Integer importVersionId,
       final File enrolmentFile,
       final String user) throws ServiceException;
+  
+  void immediateBenefitTransfer(Scenario scenario, String userEmail, String userId, String chefsFormNotes, String formUserType,
+      String chefsFormType, String benefitTriageResultType, Connection connection)
+  throws ServiceException;
 
   void transferAccountUpdate(final Connection connection,
       final Integer importVersionId,

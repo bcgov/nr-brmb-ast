@@ -87,8 +87,7 @@ public interface AdjustmentService {
    * @throws ServiceException On Exception 
    */
   void makeInventoryValuationAdjustments(
-      final Scenario scenario, final boolean saveAdjustments,
-      final boolean makeFifoAdjustments)
+      final Scenario scenario, final boolean saveAdjustments)
   throws ServiceException;
 
 

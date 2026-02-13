@@ -12,10 +12,11 @@ package ca.bc.gov.srm.farm.service;
 
 import java.io.InputStream;
 import java.sql.Connection;
+import java.util.Date;
 import java.util.List;
 
 import ca.bc.gov.srm.farm.domain.ImportVersion;
-import ca.bc.gov.srm.farm.domain.fifo.FifoResults;
+import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageResults;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.ui.domain.dataimport.ImportResults;
 import ca.bc.gov.srm.farm.ui.domain.dataimport.ImportSearchResult;
@@ -28,7 +29,7 @@ import ca.bc.gov.srm.farm.ui.domain.dataimport.StagingResults;
 public interface ImportService {
   
   public static final String JOB_TYPE_IMPORT = "IMPORT";
-  public static final String JOB_TYPE_FIFO = "FIFO";
+  public static final String JOB_TYPE_TRIAGE = "TRIAGE";
 
   /**
    * searchImports. Used by screen 250.
@@ -38,6 +39,8 @@ public interface ImportService {
    * @throws  ServiceException  On exception.
    */
   List<ImportSearchResult> searchImports(final List<String> importTypes) throws ServiceException;
+
+  List<ImportSearchResult> searchImports(List<String> importTypes, Date createdAfterDate) throws ServiceException;
 
   /**
    * Only one "in progress" import is allowed at one time.
@@ -190,14 +193,14 @@ public interface ImportService {
     throws ServiceException;
 
   /**
-   * The details of FIFO data from the import versions table.
+   * The details of Benefit Triage data from the import versions table.
    *
    * @param importVersionId id to use
    *
-   * @return the FIFO results
+   * @return the Benefit Triage results
    *
    * @throws ServiceException on exception
    */
-  FifoResults getFifoResults(ImportVersion importVersion) throws ServiceException;
+  BenefitTriageResults getTriageResults(ImportVersion importVersion) throws ServiceException;
   
 }

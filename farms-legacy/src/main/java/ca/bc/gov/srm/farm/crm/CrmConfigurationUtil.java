@@ -17,20 +17,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
 import ca.bc.gov.srm.farm.configuration.ConfigurationUtility;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 
 
 public class CrmConfigurationUtil {
-
-  public static final String ACCOUNT_LOOKUP_QUERY_STRING = "?%24filter=vsi_pin%20eq%20%27{pin}%27";
-  public static final String QUEUE_LOOKUP_QUERY_STRING = "?%24filter=name%20eq%20%27{name}%27";
-  public static final String QUEUEITEM_LOOKUP_QUERY_STRING = "?%24filter=_objectid_value%20eq%20%27{taskId}%27";
-  public static final String VALIDATION_ERROR_LOOKUP_QUERY_STRING = "?%24filter=contains(cr4dd_chefsurl,%27s={submissionId}%27)";
-  public static final String BENEFIT_LOOKUP_QUERY_STRING = "?%24orderby=createdon%20desc&%24filter=_vsi_participantid_value%20eq%20%27{accountId}%27&%24expand=vsi_participantprogramyearid(%24select=vsi_programyearid;%24expand=vsi_programyearid(%24select=vsi_year))";
-  public static final String PROGRAM_YEAR_QUERY_STRING = "?%24filter=vsi_year%20eq%20%27{year}%27";
-  public static final String ENROLMENT_QUERY_STRING = "?%24filter=_vsi_programyearid_value%20eq%20%27{programyearid}%27%20and%20_vsi_participantid_value%20eq%20%27{accountid}%27";
 
   private static CrmConfigurationUtil instance = null;
   
@@ -58,11 +51,11 @@ public class CrmConfigurationUtil {
   }
   
   public String getValidationErrorUrl() {
-    return getUrl(VALIDATION_ERROR_ENDPOINT);
+    return getUrl(VALIDATION_ERROR_TASK_ENDPOINT);
   }
 
   public String getCoverageTaskUrl() {
-    return getUrl(COVERAGE_TASK_ENDPOINT);
+    return getUrl(COVERAGE_NOTICE_TASK_ENDPOINT);
   }
 
   public String getNolTaskUrl() {
@@ -122,8 +115,15 @@ public class CrmConfigurationUtil {
     return result;
   }
   
-  public String getValidationErrorLookupUrl(String submissionId) {
-    return getValidationErrorUrl() + VALIDATION_ERROR_LOOKUP_QUERY_STRING.replace("{submissionId}", submissionId);
+  public String getValidationErrorLookupUrl(String submissionGuid, boolean activeOnly) {
+    String optionalFilter = "";
+    if(activeOnly) {
+      optionalFilter = QUERY_PARAM_TASK_ACTIVE_ONLY;
+    }
+    return getValidationErrorUrl()
+        + VALIDATION_ERROR_LOOKUP_QUERY_STRING.replace("{submissionGuid}", submissionGuid)
+        + optionalFilter
+        + QUERY_PARAM_ORDER_BY_CREATED_ON_DESC;
   }
   
   public String getBenefitLookupUrl(String accountId) {
@@ -154,7 +154,7 @@ public class CrmConfigurationUtil {
     return getAPIUrl() + endpointPath;
   }
 
-  public String getAPIUrl() {
+  private String getAPIUrl() {
     
     String dynamicsUrl = configUtil.getValue(ConfigurationKeys.CRM_DYNAMICS_URL);
     String apiVersion = configUtil.getValue(ConfigurationKeys.CRM_API_VERSION);
@@ -162,21 +162,6 @@ public class CrmConfigurationUtil {
     String result = dynamicsUrl + "/api/data/v" + apiVersion + "/";
 
     return result;
-  }
-
-  public boolean isBenefitUrlConfigured() {
-    String benefitUrl = getBenefitUpdateUrl();
-    return benefitUrl != null;
-  }
-
-  public boolean isTaskUrlConfigured() {
-    String taskUrl = getTaskUrl();
-    return taskUrl != null;
-  }
-
-  public boolean isEnrolmentUrlConfigured() {
-    String enrolmentUrl = getEnrolmentUpdateUrl();
-    return enrolmentUrl != null;
   }
 
   private String encodeValue(String value) throws ServiceException {
@@ -187,4 +172,39 @@ public class CrmConfigurationUtil {
     }
   }
   
+
+  public String getMainTaskAppUrl(String formTypeCode, String mainTask) {
+    String mainTaskUrl = null;
+    String taskAppPath = null;
+    
+    switch (formTypeCode) {
+    case ChefsFormTypeCodes.CN:
+      taskAppPath = APP_PATH_COVERAGE_NOTICE_TASK;
+      break;
+    case ChefsFormTypeCodes.NOL:
+      taskAppPath = APP_PATH_NOL_TASK;
+      break;
+    case ChefsFormTypeCodes.NPP:
+      taskAppPath = APP_PATH_NPP_TASK;
+      break;
+    }
+    
+    mainTaskUrl = String.format(CRM_TASK_URL_FORMAT, configUtil.getValue(ConfigurationKeys.CRM_DYNAMICS_URL),
+        configUtil.getValue(ConfigurationKeys.CRM_APP_ID), taskAppPath, mainTask);
+    
+    return mainTaskUrl;
+  }
+
+  public String getValidationErrorTaskAppUrl(String validationTaskGuid) {
+    String validationTaskUrl = String.format(CRM_TASK_URL_FORMAT, configUtil.getValue(ConfigurationKeys.CRM_DYNAMICS_URL),
+        configUtil.getValue(ConfigurationKeys.CRM_APP_ID), APP_PATH_VALIDATION_ERROR_TASK, validationTaskGuid);
+    return validationTaskUrl;
+  }
+
+  public String getCoreConfigUrl() {
+    String endpointUrl = getUrl(CORE_CONFIGURATION_ENDPOINT);
+    
+    String result = endpointUrl + CORE_CONFIGURATION_QUERY_STRING;
+    return result;
+  }
 }

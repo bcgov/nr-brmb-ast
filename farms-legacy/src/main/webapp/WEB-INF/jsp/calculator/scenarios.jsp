@@ -240,7 +240,7 @@
         <c:if test="${ ! form.assignedToCurrentUser }">
           <u:yuiButton buttonLabel="Check.Out" buttonId="checkOutButton" function="checkOut"/>
         </c:if>
-        <c:if test="${ form.assignedToCurrentUser and scenario.scenarioCategoryCode != 'FIFO' }">
+        <c:if test="${ form.assignedToCurrentUser and scenario.scenarioCategoryCode != 'TRIAGE' }">
           <u:yuiButton buttonLabel="Save.as.New.Scenario" buttonId="saveAsNewButton" function="saveAsNew" disabled="${scenario.chefsFormTypeCode == 'SUPP' or scenario.chefsFormTypeCode == 'INTERIM'}"/>
         </c:if>
       </w:ifUserCanPerformAction>
@@ -431,7 +431,16 @@
         </td>
         <td style="<c:out value="${rowStyle}"/>"><c:if test="${item.defaultInd}">Y</c:if></td>
         <td style="<c:out value="${rowStyle}"/>" align="left"><c:out value="${item.scenarioDescription}"/></td>
-        <td style="<c:out value="${rowStyle}"/>"><c:out value="${item.scenarioCreatedByDisplay}"/></td>
+        <td style="<c:out value="${rowStyle}"/>">
+          <c:choose>
+            <c:when test="${not empty item.chefsViewSubmissionUrl}">
+              <a href="<c:out value="${item.chefsViewSubmissionUrl}"/>" target="_blank"><c:out value="${item.scenarioCreatedByDisplay}"/></a>
+            </c:when>
+            <c:otherwise>
+              <c:out value="${item.scenarioCreatedByDisplay}"/>
+            </c:otherwise>
+          </c:choose>
+        </td>
       </tr>
   </c:forEach>
 

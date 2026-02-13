@@ -54,7 +54,7 @@ public final class ImportClassCodes {
   
   public static final String TIP_REPORT = "TIP_REPORT";
   
-  public static final String FIFO = "FIFO";
+  public static final String TRIAGE = "TRIAGE";
   
 
   public static boolean isCra(String importClassCode) {

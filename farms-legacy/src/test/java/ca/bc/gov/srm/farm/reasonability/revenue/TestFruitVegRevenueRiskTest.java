@@ -3,6 +3,7 @@ package ca.bc.gov.srm.farm.reasonability.revenue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import ca.bc.gov.srm.farm.exception.ReasonabilityTestException;
 import ca.bc.gov.srm.farm.reasonability.ReasonabilityConfiguration;
 import ca.bc.gov.srm.farm.reasonability.ReasonabilityTestResultMessage;
 import ca.bc.gov.srm.farm.reasonability.ReasonabilityUnitTestUtils;
+import ca.bc.gov.srm.farm.util.DateUtils;
 import ca.bc.gov.srm.farm.util.TestUtils;
 
 public class TestFruitVegRevenueRiskTest {
@@ -81,16 +83,23 @@ public class TestFruitVegRevenueRiskTest {
   }
 
   private Scenario buildScenarioWithNoCombinedFarm(List<CropItem> cropItems) {
+    final int programYear = 2018;
+    
     Scenario scenario = new Scenario();
-    scenario.setYear(new Integer(2018));
+    scenario.setYear(new Integer(programYear));
     scenario.setIsInCombinedFarmInd(false);
     scenario.setParticipantDataSrcCode(ParticipantDataSrcCodes.CRA);
     scenario.setReasonabilityTestResults(new ReasonabilityTestResults());
-
+    
     FarmingYear farmYear = new FarmingYear();
     FarmingOperation farmOp = new FarmingOperation();
     farmOp.setCropItems(cropItems);
 
+    farmOp.setSchedule("A");
+    farmOp.setPartnershipPercent(1.0);
+    farmOp.setFiscalYearStart(DateUtils.getTimestamp(programYear, Calendar.JANUARY, 1, 0, 0, 0, 0));
+    farmOp.setFiscalYearEnd(DateUtils.getTimestamp(programYear, Calendar.DECEMBER, 31, 0, 0, 0, 0));
+    
     List<FarmingOperation> farmOps = new ArrayList<>();
     farmOps.add(farmOp);
     farmYear.setFarmingOperations(farmOps);
@@ -101,14 +110,16 @@ public class TestFruitVegRevenueRiskTest {
   }
 
   private Scenario buildScenarioWithCombinedFarm(List<CropItem> cropItems, List<CropItem> cropItems2) {
+    final int programYear = 2018;
+    
     Scenario scenario = new Scenario();
-    scenario.setYear(new Integer(2018));
+    scenario.setYear(new Integer(programYear));
     scenario.setIsInCombinedFarmInd(true);
     scenario.setParticipantDataSrcCode(ParticipantDataSrcCodes.CRA);
     scenario.setReasonabilityTestResults(new ReasonabilityTestResults());
 
     Scenario scenario2 = new Scenario();
-    scenario2.setYear(new Integer(2018));
+    scenario2.setYear(new Integer(programYear));
     scenario2.setIsInCombinedFarmInd(true);
     scenario2.setParticipantDataSrcCode(ParticipantDataSrcCodes.CRA);
 
@@ -127,6 +138,11 @@ public class TestFruitVegRevenueRiskTest {
     FarmingOperation farmOp = new FarmingOperation();
     farmOp.setCropItems(cropItems);
 
+    farmOp.setSchedule("A");
+    farmOp.setPartnershipPercent(1.0);
+    farmOp.setFiscalYearStart(DateUtils.getTimestamp(programYear, Calendar.JANUARY, 1, 0, 0, 0, 0));
+    farmOp.setFiscalYearEnd(DateUtils.getTimestamp(programYear, Calendar.DECEMBER, 31, 0, 0, 0, 0));
+
     List<FarmingOperation> farmOps = new ArrayList<>();
     farmOps.add(farmOp);
     farmYear.setFarmingOperations(farmOps);
@@ -135,6 +151,11 @@ public class TestFruitVegRevenueRiskTest {
     FarmingYear farmYear2 = new FarmingYear();
     FarmingOperation farmOp2 = new FarmingOperation();
     farmOp2.setCropItems(cropItems2);
+
+    farmOp2.setSchedule("A");
+    farmOp2.setPartnershipPercent(1.0);
+    farmOp2.setFiscalYearStart(DateUtils.getTimestamp(programYear, Calendar.JANUARY, 1, 0, 0, 0, 0));
+    farmOp2.setFiscalYearEnd(DateUtils.getTimestamp(programYear, Calendar.DECEMBER, 31, 0, 0, 0, 0));
 
     List<FarmingOperation> farmOps2 = new ArrayList<>();
     farmOps2.add(farmOp2);
@@ -1174,7 +1195,7 @@ public class TestFruitVegRevenueRiskTest {
     FarmingOperation farmingOperation = scenario.getFarmingYear().getFarmingOperations().get(0);
     farmingOperation.setIncomeExpenses(incomeExpenses);
     farmingOperation.setReceivableItems(receivableItems);
-    farmingOperation.setGalaAppleFmvPrice(Double.valueOf(0.13));
+    farmingOperation.setAppleFmvPrice(Double.valueOf(0.13));
 
     RevenueRiskTest revenueRiskTest = new RevenueRiskTest();
 
@@ -1399,6 +1420,165 @@ public class TestFruitVegRevenueRiskTest {
   }
 
   @Test
+  public void failWithApplesMissingFiscalDates() {
+    Double varianceLimit = .2;
+
+    List<CropItem> cropItems = new ArrayList<>();
+    List<IncomeExpense> incomeExpenses = new ArrayList<>();
+    List<ReceivableItem> receivableItems = new ArrayList<>();
+
+    {
+      CropItem cropItem1 = new CropItem();
+      cropItem1.setCommodityTypeCode(CommodityTypeCodes.FRUIT_VEG);
+      cropItem1.setFruitVegTypeCode(FruitVegTypeCodes.APPLE);
+      cropItem1.setFruitVegTypeCodeDescription(APPLE_FRUIT_VEG_TYPE_CODE_DESCRIPTION);
+      cropItem1.setInventoryItemCode(APPLES_AMBROSIA_1ST_YEAR_INVENTORY_ITEM_CODE);
+      cropItem1.setInventoryItemCodeDescription(APPLES_AMBROSIA_1ST_YEAR_INVENTORY_ITEM_DESCRIPTION);
+      cropItem1.setCropUnitCode(CropUnitCodes.POUNDS);
+      cropItem1.setReportedQuantityProduced(100.00);
+      cropItem1.setFmvEnd(5.00);
+      cropItem1.setLineItem(APPLES_LINE_ITEM);
+      cropItem1.setLineItemDescription(APPLES_LINE_ITEM_DESCRIPTION);
+      cropItem1.setRevenueVarianceLimit(varianceLimit);
+      cropItems.add(cropItem1);
+    }
+
+    {
+      CropItem cropItem2 = new CropItem();
+      cropItem2.setCommodityTypeCode(CommodityTypeCodes.FRUIT_VEG);
+      cropItem2.setFruitVegTypeCode(FruitVegTypeCodes.APPLE);
+      cropItem2.setFruitVegTypeCodeDescription(APPLE_FRUIT_VEG_TYPE_CODE_DESCRIPTION);
+      cropItem2.setInventoryItemCode(APPLES_AMBROSIA_2ND_TO_4TH_YEAR_INVENTORY_ITEM_CODE);
+      cropItem2.setInventoryItemCodeDescription(APPLES_AMBROSIA_2ND_TO_4TH_YEAR_INVENTORY_ITEM_DESCRIPTION);
+      cropItem2.setCropUnitCode(CropUnitCodes.POUNDS);
+      cropItem2.setReportedQuantityProduced(100.00);
+      cropItem2.setFmvEnd(4.00);
+      cropItem2.setLineItem(APPLES_LINE_ITEM);
+      cropItem2.setLineItemDescription(APPLES_LINE_ITEM_DESCRIPTION);
+      cropItem2.setRevenueVarianceLimit(varianceLimit);
+      cropItems.add(cropItem2);
+    }
+    
+    {
+      ReceivableItem receivableItem = new ReceivableItem();
+      receivableItem.setCommodityTypeCode(CommodityTypeCodes.FRUIT_VEG);
+      receivableItem.setFruitVegTypeCode(FruitVegTypeCodes.APPLE);
+      receivableItem.setFruitVegTypeCodeDescription(APPLE_FRUIT_VEG_TYPE_CODE_DESCRIPTION);
+      receivableItem.setInventoryItemCode(APPLES_INVENTORY_ITEM_CODE);
+      receivableItem.setInventoryItemCodeDescription(APPLES_INVENTORY_ITEM_DESCRIPTION);
+      receivableItem.setLineItem(APPLES_LINE_ITEM);
+      receivableItem.setLineItemDescription(APPLES_LINE_ITEM_DESCRIPTION);
+      receivableItem.setInventoryClassCode(InventoryClassCodes.RECEIVABLE);
+      receivableItem.setReportedStartOfYearAmount(29.0);
+      receivableItem.setReportedEndOfYearAmount(29.0);
+      receivableItems.add(receivableItem);
+    }
+
+    {
+      LineItem lineItem1 = new LineItem();
+      lineItem1.setCommodityTypeCode(CommodityTypeCodes.FRUIT_VEG);
+      lineItem1.setFruitVegTypeCode(FruitVegTypeCodes.APPLE);
+      lineItem1.setFruitVegTypeCodeDescription(APPLE_FRUIT_VEG_TYPE_CODE_DESCRIPTION);
+      lineItem1.setLineItem(APPLES_LINE_ITEM);
+      lineItem1.setDescription(APPLES_LINE_ITEM_DESCRIPTION);
+  
+      IncomeExpense incExp1 = new IncomeExpense();
+      incExp1.setIsExpense(Boolean.FALSE);
+      incExp1.setLineItem(lineItem1);
+      incExp1.setReportedAmount(29.0);
+      incomeExpenses.add(incExp1);
+    }
+
+    Scenario scenario = buildScenarioWithNoCombinedFarm(cropItems);
+    FarmingOperation farmingOperation = scenario.getFarmingYear().getFarmingOperations().get(0);
+    farmingOperation.setIncomeExpenses(incomeExpenses);
+    farmingOperation.setReceivableItems(receivableItems);
+
+    farmingOperation.setFiscalYearStart(null);
+    farmingOperation.setFiscalYearEnd(null);
+
+    RevenueRiskTest revenueRiskTest = new RevenueRiskTest();
+
+    try {
+      revenueRiskTest.test(scenario);
+    } catch (ReasonabilityTestException e) {
+      e.printStackTrace();
+      fail();
+    }
+
+    RevenueRiskTestResult revenueRiskResult = scenario.getReasonabilityTestResults().getRevenueRiskTest();
+    assertNotNull(revenueRiskResult);
+    assertNotNull(revenueRiskResult.getMessages());
+    assertNotNull(revenueRiskResult.getErrorMessages());
+    ReasonabilityUnitTestUtils.logMessages(logger, revenueRiskResult.getErrorMessages());
+    assertEquals(1, revenueRiskResult.getErrorMessages().size());
+    assertEquals(ReasonabilityTestResultMessage.createMessageWithParameters(RevenueRiskTest.ERROR_MISSING_FISCAL_YEAR_DATES, "A"),
+        scenario.getReasonabilityTestResults().getRevenueRiskTest().getMessages().get(MessageTypeCodes.ERROR).get(0).getMessage());
+
+    // Inventory Results
+    {
+      List<RevenueRiskInventoryItem> inventoryResults = revenueRiskResult.getFruitVegInventory();
+      assertEquals(2, inventoryResults.size());
+      Iterator<RevenueRiskInventoryItem> iterator = inventoryResults.iterator();
+      {
+        RevenueRiskInventoryItem inventoryResult = iterator.next();
+        assertEquals(APPLES_AMBROSIA_1ST_YEAR_INVENTORY_ITEM_CODE, inventoryResult.getInventoryItemCode());
+        assertEquals(APPLES_AMBROSIA_1ST_YEAR_INVENTORY_ITEM_DESCRIPTION, inventoryResult.getInventoryItemCodeDescription());
+        assertEquals(CropUnitCodes.POUNDS, inventoryResult.getCropUnitCode());
+        assertEquals(CropUnitCodes.POUNDS_DESCRIPTION, inventoryResult.getCropUnitCodeDescription());
+        assertEquals(FruitVegTypeCodes.APPLE, inventoryResult.getFruitVegTypeCode());
+        assertEquals(APPLE_FRUIT_VEG_TYPE_CODE_DESCRIPTION, inventoryResult.getFruitVegTypeCodeDescription());
+        assertEquals("100.0", String.valueOf(inventoryResult.getQuantityProduced()));
+        assertNull(inventoryResult.getFmvPrice());
+        assertNull(inventoryResult.getExpectedRevenue());
+        assertEquals(String.valueOf(APPLES_LINE_ITEM), String.valueOf(inventoryResult.getLineItemCode()));
+        assertEquals(APPLES_LINE_ITEM_DESCRIPTION, String.valueOf(inventoryResult.getLineItemDescription()));
+        assertEquals("0.2", String.valueOf(inventoryResult.getVarianceLimit()));
+      }
+      
+      {
+        RevenueRiskInventoryItem inventoryResult = iterator.next();
+        assertEquals(APPLES_AMBROSIA_2ND_TO_4TH_YEAR_INVENTORY_ITEM_CODE, inventoryResult.getInventoryItemCode());
+        assertEquals(APPLES_AMBROSIA_2ND_TO_4TH_YEAR_INVENTORY_ITEM_DESCRIPTION, inventoryResult.getInventoryItemCodeDescription());
+        assertEquals(CropUnitCodes.POUNDS, inventoryResult.getCropUnitCode());
+        assertEquals(CropUnitCodes.POUNDS_DESCRIPTION, inventoryResult.getCropUnitCodeDescription());
+        assertEquals(FruitVegTypeCodes.APPLE, inventoryResult.getFruitVegTypeCode());
+        assertEquals(APPLE_FRUIT_VEG_TYPE_CODE_DESCRIPTION, inventoryResult.getFruitVegTypeCodeDescription());
+        assertEquals("100.0", String.valueOf(inventoryResult.getQuantityProduced()));
+        assertNull(inventoryResult.getFmvPrice());
+        assertNull(inventoryResult.getExpectedRevenue());
+        assertEquals(String.valueOf(APPLES_LINE_ITEM), String.valueOf(inventoryResult.getLineItemCode()));
+        assertEquals(APPLES_LINE_ITEM_DESCRIPTION, String.valueOf(inventoryResult.getLineItemDescription()));
+        assertEquals("0.2", String.valueOf(inventoryResult.getVarianceLimit()));
+      }
+    }
+
+    // Fruit & Veg Type Results
+    {
+      assertNotNull(revenueRiskResult.getFruitVegResults());
+      assertEquals(1, revenueRiskResult.getFruitVegResults().size());
+      Iterator<RevenueRiskFruitVegItemTestResult> iterator = revenueRiskResult.getFruitVegResults().iterator();
+      {
+        RevenueRiskFruitVegItemTestResult result = iterator.next();
+        assertNotNull(result);
+        
+        assertEquals(CropUnitCodes.POUNDS, result.getCropUnitCode());
+        assertEquals(FruitVegTypeCodes.APPLE, result.getFruitVegTypeCode());
+        assertEquals(APPLE_FRUIT_VEG_TYPE_CODE_DESCRIPTION, result.getFruitVegTypeDesc());
+        assertEquals("200.0", String.valueOf(result.getQuantityProduced()));
+        assertEquals("0.2", String.valueOf(result.getVarianceLimit()));
+        assertEquals("29.0", String.valueOf(result.getReportedRevenue()));
+        assertEquals("0.0", String.valueOf(result.getExpectedRevenue()));
+        assertNull(result.getExpectedPrice());
+        assertNull(result.getVariance());
+        assertEquals(Boolean.FALSE, result.getPass());
+      }
+    }
+
+    assertEquals(Boolean.FALSE, revenueRiskResult.getResult());
+  }
+
+  @Test
   public void failWithApplesZeroIncome() {
     Double varianceLimit = .2;
 
@@ -1458,7 +1638,7 @@ public class TestFruitVegRevenueRiskTest {
     FarmingOperation farmingOperation = scenario.getFarmingYear().getFarmingOperations().get(0);
     farmingOperation.setIncomeExpenses(incomeExpenses);
     farmingOperation.setReceivableItems(receivableItems);
-    farmingOperation.setGalaAppleFmvPrice(Double.valueOf(0.13));
+    farmingOperation.setAppleFmvPrice(Double.valueOf(0.13));
 
     RevenueRiskTest revenueRiskTest = new RevenueRiskTest();
 
@@ -1574,7 +1754,7 @@ public class TestFruitVegRevenueRiskTest {
     FarmingOperation farmingOperation = scenario.getFarmingYear().getFarmingOperations().get(0);
     farmingOperation.setIncomeExpenses(incomeExpenses);
     farmingOperation.setReceivableItems(receivableItems);
-    farmingOperation.setGalaAppleFmvPrice(Double.valueOf(0.13));
+    farmingOperation.setAppleFmvPrice(Double.valueOf(0.13));
     
     RevenueRiskTest revenueRiskTest = new RevenueRiskTest();
     

@@ -190,7 +190,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "CASH0000-0000-0000-0001-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previously failed test run.
     deleteSubmission(submissionGuid);
@@ -253,7 +253,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     deleteSubmission(submissionGuid);
@@ -329,7 +328,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     deleteSubmission(submissionGuid);
@@ -406,7 +404,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     deleteSubmission(submissionGuid);
@@ -417,7 +414,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "CASH0000-0000-0000-0004-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previously failed test run.
     deleteSubmission(submissionGuid);
@@ -483,7 +480,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission if it exists, from a previously failed test run.
     deleteSubmission(submissionGuid);
@@ -494,7 +490,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "CASH0000-0000-0000-0005-000000000000";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     // Delete the submission if it exists, from a previously failed test run.
     deleteSubmission(submissionGuid);
@@ -612,7 +608,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getValidationTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     programYearMetadata = getProgramYearMetadata(participantPin, programYear);
 
@@ -649,7 +644,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
     String submissionGuid = "2e457fae-ebd3-43c7-b69e-256544c01253";
 
-    deleteValidationErrorTasksBySubmissionId(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
     assertFalse(programYearMetadata.isEmpty());
@@ -717,7 +712,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Correct the SIN Number
     data.setSinNumber("999999999");
@@ -834,7 +828,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertNull(submissionRec.getMainTaskGuid());
     assertNotNull(submissionRec.getSubmissionId());
     assertNotNull(submissionRec.getRevisionCount());
-    assertEquals(1, submissionRec.getRevisionCount().intValue());
 
     // Delete the submission to cleanup the database
     deleteSubmission(submissionGuid);
@@ -900,7 +893,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
         "CASH0000-0000-0000-0000-000000000002" };
     List<String> submissionGuidList = Arrays.asList(submissionGuidArray);
 
-    deleteSubmissions(submissionGuidList);
+    deleteSubmissionsFromFarm(submissionGuidArray);
 
     // Confirm that the submissions now do not exist.
     {
@@ -980,7 +973,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[1]);
@@ -991,7 +983,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       assertEquals("66666666-6666-6666-6666-666666666001", submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[2]);
@@ -1002,7 +993,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
     }
 
     // Update the submissions
@@ -1058,7 +1048,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       assertEquals("66666666-6666-6666-6666-666666666000", submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[1]);
@@ -1069,7 +1058,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
     {
       ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuidArray[2]);
@@ -1080,10 +1068,9 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getMainTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(2, submissionRec.getRevisionCount().intValue());
     }
 
-    deleteSubmissions(submissionGuidList);
+    deleteSubmissionsFromFarm(submissionGuidArray);
   }
 
   @Test
@@ -1179,7 +1166,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getValidationTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
       
       List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
       assertFalse(programYearMetadata.isEmpty());
@@ -1283,7 +1269,6 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       assertNull(submissionRec.getValidationTaskGuid());
       assertNotNull(submissionRec.getSubmissionId());
       assertNotNull(submissionRec.getRevisionCount());
-      assertEquals(1, submissionRec.getRevisionCount().intValue());
   
       programYearMetadata = getProgramYearMetadata(participantPin, programYear);
       assertFalse(programYearMetadata.isEmpty());

@@ -4,8 +4,8 @@
 
   <div class="yui-navset">
     <ul class="yui-nav">
-        <li <c:if test="${tabName == 'status'}">class="selected"</c:if>><a href="<html:rewrite action="farm258"/>"><em><fmt:message key="Fifo.Status"/></em></a></li>
-        <li <c:if test="${tabName == 'jobs'  }">class="selected"</c:if>><a href="<html:rewrite action="farm259"/>"><em><fmt:message key="Fifo.Jobs"/></em></a></li>
+        <li <c:if test="${tabName == 'status'}">class="selected"</c:if>><a href="<html:rewrite action="farm258"/>"><em><fmt:message key="Benefit.Triage.Status"/></em></a></li>
+        <li <c:if test="${tabName == 'jobs'  }">class="selected"</c:if>><a href="<html:rewrite action="farm259"/>"><em><fmt:message key="Benefit.Triage.Jobs"/></em></a></li>
     </ul>
     <div class="yui-content">
       <%@ include file="/WEB-INF/jsp/common/messages.jsp" %>

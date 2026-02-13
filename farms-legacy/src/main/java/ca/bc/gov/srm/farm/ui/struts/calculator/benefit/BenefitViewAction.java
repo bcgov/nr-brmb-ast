@@ -95,7 +95,7 @@ public class BenefitViewAction extends CalculatorAction {
           handleInvalidRevisionCount(request);
           forward = mapping.findForward(ActionConstants.FAILURE);
       }
-    } else if(scenario.isFifoScenario() && scenario.stateIsOneOf(ScenarioStateCodes.FAILED)) {
+    } else if(scenario.isBenefitTriageScenario() && scenario.stateIsOneOf(ScenarioStateCodes.FAILED)) {
       errors = benefitService.calculateBenefit(scenario, getUserId(), false, true, true);
     }
     

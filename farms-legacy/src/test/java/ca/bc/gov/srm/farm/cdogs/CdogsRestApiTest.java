@@ -155,7 +155,16 @@ public class CdogsRestApiTest {
     }
     assertEquals("OK", response);
     
-    templateGuid = cdogsConfig.getNppTemplateGuid();
+    templateGuid = cdogsConfig.getNppTemplateGuid(null);
+    try {
+      response = cdogsDao.checkTemplateCache(templateGuid);
+    } catch (IOException | ServiceException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+    assertEquals("OK", response);
+
+    templateGuid = cdogsConfig.getNppTemplateGuid(2);
     try {
       response = cdogsDao.checkTemplateCache(templateGuid);
     } catch (IOException | ServiceException e) {
@@ -781,8 +790,82 @@ public class CdogsRestApiTest {
   @Test
   public void generatePdfFromNppTemplateGuidTest() {
 
-    String nppTemplateGuid = cdogsConfig.getNppTemplateGuid();
+    String nppTemplateGuid = cdogsConfig.getNppTemplateGuid(null);
     String submissionGuid = "bf693d24-6589-43f7-93ff-8f9bd851e8af";
+    
+    String fileName = "2023_NPP_23846074_Form.pdf";
+    String saveFilePath = IOUtils.getTempDirPath() + "/" + fileName;
+    File file = new File(saveFilePath);
+
+    // delete file if if exist
+    if (file.delete()) {
+      logger.debug("File deleted successfully: " + saveFilePath);
+    } else {
+      logger.debug("Failed to delete the file: " + saveFilePath);
+    }
+    
+    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, ChefsConstants.USER_TYPE_IDIR);
+    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+
+    String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
+    assertNotNull(submissionUrl);
+
+    SubmissionWrapperResource<NppSubmissionDataResource> submissionWrapper = null;
+    try {
+      submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl,
+          NppSubmissionDataResource.class);
+    } catch (ServiceException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+    assertNotNull(submissionWrapper);
+
+    SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = submissionWrapper
+        .getSubmissionMetaData();
+    assertNotNull(submissionMetaData);
+
+    SubmissionResource<NppSubmissionDataResource> submission = submissionMetaData.getSubmission();
+    assertNotNull(submission);
+
+    NppSubmissionDataResource data = submission.getData();
+    assertNotNull(data);
+
+    CdogsTemplateDataResource cdogsTemplateDataResource = new CdogsTemplateDataResource();
+    CdogsOptionsResource cdogsOptionsResource = new CdogsOptionsResource(fileName);
+    cdogsTemplateDataResource.setData(data);
+    cdogsTemplateDataResource.setOptions(cdogsOptionsResource);
+
+    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    String cdogsDataJson = null;
+    try {
+      cdogsDataJson = ow.writeValueAsString(cdogsTemplateDataResource);
+      assertNotNull(cdogsDataJson);
+      logger.debug(cdogsDataJson);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+
+    try {
+      String response = cdogsDao.generatePdfFromTemplateGuid(nppTemplateGuid, saveFilePath, cdogsDataJson);
+      assertNotNull(response);
+      assertTrue(file.exists());
+      if (file.exists() && !file.isDirectory()) {
+        logger.debug("file exist: " + saveFilePath);
+//        file.delete();
+      }
+    } catch (IOException | ServiceException e) {
+      e.printStackTrace();
+      fail("Unexpected Exception");
+    }
+
+  }
+
+  @Test
+  public void generatePdfFromNppTemplateGuidV2Test() {
+
+    String nppTemplateGuid = cdogsConfig.getNppTemplateGuid(2);
+    String submissionGuid = "cca20981-7600-4d83-b08f-4a2f235eec2c";
     
     String fileName = "2023_NPP_23846074_Form.pdf";
     String saveFilePath = IOUtils.getTempDirPath() + "/" + fileName;
@@ -947,8 +1030,8 @@ public class CdogsRestApiTest {
     chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
   
     String statementATemplateGuid = cdogsConfig.getStatementATemplateGuid();
-    String submissionGuid = "fde01732-945c-4d2a-b4eb-8b61250b3f1f";
-    String participantPin = "98765703";
+    String submissionGuid = "ff0c841c-724f-46fa-b8ab-fa4680257d32";
+    String participantPin = "98765801";
   
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
     assertNotNull(submissionUrl);
@@ -975,14 +1058,14 @@ public class CdogsRestApiTest {
   
     assertEquals("DIANE KEATON", data.getCorporationName());
     assertEquals("ADMIN@APPLES.CA", data.getEmail());
-    assertEquals("Status Indian farming on a reserve", data.getFarmType().getLabel());
-    assertEquals("statusIndianFarmingOnAReserve", data.getFarmType().getValue());
+    assertEquals("Corporation", data.getFarmType().getLabel());
+    assertEquals("corporation", data.getFarmType().getValue());
     assertEquals(Integer.valueOf(participantPin), data.getAgriStabilityAgriInvestPin());
     assertEquals("(640) 555-5555", data.getTelephone());
     assertNull(data.getTrustNumber());
-    assertNull(data.getBusinessTaxNumber());
+    assertEquals("9876 54321", data.getBusinessTaxNumber());
     assertNull(data.getTrustBusinessNumber());
-    assertEquals("987654321", data.getSinNumber());
+    assertNull(data.getSinNumber());
     assertEquals("cash", data.getAccountingMethod());
   
     String fileName = "2024_Statement_A_" + participantPin + "_Form.pdf";

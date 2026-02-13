@@ -10,7 +10,7 @@
  */
 package ca.bc.gov.srm.farm.reasonability.revenue;
 
-import static ca.bc.gov.srm.farm.reasonability.revenue.RevenueRiskTest.ERROR_INVENTORY_MISSING_FMV;
+import static ca.bc.gov.srm.farm.reasonability.revenue.RevenueRiskTest.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.bc.gov.srm.farm.domain.CropItem;
+import ca.bc.gov.srm.farm.domain.FarmingOperation;
 import ca.bc.gov.srm.farm.domain.IncomeExpense;
 import ca.bc.gov.srm.farm.domain.LineItem;
 import ca.bc.gov.srm.farm.domain.Scenario;
@@ -31,6 +32,7 @@ import ca.bc.gov.srm.farm.domain.reasonability.revenue.RevenueRiskTestResult;
 import ca.bc.gov.srm.farm.reasonability.ReasonabilityConfiguration;
 import ca.bc.gov.srm.farm.reasonability.ReasonabilityTest;
 import ca.bc.gov.srm.farm.reasonability.ReasonabilityTestResultMessage;
+import ca.bc.gov.srm.farm.reasonability.ReasonabilityTestUtils;
 import ca.bc.gov.srm.farm.util.MathUtils;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
 
@@ -120,7 +122,8 @@ public class NurseryRevenueRiskSubTest {
       nurseryInventoryItem.setCropUnitCode(nurseryItem.getCropUnitCode());
       nurseryInventoryItem.setCropUnitCodeDescription(nurseryItem.getCropUnitCodeDescription());
       
-      Double partnershipPercent = ScenarioUtils.getPartnershipPercent(nurseryItem.getFarmingOperation());
+      FarmingOperation farmingOperation = nurseryItem.getFarmingOperation();
+      Double partnershipPercent = ScenarioUtils.getPartnershipPercent(farmingOperation);
       
       quantityProduced *= partnershipPercent;
       quantityStart *= partnershipPercent;
@@ -142,7 +145,13 @@ public class NurseryRevenueRiskSubTest {
       
       Double expectedRevenue = null;
       if (fmvEnd == null) {
-        addErrorMessage(errors, ERROR_INVENTORY_MISSING_FMV, nurseryItem.getInventoryItemCode(), nurseryItem.getInventoryItemCodeDescription());
+        // If the fiscal year dates are missing then the FMV cannot be found,
+        // so only show the missing FMV message if the operation has the dates.
+        if(farmingOperation.getFiscalYearStart() == null || farmingOperation.getFiscalYearEnd() == null) {
+          ReasonabilityTestUtils.addErrorMessage(errors, ERROR_MISSING_FISCAL_YEAR_DATES, farmingOperation.getSchedule());
+        } else {
+          addErrorMessage(errors, ERROR_INVENTORY_MISSING_FMV, nurseryItem.getInventoryItemCode(), nurseryItem.getInventoryItemCodeDescription());
+        }
       } else {
         expectedRevenue = quantitySold * fmvEnd;
       }

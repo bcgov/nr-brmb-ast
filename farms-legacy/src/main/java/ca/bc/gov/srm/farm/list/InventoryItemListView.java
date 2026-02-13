@@ -29,8 +29,6 @@ public class InventoryItemListView extends BaseListView {
   
   private Boolean isMarketCommodity;
   
-  private Integer year;
-
   private Boolean isEligible;
   
   private String defaultCropUnitCode;
@@ -138,14 +136,6 @@ public class InventoryItemListView extends BaseListView {
 
   public void setIsMarketCommodity(Boolean isMarketCommodity) {
     this.isMarketCommodity = isMarketCommodity;
-  }
-
-  public Integer getYear() {
-    return year;
-  }
-
-  public void setYear(Integer year) {
-    this.year = year;
   }
 
   public Boolean getIsEligible() {

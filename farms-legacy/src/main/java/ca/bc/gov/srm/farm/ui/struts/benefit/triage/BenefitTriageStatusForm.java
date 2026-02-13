@@ -1,19 +1,19 @@
-package ca.bc.gov.srm.farm.ui.struts.fifo;
+package ca.bc.gov.srm.farm.ui.struts.benefit.triage;
 
 import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
 
-import ca.bc.gov.srm.farm.domain.fifo.FifoStatus;
+import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageStatus;
 import ca.bc.gov.srm.farm.list.ListView;
 
-public class FifoStatusForm extends ValidatorForm {
+public class BenefitTriageStatusForm extends ValidatorForm {
 
   private static final long serialVersionUID = -1117656610503380741L;
 
   private Integer year;
 
-  private List<FifoStatus> statusResults;
+  private List<BenefitTriageStatus> statusResults;
   private List<ListView> programYearSelectOptions;
   private List<ListView> scenarioStateSelectOptions;
 
@@ -22,11 +22,11 @@ public class FifoStatusForm extends ValidatorForm {
   private String statusFilter;
   private String isPaymentFileFilter;
 
-  public List<FifoStatus> getStatusResults() {
+  public List<BenefitTriageStatus> getStatusResults() {
     return statusResults;
   }
 
-  public void setStatusResults(List<FifoStatus> statusResults) {
+  public void setStatusResults(List<BenefitTriageStatus> statusResults) {
     this.statusResults = statusResults;
   }
 

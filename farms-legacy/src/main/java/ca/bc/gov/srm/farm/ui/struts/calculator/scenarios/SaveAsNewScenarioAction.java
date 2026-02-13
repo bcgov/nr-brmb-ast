@@ -65,7 +65,7 @@ public class SaveAsNewScenarioAction extends ScenariosViewAction {
     CalculatorService calculatorService = ServiceFactory.getCalculatorService();
     
     try {
-      boolean basedOnCra = ScenarioTypeCodes.CRA.equals(scenario.getScenarioTypeCode());
+      boolean createdFromBaseData = ScenarioTypeCodes.isBaseData(scenario.getScenarioTypeCode());
       int programYear = form.getYear();
 
       Integer newScenarioNumber = calculatorService.saveScenarioAsNew(
@@ -79,7 +79,7 @@ public class SaveAsNewScenarioAction extends ScenariosViewAction {
 
       scenario = refreshScenario(form);
 
-      if(basedOnCra) {
+      if(createdFromBaseData) {
         AdjustmentService adjService = ServiceFactory.getAdjustmentService();
         adjService.makeInventoryValuationAdjustments(scenario);
         // refresh the scenario again to get the adjustments

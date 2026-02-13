@@ -28,9 +28,13 @@ import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 
 import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
+import ca.bc.gov.srm.farm.chefs.resource.interim.InterimSubmissionDataResource;
+import ca.bc.gov.srm.farm.chefs.resource.interim.InterimSubmissionRequestDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppSubmissionRequestDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.preflight.PreflightWrapperResource;
+import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementASubmissionDataResource;
+import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementASubmissionRequestDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionParentResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
@@ -75,12 +79,12 @@ public class ChefsRestApiDao extends RestApiDao {
     return getResource(endpointUrl, parametricType);
   }
 
-  public SubmissionParentResource<NppSubmissionDataResource> postNppSubmission(String endpointUrl,
-      NppSubmissionRequestDataResource<NppSubmissionDataResource> resource) throws ServiceException {
+  public <T extends ChefsResource> SubmissionParentResource<T> postSubmission(String endpointUrl,
+      Object resource, Class<T> resourceClass) throws ServiceException {
 
     logMethodStart(logger);
 
-    SubmissionParentResource<NppSubmissionDataResource> result = null;
+    SubmissionParentResource<T> result = null;
     try {
 
       ObjectMapper jsonObjectMapper = JsonUtils.getJsonObjectMapper();
@@ -121,7 +125,7 @@ public class ChefsRestApiDao extends RestApiDao {
       JavaType parametricType;
       try {
         parametricType = jsonObjectMapper.getTypeFactory().constructParametricType(SubmissionParentResource.class,
-            NppSubmissionDataResource.class);
+            resourceClass);
       } catch (Exception e) {
         throw new ServiceException(e);
       }
@@ -137,7 +141,22 @@ public class ChefsRestApiDao extends RestApiDao {
     logMethodEnd(logger);
     return result;
   }
-  
+
+  public SubmissionParentResource<NppSubmissionDataResource> postNppSubmission(String endpointUrl,
+      NppSubmissionRequestDataResource<NppSubmissionDataResource> resource) throws ServiceException {
+    return postSubmission(endpointUrl, resource, NppSubmissionDataResource.class);
+  }
+
+  public SubmissionParentResource<InterimSubmissionDataResource> postInterimSubmission(String endpointUrl,
+      InterimSubmissionRequestDataResource<InterimSubmissionDataResource> resource) throws ServiceException {
+    return postSubmission(endpointUrl, resource, InterimSubmissionDataResource.class);
+  }
+
+  public SubmissionParentResource<StatementASubmissionDataResource> postStatementASubmission(String endpointUrl,
+      StatementASubmissionRequestDataResource<StatementASubmissionDataResource> resource) throws ServiceException {
+    return postSubmission(endpointUrl, resource, StatementASubmissionDataResource.class);
+  }
+
   public <T extends ChefsResource> PreflightWrapperResource<T> getSubmissionOptionsResource(String endpointUrl, Class<T> clazz) throws ServiceException {
 
     ObjectMapper jsonObjectMapper = new ObjectMapper();
@@ -214,6 +233,12 @@ public class ChefsRestApiDao extends RestApiDao {
     } catch(IOException e) {
       throw new ServiceException("Error getting resource", e);
     }
+  }
+
+  public void deleteSubmission(String submissionGuid) throws ServiceException {
+    ChefsConfigurationUtil chefsConfig = ChefsConfigurationUtil.getInstance();
+    String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
+    delete(submissionUrl);
   }
 
 }

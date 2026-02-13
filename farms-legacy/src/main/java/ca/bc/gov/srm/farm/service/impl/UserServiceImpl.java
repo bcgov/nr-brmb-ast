@@ -232,13 +232,17 @@ public class UserServiceImpl extends BaseService implements UserService {
           .filter(u -> u.getUserGuid().equals(ulv.getGuid())).findAny().orElse(null);
       if (foundVerifier != null) {
         logger.debug("verifier found - update verifier");
-        if (!Objects.equals(foundVerifier.getSourceDirectory(), ulv.getSourceDirectory()) ||
-            !Objects.equals(foundVerifier.getAccountName(), ulv.getAccountName()) ||
-            !Objects.equals(foundVerifier.getEmailAddress(), ulv.getEmailAddress())) {
+        if (!Objects.equals(foundVerifier.getSourceDirectory(), ulv.getSourceDirectory())
+            || !Objects.equals(foundVerifier.getAccountName(), ulv.getAccountName())
+            || !Objects.equals(foundVerifier.getEmailAddress(), ulv.getEmailAddress())
+            || foundVerifier.getDeletedInd()
+            || !foundVerifier.getVerifierInd()) {
           logger.debug("data needs syncing");
           foundVerifier.setSourceDirectory(ulv.getSourceDirectory());
           foundVerifier.setAccountName(ulv.getAccountName());
           foundVerifier.setEmailAddress(ulv.getEmailAddress());
+          foundVerifier.setVerifierInd(true);
+          foundVerifier.setDeletedInd(false);
           modifiedVerifiers.add(foundVerifier);
         }
       } else {
