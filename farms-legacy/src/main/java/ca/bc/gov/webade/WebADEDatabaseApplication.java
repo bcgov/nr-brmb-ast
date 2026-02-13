@@ -232,8 +232,6 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
 
     @Override
     public void shutdown() throws SecurityException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'shutdown'");
     }
 
     /**
