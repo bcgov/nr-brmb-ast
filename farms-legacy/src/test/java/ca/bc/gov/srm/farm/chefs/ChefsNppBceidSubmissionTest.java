@@ -11,9 +11,9 @@
 package ca.bc.gov.srm.farm.chefs;
 
 import static ca.bc.gov.srm.farm.chefs.forms.ChefsFormConstants.*;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.LocalDate;
