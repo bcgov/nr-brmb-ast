@@ -17,7 +17,6 @@ import ca.bc.gov.webade.user.UserCredentials;
 import ca.bc.gov.webade.user.WebADEUserPermissions;
 import ca.bc.gov.webade.user.security.enterprise.SecurityConfiguration;
 import ca.bc.gov.webade.user.service.UserInfoService;
-import oracle.jdbc.OracleConnection;
 
 public final class WebADEDatabaseApplication implements Application, Serializable {
 
