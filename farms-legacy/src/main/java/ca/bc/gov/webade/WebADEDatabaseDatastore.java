@@ -418,28 +418,52 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
         GUID userGuid = databaseUserCredentials.getUserGuid();
         if (userGuid.equals(new GUID("AHOPKINS000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(6L);
+            databaseUserCredentials.setAccountName("AHOPKINS");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("BGRABLE0000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(7L);
+            databaseUserCredentials.setAccountName("BGRABLE");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("BPITT000000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(8L);
+            databaseUserCredentials.setAccountName("BPITT");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("CEASTWOOD00000000000000000000000"))) {
             databaseUserCredentials.setEUserId(9L);
+            databaseUserCredentials.setAccountName("CEASTWOOD");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("DLETTERMAN0000000000000000000000"))) {
             databaseUserCredentials.setEUserId(10L);
+            databaseUserCredentials.setAccountName("DLETTERMAN");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("DMOORE00000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(11L);
+            databaseUserCredentials.setAccountName("DMOORE");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("ETAYLOR0000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(12L);
+            databaseUserCredentials.setAccountName("ETAYLOR");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("FASTAIRE000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(13L);
+            databaseUserCredentials.setAccountName("FASTAIRE");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("GGARBO00000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(14L);
+            databaseUserCredentials.setAccountName("GGARBO");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("HFORD000000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(15L);
+            databaseUserCredentials.setAccountName("HFORD");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("JCHAN000000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(17L);
+            databaseUserCredentials.setAccountName("JCHAN");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("UTHRUMAN000000000000000000000000"))) {
             databaseUserCredentials.setEUserId(30L);
+            databaseUserCredentials.setAccountName("UTHURMAN");
+            databaseUserCredentials.setSourceDirectory("IDIR");
         } else if (userGuid.equals(new GUID("OAUTHGOV100000000000000000000000"))) {
             databaseUserCredentials.setEUserId(503L);
         } else if (userGuid.equals(new GUID("OAUTHGOV200000000000000000000000"))) {
