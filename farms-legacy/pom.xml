@@ -316,11 +316,6 @@
                 <artifactId>xalan</artifactId>
                 <version>2.7.0</version>
             </dependency>
-            <dependency>
-                <groupId>xsdlib</groupId>
-                <artifactId>xsdlib</artifactId>
-                <version>20030225</version>
-            </dependency>
 
             <!-- Miscellaneous -->
             <dependency>
@@ -578,10 +573,6 @@
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xsdlib</groupId>
-            <artifactId>xsdlib</artifactId>
         </dependency>
 
         <!-- Miscellaneous -->
