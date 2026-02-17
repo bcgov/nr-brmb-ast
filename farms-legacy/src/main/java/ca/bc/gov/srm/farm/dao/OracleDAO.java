@@ -765,7 +765,12 @@ abstract class OracleDAO {
   protected OracleConnection getOracleConnection(
     final Transaction transaction) {
     @SuppressWarnings("resource")
-    Connection c = wrappedConnection(getConnection(transaction));
+    Connection c = null;
+    try {
+      c = wrappedConnection(getConnection(transaction));
+    } catch (SQLException ex) {
+      // do nothing
+    }
 
     if (c instanceof OracleConnection) {
       return (OracleConnection) c;
@@ -777,7 +782,12 @@ abstract class OracleDAO {
 
   protected OracleConnection getOracleConnection(final Connection connection) {
 
-    Connection c = wrappedConnection(connection);
+    Connection c = null;
+    try {
+      c = wrappedConnection(connection);
+    } catch (SQLException ex) {
+      // do nothing
+    }
 
     if (c instanceof OracleConnection) {
       return (OracleConnection) c;
@@ -1766,16 +1776,8 @@ abstract class OracleDAO {
    *
    * @return  The return value.
    */
-  protected Connection wrappedConnection(final Connection connection) {
-
-    Connection inConnection = connection;
-
-    if (inConnection instanceof WrapperConnection) {
-      WrapperConnection wconn = (WrapperConnection) inConnection;
-      inConnection = wconn.getWrappedConnection();
-    }
-
-    return inConnection;
+  protected Connection wrappedConnection(final Connection connection) throws SQLException {
+    return connection.unwrap(OracleConnection.class);
   }
 
   /**

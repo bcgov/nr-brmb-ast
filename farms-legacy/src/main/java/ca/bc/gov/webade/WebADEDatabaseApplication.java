@@ -157,21 +157,18 @@ public final class WebADEDatabaseApplication implements Application, Serializabl
     @Override
     public Connection getConnection(WebADEUserPermissions userAuthorizations, Role role)
             throws WebADEException, SQLException {
-        Connection connection = this.dataSource.getConnection();
-        return connection.unwrap(OracleConnection.class);
+        return this.dataSource.getConnection();
     }
 
     @Override
     public Connection getConnectionByAction(WebADEUserPermissions userAuthorizations, Action action)
             throws WebADEException, SQLException {
-        Connection connection = this.dataSource.getConnection();
-        return connection.unwrap(OracleConnection.class);
+        return this.dataSource.getConnection();
     }
 
     @Override
     public Connection getConnectionByPriviledgedAction(Action action) throws WebADEException, SQLException {
-        Connection connection = this.dataSource.getConnection();
-        return connection.unwrap(OracleConnection.class);
+        return this.dataSource.getConnection();
     }
 
     @Override
