@@ -15,7 +15,7 @@ package ca.bc.gov.srm.farm.domain.staging;
  */
 public final class Z99ExtractFileCtl {
 
-  /** extractFileNumber the 2 digit file number of each file (01, 02, …). */
+  /** extractFileNumber the 2 digit file number of each file (01, 02, 03). */
   private java.lang.Integer extractFileNumber;
 
   /** extractDate is the ProgramYear for this record. */
@@ -37,7 +37,7 @@ public final class Z99ExtractFileCtl {
   }
 
   /**
-   * ExtractFileNumber the 2 digit file number of each file (01, 02, …).
+   * ExtractFileNumber the 2 digit file number of each file (01, 02, 03).
    *
    * @return  java.lang.Integer
    */
@@ -46,7 +46,7 @@ public final class Z99ExtractFileCtl {
   }
 
   /**
-   * ExtractFileNumber the 2 digit file number of each file (01, 02, …).
+   * ExtractFileNumber the 2 digit file number of each file (01, 02, 03).
    *
    * @param  newVal  The new value for this property
    */
