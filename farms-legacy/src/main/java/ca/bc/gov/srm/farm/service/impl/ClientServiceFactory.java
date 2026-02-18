@@ -56,6 +56,7 @@ import ca.bc.gov.srm.farm.domain.ScenarioStateAudit;
 import ca.bc.gov.srm.farm.domain.WholeFarmParticipant;
 import ca.bc.gov.srm.farm.domain.codes.CropUnitCodes;
 import ca.bc.gov.srm.farm.domain.codes.CropUnitConversion;
+import ca.bc.gov.srm.farm.domain.codes.FruitVegTypeCodes;
 import ca.bc.gov.srm.farm.domain.codes.InventoryItemCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioBpuPurposeCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
@@ -85,22 +86,14 @@ public final class ClientServiceFactory implements ClientService {
   }
 
   @SuppressWarnings("resource")
-  public static ClientService getInstance(final Connection pConnection) {
-
-    if (pConnection instanceof WrapperConnection) {
-      WrapperConnection wr = (WrapperConnection) pConnection;
-
-      if (wr.getWrappedConnection() instanceof OracleConnection) {
-        return new ClientServiceFactory((OracleConnection) wr
-            .getWrappedConnection());
-      }
-      return null;
+  public static ClientService getInstance(final Connection pConnection) throws ServiceException {
+    OracleConnection connection = null;
+    try {
+      connection = pConnection.unwrap(OracleConnection.class);
+    } catch (SQLException ex) {
+      throw new ServiceException(ex);
     }
-    
-    if (pConnection instanceof OracleConnection) {
-      return new ClientServiceFactory((OracleConnection) pConnection);
-    }
-    return null;
+    return new ClientServiceFactory(connection);
   }
   
   /**
@@ -437,22 +430,50 @@ public final class ClientServiceFactory implements ClientService {
       }
     }
 
-    if(ScenarioUtils.hasAppleInventory(sc)) {
+    boolean hasAppleInventory = ScenarioUtils.hasInventoryOfFruitVegType(sc, FruitVegTypeCodes.APPLE);
+    if(hasAppleInventory) {
+      final String inventoryCode = InventoryItemCodes.APPLES;
       for(FarmingOperation op : sc.getFarmingYear().getFarmingOperations()){
         HashMap<String,List<FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(),
-            InventoryItemCodes.APPLES_GALA_5_PLUS_YEARS, CropUnitCodes.POUNDS);
+            inventoryCode, CropUnitCodes.POUNDS);
         
         if(fmvs != null){
-          List<FmvFullResult> fmv = fmvs.get(InventoryItemCodes.APPLES_GALA_5_PLUS_YEARS);
+          List<FmvFullResult> fmv = fmvs.get(inventoryCode);
           if(fmv != null) {
             for(FmvFullResult f : fmv) {
               String cropUnitCode = f.getCropUnit();
               if(CropUnitCodes.POUNDS.equals(cropUnitCode)) {
-                Double galaApplePrice = f.getEndPrice();
-                if(galaApplePrice == null) {
-                  galaApplePrice = f.getStartPrice();
+                Double applePrice = f.getEndPrice();
+                if(applePrice == null) {
+                  applePrice = f.getStartPrice();
                 }
-                op.setGalaAppleFmvPrice(galaApplePrice);
+                op.setAppleFmvPrice(applePrice);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    boolean hasCherryInventory = ScenarioUtils.hasInventoryOfFruitVegType(sc, FruitVegTypeCodes.CHERRY);
+    if(hasCherryInventory) {
+      final String inventoryCode = InventoryItemCodes.CHERRIES;
+      for(FarmingOperation op : sc.getFarmingYear().getFarmingOperations()){
+        HashMap<String,List<FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(),
+            inventoryCode, CropUnitCodes.POUNDS);
+        
+        if(fmvs != null){
+          List<FmvFullResult> fmv = fmvs.get(inventoryCode);
+          if(fmv != null) {
+            for(FmvFullResult f : fmv) {
+              String cropUnitCode = f.getCropUnit();
+              if(CropUnitCodes.POUNDS.equals(cropUnitCode)) {
+                Double price = f.getEndPrice();
+                if(price == null) {
+                  price = f.getStartPrice();
+                }
+                op.setCherryFmvPrice(price);
                 break;
               }
             }

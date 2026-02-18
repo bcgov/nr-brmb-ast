@@ -18,6 +18,9 @@ import java.util.Arrays;
 public class BPU {
 
   public static final int NUMBER_OF_YEARS = 6;
+  
+  public static final String BPU_CODE_TYPE_INVENTORY = "INV";
+  public static final String BPU_CODE_TYPE_STRUCTURE_GROUP = "SG";
 
   private Integer bpuId;
   private Integer programYear;

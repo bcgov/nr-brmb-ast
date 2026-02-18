@@ -217,7 +217,9 @@ public class FarmingOperation implements Serializable {
     
   private Date tipReportGeneratedDate;
 
-  private Double galaAppleFmvPrice;
+  private Double appleFmvPrice;
+  
+  private Double cherryFmvPrice;
   
   private Double chickenBroilerFMVPrice;
   
@@ -1135,12 +1137,20 @@ public class FarmingOperation implements Serializable {
     this.farmingYear = farmingYear;
   }
 
-  public Double getGalaAppleFmvPrice() {
-    return galaAppleFmvPrice;
+  public Double getAppleFmvPrice() {
+    return appleFmvPrice;
   }
 
-  public void setGalaAppleFmvPrice(Double galaAppleFmvPrice) {
-    this.galaAppleFmvPrice = galaAppleFmvPrice;
+  public void setAppleFmvPrice(Double appleFmvPrice) {
+    this.appleFmvPrice = appleFmvPrice;
+  }
+  
+  public Double getCherryFmvPrice() {
+    return cherryFmvPrice;
+  }
+
+  public void setCherryFmvPrice(Double cherryFmvPrice) {
+    this.cherryFmvPrice = cherryFmvPrice;
   }
 
   public Double getChickenBroilerFMVPrice() {
@@ -1283,7 +1293,8 @@ public class FarmingOperation implements Serializable {
     "\t farmingOperationPartners : "+farmingOperationPartnersCount+"\n"+
     "\t productionInsurances : "+productionInsurancesCount+"\n"+
     "\t margin : "+margin+"\n"+
-    "\t galaAppleFmvPrice : "+galaAppleFmvPrice+"\n";
+    "\t cherryFmvPrice : "+cherryFmvPrice+"\n"+
+    "\t appleFmvPrice : "+appleFmvPrice+"\n";
   }
 
   /**

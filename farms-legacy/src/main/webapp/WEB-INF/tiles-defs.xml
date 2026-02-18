@@ -168,43 +168,42 @@
         <put name="screenNumber" value="257" />
     </definition>
     
-    <!-- FIFO -->
+    <!-- Benefit Triage -->
     
-    <definition name=".fifo" path="/WEB-INF/jsp/fifo/fifoLayout.jsp">
-        <put name="body" value="/WEB-INF/jsp/fifo/fifoSubTabs.jsp" />
-        <put name="subTabs" value="/WEB-INF/jsp/fifo/noSubTabs.jsp" />
+    <definition name=".benefitTriage" path="/WEB-INF/jsp/benefitTriage/benefitTriageLayout.jsp">
+        <put name="body" value="/WEB-INF/jsp/benefitTriage/benefitTriageSubTabs.jsp" />
+        <put name="subTabs" value="/WEB-INF/jsp/benefitTriage/noSubTabs.jsp" />
         <put name="screenNumber" value="000" />
     </definition>
     
-    <definition name=".fifo.farm.status" extends=".fifo">
+    <definition name=".benefitTriage.farm.status" extends=".benefitTriage">
         <put name="tabName" value="status" />
     </definition>
     
-    <definition name="page.farm258" extends=".fifo.farm.status">
-        <put name="subTabBody" value="/WEB-INF/jsp/fifo/fifoStatus.jsp" />
+    <definition name="page.farm258" extends=".benefitTriage.farm.status">
+        <put name="subTabBody" value="/WEB-INF/jsp/benefitTriage/benefitTriageStatus.jsp" />
         <put name="screenNumber" value="258" />
     </definition>
     
-     <definition name=".fifo.farm.jobs" extends=".fifo">
+     <definition name=".benefitTriage.farm.jobs" extends=".benefitTriage">
         <put name="tabName" value="jobs" />
     </definition>
     
-    <definition name="page.farm259" extends=".fifo.farm.jobs">
-        <put name="subTabBody" value="/WEB-INF/jsp/fifo/fifoJobs.jsp" />
+    <definition name="page.farm259" extends=".benefitTriage.farm.jobs">
+        <put name="subTabBody" value="/WEB-INF/jsp/benefitTriage/benefitTriageJobs.jsp" />
         <put name="screenNumber" value="259" />
     </definition>
     
-     <definition name="page.farm254" extends=".fifo.farm.jobs">
-        <put name="subTabBody" value="/WEB-INF/jsp/fifo/fifoJobInProgress.jsp" />
+     <definition name="page.farm254" extends=".benefitTriage.farm.jobs">
+        <put name="subTabBody" value="/WEB-INF/jsp/benefitTriage/benefitTriageJobInProgress.jsp" />
         <put name="screenNumber" value="254" />
     </definition>
     
-    <definition name="page.farm253" extends=".fifo.farm.jobs">
-        <put name="subTabBody" value="/WEB-INF/jsp/fifo/fifoJobResult.jsp" />
+    <definition name="page.farm253" extends=".benefitTriage.farm.jobs">
+        <put name="subTabBody" value="/WEB-INF/jsp/benefitTriage/benefitTriageJobResult.jsp" />
         <put name="screenNumber" value="253" />
     </definition>
 
-    <!-- Account Details -->
 
     <definition name="page.farm300" extends=".default">
         <put name="body" value=".accountStatus" />

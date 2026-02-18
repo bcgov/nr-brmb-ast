@@ -86,7 +86,7 @@ public final class ScenarioCategoryCodes {
   /** CHEFS Statement A */
   public static final String CHEF_STA = "CHEF_STA";
 
-  /** First In First Out */
-  public static final String FIFO = "FIFO";
+  /** Benefit Triage */
+  public static final String TRIAGE = "TRIAGE";
 
 }

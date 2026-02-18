@@ -25,6 +25,7 @@ import ca.bc.gov.srm.farm.reasonability.ReasonabilityTest;
 import ca.bc.gov.srm.farm.util.CropItemUtils;
 import ca.bc.gov.srm.farm.util.CropUnitUtils;
 import ca.bc.gov.srm.farm.util.MathUtils;
+import ca.bc.gov.srm.farm.util.ObjectUtils;
 
 /**
  * @author awilkinson
@@ -163,7 +164,7 @@ public class ForageProductionSubTest {
       
       double reportedQuantityProduced = 0d;
       for (CropItem item : itemsForThisCode) {
-        Double curQuantityProduced = item.getTotalQuantityProduced();
+        Double curQuantityProduced = ObjectUtils.ifNull(item.getTotalQuantityProduced(), Double.valueOf(0));
 
         // Forage Seeds MUST be reported in pounds
         if(curQuantityProduced > 0 && !firstItem.getCropUnitCode().equals(CropUnitCodes.POUNDS)) {

@@ -64,7 +64,7 @@ public class ServiceFactory extends BaseFactory {
 
   private static CdogsService cdogsService = null;
 
-  private static FifoService fifoService = null;
+  private static BenefitTriageService benefitTriageService = null;
 
   private static UserService userService = null;
   
@@ -417,13 +417,13 @@ public class ServiceFactory extends BaseFactory {
     return cdogsService;
   }
 
-  public static FifoService getFifoService() {
+  public static BenefitTriageService getBenefitTriageService() {
 
-    if (fifoService == null) {
-      fifoService = (FifoService) instance.createSecuredService(FifoService.class);
+    if (benefitTriageService == null) {
+      benefitTriageService = (BenefitTriageService) instance.createSecuredService(BenefitTriageService.class);
     }
 
-    return fifoService;
+    return benefitTriageService;
   }
   
   public static UserService getUserService() {

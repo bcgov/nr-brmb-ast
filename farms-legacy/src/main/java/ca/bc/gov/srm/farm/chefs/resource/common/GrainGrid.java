@@ -12,6 +12,8 @@ package ca.bc.gov.srm.farm.chefs.resource.common;
 
 import java.util.Objects;
 
+import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
+
 public class GrainGrid extends CropGrid {
 
   private String isIrrigated;
@@ -21,6 +23,16 @@ public class GrainGrid extends CropGrid {
   private Double quantityPurchased;
   private Double quantityUsedForFeed;
   private Double quantityUsedForSeed;
+
+  public GrainGrid() {
+    super();
+  }
+
+  public GrainGrid(String label, String value, Double acres) {
+    super();
+    this.commodity = new LabelValue(label, value);
+    this.acres = acres;
+  }
 
   public String getIsIrrigated() {
     return isIrrigated;

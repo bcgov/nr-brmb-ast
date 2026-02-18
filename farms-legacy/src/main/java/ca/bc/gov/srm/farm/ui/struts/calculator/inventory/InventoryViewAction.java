@@ -201,7 +201,7 @@ public class InventoryViewAction extends CalculatorAction {
     
     if(StringUtils.isBlank(form.getFinancialViewRadio())) {
       form.setItemTypeRadio("crop");
-      if(scenario.isUserScenario() || scenario.isFifoScenario()) {
+      if(scenario.isUserScenario() || scenario.isBenefitTriageScenario()) {
         form.setFinancialViewRadio("adjusted");
       } else {
         form.setFinancialViewRadio("cra");

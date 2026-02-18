@@ -110,7 +110,9 @@ public class ChefsSearchAction extends SecureAction {
       templates.add(cdogsTemplate);
       break;
     case ChefsFormTypeCodes.NPP:
-      cdogsTemplate = new CdogsTemplate(NppFormConstants.FORM_SHORT_NAME, cdogsConfig.getNppTemplateGuid());
+      cdogsTemplate = new CdogsTemplate(NppFormConstants.FORM_SHORT_NAME, cdogsConfig.getNppTemplateGuid(null));
+      templates.add(cdogsTemplate);
+      cdogsTemplate = new CdogsTemplate(NppFormConstants.FORM_SHORT_NAME + " V2", cdogsConfig.getNppTemplateGuid(2));
       templates.add(cdogsTemplate);
       break;
     case ChefsFormTypeCodes.STA:

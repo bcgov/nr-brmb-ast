@@ -166,7 +166,7 @@ public class NolSubmissionProcessor extends ChefsSubmissionProcessor<NolSubmissi
       boolean hasErrors = ! validationErrors.isEmpty();
       
       if(hasErrors) {
-        CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionId(submissionGuid);
+        CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
         if (existingValidationErrorTask == null) {
           logger.debug("Creating validation error task...");
           newTask = createValidationErrorTask(crmAccount, data, validationErrors);

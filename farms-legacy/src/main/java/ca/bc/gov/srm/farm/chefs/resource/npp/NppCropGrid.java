@@ -18,6 +18,17 @@ public class NppCropGrid extends ChefsResource {
 	private Double acres;
 	private Double squareMeters;
 
+	public NppCropGrid() {
+		super();
+	}
+
+	public NppCropGrid(String crop, Double acres, Double squareMeters) {
+		super();
+		this.crop = crop;
+		this.acres = acres;
+		this.squareMeters = squareMeters;
+	}
+
 	public String getCrop() {
 		return crop;
 	}

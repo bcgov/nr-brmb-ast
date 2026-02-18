@@ -127,43 +127,37 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
       submissionRec = newSubmissionRecord(submissionGuid);
     }
 
-    try {
-      Client client = null;
-      CrmAccountResource crmAccount = null;
-      if (participantPin != null) {
-        client = getClientByParticipantPin(participantPin);
-        crmAccount = getCrmAccountByParticipantPin(participantPin);
-      }
+    Client client = null;
+    CrmAccountResource crmAccount = null;
+    if (participantPin != null) {
+      client = getClientByParticipantPin(participantPin);
+      crmAccount = getCrmAccountByParticipantPin(participantPin);
+    }
 
-      List<String> validationErrors = validate(data, client, crmAccount);
-      boolean hasErrors = !validationErrors.isEmpty();
+    List<String> validationErrors = validate(data, client, crmAccount);
+    boolean hasErrors = !validationErrors.isEmpty();
 
-      if (hasErrors) {
-        CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionId(submissionGuid);
-        if (existingValidationErrorTask == null) {
+    if (hasErrors) {
+      CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
+      if (existingValidationErrorTask == null) {
+        newTask = createValidationErrorTask(crmAccount, data, validationErrors);
+      } else {
+        logger.debug("Validation error task already exists: " + existingValidationErrorTask.toString());
+        if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
           newTask = createValidationErrorTask(crmAccount, data, validationErrors);
         } else {
-          logger.debug("Validation error task already exists: " + existingValidationErrorTask.toString());
-          if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
-            newTask = createValidationErrorTask(crmAccount, data, validationErrors);
-          } else {
-            newTask = existingValidationErrorTask;
-          }
+          newTask = existingValidationErrorTask;
         }
-        submissionRec.setSubmissionStatusCode(INVALID);
-        submissionRec.setValidationTaskGuid(newTask.getActivityId());
-        submissionRec = createOrUpdateSubmission(submissionRec);
-
-      } else {
-        // Validation passed
-
-        assert client != null;
-        createScenarios(data, client, programYear, submissionRec);
       }
+      submissionRec.setSubmissionStatusCode(INVALID);
+      submissionRec.setValidationTaskGuid(newTask.getActivityId());
+      submissionRec = createOrUpdateSubmission(submissionRec);
 
-    } catch (SQLException e) {
-      logger.error("Unexpected error: ", e);
-      throw new ServiceException(e);
+    } else {
+      // Validation passed
+
+      assert client != null;
+      createScenarios(data, client, programYear, submissionRec);
     }
 
     logMethodEnd(logger);

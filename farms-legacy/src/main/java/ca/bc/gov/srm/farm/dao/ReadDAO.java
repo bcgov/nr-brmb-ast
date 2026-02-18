@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import ca.bc.gov.srm.farm.calculator.BenefitValidator;
 import ca.bc.gov.srm.farm.chefs.ChefsConfigurationUtil;
 import ca.bc.gov.srm.farm.domain.BasePricePerUnit;
 import ca.bc.gov.srm.farm.domain.BasePricePerUnitYear;
@@ -2341,7 +2342,7 @@ public class ReadDAO {
    * @param pStructCodes List
    * @param scid
    *          Integer
-   * @param baseyear
+   * @param programYear
    *          Integer
    * @return HashMap[] [HashMap<InvCode, BPU>,HashMap<StructCode, BPU>]
    * @throws SQLException
@@ -2349,7 +2350,7 @@ public class ReadDAO {
    */
   @SuppressWarnings("resource")
   public HashMap<String, BasePricePerUnit>[] readBasePricePerUnit(List<String> pInvCodes, List<String> pStructCodes,
-      Integer scid, Integer baseyear) throws SQLException {
+      Integer scid, Integer programYear) throws SQLException {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
@@ -2366,7 +2367,7 @@ public class ReadDAO {
       proc.setArray(c++, oracleArrayInventoryCodes);
       proc.setArray(c++, oracleArrayStructureGroupCodes);
 
-      proc.setInt(c++, baseyear);
+      proc.setInt(c++, programYear);
       proc.execute();
 
       rs = proc.getResultSet();
@@ -2382,12 +2383,64 @@ public class ReadDAO {
       HashMap<String, BasePricePerUnit>[] result = new HashMap[2];
       result[0] = r1.size() > 0 ? r1 : null;
       result[1] = r2.size() > 0 ? r2 : null;
+      
+      if(result[0] != null) {
+        addZeroValueCodes(result[0], programYear);
+      }
+      
       return result;
     } finally {
     	close(rs, proc);
     }
   }
   
+  
+  /**
+   * Prevent "BPUs are missing" errors for inventory codes for which a zero value is allowed:
+   *     17 - Summer Fallow Acres
+   *     18 - Pasture Acres
+   *     19 - Wasteland Acres
+   */
+  private void addZeroValueCodes(HashMap<String, BasePricePerUnit> invBpus, Integer programYear) {
+    
+    
+    for (String inventoryItemCode : BenefitValidator.BPU_CODES_ALLOWING_ZEROES) {
+      BasePricePerUnit bpu = invBpus.get(inventoryItemCode);
+      if(bpu == null) {
+        double[] margins = {0, 0, 0, 0, 0, 0};
+        double[] expenses = {0, 0, 0, 0, 0, 0};
+        
+        bpu = buildBpu(inventoryItemCode, null, programYear, margins, expenses);
+        invBpus.put(inventoryItemCode, bpu);
+      }
+    }
+  }
+  
+  public BasePricePerUnit buildBpu(String inventoryItemCode, String structureGroupCode, int programYear,
+      double[] margins, double[] expenses) {
+    BasePricePerUnit basePricePerUnit = new BasePricePerUnit();
+    final int numberOfBpuYears = 6;
+    int year = programYear - numberOfBpuYears;
+    basePricePerUnit.setInventoryCode(inventoryItemCode);
+    basePricePerUnit.setStructureGroupCode(structureGroupCode);
+    basePricePerUnit.setRevisionCount(1);
+    List<BasePricePerUnitYear> basePricePerUnitYears = new ArrayList<>();
+    for(int i = 0; i < 6; i++) {
+      basePricePerUnitYears.add(buildBpuYear(year++, margins[i], expenses[i]));
+    }
+    basePricePerUnit.setBasePricePerUnitYears(basePricePerUnitYears);
+    
+    return basePricePerUnit;
+  }
+
+  public BasePricePerUnitYear buildBpuYear(int year, double margin, double expense) {
+    BasePricePerUnitYear bpuYear = new BasePricePerUnitYear();
+    bpuYear.setYear(year);
+    bpuYear.setMargin(margin);
+    bpuYear.setExpense(expense);
+    bpuYear.setRevisionCount(1);
+    return bpuYear;
+  }
   
   
   /**
@@ -2434,10 +2487,10 @@ public class ReadDAO {
     	close(rs, proc);
     }
   }
-  
-  
 
-	/**
+
+
+  /**
 	 * @param rs rs
 	 * @param r1 r1
 	 * @param r2 r2

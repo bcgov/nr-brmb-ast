@@ -65,7 +65,7 @@ final class BenefitServiceImpl extends BaseService implements BenefitService {
    */
   @Override
   public ActionMessages calculateBenefit(final Scenario scenario, final String userId) 
-  throws Exception {
+  throws ServiceException {
     return calculateBenefit(scenario, userId, true, true, true);
   }
   
@@ -81,7 +81,7 @@ final class BenefitServiceImpl extends BaseService implements BenefitService {
    */
   @Override
   public ActionMessages getAllValidationErrors(final Scenario scenario, final String userId) 
-  throws Exception {
+  throws ServiceException {
     return calculateBenefit(scenario, userId, false, true, false);
   }
   
@@ -107,7 +107,7 @@ final class BenefitServiceImpl extends BaseService implements BenefitService {
       final boolean saveBenefit,
       final boolean validate,
       final boolean recalculateOverridables) 
-  throws Exception {
+  throws ServiceException {
     //
     // Create missing objects so that even if validation fails
     // we don't have to put null checks everywhere.
@@ -300,7 +300,7 @@ final class BenefitServiceImpl extends BaseService implements BenefitService {
    * @param userId userId
    * @throws Exception on Exception
    */
-  private void save(final Scenario scenario, final String userId) throws Exception {
+  private void save(final Scenario scenario, final String userId) throws ServiceException {
     Transaction transaction = null;
     
     try {

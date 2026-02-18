@@ -13,6 +13,7 @@ package ca.bc.gov.srm.farm.service;
 import org.apache.struts.action.ActionMessages;
 
 import ca.bc.gov.srm.farm.domain.Scenario;
+import ca.bc.gov.srm.farm.exception.ServiceException;
 
 
 
@@ -40,7 +41,7 @@ public interface BenefitService {
    * @return  ActionMessages
    */
   ActionMessages calculateBenefit(final Scenario scenario, final String userId) 
-  throws Exception;
+  throws ServiceException;
   
   
   /**
@@ -62,6 +63,6 @@ public interface BenefitService {
       final boolean saveBenefit,
       final boolean validate,
       final boolean recalculateOverridables) 
-  throws Exception;
+  throws ServiceException;
 
 }

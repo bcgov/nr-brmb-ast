@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import ca.bc.gov.srm.farm.domain.Scenario;
 
@@ -107,8 +108,6 @@ public class EnwEnrolment implements Serializable {
   private Double enrolmentFeeMinimum;
   
   private List<Integer> benefitMarginYears;
-  
-  private Boolean canCalculateProxyMargins;
   
   private Double productiveValueYearMinus2;
   private Double productiveValueYearMinus3;
@@ -546,14 +545,6 @@ public class EnwEnrolment implements Serializable {
     this.inCombinedFarm = inCombinedFarm;
   }
 
-  public Boolean getCanCalculateProxyMargins() {
-    return canCalculateProxyMargins;
-  }
-
-  public void setCanCalculateProxyMargins(Boolean canCalculateProxyMargins) {
-    this.canCalculateProxyMargins = canCalculateProxyMargins;
-  }
-
   public Double getProductiveValueYearMinus2() {
     return productiveValueYearMinus2;
   }
@@ -577,6 +568,15 @@ public class EnwEnrolment implements Serializable {
   public void setProductiveValueYearMinus4(Double productiveValueYearMinus4) {
     this.productiveValueYearMinus4 = productiveValueYearMinus4;
   }
+  
+  @JsonIgnore
+  public Boolean getCanCalculateProxyMargins() {
+    Boolean canCalculateProxyMargins = null;
+    if(getHasBpus() != null && getHasProductiveUnits() != null) {
+      canCalculateProxyMargins = getHasBpus() && getHasProductiveUnits();
+    }
+    return canCalculateProxyMargins;
+  }
 
   @Override
   public String toString() {
@@ -599,7 +599,7 @@ public class EnwEnrolment implements Serializable {
         + benefitCalculated + ", proxyMarginsCalculated=" + proxyMarginsCalculated + ", manualMarginsCalculated=" + manualMarginsCalculated
         + ", hasProductiveUnits=" + hasProductiveUnits + ", hasBpus=" + hasBpus + ", revisionCount=" + revisionCount + ", programYear=" + programYear
         + ", enrolmentFeeCalculationFactor=" + enrolmentFeeCalculationFactor + ", enrolmentFeeMinimum=" + enrolmentFeeMinimum
-        + ", benefitMarginYears=" + benefitMarginYears + ", canCalculateProxyMargins=" + canCalculateProxyMargins + ", productiveValueYearMinus2="
+        + ", benefitMarginYears=" + benefitMarginYears + ", getCanCalculateProxyMargins=" + getCanCalculateProxyMargins() + ", productiveValueYearMinus2="
         + productiveValueYearMinus2 + ", productiveValueYearMinus3=" + productiveValueYearMinus3 + ", productiveValueYearMinus4="
         + productiveValueYearMinus4 + ", proxyMarginYears=" + proxyMarginYears + ", proxyMargins=" + proxyMargins + ", enwProductiveUnits="
         + enwProductiveUnits + ", inCombinedFarm=" + inCombinedFarm + "]";

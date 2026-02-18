@@ -448,7 +448,6 @@ public class ListDAO extends OracleDAO {
         item.setInventoryClassCode(getString(rs, "INVENTORY_CLASS_CODE"));
         item.setInventoryClassCodeDescription(getString(rs, "ITEM_CLASS_DESC"));
         item.setIsMarketCommodity(Boolean.valueOf(getIndicator(rs, "MARKET_COMMODITY_IND")));
-        item.setYear(getInteger(rs, "PROGRAM_YEAR"));
         item.setIsEligible(Boolean.valueOf(getIndicator(rs, "ELIGIBILITY_IND")));
         item.setCommodityTypeCode(getString(rs, "COMMODITY_TYPE_CODE"));
         item.setLineItem(getInteger(rs, "LINE_ITEM"));

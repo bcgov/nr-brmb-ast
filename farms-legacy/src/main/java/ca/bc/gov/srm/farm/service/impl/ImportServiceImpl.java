@@ -34,18 +34,18 @@ import ca.bc.gov.srm.farm.dao.ImportDAO;
 import ca.bc.gov.srm.farm.dao.ImportXmlDAO;
 import ca.bc.gov.srm.farm.dao.SearchDAO;
 import ca.bc.gov.srm.farm.domain.ImportVersion;
+import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageResults;
 import ca.bc.gov.srm.farm.domain.codes.ImportClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.ImportStateCodes;
-import ca.bc.gov.srm.farm.domain.fifo.FifoResults;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.exception.TransactionException;
 import ca.bc.gov.srm.farm.io.FileUtility;
 import ca.bc.gov.srm.farm.service.AarmService;
 import ca.bc.gov.srm.farm.service.BaseService;
+import ca.bc.gov.srm.farm.service.BenefitTriageService;
 import ca.bc.gov.srm.farm.service.BpuService;
 import ca.bc.gov.srm.farm.service.CrmTransferService;
 import ca.bc.gov.srm.farm.service.EnrolmentService;
-import ca.bc.gov.srm.farm.service.FifoService;
 import ca.bc.gov.srm.farm.service.FmvService;
 import ca.bc.gov.srm.farm.service.ImportController;
 import ca.bc.gov.srm.farm.service.ImportService;
@@ -69,21 +69,22 @@ import ca.bc.gov.webade.dbpool.WrapperConnection;
 final class ImportServiceImpl extends BaseService implements ImportService {
 
   private Logger logger = LoggerFactory.getLogger(ImportServiceImpl.class);
-
-  /**
-   * @param importTypes importTypes
-   * @return List<ImportSearchResult>
-   * @throws ServiceException On exception.
-   */
+  
   @Override
   public List<ImportSearchResult> searchImports(final List<String> importTypes) throws ServiceException {
+    Date oneYearAgo = DateUtils.oneYearAgo();
+    return searchImports(importTypes, oneYearAgo);
+  }
+
+  @Override
+  public List<ImportSearchResult> searchImports(List<String> importTypes, Date createdAfterDate) throws ServiceException {
     List<ImportSearchResult> results = null;
     Transaction transaction = null;
     SearchDAO dao = new SearchDAO();
 
     try {
       transaction = openTransaction();
-      results = dao.searchImports(transaction, importTypes);
+      results = dao.searchImports(transaction, importTypes, createdAfterDate);
     } catch (Exception e) {
       throw new ServiceException(e);
     } finally {
@@ -442,7 +443,7 @@ final class ImportServiceImpl extends BaseService implements ImportService {
           //
           // FMV, BPU, and AARM XML is really small so keep using the XML queries.
           //
-          if (! ImportClassCodes.FIFO.equals(classCode)) {
+          if (! ImportClassCodes.TRIAGE.equals(classCode)) {
             
             logger.debug("> getImportTopLevelErrors");
             List<FileLineMessage> errors = xdao.getImportTopLevelErrors(transaction, id);
@@ -469,30 +470,30 @@ final class ImportServiceImpl extends BaseService implements ImportService {
   }
   
   /**
-   * The details of FIFO data from import versions.
+   * The details of Benefit Triage data from import versions.
    *
    * @param importVersionId id to use
    *
-   * @return the FIFO results
+   * @return the Benefit Triage results
    *
    * @throws ServiceException on exception
    */
   @Override
-  public FifoResults getFifoResults(final ImportVersion importVersion) throws ServiceException {
-    logger.debug("> getFifoResult");
+  public BenefitTriageResults getTriageResults(final ImportVersion importVersion) throws ServiceException {
+    logger.debug("> getTriageResult");
 
-    FifoResults fifoResults = new FifoResults();
+    BenefitTriageResults triageResults = new BenefitTriageResults();
     try {
       ObjectMapper jsonObjectMapper = new ObjectMapper();
       if (!importVersion.getAuditInfo().isEmpty()) {
-        fifoResults = jsonObjectMapper.readValue(importVersion.getAuditInfo(), FifoResults.class);
+        triageResults = jsonObjectMapper.readValue(importVersion.getAuditInfo(), BenefitTriageResults.class);
       }
     } catch (Exception e) {
       throw new ServiceException(e);
     } 
-    logger.debug("< getFifoResult");
+    logger.debug("< getTriageResult");
 
-    return fifoResults;
+    return triageResults;
   }
 
   /**
@@ -730,10 +731,10 @@ final class ImportServiceImpl extends BaseService implements ImportService {
  
        service.processScheduledReportGeneration(connection, file, ivId, userId); 
        file.delete();
-    } else if (ImportClassCodes.FIFO.equals(iv.getImportClassCode())) {
-      FifoService service = ServiceFactory.getFifoService();
+    } else if (ImportClassCodes.TRIAGE.equals(iv.getImportClassCode())) {
+      BenefitTriageService service = ServiceFactory.getBenefitTriageService();
 
-      service.processFifoCalculations(connection, file, ivId, userId); 
+      service.processBenefitTriage(connection, ivId, userId); 
       file.delete();
     }
 

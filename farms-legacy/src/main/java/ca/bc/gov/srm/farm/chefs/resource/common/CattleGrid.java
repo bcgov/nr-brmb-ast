@@ -27,6 +27,17 @@ public class CattleGrid extends ChefsResource {
   private Double endingInventoryCattle;
   private Double averageWeightPurchases;
 
+  public CattleGrid() {
+    super();
+  }
+
+  public CattleGrid(String label, String value, Integer salesCattle, Double endingInventoryCattle) {
+    super();
+    this.cattleType = new LabelValue(label, value);
+    this.salesCattle = salesCattle;
+    this.endingInventoryCattle = endingInventoryCattle;
+  }
+
   public LabelValue getCattleType() {
     return cattleType;
   }

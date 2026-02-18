@@ -35,6 +35,7 @@ import ca.bc.gov.srm.farm.chefs.ChefsConfigurationUtil;
 import ca.bc.gov.srm.farm.chefs.ChefsConstants;
 import ca.bc.gov.srm.farm.chefs.ChefsFormCredentials;
 import ca.bc.gov.srm.farm.chefs.ChefsRestApiDao;
+import ca.bc.gov.srm.farm.chefs.database.ChefsSubmissionStatusCodes;
 import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionListItemResource;
@@ -93,7 +94,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   protected Map<String, ChefsSubmission> submissionRecordMap;
   
   private String environment;
-  private final boolean basicBCeIDFormsEnabled;
+  private boolean basicBCeIDFormsEnabled;
 
   protected String user = SYSTEM_USER;
 
@@ -117,7 +118,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(formTypeCode, formUserType);
     submissionsUrl = chefsConfig.getSubmissionsUrl(formCredentials.getFormId());
     basicBCeIDFormsEnabled = configUtil.getBoolean(ConfigurationKeys.CHEFS_BASIC_BCEID_FORMS_ENABLED);
-    verifierUserEmail = configUtil.getValue(ConfigurationKeys.FIFO_VERIFIER_USER_EMAIL);
+    verifierUserEmail = configUtil.getValue(ConfigurationKeys.CHEFS_VERIFIER_USER_EMAIL);
     
     restDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
     crmDao = new CrmRestApiDao();
@@ -202,18 +203,19 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     CrmTaskResource task = null;
     try {
       
-      CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionId(submissionGuid);
+      CrmTaskResource existingValidationErrorTask = getValidationErrorTask(submissionGuid);
+      
       if (existingValidationErrorTask == null) {
         task = createSystemErrorTask(submissionGuid, e);
         
-        updateSubmissionRec(submissionStatusCode, submissionGuid, task);
+        updateSubmissionRec(submissionGuid, submissionStatusCode, task, null);
         
       } else {
         logger.debug(submissionStatusCode + " error task already exists: " + existingValidationErrorTask.toString());
         if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
           task = createSystemErrorTask(submissionGuid, e);
           
-          updateSubmissionRec(submissionStatusCode, submissionGuid, task);
+          updateSubmissionRec(submissionGuid, submissionStatusCode, task, null);
         } else {
           task = existingValidationErrorTask;
         }
@@ -226,15 +228,54 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     return task;
   }
 
-  private void updateSubmissionRec(String submissionStatusCode, String submissionGuid, CrmTaskResource task)
-      throws DataAccessException, SQLException {
+  protected CrmTaskResource getValidationErrorTask(String submissionGuid) throws ServiceException {
+    ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuid);
+    CrmTaskResource existingValidationErrorTask = null;
+    
+    // It is possible that the submission record has a validationTaskGuid but the task has been deleted.
+    // In that case, crmDao.getValidationErrorTask() will return null.
+    if(submissionRec != null && submissionRec.getValidationTaskGuid() != null) {
+      existingValidationErrorTask = crmDao.getValidationErrorTask(submissionRec.getValidationTaskGuid());
+    }
+    return existingValidationErrorTask;
+  }
+
+  protected void updateSubmissionRec(String submissionGuid, String submissionStatusCode, CrmTaskResource validationErrorTask,
+      CrmTaskResource mainTask)
+      throws ServiceException {
+    
     ChefsSubmission submissionRec = chefsDatabaseDao.readSubmissionByGuid(connection, submissionGuid);
     if(submissionRec == null) {
       submissionRec = newSubmissionRecord(submissionGuid);
     }
-    submissionRec.setValidationTaskGuid(task.getActivityId());
+    if(validationErrorTask != null) {
+      submissionRec.setValidationTaskGuid(validationErrorTask.getActivityId());
+    }
+    if(mainTask != null) {
+      submissionRec.setMainTaskGuid(mainTask.getActivityId());
+    }
     submissionRec.setSubmissionStatusCode(submissionStatusCode);
     submissionRec = createOrUpdateSubmission(submissionRec);
+  }
+  
+  
+  protected void updateSubmission(ChefsSubmission submissionRec) throws ServiceException {
+    
+    try {
+      chefsDatabaseDao.updateSubmission(connection, submissionRec, user);
+      connection.commit();
+    } catch (DataAccessException | SQLException e) {
+      logger.error("Error updating submission record: ", e);
+      throw new ServiceException(e);
+    }
+  }
+
+  protected void setSubmissionInvalid(String submissionGuid, CrmTaskResource task) throws ServiceException {
+    updateSubmissionRec(submissionGuid, ChefsSubmissionStatusCodes.INVALID, task, null);
+  }
+
+  protected void setSubmissionProcessed(String submissionGuid, CrmTaskResource task) throws ServiceException {
+    updateSubmissionRec(submissionGuid, ChefsSubmissionStatusCodes.PROCESSED, null, task);
   }
 
 
@@ -274,7 +315,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   }
 
 
-  protected ChefsSubmission newSubmissionRecord(String submissionGuid ) {
+  protected ChefsSubmission newSubmissionRecord(String submissionGuid ) throws ServiceException {
     ChefsSubmission submissionRec = new ChefsSubmission();
     submissionRec.setSubmissionGuid(submissionGuid);
     submissionRec.setFormTypeCode(formTypeCode);
@@ -284,24 +325,43 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     } else {
       submissionRec.setBceidFormInd("N");
     }
+    submissionRec = createOrUpdateSubmission(submissionRec);
+    
+    if( ! submissionRecordMap.containsKey(submissionGuid) ) {
+      submissionRecordMap.put(submissionGuid, submissionRec);
+    }
+    
     return submissionRec;
   }
 
 
-  protected ChefsSubmission createOrUpdateSubmission(ChefsSubmission submissionRec) throws DataAccessException, SQLException {
+  protected ChefsSubmission createOrUpdateSubmission(ChefsSubmission submissionRec) throws ServiceException {
     ChefsSubmission result = submissionRec;
     
-    if(submissionRec.getSubmissionId() != null) {
-      chefsDatabaseDao.updateSubmission(connection, submissionRec, user);
-    } else {
-      chefsDatabaseDao.createSubmission(connection, submissionRec, user);
-      result = chefsDatabaseDao.readSubmissionByGuid(connection, submissionRec.getSubmissionGuid());
+    try {
+      if(submissionRec.getSubmissionId() != null) {
+        chefsDatabaseDao.updateSubmission(connection, submissionRec, user);
+      } else {
+        chefsDatabaseDao.createSubmission(connection, submissionRec, user);
+        result = chefsDatabaseDao.readSubmissionByGuid(connection, submissionRec.getSubmissionGuid());
+      }
+      
+      connection.commit();
+      
+    } catch (DataAccessException | SQLException e) {
+      logger.error("Error creating submission: ", e);
+      throw new ServiceException(e);
     }
-    
-    connection.commit();
     
     return result;
   }
+
+
+  protected void updateScenarioSubmissionId(Integer submissionId, Integer scenarioId) throws DataAccessException, SQLException {
+    chefsDatabaseDao.updateScenarioSubmissionId(connection, scenarioId, submissionId, user);
+    connection.commit();
+  }
+  
   
   protected abstract String getSystemErrorQueueId() throws ServiceException;
 
@@ -346,11 +406,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
           submissionRec = newSubmissionRecord(submissionGuid);
         }
         submissionRec.setSubmissionStatusCode(OTHER_ENV);
-        try {
-          submissionRec = createOrUpdateSubmission(submissionRec);
-        } catch (SQLException e) {
-          throw new ServiceException(e);
-        }
+        submissionRec = createOrUpdateSubmission(submissionRec);
       }
     }
     
@@ -414,6 +470,8 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     }
     
     boolean isDuplicate = existingSubmissionGuids != null && ! existingSubmissionGuids.isEmpty();
+    
+    String submissionStatusCode = submissionRec == null ? null : submissionRec.getSubmissionStatusCode();
 
     if(isDuplicate) {
       
@@ -423,26 +481,22 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
       submissionProcessData.setChefsSubmission(newSubmissionRec);
       submissionProcessData.setValidationErrorTask(validationErrorTask);
       submissionProcessData.setProcess(false);
+      createOrUpdateSubmission(newSubmissionRec);
       
-      try {
-        createOrUpdateSubmission(newSubmissionRec);
-      } catch (SQLException e) {
-        logger.error("SQLException: ", e);
-        throw new ServiceException(e);
-      }
-      
-    } else if (submissionRec != null && isOneOf(submissionRec.getSubmissionStatusCode(), INVALID, SYSTEM_ERROR, PARSE_ERROR)) {
+    } else if (submissionRec != null && isOneOf(submissionStatusCode, INVALID, SYSTEM_ERROR, PARSE_ERROR)) {
       // If the status is Invalid then check if the validation task has been
       // completed.
 
-      logger.debug("Submission record found with status INVALID. Checking if validation task is completed.");
+      logger.debug(String.format("Submission record found with status %s. Checking if validation task is completed.", submissionStatusCode));
 
       CrmTaskResource existingValidationTask = crmDao.getValidationErrorTask(submissionRec.getValidationTaskGuid());
-      submissionProcessData.setProcess(existingValidationTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED);
+      boolean process = existingValidationTask == null ||
+          existingValidationTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED;
+      submissionProcessData.setProcess(process);
 
       logger.debug("Validation task completed: " + submissionProcessData.getProcess());
 
-    } else if (submissionRec == null || isOneOf(submissionRec.getSubmissionStatusCode(), SUBMITTED)) {
+    } else if (submissionRec == null || isOneOf(submissionStatusCode, SUBMITTED)) {
 
       submissionProcessData = handleAdminSection(submissionGuid, data, submissionRec);
 
@@ -612,5 +666,9 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   public String getFormLongName() {
     return formLongName;
   }
-  
+
+  public void setBasicBCeIDFormsEnabled(boolean basicBCeIDFormsEnabled) {
+    this.basicBCeIDFormsEnabled = basicBCeIDFormsEnabled;
+  }
+
 }

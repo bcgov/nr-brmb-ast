@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -50,6 +51,21 @@ public abstract class ReasonabilityTestResult implements Serializable {
     if(messages == null) {
       messages = new HashMap<>();
     }
+    
+    for(String messageType : messages.keySet()) {
+      List<ReasonabilityTestResultMessage> list = messages.get(messageType);
+      if(!list.isEmpty()) {
+        List<ReasonabilityTestResultMessage> uniqueList = list.stream()
+            .distinct()
+            .collect(Collectors.toList());
+        
+        if(uniqueList.size() != list.size()) {
+          list.clear();
+          list.addAll(uniqueList);
+        }
+      }
+    }
+    
     return messages;
   }
 

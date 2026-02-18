@@ -79,7 +79,9 @@ public class ProductiveUnitsForm extends CalculatorSearchForm {
 
   /** set to true when the Add New button is clicked */
   private boolean addedNew = false;
-  
+
+  private boolean isBaseData = false;
+
   /** Map<year, value> */
   private Map<String, List<String>> participantDataSrcCodesByYear = new HashMap<>();
 
@@ -117,6 +119,38 @@ public class ProductiveUnitsForm extends CalculatorSearchForm {
 
   public List<String> getRolledUpLineKeys() {
     return getLineKeys(true);
+  }
+
+  public List<String> getLineKeysCra() {
+    return this.isBaseData ? getLineKeysCra(false) : getLineKeys();
+  }
+
+  public List<String> getRolledUpLineKeysCra() {
+    return this.isBaseData ? getLineKeysCra(true) : getRolledUpLineKeys();
+  }
+
+  public List<String> getLineKeysCra(boolean isRolledUp) {
+    List<String> lineKeysCra = new ArrayList<>(getLineKeys(isRolledUp));
+
+    // filter out those line keys that don't have CRA value
+    Iterator<String> iterator = lineKeysCra.iterator();
+    while (iterator.hasNext()) {
+      String lineKey = iterator.next();
+      boolean hasValue = false;
+      for (String year : this.getRequiredYears()) {
+        for (String curParticipantDataSrcCode : this.participantDataSrcCodesByYear.get(year)) {
+          ProductiveUnitFormLine item = isRolledUp ? this.rolledUpItems.get(lineKey) : this.items.get(lineKey);
+          ProductiveUnitFormRecord record = item.getRecord(curParticipantDataSrcCode);
+          String craValue = record.getCra(year);
+          hasValue |= (craValue != null && craValue.trim().length() > 0);
+        }
+      }
+      if (!hasValue) {
+        iterator.remove();
+      }
+    }
+
+    return lineKeysCra;
   }
 
   /**
@@ -368,5 +402,9 @@ public class ProductiveUnitsForm extends CalculatorSearchForm {
   public boolean isLocalProductiveUnitsAvailableForImport() {
     return operationsForImport.stream()
         .anyMatch(o -> o.getHasLocalProductiveUnits());
+  }
+
+  public void setIsBaseData(boolean isBaseData) {
+    this.isBaseData = isBaseData;
   }
 }

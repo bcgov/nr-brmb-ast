@@ -86,7 +86,7 @@ public class IncomeExpensesViewAction extends CalculatorAction {
     if(StringUtils.isBlank(form.getFinancialViewRadio())) {
       form.setIncomeExpenseRadio("income");
       form.setEligibilityRadio("eligible");
-      if(scenario.isUserScenario() || scenario.isFifoScenario()) {
+      if(scenario.isUserScenario() || scenario.isBenefitTriageScenario()) {
         form.setFinancialViewRadio("adjusted");
       } else {
         form.setFinancialViewRadio("cra");

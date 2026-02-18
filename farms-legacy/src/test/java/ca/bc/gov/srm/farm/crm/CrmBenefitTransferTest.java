@@ -73,7 +73,8 @@ public class CrmBenefitTransferTest {
       "Y", // Cash Margins Opt In
       "2024-12-15",
       "5001",
-      "ZERO_PASS"
+      "ZERO_PASS",
+      "250000.00"
   };
   
   private static ObjectMapper jsonObjectMapper = JsonUtils.getJsonObjectMapper();
@@ -138,6 +139,7 @@ public class CrmBenefitTransferTest {
     assertEquals(Double.valueOf(448547.92), resource.getVsi_negativemarginbenefitamount());
     assertEquals(Boolean.TRUE, resource.getVsi_fullyprovinciallyfunded());
     assertEquals(Double.valueOf(65407.0), resource.getVsi_provinciallyfundedamount());
+    assertEquals(Double.valueOf(250000.00), resource.getVsi_combinedfarmstotal());
     assertEquals(Double.valueOf(11000.0), resource.getVsi_deemedproductioninsurancemargindeclineamo());
     assertEquals(Double.valueOf(130813.0), resource.getVsi_lateparticipationpenaltyamount());
     assertEquals("2021-02-17T08:00:00Z", resource.getVsi_provincialsupplementalreceiveddate());
@@ -181,10 +183,10 @@ public class CrmBenefitTransferTest {
     String csvLine = null;
     try {
       String formUserType = null;
-      String fifoResultType = null;
+      String benefitTriageResultType = null;
       
       csvLine = benefitTransformer.generateCsv(scenario, stateChangeDate, "test@test.com", chefsFormNotes, formUserType,
-          ChefsFormTypeCodes.INTERIM, fifoResultType);
+          ChefsFormTypeCodes.INTERIM, benefitTriageResultType);
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected ServiceException");
@@ -236,6 +238,7 @@ public class CrmBenefitTransferTest {
     assertEquals(Double.valueOf(30856.78), resource.getVsi_negativemarginbenefitamount());
     assertEquals(Boolean.FALSE, resource.getVsi_fullyprovinciallyfunded());
     assertEquals(Double.valueOf(7908.0), resource.getVsi_provinciallyfundedamount());
+    assertEquals(Double.valueOf(63261.0), resource.getVsi_combinedfarmstotal());
     assertNull(resource.getVsi_deemedproductioninsurancemargindeclineamo());
     assertNull(resource.getVsi_lateparticipationpenaltyamount());
     assertTrue(resource.getVsi_provincialsupplementalreceiveddate().startsWith("2020-09-01"));
@@ -284,9 +287,9 @@ public class CrmBenefitTransferTest {
     
     String csvLine = null;
     try {
-      String fifoResultType = null;
+      String benefitTriageResultType = null;
       csvLine = benefitTransformer.generateCsv(scenario, stateChangeDate, "test@test.com", chefsFormNotes, formUserType,
-          chefsFormType, fifoResultType);
+          chefsFormType, benefitTriageResultType);
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected ServiceException");

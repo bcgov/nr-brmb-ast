@@ -12,10 +12,24 @@ package ca.bc.gov.srm.farm.chefs.resource.common;
 
 import java.util.Objects;
 
+import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
+
 public class NurseryGrid extends CropGrid {
 
   private Integer squareMeters;
   private Double endingInventory;
+
+  public NurseryGrid() {
+    super();
+  }
+
+  public NurseryGrid(String label, String value, Integer squareMeters, Double quantityProduced, Double endingInventory) {
+    super();
+    this.commodity = new LabelValue(label, value);
+    this.squareMeters = squareMeters;
+    this.quantityProduced = quantityProduced;
+    this.endingInventory = endingInventory;
+  }
 
   public Integer getSquareMeters() {
     return squareMeters;

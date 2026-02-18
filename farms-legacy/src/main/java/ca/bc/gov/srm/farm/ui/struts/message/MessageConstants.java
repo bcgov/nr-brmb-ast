@@ -115,6 +115,9 @@ public final class MessageConstants {
   public static final String ERRORS_PROVINCIAL_SUPPLEMENTAL_RECEIVED_DATE_ADJUSTMENT_SCREENS =
       "error.local.supplemental.received.date.adjustment.screens";
   
+  public static final String ERRORS_CHANGES_NOT_SAVED =
+      "error.changes.not.saved";
+  
   public static final String ERRORS_FARM_DETAIL_PROVINCIAL_SUPPLEMENTAL_RECEIVED_DATE_REQUIRED =
       "error.farm.detail.local.supplemental.received.date.required";
   

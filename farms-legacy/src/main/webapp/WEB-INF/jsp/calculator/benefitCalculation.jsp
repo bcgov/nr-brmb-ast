@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/common/include.jsp" %>
 
-<c:set var="showBenefitTabs" value="${(scenario.userScenario or scenario.fifoScenario) and not scenario.unknownCategory}"/>
+<c:set var="showBenefitTabs" value="${(scenario.userScenario or scenario.benefitTriageScenario) and not scenario.unknownCategory}"/>
 <c:set var="showEnrolmentTab" value="${scenario.enrolmentNoticeWorkflow}"/>
 <c:set var="showNegativeMarginTab" value="${scenario.negativeMarginCalculationEnabled}"/>
 
@@ -50,7 +50,7 @@
 </div>
 
 <c:if test="${showBenefitTabs}">
-  <c:set var="readOnlyWithoutBenefitCalculated" value="${not form.canModifyScenario and not scenario.benefitSuccessfullyCalculated  and not scenario.fifoScenario}"/>
+  <c:set var="readOnlyWithoutBenefitCalculated" value="${not form.canModifyScenario and not scenario.benefitSuccessfullyCalculated  and not scenario.benefitTriageScenario}"/>
   <c:set var="readOnlyWithoutEnrolmentCalculated" value="${not form.canModifyScenario and not scenario.enwEnrolmentCalculated}"/>
 
   <script>

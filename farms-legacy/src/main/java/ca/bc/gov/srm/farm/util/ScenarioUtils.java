@@ -47,7 +47,6 @@ import ca.bc.gov.srm.farm.domain.Scenario;
 import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
 import ca.bc.gov.srm.farm.domain.codes.CommodityTypeCodes;
 import ca.bc.gov.srm.farm.domain.codes.FederalAccountingCodes;
-import ca.bc.gov.srm.farm.domain.codes.FruitVegTypeCodes;
 import ca.bc.gov.srm.farm.domain.codes.InventoryClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.InventoryItemCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
@@ -107,17 +106,17 @@ public final class ScenarioUtils {
   /**
    * Check if the program year has any supplemental data at all.
    * @param scenario scenario
-   * @param checkCRAOnly If true, adjustments don't count. Only CRA data counts.
+   * @param checkReportedOnly If true, adjustments don't count. Only reported data counts (not adjustments).
    * @return boolean
    */
-  private static boolean hasProgramYearSupplemental(Scenario scenario, boolean checkCRAOnly) {
-    boolean hasSupplementalRecord = hasProgramYearSupplementalInventory(scenario, checkCRAOnly);
+  private static boolean hasProgramYearSupplemental(Scenario scenario, boolean checkReportedOnly) {
+    boolean hasSupplementalRecord = hasProgramYearSupplementalInventory(scenario, checkReportedOnly);
 
     if( ! hasSupplementalRecord) {
-      hasSupplementalRecord = hasProgramYearSupplementalAccruals(scenario, checkCRAOnly);
+      hasSupplementalRecord = hasProgramYearSupplementalAccruals(scenario, checkReportedOnly);
     }
     if( ! hasSupplementalRecord) {
-      hasSupplementalRecord = hasProgramYearSupplementalProductiveUnits(scenario, checkCRAOnly);
+      hasSupplementalRecord = hasProgramYearSupplementalProductiveUnits(scenario, checkReportedOnly);
     }
     
     return hasSupplementalRecord;
@@ -127,10 +126,10 @@ public final class ScenarioUtils {
   /**
    * Check if the program year has any supplemental data at all.
    * @param scenario scenario
-   * @param checkCRAOnly If true, adjustments don't count. Only CRA data counts.
+   * @param checkReportedOnly If true, adjustments don't count. Only reported data counts (not adjustments).
    * @return boolean
    */
-  private static boolean hasProgramYearSupplementalInventory(Scenario scenario, boolean checkCRAOnly) {
+  private static boolean hasProgramYearSupplementalInventory(Scenario scenario, boolean checkReportedOnly) {
     boolean hasSupplementalRecord = false;
     
     if(scenario.getFarmingYear() != null && scenario.getFarmingYear().getFarmingOperations() != null) {
@@ -139,7 +138,7 @@ public final class ScenarioUtils {
         // check whether inventory record exists
         if(fo.getInventoryItems() != null) {
           for(InventoryItem inventoryItem : fo.getInventoryItems()) {
-            boolean hasValues = hasSupplemental(inventoryItem, checkCRAOnly);
+            boolean hasValues = hasSupplemental(inventoryItem, checkReportedOnly);
             
             if(hasValues) {
               hasSupplementalRecord = true;
@@ -157,10 +156,10 @@ public final class ScenarioUtils {
   /**
    * Check if the program year has any supplemental data at all.
    * @param scenario scenario
-   * @param checkCRAOnly If true, adjustments don't count. Only CRA data counts.
+   * @param checkReportedOnly If true, adjustments don't count. Only reported data counts (not adjustments).
    * @return boolean
    */
-  private static boolean hasProgramYearSupplementalAccruals(Scenario scenario, boolean checkCRAOnly) {
+  private static boolean hasProgramYearSupplementalAccruals(Scenario scenario, boolean checkReportedOnly) {
     boolean hasSupplementalRecord = false;
     
     if(scenario.getFarmingYear() != null && scenario.getFarmingYear().getFarmingOperations() != null) {
@@ -170,7 +169,7 @@ public final class ScenarioUtils {
         if(fo.getAccrualItems() != null) {
           for(InventoryItem inventoryItem : fo.getAccrualItems()) {
             
-            if(checkCRAOnly) {
+            if(checkReportedOnly) {
               
               hasSupplementalRecord = inventoryItem.getReportedEndOfYearAmount() != null;
               if(hasSupplementalRecord) {
@@ -198,16 +197,16 @@ public final class ScenarioUtils {
   /**
    * Check if the program year has any supplemental data at all.
    * @param scenario scenario
-   * @param checkCRAOnly If true, adjustments don't count. Only CRA data counts.
+   * @param checkReportedOnly If true, adjustments don't count. Only reported data counts (not adjustments).
    * @return boolean
    */
-  private static boolean hasProgramYearSupplementalProductiveUnits(Scenario scenario, boolean checkCRAOnly) {
+  private static boolean hasProgramYearSupplementalProductiveUnits(Scenario scenario, boolean checkReportedOnly) {
     boolean hasSupplementalRecord = false;
     
     if(scenario.getFarmingYear() != null && scenario.getFarmingYear().getFarmingOperations() != null) {
       operationLoop: for(FarmingOperation fo : scenario.getFarmingYear().getFarmingOperations()) {
         
-        if(checkCRAOnly) {
+        if(checkReportedOnly) {
           
           for(ProductiveUnitCapacity puc : fo.getProductiveUnitCapacities()) {
             
@@ -228,31 +227,31 @@ public final class ScenarioUtils {
   }
   
   public static boolean hasProgramYearIncomeExpenses(Scenario scenario) {
-    boolean hasSupplementalIncomeExpenses = false;
+    boolean hasIncomeOrExpenses = false;
     
     if(scenario.getFarmingYear() != null && scenario.getFarmingYear().getFarmingOperations() != null) {
       for(FarmingOperation fo : scenario.getFarmingYear().getFarmingOperations()) {
         
-        hasSupplementalIncomeExpenses = fo.getIncomeExpenses() != null && !fo.getIncomeExpenses().isEmpty();
-        if(hasSupplementalIncomeExpenses) {
+        hasIncomeOrExpenses = fo.getIncomeExpenses() != null && !fo.getIncomeExpenses().isEmpty();
+        if(hasIncomeOrExpenses) {
           break;
         }
       }
     }
-    return hasSupplementalIncomeExpenses;
+    return hasIncomeOrExpenses;
   }
 
   /**
    * @param inventoryItem inventoryItem
-   * @param checkCRAOnly If true, adjustments don't count. Only CRA data counts.
+   * @param checkReportedOnly If true, adjustments don't count. Only reported data counts (not adjustments).
    * @return true if the InventoryItem has values that count as Supplemental Data
    */
-  public static boolean hasSupplemental(InventoryItem inventoryItem, boolean checkCRAOnly) {
+  public static boolean hasSupplemental(InventoryItem inventoryItem, boolean checkReportedOnly) {
     boolean hasValues = false;
     if(inventoryItem instanceof CropItem) {
       CropItem cropItem = (CropItem) inventoryItem;
       
-      if(checkCRAOnly) {
+      if(checkReportedOnly) {
         hasValues = cropItem.getReportedQuantityProduced() != null ||
             cropItem.getReportedQuantityEnd() != null ||
             cropItem.getReportedPriceEnd() != null ||
@@ -269,7 +268,7 @@ public final class ScenarioUtils {
     } else if(inventoryItem instanceof LivestockItem) {
       LivestockItem livestockItem = (LivestockItem) inventoryItem;
       
-      if(checkCRAOnly) {
+      if(checkReportedOnly) {
         hasValues = livestockItem.getReportedQuantityEnd() != null ||
             livestockItem.getReportedPriceEnd() != null;
       } else {
@@ -279,7 +278,7 @@ public final class ScenarioUtils {
       
     } else if(inventoryItem.isAccrual()) {
       
-      if(checkCRAOnly) {
+      if(checkReportedOnly) {
         hasValues = inventoryItem.getReportedEndOfYearAmount() != null;
       } else {
         hasValues = inventoryItem.getTotalEndOfYearAmount() != null;
@@ -856,13 +855,17 @@ public final class ScenarioUtils {
     return getConsolidatedIncomeExpense(scenario, getExpenses, null);
   }
   
+  public static Map<Integer, IncomeExpense> getConsolidatedIncomeExpense(Scenario scenario, boolean getExpenses, String commodityTypeCode) {
+    return getConsolidatedIncomeExpense(scenario, getExpenses, commodityTypeCode, scenario.getYear());
+  }
+  
   /**
    * @param getExpenses If true, get expenses, else get incomes.
    * @param commodityTypeCode Optional. If specified only return those with matching type.
    */
-  public static Map<Integer, IncomeExpense> getConsolidatedIncomeExpense(Scenario scenario, boolean getExpenses, String commodityTypeCode) {
+  public static Map<Integer, IncomeExpense> getConsolidatedIncomeExpense(Scenario scenario, boolean getExpenses, String commodityTypeCode, int year) {
     Map<Integer, IncomeExpense> incMap = new HashMap<>();
-    for (ReferenceScenario programYearScenario : scenario.getReferenceScenariosByYear(scenario.getYear())) {
+    for (ReferenceScenario programYearScenario : scenario.getReferenceScenariosByYear(year)) {
       for(FarmingOperation fo : programYearScenario.getFarmingYear().getFarmingOperations()) {
         if (fo.getIncomeExpenses() == null) {
           continue;
@@ -1035,34 +1038,31 @@ public final class ScenarioUtils {
     
     return reportedIncomes;
   }
-  
-  
-  /**
-   * Check if the program year has any productive units with the fruit/veg type APPLE.
-   */
-  public static boolean hasAppleInventory(Scenario scenario) {
-    boolean hasApples = false;
+
+  public static boolean hasInventoryOfFruitVegType(Scenario scenario, String fruitVegTypeCode) {
+    boolean hasType = false;
     
     if(scenario.getFarmingYear() != null && scenario.getFarmingYear().getFarmingOperations() != null) {
       operationLoop: for(FarmingOperation fo : scenario.getFarmingYear().getFarmingOperations()) {
         
         for(CropItem cropItem : fo.getCropItems()) {
           
-          if(FruitVegTypeCodes.APPLE.equals(cropItem.getFruitVegTypeCode())) {
-            hasApples = (cropItem.getTotalQuantityProduced() != null && cropItem.getTotalQuantityProduced() > 0)
+          if(fruitVegTypeCode.equals(cropItem.getFruitVegTypeCode())) {
+            hasType = (cropItem.getTotalQuantityProduced() != null && cropItem.getTotalQuantityProduced() > 0)
                 || (cropItem.getTotalQuantityStart() != null && cropItem.getTotalQuantityStart() > 0)
                 || (cropItem.getTotalQuantityEnd() != null && cropItem.getTotalQuantityEnd() > 0);
             
-            if(hasApples) {
+            if(hasType) {
               break operationLoop;
             }
           }
         }
       }
     }
-    return hasApples;
+    return hasType;
   }
-  
+
+
   /**
    * Check if the program year has any productive units with the passed in structure group code.
    */
@@ -1378,6 +1378,18 @@ public final class ScenarioUtils {
         .orElse(null);
     return scenarioMetaData;
   }
+  
+  
+  public static ScenarioMetaData findScenarioById(List<ScenarioMetaData> programYearMetadata,
+      Integer scenarioId) {
+    
+    ScenarioMetaData scenarioMetaData = programYearMetadata
+        .stream()
+        .filter(y -> y.getScenarioId().equals(scenarioId))
+        .max(Comparator.comparing(ScenarioMetaData::getScenarioNumber))
+        .orElse(null);
+    return scenarioMetaData;
+  }
 
 
   public static ScenarioMetaData findNolScenario(List<ScenarioMetaData> programYearMetadata, Integer programYear) {
@@ -1442,14 +1454,46 @@ public final class ScenarioUtils {
         .collect(Collectors.toList());
     return scenarioMetaDataList;
   }
+
+  public static ScenarioMetaData findLatestScenarioByChefSubmissionGuid(List<ScenarioMetaData> programYearMetadata,
+      Integer programYear, String categoryCode, String chefSubmissionGuid) {
+    
+    ScenarioMetaData scenarioMetaData = programYearMetadata
+        .stream()
+        .filter(y -> y.getProgramYear().equals(programYear)
+            && y.categoryIsOneOf(categoryCode)
+            && chefSubmissionGuid.equals(y.getChefsFormSubmissionGuid()))
+        .max(Comparator.comparing(ScenarioMetaData::getScenarioNumber))
+        .orElse(null);
+    return scenarioMetaData;
+  }
   
-  public static List<ScenarioMetaData> findCompletedFifoScenarios(List<ScenarioMetaData> programYearMetadata, Integer programYear) {
+  public static List<ScenarioMetaData> findCompletedTriageScenarios(List<ScenarioMetaData> programYearMetadata, Integer programYear) {
     List<ScenarioMetaData> scenarioMetaDataList = programYearMetadata.stream()
         .filter(y -> y.getProgramYear().equals(programYear)
-            && y.categoryIsOneOf(FIFO)
-            && y.typeIsOneOf(FIFO)
+            && y.categoryIsOneOf(TRIAGE)
+            && y.typeIsOneOf(TRIAGE)
             && y.stateIsOneOf(COMPLETED))
         .collect(Collectors.toList());
     return scenarioMetaDataList;
+  }
+  
+  public static List<ScenarioMetaData> findCombinedFarmScenarios(List<ScenarioMetaData> programYearMetadata, Integer programYear) {
+    List<ScenarioMetaData> scenarioMetaDataList = programYearMetadata.stream()
+        .filter(y -> y.getProgramYear().equals(programYear)
+            && y.getCombinedFarmNumber() != null)
+        .collect(Collectors.toList());
+    return scenarioMetaDataList;
+  }
+
+  public static ScenarioMetaData findLatestEnrolmentNoticeWorkflowScenario(List<ScenarioMetaData> programYearMetadata, Integer programYear) {
+    ScenarioMetaData scenarioMetaData = programYearMetadata.stream()
+        .filter(y -> y.getProgramYear().equals(programYear)
+            && y.categoryIsOneOf(ENROLMENT_NOTICE_WORKFLOW)
+            && y.getScenarioTypeCode().equals(ScenarioTypeCodes.USER)
+            && y.stateIsOneOf(IN_PROGRESS, ENROLMENT_NOTICE_COMPLETE))
+        .max(Comparator.comparing(ScenarioMetaData::getScenarioNumber))
+        .orElse(null);
+    return scenarioMetaData;
   }
 }

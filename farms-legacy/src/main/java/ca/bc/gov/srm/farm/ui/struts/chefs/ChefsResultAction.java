@@ -13,10 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.bc.gov.srm.farm.chefs.ChefsConfigurationUtil;
 import ca.bc.gov.srm.farm.chefs.ChefsConstants;
-import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
-import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
-import ca.bc.gov.srm.farm.configuration.ConfigurationUtility;
+import ca.bc.gov.srm.farm.crm.CrmConfigurationUtil;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmission;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.service.ChefsFormSubmissionService;
@@ -31,10 +29,6 @@ import ca.bc.gov.srm.farm.util.JsonUtils;
 public class ChefsResultAction extends SecureAction {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
-  private ConfigurationUtility configUtil = ConfigurationUtility.getInstance();
-  private static final String CRM_TASK_URL_FORMAT = "%s/main.aspx?appid=%s&pagetype=entityrecord&etn=%s&id=%s";
-  private static final String VSI_NOLTASK = "vsi_noltask";
-  private static final String VSI_VALIDATIONERRORTASK = "vsi_validationerrortask";
 
   @Override
   protected ActionForward doExecute(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse response)
@@ -45,23 +39,24 @@ public class ChefsResultAction extends SecureAction {
     String submissionGuid = form.getSubmissionGuid();
 
     ChefsFormSubmissionService chefsFormSubmissionService = ServiceFactory.getChefsFormSubmissionService();
+    CrmConfigurationUtil crmConfig = CrmConfigurationUtil.getInstance();
+    
     ChefsSubmission submission = chefsFormSubmissionService.getSubmissionByGuid(submissionGuid);
 
-    String mainTask = submission.getMainTaskGuid();
-    String validationTask = submission.getValidationTaskGuid();
+    String mainTaskGuid = submission.getMainTaskGuid();
+    String validationTaskGuid = submission.getValidationTaskGuid();
 
     String mainTaskUrl = null;
-    if (mainTask != null && submission.getFormTypeCode().equals(ChefsFormTypeCodes.NOL)) {
-      mainTaskUrl = String.format(CRM_TASK_URL_FORMAT, configUtil.getValue(ConfigurationKeys.CRM_DYNAMICS_URL),
-          configUtil.getValue(ConfigurationKeys.CRM_APP_ID), VSI_NOLTASK, mainTask);
-      form.setMainTaskUrl(mainTaskUrl);
+    if (mainTaskGuid != null) {
+      mainTaskUrl = crmConfig.getMainTaskAppUrl(submission.getFormTypeCode(), mainTaskGuid);
     }
+    form.setMainTaskUrl(mainTaskUrl);
+    
     String validationTaskUrl = null;
-    if (validationTask != null) {
-      validationTaskUrl = String.format(CRM_TASK_URL_FORMAT, configUtil.getValue(ConfigurationKeys.CRM_DYNAMICS_URL),
-          configUtil.getValue(ConfigurationKeys.CRM_APP_ID), VSI_VALIDATIONERRORTASK, validationTask);
-      form.setValidationTaskUrl(validationTaskUrl);
+    if (validationTaskGuid != null) {
+      validationTaskUrl = crmConfig.getValidationErrorTaskAppUrl(validationTaskGuid);
     }
+    form.setValidationTaskUrl(validationTaskUrl);
 
     String userFormType = chefsFormSubmissionService.getUserFormType(submission);
 
