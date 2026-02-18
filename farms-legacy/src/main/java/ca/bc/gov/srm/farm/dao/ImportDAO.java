@@ -27,7 +27,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class ImportDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_WEBAPP_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WEBAPP_PKG";
 
   private static final String GET_PROC = "GET_IMPORT_VERSION";
 

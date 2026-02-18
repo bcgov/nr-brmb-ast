@@ -26,7 +26,7 @@ import java.sql.SQLException;
 public class ClaimHistoryDAO extends OracleDAO {
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_WEBAPP_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WEBAPP_PKG";
 
   /** CLAIM_PROC. */
   private static final String CLAIM_PROC = "get_ref_year_claim";

@@ -38,7 +38,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
 public class ListDAO extends OracleDAO {
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_WEBAPP_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WEBAPP_PKG";
 
   /**
    * @param   transaction  transaction

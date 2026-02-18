@@ -25,7 +25,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class CobDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_WEBAPP_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WEBAPP_PKG";
 
   private static final String INSERT_PROC = "INSERT_COB";
   

@@ -32,7 +32,7 @@ import ca.bc.gov.srm.farm.ui.domain.CalculatorInboxItem;
 public class CalculatorViewDAO extends OracleDAO {
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_WEBAPP_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WEBAPP_PKG";
 
   private static final String READ_INBOX_PROC = "READ_INBOX";
   

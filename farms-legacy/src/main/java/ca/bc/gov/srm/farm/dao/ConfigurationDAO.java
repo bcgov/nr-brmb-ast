@@ -26,7 +26,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
 public class ConfigurationDAO extends OracleDAO {
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_WEBAPP_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WEBAPP_PKG";
   
   private static final String GET_CONFIGURATION_PARAMETERS_PROC = "GET_CONFIGURATION_PARAMETERS";
   

@@ -35,7 +35,7 @@ import java.util.List;
 public class SubscriptionDAO extends OracleDAO {
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_WEBAPP_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WEBAPP_PKG";
 
   /** USERS_PROC. */
   private static final String USERS_PROC = "GET_AUTHORIZED_USERS";
