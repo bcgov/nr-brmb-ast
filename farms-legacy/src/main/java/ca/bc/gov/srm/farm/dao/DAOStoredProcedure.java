@@ -72,7 +72,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     final int paramCount, final boolean returnsValue) throws SQLException {
 
     if (returnsValue) {
-      init(connection, procName, paramCount, oracle.jdbc.OracleTypes.CURSOR);
+      init(connection, procName, paramCount, Types.REF_CURSOR);
     } else {
       init(connection, procName, paramCount, NO_RETURN_TYPE);
     }
