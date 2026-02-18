@@ -36,8 +36,6 @@ import ca.bc.gov.srm.farm.exception.InvalidRevisionCountException;
 import ca.bc.gov.srm.farm.exception.LineItemNotFoundException;
 import ca.bc.gov.srm.farm.transaction.Transaction;
 import ca.bc.gov.srm.farm.util.DataParseUtils;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
-import oracle.jdbc.OracleTypes;
 import oracle.jdbc.driver.OracleConnection;
 
 
@@ -1066,7 +1064,7 @@ abstract class OracleDAO {
     CallableStatement result = null;
     String sql = createPrepareCallSql(procedureName, parameterCount, true);
     result = connection.prepareCall(sql);
-    result.registerOutParameter(1, OracleTypes.CURSOR);
+    result.registerOutParameter(1, Types.REF_CURSOR);
 
     return result;
   }

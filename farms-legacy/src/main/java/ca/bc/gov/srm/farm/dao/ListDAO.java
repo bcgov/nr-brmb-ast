@@ -330,6 +330,8 @@ public class ListDAO extends OracleDAO {
     final int paramCount = 0;
 
     try {
+      connection.setAutoCommit(false);
+
       cstmt = prepareFunction(connection, qualifiedProcName, paramCount);
       cstmt.execute();
       resultSet = (ResultSet) cstmt.getObject(1);
@@ -340,10 +342,21 @@ public class ListDAO extends OracleDAO {
         rows.add(new CodeListView(code, desc));
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       handleException(e);
     } finally {
       close(resultSet, cstmt);
+      try {
+        connection.setAutoCommit(true);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return rows;
