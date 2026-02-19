@@ -54,7 +54,7 @@ begin
                    )
                end) combined_farm_number,
                cs.chef_form_type_code,
-               sc.verified_user_id,
+               sc.verifier_user_id,
                u.email_address verified_by_email,
                u.account_name verifier_account_name
         from farms.farm_agristability_scenarios sc
@@ -66,7 +66,7 @@ begin
         -- this join is never going to result in multiple rows
         left join farms.farm_reference_scenarios refs on refs.agristability_scenario_id = sc.agristability_scenario_id
         left outer join farms.farm_chef_submissions cs on cs.chef_submission_id = sc.chef_submission_id
-        left outer join farms.farm_users u on u.user_id = sc.verified_user_id
+        left outer join farms.farm_users u on u.user_id = sc.verifier_user_id
         where sc.agristability_scenario_id = any(sc_ids);
     return cur;
 end;
