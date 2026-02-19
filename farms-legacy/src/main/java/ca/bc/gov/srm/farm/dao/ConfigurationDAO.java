@@ -43,23 +43,39 @@ public class ConfigurationDAO extends OracleDAO {
     Connection connection = getConnection(transaction);
     Map<String, String> parameters = new HashMap<>();
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + GET_CONFIGURATION_PARAMETERS_PROC, GET_CONFIGURATION_PARAMETERS_PARAM, true); ) {
+    try {
+      connection.setAutoCommit(false);
 
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + GET_CONFIGURATION_PARAMETERS_PROC, GET_CONFIGURATION_PARAMETERS_PARAM, true); ) {
 
-      try(ResultSet rs = proc.getResultSet(); ) {
+        proc.execute();
 
-        while (rs.next()) {
-          String name = getString(rs, "parameter_name");
-          String value = getString(rs, "parameter_value");
-          parameters.put(name, value);
+        try(ResultSet rs = proc.getResultSet(); ) {
+
+          while (rs.next()) {
+            String name = getString(rs, "parameter_name");
+            String value = getString(rs, "parameter_value");
+            parameters.put(name, value);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(true);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return parameters;
