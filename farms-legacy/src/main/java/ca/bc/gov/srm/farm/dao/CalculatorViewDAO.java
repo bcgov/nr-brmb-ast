@@ -135,12 +135,13 @@ public class CalculatorViewDAO extends OracleDAO {
       final List<String> scenarioStateCodes)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<CalculatorInboxItem> inboxItems = null;
 
     try {
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_INBOX_PROC, READ_INBOX_PARAM, true);
@@ -149,7 +150,7 @@ public class CalculatorViewDAO extends OracleDAO {
 
       int param = 1;
       proc.setString(param++, searchType);
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.setString(param++, userGuid);
       proc.setArray(param++, oracleArray);
       proc.execute();
@@ -174,11 +175,22 @@ public class CalculatorViewDAO extends OracleDAO {
         inboxItems.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(true);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return inboxItems;

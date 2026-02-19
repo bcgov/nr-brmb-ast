@@ -1965,7 +1965,7 @@ abstract class OracleDAO {
   }
 
   protected Array createStringOracleArray(Connection connection, List<String> values) throws SQLException {
-    return ((OracleConnection)connection).createOracleArray(CODE_COLLECTION_TYPE_NAME, toArray(values));
+    return connection.createArrayOf("varchar", toArray(values));
   }
   
   protected Array createNumbersOracleArray(Connection connection, List<Integer> values) throws SQLException {
