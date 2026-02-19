@@ -396,12 +396,14 @@ public class ListDAO extends OracleDAO {
     throws DataAccessException {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_LINE_ITEMS";
     List<LineItemListView> rows = new ArrayList<>();
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 2;
 
     try {
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, qualifiedProcName, paramCount, true);
 
       int param = 1;
@@ -421,10 +423,21 @@ public class ListDAO extends OracleDAO {
         rows.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(true);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return rows;
