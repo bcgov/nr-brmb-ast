@@ -1590,15 +1590,18 @@ public class DAOStoredProcedure implements AutoCloseable {
   protected final String getPrepareCallSql() {
     StringBuffer result = new StringBuffer();
 
-    result.append("{");
-
     if (returnsValue()) {
+      result.append("{");
       result.append("? = ");
     }
 
     result.append("call " + getProcName() + "(");
     result.append(getParamListString());
-    result.append(") }");
+    result.append(")");
+
+    if (returnsValue()) {
+      result.append("}");
+    }
 
     return result.toString();
   }
