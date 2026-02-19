@@ -71,7 +71,7 @@ public class ReadDAO {
   private static final String NUM_COLLECTION_TYPE_NAME = "FARM_ID_TBL";
   private static final String CODE_COLLECTION_TYPE_NAME = "FARM_CD_TBL";
 
-  private static final String PACKAGE_NAME = "FARM_READ_PKG";
+  private static final String PACKAGE_NAME = "FARMS_READ_PKG";
 
   private static final String READ_OPERATION_PROC = "READ_PYV_OP";
   private static final int READ_OPERATION_PARAM = 1;
