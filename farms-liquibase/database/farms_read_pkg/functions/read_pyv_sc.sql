@@ -36,17 +36,17 @@ begin
                cs.chef_submission_id,
                cs.main_task_guid crm_task_guid,
                cs.chef_submission_guid,
-               case when cs.combined_farm_number is not null then 'Y' else 'N' end is_in_combined_farm_indicator,
+               case when sc.combined_farm_number is not null then 'Y' else 'N' end is_in_combined_farm_ind,
                (case
                    when sc.scenario_class_code = 'USER' and sc.scenario_state_code in ('COMP', 'AMEND', 'EN_COMP', 'PREVERIFID') then sc.combined_farm_number
                    when sc.scenario_class_code = 'USER' and sc.scenario_state_code = 'IP' then (
                        select min(s2.combined_farm_number)
-                       from farms.farm_agri_scenarios_vw m
-                       join farms.farm_program_year_versions pyv on pyv.program_year_version_id = m.program_year_version_id
-                       join farms.farm_agri_scenarios_vw m2 on m2.program_year_id = m.program_year_id
-                       join farms.farm_agristability_scenarios s2 on s2.agristability_scenario_id = m2.agristability_scenario_id
-                       join farms.farm_program_year_versions pyv2 on pyv2.program_year_version_id = m2.program_year_version_id
-                       where m.agristability_scenario_id = sc.agristability_scenario_id
+                       from farms.farm_scenarios_vw sv
+                       join farms.farm_program_year_versions pyv on pyv.program_year_version_id = sv.program_year_version_id
+                       join farms.farm_scenarios_vw sv2 on sv2.program_year_id = sv.program_year_id
+                       join farms.farm_agristability_scenarios s2 on s2.agristability_scenario_id = sv2.agristability_scenario_id
+                       join farms.farm_program_year_versions pyv2 on pyv2.program_year_version_id = sv2.program_year_version_id
+                       where sv.agristability_scenario_id = sc.agristability_scenario_id
                        and s2.scenario_class_code = 'USER'
                        and s2.scenario_state_code = 'IP'
                        and pyv2.municipality_code = pyv.municipality_code
