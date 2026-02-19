@@ -134,6 +134,8 @@ public class SubscriptionDAO extends OracleDAO {
     final int paramCount = 1;
 
     try {
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int param = 1;
@@ -166,11 +168,22 @@ public class SubscriptionDAO extends OracleDAO {
         items.add(ac);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(true);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return items;
