@@ -576,6 +576,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_PROGRAM_YEAR_VER_PROC, READ_PROGRAM_YEAR_VER_PARAM, true);
 
@@ -590,9 +592,14 @@ public class ReadDAO {
         buildPyv(rs, sc);
       }
 
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
 
