@@ -2869,6 +2869,6 @@ public class ReadDAO {
   
   @SuppressWarnings("resource")
   protected Array createNumbersOracleArray(Integer[] values) throws SQLException {
-    return getOracleConnection().createOracleArray(NUM_COLLECTION_TYPE_NAME, values);
+    return conn.createArrayOf("numeric", values);
   }
 }
