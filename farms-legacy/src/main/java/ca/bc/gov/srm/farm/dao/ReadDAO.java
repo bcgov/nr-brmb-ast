@@ -517,12 +517,14 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_PROGRAM_YEAR_ID_PROC, READ_PROGRAM_YEAR_ID_PARAM, true);
 
       int c = 1;
       proc.setInt(c++, pin);
-      proc.setInt(c++, year);
+      proc.setShort(c++, year == null ? null : year.shortValue());
       proc.setInt(c++, scnum);
       proc.setString(c++, pMode);
       proc.execute();
@@ -553,10 +555,15 @@ public class ReadDAO {
         return l.toArray(new int[l.size()][]);
       }
 
+      conn.commit();
       return null;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
   
