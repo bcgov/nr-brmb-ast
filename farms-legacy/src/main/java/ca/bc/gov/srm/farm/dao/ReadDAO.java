@@ -192,6 +192,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_CLIENT_PROC, READ_CLIENT_PARAM, true);
 
@@ -269,10 +271,15 @@ public class ReadDAO {
         throw new SQLException("Too many Agristability Clients found.");
       }
 
+      conn.commit();
       return ac;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
 
@@ -294,6 +301,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_PROGRAM_YEAR_META_PROC, READ_PROGRAM_YEAR_META_PARAM, true);
 
@@ -346,10 +355,15 @@ public class ReadDAO {
         l.add(pyv);
       }
 
+      conn.commit();
       return l;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
 
