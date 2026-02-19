@@ -308,7 +308,7 @@ public class ReadDAO {
 
       int c = 1;
       proc.setInt(c++, pin);
-      proc.setInt(c++, year);
+      proc.setShort(c++, year == null ? null : year.shortValue());
       proc.execute();
 
       rs = proc.getResultSet();
