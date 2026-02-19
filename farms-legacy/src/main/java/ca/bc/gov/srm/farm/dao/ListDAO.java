@@ -507,12 +507,14 @@ public class ListDAO extends OracleDAO {
       throws DataAccessException {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_SECTOR_DETAIL_CODES";
     List<SectorDetailCodeListView> items = new ArrayList<>();
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 0;
     
     try {
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, qualifiedProcName, paramCount, true);
       
       proc.execute();
@@ -528,11 +530,22 @@ public class ListDAO extends OracleDAO {
         
         items.add(item);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(true);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     
