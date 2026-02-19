@@ -1137,6 +1137,8 @@ public class ReadDAO {
     ResultSet rs = null;
     
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_STATE_AUDITS_PROC,
           READ_STATE_AUDITS_PARAM, true);
       
@@ -1163,11 +1165,16 @@ public class ReadDAO {
         
         audits.add(ssa);
       }
-      
+
+      conn.commit();
       return audits;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       
       close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
   
@@ -1188,6 +1195,8 @@ public class ReadDAO {
     ResultSet rs = null;
     
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(
       		conn, 
       		PACKAGE_NAME + "." + READ_SC_LOGS_PROC,
@@ -1209,8 +1218,14 @@ public class ReadDAO {
         
         logs.add(log);
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(true);
     }
     
     return logs;
