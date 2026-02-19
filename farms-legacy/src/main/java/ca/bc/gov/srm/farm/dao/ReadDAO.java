@@ -825,6 +825,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_SCENARIO_PROC, READ_SCENARIO_PARAM, true);
 
@@ -895,8 +897,13 @@ public class ReadDAO {
         sc.setIsInCombinedFarmInd(false);
       }
 
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
 
