@@ -48,7 +48,6 @@ import ca.bc.gov.srm.farm.domain.reasonability.revenue.NurseryRevenueRiskSubTest
 import ca.bc.gov.srm.farm.domain.reasonability.revenue.RevenueRiskTestResult;
 import ca.bc.gov.srm.farm.reasonability.ReasonabilityTestResultMessage;
 import ca.bc.gov.srm.farm.util.DataParseUtils;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
 
 /**
  * @author awilkinson
@@ -125,12 +124,7 @@ public class ReasonabilityReadDAO {
    */
   public ReasonabilityReadDAO(final Connection c) {
     neverUse = c;
-    if (c instanceof WrapperConnection) {
-      WrapperConnection wc = (WrapperConnection) c;
-      this.conn = wc.getWrappedConnection();
-    } else {
-      this.conn = c;
-    }
+    this.conn = c;
   }
 
   private String getString(final ResultSet rs, final int i) throws SQLException {

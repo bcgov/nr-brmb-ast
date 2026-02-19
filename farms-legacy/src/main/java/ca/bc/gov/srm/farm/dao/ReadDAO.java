@@ -61,7 +61,6 @@ import ca.bc.gov.srm.farm.domain.codes.InventoryClassCodes;
 import ca.bc.gov.srm.farm.domain.enrolment.Enrolment;
 import ca.bc.gov.srm.farm.domain.enrolment.EnwEnrolment;
 import ca.bc.gov.srm.farm.util.DataParseUtils;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
 import oracle.jdbc.driver.OracleConnection;
 
 /**
@@ -171,12 +170,7 @@ public class ReadDAO {
    */
   public ReadDAO(final Connection c) {
     neverUse = c;
-    if (c instanceof WrapperConnection) {
-      WrapperConnection wc = (WrapperConnection) c;
-      this.conn = wc.getWrappedConnection();
-    } else {
-      this.conn = c;
-    }
+    this.conn = c;
   }
 
   /*

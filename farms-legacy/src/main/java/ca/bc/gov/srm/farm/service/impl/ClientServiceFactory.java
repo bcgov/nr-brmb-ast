@@ -67,8 +67,6 @@ import ca.bc.gov.srm.farm.service.PreVerificationService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.util.ReferenceScenarioComparator;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
-import oracle.jdbc.OracleConnection;
 
 /**
  * @author dzwiers
@@ -80,20 +78,14 @@ public final class ClientServiceFactory implements ClientService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ClientServiceFactory.class);
 
-  private ClientServiceFactory(final OracleConnection pConnection) {
+  private ClientServiceFactory(final Connection pConnection) {
     dao = new ReadDAO(pConnection);
     reasonabilityDAO = new ReasonabilityReadDAO(pConnection);
   }
 
   @SuppressWarnings("resource")
   public static ClientService getInstance(final Connection pConnection) throws ServiceException {
-    OracleConnection connection = null;
-    try {
-      connection = pConnection.unwrap(OracleConnection.class);
-    } catch (SQLException ex) {
-      throw new ServiceException(ex);
-    }
-    return new ClientServiceFactory(connection);
+    return new ClientServiceFactory(pConnection);
   }
   
   /**
