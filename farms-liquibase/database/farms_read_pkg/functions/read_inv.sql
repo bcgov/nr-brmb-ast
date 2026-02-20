@@ -78,11 +78,11 @@ begin
                iid.commodity_type_code,
                ctc.description commodity_type_code_description,
                iid.fruit_veg_type_code,
-               fvtc.description fruit_vegetable_type_code_description,
+               fvtc.description fruit_veg_type_code_description,
                iid.line_item,
                li.description line_item_description,
                iid.multi_stage_commdty_code,
-               mscc.description multiple_stage_commodity_code_description,
+               mscc.description multi_stage_commdty_code_desc,
                ffvtd.revenue_variance_limit,
                cuc.crop_unit_code,
                cuc.description crop_unit_description,
@@ -98,7 +98,7 @@ begin
                a.quantity_produced cra_quantity_produced,
                a.on_farm_acres cra_on_farm_acres,
                a.unseedable_acres cra_unseedable_acres,
-               a.accept_producer_price_ind cra_accept_producer_price_indicator,
+               a.accept_producer_price_ind cra_accept_producer_price_ind,
                a.aarm_reference_p1_price cra_aarm_reference_p1_price,
                a.aarm_reference_p2_price cra_aarm_reference_p2_price,
                a.revision_count cra_revision_count,
@@ -113,7 +113,7 @@ begin
                b.quantity_produced adj_quantity_produced,
                b.on_farm_acres adj_on_farm_acres,
                b.unseedable_acres adj_unseedable_acres,
-               b.accept_producer_price_ind adj_accept_producer_price_indicator,
+               b.accept_producer_price_ind adj_accept_producer_price_ind,
                b.aarm_reference_p1_price adj_aarm_reference_p1_price,
                b.aarm_reference_p2_price adj_aarm_reference_p2_price,
                b.agristability_scenario_id adj_agristability_scenario_id,
@@ -124,7 +124,7 @@ begin
         join farms.farm_agristabilty_cmmdty_xref x on (a.agristabilty_cmmdty_xref_id = x.agristabilty_cmmdty_xref_id
                                                     or b.agristabilty_cmmdty_xref_id = x.agristabilty_cmmdty_xref_id)
         join farms.farm_inventory_item_codes iic on x.inventory_item_code = iic.inventory_item_code
-        join farms.farm_inventory_class_codes icc on iic.inventory_class_code = icc.inventory_class_code
+        join farms.farm_inventory_class_codes icc on x.inventory_class_code = icc.inventory_class_code
         join farms.farm_farming_operations fo on fo.farming_operation_id = coalesce(a.farming_operation_id, b.farming_operation_id)
         join farms.farm_program_year_versions pyv on pyv.program_year_version_id = fo.program_year_version_id
         join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
