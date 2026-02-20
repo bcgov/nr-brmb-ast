@@ -951,24 +951,35 @@ public class ReadDAO {
     final int numberOfNotes = 3;
     String verificationNotes[] = new String[numberOfNotes];
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-        PACKAGE_NAME + "." + READ_VERIFICATION_NOTES, READ_VERIFICATION_NOTES_PARAM, true);) {
+    try {
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setInt(c, pyId);
-      proc.execute();
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+          PACKAGE_NAME + "." + READ_VERIFICATION_NOTES, READ_VERIFICATION_NOTES_PARAM, true);) {
 
-      try(ResultSet rs = proc.getResultSet();) {
+        int c = 1;
+        proc.setInt(c, pyId);
+        proc.execute();
 
-        if (rs.next()) {
-          c = 1;
-          verificationNotes[c-1] = getString(rs, c++);
-          verificationNotes[c-1] = getString(rs, c++);
-          verificationNotes[c-1] = getString(rs, c++);
+        try(ResultSet rs = proc.getResultSet();) {
+
+          if (rs.next()) {
+            c = 1;
+            verificationNotes[c-1] = getString(rs, c++);
+            verificationNotes[c-1] = getString(rs, c++);
+            verificationNotes[c-1] = getString(rs, c++);
+          }
         }
+
       }
 
+      conn.commit();
       return verificationNotes;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
   }
 
