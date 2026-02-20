@@ -2802,6 +2802,8 @@ public class ReadDAO {
     EnwEnrolment e = null;
     
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_ENW_ENROLMENT_PROC, READ_ENW_ENROLMENT_PARAM, true);
       
@@ -2866,10 +2868,15 @@ public class ReadDAO {
         e.setEnrolmentCalculationTypeCode(getString(rs, c++));
         e.setRevisionCount(getInteger(rs, c++));
       }
-      
+
+      conn.commit();
       return e;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
 
