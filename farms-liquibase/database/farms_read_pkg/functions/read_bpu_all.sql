@@ -1,7 +1,7 @@
 create or replace function farms_read_pkg.read_bpu_all(
     in in_sc_id farms.farm_agristability_scenarios.agristability_scenario_id%type,
-    in inv_cds numeric[],
-    in str_cds numeric[],
+    in inv_cds varchar[],
+    in str_cds varchar[],
     in in_base_year farms.farm_program_years.year%type
 )
 returns refcursor

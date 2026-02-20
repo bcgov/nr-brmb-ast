@@ -2488,6 +2488,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       Array oracleArrayInventoryCodes = createStringOracleArray(pInvCodes);
       Array oracleArrayStructureGroupCodes = createStringOracleArray(pStructCodes);
       
@@ -2499,7 +2501,7 @@ public class ReadDAO {
       proc.setArray(c++, oracleArrayInventoryCodes);
       proc.setArray(c++, oracleArrayStructureGroupCodes);
 
-      proc.setInt(c++, programYear);
+      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
       proc.execute();
 
       rs = proc.getResultSet();
@@ -2519,10 +2521,15 @@ public class ReadDAO {
       if(result[0] != null) {
         addZeroValueCodes(result[0], programYear);
       }
-      
+
+      conn.commit();
       return result;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
   
@@ -2956,7 +2963,7 @@ public class ReadDAO {
 
   @SuppressWarnings("resource")
   protected Array createStringOracleArray(List<String> values) throws SQLException {
-    return getOracleConnection().createOracleArray(CODE_COLLECTION_TYPE_NAME, values.toArray());
+    return conn.createArrayOf("varchar", values.toArray());
   }
   
   @SuppressWarnings("resource")
