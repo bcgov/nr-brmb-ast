@@ -781,6 +781,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_PRODUCTION_INSURANCE_PROC, READ_PRODUCTION_INSURANCE_PARAM,
           true);
@@ -813,10 +815,15 @@ public class ReadDAO {
         l.add(op);
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
 
