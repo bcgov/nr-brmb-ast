@@ -2696,6 +2696,8 @@ public class ReadDAO {
     Date cobGenerationDate = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_COB_GEN_DATE_PROC, READ_COB_GEN_DATE_PARAM, true);
 
@@ -2710,9 +2712,14 @@ public class ReadDAO {
         cobGenerationDate = getDate(rs, c++);
       }
 
+      conn.commit();
       return cobGenerationDate;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
   
