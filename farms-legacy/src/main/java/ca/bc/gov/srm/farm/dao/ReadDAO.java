@@ -2913,6 +2913,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_FARM_TYPE_PROC, READ_FARM_TYPE_PARAM, true);
 
@@ -2927,8 +2929,13 @@ public class ReadDAO {
         scenario.setFarmTypeCodeDescription(getString(rs, c++));
       }
 
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
    
