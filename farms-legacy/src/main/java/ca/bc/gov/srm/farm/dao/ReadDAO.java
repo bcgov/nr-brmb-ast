@@ -1390,6 +1390,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_MARGIN_PROC, READ_MARGIN_PARAM, true);
 
@@ -1440,12 +1442,17 @@ public class ReadDAO {
         r.put(opId, m);
       }
 
+      conn.commit();
       if(r.size() > 0) {
         return r;
       }
       return null;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
 
