@@ -1454,6 +1454,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_CROP_UNIT_CONVERSIONS_PROC,
           READ_CROP_UNIT_CONVERSIONS_PARAM, true);
 
@@ -1498,9 +1500,14 @@ public class ReadDAO {
         
       }
 
+      conn.commit();
       return invCropConversions;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
         close(rs, proc);
+        conn.setAutoCommit(true);
     }
   }
   
