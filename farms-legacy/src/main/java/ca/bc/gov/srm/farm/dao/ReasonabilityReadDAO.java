@@ -182,121 +182,165 @@ public class ReasonabilityReadDAO {
     productionTest.setForageTestResults(new ArrayList<ProductionInventoryItemTestResult>());
     productionTest.setForageSeedTestResults(new ArrayList<ProductionInventoryItemTestResult>());
     productionTest.setGrainItemTestResults(new ArrayList<ProductionInventoryItemTestResult>());
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_REASONABILITY_FORAGE_PRODUCTION_TEST_PROC, READ_REASONABILITY_FORAGE_PRODUCTION_TEST_PARAM, true);) {
-    
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.setInt(c++, programYear);
-      proc.execute();
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_REASONABILITY_FORAGE_PRODUCTION_TEST_PROC, READ_REASONABILITY_FORAGE_PRODUCTION_TEST_PARAM, true);) {
       
-      try(ResultSet rs = proc.getResultSet();) {
-        while (rs.next()) {
-          c = 1;
-          ProductionInventoryItemTestResult testRecord = new ProductionInventoryItemTestResult();
-          
-          testRecord.setProductiveCapacityAmount(getDouble(rs, c++));
-          testRecord.setExpectedProductionPerUnit(getDouble(rs,c++));
-          testRecord.setReportedProduction(getDouble(rs, c++));
-          testRecord.setExpectedQuantityProduced(getDouble(rs,c++));
-          testRecord.setVariance(getDouble(rs, c++));
-          testRecord.setPass(getIndicator(rs, c++));
-          testRecord.setInventoryItemCode(getString(rs, c++));
-          testRecord.setInventoryItemCodeDescription(getString(rs, c++));
-          testRecord.setCommodityTypeCode(getString(rs, c++));
-          
-          if (testRecord.getCommodityTypeCode().equals(CommodityTypeCodes.FORAGE)) {
-            productionTest.getForageTestResults().add(testRecord);
-          } else if (testRecord.getCommodityTypeCode().equals(CommodityTypeCodes.FORAGE_SEED)) {
-            productionTest.getForageSeedTestResults().add(testRecord);
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setInt(c++, programYear);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+          while (rs.next()) {
+            c = 1;
+            ProductionInventoryItemTestResult testRecord = new ProductionInventoryItemTestResult();
+            
+            testRecord.setProductiveCapacityAmount(getDouble(rs, c++));
+            testRecord.setExpectedProductionPerUnit(getDouble(rs,c++));
+            testRecord.setReportedProduction(getDouble(rs, c++));
+            testRecord.setExpectedQuantityProduced(getDouble(rs,c++));
+            testRecord.setVariance(getDouble(rs, c++));
+            testRecord.setPass(getIndicator(rs, c++));
+            testRecord.setInventoryItemCode(getString(rs, c++));
+            testRecord.setInventoryItemCodeDescription(getString(rs, c++));
+            testRecord.setCommodityTypeCode(getString(rs, c++));
+            
+            if (testRecord.getCommodityTypeCode().equals(CommodityTypeCodes.FORAGE)) {
+              productionTest.getForageTestResults().add(testRecord);
+            } else if (testRecord.getCommodityTypeCode().equals(CommodityTypeCodes.FORAGE_SEED)) {
+              productionTest.getForageSeedTestResults().add(testRecord);
+            }
           }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_PRODUCTION_FRUIT_VEG_INVENTORY_PROC, READ_PRODUCTION_FRUIT_VEG_INVENTORY_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.setInt(c++, programYear);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-        List<ProductionInventoryItemTestResult> fruitVegInventoryItems = new ArrayList<>();
-        productionTest.setFruitVegInventoryItems(fruitVegInventoryItems);
-        while (rs.next()) {
-          c = 1;
-          ProductionInventoryItemTestResult testRecord = new ProductionInventoryItemTestResult();
-          fruitVegInventoryItems.add(testRecord);
-          
-          testRecord.setProductiveCapacityAmount(getDouble(rs, c++));
-          testRecord.setExpectedProductionPerUnit(getDouble(rs, c++));
-          testRecord.setReportedProduction(getDouble(rs, c++));
-          testRecord.setExpectedQuantityProduced(getDouble(rs,c++));
-          testRecord.setInventoryItemCode(getString(rs, c++));
-          testRecord.setInventoryItemCodeDescription(getString(rs, c++));
-          testRecord.setCropUnitCode(getString(rs, c++));
-          testRecord.setFruitVegTypeCode(getString(rs, c++));
-          testRecord.setFruitVegTypeCodeDescription(getString(rs, c++));
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_PRODUCTION_FRUIT_VEG_INVENTORY_PROC, READ_PRODUCTION_FRUIT_VEG_INVENTORY_PARAM, true);) {
+        
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setInt(c++, programYear);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+          List<ProductionInventoryItemTestResult> fruitVegInventoryItems = new ArrayList<>();
+          productionTest.setFruitVegInventoryItems(fruitVegInventoryItems);
+          while (rs.next()) {
+            c = 1;
+            ProductionInventoryItemTestResult testRecord = new ProductionInventoryItemTestResult();
+            fruitVegInventoryItems.add(testRecord);
+            
+            testRecord.setProductiveCapacityAmount(getDouble(rs, c++));
+            testRecord.setExpectedProductionPerUnit(getDouble(rs, c++));
+            testRecord.setReportedProduction(getDouble(rs, c++));
+            testRecord.setExpectedQuantityProduced(getDouble(rs,c++));
+            testRecord.setInventoryItemCode(getString(rs, c++));
+            testRecord.setInventoryItemCodeDescription(getString(rs, c++));
+            testRecord.setCropUnitCode(getString(rs, c++));
+            testRecord.setFruitVegTypeCode(getString(rs, c++));
+            testRecord.setFruitVegTypeCodeDescription(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_REASONABILITY_FRUIT_VEG_PRODUCTION_TEST_PROC, READ_REASONABILITY_FRUIT_VEG_PRODUCTION_TEST_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-        List<FruitVegProductionResult> fruitVegItemTestResults = new ArrayList<>();
-        productionTest.setFruitVegTestResults(fruitVegItemTestResults);
-        while (rs.next()) {
-          c = 1;
-          FruitVegProductionResult testRecord = new FruitVegProductionResult();
-          fruitVegItemTestResults.add(testRecord);
-          
-          testRecord.setProductiveCapacityAmount(getDouble(rs, c++));
-          testRecord.setReportedProduction(getDouble(rs, c++));
-          testRecord.setExpectedQuantityProduced(getDouble(rs,c++));
-          testRecord.setVariance(getDouble(rs, c++));
-          testRecord.setPass(getIndicator(rs, c++));
-          testRecord.setFruitVegTypeCode(getString(rs, c++));
-          testRecord.setFruitVegTypeCodeDescription(getString(rs, c++));
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_REASONABILITY_FRUIT_VEG_PRODUCTION_TEST_PROC, READ_REASONABILITY_FRUIT_VEG_PRODUCTION_TEST_PARAM, true);) {
+        
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+          List<FruitVegProductionResult> fruitVegItemTestResults = new ArrayList<>();
+          productionTest.setFruitVegTestResults(fruitVegItemTestResults);
+          while (rs.next()) {
+            c = 1;
+            FruitVegProductionResult testRecord = new FruitVegProductionResult();
+            fruitVegItemTestResults.add(testRecord);
+            
+            testRecord.setProductiveCapacityAmount(getDouble(rs, c++));
+            testRecord.setReportedProduction(getDouble(rs, c++));
+            testRecord.setExpectedQuantityProduced(getDouble(rs,c++));
+            testRecord.setVariance(getDouble(rs, c++));
+            testRecord.setPass(getIndicator(rs, c++));
+            testRecord.setFruitVegTypeCode(getString(rs, c++));
+            testRecord.setFruitVegTypeCodeDescription(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-      
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_REASONABILITY_GRAINS_PRODUCTION_TEST_PROC, READ_REASONABILITY_GRAINS_PRODUCTION_TEST_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.setInt(c++, programYear);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-        while (rs.next()) {
-          c = 1;
-          ProductionInventoryItemTestResult testRecord = new ProductionInventoryItemTestResult();
-          productionTest.getGrainItemTestResults().add(testRecord);
-          
-          testRecord.setProductiveCapacityAmount(getDouble(rs, c++));
-          testRecord.setExpectedProductionPerUnit(getDouble(rs,c++));
-          testRecord.setReportedProduction(getDouble(rs, c++));
-          testRecord.setExpectedQuantityProduced(getDouble(rs,c++));
-          testRecord.setVariance(getDouble(rs, c++));
-          testRecord.setPass(getIndicator(rs, c++));
-          testRecord.setInventoryItemCode(getString(rs, c++));
-          testRecord.setInventoryItemCodeDescription(getString(rs, c++));
-          testRecord.setCommodityTypeCode(getString(rs, c++));
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_REASONABILITY_GRAINS_PRODUCTION_TEST_PROC, READ_REASONABILITY_GRAINS_PRODUCTION_TEST_PARAM, true);) {
+        
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setInt(c++, programYear);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+          while (rs.next()) {
+            c = 1;
+            ProductionInventoryItemTestResult testRecord = new ProductionInventoryItemTestResult();
+            productionTest.getGrainItemTestResults().add(testRecord);
+            
+            testRecord.setProductiveCapacityAmount(getDouble(rs, c++));
+            testRecord.setExpectedProductionPerUnit(getDouble(rs,c++));
+            testRecord.setReportedProduction(getDouble(rs, c++));
+            testRecord.setExpectedQuantityProduced(getDouble(rs,c++));
+            testRecord.setVariance(getDouble(rs, c++));
+            testRecord.setPass(getIndicator(rs, c++));
+            testRecord.setInventoryItemCode(getString(rs, c++));
+            testRecord.setInventoryItemCodeDescription(getString(rs, c++));
+            testRecord.setCommodityTypeCode(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
+
     Collections.sort(productionTest.getForageTestResults());
     Collections.sort(productionTest.getForageSeedTestResults());
     Collections.sort(productionTest.getGrainItemTestResults());
@@ -329,93 +373,124 @@ public class ReasonabilityReadDAO {
     
     revenueRiskTestResult.setForageGrainIncomes(new ArrayList<RevenueRiskIncomeTestResult>());
     revenueRiskTestResult.setForageGrainInventory(new ArrayList<RevenueRiskInventoryItem>());
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PROC, READ_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.setInt(c++, programYear);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-      
-        while (rs.next()) {
-          c = 1;
-          RevenueRiskInventoryItem testRecord = new RevenueRiskInventoryItem();
-          revenueRiskTestResult.getForageGrainInventory().add(testRecord);
-          
-          testRecord.setQuantityProduced(getDouble(rs, c++));
-          testRecord.setQuantityStart(getDouble(rs, c++));
-          testRecord.setQuantityEnd(getDouble(rs, c++));
-          testRecord.setQuantityConsumed(getDouble(rs, c++));
-          testRecord.setQuantitySold(getDouble(rs, c++));
-          testRecord.setExpectedRevenue(getDouble(rs, c++));
-          testRecord.setReportedPrice(getDouble(rs, c++));
-          testRecord.setInventoryItemCode(getString(rs, c++));
-          testRecord.setInventoryItemCodeDescription(getString(rs, c++));
-          testRecord.setCropUnitCode(getString(rs, c++));
-          testRecord.setCropUnitCodeDescription(getString(rs, c++));
-          testRecord.setCommodityTypeCode(getString(rs, c++));
-          testRecord.setCommodityTypeCodeDescription(getString(rs, c++));
+
+    try {
+      conn.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PROC, READ_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PARAM, true);) {
+        
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setInt(c++, programYear);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+        
+          while (rs.next()) {
+            c = 1;
+            RevenueRiskInventoryItem testRecord = new RevenueRiskInventoryItem();
+            revenueRiskTestResult.getForageGrainInventory().add(testRecord);
+            
+            testRecord.setQuantityProduced(getDouble(rs, c++));
+            testRecord.setQuantityStart(getDouble(rs, c++));
+            testRecord.setQuantityEnd(getDouble(rs, c++));
+            testRecord.setQuantityConsumed(getDouble(rs, c++));
+            testRecord.setQuantitySold(getDouble(rs, c++));
+            testRecord.setExpectedRevenue(getDouble(rs, c++));
+            testRecord.setReportedPrice(getDouble(rs, c++));
+            testRecord.setInventoryItemCode(getString(rs, c++));
+            testRecord.setInventoryItemCodeDescription(getString(rs, c++));
+            testRecord.setCropUnitCode(getString(rs, c++));
+            testRecord.setCropUnitCodeDescription(getString(rs, c++));
+            testRecord.setCommodityTypeCode(getString(rs, c++));
+            testRecord.setCommodityTypeCodeDescription(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_G_F_FS_INCM_RSLTS_PROC, READ_FARM_RSNBLTY_REV_G_F_FS_INCM_RSLTS_PARAM, true);) {
-    
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.setInt(c++, programYear);
-      proc.setDate(c++, verifiedDate);
-      proc.execute();
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSNBLTY_REV_G_F_FS_INCM_RSLTS_PROC, READ_FARM_RSNBLTY_REV_G_F_FS_INCM_RSLTS_PARAM, true);) {
       
-      try(ResultSet rs = proc.getResultSet();) {
-        while (rs.next()) {
-          c = 1;
-          RevenueRiskIncomeTestResult testRecord = new RevenueRiskIncomeTestResult();
-          revenueRiskTestResult.getForageGrainIncomes().add(testRecord);
-          
-          testRecord.setLineItemCode(getInteger(rs, c++));
-          testRecord.setReportedRevenue(getDouble(rs, c++));
-          testRecord.setExpectedRevenue(getDouble(rs, c++));
-          testRecord.setVariance(getDouble(rs, c++));
-          testRecord.setPass(getIndicator(rs, c++));
-          testRecord.setDescription(getString(rs, c++));
-          testRecord.setCommodityTypeCode(getString(rs, c++));
-          testRecord.setCommodityTypeCodeDescription(getString(rs, c++));
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setInt(c++, programYear);
+        proc.setDate(c++, verifiedDate);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+          while (rs.next()) {
+            c = 1;
+            RevenueRiskIncomeTestResult testRecord = new RevenueRiskIncomeTestResult();
+            revenueRiskTestResult.getForageGrainIncomes().add(testRecord);
+            
+            testRecord.setLineItemCode(getInteger(rs, c++));
+            testRecord.setReportedRevenue(getDouble(rs, c++));
+            testRecord.setExpectedRevenue(getDouble(rs, c++));
+            testRecord.setVariance(getDouble(rs, c++));
+            testRecord.setPass(getIndicator(rs, c++));
+            testRecord.setDescription(getString(rs, c++));
+            testRecord.setCommodityTypeCode(getString(rs, c++));
+            testRecord.setCommodityTypeCodeDescription(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
+
   }
   
   private void readForageConsumers(ReasonabilityTestResults results) throws SQLException {
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSN_FORAGE_CONSUMERS_PROC, READ_FARM_RSN_FORAGE_CONSUMERS_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, results.getReasonabilityTestResultId());
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-        while (rs.next()) {
-          c = 1;
-          ForageConsumer forageConsumer = new ForageConsumer();
-          results.getForageConsumers().add(forageConsumer);
-          
-          forageConsumer.setProductiveUnitCapacity(getDouble(rs, c++));
-          forageConsumer.setQuantityConsumedPerUnit(getDouble(rs, c++));
-          forageConsumer.setQuantityConsumed(getDouble(rs, c++));
-          forageConsumer.setStructureGroupCode(getString(rs, c++));
-          forageConsumer.setStructureGroupCodeDescription(getString(rs, c++));
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSN_FORAGE_CONSUMERS_PROC, READ_FARM_RSN_FORAGE_CONSUMERS_PARAM, true);) {
+        
+        int c = 1;
+        proc.setInt(c++, results.getReasonabilityTestResultId());
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+          while (rs.next()) {
+            c = 1;
+            ForageConsumer forageConsumer = new ForageConsumer();
+            results.getForageConsumers().add(forageConsumer);
+            
+            forageConsumer.setProductiveUnitCapacity(getDouble(rs, c++));
+            forageConsumer.setQuantityConsumedPerUnit(getDouble(rs, c++));
+            forageConsumer.setQuantityConsumed(getDouble(rs, c++));
+            forageConsumer.setStructureGroupCode(getString(rs, c++));
+            forageConsumer.setStructureGroupCodeDescription(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
   }
 
   private void readRevenueRiskFruitVegResults(Integer reasonabilityTestResultId,
@@ -424,65 +499,86 @@ public class ReasonabilityReadDAO {
     
     List<RevenueRiskInventoryItem> fruitVegInventory = new ArrayList<>();
     revenueRiskTestResult.setFruitVegInventory(fruitVegInventory);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PROC, READ_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.setInt(c++, programYear);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-      
-        while (rs.next()) {
-          c = 1;
-          RevenueRiskInventoryItem testRecord = new RevenueRiskInventoryItem();
-          revenueRiskTestResult.getFruitVegInventory().add(testRecord);
-          
-          testRecord.setInventoryItemCode(getString(rs, c++));
-          testRecord.setInventoryItemCodeDescription(getString(rs, c++));
-          testRecord.setQuantityProduced(getDouble(rs, c++));
-          testRecord.setFmvPrice(getDouble(rs, c++));
-          testRecord.setExpectedRevenue(getDouble(rs, c++));
-          testRecord.setFruitVegTypeCode(getString(rs, c++));
-          testRecord.setFruitVegTypeCodeDescription(getString(rs, c++));
-          testRecord.setCropUnitCode(getString(rs, c++));
-          testRecord.setCropUnitCodeDescription(getString(rs, c++));
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PROC, READ_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PARAM, true);) {
+        
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setInt(c++, programYear);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+        
+          while (rs.next()) {
+            c = 1;
+            RevenueRiskInventoryItem testRecord = new RevenueRiskInventoryItem();
+            revenueRiskTestResult.getFruitVegInventory().add(testRecord);
+            
+            testRecord.setInventoryItemCode(getString(rs, c++));
+            testRecord.setInventoryItemCodeDescription(getString(rs, c++));
+            testRecord.setQuantityProduced(getDouble(rs, c++));
+            testRecord.setFmvPrice(getDouble(rs, c++));
+            testRecord.setExpectedRevenue(getDouble(rs, c++));
+            testRecord.setFruitVegTypeCode(getString(rs, c++));
+            testRecord.setFruitVegTypeCodeDescription(getString(rs, c++));
+            testRecord.setCropUnitCode(getString(rs, c++));
+            testRecord.setCropUnitCodeDescription(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
-    
+
     List<RevenueRiskFruitVegItemTestResult> fruitVegResults = new ArrayList<>();
     revenueRiskTestResult.setFruitVegResults(fruitVegResults);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_FRUIT_VEG_RSLTS_PROC, READ_FARM_RSNBLTY_REV_FRUIT_VEG_RSLTS_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSNBLTY_REV_FRUIT_VEG_RSLTS_PROC, READ_FARM_RSNBLTY_REV_FRUIT_VEG_RSLTS_PARAM, true);) {
         
-        while (rs.next()) {
-          c = 1;
-          RevenueRiskFruitVegItemTestResult testRecord = new RevenueRiskFruitVegItemTestResult();
-          revenueRiskTestResult.getFruitVegResults().add(testRecord);
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
           
-          testRecord.setQuantityProduced(getDouble(rs, c++));
-          testRecord.setVariance(getDouble(rs, c++));
-          testRecord.setVarianceLimit(getDouble(rs, c++));
-          testRecord.setReportedRevenue(getDouble(rs, c++));
-          testRecord.setExpectedPrice(getDouble(rs, c++));
-          testRecord.setExpectedRevenue(getDouble(rs, c++));
-          testRecord.setPass(getIndicator(rs, c++));
-          testRecord.setFruitVegTypeCode(getString(rs, c++));
-          testRecord.setCropUnitCode(getString(rs, c++));
-          testRecord.setFruitVegTypeDesc(getString(rs, c++));
+          while (rs.next()) {
+            c = 1;
+            RevenueRiskFruitVegItemTestResult testRecord = new RevenueRiskFruitVegItemTestResult();
+            revenueRiskTestResult.getFruitVegResults().add(testRecord);
+            
+            testRecord.setQuantityProduced(getDouble(rs, c++));
+            testRecord.setVariance(getDouble(rs, c++));
+            testRecord.setVarianceLimit(getDouble(rs, c++));
+            testRecord.setReportedRevenue(getDouble(rs, c++));
+            testRecord.setExpectedPrice(getDouble(rs, c++));
+            testRecord.setExpectedRevenue(getDouble(rs, c++));
+            testRecord.setPass(getIndicator(rs, c++));
+            testRecord.setFruitVegTypeCode(getString(rs, c++));
+            testRecord.setCropUnitCode(getString(rs, c++));
+            testRecord.setFruitVegTypeDesc(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
   }
 
@@ -493,122 +589,116 @@ public class ReasonabilityReadDAO {
     nurseryTestResult.setInventory(new ArrayList<RevenueRiskInventoryItem>());
     nurseryTestResult.setIncomes(new ArrayList<RevenueRiskIncomeTestResult>());
     revenueRiskTestResult.setNursery(nurseryTestResult);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_NRSRY_RESULTS_PROC, READ_FARM_RSNBLTY_REV_NRSRY_RESULTS_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-        while (rs.next()) {
-          c = 1;
-          nurseryTestResult.setSubTestPass(getIndicator(rs, c++));
-          nurseryTestResult.setVariance(getDouble(rs, c++));
-          nurseryTestResult.setVarianceLimit(getDouble(rs, c++));
-          nurseryTestResult.setExpectedRevenue(getDouble(rs, c++));
-          nurseryTestResult.setReportedRevenue(getDouble(rs, c++));
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSNBLTY_REV_NRSRY_RESULTS_PROC, READ_FARM_RSNBLTY_REV_NRSRY_RESULTS_PARAM, true);) {
+        
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+          while (rs.next()) {
+            c = 1;
+            nurseryTestResult.setSubTestPass(getIndicator(rs, c++));
+            nurseryTestResult.setVariance(getDouble(rs, c++));
+            nurseryTestResult.setVarianceLimit(getDouble(rs, c++));
+            nurseryTestResult.setExpectedRevenue(getDouble(rs, c++));
+            nurseryTestResult.setReportedRevenue(getDouble(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_NRSRY_INVN_RSLTS_PROC, READ_FARM_RSNBLTY_REV_NRSRY_INVN_RSLTS_PARAM, true);) {      
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.setInt(c++, programYear);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-        while (rs.next()) {
-          c = 1;
-          RevenueRiskInventoryItem invItem = new RevenueRiskInventoryItem();
-          nurseryTestResult.getInventory().add(invItem);
-          
-          invItem.setQuantityProduced(getDouble(rs, c++));
-          invItem.setQuantityStart(getDouble(rs, c++));
-          invItem.setQuantityEnd(getDouble(rs, c++));
-          invItem.setQuantitySold(getDouble(rs, c++));
-          invItem.setExpectedRevenue(getDouble(rs, c++));
-          invItem.setFmvPrice(getDouble(rs, c++));
-          invItem.setInventoryItemCode(getString(rs, c++));
-          invItem.setInventoryItemCodeDescription(getString(rs, c++));
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSNBLTY_REV_NRSRY_INVN_RSLTS_PROC, READ_FARM_RSNBLTY_REV_NRSRY_INVN_RSLTS_PARAM, true);) {      
+        
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setInt(c++, programYear);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+          while (rs.next()) {
+            c = 1;
+            RevenueRiskInventoryItem invItem = new RevenueRiskInventoryItem();
+            nurseryTestResult.getInventory().add(invItem);
+            
+            invItem.setQuantityProduced(getDouble(rs, c++));
+            invItem.setQuantityStart(getDouble(rs, c++));
+            invItem.setQuantityEnd(getDouble(rs, c++));
+            invItem.setQuantitySold(getDouble(rs, c++));
+            invItem.setExpectedRevenue(getDouble(rs, c++));
+            invItem.setFmvPrice(getDouble(rs, c++));
+            invItem.setInventoryItemCode(getString(rs, c++));
+            invItem.setInventoryItemCodeDescription(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_NRSRY_INCM_RSLTS_PROC, READ_FARM_RSNBLTY_REV_NRSRY_INCM_RSLTS_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.setInt(c++, programYear);
-      proc.setDate(c++, verifiedDate);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-        while (rs.next()) {
-          c = 1;
-          RevenueRiskIncomeTestResult incomeResult = new RevenueRiskIncomeTestResult();
-          nurseryTestResult.getIncomes().add(incomeResult);
-          
-          incomeResult.setLineItemCode(getInteger(rs, c++));
-          incomeResult.setReportedRevenue(getDouble(rs, c++));
-          incomeResult.setDescription(getString(rs, c++));
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSNBLTY_REV_NRSRY_INCM_RSLTS_PROC, READ_FARM_RSNBLTY_REV_NRSRY_INCM_RSLTS_PARAM, true);) {
+        
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setInt(c++, programYear);
+        proc.setDate(c++, verifiedDate);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {
+          while (rs.next()) {
+            c = 1;
+            RevenueRiskIncomeTestResult incomeResult = new RevenueRiskIncomeTestResult();
+            nurseryTestResult.getIncomes().add(incomeResult);
+            
+            incomeResult.setLineItemCode(getInteger(rs, c++));
+            incomeResult.setReportedRevenue(getDouble(rs, c++));
+            incomeResult.setDescription(getString(rs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
   }
 
   private void readRevenueRiskPoultryBroilersResults(Integer reasonabilityTestResultId, RevenueRiskTestResult revenueRiskTestResult)
       throws SQLException {
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PROC, READ_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-      
-        while (rs.next()) {
-          c = 1;
-          PoultryBroilersRevenueRiskSubTestResult poultryBroilersRevenueRiskSubTestResult = new PoultryBroilersRevenueRiskSubTestResult();
-          revenueRiskTestResult.setPoultryBroilers(poultryBroilersRevenueRiskSubTestResult);
-          
-          poultryBroilersRevenueRiskSubTestResult.setHasPoultryBroilers(getIndicator(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setSubTestPass(getIndicator(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setHasChickens(getIndicator(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setChickenPass(getIndicator(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setChickenAverageWeightKg(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setChickenExpectedSoldCount(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setChickenPricePerBird(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setChickenExpectedRevenue(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setChickenReportedRevenue(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setChickenKgProduced(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setChickenVariance(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setChickenVarianceLimit(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setHasTurkeys(getIndicator(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setTurkeyPass(getIndicator(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setTurkeyAverageWeightKg(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setTurkeyExpectedSoldCount(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setTurkeyPricePerBird(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setTurkeyExpectedRevenue(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setTurkeyReportedRevenue(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setTurkeyKgProduced(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setTurkeyVariance(getDouble(rs, c++));
-          poultryBroilersRevenueRiskSubTestResult.setTurkeyVarianceLimit(getDouble(rs, c++));
-        }
-      }
-    }
-  }
+    try {
+      conn.setAutoCommit(false);
 
-  private void readRevenueRiskPoultryEggResults(Integer reasonabilityTestResultId, RevenueRiskTestResult revenueRiskTestResult) throws SQLException {
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_PLTRY_EGG_RSLTS_PROC, READ_FARM_RSNBLTY_REV_PLTRY_EGG_RSLTS_PARAM, true);) {
-
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PROC, READ_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PARAM, true);) {
+        
         int c = 1;
         proc.setInt(c++, reasonabilityTestResultId);
         proc.execute();
@@ -617,33 +707,94 @@ public class ReasonabilityReadDAO {
         
           while (rs.next()) {
             c = 1;
-            PoultryEggsRevenueRiskSubTestResult poultryEggsRevenueRiskSubTestResult = new PoultryEggsRevenueRiskSubTestResult();
-            revenueRiskTestResult.setPoultryEggs(poultryEggsRevenueRiskSubTestResult);
+            PoultryBroilersRevenueRiskSubTestResult poultryBroilersRevenueRiskSubTestResult = new PoultryBroilersRevenueRiskSubTestResult();
+            revenueRiskTestResult.setPoultryBroilers(poultryBroilersRevenueRiskSubTestResult);
             
-            poultryEggsRevenueRiskSubTestResult.setSubTestPass(getIndicator(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionPass(getIndicator(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHasPoultryEggs(getIndicator(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionLayers(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionAverageEggsPerLayer(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionEggsTotal(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionEggsDozen(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionEggsDozenPrice(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionExpectedRevenue(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionReportedRevenue(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionVariance(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setConsumptionVarianceLimit(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingPass(getIndicator(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingLayers(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingAverageEggsPerLayer(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingEggsTotal(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingEggsDozen(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingEggsDozenPrice(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingExpectedRevenue(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingReportedRevenue(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingVariance(getDouble(rs, c++));
-            poultryEggsRevenueRiskSubTestResult.setHatchingVarianceLimit(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setHasPoultryBroilers(getIndicator(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setSubTestPass(getIndicator(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setHasChickens(getIndicator(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setChickenPass(getIndicator(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setChickenAverageWeightKg(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setChickenExpectedSoldCount(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setChickenPricePerBird(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setChickenExpectedRevenue(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setChickenReportedRevenue(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setChickenKgProduced(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setChickenVariance(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setChickenVarianceLimit(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setHasTurkeys(getIndicator(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setTurkeyPass(getIndicator(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setTurkeyAverageWeightKg(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setTurkeyExpectedSoldCount(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setTurkeyPricePerBird(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setTurkeyExpectedRevenue(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setTurkeyReportedRevenue(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setTurkeyKgProduced(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setTurkeyVariance(getDouble(rs, c++));
+            poultryBroilersRevenueRiskSubTestResult.setTurkeyVarianceLimit(getDouble(rs, c++));
           }
         }
+      }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
+    }
+  }
+
+  private void readRevenueRiskPoultryEggResults(Integer reasonabilityTestResultId, RevenueRiskTestResult revenueRiskTestResult) throws SQLException {
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_FARM_RSNBLTY_REV_PLTRY_EGG_RSLTS_PROC, READ_FARM_RSNBLTY_REV_PLTRY_EGG_RSLTS_PARAM, true);) {
+
+          int c = 1;
+          proc.setInt(c++, reasonabilityTestResultId);
+          proc.execute();
+          
+          try(ResultSet rs = proc.getResultSet();) {
+          
+            while (rs.next()) {
+              c = 1;
+              PoultryEggsRevenueRiskSubTestResult poultryEggsRevenueRiskSubTestResult = new PoultryEggsRevenueRiskSubTestResult();
+              revenueRiskTestResult.setPoultryEggs(poultryEggsRevenueRiskSubTestResult);
+              
+              poultryEggsRevenueRiskSubTestResult.setSubTestPass(getIndicator(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionPass(getIndicator(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHasPoultryEggs(getIndicator(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionLayers(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionAverageEggsPerLayer(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionEggsTotal(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionEggsDozen(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionEggsDozenPrice(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionExpectedRevenue(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionReportedRevenue(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionVariance(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setConsumptionVarianceLimit(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingPass(getIndicator(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingLayers(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingAverageEggsPerLayer(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingEggsTotal(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingEggsDozen(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingEggsDozenPrice(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingExpectedRevenue(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingReportedRevenue(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingVariance(getDouble(rs, c++));
+              poultryEggsRevenueRiskSubTestResult.setHatchingVarianceLimit(getDouble(rs, c++));
+            }
+          }
+      }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
   }
   
@@ -661,57 +812,12 @@ public class ReasonabilityReadDAO {
   private void readRevenueRiskHogsResults(Integer reasonabilityTestResultId, RevenueRiskTestResult revenueRiskTestResult) throws SQLException {
     
     HogsRevenueRiskSubTestResult hogsTestResult = null;
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_FARM_RSNBLTY_REV_HOGS_RSLTS_PROC, READ_FARM_RSNBLTY_REV_HOGS_RSLTS_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-        while (rs.next()) {
-          hogsTestResult = new HogsRevenueRiskSubTestResult();
-          revenueRiskTestResult.setHogs(hogsTestResult);
-          c = 1;
-          hogsTestResult.setHasHogs(getIndicator(rs, c++));
-          hogsTestResult.setHogsPass(getIndicator(rs, c++));
-          hogsTestResult.setFarrowToFinishOperation(getIndicator(rs, c++));
-          hogsTestResult.setFeederOperation(getIndicator(rs, c++));
-          hogsTestResult.setReportedExpenses(getDouble(rs, c++));
-          hogsTestResult.setTotalQuantityStart(getDouble(rs, c++));
-          hogsTestResult.setTotalQuantityEnd(getDouble(rs, c++));
-          hogsTestResult.setSowsBreeding(getDouble(rs, c++));
-          hogsTestResult.setBirthsPerCycle(getDouble(rs, c++));
-          hogsTestResult.setBirthCyclesPerYear(getDouble(rs, c++));
-          hogsTestResult.setTotalBirthsPerCycle(getDouble(rs, c++));
-          hogsTestResult.setTotalBirthsAllCycles(getDouble(rs, c++));
-          hogsTestResult.setDeathRate(getDouble(rs, c++));
-          hogsTestResult.setDeaths(getDouble(rs, c++));
-          hogsTestResult.setBoarPurchaseCount(getDouble(rs, c++));
-          hogsTestResult.setBoarPurchasePrice(getDouble(rs, c++));
-          hogsTestResult.setBoarPurchaseExpense(getDouble(rs, c++));
-          hogsTestResult.setSowPurchaseExpense(getDouble(rs, c++));
-          hogsTestResult.setSowPurchaseCount(getDouble(rs, c++));
-          hogsTestResult.setSowPurchasePrice(getDouble(rs, c++));
-          hogsTestResult.setFeederProductiveUnits(getDouble(rs, c++));
-          hogsTestResult.setWeanlingPurchaseExpense(getDouble(rs, c++));
-          hogsTestResult.setWeanlingPurchasePrice(getDouble(rs, c++));
-          hogsTestResult.setWeanlingPurchaseCount(getDouble(rs, c++));
-          hogsTestResult.setTotalPurchaseCount(getDouble(rs, c++));
-          hogsTestResult.setExpectedSold(getDouble(rs, c++));
-          hogsTestResult.setHeaviestHogFmvPrice(getDouble(rs, c++));
-          hogsTestResult.setReportedRevenue(getDouble(rs, c++));
-          hogsTestResult.setExpectedRevenue(getDouble(rs, c++));
-          hogsTestResult.setRevenueVariance(getDouble(rs, c++));
-          hogsTestResult.setVarianceLimit(getDouble(rs, c++));
-        }
-      }
-    }
-    
-    if(hogsTestResult != null) {
+
+    try {
+      conn.setAutoCommit(false);
+
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_FARM_RSNBLTY_REV_HOGS_INVN_RSLTS_PROC, READ_FARM_RSNBLTY_REV_HOGS_INVN_RSLTS_PARAM, true);) {      
+          + READ_FARM_RSNBLTY_REV_HOGS_RSLTS_PROC, READ_FARM_RSNBLTY_REV_HOGS_RSLTS_PARAM, true);) {
         
         int c = 1;
         proc.setInt(c++, reasonabilityTestResultId);
@@ -719,20 +825,86 @@ public class ReasonabilityReadDAO {
         
         try(ResultSet rs = proc.getResultSet();) {
           while (rs.next()) {
+            hogsTestResult = new HogsRevenueRiskSubTestResult();
+            revenueRiskTestResult.setHogs(hogsTestResult);
             c = 1;
-            RevenueRiskInventoryItem invItem = new RevenueRiskInventoryItem();
-            hogsTestResult.getInventory().add(invItem);
-            
-            invItem.setQuantityStart(getDouble(rs, c++));
-            invItem.setQuantityEnd(getDouble(rs, c++));
-            invItem.setFmvPrice(getDouble(rs, c++));
-            invItem.setInventoryItemCode(getString(rs, c++));
-            invItem.setInventoryItemCodeDescription(getString(rs, c++));
+            hogsTestResult.setHasHogs(getIndicator(rs, c++));
+            hogsTestResult.setHogsPass(getIndicator(rs, c++));
+            hogsTestResult.setFarrowToFinishOperation(getIndicator(rs, c++));
+            hogsTestResult.setFeederOperation(getIndicator(rs, c++));
+            hogsTestResult.setReportedExpenses(getDouble(rs, c++));
+            hogsTestResult.setTotalQuantityStart(getDouble(rs, c++));
+            hogsTestResult.setTotalQuantityEnd(getDouble(rs, c++));
+            hogsTestResult.setSowsBreeding(getDouble(rs, c++));
+            hogsTestResult.setBirthsPerCycle(getDouble(rs, c++));
+            hogsTestResult.setBirthCyclesPerYear(getDouble(rs, c++));
+            hogsTestResult.setTotalBirthsPerCycle(getDouble(rs, c++));
+            hogsTestResult.setTotalBirthsAllCycles(getDouble(rs, c++));
+            hogsTestResult.setDeathRate(getDouble(rs, c++));
+            hogsTestResult.setDeaths(getDouble(rs, c++));
+            hogsTestResult.setBoarPurchaseCount(getDouble(rs, c++));
+            hogsTestResult.setBoarPurchasePrice(getDouble(rs, c++));
+            hogsTestResult.setBoarPurchaseExpense(getDouble(rs, c++));
+            hogsTestResult.setSowPurchaseExpense(getDouble(rs, c++));
+            hogsTestResult.setSowPurchaseCount(getDouble(rs, c++));
+            hogsTestResult.setSowPurchasePrice(getDouble(rs, c++));
+            hogsTestResult.setFeederProductiveUnits(getDouble(rs, c++));
+            hogsTestResult.setWeanlingPurchaseExpense(getDouble(rs, c++));
+            hogsTestResult.setWeanlingPurchasePrice(getDouble(rs, c++));
+            hogsTestResult.setWeanlingPurchaseCount(getDouble(rs, c++));
+            hogsTestResult.setTotalPurchaseCount(getDouble(rs, c++));
+            hogsTestResult.setExpectedSold(getDouble(rs, c++));
+            hogsTestResult.setHeaviestHogFmvPrice(getDouble(rs, c++));
+            hogsTestResult.setReportedRevenue(getDouble(rs, c++));
+            hogsTestResult.setExpectedRevenue(getDouble(rs, c++));
+            hogsTestResult.setRevenueVariance(getDouble(rs, c++));
+            hogsTestResult.setVarianceLimit(getDouble(rs, c++));
           }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
-    
+
+    if(hogsTestResult != null) {
+      try {
+        conn.setAutoCommit(false);
+
+        try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+            + READ_FARM_RSNBLTY_REV_HOGS_INVN_RSLTS_PROC, READ_FARM_RSNBLTY_REV_HOGS_INVN_RSLTS_PARAM, true);) {      
+          
+          int c = 1;
+          proc.setInt(c++, reasonabilityTestResultId);
+          proc.execute();
+          
+          try(ResultSet rs = proc.getResultSet();) {
+            while (rs.next()) {
+              c = 1;
+              RevenueRiskInventoryItem invItem = new RevenueRiskInventoryItem();
+              hogsTestResult.getInventory().add(invItem);
+              
+              invItem.setQuantityStart(getDouble(rs, c++));
+              invItem.setQuantityEnd(getDouble(rs, c++));
+              invItem.setFmvPrice(getDouble(rs, c++));
+              invItem.setInventoryItemCode(getString(rs, c++));
+              invItem.setInventoryItemCodeDescription(getString(rs, c++));
+            }
+          }
+        }
+
+        conn.commit();
+      } catch (SQLException ex) {
+        conn.rollback();
+        throw ex;
+      } finally {
+        conn.setAutoCommit(true);
+      }
+    }
   }
 
 
@@ -745,31 +917,42 @@ public class ReasonabilityReadDAO {
     messages.put(MessageTypeCodes.ERROR, new ArrayList<ReasonabilityTestResultMessage>());
     messages.put(MessageTypeCodes.WARNING, new ArrayList<ReasonabilityTestResultMessage>());
     messages.put(MessageTypeCodes.INFO, new ArrayList<ReasonabilityTestResultMessage>());
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_REASONABILITY_TEST_MESSAGES_PROC, READ_REASONABILITY_TEST_MESSAGES_PARAM, true);) {      
-      
-      int c = 1;
-      proc.setInt(c++, reasonabilityTestResultId);
-      proc.setString(c++, testName);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {     
-        while (rs.next()) {
-          c = 1;
-          
-          ReasonabilityTestResultMessage reasonabilityMessage = new ReasonabilityTestResultMessage(getString(rs, c++), getString(rs, c++));
-          if (reasonabilityMessage.getMessageTypeCode().equals(MessageTypeCodes.ERROR)) {
-            messages.get(MessageTypeCodes.ERROR).add(reasonabilityMessage);
-          } else if (reasonabilityMessage.getMessageTypeCode().equals(MessageTypeCodes.WARNING)) {
-            messages.get(MessageTypeCodes.WARNING).add(reasonabilityMessage);
-          } else if (reasonabilityMessage.getMessageTypeCode().equals(MessageTypeCodes.INFO)) {
-            messages.get(MessageTypeCodes.INFO).add(reasonabilityMessage);
+
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_REASONABILITY_TEST_MESSAGES_PROC, READ_REASONABILITY_TEST_MESSAGES_PARAM, true);) {      
+        
+        int c = 1;
+        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setString(c++, testName);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet();) {     
+          while (rs.next()) {
+            c = 1;
+            
+            ReasonabilityTestResultMessage reasonabilityMessage = new ReasonabilityTestResultMessage(getString(rs, c++), getString(rs, c++));
+            if (reasonabilityMessage.getMessageTypeCode().equals(MessageTypeCodes.ERROR)) {
+              messages.get(MessageTypeCodes.ERROR).add(reasonabilityMessage);
+            } else if (reasonabilityMessage.getMessageTypeCode().equals(MessageTypeCodes.WARNING)) {
+              messages.get(MessageTypeCodes.WARNING).add(reasonabilityMessage);
+            } else if (reasonabilityMessage.getMessageTypeCode().equals(MessageTypeCodes.INFO)) {
+              messages.get(MessageTypeCodes.INFO).add(reasonabilityMessage);
+            }
+            
           }
-          
         }
+
       }
 
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
     return messages;
   }
@@ -777,126 +960,136 @@ public class ReasonabilityReadDAO {
   public final ReasonabilityTestResults readReasonabilityTestResults(Scenario scenario, Date verifiedDate) throws SQLException {
     ReasonabilityTestResults results = null;
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_REASONABILITY_TESTS_PROC, READ_REASONABILITY_TESTS_PARAM, true);) {
+    try {
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setInt(c++, scenario.getScenarioId());
-      proc.execute();
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+            + READ_REASONABILITY_TESTS_PROC, READ_REASONABILITY_TESTS_PARAM, true);) {
 
-      try(ResultSet rs = proc.getResultSet();) {
+        int c = 1;
+        proc.setInt(c++, scenario.getScenarioId());
+        proc.execute();
 
-        if (rs.next()) {
-  
-          results = new ReasonabilityTestResults();
-          BenefitRiskAssessmentTestResult benefitRisk = new BenefitRiskAssessmentTestResult();
-          MarginTestResult margin = new MarginTestResult();
-          StructuralChangeTestResult structureChange = new StructuralChangeTestResult();
-          ExpenseTestIACResult expenseIAC = new ExpenseTestIACResult();
-          ExpenseTestRefYearCompGCResult expenseGC = new ExpenseTestRefYearCompGCResult();
-          
-          results.setBenefitRisk(benefitRisk);
-          results.setMarginTest(margin);
-          results.setStructuralChangeTest(structureChange);
-          results.setExpenseTestIAC(expenseIAC);
-          results.setExpenseTestRefYearCompGC(expenseGC);
-          
-          c = 1;
-          
-          results.setReasonabilityTestResultId(getInteger(rs, c++));
-          results.setIsFresh(getIndicator(rs, c++));
-          results.setGeneratedDate(getDate(rs, c++));
-          results.setForageConsumerCapacity(getDouble(rs, c++));
-          
-          benefitRisk.setResult(getIndicator(rs, c++));
-          Double programYearMargin = getDouble(rs, c++);
-          benefitRisk.setProgramYearMargin(programYearMargin);
-          benefitRisk.setTotalBenefit(getDouble(rs, c++));
-          benefitRisk.setBenchmarkMargin(getDouble(rs, c++));
-          benefitRisk.setBenefitRiskDeductible(getDouble(rs, c++));
-          benefitRisk.setBenefitBenchmarkLessDeductible(getDouble(rs, c++));
-          benefitRisk.setBenefitBenchmarkLessProgramYearMargin(getDouble(rs, c++));
-          benefitRisk.setBenefitRiskPayoutLevel(getDouble(rs, c++));
-          benefitRisk.setBenefitBenchmarkBeforeCombinedFarmPercent(getDouble(rs, c++));
-          benefitRisk.setCombinedFarmPercent(getDouble(rs, c++));
-          benefitRisk.setBenefitBenchmark(getDouble(rs, c++));
-          benefitRisk.setVariance(getDouble(rs, c++));
-          benefitRisk.setVarianceLimit(getDouble(rs, c++));
-          
-          margin.setResult(getIndicator(rs, c++));
-          margin.setProgramYearMargin(programYearMargin);
-          margin.setAdjustedReferenceMargin(getDouble(rs, c++));
-          margin.setAdjustedReferenceMarginVariance(getDouble(rs, c++));
-          margin.setAdjustedReferenceMarginVarianceLimit(getDouble(rs, c++));
-          margin.setWithinLimitOfReferenceMargin(getIndicator(rs, c++));
-          margin.setIndustryAverage(getDouble(rs, c++));
-          margin.setIndustryVariance(getDouble(rs, c++));
-          margin.setIndustryVarianceLimit(getDouble(rs, c++));
-          margin.setWithinLimitOfIndustryAverage(getIndicator(rs, c++));
-          
-          structureChange.setResult(getIndicator(rs, c++));
-          structureChange.setProductionMargAccrAdjs(getDouble(rs, c++));
-          structureChange.setRatioReferenceMargin(getDouble(rs, c++));
-          structureChange.setAdditiveReferenceMargin(getDouble(rs, c++));
-          structureChange.setRatioAdditiveDiffVariance(getDouble(rs, c++));
-          structureChange.setRatioAdditiveDiffVarianceLimit(getDouble(rs, c++));
-          structureChange.setWithinRatioAdditiveDiffLimit(getIndicator(rs, c++));
-          structureChange.setAdditiveDivisionRatio(getDouble(rs, c++));
-          structureChange.setAdditiveDivisionRatioLimit(getDouble(rs, c++));
-          structureChange.setWithinAdditiveDivisionLimit(getIndicator(rs, c++));
-          structureChange.setMethodToUse(getString(rs, c++));
-          structureChange.setFarmSizeRatioLimit(getDouble(rs, c++));
-          structureChange.setWithinFarmSizeRatioLimit(getIndicator(rs, c++));
-          
-          expenseIAC.setResult(getIndicator(rs, c++));
-          expenseIAC.setExpenseAccrualAdjs(getDouble(rs, c++));
-          expenseIAC.setIndustryAverage(getDouble(rs, c++));
-          expenseIAC.setIndustryVariance(getDouble(rs, c++));
-          expenseIAC.setIndustryVarianceLimit(getDouble(rs, c++));
-          
-          ProductionTestResult productionTest = readProductionTestResults(results.getReasonabilityTestResultId(), scenario.getYear());
-          results.setProductionTest(productionTest);
-          productionTest.setResult(getIndicator(rs, c++));
-          productionTest.setPassForageAndForageSeedTest(getIndicator(rs, c++));
-          productionTest.setPassFruitVegTest(getIndicator(rs, c++));
-          productionTest.setForageProducedVarianceLimit(getDouble(rs, c++));
-          productionTest.setFruitVegProducedVarianceLimit(getDouble(rs, c++));
-          productionTest.setGrainProducedVarianceLimit(getDouble(rs, c++));
-          
-          expenseGC.setResult(getIndicator(rs, c++));
-          expenseGC.setProgramYearAcrAdjExpense(getDouble(rs, c++));
-          expenseGC.setExpenseStructuralChangeYearMinus1(getDouble(rs, c++));
-          expenseGC.setExpenseStructuralChangeYearMinus2(getDouble(rs, c++));
-          expenseGC.setExpenseStructuralChangeYearMinus3(getDouble(rs, c++));
-          expenseGC.setExpenseStructuralChangeYearMinus4(getDouble(rs, c++));
-          expenseGC.setExpenseStructuralChangeYearMinus5(getDouble(rs, c++));
-          expenseGC.setExpenseStructrualChangeAverage(getDouble(rs, c++));
-          expenseGC.setVariance(getDouble(rs, c++));
-          expenseGC.setVarianceLimit(getDouble(rs, c++));
-          
-          readForageConsumers(results);
-          
-          RevenueRiskTestResult revenueRiskTest = readRevenueRiskTestResults(results.getReasonabilityTestResultId(), scenario.getYear(), verifiedDate);
-          results.setRevenueRiskTest(revenueRiskTest);
-          
-          revenueRiskTest.setResult(getIndicator(rs, c++));
-          revenueRiskTest.setForageGrainPass(getIndicator(rs, c++));
-          revenueRiskTest.setForageGrainVarianceLimit(getDouble(rs, c++));
-          revenueRiskTest.setFruitVegTestPass(getIndicator(rs, c++));
-          
-          
-          readBenefitRiskProductiveUnits(scenario, results);
-          
-          
-          for(ReasonabilityTestResult testResult : results.getTestResults()) {
-            testResult.setMessages(readReasonabilityTestMessages(results.getReasonabilityTestResultId(), testResult.getName()));
-          }
+        try(ResultSet rs = proc.getResultSet();) {
 
-        }
-      }
-      
-    }
+          if (rs.next()) {
     
+            results = new ReasonabilityTestResults();
+            BenefitRiskAssessmentTestResult benefitRisk = new BenefitRiskAssessmentTestResult();
+            MarginTestResult margin = new MarginTestResult();
+            StructuralChangeTestResult structureChange = new StructuralChangeTestResult();
+            ExpenseTestIACResult expenseIAC = new ExpenseTestIACResult();
+            ExpenseTestRefYearCompGCResult expenseGC = new ExpenseTestRefYearCompGCResult();
+            
+            results.setBenefitRisk(benefitRisk);
+            results.setMarginTest(margin);
+            results.setStructuralChangeTest(structureChange);
+            results.setExpenseTestIAC(expenseIAC);
+            results.setExpenseTestRefYearCompGC(expenseGC);
+            
+            c = 1;
+            
+            results.setReasonabilityTestResultId(getInteger(rs, c++));
+            results.setIsFresh(getIndicator(rs, c++));
+            results.setGeneratedDate(getDate(rs, c++));
+            results.setForageConsumerCapacity(getDouble(rs, c++));
+            
+            benefitRisk.setResult(getIndicator(rs, c++));
+            Double programYearMargin = getDouble(rs, c++);
+            benefitRisk.setProgramYearMargin(programYearMargin);
+            benefitRisk.setTotalBenefit(getDouble(rs, c++));
+            benefitRisk.setBenchmarkMargin(getDouble(rs, c++));
+            benefitRisk.setBenefitRiskDeductible(getDouble(rs, c++));
+            benefitRisk.setBenefitBenchmarkLessDeductible(getDouble(rs, c++));
+            benefitRisk.setBenefitBenchmarkLessProgramYearMargin(getDouble(rs, c++));
+            benefitRisk.setBenefitRiskPayoutLevel(getDouble(rs, c++));
+            benefitRisk.setBenefitBenchmarkBeforeCombinedFarmPercent(getDouble(rs, c++));
+            benefitRisk.setCombinedFarmPercent(getDouble(rs, c++));
+            benefitRisk.setBenefitBenchmark(getDouble(rs, c++));
+            benefitRisk.setVariance(getDouble(rs, c++));
+            benefitRisk.setVarianceLimit(getDouble(rs, c++));
+            
+            margin.setResult(getIndicator(rs, c++));
+            margin.setProgramYearMargin(programYearMargin);
+            margin.setAdjustedReferenceMargin(getDouble(rs, c++));
+            margin.setAdjustedReferenceMarginVariance(getDouble(rs, c++));
+            margin.setAdjustedReferenceMarginVarianceLimit(getDouble(rs, c++));
+            margin.setWithinLimitOfReferenceMargin(getIndicator(rs, c++));
+            margin.setIndustryAverage(getDouble(rs, c++));
+            margin.setIndustryVariance(getDouble(rs, c++));
+            margin.setIndustryVarianceLimit(getDouble(rs, c++));
+            margin.setWithinLimitOfIndustryAverage(getIndicator(rs, c++));
+            
+            structureChange.setResult(getIndicator(rs, c++));
+            structureChange.setProductionMargAccrAdjs(getDouble(rs, c++));
+            structureChange.setRatioReferenceMargin(getDouble(rs, c++));
+            structureChange.setAdditiveReferenceMargin(getDouble(rs, c++));
+            structureChange.setRatioAdditiveDiffVariance(getDouble(rs, c++));
+            structureChange.setRatioAdditiveDiffVarianceLimit(getDouble(rs, c++));
+            structureChange.setWithinRatioAdditiveDiffLimit(getIndicator(rs, c++));
+            structureChange.setAdditiveDivisionRatio(getDouble(rs, c++));
+            structureChange.setAdditiveDivisionRatioLimit(getDouble(rs, c++));
+            structureChange.setWithinAdditiveDivisionLimit(getIndicator(rs, c++));
+            structureChange.setMethodToUse(getString(rs, c++));
+            structureChange.setFarmSizeRatioLimit(getDouble(rs, c++));
+            structureChange.setWithinFarmSizeRatioLimit(getIndicator(rs, c++));
+            
+            expenseIAC.setResult(getIndicator(rs, c++));
+            expenseIAC.setExpenseAccrualAdjs(getDouble(rs, c++));
+            expenseIAC.setIndustryAverage(getDouble(rs, c++));
+            expenseIAC.setIndustryVariance(getDouble(rs, c++));
+            expenseIAC.setIndustryVarianceLimit(getDouble(rs, c++));
+            
+            ProductionTestResult productionTest = readProductionTestResults(results.getReasonabilityTestResultId(), scenario.getYear());
+            results.setProductionTest(productionTest);
+            productionTest.setResult(getIndicator(rs, c++));
+            productionTest.setPassForageAndForageSeedTest(getIndicator(rs, c++));
+            productionTest.setPassFruitVegTest(getIndicator(rs, c++));
+            productionTest.setForageProducedVarianceLimit(getDouble(rs, c++));
+            productionTest.setFruitVegProducedVarianceLimit(getDouble(rs, c++));
+            productionTest.setGrainProducedVarianceLimit(getDouble(rs, c++));
+            
+            expenseGC.setResult(getIndicator(rs, c++));
+            expenseGC.setProgramYearAcrAdjExpense(getDouble(rs, c++));
+            expenseGC.setExpenseStructuralChangeYearMinus1(getDouble(rs, c++));
+            expenseGC.setExpenseStructuralChangeYearMinus2(getDouble(rs, c++));
+            expenseGC.setExpenseStructuralChangeYearMinus3(getDouble(rs, c++));
+            expenseGC.setExpenseStructuralChangeYearMinus4(getDouble(rs, c++));
+            expenseGC.setExpenseStructuralChangeYearMinus5(getDouble(rs, c++));
+            expenseGC.setExpenseStructrualChangeAverage(getDouble(rs, c++));
+            expenseGC.setVariance(getDouble(rs, c++));
+            expenseGC.setVarianceLimit(getDouble(rs, c++));
+            
+            readForageConsumers(results);
+            
+            RevenueRiskTestResult revenueRiskTest = readRevenueRiskTestResults(results.getReasonabilityTestResultId(), scenario.getYear(), verifiedDate);
+            results.setRevenueRiskTest(revenueRiskTest);
+            
+            revenueRiskTest.setResult(getIndicator(rs, c++));
+            revenueRiskTest.setForageGrainPass(getIndicator(rs, c++));
+            revenueRiskTest.setForageGrainVarianceLimit(getDouble(rs, c++));
+            revenueRiskTest.setFruitVegTestPass(getIndicator(rs, c++));
+            
+            
+            readBenefitRiskProductiveUnits(scenario, results);
+            
+            
+            for(ReasonabilityTestResult testResult : results.getTestResults()) {
+              testResult.setMessages(readReasonabilityTestMessages(results.getReasonabilityTestResultId(), testResult.getName()));
+            }
+
+          }
+        }
+        
+      }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
+    }
     return results;
   }
 
@@ -906,36 +1099,47 @@ public class ReasonabilityReadDAO {
     BenefitRiskAssessmentTestResult benefitRisk = results.getBenefitRisk();
     
     int c;
-    try(DAOStoredProcedure puProc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + READ_REASONABILITY_BENEFIT_RISK_PU_PROC, READ_REASONABILITY_BENEFIT_RISK_PU_PARAM, true);) {
-      
-      // productive units
-      c = 1;
-      puProc.setInt(c++, results.getReasonabilityTestResultId());
-      puProc.setInt(c++, scenario.getYear());
-      puProc.execute();
-      
-      try(ResultSet puRs = puProc.getResultSet();) {
+    try {
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure puProc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + READ_REASONABILITY_BENEFIT_RISK_PU_PROC, READ_REASONABILITY_BENEFIT_RISK_PU_PARAM, true);) {
         
-        while(puRs.next()) {
-          BenefitRiskProductiveUnit rpu = new BenefitRiskProductiveUnit();
-          benefitRisk.getBenefitRiskProductiveUnits().add(rpu);
+        // productive units
+        c = 1;
+        puProc.setInt(c++, results.getReasonabilityTestResultId());
+        puProc.setInt(c++, scenario.getYear());
+        puProc.execute();
+        
+        try(ResultSet puRs = puProc.getResultSet();) {
           
-          c = 1;
-          
-          rpu.setReportedProductiveCapacityAmount(getDouble(puRs, c++));
-          rpu.setConsumedProductiveCapacityAmount(getDouble(puRs, c++));
-          rpu.setNetProductiveCapacityAmount(getDouble(puRs, c++));
-          rpu.setBpuCalculated(getDouble(puRs, c++));
-          rpu.setEstimatedMargin(getDouble(puRs, c++));
-          rpu.setInventoryItemCode(getString(puRs, c++));
-          rpu.setInventoryItemCodeDescription(getString(puRs, c++));
-          rpu.setStructureGroupCode(getString(puRs, c++));
-          rpu.setStructureGroupCodeDescription(getString(puRs, c++));
-          rpu.setCommodityTypeCode(getString(puRs, c++));
-          rpu.setCommodityTypeCodeDescription(getString(puRs, c++));
+          while(puRs.next()) {
+            BenefitRiskProductiveUnit rpu = new BenefitRiskProductiveUnit();
+            benefitRisk.getBenefitRiskProductiveUnits().add(rpu);
+            
+            c = 1;
+            
+            rpu.setReportedProductiveCapacityAmount(getDouble(puRs, c++));
+            rpu.setConsumedProductiveCapacityAmount(getDouble(puRs, c++));
+            rpu.setNetProductiveCapacityAmount(getDouble(puRs, c++));
+            rpu.setBpuCalculated(getDouble(puRs, c++));
+            rpu.setEstimatedMargin(getDouble(puRs, c++));
+            rpu.setInventoryItemCode(getString(puRs, c++));
+            rpu.setInventoryItemCodeDescription(getString(puRs, c++));
+            rpu.setStructureGroupCode(getString(puRs, c++));
+            rpu.setStructureGroupCodeDescription(getString(puRs, c++));
+            rpu.setCommodityTypeCode(getString(puRs, c++));
+            rpu.setCommodityTypeCodeDescription(getString(puRs, c++));
+          }
         }
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(true);
     }
   }
   
