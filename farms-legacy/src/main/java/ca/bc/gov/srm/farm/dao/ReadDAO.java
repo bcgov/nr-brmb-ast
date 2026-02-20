@@ -2219,6 +2219,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_IE_PROC,
           READ_IE_PARAM, true);
 
@@ -2229,7 +2231,7 @@ public class ReadDAO {
       Array oracleArrayScenarioIds = createNumbersOracleArray(scenarioIds);
       proc.setArray(c++, oracleArrayScenarioIds);
 
-      proc.setInt(c++, programYear);
+      proc.setShort(c++, (short) programYear);
       proc.setDate(c++, verifiedDate);
       proc.execute();
 
@@ -2288,10 +2290,15 @@ public class ReadDAO {
         l.add(ie);
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
 
