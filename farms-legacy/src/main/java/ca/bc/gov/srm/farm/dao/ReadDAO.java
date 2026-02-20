@@ -1291,6 +1291,8 @@ public class ReadDAO {
     ResultSet rs = null;
 
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_TOT_MGN_PROC, READ_TOT_MGN_PARAM, true);
 
@@ -1361,9 +1363,14 @@ public class ReadDAO {
         r.put(scId, mt);
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
     	close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
 
