@@ -54,7 +54,7 @@ import ca.bc.gov.srm.farm.util.DataParseUtils;
  */
 public class ReasonabilityReadDAO {
 
-  private static final String PACKAGE_NAME = "FARM_REASONABILITY_READ_PKG";
+  private static final String PACKAGE_NAME = "FARMS_REASONABILITY_READ_PKG";
   
   private static final String READ_REASONABILITY_TESTS_PROC = "READ_REASONABILITY_TESTS";
   private static final int READ_REASONABILITY_TESTS_PARAM = 1;
