@@ -2740,12 +2740,14 @@ public class ReadDAO {
     Enrolment e = null;
     
     try {
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_ENROLMENT_PROC, READ_ENROLMENT_PARAM, true);
       
       int c = 1;
       proc.setInt(c++, pin);
-      proc.setInt(c++, enrolmentYear);
+      proc.setShort(c++, enrolmentYear == null ? null : enrolmentYear.shortValue());
       proc.execute();
       
       rs = proc.getResultSet();
@@ -2777,10 +2779,15 @@ public class ReadDAO {
         e.setIsCreateTaskInBarn(getIndicator(rs, c++));
         e.setRevisionCount(getInteger(rs, c++));
       }
-      
+
+      conn.commit();
       return e;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(true);
     }
   }
   
