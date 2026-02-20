@@ -921,7 +921,7 @@ public class DAOStoredProcedure implements AutoCloseable {
   public final void setLong(final int index, final Long x) throws SQLException {
 
     if (x == null) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.BIGINT);
     } else {
       setLong(index, x.longValue());
     }

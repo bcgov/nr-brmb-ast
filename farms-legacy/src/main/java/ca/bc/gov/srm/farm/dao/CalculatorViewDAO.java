@@ -90,7 +90,7 @@ public class CalculatorViewDAO extends OracleDAO {
 
       int param = 1;
       proc.setInt(param++, participantPin);
-      proc.setInt(param++, combinedFarmNumber);
+      proc.setLong(param++, combinedFarmNumber == null ? null : combinedFarmNumber.longValue());
       proc.execute();
 
       rs = proc.getResultSet();
@@ -285,13 +285,13 @@ public class CalculatorViewDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + PYV_HAS_VERIFIED_SC_PROC, PYV_HAS_VERIFIED_SC_PARAM, Types.INTEGER);
+          + PYV_HAS_VERIFIED_SC_PROC, PYV_HAS_VERIFIED_SC_PARAM, Types.BIGINT);
 
       int param = 1;
       proc.setInt(param++, programYearVersionId);
       proc.execute();
       
-      int resultInt = proc.getInt(1);
+      int resultInt = (int)proc.getLong(1);
       result = resultInt == 1;
 
       connection.commit();
