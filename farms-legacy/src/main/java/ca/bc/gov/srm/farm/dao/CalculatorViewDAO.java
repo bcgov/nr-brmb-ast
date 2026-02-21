@@ -463,15 +463,15 @@ public class CalculatorViewDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + GET_VERIFED_SC_CF_NUMBER_PROC, GET_VERIFED_SC_CF_NUMBER_PARAM, Types.INTEGER);
+          + GET_VERIFED_SC_CF_NUMBER_PROC, GET_VERIFED_SC_CF_NUMBER_PARAM, Types.BIGINT);
       
       int c = 1;
       
       proc.setInt(c++, pin);
-      proc.setInt(c++, programYear);
+      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
       
       proc.execute();
-      combinedFarmNumber = new Integer(proc.getInt(1));
+      combinedFarmNumber = (int)proc.getLong(1);
       if(combinedFarmNumber.intValue() == 0) {
         combinedFarmNumber = null;
       }
