@@ -146,6 +146,12 @@
         },
         {
             "includeAll": {
+                "path": "farms_user_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
                 "path": "farms_version_pkg",
                 "relativeToChangeLogFile": "true"
             }
