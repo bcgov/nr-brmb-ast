@@ -182,8 +182,10 @@ public class ReasonabilityReadDAO {
     productionTest.setForageTestResults(new ArrayList<ProductionInventoryItemTestResult>());
     productionTest.setForageSeedTestResults(new ArrayList<ProductionInventoryItemTestResult>());
     productionTest.setGrainItemTestResults(new ArrayList<ProductionInventoryItemTestResult>());
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -223,10 +225,11 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -263,10 +266,11 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -300,10 +304,11 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -338,7 +343,7 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
     Collections.sort(productionTest.getForageTestResults());
@@ -373,8 +378,10 @@ public class ReasonabilityReadDAO {
     
     revenueRiskTestResult.setForageGrainIncomes(new ArrayList<RevenueRiskIncomeTestResult>());
     revenueRiskTestResult.setForageGrainInventory(new ArrayList<RevenueRiskInventoryItem>());
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -414,10 +421,11 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -452,14 +460,16 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
   }
   
   private void readForageConsumers(ReasonabilityTestResults results) throws SQLException {
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -489,7 +499,7 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -499,8 +509,10 @@ public class ReasonabilityReadDAO {
     
     List<RevenueRiskInventoryItem> fruitVegInventory = new ArrayList<>();
     revenueRiskTestResult.setFruitVegInventory(fruitVegInventory);
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -536,13 +548,14 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
     List<RevenueRiskFruitVegItemTestResult> fruitVegResults = new ArrayList<>();
     revenueRiskTestResult.setFruitVegResults(fruitVegResults);
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -578,7 +591,7 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -589,8 +602,10 @@ public class ReasonabilityReadDAO {
     nurseryTestResult.setInventory(new ArrayList<RevenueRiskInventoryItem>());
     nurseryTestResult.setIncomes(new ArrayList<RevenueRiskIncomeTestResult>());
     revenueRiskTestResult.setNursery(nurseryTestResult);
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -617,10 +632,11 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -654,10 +670,11 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -687,13 +704,15 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
   private void readRevenueRiskPoultryBroilersResults(Integer reasonabilityTestResultId, RevenueRiskTestResult revenueRiskTestResult)
       throws SQLException {
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -741,12 +760,14 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
   private void readRevenueRiskPoultryEggResults(Integer reasonabilityTestResultId, RevenueRiskTestResult revenueRiskTestResult) throws SQLException {
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -794,7 +815,7 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -812,8 +833,10 @@ public class ReasonabilityReadDAO {
   private void readRevenueRiskHogsResults(Integer reasonabilityTestResultId, RevenueRiskTestResult revenueRiskTestResult) throws SQLException {
     
     HogsRevenueRiskSubTestResult hogsTestResult = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -868,11 +891,12 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
 
     if(hogsTestResult != null) {
       try {
+        originalAutoCommit = conn.getAutoCommit();
         conn.setAutoCommit(false);
 
         try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -902,7 +926,7 @@ public class ReasonabilityReadDAO {
         conn.rollback();
         throw ex;
       } finally {
-        conn.setAutoCommit(true);
+        conn.setAutoCommit(originalAutoCommit);
       }
     }
   }
@@ -917,8 +941,10 @@ public class ReasonabilityReadDAO {
     messages.put(MessageTypeCodes.ERROR, new ArrayList<ReasonabilityTestResultMessage>());
     messages.put(MessageTypeCodes.WARNING, new ArrayList<ReasonabilityTestResultMessage>());
     messages.put(MessageTypeCodes.INFO, new ArrayList<ReasonabilityTestResultMessage>());
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -952,15 +978,17 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
     return messages;
   }
 
   public final ReasonabilityTestResults readReasonabilityTestResults(Scenario scenario, Date verifiedDate) throws SQLException {
     ReasonabilityTestResults results = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -1088,7 +1116,7 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
     return results;
   }
@@ -1097,9 +1125,11 @@ public class ReasonabilityReadDAO {
       throws SQLException {
     
     BenefitRiskAssessmentTestResult benefitRisk = results.getBenefitRisk();
+    boolean originalAutoCommit = true;
     
     int c;
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure puProc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -1139,7 +1169,7 @@ public class ReasonabilityReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   

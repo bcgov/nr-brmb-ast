@@ -41,9 +41,11 @@ public class ConfigurationDAO extends OracleDAO {
       throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Map<String, String> parameters = new HashMap<>();
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -72,7 +74,7 @@ public class ConfigurationDAO extends OracleDAO {
       handleException(e);
     } finally {
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -86,9 +88,11 @@ public class ConfigurationDAO extends OracleDAO {
       throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Map<Integer, Map<String, String>> parametersByYear = new HashMap<>();
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -125,7 +129,7 @@ public class ConfigurationDAO extends OracleDAO {
       handleException(e);
     } finally {
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }

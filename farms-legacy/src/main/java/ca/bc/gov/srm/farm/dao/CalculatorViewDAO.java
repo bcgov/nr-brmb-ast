@@ -78,11 +78,13 @@ public class CalculatorViewDAO extends OracleDAO {
       throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     Map<Integer, List<Integer>> scNumMap = new HashMap<>();
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -119,7 +121,7 @@ public class CalculatorViewDAO extends OracleDAO {
     } finally {
       close(rs, proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -148,11 +150,13 @@ public class CalculatorViewDAO extends OracleDAO {
       throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<CalculatorInboxItem> inboxItems = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -199,7 +203,7 @@ public class CalculatorViewDAO extends OracleDAO {
     } finally {
       close(rs, proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -221,11 +225,13 @@ public class CalculatorViewDAO extends OracleDAO {
       throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     Integer revisionCount = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -254,7 +260,7 @@ public class CalculatorViewDAO extends OracleDAO {
     } finally {
       close(rs, proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -278,10 +284,12 @@ public class CalculatorViewDAO extends OracleDAO {
   throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     boolean result = false;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -306,7 +314,7 @@ public class CalculatorViewDAO extends OracleDAO {
     } finally {
       close(proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -331,11 +339,13 @@ public class CalculatorViewDAO extends OracleDAO {
       throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<DeductionLineItem> items = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -376,7 +386,7 @@ public class CalculatorViewDAO extends OracleDAO {
     } finally {
       close(rs, proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -400,10 +410,12 @@ public class CalculatorViewDAO extends OracleDAO {
       final Integer programYear) throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     Integer combinedFarmNumber = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -432,7 +444,7 @@ public class CalculatorViewDAO extends OracleDAO {
     } finally {
       close(proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -456,10 +468,12 @@ public class CalculatorViewDAO extends OracleDAO {
       final Integer programYear) throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     Integer combinedFarmNumber = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -488,7 +502,7 @@ public class CalculatorViewDAO extends OracleDAO {
     } finally {
       close(proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }

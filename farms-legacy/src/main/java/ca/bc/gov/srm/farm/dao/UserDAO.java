@@ -44,8 +44,10 @@ public class UserDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + CREATE_USER_PROC, paramCount, false);) {
@@ -84,7 +86,7 @@ public class UserDAO extends OracleDAO {
       handleException(e);
     } finally {
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -100,8 +102,10 @@ public class UserDAO extends OracleDAO {
     final int paramCount = 8;
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + UPDATE_USER_PROC, paramCount, false)) {
@@ -141,7 +145,7 @@ public class UserDAO extends OracleDAO {
       handleException(e);
     } finally {
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -158,8 +162,10 @@ public class UserDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + DELETE_USER_PROC, paramCount, false); ) {
@@ -192,7 +198,7 @@ public class UserDAO extends OracleDAO {
       handleException(e);
     } finally {
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -207,8 +213,10 @@ public class UserDAO extends OracleDAO {
     FarmUser farmUser = null;
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
@@ -235,7 +243,7 @@ public class UserDAO extends OracleDAO {
       handleException(e);
     } finally {
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -252,8 +260,10 @@ public class UserDAO extends OracleDAO {
     FarmUser farmUser = null;
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
@@ -280,7 +290,7 @@ public class UserDAO extends OracleDAO {
       handleException(e);
     } finally {
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -295,6 +305,7 @@ public class UserDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + GET_ALL_USERS_PROC;
     List<FarmUser> users = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     final int paramCount = 1;
     
     String deletedInd = null;
@@ -303,6 +314,7 @@ public class UserDAO extends OracleDAO {
     }
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true)) {
@@ -331,7 +343,7 @@ public class UserDAO extends OracleDAO {
       handleException(e);
     } finally {
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }

@@ -129,11 +129,13 @@ public class SubscriptionDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + CLIENTS_PROC;
     List items = new ArrayList();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
@@ -180,7 +182,7 @@ public class SubscriptionDAO extends OracleDAO {
     } finally {
       close(resultSet, proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }

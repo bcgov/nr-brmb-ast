@@ -325,11 +325,13 @@ public class ListDAO extends OracleDAO {
     String qualifiedProcName = PACKAGE_NAME + "." + procName;
     List<CodeListView> rows = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     CallableStatement cstmt = null;
     ResultSet resultSet = null;
     final int paramCount = 0;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       cstmt = prepareFunction(connection, qualifiedProcName, paramCount);
@@ -353,7 +355,7 @@ public class ListDAO extends OracleDAO {
     } finally {
       close(resultSet, cstmt);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -397,11 +399,13 @@ public class ListDAO extends OracleDAO {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_LINE_ITEMS";
     List<LineItemListView> rows = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 2;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, qualifiedProcName, paramCount, true);
@@ -434,7 +438,7 @@ public class ListDAO extends OracleDAO {
     } finally {
       close(rs, proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -455,11 +459,13 @@ public class ListDAO extends OracleDAO {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_INVENTORY_VALID_ITEMS";
     List<InventoryItemListView> items = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 0;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, qualifiedProcName, paramCount, true);
@@ -496,7 +502,7 @@ public class ListDAO extends OracleDAO {
     } finally {
       close(rs, proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -521,11 +527,13 @@ public class ListDAO extends OracleDAO {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_SECTOR_DETAIL_CODES";
     List<SectorDetailCodeListView> items = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 0;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, qualifiedProcName, paramCount, true);
@@ -555,7 +563,7 @@ public class ListDAO extends OracleDAO {
     } finally {
       close(rs, proc);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }
@@ -590,11 +598,13 @@ public class ListDAO extends OracleDAO {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_VERIFIERS";
     List<UserListView> rows = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     CallableStatement cstmt = null;
     ResultSet resultSet = null;
     final int paramCount = 0;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
       cstmt = prepareFunction(connection, qualifiedProcName, paramCount);
@@ -620,7 +630,7 @@ public class ListDAO extends OracleDAO {
     } finally {
       close(resultSet, cstmt);
       try {
-        connection.setAutoCommit(true);
+        connection.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         handleException(ex);
       }

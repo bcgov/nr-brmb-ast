@@ -190,8 +190,10 @@ public class ReadDAO {
   public final Client readClient(final Integer pin) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn,
@@ -279,7 +281,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -299,8 +301,10 @@ public class ReadDAO {
       final Integer year) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -363,7 +367,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -515,8 +519,10 @@ public class ReadDAO {
       final Integer scnum, String pMode) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -563,7 +569,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -581,8 +587,10 @@ public class ReadDAO {
       throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -606,7 +614,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -625,8 +633,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -692,7 +702,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -712,8 +722,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -759,7 +771,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -779,8 +791,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -823,7 +837,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -844,8 +858,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -924,7 +940,7 @@ public class ReadDAO {
       throw ex;
     } finally {
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -950,8 +966,10 @@ public class ReadDAO {
   public final String[] readVerificationNotes(Integer pyId) throws SQLException {
     final int numberOfNotes = 3;
     String verificationNotes[] = new String[numberOfNotes];
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(conn,
@@ -979,7 +997,7 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -1000,8 +1018,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -1044,7 +1064,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -1064,8 +1084,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_CLAIM_PROC,
@@ -1169,7 +1191,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -1188,8 +1210,10 @@ public class ReadDAO {
     
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_STATE_AUDITS_PROC,
@@ -1227,7 +1251,7 @@ public class ReadDAO {
     } finally {
       
       close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -1246,8 +1270,10 @@ public class ReadDAO {
   	List<ScenarioLog> logs = new ArrayList<>();
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(
@@ -1278,7 +1304,7 @@ public class ReadDAO {
       throw ex;
     } finally {
       close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
     
     return logs;
@@ -1300,8 +1326,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -1381,7 +1409,7 @@ public class ReadDAO {
       throw ex;
     } finally {
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -1399,8 +1427,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn,
@@ -1463,7 +1493,7 @@ public class ReadDAO {
       throw ex;
     } finally {
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -1484,8 +1514,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_CROP_UNIT_CONVERSIONS_PROC,
@@ -1539,7 +1571,7 @@ public class ReadDAO {
       throw ex;
     } finally {
         close(rs, proc);
-        conn.setAutoCommit(true);
+        conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -1563,8 +1595,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_INV_PROC,
@@ -1762,7 +1796,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -2147,8 +2181,10 @@ public class ReadDAO {
     final int paramCount = 2;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_PUC_PROC,
@@ -2225,7 +2261,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -2249,8 +2285,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_IE_PROC,
@@ -2330,7 +2368,7 @@ public class ReadDAO {
     } finally {
 
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -2486,8 +2524,10 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       Array oracleArrayInventoryCodes = createStringOracleArray(pInvCodes);
@@ -2529,7 +2569,7 @@ public class ReadDAO {
       throw ex;
     } finally {
     	close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -2692,10 +2732,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     Date cobGenerationDate = null;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -2719,7 +2761,7 @@ public class ReadDAO {
       throw ex;
     } finally {
       close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -2736,10 +2778,12 @@ public class ReadDAO {
     
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     Enrolment e = null;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -2787,7 +2831,7 @@ public class ReadDAO {
       throw ex;
     } finally {
       close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -2798,10 +2842,12 @@ public class ReadDAO {
     
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     EnwEnrolment e = null;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -2876,7 +2922,7 @@ public class ReadDAO {
       throw ex;
     } finally {
       close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -2939,8 +2985,10 @@ public class ReadDAO {
   public final void readFarmType(Scenario scenario) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
@@ -2963,7 +3011,7 @@ public class ReadDAO {
       throw ex;
     } finally {
       close(rs, proc);
-      conn.setAutoCommit(true);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
    
