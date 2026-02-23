@@ -15,4 +15,4 @@ begin
         order by fu.account_name asc;
     return cur;
 end;
-$$
+$$;
