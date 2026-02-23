@@ -109,7 +109,7 @@ public class UserDAO extends OracleDAO {
         for (FarmUser farmUser : farmUsers) {
 
           int param = 1;
-          proc.setString(param++, farmUser.getUserId());
+          proc.setLong(param++, farmUser.getUserId());
           proc.setString(param++, farmUser.getUserGuid());
           proc.setString(param++, farmUser.getSourceDirectory());
           proc.setString(param++, farmUser.getAccountName());
