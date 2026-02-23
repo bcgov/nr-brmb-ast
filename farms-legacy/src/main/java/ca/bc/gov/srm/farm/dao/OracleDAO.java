@@ -1956,12 +1956,12 @@ abstract class OracleDAO {
 
   @SuppressWarnings("resource")
   protected Array createStringOracleArray(Transaction transaction, List<String> values) throws SQLException {
-    return getOracleConnection(transaction).createOracleArray(CODE_COLLECTION_TYPE_NAME, toArray(values));
+    return ((Connection)transaction.getDatastore()).createArrayOf("varchar", toArray(values));
   }
   
   @SuppressWarnings("resource")
   protected Array createNumbersOracleArray(Transaction transaction, List<Integer> values) throws SQLException {
-    return getOracleConnection(transaction).createOracleArray(NUM_COLLECTION_TYPE_NAME, toArray(values));
+    return ((Connection)transaction.getDatastore()).createArrayOf("numeric", toArray(values));
   }
 
   protected Array createStringOracleArray(Connection connection, List<String> values) throws SQLException {
