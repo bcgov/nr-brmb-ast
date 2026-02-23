@@ -1989,7 +1989,7 @@ abstract class OracleDAO {
   
   @SuppressWarnings("resource")
   protected Array createNumbersOracleArray(Connection connection, Integer[] values) throws SQLException {
-    return getOracleConnection(connection).createOracleArray(NUM_COLLECTION_TYPE_NAME, values);
+    return connection.createArrayOf("numeric", values);
   }
 
   @SuppressWarnings("resource")
