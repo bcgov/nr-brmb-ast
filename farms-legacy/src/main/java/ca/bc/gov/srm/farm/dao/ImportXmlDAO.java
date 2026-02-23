@@ -39,7 +39,7 @@ import oracle.jdbc.OracleResultSet;
  */
 public class ImportXmlDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_IMPORT_XML_PKG";
+  private static final String PACKAGE_NAME = "FARMS_IMPORT_XML_PKG";
 
 
 
@@ -90,11 +90,15 @@ public class ImportXmlDAO extends OracleDAO {
     String qualifiedProcName = PACKAGE_NAME + "." + procName;
     List<FileLineMessage> items = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(
           connection,
           qualifiedProcName,
@@ -122,11 +126,22 @@ public class ImportXmlDAO extends OracleDAO {
         items.add(result);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return items;
@@ -148,11 +163,15 @@ public class ImportXmlDAO extends OracleDAO {
     final ImportResults importResults) throws DataAccessException {
     String procName = PACKAGE_NAME + "." + IMPORT_NUMBERS_PROC;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       proc.setInt(paramCount, importVersionId);
@@ -166,11 +185,22 @@ public class ImportXmlDAO extends OracleDAO {
       	importResults.setNumberOfValueUpdates(resultSet.getInt("NUM_VALUE_UPDATES")); // BPU import only!
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   } 
   
@@ -185,8 +215,12 @@ public class ImportXmlDAO extends OracleDAO {
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       
       int index = 1;
@@ -204,17 +238,23 @@ public class ImportXmlDAO extends OracleDAO {
           log = (IMPORTLOG) um.unmarshal(stream);
         } 
       }
-    } catch (SQLException e) {
-      getLog().error("Unexpected error: ", e);
-      handleException(e);
-    } catch (JAXBException e) {
-      getLog().error("Unexpected error: ", e);
-      handleException(e);
-    } catch (IOException e) {
+
+      connection.commit();
+    } catch (SQLException | JAXBException | IOException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return log;
@@ -238,8 +278,12 @@ public class ImportXmlDAO extends OracleDAO {
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       
       int index = 1;
@@ -257,17 +301,23 @@ public class ImportXmlDAO extends OracleDAO {
           log = (STAGINGLOG) um.unmarshal(stream);
         }
       }
-    } catch (SQLException e) {
-      getLog().error("Unexpected error: ", e);
-      handleException(e);
-    } catch (JAXBException e) {
-      getLog().error("Unexpected error: ", e);
-      handleException(e);
-    } catch (IOException e) {
+
+      connection.commit();
+    } catch (SQLException | JAXBException | IOException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return log;
