@@ -39,7 +39,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class CalculatorDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_CALCULATOR_PKG";
+  private static final String PACKAGE_NAME = "FARMS_CALCULATOR_PKG";
   
 
   private static final String UPDATE_SCENARIO_REVISION_COUNT_PROC = "UPDATE_SC_REV";
@@ -766,8 +766,8 @@ public class CalculatorDAO extends OracleDAO {
 
         int param = 1;
         proc.setInt(param++, participantPin);
-        proc.setInt(param++, year);
-        proc.setInt(param++, excludedProgramYearVersionNumber);
+        proc.setShort(param++, (short)year);
+        proc.setLong(param++, excludedProgramYearVersionNumber == null ? null : excludedProgramYearVersionNumber.longValue());
         proc.execute();
 
         try (ResultSet rs = proc.getResultSet();) {
