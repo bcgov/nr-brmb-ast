@@ -82,7 +82,7 @@ public class EnrolmentReadDAO extends OracleDAO {
             + READ_ENROLMENTS_PROC, paramCount , true); ) {
 
         int param = 1;
-        proc.setInt(param++, enrolmentYear);
+        proc.setShort(param++, enrolmentYear == null ? null : enrolmentYear.shortValue());
         proc.setString(param++, regionCode);
         proc.execute();
 
