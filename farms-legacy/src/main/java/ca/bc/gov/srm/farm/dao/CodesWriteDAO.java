@@ -1185,13 +1185,13 @@ public class CodesWriteDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + IN_USE_MUNICIPALITY_CODE_PROC, IN_USE_MUNICIPALITY_CODE_PARAM, Types.INTEGER);
+          + IN_USE_MUNICIPALITY_CODE_PROC, IN_USE_MUNICIPALITY_CODE_PARAM, Types.NUMERIC);
       
       int param = 1;
       proc.setString(param++, code);
       proc.execute();
 
-      inUseInt = proc.getInt(1);
+      inUseInt = proc.getIntObj(1);
       result = inUseInt == 1;
 
       connection.commit();
