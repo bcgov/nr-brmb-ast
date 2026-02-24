@@ -1061,7 +1061,7 @@ public class CodesReadDAO extends OracleDAO {
       Integer programYearParam = null;
       int param = 1;
       proc.setString(param++, code);
-      proc.setInt(param++, programYearParam);
+      proc.setShort(param++, programYearParam == null ? null : programYearParam.shortValue());
       proc.execute();
       
       rs = proc.getResultSet();
