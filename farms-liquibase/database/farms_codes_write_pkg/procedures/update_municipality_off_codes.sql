@@ -13,7 +13,6 @@ begin
         office_municipality_xref_id,
         municipality_code,
         regional_office_code,
-        revision_count,
         who_created,
         when_created,
         who_updated,
