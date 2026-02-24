@@ -1032,7 +1032,7 @@ public class CodesWriteDAO extends OracleDAO {
           + DELETE_FMV_PROC, DELETE_FMV_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.setString(param++, inventoryItemCode);
       proc.setString(param++, municipalityCode);
       proc.setString(param++, cropUnitCode);
