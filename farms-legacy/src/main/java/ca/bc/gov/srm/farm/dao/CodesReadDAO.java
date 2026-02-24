@@ -1143,7 +1143,7 @@ public class CodesReadDAO extends OracleDAO {
       int param = 1;
       proc.setString(param++, inventoryClassCode);
       proc.setString(param++, inventoryItemCode);
-      proc.setInt(param++, commodityXrefId);
+      proc.setLong(param++, commodityXrefId == null ? null : commodityXrefId.longValue());
       proc.execute();
 
       rs = proc.getResultSet();
