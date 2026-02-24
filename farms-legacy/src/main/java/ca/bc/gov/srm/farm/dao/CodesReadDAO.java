@@ -1712,7 +1712,7 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_EXPECTED_PRODUCTION_ITEMS_PROC, READ_EXPECTED_PRODUCTION_ITEMS_PARAM, true);
       
-      proc.setInt(param++, id);
+      proc.setLong(param++, id == null ? null : id.longValue());
       
       proc.execute();
       rs = proc.getResultSet();
