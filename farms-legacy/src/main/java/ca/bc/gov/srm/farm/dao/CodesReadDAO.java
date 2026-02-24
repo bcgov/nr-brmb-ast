@@ -414,7 +414,7 @@ public class CodesReadDAO extends OracleDAO {
           + READ_FMV_PROC, READ_FMV_PARAM, true);
 
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.setString(param++, inventoryItemCode);
       proc.setString(param++, municipalityCode);
       proc.setString(param++, cropUnitCode);

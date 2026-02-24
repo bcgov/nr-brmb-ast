@@ -15,9 +15,10 @@ begin
                fmv.inventory_item_code,
                fmv.municipality_code,
                fmv.crop_unit_code,
-               iic.description inventory_item_code_description,
+               iic.description inventory_item_code_desc,
                mc.description municipality_code_description,
                cuc.description crop_unit_code_description,
+               cud.crop_unit_code default_crop_unit_code,
                cud.crop_unit_code default_crop_unit_description,
                fmv.fair_market_value_id,
                fmv.period,
@@ -36,7 +37,7 @@ begin
         and (in_crop_unit_code is null or fmv.crop_unit_code = in_crop_unit_code)
         and (fmv.expiry_date is null or fmv.expiry_date > current_date)
         /* Read relies on this ordering to construct FMV objects. */
-        group by lower(iic.description),
+        order by lower(iic.description),
                  fmv.inventory_item_code,
                  lower(mc.description),
                  fmv.municipality_code,
