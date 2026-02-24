@@ -605,8 +605,8 @@ public class CodesWriteDAO extends OracleDAO {
           + CREATE_LINE_ITEM_PROC, CREATE_LINE_ITEM_PARAM, false);
 
       int param = 1;
-      proc.setInt(param++, lineItem.getProgramYear());
-      proc.setInt(param++, lineItem.getLineItem());
+      proc.setShort(param++, lineItem.getProgramYear() == null ? null : lineItem.getProgramYear().shortValue());
+      proc.setShort(param++, lineItem.getLineItem() == null ? null : lineItem.getLineItem().shortValue());
       proc.setString(param++, lineItem.getDescription());
       proc.setString(param++, getIndicatorYN(lineItem.getIsEligible()));
       proc.setString(param++, getIndicatorYN(lineItem.getIsEligibleRefYears()));

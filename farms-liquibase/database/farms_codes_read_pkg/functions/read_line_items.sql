@@ -44,8 +44,8 @@ begin
         left outer join farms.farm_commodity_type_codes ctc on ctc.commodity_type_code = li.commodity_type_code
         where li.program_year = in_program_year
         and (in_line_item is null or li.line_item = in_line_item)
-        and li.expiry_date > current_date
-        and li.established_date < current_date
+        and li.expiry_date > current_timestamp
+        and li.established_date < current_timestamp
         order by lower(li.description);
 
     return cur;
