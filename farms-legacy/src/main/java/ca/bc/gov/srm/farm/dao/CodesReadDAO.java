@@ -1970,7 +1970,7 @@ public class CodesReadDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_YEAR_CONFIGURATION_PARAMS_PROC, READ_YEAR_CONFIGURATION_PARAMS_PARAM, true);) {
         
-        proc.setInt(param++, programYear);
+        proc.setShort(param++, programYear == null ? null : programYear.shortValue());
         proc.execute();
         
         try (ResultSet rs = proc.getResultSet();) {
