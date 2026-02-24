@@ -12,7 +12,7 @@ begin
         select t.sector_code,
                t.description,
                t.established_date,
-               t.expiration_date,
+               t.expiry_date,
                t.revision_count
         from farms.farm_sector_codes t
         where (in_code is null or t.sector_code = in_code)
