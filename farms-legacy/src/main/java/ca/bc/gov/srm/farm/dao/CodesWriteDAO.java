@@ -549,14 +549,14 @@ public class CodesWriteDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + IN_USE_LINE_ITEM_PROC, IN_USE_LINE_ITEM_PARAM, Types.INTEGER);
+          + IN_USE_LINE_ITEM_PROC, IN_USE_LINE_ITEM_PARAM, Types.NUMERIC);
 
       int param = 1;
-      proc.setInt(param++, year);
-      proc.setInt(param++, lineItem);
+      proc.setShort(param++, year == null ? null : year.shortValue());
+      proc.setShort(param++, lineItem == null ? null : lineItem.shortValue());
       proc.execute();
 
-      inUseInt = proc.getInt(1);
+      inUseInt = proc.getIntObj(1);
       result = inUseInt == 1;
 
       connection.commit();
@@ -737,9 +737,9 @@ public class CodesWriteDAO extends OracleDAO {
           + DELETE_LINE_ITEM_PROC, DELETE_LINE_ITEM_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, lineItemId);
-      proc.setInt(param++, year);
-      proc.setInt(param++, lineItem);
+      proc.setLong(param++, lineItemId == null ? null : lineItemId.longValue());
+      proc.setShort(param++, year == null ? null : year.shortValue());
+      proc.setShort(param++, lineItem == null ? null : lineItem.shortValue());
       proc.setInt(param++, revisionCount);
       proc.execute();
 
