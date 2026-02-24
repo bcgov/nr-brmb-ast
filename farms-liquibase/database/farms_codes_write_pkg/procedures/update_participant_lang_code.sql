@@ -1,5 +1,5 @@
 create or replace procedure farms_codes_write_pkg.update_participant_lang_code(
-   in in_participant_language_code farms.farm_participant_lang_codes.participant_lang_code%type,
+   in in_participant_lang_code farms.farm_participant_lang_codes.participant_lang_code%type,
    in in_description farms.farm_participant_lang_codes.description%type,
    in in_effective_date farms.farm_participant_lang_codes.established_date%type,
    in in_expiry_date farms.farm_participant_lang_codes.expiry_date%type,
@@ -8,6 +8,8 @@ create or replace procedure farms_codes_write_pkg.update_participant_lang_code(
 )
 language plpgsql
 as $$
+declare
+    v_rows_affected  bigint := null;
 begin
     update farms.farm_participant_lang_codes
     set description = in_description,
@@ -16,10 +18,11 @@ begin
         revision_count = revision_count + 1,
         who_updated = in_user,
         when_updated = current_timestamp
-    where participant_lang_code = in_participant_language_code
+    where participant_lang_code = in_participant_lang_code
     and revision_count = in_revision_count;
 
-    if sql%rowcount <> 1 then
+    get diagnostics v_rows_affected = row_count;
+    if v_rows_affected = 0 then
         raise exception 'Invalid revision count';
     end if;
 end;
