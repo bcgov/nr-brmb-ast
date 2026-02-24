@@ -238,7 +238,7 @@ public class CalculatorViewDAO extends OracleDAO {
           + GET_SCENARIO_REVISION_COUNT_PROC, GET_SCENARIO_REVISION_COUNT_PARAM, true);
       
       int param = 1;
-      proc.setInt(param++, scenarioId);
+      proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
       proc.execute();
 
       rs = proc.getResultSet();
