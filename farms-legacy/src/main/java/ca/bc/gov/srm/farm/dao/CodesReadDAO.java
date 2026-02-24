@@ -787,7 +787,7 @@ public class CodesReadDAO extends OracleDAO {
           + READ_BPU_PROC, READ_BPU_PARAM, true);
 
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.execute();
 
       rs = proc.getResultSet();
