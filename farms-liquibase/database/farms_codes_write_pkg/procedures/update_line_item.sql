@@ -21,6 +21,8 @@ create or replace procedure farms_codes_write_pkg.update_line_item(
 )
 language plpgsql
 as $$
+declare
+    v_rows_affected  bigint := null;
 begin
     call farms_codes_write_pkg.create_line_item(
         in_program_year,
@@ -52,7 +54,8 @@ begin
     where line_item_id = in_line_item_id
     and revision_count = in_revision_count;
 
-    if sql%rowcount <> 1 then
+    get diagnostics v_rows_affected = row_count;
+    if v_rows_affected = 0 then
         raise exception 'Invalid revision count';
     end if;
 end;
