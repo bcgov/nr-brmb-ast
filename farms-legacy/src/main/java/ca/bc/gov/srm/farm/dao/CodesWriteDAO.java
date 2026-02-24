@@ -12,6 +12,7 @@ package ca.bc.gov.srm.farm.dao;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -903,10 +904,10 @@ public class CodesWriteDAO extends OracleDAO {
         if(period.getPrice() != null
             && period.getPercentVariance() != null) {
           param = 1;
-          proc.setInt(param++, fmv.getProgramYear());
-          proc.setInt(param++, period.getPeriod());
-          proc.setDouble(param++, period.getPrice());
-          proc.setDouble(param++, period.getPercentVariance());
+          proc.setShort(param++, fmv.getProgramYear() == null ? null : fmv.getProgramYear().shortValue());
+          proc.setShort(param++, period.getPeriod() == null ? null : period.getPeriod().shortValue());
+          proc.setBigDecimal(param++, period.getPrice() == null ? null : BigDecimal.valueOf(period.getPrice()));
+          proc.setBigDecimal(param++, period.getPercentVariance() == null ? null : BigDecimal.valueOf(period.getPercentVariance()));
           proc.setString(param++, fmv.getInventoryItemCode());
           proc.setString(param++, fmv.getMunicipalityCode());
           proc.setString(param++, fmv.getCropUnitCode());

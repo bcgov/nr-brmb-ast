@@ -1115,7 +1115,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if ((x == null) || (x.trim().length() == 0)) {
-      setNull(index, Types.VARCHAR);
+      setNull(index, Types.NUMERIC);
     } else {
       setBigDecimal(index, BigDecimal.valueOf(Long.parseLong(x)));
     }
