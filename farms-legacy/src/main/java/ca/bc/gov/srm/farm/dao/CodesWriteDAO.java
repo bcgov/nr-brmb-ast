@@ -838,16 +838,16 @@ public class CodesWriteDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + IN_USE_FMV_PROC, IN_USE_FMV_PARAM, Types.INTEGER);
+          + IN_USE_FMV_PROC, IN_USE_FMV_PARAM, Types.NUMERIC);
 
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.setString(param++, inventoryItemCode);
       proc.setString(param++, municipalityCode);
       proc.setString(param++, cropUnitCode);
       proc.execute();
 
-      inUseInt = proc.getInt(1);
+      inUseInt = proc.getIntObj(1);
       result = inUseInt == 1;
 
       connection.commit();

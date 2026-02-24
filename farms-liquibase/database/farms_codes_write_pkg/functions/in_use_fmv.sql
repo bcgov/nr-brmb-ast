@@ -19,8 +19,8 @@ begin
             join farms.farm_reported_inventories ri on ri.farming_operation_id = fo.farming_operation_id
             join farms.farm_agristabilty_cmmdty_xref x on x.agristabilty_cmmdty_xref_id = ri.agristabilty_cmmdty_xref_id
             where pyv.municipality_code = in_municipality_code
-            and (to_number(to_char(fo.fiscal_year_start, 'YYYY')) = in_program_year
-                 or to_number(to_char(fo.fiscal_year_end, 'YYYY')) = in_program_year)
+            and (to_char(fo.fiscal_year_start, 'YYYY')::numeric = in_program_year
+                 or to_char(fo.fiscal_year_end, 'YYYY')::numeric = in_program_year)
             and x.inventory_item_code = in_inventory_item_code
             and x.inventory_class_code in ('1', '2')
             and (x.inventory_class_code = '2' or ri.crop_unit_code = in_crop_unit_code)
