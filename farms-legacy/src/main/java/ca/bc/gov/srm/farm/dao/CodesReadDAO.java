@@ -1816,8 +1816,8 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_LINE_ITEM_EXISTS_FOR_PROGRAM_YEAR_PROC, CHECK_LINE_ITEM_EXISTS_FOR_PROGRAM_YEAR_PARAM, true);
       
-      proc.setInt(param++, lineItem);
-      proc.setInt(param++, programYear);
+      proc.setShort(param++, lineItem == null ? null : lineItem.shortValue());
+      proc.setShort(param++, programYear == null ? null : programYear.shortValue());
       
       proc.execute();
       rs = proc.getResultSet();
