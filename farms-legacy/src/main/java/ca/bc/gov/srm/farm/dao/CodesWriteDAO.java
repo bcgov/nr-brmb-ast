@@ -2913,7 +2913,7 @@ public class CodesWriteDAO extends OracleDAO {
       int param = 1;
       proc.setString(param++, expectedProduction.getCropUnitCode());
       proc.setString(param++, expectedProduction.getInventoryItemCode());
-      proc.setDouble(param++, expectedProduction.getExpectedProductionPerAcre());
+      proc.setBigDecimal(param++, expectedProduction.getExpectedProductionPerAcre() == null ? null : BigDecimal.valueOf(expectedProduction.getExpectedProductionPerAcre()));
       proc.setString(param++, user);
       proc.execute();
 
