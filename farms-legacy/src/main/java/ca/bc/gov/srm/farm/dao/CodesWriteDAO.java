@@ -2560,7 +2560,7 @@ public class CodesWriteDAO extends OracleDAO {
         param = 1;
         proc.setString(param++, cropUnitConversion.getInventoryItemCode());
         proc.setString(param++, item.getTargetCropUnitCode());
-        proc.setDouble(param++, item.getConversionFactor().doubleValue());
+        proc.setBigDecimal(param++, item.getConversionFactor());
         proc.setString(param++, user);
         proc.addBatch();
       }
