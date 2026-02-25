@@ -2820,7 +2820,7 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_PYV_PROC, CREATE_PYV_PARAM, Types.INTEGER);) {
+          + CREATE_PYV_PROC, CREATE_PYV_PARAM, Types.BIGINT);) {
         
         int param = 1;
         proc.setInt(param++, programYearId);
@@ -2828,7 +2828,7 @@ public class CalculatorDAO extends OracleDAO {
         proc.setString(param++, user);
         proc.execute();
         
-        programYearVersionId = proc.getInt(1);
+        programYearVersionId = (int)proc.getLong(1);
       }
 
       connection.commit();
