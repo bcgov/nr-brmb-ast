@@ -2718,7 +2718,7 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + CREATE_CLIENT_PROC, CREATE_CLIENT_PARAM, Types.INTEGER);) {
+            + CREATE_CLIENT_PROC, CREATE_CLIENT_PARAM, Types.BIGINT);) {
         
         int param = 1;
         proc.setInt(param++, client.getParticipantPin());
@@ -2731,7 +2731,7 @@ public class CalculatorDAO extends OracleDAO {
         proc.setString(param++, user);
         proc.execute();
         
-        clientId = proc.getInt(1);
+        clientId = (int)proc.getLong(1);
         client.setClientId(clientId);
       }
 
