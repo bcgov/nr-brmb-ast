@@ -2870,7 +2870,7 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_SCENARIO_PROC, paramCount, Types.INTEGER); ) {
+          + CREATE_SCENARIO_PROC, paramCount, Types.BIGINT); ) {
         
         int param = 1;
         proc.setInt(param++, programYearVersionId);
@@ -2879,7 +2879,7 @@ public class CalculatorDAO extends OracleDAO {
         proc.setString(param++, user);
         proc.execute();
         
-        scenarioId = proc.getInt(1);
+        scenarioId = (int)proc.getLong(1);
       }
 
       connection.commit();
