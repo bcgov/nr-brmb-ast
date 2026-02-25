@@ -784,10 +784,10 @@ public class CodesWriteDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + COPY_YEAR_LINE_ITEMS_PROC, COPY_YEAR_LINE_ITEMS_PARAM, false);
+          + COPY_YEAR_LINE_ITEMS_PROC, COPY_YEAR_LINE_ITEMS_PARAM, Types.NUMERIC);
 
       int param = 1;
-      proc.setInt(param++, toYear);
+      proc.setShort(param++, toYear == null ? null : toYear.shortValue());
       proc.setString(param++, user);
       proc.execute();
 
