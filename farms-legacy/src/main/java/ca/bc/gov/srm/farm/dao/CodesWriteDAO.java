@@ -1404,10 +1404,10 @@ public class CodesWriteDAO extends OracleDAO {
           + UPDATE_BPU_YEAR_PROC, numParams, false);
 
       int param = 1;
-      proc.setInt(param++, year.getBpuId());
-      proc.setInt(param++, year.getYear());
-      proc.setDouble(param++, year.getAverageMargin());
-      proc.setDouble(param++, year.getAverageExpense());
+      proc.setLong(param++, year.getBpuId() == null ? null : year.getBpuId().longValue());
+      proc.setShort(param++, year.getYear() == null ? null : year.getYear().shortValue());
+      proc.setBigDecimal(param++, year.getAverageMargin() == null ? null : BigDecimal.valueOf(year.getAverageMargin()));
+      proc.setBigDecimal(param++, year.getAverageExpense() == null ? null : BigDecimal.valueOf(year.getAverageExpense()));
       proc.setInt(param++, year.getRevisionCount());
       proc.setString(param++, user);
       proc.execute();
