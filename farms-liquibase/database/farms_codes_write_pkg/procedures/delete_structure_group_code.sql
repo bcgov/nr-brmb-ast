@@ -5,6 +5,7 @@ create or replace procedure farms_codes_write_pkg.delete_structure_group_code(
 language plpgsql
 as $$
 declare
+    v_rows_affected  bigint := null;
     v_in_use numeric;
 begin
 
@@ -19,7 +20,8 @@ begin
         where c.structure_group_code = in_structure_group_code
         and c.revision_count = in_revision_count;
 
-        if sql%rowcount <> 1 then
+        get diagnostics v_rows_affected = row_count;
+        if v_rows_affected = 0 then
             raise exception 'Invalid revision count';
         end if;
     end if;
