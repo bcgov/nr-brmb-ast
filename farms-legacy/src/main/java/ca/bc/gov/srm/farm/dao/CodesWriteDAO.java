@@ -2779,7 +2779,7 @@ public class CodesWriteDAO extends OracleDAO {
       int param = 1;
       proc.setString(param++, fruitVegCode.getName());
       proc.setString(param++, fruitVegCode.getDescription());
-      proc.setDouble(param++, fruitVegCode.getVarianceLimit().toString());
+      proc.setBigDecimal(param++, fruitVegCode.getVarianceLimit() == null ? null : BigDecimal.valueOf(fruitVegCode.getVarianceLimit()));
       proc.setString(param++, user);
       proc.execute();
 
