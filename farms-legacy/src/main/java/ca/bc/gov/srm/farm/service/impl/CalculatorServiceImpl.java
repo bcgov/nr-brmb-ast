@@ -3231,7 +3231,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.begin();
       
       @SuppressWarnings("resource")
-      Connection connection = OracleUtils.getOracleConnection(transaction);
+      Connection connection = (Connection)transaction.getDatastore();
       
       Person owner = participant.getClient().getOwner();
       Person contact = participant.getClient().getContact();
