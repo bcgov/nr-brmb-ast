@@ -2772,15 +2772,15 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_PY_PROC, CREATE_PY_PARAM, Types.INTEGER);) {
+          + CREATE_PY_PROC, CREATE_PY_PARAM, Types.BIGINT);) {
         
         int param = 1;
-        proc.setInt(param++, clientId);
-        proc.setInt(param++, year);
+        proc.setLong(param++, clientId == null ? null : clientId.longValue());
+        proc.setShort(param++, year == null ? null : year.shortValue());
         proc.setString(param++, user);
         proc.execute();
         
-        programYearId = proc.getInt(1);
+        programYearId = (int)proc.getLong(1);
       }
 
       connection.commit();

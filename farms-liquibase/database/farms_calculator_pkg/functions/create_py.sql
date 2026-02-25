@@ -16,7 +16,7 @@ begin
 
     insert into farms.farm_program_years(
        program_year_id,
-       "YEAR",
+       year,
        non_participant_ind,
        agristability_client_id,
        cash_margins_ind,
