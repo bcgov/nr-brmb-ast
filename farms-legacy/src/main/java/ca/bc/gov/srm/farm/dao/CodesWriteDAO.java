@@ -2646,7 +2646,7 @@ public class CodesWriteDAO extends OracleDAO {
           + RECALCULATE_FMVS_PROC, RECALCULATE_FMVS_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, programYear);
+      proc.setShort(param++, programYear == null ? null : programYear.shortValue());
       proc.setString(param++, inventoryItemCode);
       proc.setString(param++, user);
       proc.execute();
