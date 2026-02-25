@@ -1594,14 +1594,14 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + PIN_EXISTS_PROC, PIN_EXISTS_PARAM, Types.INTEGER);
+          + PIN_EXISTS_PROC, PIN_EXISTS_PARAM, Types.BIGINT);
 
       int c = 1;
 
       proc.setInt(c++, pin);
 
       proc.execute();
-      pinExistsInteger = new Integer(proc.getInt(1));
+      pinExistsInteger = new Integer((int)proc.getLong(1));
       
       exists = pinExistsInteger.intValue() == 1;
 
