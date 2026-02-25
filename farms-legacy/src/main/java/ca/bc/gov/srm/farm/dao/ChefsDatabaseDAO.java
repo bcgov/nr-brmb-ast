@@ -42,7 +42,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class ChefsDatabaseDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_CHEFS_PKG";
+  private static final String PACKAGE_NAME = "FARMS_CHEFS_PKG";
 
   private static final String CREATE_SUBMISSION_PROC = "CREATE_SUBMISSION";
   private static final String UPDATE_SUBMISSION_PROC = "UPDATE_SUBMISSION";
@@ -127,34 +127,52 @@ public class ChefsDatabaseDAO extends OracleDAO {
   throws DataAccessException {
     
     final int paramCount = 6;
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_SUBMISSION_PROC, paramCount, false); ) {
+    boolean originalAutoCommit = true;
 
-      for (ChefsSubmission submission : submissions) {
-        
-        int param = 1;
-        proc.setInt(param++, submission.getSubmissionId());
-        proc.setString(param++, submission.getValidationTaskGuid());
-        proc.setString(param++, submission.getMainTaskGuid());
-        proc.setString(param++, submission.getBceidFormInd());
-        proc.setString(param++, submission.getSubmissionStatusCode());
-        proc.setString(param++, user);
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_SUBMISSION_PROC, paramCount, false); ) {
+
+        for (ChefsSubmission submission : submissions) {
+          
+          int param = 1;
+          proc.setInt(param++, submission.getSubmissionId());
+          proc.setString(param++, submission.getValidationTaskGuid());
+          proc.setString(param++, submission.getMainTaskGuid());
+          proc.setString(param++, submission.getBceidFormInd());
+          proc.setString(param++, submission.getSubmissionStatusCode());
+          proc.setString(param++, user);
+          
+          if(submissions.size() > 1) {
+            proc.addBatch();
+          } else {
+            proc.execute();
+          }
+        }
         
         if(submissions.size() > 1) {
-          proc.addBatch();
-        } else {
-          proc.execute();
+          proc.executeBatch();
         }
       }
-      
-      if(submissions.size() > 1) {
-        proc.executeBatch();
-      }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -186,33 +204,51 @@ public class ChefsDatabaseDAO extends OracleDAO {
     }
     
     final int paramCount = 1;
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + DELETE_SUBMISSION_PROC, paramCount, false); ) {
+    boolean originalAutoCommit = true;
 
-      int guidCount = 0;
-      for (String submissionGuid : submissionGuids) {
-        
-        if(submissionGuid != null) {
-          guidCount++;
-          int param = 1;
-          proc.setString(param++, submissionGuid);
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + DELETE_SUBMISSION_PROC, paramCount, false); ) {
+
+        int guidCount = 0;
+        for (String submissionGuid : submissionGuids) {
           
-          if(submissionGuids.size() > 1) {
-            proc.addBatch();
-          } else {
-            proc.execute();
+          if(submissionGuid != null) {
+            guidCount++;
+            int param = 1;
+            proc.setString(param++, submissionGuid);
+            
+            if(submissionGuids.size() > 1) {
+              proc.addBatch();
+            } else {
+              proc.execute();
+            }
           }
         }
+        
+        if(guidCount > 1) {
+          proc.executeBatch();
+        }
       }
-      
-      if(guidCount > 1) {
-        proc.executeBatch();
-      }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -223,38 +259,56 @@ public class ChefsDatabaseDAO extends OracleDAO {
 
     final int paramCount = 1;
     List<ChefsSubmission> submissions = new ArrayList<>();
+    boolean originalAutoCommit = true;
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + READ_SUBMISSIONS_BY_FORM_TYPE_PROC, paramCount, true); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.setString(param++, formTypeCode);
-      proc.execute();
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + READ_SUBMISSIONS_BY_FORM_TYPE_PROC, paramCount, true); ) {
 
-      try (ResultSet rs = proc.getResultSet(); ) {
+        int param = 1;
+        proc.setString(param++, formTypeCode);
+        proc.execute();
 
-        while (rs.next()) {
-          String submissionGuid = getString(rs, "Chef_Submission_Guid");
-          
-          ChefsSubmission submission = new ChefsSubmission();
-          submission.setSubmissionId(getInteger(rs, "Chef_Submission_Id"));
-          submission.setSubmissionGuid(submissionGuid);
-          submission.setValidationTaskGuid(getString(rs, "Validation_Task_Guid"));
-          submission.setMainTaskGuid(getString(rs, "Main_Task_Guid"));
-          submission.setFormTypeCode(getString(rs, "Chef_Form_Type_Code"));
-          submission.setFormTypeDescription(getString(rs, "Chef_Form_Type_Description"));
-          submission.setSubmissionStatusCode(getString(rs, "Chef_Submssn_Status_Code"));
-          submission.setRevisionCount(getInteger(rs, "Revision_Count"));
-          submission.setBceidFormInd(getString(rs, "Bceid_Form_Ind"));
-          submission.setCreatedDate(getDate(rs, "When_Created"));
-          submission.setUpdatedDate(getDate(rs, "When_Updated"));
-          submissions.add(submission);
+        try (ResultSet rs = proc.getResultSet(); ) {
+
+          while (rs.next()) {
+            String submissionGuid = getString(rs, "Chef_Submission_Guid");
+            
+            ChefsSubmission submission = new ChefsSubmission();
+            submission.setSubmissionId(getInteger(rs, "Chef_Submission_Id"));
+            submission.setSubmissionGuid(submissionGuid);
+            submission.setValidationTaskGuid(getString(rs, "Validation_Task_Guid"));
+            submission.setMainTaskGuid(getString(rs, "Main_Task_Guid"));
+            submission.setFormTypeCode(getString(rs, "Chef_Form_Type_Code"));
+            submission.setFormTypeDescription(getString(rs, "Chef_Form_Type_Description"));
+            submission.setSubmissionStatusCode(getString(rs, "Chef_Submssn_Status_Code"));
+            submission.setRevisionCount(getInteger(rs, "Revision_Count"));
+            submission.setBceidFormInd(getString(rs, "Bceid_Form_Ind"));
+            submission.setCreatedDate(getDate(rs, "When_Created"));
+            submission.setUpdatedDate(getDate(rs, "When_Updated"));
+            submissions.add(submission);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return submissions;
@@ -280,24 +334,42 @@ public class ChefsDatabaseDAO extends OracleDAO {
 
     final int paramCount = 1;
     Map<String, ChefsSubmission> submissionMap = null;
+    boolean originalAutoCommit = true;
 
     List<String> submissionGuidList = new ArrayList<>();
     submissionGuidList.addAll(submissionGuids);
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + READ_SUBMISSIONS_BY_GUID_PROC, paramCount, true); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      Array oracleArray = createGuidOracleArray(connection, submissionGuidList);
-      
-      int param = 1;
-      proc.setArray(param++, oracleArray);
-      proc.execute();
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + READ_SUBMISSIONS_BY_GUID_PROC, paramCount, true); ) {
 
-      submissionMap = submissionResultSetToMap(proc);
+        Array oracleArray = createGuidOracleArray(connection, submissionGuidList);
+        
+        int param = 1;
+        proc.setArray(param++, oracleArray);
+        proc.execute();
 
+        submissionMap = submissionResultSetToMap(proc);
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return submissionMap;
@@ -350,19 +422,37 @@ public class ChefsDatabaseDAO extends OracleDAO {
   throws DataAccessException {
     
     final int paramCount = 3;
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_SCENARIO_SUBMISSION_ID_PROC, paramCount, false); ) {
+    boolean originalAutoCommit = true;
 
-      int param = 1;
-      proc.setInt(param++, scenarioId);
-      proc.setInt(param++, submissionId);
-      proc.setString(param++, user);
-      proc.execute();
-      
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_SCENARIO_SUBMISSION_ID_PROC, paramCount, false); ) {
+
+        int param = 1;
+        proc.setInt(param++, scenarioId);
+        proc.setInt(param++, submissionId);
+        proc.setString(param++, user);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -377,28 +467,46 @@ public class ChefsDatabaseDAO extends OracleDAO {
     Connection connection = getConnection(transaction);
     
     final int paramCount = 6;
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + ADD_PUC_PROC, paramCount, false); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      for (ProductiveUnitCapacity puc : pucList) {
-        int param = 1;
-        FarmingOperation operation = puc.getFarmingOperation();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + ADD_PUC_PROC, paramCount, false); ) {
 
-        proc.setDouble(param++, puc.getAdjAmount());
-        proc.setInt(param++, operation.getFarmingOperationId());
-        proc.setString(param++, puc.getStructureGroupCode());
-        proc.setString(param++, puc.getInventoryItemCode());
-        proc.setString(param++, ParticipantDataSrcCodes.LOCAL);
-        proc.setString(param++, user);
+        for (ProductiveUnitCapacity puc : pucList) {
+          int param = 1;
+          FarmingOperation operation = puc.getFarmingOperation();
 
-        proc.addBatch();
+          proc.setDouble(param++, puc.getAdjAmount());
+          proc.setInt(param++, operation.getFarmingOperationId());
+          proc.setString(param++, puc.getStructureGroupCode());
+          proc.setString(param++, puc.getInventoryItemCode());
+          proc.setString(param++, ParticipantDataSrcCodes.LOCAL);
+          proc.setString(param++, user);
+
+          proc.addBatch();
+        }
+
+        proc.executeBatch();
       }
 
-      proc.executeBatch();
-
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -413,27 +521,45 @@ public class ChefsDatabaseDAO extends OracleDAO {
     Connection connection = getConnection(transaction);
     
     final int paramCount = 5;
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + ADD_INCOME_EXPENSE_PROC, paramCount, false); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      for (IncomeExpense ie : incomeExpenseList) {
-        int param = 1;
-        FarmingOperation operation = ie.getFarmingOperation();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + ADD_INCOME_EXPENSE_PROC, paramCount, false); ) {
 
-        proc.setDouble(param++, ie.getAdjAmount());
-        proc.setString(param++, getIndicatorYN(ie.getIsExpense()));
-        proc.setInt(param++, operation.getFarmingOperationId());
-        proc.setInt(param++, ie.getLineItem().getLineItem());
-        proc.setString(param++, user);
+        for (IncomeExpense ie : incomeExpenseList) {
+          int param = 1;
+          FarmingOperation operation = ie.getFarmingOperation();
 
-        proc.addBatch();
+          proc.setDouble(param++, ie.getAdjAmount());
+          proc.setString(param++, getIndicatorYN(ie.getIsExpense()));
+          proc.setInt(param++, operation.getFarmingOperationId());
+          proc.setInt(param++, ie.getLineItem().getLineItem());
+          proc.setString(param++, user);
+
+          proc.addBatch();
+        }
+
+        proc.executeBatch();
       }
 
-      proc.executeBatch();
-
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -448,79 +574,115 @@ public class ChefsDatabaseDAO extends OracleDAO {
     Connection connection = getConnection(transaction);
     
     final int paramCount = 16;
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + ADD_INVENTORY_PROC, paramCount, false); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      for (InventoryItem item : inventoryList) {
-        FarmingOperation operation = item.getFarmingOperation();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + ADD_INVENTORY_PROC, paramCount, false); ) {
 
-        // this is mostly here to avoid casts and allow for easy checks
-        CropItem cropItem = null;
-        String inventoryClassCode = item.getInventoryClassCode();
-        if (inventoryClassCode.equals(InventoryClassCodes.CROP)) {
-          cropItem = (CropItem) item;
+        for (InventoryItem item : inventoryList) {
+          FarmingOperation operation = item.getFarmingOperation();
+
+          // this is mostly here to avoid casts and allow for easy checks
+          CropItem cropItem = null;
+          String inventoryClassCode = item.getInventoryClassCode();
+          if (inventoryClassCode.equals(InventoryClassCodes.CROP)) {
+            cropItem = (CropItem) item;
+          }
+          int param = 1;
+
+          proc.setInt(param++, operation.getFarmingOperationId());
+          proc.setDouble(param++, item.getAdjPriceStart());
+          proc.setDouble(param++, item.getAdjPriceEnd());
+          proc.setDouble(param++, item.getAdjEndYearProducerPrice());
+          proc.setDouble(param++, item.getAdjQuantityStart());
+          proc.setDouble(param++, item.getAdjQuantityEnd());
+          proc.setDouble(param++, item.getAdjStartOfYearAmount());
+          proc.setDouble(param++, item.getAdjEndOfYearAmount());
+
+          if (cropItem != null) {
+            proc.setDouble(param++, cropItem.getAdjQuantityProduced());
+            proc.setString(param++, cropItem.getCropUnitCode());
+            proc.setDouble(param++, cropItem.getOnFarmAcres());
+            proc.setDouble(param++, cropItem.getUnseedableAcres());
+          } else if (inventoryClassCode.equals(InventoryClassCodes.LIVESTOCK)) {
+            proc.setNull(param++, Types.NUMERIC);
+            proc.setString(param++, CropUnitCodes.getLivestockUnitCode(item.getInventoryItemCode()));
+            proc.setNull(param++, Types.VARCHAR);
+            proc.setNull(param++, Types.VARCHAR);
+          } else if(item.isAccrual()) {
+            proc.setNull(param++, Types.NUMERIC);
+            proc.setNull(param++, Types.VARCHAR);
+            proc.setNull(param++, Types.VARCHAR);
+            proc.setNull(param++, Types.VARCHAR);
+          } else {
+            throw new UnsupportedOperationException("Unknown inventory class code: " + inventoryClassCode);
+          }
+          proc.setInt(param++, item.getCommodityXrefId());
+          proc.setString(param++, item.getInventoryItemCode());
+          proc.setString(param++, inventoryClassCode);
+          proc.setString(param++, user);
+
+          proc.addBatch();
         }
-        int param = 1;
 
-        proc.setInt(param++, operation.getFarmingOperationId());
-        proc.setDouble(param++, item.getAdjPriceStart());
-        proc.setDouble(param++, item.getAdjPriceEnd());
-        proc.setDouble(param++, item.getAdjEndYearProducerPrice());
-        proc.setDouble(param++, item.getAdjQuantityStart());
-        proc.setDouble(param++, item.getAdjQuantityEnd());
-        proc.setDouble(param++, item.getAdjStartOfYearAmount());
-        proc.setDouble(param++, item.getAdjEndOfYearAmount());
-
-        if (cropItem != null) {
-          proc.setDouble(param++, cropItem.getAdjQuantityProduced());
-          proc.setString(param++, cropItem.getCropUnitCode());
-          proc.setDouble(param++, cropItem.getOnFarmAcres());
-          proc.setDouble(param++, cropItem.getUnseedableAcres());
-        } else if (inventoryClassCode.equals(InventoryClassCodes.LIVESTOCK)) {
-          proc.setNull(param++, Types.NUMERIC);
-          proc.setString(param++, CropUnitCodes.getLivestockUnitCode(item.getInventoryItemCode()));
-          proc.setNull(param++, Types.VARCHAR);
-          proc.setNull(param++, Types.VARCHAR);
-        } else if(item.isAccrual()) {
-          proc.setNull(param++, Types.NUMERIC);
-          proc.setNull(param++, Types.VARCHAR);
-          proc.setNull(param++, Types.VARCHAR);
-          proc.setNull(param++, Types.VARCHAR);
-        } else {
-          throw new UnsupportedOperationException("Unknown inventory class code: " + inventoryClassCode);
-        }
-        proc.setInt(param++, item.getCommodityXrefId());
-        proc.setString(param++, item.getInventoryItemCode());
-        proc.setString(param++, inventoryClassCode);
-        proc.setString(param++, user);
-
-        proc.addBatch();
+        proc.executeBatch();
       }
 
-      proc.executeBatch();
-
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
   public void createCrmEntity(Connection connection, ChefsSubmssnCrmEntity entity, String user) throws DataAccessException {
 
     final int paramCount = 4;
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + CREATE_CRM_ENTITY_PROC, paramCount, false);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.setString(param++, entity.getCrmEntityGuid());
-      proc.setString(param++, entity.getCrmEntityTypeCode());
-      proc.setInt(param++, entity.getChefSubmissionId());
-      proc.setString(param++, user);
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + CREATE_CRM_ENTITY_PROC, paramCount, false);) {
 
+        int param = 1;
+        proc.setString(param++, entity.getCrmEntityGuid());
+        proc.setString(param++, entity.getCrmEntityTypeCode());
+        proc.setInt(param++, entity.getChefSubmissionId());
+        proc.setString(param++, user);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -530,19 +692,37 @@ public class ChefsDatabaseDAO extends OracleDAO {
 
     final int paramCount = 1;
     Map<String, ChefsSubmssnCrmEntity> submissionMap = null;
+    boolean originalAutoCommit = true;
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + READ_CRM_ENTITY_GUIDS_BY_SUBMISSION_GUID_PROC, paramCount, true); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.setString(param++, submissionGuid);
-      proc.execute();
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + READ_CRM_ENTITY_GUIDS_BY_SUBMISSION_GUID_PROC, paramCount, true); ) {
 
-      submissionMap = crmEntityResultSetToMap(proc);
+        int param = 1;
+        proc.setString(param++, submissionGuid);
+        proc.execute();
 
+        submissionMap = crmEntityResultSetToMap(proc);
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return submissionMap;
@@ -580,29 +760,47 @@ public class ChefsDatabaseDAO extends OracleDAO {
 
     final int paramCount = 4;
     Collection<String> submissionGuids = new ArrayList<>();
+    boolean originalAutoCommit = true;
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + READ_EXISTING_SUBMISSIONS_FOR_PIN_AND_YEAR_PROC, paramCount, true); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.setString(param++, formTypeCode);
-      proc.setInt(param++, participantPin);
-      proc.setInt(param++, programYear);
-      proc.setString(param++, submissionGuid);
-      proc.execute();
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + READ_EXISTING_SUBMISSIONS_FOR_PIN_AND_YEAR_PROC, paramCount, true); ) {
 
-      try (ResultSet rs = proc.getResultSet();) {
+        int param = 1;
+        proc.setString(param++, formTypeCode);
+        proc.setInt(param++, participantPin);
+        proc.setInt(param++, programYear);
+        proc.setString(param++, submissionGuid);
+        proc.execute();
 
-        while (rs.next()) {
-          String curSubmissionGuid = getString(rs, "Chef_Submission_Guid");
+        try (ResultSet rs = proc.getResultSet();) {
 
-          submissionGuids.add(curSubmissionGuid);
+          while (rs.next()) {
+            String curSubmissionGuid = getString(rs, "Chef_Submission_Guid");
+
+            submissionGuids.add(curSubmissionGuid);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return submissionGuids;
