@@ -951,7 +951,7 @@ public class CodesReadDAO extends OracleDAO {
           + EXPORT_MISSING_BPU_PROC, EXPORT_MISSING_BPU_PARAM, true);
       
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.execute();
       
       rs = proc.getResultSet();
