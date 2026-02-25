@@ -3920,13 +3920,13 @@ public class CodesWriteDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + IN_USE_SECTOR_DETAIL_CODE_PROC, paramCount, Types.INTEGER); ) {
+            + IN_USE_SECTOR_DETAIL_CODE_PROC, paramCount, Types.NUMERIC); ) {
         
         int param = 1;
         proc.setString(param++, code);
         proc.execute();
 
-        inUseInt = proc.getInt(1);
+        inUseInt = proc.getIntObj(1);
         result = inUseInt == 1;
       }
 
