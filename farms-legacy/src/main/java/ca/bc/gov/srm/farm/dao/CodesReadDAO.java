@@ -532,7 +532,7 @@ public class CodesReadDAO extends OracleDAO {
           + EXPORT_FMV_PROC, EXPORT_FMV_PARAM, true);
       
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.setString(param++, inventoryItemCodeFilter);
       proc.setString(param++, inventoryItemDescriptionFilter);
       proc.setString(param++, municipalityDescriptionFilter);
