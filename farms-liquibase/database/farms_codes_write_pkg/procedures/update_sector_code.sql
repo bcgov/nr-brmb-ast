@@ -7,17 +7,20 @@ create or replace procedure farms_codes_write_pkg.update_sector_code(
 )
 language plpgsql
 as $$
+declare
+    v_rows_affected  bigint := null;
 begin
     update farms.farm_sector_codes
     set description = in_description,
         expiry_date = in_expiry_date,
         revision_count = revision_count + 1,
         who_updated = in_user,
-        update_timestamp = current_timestamp
+        when_updated = current_timestamp
     where sector_code = in_sector_code
     and revision_count = in_revision_count;
 
-    if sql%rowcount <> 1 then
+    get diagnostics v_rows_affected = row_count;
+    if v_rows_affected = 0 then
         raise exception 'Invalid revision count';
     end if;
 end;
