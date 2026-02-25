@@ -1291,17 +1291,15 @@ public class CodesWriteDAO extends OracleDAO {
           + CREATE_BPU_PROC, numParams, false);
 
       int param = 1;
-      proc.registerOutParameter(param, Types.INTEGER);
-      
-      proc.setInt(param++, (Integer) null);
-      proc.setInt(param++, bpu.getProgramYear());
+      proc.registerOutParameter(param++, Types.BIGINT);
+      proc.setShort(param++, bpu.getProgramYear() == null ? null : bpu.getProgramYear().shortValue());
       proc.setString(param++, bpu.getInvSgCode());
       proc.setString(param++, bpu.getMunicipalityCode());
       proc.setString(param++, user);
       proc.execute();
 
       param = 1;
-      bpu.setBpuId(new Integer(proc.getInt(param)));
+      bpu.setBpuId(new Integer((int)proc.getLong(param)));
 
       connection.commit();
     } catch (SQLException e) {
