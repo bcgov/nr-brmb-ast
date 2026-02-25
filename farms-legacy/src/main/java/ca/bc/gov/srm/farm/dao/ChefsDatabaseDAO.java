@@ -432,8 +432,8 @@ public class ChefsDatabaseDAO extends OracleDAO {
             + UPDATE_SCENARIO_SUBMISSION_ID_PROC, paramCount, false); ) {
 
         int param = 1;
-        proc.setInt(param++, scenarioId);
-        proc.setInt(param++, submissionId);
+        proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
+        proc.setLong(param++, submissionId == null ? null : submissionId.longValue());
         proc.setString(param++, user);
         proc.execute();
       }
