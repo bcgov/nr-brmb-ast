@@ -1456,13 +1456,13 @@ public class CodesWriteDAO extends OracleDAO {
 
       final int numParams = 1;
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + IN_USE_BPU_PROC, numParams, Types.INTEGER);
+          + IN_USE_BPU_PROC, numParams, Types.NUMERIC);
 
       int param = 1;
       proc.setInt(param++, bpuId);
       proc.execute();
 
-      int inUseInt = proc.getInt(1);
+      int inUseInt = proc.getIntObj(1);
       result = inUseInt == 1;
 
       connection.commit();
