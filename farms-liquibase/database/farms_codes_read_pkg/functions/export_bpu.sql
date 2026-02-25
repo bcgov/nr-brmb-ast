@@ -14,19 +14,19 @@ begin
         select program_year ||
                ',' || municipality_code ||
                ',' || inventory_code ||
-               ',"' || unit_comment || '"' ||
-               ',"' || year_minus_6_margin || '"' ||
-               ',"' || year_minus_5_margin || '"' ||
-               ',"' || year_minus_4_margin || '"' ||
-               ',"' || year_minus_3_margin || '"' ||
-               ',"' || year_minus_2_margin || '"' ||
-               ',"' || year_minus_1_margin || '"' ||
-               ',"' || year_minus_6_expense || '"' ||
-               ',"' || year_minus_5_expense || '"' ||
-               ',"' || year_minus_4_expense || '"' ||
-               ',"' || year_minus_3_expense || '"' ||
-               ',"' || year_minus_2_expense || '"' ||
-               ',"' || year_minus_1_expense || '"' bpu_export
+               ',"' || coalesce(unit_comment, '') || '"' ||
+               ',"' || coalesce(year_minus_6_margin::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_5_margin::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_4_margin::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_3_margin::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_2_margin::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_1_margin::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_6_expense::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_5_expense::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_4_expense::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_3_expense::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_2_expense::varchar, '') || '"' ||
+               ',"' || coalesce(year_minus_1_expense::varchar, '') || '"' bpu_export
         from (
             select bpus.program_year,
                    bpus.municipality_code,
@@ -71,8 +71,8 @@ begin
                      coalesce(bpus.structure_group_code, bpus.inventory_item_code),
                      bpus.municipality_code
         ) t
-        order by to_number(inventory_code),
-                 to_number(municipality_code);
+        order by inventory_code::numeric,
+                 municipality_code::numeric;
     return cur;
 end;
 $$;

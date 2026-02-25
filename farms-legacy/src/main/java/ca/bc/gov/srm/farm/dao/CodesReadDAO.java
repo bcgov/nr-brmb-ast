@@ -889,7 +889,7 @@ public class CodesReadDAO extends OracleDAO {
           + EXPORT_BPU_PROC, EXPORT_BPU_PARAM, true);
       
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.setString(param++, inventoryItemCodeFilter);
       proc.setString(param++, inventoryItemDescriptionFilter);
       proc.setString(param++, municipalityDescriptionFilter);
