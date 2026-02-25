@@ -11,6 +11,7 @@ GRANT EXECUTE ON FUNCTION farms_calculator_pkg.cf_ref_years_mismatch_error TO "a
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.copy_forward_year_config TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.copy_scenario_pyv TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_client TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_operation TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_parent_scenario TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_person TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_calculator_pkg.create_py TO "app_farms_rest_proxy";

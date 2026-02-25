@@ -58,6 +58,13 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "../../../../../database/farms_calculator_pkg/functions/create_operation.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "../../../../../database/farms_calculator_pkg/functions/create_parent_scenario.sql"
                         }
                     },

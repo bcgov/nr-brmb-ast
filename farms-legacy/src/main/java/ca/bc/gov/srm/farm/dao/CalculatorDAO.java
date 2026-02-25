@@ -11,6 +11,7 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
+import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -383,36 +384,36 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + CREATE_OPERATION_PROC, CREATE_OPERATION_PARAM, Types.INTEGER);) {
+            + CREATE_OPERATION_PROC, CREATE_OPERATION_PARAM, Types.BIGINT);) {
         
         int param = 1;
-        proc.setInt(param++, fo.getFarmingYear().getProgramYearVersionId());
-        proc.setInt(param++, scenarioId);
-        proc.setInt(param++, fo.getOperationNumber());
+        proc.setLong(param++, fo.getFarmingYear().getProgramYearVersionId() == null ? null : fo.getFarmingYear().getProgramYearVersionId().longValue());
+        proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
+        proc.setShort(param++, fo.getOperationNumber() == null ? null : fo.getOperationNumber().shortValue());
         proc.setString(param++, fo.getSchedule());
         proc.setString(param++, fo.getAccountingCode());
         proc.setDate(param++, fo.getFiscalYearStart());
         proc.setDate(param++, fo.getFiscalYearEnd());
         proc.setInt(param++, fo.getPartnershipPin());
         proc.setString(param++, fo.getPartnershipName());
-        proc.setDouble(param++, fo.getPartnershipPercent());
+        proc.setBigDecimal(param++, fo.getPartnershipPercent() == null ? null : BigDecimal.valueOf(fo.getPartnershipPercent()));
         proc.setString(param++, getIndicatorYN(fo.getIsCropDisaster()));
         proc.setString(param++, getIndicatorYN(fo.getIsCropShare()));
         proc.setString(param++, getIndicatorYN(fo.getIsFeederMember()));
         proc.setString(param++, getIndicatorYN(fo.getIsLandlord()));
         proc.setString(param++, getIndicatorYN(fo.getIsLivestockDisaster()));
-        proc.setDouble(param++, fo.getBusinessUseHomeExpense());
-        proc.setDouble(param++, fo.getFarmingExpenses());
-        proc.setDouble(param++, fo.getGrossIncome());
-        proc.setDouble(param++, fo.getInventoryAdjustments());
-        proc.setDouble(param++, fo.getNetFarmIncome());
-        proc.setDouble(param++, fo.getNetIncomeAfterAdj());
-        proc.setDouble(param++, fo.getNetIncomeBeforeAdj());
-        proc.setDouble(param++, fo.getOtherDeductions());
+        proc.setBigDecimal(param++, fo.getBusinessUseHomeExpense() == null ? null : BigDecimal.valueOf(fo.getBusinessUseHomeExpense()));
+        proc.setBigDecimal(param++, fo.getFarmingExpenses() == null ? null : BigDecimal.valueOf(fo.getFarmingExpenses()));
+        proc.setBigDecimal(param++, fo.getGrossIncome() == null ? null : BigDecimal.valueOf(fo.getGrossIncome()));
+        proc.setBigDecimal(param++, fo.getInventoryAdjustments() == null ? null : BigDecimal.valueOf(fo.getInventoryAdjustments()));
+        proc.setBigDecimal(param++, fo.getNetFarmIncome() == null ? null : BigDecimal.valueOf(fo.getNetFarmIncome()));
+        proc.setBigDecimal(param++, fo.getNetIncomeAfterAdj() == null ? null : BigDecimal.valueOf(fo.getNetIncomeAfterAdj()));
+        proc.setBigDecimal(param++, fo.getNetIncomeBeforeAdj() == null ? null : BigDecimal.valueOf(fo.getNetIncomeBeforeAdj()));
+        proc.setBigDecimal(param++, fo.getOtherDeductions() == null ? null : BigDecimal.valueOf(fo.getOtherDeductions()));
         proc.setString(param++, user);
         proc.execute();
         
-        fo.setFarmingOperationId(new Integer(proc.getInt(1)));
+        fo.setFarmingOperationId(new Integer((int)proc.getLong(1)));
       }
 
       connection.commit();
