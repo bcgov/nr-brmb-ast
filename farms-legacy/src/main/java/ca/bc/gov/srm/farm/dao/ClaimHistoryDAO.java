@@ -47,15 +47,19 @@ public class ClaimHistoryDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + CLAIM_PROC;
     Benefit benefit = null;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int param = 1;
-      proc.setInt(param++, scenarioId);
+      proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
       proc.execute();
       resultSet = proc.getResultSet();
 
@@ -63,11 +67,22 @@ public class ClaimHistoryDAO extends OracleDAO {
       	benefit = createBenefit(resultSet);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return benefit;
