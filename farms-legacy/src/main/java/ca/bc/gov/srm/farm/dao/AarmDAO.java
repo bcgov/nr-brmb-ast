@@ -23,7 +23,7 @@ import ca.bc.gov.srm.farm.domain.staging.AarmCsvRow;
  */
 public class AarmDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_AARM_PKG";
+  private static final String PACKAGE_NAME = "FARMS_AARM_PKG";
 
   /** INSERT_PROC. */
   private static final String INSERT_PROC = "INSERT_STAGING_ROW";
@@ -66,8 +66,29 @@ public class AarmDAO extends OracleDAO {
     final int paramCount = 0;
   	String procName = PACKAGE_NAME + "." + CLEAR_PROC;
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
-      proc.execute();
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
   
@@ -87,35 +108,56 @@ public class AarmDAO extends OracleDAO {
   		final int rowNum)
     throws SQLException {
 
-    if (insertProc == null) {
-    	final int paramCount = 14;
-    	String procName = PACKAGE_NAME + "." + INSERT_PROC;
-    	
-    	insertProc = new DAOStoredProcedure(connection,
-    			procName,
-          paramCount, 
-          false);
-    } else {
-    	insertProc.clearParameters();
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      if (insertProc == null) {
+        final int paramCount = 14;
+        String procName = PACKAGE_NAME + "." + INSERT_PROC;
+        
+        insertProc = new DAOStoredProcedure(connection,
+            procName,
+            paramCount, 
+            false);
+      } else {
+        insertProc.clearParameters();
+      }
+
+      int index = 1;
+      insertProc.setInt(index++, obj.getAarmKey());
+      insertProc.setInt(index++, obj.getParticipantPin());
+      insertProc.setInt(index++, obj.getProgramYear());
+      insertProc.setInt(index++, obj.getOperationNumber());
+      insertProc.setDouble(index++, obj.getPartnerPercent());
+      insertProc.setInt(index++, obj.getInventoryTypeCode());
+      insertProc.setInt(index++, obj.getInventoryCode());
+      insertProc.setString(index++, obj.getInventoryDescription());
+      insertProc.setInt(index++, obj.getProductionUnit());
+      insertProc.setDouble(index++, obj.getAarmReferenceP1Price());
+      insertProc.setDouble(index++, obj.getAarmReferenceP2Price());
+      insertProc.setDouble(index++, obj.getQuantityStart());
+      insertProc.setDouble(index++, obj.getQuantityEnd());
+      insertProc.setString(index++, userId);
+
+      insertProc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
-
-    int index = 1;
-    insertProc.setInt(index++, obj.getAarmKey());
-    insertProc.setInt(index++, obj.getParticipantPin());
-    insertProc.setInt(index++, obj.getProgramYear());
-    insertProc.setInt(index++, obj.getOperationNumber());
-    insertProc.setDouble(index++, obj.getPartnerPercent());
-    insertProc.setInt(index++, obj.getInventoryTypeCode());
-    insertProc.setInt(index++, obj.getInventoryCode());
-    insertProc.setString(index++, obj.getInventoryDescription());
-    insertProc.setInt(index++, obj.getProductionUnit());
-    insertProc.setDouble(index++, obj.getAarmReferenceP1Price());
-    insertProc.setDouble(index++, obj.getAarmReferenceP2Price());
-    insertProc.setDouble(index++, obj.getQuantityStart());
-    insertProc.setDouble(index++, obj.getQuantityEnd());
-    insertProc.setString(index++, userId);
-
-    insertProc.execute();
   }
   
   
@@ -126,13 +168,34 @@ public class AarmDAO extends OracleDAO {
     final int paramCount = 2;
   	String procName = PACKAGE_NAME + "." + OPERATIONAL_PROC;
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
-      
-      int index = 1;
-      proc.setInt(index++, importVersionId);
-      proc.setString(index++, userId);
-      
-      proc.execute();
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+        
+        int index = 1;
+        proc.setInt(index++, importVersionId);
+        proc.setString(index++, userId);
+        
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
