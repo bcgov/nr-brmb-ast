@@ -66,10 +66,10 @@ public class CobDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
 
         int index = 1;
-        proc.registerOutParameter(index, Types.INTEGER);
+        proc.registerOutParameter(index, Types.BIGINT);
 
-        proc.setInt(index++, (Integer) null);
-        proc.setInt(index++, scenarioId);
+        proc.setLong(index++, (Long) null);
+        proc.setLong(index++, scenarioId == null ? null : scenarioId.longValue());
         proc.setString(index++, userId);
         proc.execute();
       }
@@ -121,7 +121,7 @@ public class CobDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
 
         int index = 1;
-        proc.setInt(index++, scenarioId);
+        proc.setLong(index++, scenarioId == null ? null : scenarioId.longValue());
         proc.setString(index++, userId);
         proc.execute();
       }
@@ -178,7 +178,7 @@ public class CobDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
-      proc.setInt(paramCount, scenarioId);
+      proc.setLong(paramCount, scenarioId == null ? null : scenarioId.longValue());
       proc.execute();
       resultSet = proc.getResultSet();
 
@@ -234,7 +234,7 @@ public class CobDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
 
         int index = 1;
-        proc.setInt(index++, scenarioId);
+        proc.setLong(index++, scenarioId == null ? null : scenarioId.longValue());
         proc.execute();
       }
 
