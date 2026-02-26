@@ -80,8 +80,29 @@ public class BpuDAO extends OracleDAO {
     final int paramCount = 0;
   	String procName = PACKAGE_NAME + "." + CLEAR_PROC;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
-      proc.execute();
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
   
@@ -101,40 +122,61 @@ public class BpuDAO extends OracleDAO {
   		final int rowNum)
     throws SQLException {
 
-    if (insertProc == null) {
-    	final int paramCount = 18;
-    	String procName = PACKAGE_NAME + "." + INSERT_PROC;
-    	
-    	insertProc = new DAOStoredProcedure(connection,
-    			procName,
-          paramCount, 
-          false);
-    } else {
-    	insertProc.clearParameters();
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      if (insertProc == null) {
+        final int paramCount = 18;
+        String procName = PACKAGE_NAME + "." + INSERT_PROC;
+        
+        insertProc = new DAOStoredProcedure(connection,
+            procName,
+            paramCount, 
+            false);
+      } else {
+        insertProc.clearParameters();
+      }
+
+      int index = 1;
+
+      insertProc.setInt(index++, rowNum);
+      insertProc.setInt(index++, obj.getProgramYear());
+      insertProc.setString(index++, obj.getMunicipalityCode());
+      insertProc.setString(index++, obj.getInventoryCode());
+      insertProc.setString(index++, obj.getUnitDescription());
+      insertProc.setDouble(index++, obj.getYearMinus6Margin());
+      insertProc.setDouble(index++, obj.getYearMinus5Margin());
+      insertProc.setDouble(index++, obj.getYearMinus4Margin());
+      insertProc.setDouble(index++, obj.getYearMinus3Margin());
+      insertProc.setDouble(index++, obj.getYearMinus2Margin());
+      insertProc.setDouble(index++, obj.getYearMinus1Margin());
+      insertProc.setDouble(index++, obj.getYearMinus6Expense());
+      insertProc.setDouble(index++, obj.getYearMinus5Expense());
+      insertProc.setDouble(index++, obj.getYearMinus4Expense());
+      insertProc.setDouble(index++, obj.getYearMinus3Expense());
+      insertProc.setDouble(index++, obj.getYearMinus2Expense());
+      insertProc.setDouble(index++, obj.getYearMinus1Expense());
+      insertProc.setString(index++, userId);
+
+      insertProc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
-
-    int index = 1;
-
-    insertProc.setInt(index++, rowNum);
-    insertProc.setInt(index++, obj.getProgramYear());
-    insertProc.setString(index++, obj.getMunicipalityCode());
-    insertProc.setString(index++, obj.getInventoryCode());
-    insertProc.setString(index++, obj.getUnitDescription());
-    insertProc.setDouble(index++, obj.getYearMinus6Margin());
-    insertProc.setDouble(index++, obj.getYearMinus5Margin());
-    insertProc.setDouble(index++, obj.getYearMinus4Margin());
-    insertProc.setDouble(index++, obj.getYearMinus3Margin());
-    insertProc.setDouble(index++, obj.getYearMinus2Margin());
-    insertProc.setDouble(index++, obj.getYearMinus1Margin());
-    insertProc.setDouble(index++, obj.getYearMinus6Expense());
-    insertProc.setDouble(index++, obj.getYearMinus5Expense());
-    insertProc.setDouble(index++, obj.getYearMinus4Expense());
-    insertProc.setDouble(index++, obj.getYearMinus3Expense());
-    insertProc.setDouble(index++, obj.getYearMinus2Expense());
-    insertProc.setDouble(index++, obj.getYearMinus1Expense());
-    insertProc.setString(index++, userId);
-
-    insertProc.execute();
   }
   
   
@@ -150,11 +192,32 @@ public class BpuDAO extends OracleDAO {
     final int paramCount = 1;
   	String procName = PACKAGE_NAME + "." + VALIDATE_PROC;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
-      
-      int index = 1;
-      proc.setInt(index++, importVersionId);
-      proc.execute();
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+        
+        int index = 1;
+        proc.setInt(index++, importVersionId);
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
   
@@ -172,11 +235,32 @@ public class BpuDAO extends OracleDAO {
     final int paramCount = 1;
   	String procName = PACKAGE_NAME + "." + DELETE_ERRORS_PROC;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
-      
-      int index = 1;
-      proc.setInt(index++, importVersionId);
-      proc.execute();
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+        
+        int index = 1;
+        proc.setInt(index++, importVersionId);
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
   
@@ -193,20 +277,39 @@ public class BpuDAO extends OracleDAO {
     List<String> errors = new ArrayList<>();
     final int paramCount = 1;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
-      
-      int index = 1;
-      proc.setInt(index++, importVersionId);
-      proc.execute();
-      try (ResultSet resultSet = proc.getResultSet();) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-        while (resultSet.next()) {
-        	errors.add(resultSet.getString("LOG_MESSAGE"));
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
+        
+        int index = 1;
+        proc.setInt(index++, importVersionId);
+        proc.execute();
+        try (ResultSet resultSet = proc.getResultSet();) {
+
+          while (resultSet.next()) {
+            errors.add(resultSet.getString("LOG_MESSAGE"));
+          }
         }
       }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return errors;
@@ -228,12 +331,33 @@ public class BpuDAO extends OracleDAO {
     final int paramCount = 2;
   	String procName = PACKAGE_NAME + "." + OPERATIONAL_PROC;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
-      int index = 1;
-      proc.setInt(index++, importVersionId);
-      proc.setString(index++, userId);
-      
-      proc.execute();
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+        int index = 1;
+        proc.setInt(index++, importVersionId);
+        proc.setString(index++, userId);
+        
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
