@@ -75,9 +75,30 @@ public class IvprDAO extends OracleDAO {
   public final void clearStaging() throws SQLException {
     final int paramCount = 0;
     String procName = PACKAGE_NAME + "." + CLEAR_PROC;
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
-      proc.execute();
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -97,25 +118,46 @@ public class IvprDAO extends OracleDAO {
       final int rowNum)
     throws SQLException {
 
-    if (insertProc == null) {
-      final int paramCount = 6;
-      String procName = PACKAGE_NAME + "." + INSERT_PROC;
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      insertProc = new DAOStoredProcedure(connection, procName, paramCount, false);
-    } else {
-      insertProc.clearParameters();
+      if (insertProc == null) {
+        final int paramCount = 6;
+        String procName = PACKAGE_NAME + "." + INSERT_PROC;
+
+        insertProc = new DAOStoredProcedure(connection, procName, paramCount, false);
+      } else {
+        insertProc.clearParameters();
+      }
+
+      int index = 1;
+
+      insertProc.setInt(index++, rowNum);
+      insertProc.setInt(index++, obj.getProgramYear());
+      insertProc.setString(index++, obj.getInventoryItemCode());
+      insertProc.setDouble(index++, obj.getInsurableValue());
+      insertProc.setDouble(index++, obj.getPremiumRate());
+      insertProc.setString(index++, userId);
+
+      insertProc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
-
-    int index = 1;
-
-    insertProc.setInt(index++, rowNum);
-    insertProc.setInt(index++, obj.getProgramYear());
-    insertProc.setString(index++, obj.getInventoryItemCode());
-    insertProc.setDouble(index++, obj.getInsurableValue());
-    insertProc.setDouble(index++, obj.getPremiumRate());
-    insertProc.setString(index++, userId);
-
-    insertProc.execute();
   }
 
 
@@ -129,11 +171,32 @@ public class IvprDAO extends OracleDAO {
     final int paramCount = 1;
     String procName = PACKAGE_NAME + "." + VALIDATE_PROC;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int index = 1;
-      proc.setInt(index++, importVersionId);
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+
+        int index = 1;
+        proc.setInt(index++, importVersionId);
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -148,11 +211,32 @@ public class IvprDAO extends OracleDAO {
     final int paramCount = 1;
     String procName = PACKAGE_NAME + "." + DELETE_ERRORS_PROC;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int index = 1;
-      proc.setInt(index++, importVersionId);
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+
+        int index = 1;
+        proc.setInt(index++, importVersionId);
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -169,20 +253,39 @@ public class IvprDAO extends OracleDAO {
     List<String> errors = new ArrayList<>();
     final int paramCount = 1;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int index = 1;
-      proc.setInt(index++, importVersionId);
-      proc.execute();
-      try (ResultSet resultSet = proc.getResultSet();) {
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
 
-        while (resultSet.next()) {
-          errors.add(resultSet.getString("LOG_MESSAGE"));
+        int index = 1;
+        proc.setInt(index++, importVersionId);
+        proc.execute();
+        try (ResultSet resultSet = proc.getResultSet();) {
+
+          while (resultSet.next()) {
+            errors.add(resultSet.getString("LOG_MESSAGE"));
+          }
         }
       }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return errors;
@@ -205,12 +308,33 @@ public class IvprDAO extends OracleDAO {
     final int paramCount = 2;
     String procName = PACKAGE_NAME + "." + OPERATIONAL_PROC;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
-      int index = 1;
-      proc.setInt(index++, importVersionId);
-      proc.setString(index++, userId);
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+        int index = 1;
+        proc.setInt(index++, importVersionId);
+        proc.setString(index++, userId);
+
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
