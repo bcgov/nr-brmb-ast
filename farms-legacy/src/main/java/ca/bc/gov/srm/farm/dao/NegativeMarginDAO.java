@@ -43,26 +43,45 @@ public class NegativeMarginDAO extends OracleDAO {
   throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     String procName = PACKAGE_NAME + "." + GET_NEGATIVE_MARGINS_PROC;
     final int paramCount = 2;
     List<NegativeMargin> negativeMargins = new ArrayList<>();
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.setInt(param++, farmingOperationId);
-      proc.setInt(param++, scenarioId);
-      proc.execute();
-      try (ResultSet resultSet = proc.getResultSet();) {
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
 
-        while (resultSet.next()) {
-          NegativeMargin nm = populateNegativeMargin(resultSet);
-          negativeMargins.add(nm);
+        int param = 1;
+        proc.setInt(param++, farmingOperationId);
+        proc.setInt(param++, scenarioId);
+        proc.execute();
+        try (ResultSet resultSet = proc.getResultSet();) {
+
+          while (resultSet.next()) {
+            NegativeMargin nm = populateNegativeMargin(resultSet);
+            negativeMargins.add(nm);
+          }
         }
       }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return negativeMargins;
@@ -108,29 +127,48 @@ public class NegativeMarginDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     final int paramCount = 7;
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_NEGATIVE_MARGIN_PROC, paramCount, false); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      for (NegativeMargin negativeMargin : negativeMargins) {
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_NEGATIVE_MARGIN_PROC, paramCount, false); ) {
 
-        int param = 1;
-        proc.setInt(param++, negativeMargin.getNegativeMarginId());
-        proc.setBigDecimal(param++, negativeMargin.getDeductiblePercentage());
-        proc.setBigDecimal(param++, negativeMargin.getInsurableValuePurchased());
-        proc.setBigDecimal(param++, negativeMargin.getGuaranteedProdValue());
-        proc.setBigDecimal(param++, negativeMargin.getPremiumsPaid());
-        proc.setBigDecimal(param++, negativeMargin.getClaimsReceived());
-        proc.setString(param++, user);
+        for (NegativeMargin negativeMargin : negativeMargins) {
 
-        proc.addBatch();
+          int param = 1;
+          proc.setInt(param++, negativeMargin.getNegativeMarginId());
+          proc.setBigDecimal(param++, negativeMargin.getDeductiblePercentage());
+          proc.setBigDecimal(param++, negativeMargin.getInsurableValuePurchased());
+          proc.setBigDecimal(param++, negativeMargin.getGuaranteedProdValue());
+          proc.setBigDecimal(param++, negativeMargin.getPremiumsPaid());
+          proc.setBigDecimal(param++, negativeMargin.getClaimsReceived());
+          proc.setString(param++, user);
+
+          proc.addBatch();
+        }
+
+        proc.executeBatch();
       }
 
-      proc.executeBatch();
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -144,20 +182,38 @@ public class NegativeMarginDAO extends OracleDAO {
   throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     String procName = PACKAGE_NAME + "." + CALCULATE_NEGATIVE_MARGINS_PROC;
     final int paramCount = 3;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.setInt(param++, farmingOperationId);
-      proc.setInt(param++, scenarioId);
-      proc.setString(param++, user);
-      proc.execute();
-      
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+
+        int param = 1;
+        proc.setInt(param++, farmingOperationId);
+        proc.setInt(param++, scenarioId);
+        proc.setString(param++, user);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
   }
