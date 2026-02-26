@@ -142,6 +142,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zivpr_iv_premium_rates TO "ap
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zprogram_enrolments TO "app_farms_rest_proxy";
 
 -- tables (truncate)
+GRANT TRUNCATE ON TABLE farms.farm_zaarm_margins TO "app_farms_rest_proxy";
 GRANT TRUNCATE ON TABLE farms.farm_zbpu_benchmark_per_units TO "app_farms_rest_proxy";
 GRANT TRUNCATE ON TABLE farms.farm_zfmv_fair_market_values TO "app_farms_rest_proxy";
 GRANT TRUNCATE ON TABLE farms.farm_zivpr_iv_premium_rates TO "app_farms_rest_proxy";
