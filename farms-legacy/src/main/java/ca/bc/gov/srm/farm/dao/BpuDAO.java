@@ -11,6 +11,7 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -141,23 +142,23 @@ public class BpuDAO extends OracleDAO {
 
       int index = 1;
 
-      insertProc.setInt(index++, rowNum);
-      insertProc.setInt(index++, obj.getProgramYear());
+      insertProc.setLong(index++, (long)rowNum);
+      insertProc.setShort(index++, obj.getProgramYear() == null ? null : obj.getProgramYear().shortValue());
       insertProc.setString(index++, obj.getMunicipalityCode());
       insertProc.setString(index++, obj.getInventoryCode());
       insertProc.setString(index++, obj.getUnitDescription());
-      insertProc.setDouble(index++, obj.getYearMinus6Margin());
-      insertProc.setDouble(index++, obj.getYearMinus5Margin());
-      insertProc.setDouble(index++, obj.getYearMinus4Margin());
-      insertProc.setDouble(index++, obj.getYearMinus3Margin());
-      insertProc.setDouble(index++, obj.getYearMinus2Margin());
-      insertProc.setDouble(index++, obj.getYearMinus1Margin());
-      insertProc.setDouble(index++, obj.getYearMinus6Expense());
-      insertProc.setDouble(index++, obj.getYearMinus5Expense());
-      insertProc.setDouble(index++, obj.getYearMinus4Expense());
-      insertProc.setDouble(index++, obj.getYearMinus3Expense());
-      insertProc.setDouble(index++, obj.getYearMinus2Expense());
-      insertProc.setDouble(index++, obj.getYearMinus1Expense());
+      insertProc.setBigDecimal(index++, obj.getYearMinus6Margin() == null ? null : BigDecimal.valueOf(obj.getYearMinus6Margin()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus5Margin() == null ? null : BigDecimal.valueOf(obj.getYearMinus5Margin()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus4Margin() == null ? null : BigDecimal.valueOf(obj.getYearMinus4Margin()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus3Margin() == null ? null : BigDecimal.valueOf(obj.getYearMinus3Margin()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus2Margin() == null ? null : BigDecimal.valueOf(obj.getYearMinus2Margin()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus1Margin() == null ? null : BigDecimal.valueOf(obj.getYearMinus1Margin()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus6Expense() == null ? null : BigDecimal.valueOf(obj.getYearMinus6Expense()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus5Expense() == null ? null : BigDecimal.valueOf(obj.getYearMinus5Expense()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus4Expense() == null ? null : BigDecimal.valueOf(obj.getYearMinus4Expense()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus3Expense() == null ? null : BigDecimal.valueOf(obj.getYearMinus3Expense()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus2Expense() == null ? null : BigDecimal.valueOf(obj.getYearMinus2Expense()));
+      insertProc.setBigDecimal(index++, obj.getYearMinus1Expense() == null ? null : BigDecimal.valueOf(obj.getYearMinus1Expense()));
       insertProc.setString(index++, userId);
 
       insertProc.execute();
@@ -200,7 +201,7 @@ public class BpuDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
         
         int index = 1;
-        proc.setInt(index++, importVersionId);
+        proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
         proc.execute();
       }
 
@@ -243,7 +244,7 @@ public class BpuDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
         
         int index = 1;
-        proc.setInt(index++, importVersionId);
+        proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
         proc.execute();
       }
 
@@ -285,7 +286,7 @@ public class BpuDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
         
         int index = 1;
-        proc.setInt(index++, importVersionId);
+        proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
         proc.execute();
         try (ResultSet resultSet = proc.getResultSet();) {
 
@@ -338,7 +339,7 @@ public class BpuDAO extends OracleDAO {
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
         int index = 1;
-        proc.setInt(index++, importVersionId);
+        proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
         proc.setString(index++, userId);
         
         proc.execute();
