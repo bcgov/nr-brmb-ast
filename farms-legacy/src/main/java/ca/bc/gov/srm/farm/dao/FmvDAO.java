@@ -14,6 +14,7 @@ package ca.bc.gov.srm.farm.dao;
 import ca.bc.gov.srm.farm.domain.staging.FmvCsvRow;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -137,11 +138,11 @@ public class FmvDAO extends OracleDAO {
 
       int index = 1;
 
-      insertProc.setInt(index++, rowNum);
-      insertProc.setInt(index++, obj.getProgramYear());
-      insertProc.setInt(index++, obj.getPeriod());
-      insertProc.setDouble(index++, obj.getAveragePrice());
-      insertProc.setDouble(index++, obj.getPercentVariance());
+      insertProc.setLong(index++, (long)rowNum);
+      insertProc.setShort(index++, obj.getProgramYear() == null ? null : obj.getProgramYear().shortValue());
+      insertProc.setShort(index++, obj.getPeriod() == null ? null : obj.getPeriod().shortValue());
+      insertProc.setBigDecimal(index++, obj.getAveragePrice() == null ? null : BigDecimal.valueOf(obj.getAveragePrice()));
+      insertProc.setBigDecimal(index++, obj.getPercentVariance() == null ? null : BigDecimal.valueOf(obj.getPercentVariance()));
       insertProc.setString(index++, obj.getMunicipalityCode());
       insertProc.setString(index++, obj.getUnitCode());
       insertProc.setString(index++, obj.getInventoryCode());
@@ -188,7 +189,7 @@ public class FmvDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
       proc.execute();
 
       connection.commit();
@@ -231,7 +232,7 @@ public class FmvDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
       proc.execute();
 
       connection.commit();
@@ -278,7 +279,7 @@ public class FmvDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
       proc.execute();
       resultSet = proc.getResultSet();
 
@@ -330,7 +331,7 @@ public class FmvDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
       proc.setString(index++, userId);
 
       proc.execute();
