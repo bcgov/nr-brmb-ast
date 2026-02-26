@@ -11,6 +11,7 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
+import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -96,7 +97,7 @@ public class EnrolmentWriteDAO extends OracleDAO {
         Array oracleArray = createNumbersOracleArray(conn, pinArray);
     
         int param = 1;
-        proc.setInt(param++, enrolmentYear);
+        proc.setShort(param++, enrolmentYear == null ? null : enrolmentYear.shortValue());
         proc.setIndicator(param++, createTaskInBarn);
         proc.setString(param++, user);
         proc.setArray(param++, oracleArray);
@@ -152,17 +153,17 @@ public class EnrolmentWriteDAO extends OracleDAO {
         for(EnrolmentStaging enrolment : enrolments) {
           int param = 1;
           proc.setInt(param++, enrolment.getPin());
-          proc.setInt(param++, enrolment.getEnrolmentYear());
-          proc.setDouble(param++, enrolment.getEnrolmentFee());
+          proc.setShort(param++, enrolment.getEnrolmentYear() == null ? null : enrolment.getEnrolmentYear().shortValue());
+          proc.setBigDecimal(param++, enrolment.getEnrolmentFee() == null ? null : BigDecimal.valueOf(enrolment.getEnrolmentFee()));
           proc.setIndicator(param++, enrolment.getFailedToGenerate());
           proc.setIndicator(param++, enrolment.getIsError());
           proc.setString(param++, enrolment.getFailedReason());
-          proc.setDouble(param++, enrolment.getContributionMarginAverage());
-          proc.setDouble(param++, enrolment.getMarginYearMinus2());
-          proc.setDouble(param++, enrolment.getMarginYearMinus3());
-          proc.setDouble(param++, enrolment.getMarginYearMinus4());
-          proc.setDouble(param++, enrolment.getMarginYearMinus5());
-          proc.setDouble(param++, enrolment.getMarginYearMinus6());
+          proc.setBigDecimal(param++, enrolment.getContributionMarginAverage() == null ? null : BigDecimal.valueOf(enrolment.getContributionMarginAverage()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus2() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus2()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus3() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus3()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus4() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus4()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus5() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus5()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus6() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus6()));
           proc.setIndicator(param++, enrolment.getIsMarginYearMinus2Used());
           proc.setIndicator(param++, enrolment.getIsMarginYearMinus3Used());
           proc.setIndicator(param++, enrolment.getIsMarginYearMinus4Used());
@@ -171,8 +172,8 @@ public class EnrolmentWriteDAO extends OracleDAO {
           proc.setIndicator(param++, enrolment.getIsGeneratedFromCra());
           proc.setIndicator(param++, enrolment.getIsGeneratedFromEnw());
           proc.setIndicator(param++, enrolment.getIsCreateTaskInBarn());
-          proc.setDouble(param++, enrolment.getCombinedFarmPercent());
-          proc.setInt(param++, enrolment.getMarginScenarioId());
+          proc.setBigDecimal(param++, enrolment.getCombinedFarmPercent() == null ? null : BigDecimal.valueOf(enrolment.getCombinedFarmPercent()));
+          proc.setLong(param++, enrolment.getMarginScenarioId() == null ? null : enrolment.getMarginScenarioId().longValue());
           proc.setString(param++, user);
           proc.addBatch();
         }
@@ -215,28 +216,28 @@ public class EnrolmentWriteDAO extends OracleDAO {
         
         for(Enrolment enrolment : enrolments) {
           int param = 1;
-          proc.setInt(param++, enrolment.getClientId());
-          proc.setInt(param++, enrolment.getEnrolmentYear());
-          proc.setDouble(param++, enrolment.getEnrolmentFee());
+          proc.setLong(param++, enrolment.getClientId() == null ? null : enrolment.getClientId().longValue());
+          proc.setShort(param++, enrolment.getEnrolmentYear() == null ? null : enrolment.getEnrolmentYear().shortValue());
+          proc.setBigDecimal(param++, enrolment.getEnrolmentFee() == null ? null : BigDecimal.valueOf(enrolment.getEnrolmentFee()));
           proc.setIndicator(param++, enrolment.getFailedToGenerate());
           proc.setIndicator(param++, enrolment.getIsGeneratedFromCra());
           proc.setIndicator(param++, enrolment.getIsGeneratedFromEnw());
           proc.setString(param++, enrolment.getFailedReason());
           proc.setDate(param++, enrolment.getGeneratedDate());
-          proc.setDouble(param++, enrolment.getContributionMarginAverage());
-          proc.setDouble(param++, enrolment.getMarginYearMinus2());
-          proc.setDouble(param++, enrolment.getMarginYearMinus3());
-          proc.setDouble(param++, enrolment.getMarginYearMinus4());
-          proc.setDouble(param++, enrolment.getMarginYearMinus5());
-          proc.setDouble(param++, enrolment.getMarginYearMinus6());
+          proc.setBigDecimal(param++, enrolment.getContributionMarginAverage() == null ? null : BigDecimal.valueOf(enrolment.getContributionMarginAverage()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus2() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus2()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus3() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus3()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus4() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus4()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus5() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus5()));
+          proc.setBigDecimal(param++, enrolment.getMarginYearMinus6() == null ? null : BigDecimal.valueOf(enrolment.getMarginYearMinus6()));
           proc.setIndicator(param++, enrolment.getIsMarginYearMinus2Used());
           proc.setIndicator(param++, enrolment.getIsMarginYearMinus3Used());
           proc.setIndicator(param++, enrolment.getIsMarginYearMinus4Used());
           proc.setIndicator(param++, enrolment.getIsMarginYearMinus5Used());
           proc.setIndicator(param++, enrolment.getIsMarginYearMinus6Used());
           proc.setIndicator(param++, enrolment.getIsCreateTaskInBarn());
-          proc.setDouble(param++, enrolment.getCombinedFarmPercent());
-          proc.setInt(param++, enrolment.getMarginScenarioId());
+          proc.setBigDecimal(param++, enrolment.getCombinedFarmPercent() == null ? null : BigDecimal.valueOf(enrolment.getCombinedFarmPercent()));
+          proc.setLong(param++, enrolment.getMarginScenarioId() == null ? null : enrolment.getMarginScenarioId().longValue());
           proc.setString(param++, user);
           proc.addBatch();
         }
