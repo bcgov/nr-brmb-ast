@@ -55,21 +55,40 @@ public class CobDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     final int paramCount = 3;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int index = 1;
-      proc.registerOutParameter(index, Types.INTEGER);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
 
-      proc.setInt(index++, (Integer) null);
-      proc.setInt(index++, scenarioId);
-      proc.setString(index++, userId);
-      proc.execute();
+        int index = 1;
+        proc.registerOutParameter(index, Types.INTEGER);
+
+        proc.setInt(index++, (Integer) null);
+        proc.setInt(index++, scenarioId);
+        proc.setString(index++, userId);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -91,18 +110,37 @@ public class CobDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     final int paramCount = 2;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int index = 1;
-      proc.setInt(index++, scenarioId);
-      proc.setString(index++, userId);
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+
+        int index = 1;
+        proc.setInt(index++, scenarioId);
+        proc.setString(index++, userId);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -133,7 +171,12 @@ public class CobDAO extends OracleDAO {
       procName = PACKAGE_NAME + "." + BLOB_UPDATE_PROC;
     }
 
+    boolean originalAutoCommit = true;
+
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       proc.setInt(paramCount, scenarioId);
       proc.execute();
@@ -142,10 +185,22 @@ public class CobDAO extends OracleDAO {
       if (resultSet.next()) {
         blob = resultSet.getBlob(1);
       }
+
+      connection.commit();
     } catch (SQLException ex) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        ex.addSuppressed(rollbackEx);
+      }
       throw new DataAccessException(ex);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw new DataAccessException(ex);
+      }
     }
 
     return blob;
@@ -168,17 +223,36 @@ public class CobDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     final int paramCount = 1;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int index = 1;
-      proc.setInt(index++, scenarioId);
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+
+        int index = 1;
+        proc.setInt(index++, scenarioId);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 }
