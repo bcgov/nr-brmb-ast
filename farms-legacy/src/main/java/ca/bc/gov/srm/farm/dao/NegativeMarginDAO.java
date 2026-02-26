@@ -55,8 +55,8 @@ public class NegativeMarginDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
 
         int param = 1;
-        proc.setInt(param++, farmingOperationId);
-        proc.setInt(param++, scenarioId);
+        proc.setLong(param++, farmingOperationId == null ? null : farmingOperationId.longValue());
+        proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
         proc.execute();
         try (ResultSet resultSet = proc.getResultSet();) {
 
@@ -140,7 +140,7 @@ public class NegativeMarginDAO extends OracleDAO {
         for (NegativeMargin negativeMargin : negativeMargins) {
 
           int param = 1;
-          proc.setInt(param++, negativeMargin.getNegativeMarginId());
+          proc.setLong(param++, negativeMargin.getNegativeMarginId() == null ? null : negativeMargin.getNegativeMarginId().longValue());
           proc.setBigDecimal(param++, negativeMargin.getDeductiblePercentage());
           proc.setBigDecimal(param++, negativeMargin.getInsurableValuePurchased());
           proc.setBigDecimal(param++, negativeMargin.getGuaranteedProdValue());
@@ -193,8 +193,8 @@ public class NegativeMarginDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
 
         int param = 1;
-        proc.setInt(param++, farmingOperationId);
-        proc.setInt(param++, scenarioId);
+        proc.setLong(param++, farmingOperationId == null ? null : farmingOperationId.longValue());
+        proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
         proc.setString(param++, user);
         proc.execute();
       }
