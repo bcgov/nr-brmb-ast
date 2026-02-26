@@ -32,9 +32,9 @@ import ca.bc.gov.srm.farm.log.LoggingUtils;
 import ca.bc.gov.srm.farm.transaction.Transaction;
 
 public class TipReportDAO extends OracleDAO {
-  private static final String USER_PACKAGE_NAME = "FARM_TIP_USER_PKG";
+  private static final String USER_PACKAGE_NAME = "FARMS_TIP_USER_PKG";
   
-  private static final String ADMIN_PACKAGE_NAME = "FARM_TIP_ADMIN_PKG";
+  private static final String ADMIN_PACKAGE_NAME = "FARMS_TIP_ADMIN_PKG";
 
   private static final String INSERT_TIP_REPORT_DOCUMENT_PROC = "UPSERT_TIP_REPORT_DOCUMENT";
   
