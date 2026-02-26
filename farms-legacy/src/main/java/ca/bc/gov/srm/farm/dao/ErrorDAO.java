@@ -37,15 +37,33 @@ public class ErrorDAO extends OracleDAO {
     
     String procName = PACKAGE_NAME + "." + CODIFY_PROC;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn, procName, 1, Types.VARCHAR);) {
-      proc.setString(1, msg);
-      proc.execute();
-      return (String) proc.getResult();
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn, procName, 1, Types.VARCHAR);) {
+        proc.setString(1, msg);
+        proc.execute();
+        String result = (String) proc.getResult();
+        conn.commit();
+        return result;
+      }
     } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
       return msg;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 }
