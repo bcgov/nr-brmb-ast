@@ -3,6 +3,7 @@ package ca.bc.gov.srm.farm.dao;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Array;
@@ -104,14 +105,14 @@ public class TipReportDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, INSERT_TIP_REPORT_DOCUMENT_PARAM, false);
       
       int index = 1;
-      proc.registerOutParameter(index, Types.INTEGER);
+      proc.registerOutParameter(index, Types.BIGINT);
       
-      proc.setInt(index++, (Integer) null);
-      proc.setInt(index++, farmingOperationId);
+      proc.setLong(index++, (Long) null);
+      proc.setLong(index++, farmingOperationId == null ? null : farmingOperationId.longValue());
       proc.setString(index++, userId);
       proc.execute();
       
-      reportDocId = proc.getInt(1);
+      reportDocId = (int)proc.getLong(1);
 
       connection.commit();
     } catch (SQLException e) {
@@ -157,7 +158,7 @@ public class TipReportDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.setInt(index++, reportDocId);
+      proc.setLong(index++, reportDocId == null ? null : reportDocId.longValue());
       proc.setString(index++, userId);
       proc.execute();
 
@@ -213,8 +214,8 @@ public class TipReportDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       
       int index = 1;
-      proc.setInt(index++, tipReportDocId);
-      proc.setInt(index++, farmingOperationId);
+      proc.setLong(index++, tipReportDocId == null ? null : tipReportDocId.longValue());
+      proc.setLong(index++, farmingOperationId == null ? null : farmingOperationId.longValue());
       proc.execute();
       resultSet = proc.getResultSet();
 
@@ -260,14 +261,14 @@ public class TipReportDAO extends OracleDAO {
       originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(connection, procName, paramCount, Types.INTEGER);
+      proc = new DAOStoredProcedure(connection, procName, paramCount, Types.BIGINT);
       
       int index = 1;
       
-      proc.setInt(index++, farmingOperationId);
+      proc.setLong(index++, farmingOperationId == null ? null : farmingOperationId.longValue());
       proc.execute();
       
-      reportDocId = proc.getInt(1);
+      reportDocId = (int)proc.getLong(1);
 
       connection.commit();
     } catch (SQLException e) {
@@ -305,10 +306,10 @@ public class TipReportDAO extends OracleDAO {
       originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(connection, procName, CHECK_BENCHMARK_GENERATED_PARAM, Types.INTEGER);
-      proc.setInt(paramCount++, year);
+      proc = new DAOStoredProcedure(connection, procName, CHECK_BENCHMARK_GENERATED_PARAM, Types.BIGINT);
+      proc.setShort(paramCount++, year == null ? null : year.shortValue());
       proc.execute();
-      int benchmarkCount = proc.getInt(1);
+      int benchmarkCount = (int)proc.getLong(1);
 
       connection.commit();
       
@@ -348,7 +349,7 @@ public class TipReportDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, GENERATE_BENCHMARK_PARAM, false);
 
       int index = 1;
-      proc.setInt(index++, year);
+      proc.setShort(index++, year == null ? null : year.shortValue());
       proc.setString(index++, user);
       proc.execute();
 
@@ -389,7 +390,7 @@ public class TipReportDAO extends OracleDAO {
           + READ_TIP_FARM_REPORT_PINS_PROC, paramCount, true);
       
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.execute();
       
       rs = proc.getResultSet();
@@ -449,7 +450,7 @@ public class TipReportDAO extends OracleDAO {
           + BENCHMARKS_MATCH_CONFIG_PROC, BENCHMARKS_MATCH_CONFIG_PARAM, Types.VARCHAR);
 
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.execute();
 
       inUseString = proc.getString(1);
@@ -645,11 +646,11 @@ public class TipReportDAO extends OracleDAO {
         
         int index = 1;
         
-        proc.setInt(index++, programYearParam);
+        proc.setShort(index++, programYearParam == null ? null : programYearParam.shortValue());
         proc.setString(index++, farmType3NameParam);
         proc.setString(index++, farmType2NameParam);
         proc.setString(index++, farmType1NameParam);
-        proc.setDouble(index++, incomeRangeLowParam);
+        proc.setBigDecimal(index++, incomeRangeLowParam == null ? null : BigDecimal.valueOf(incomeRangeLowParam));
         proc.execute();
         
         try(ResultSet mainResultSet = proc.getResultSet(); ) {
@@ -915,11 +916,11 @@ public class TipReportDAO extends OracleDAO {
         
         int index = 1;
         
-        expensesProc.setInt(index++, programYearParam);
+        expensesProc.setShort(index++, programYearParam == null ? null : programYearParam.shortValue());
         expensesProc.setString(index++, farmType3NameParam);
         expensesProc.setString(index++, farmType2NameParam);
         expensesProc.setString(index++, farmType1NameParam);
-        expensesProc.setDouble(index++, incomeRangeLowParam);
+        expensesProc.setBigDecimal(index++, incomeRangeLowParam == null ? null : BigDecimal.valueOf(incomeRangeLowParam));
         expensesProc.setIndicator(index++, isAllowableExpense);
         expensesProc.execute();
         
