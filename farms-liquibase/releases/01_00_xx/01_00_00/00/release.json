@@ -140,6 +140,12 @@
         },
         {
             "includeAll": {
+                "path": "farms_tip_admin_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
                 "path": "farms_tip_user_pkg",
                 "relativeToChangeLogFile": "true"
             }
