@@ -12,6 +12,7 @@ package ca.bc.gov.srm.farm.dao;
 
 import static ca.bc.gov.srm.farm.domain.codes.InventoryClassCodes.*;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -99,12 +100,12 @@ public class AdjustmentDAO extends OracleDAO {
               }
 
               proc.setString(param++, action);
-              proc.setInt(param++, puc.getAdjProductiveUnitCapacityId());
-              proc.setInt(param++, puc.getReportedProductiveUnitCapacityId());
-              proc.setDouble(param++, puc.getAdjAmount());
-              proc.setInt(param++, operation.getFarmingOperationId());
-              proc.setInt(param++, refScenarioId);
-              proc.setInt(param++, parentScenarioId);
+              proc.setLong(param++, puc.getAdjProductiveUnitCapacityId() == null ? null : puc.getAdjProductiveUnitCapacityId().longValue());
+              proc.setLong(param++, puc.getReportedProductiveUnitCapacityId() == null ? null : puc.getReportedProductiveUnitCapacityId().longValue());
+              proc.setBigDecimal(param++, puc.getAdjAmount() == null ? null : BigDecimal.valueOf(puc.getAdjAmount()));
+              proc.setLong(param++, operation.getFarmingOperationId() == null ? null : operation.getFarmingOperationId().longValue());
+              proc.setLong(param++, refScenarioId == null ? null : refScenarioId.longValue());
+              proc.setLong(param++, parentScenarioId == null ? null : parentScenarioId.longValue());
               proc.setString(param++, puc.getStructureGroupCode());
               proc.setString(param++, puc.getInventoryItemCode());
               proc.setString(param++, puc.getParticipantDataSrcCode());
@@ -194,12 +195,12 @@ public class AdjustmentDAO extends OracleDAO {
           int param = 1;
           
           proc.setString(param++, action);
-          proc.setInt(param++, adjProductiveUnitCapacityId);
-          proc.setInt(param++, reportedProductiveUnitCapacityId);
-          proc.setDouble(param++, sourcePuc.getTotalProductiveCapacityAmount());
-          proc.setInt(param++, targetOperation.getFarmingOperationId());
-          proc.setInt(param++, targetRefScenario.getScenarioId());
-          proc.setInt(param++, parentScenarioId);
+          proc.setLong(param++, adjProductiveUnitCapacityId == null ? null : adjProductiveUnitCapacityId.longValue());
+          proc.setLong(param++, reportedProductiveUnitCapacityId == null ? null : reportedProductiveUnitCapacityId.longValue());
+          proc.setBigDecimal(param++, sourcePuc.getTotalProductiveCapacityAmount() == null ? null : BigDecimal.valueOf(sourcePuc.getTotalProductiveCapacityAmount()));
+          proc.setLong(param++, targetOperation.getFarmingOperationId() == null ? null : targetOperation.getFarmingOperationId().longValue());
+          proc.setLong(param++, targetRefScenario.getScenarioId() == null ? null : targetRefScenario.getScenarioId().longValue());
+          proc.setLong(param++, parentScenarioId == null ? null : parentScenarioId.longValue());
           proc.setString(param++, sourcePuc.getStructureGroupCode());
           proc.setString(param++, sourcePuc.getInventoryItemCode());
           proc.setString(param++, participantDataSrcCode);
@@ -270,15 +271,15 @@ public class AdjustmentDAO extends OracleDAO {
               }
 
               proc.setString(param++, action);
-              proc.setInt(param++, ie.getAdjIncomeExpenseId());
-              proc.setInt(param++, ie.getReportedIncomeExpenseId());
-              proc.setDouble(param++, ie.getAdjAmount());
+              proc.setLong(param++, ie.getAdjIncomeExpenseId() == null ? null : ie.getAdjIncomeExpenseId().longValue());
+              proc.setLong(param++, ie.getReportedIncomeExpenseId() == null ? null : ie.getReportedIncomeExpenseId().longValue());
+              proc.setBigDecimal(param++, ie.getAdjAmount() == null ? null : BigDecimal.valueOf(ie.getAdjAmount()));
               proc.setString(param++, getIndicatorYN(ie.getIsExpense()));
               proc.setString(param++, getIndicatorYN(ie.getLineItem().getIsEligible()));
-              proc.setInt(param++, operation.getFarmingOperationId());
-              proc.setInt(param++, refScenarioId);
-              proc.setInt(param++, parentScenarioId);
-              proc.setInt(param++, ie.getLineItem().getLineItem());
+              proc.setLong(param++, operation.getFarmingOperationId() == null ? null : operation.getFarmingOperationId().longValue());
+              proc.setLong(param++, refScenarioId == null ? null : refScenarioId.longValue());
+              proc.setLong(param++, parentScenarioId == null ? null : parentScenarioId.longValue());
+              proc.setShort(param++, ie.getLineItem().getLineItem() == null ? null : ie.getLineItem().getLineItem().shortValue());
               proc.setInt(param++, ie.getRevisionCount());
               proc.setString(param++, user);
               proc.addBatch();
@@ -355,23 +356,23 @@ public class AdjustmentDAO extends OracleDAO {
               }
               int param = 1;
               proc.setString(param++, action);
-              proc.setInt(param++, item.getAdjInventoryId());
-              proc.setInt(param++, item.getReportedInventoryId());
-              proc.setInt(param++, operation.getFarmingOperationId());
-              proc.setInt(param++, refScenarioId);
-              proc.setInt(param++, parentScenarioId);
-              proc.setDouble(param++, item.getAdjPriceStart());
-              proc.setDouble(param++, item.getAdjPriceEnd());
-              proc.setDouble(param++, item.getAdjEndYearProducerPrice());
-              proc.setDouble(param++, item.getAdjQuantityStart());
-              proc.setDouble(param++, item.getAdjQuantityEnd());
-              proc.setDouble(param++, item.getAdjStartOfYearAmount());
-              proc.setDouble(param++, item.getAdjEndOfYearAmount());
+              proc.setLong(param++, item.getAdjInventoryId() == null ? null : item.getAdjInventoryId().longValue());
+              proc.setLong(param++, item.getReportedInventoryId() == null ? null : item.getReportedInventoryId().longValue());
+              proc.setLong(param++, operation.getFarmingOperationId() == null ? null : operation.getFarmingOperationId().longValue());
+              proc.setLong(param++, refScenarioId == null ? null : refScenarioId.longValue());
+              proc.setLong(param++, parentScenarioId == null ? null : parentScenarioId.longValue());
+              proc.setBigDecimal(param++, item.getAdjPriceStart() == null ? null : BigDecimal.valueOf(item.getAdjPriceStart()));
+              proc.setBigDecimal(param++, item.getAdjPriceEnd() == null ? null : BigDecimal.valueOf(item.getAdjPriceEnd()));
+              proc.setBigDecimal(param++, item.getAdjEndYearProducerPrice() == null ? null : BigDecimal.valueOf(item.getAdjEndYearProducerPrice()));
+              proc.setBigDecimal(param++, item.getAdjQuantityStart() == null ? null : BigDecimal.valueOf(item.getAdjQuantityStart()));
+              proc.setBigDecimal(param++, item.getAdjQuantityEnd() == null ? null : BigDecimal.valueOf(item.getAdjQuantityEnd()));
+              proc.setBigDecimal(param++, item.getAdjStartOfYearAmount() == null ? null : BigDecimal.valueOf(item.getAdjStartOfYearAmount()));
+              proc.setBigDecimal(param++, item.getAdjEndOfYearAmount() == null ? null : BigDecimal.valueOf(item.getAdjEndOfYearAmount()));
               if(cropItem != null) {
-                proc.setDouble(param++, cropItem.getAdjQuantityProduced());
+                proc.setBigDecimal(param++, cropItem.getAdjQuantityProduced() == null ? null : BigDecimal.valueOf(cropItem.getAdjQuantityProduced()));
                 proc.setString(param++, cropItem.getCropUnitCode());
-                proc.setDouble(param++, cropItem.getOnFarmAcres());
-                proc.setDouble(param++, cropItem.getUnseedableAcres());
+                proc.setBigDecimal(param++, cropItem.getOnFarmAcres() == null ? null : BigDecimal.valueOf(cropItem.getOnFarmAcres()));
+                proc.setBigDecimal(param++, cropItem.getUnseedableAcres() == null ? null : BigDecimal.valueOf(cropItem.getUnseedableAcres()));
               } else if(item.getInventoryClassCode().equals(InventoryClassCodes.LIVESTOCK)) {
                 proc.setNull(param++, Types.NUMERIC);
                 proc.setString(param++, CropUnitCodes.getLivestockUnitCode(item.getInventoryItemCode()));
@@ -383,7 +384,7 @@ public class AdjustmentDAO extends OracleDAO {
                 proc.setNull(param++, Types.VARCHAR);
                 proc.setNull(param++, Types.VARCHAR);
               }
-              proc.setInt(param++, item.getCommodityXrefId());
+              proc.setLong(param++, item.getCommodityXrefId() == null ? null : item.getCommodityXrefId().longValue());
               proc.setInt(param++, item.getRevisionCount());
               proc.setString(param++, item.getInventoryItemCode());
               proc.setString(param++, item.getInventoryClassCode());
@@ -546,36 +547,36 @@ public class AdjustmentDAO extends OracleDAO {
           
           int param = 1;
           proc.setString(param++, action);
-          proc.setInt(param++, adjInventoryId);
-          proc.setInt(param++, reportedInventoryId);
-          proc.setInt(param++, targetOperation.getFarmingOperationId());
-          proc.setInt(param++, targetRefScenario.getScenarioId());
-          proc.setInt(param++, parentScenarioId);
-          proc.setDouble(param++, adjPriceStart);
-          proc.setDouble(param++, adjPriceEnd);
+          proc.setLong(param++, adjInventoryId == null ? null : adjInventoryId.longValue());
+          proc.setLong(param++, reportedInventoryId == null ? null : reportedInventoryId.longValue());
+          proc.setLong(param++, targetOperation.getFarmingOperationId() == null ? null : targetOperation.getFarmingOperationId().longValue());
+          proc.setLong(param++, targetRefScenario.getScenarioId() == null ? null : targetRefScenario.getScenarioId().longValue());
+          proc.setLong(param++, parentScenarioId == null ? null : parentScenarioId.longValue());
+          proc.setBigDecimal(param++, adjPriceStart == null ? null : BigDecimal.valueOf(adjPriceStart));
+          proc.setBigDecimal(param++, adjPriceEnd == null ? null : BigDecimal.valueOf(adjPriceEnd));
           
           // TODO Same issue as onFarmAcres and unseedableAcres, I think.
           if(!targetHasEndYearProducerPrice && sourceHasEndYearProducerPrice) {
-            proc.setDouble(param++, ObjectUtils.ifNull(sourceEndYearProducerPrice, Double.valueOf(0)));
+            proc.setBigDecimal(param++, BigDecimal.valueOf(ObjectUtils.ifNull(sourceEndYearProducerPrice, Double.valueOf(0))));
           } else {
-            proc.setDouble(param++, targetEndYearProducerPrice);
+            proc.setBigDecimal(param++, targetEndYearProducerPrice == null ? null : BigDecimal.valueOf(targetEndYearProducerPrice));
           }
           
-          proc.setDouble(param++, adjQuantityStart);
-          proc.setDouble(param++, adjQuantityEnd);
-          proc.setDouble(param++, adjStartOfYearAmount);
-          proc.setDouble(param++, adjEndOfYearAmount);
+          proc.setBigDecimal(param++, adjQuantityStart == null ? null : BigDecimal.valueOf(adjQuantityStart));
+          proc.setBigDecimal(param++, adjQuantityEnd == null ? null : BigDecimal.valueOf(adjQuantityEnd));
+          proc.setBigDecimal(param++, adjStartOfYearAmount == null ? null : BigDecimal.valueOf(adjStartOfYearAmount));
+          proc.setBigDecimal(param++, adjEndOfYearAmount == null ? null : BigDecimal.valueOf(adjEndOfYearAmount));
           if(sourceCropItem != null) {
-            proc.setDouble(param++, adjQuantityProduced);
+            proc.setBigDecimal(param++, adjQuantityProduced == null ? null : BigDecimal.valueOf(adjQuantityProduced));
             proc.setString(param++, sourceCropItem.getCropUnitCode());
             
             // TODO onFarmAcres, unseedableAcres are being populated in the adjustment read and displayed only from the reported record. Fix?
             if(!targetHasOnFarmAcres && !targetHasUnseedableAcres && (sourceHasOnFarmAcres || sourceHasUnseedableAcres)) {
-              proc.setDouble(param++, ObjectUtils.ifNull(sourceOnFarmAcres, Double.valueOf(0)));
-              proc.setDouble(param++, ObjectUtils.ifNull(sourceUnseedableAcres, Double.valueOf(0)));
+              proc.setBigDecimal(param++, BigDecimal.valueOf(ObjectUtils.ifNull(sourceOnFarmAcres, Double.valueOf(0))));
+              proc.setBigDecimal(param++, BigDecimal.valueOf(ObjectUtils.ifNull(sourceUnseedableAcres, Double.valueOf(0))));
             } else {
-              proc.setDouble(param++, targetOnFarmAcres);
-              proc.setDouble(param++, targetUnseedableAcres);
+              proc.setBigDecimal(param++, targetOnFarmAcres == null ? null : BigDecimal.valueOf(targetOnFarmAcres));
+              proc.setBigDecimal(param++, targetUnseedableAcres == null ? null : BigDecimal.valueOf(targetUnseedableAcres));
             }
           } else if(sourceItem.getInventoryClassCode().equals(InventoryClassCodes.LIVESTOCK)) {
             proc.setNull(param++, Types.NUMERIC);
@@ -588,7 +589,7 @@ public class AdjustmentDAO extends OracleDAO {
             proc.setNull(param++, Types.VARCHAR);
             proc.setNull(param++, Types.VARCHAR);
           }
-          proc.setInt(param++, sourceItem.getCommodityXrefId());
+          proc.setLong(param++, sourceItem.getCommodityXrefId() == null ? null : sourceItem.getCommodityXrefId().longValue());
           proc.setInt(param++, revisionCount);
           proc.setString(param++, sourceItem.getInventoryItemCode());
           proc.setString(param++, sourceItem.getInventoryClassCode());
