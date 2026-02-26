@@ -11,6 +11,7 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -126,19 +127,19 @@ public class AarmDAO extends OracleDAO {
       }
 
       int index = 1;
-      insertProc.setInt(index++, obj.getAarmKey());
+      insertProc.setLong(index++, obj.getAarmKey() == null ? null : obj.getAarmKey().longValue());
       insertProc.setInt(index++, obj.getParticipantPin());
-      insertProc.setInt(index++, obj.getProgramYear());
-      insertProc.setInt(index++, obj.getOperationNumber());
-      insertProc.setDouble(index++, obj.getPartnerPercent());
-      insertProc.setInt(index++, obj.getInventoryTypeCode());
+      insertProc.setShort(index++, obj.getProgramYear() == null ? null : obj.getProgramYear().shortValue());
+      insertProc.setShort(index++, obj.getOperationNumber() == null ? null : obj.getOperationNumber().shortValue());
+      insertProc.setBigDecimal(index++, obj.getPartnerPercent() == null ? null : BigDecimal.valueOf(obj.getPartnerPercent()));
+      insertProc.setShort(index++, obj.getInventoryTypeCode() == null ? null : obj.getInventoryTypeCode().shortValue());
       insertProc.setInt(index++, obj.getInventoryCode());
       insertProc.setString(index++, obj.getInventoryDescription());
-      insertProc.setInt(index++, obj.getProductionUnit());
-      insertProc.setDouble(index++, obj.getAarmReferenceP1Price());
-      insertProc.setDouble(index++, obj.getAarmReferenceP2Price());
-      insertProc.setDouble(index++, obj.getQuantityStart());
-      insertProc.setDouble(index++, obj.getQuantityEnd());
+      insertProc.setShort(index++, obj.getProductionUnit() == null ? null : obj.getProductionUnit().shortValue());
+      insertProc.setBigDecimal(index++, obj.getAarmReferenceP1Price() == null ? null : BigDecimal.valueOf(obj.getAarmReferenceP1Price()));
+      insertProc.setBigDecimal(index++, obj.getAarmReferenceP2Price() == null ? null : BigDecimal.valueOf(obj.getAarmReferenceP2Price()));
+      insertProc.setBigDecimal(index++, obj.getQuantityStart() == null ? null : BigDecimal.valueOf(obj.getQuantityStart()));
+      insertProc.setBigDecimal(index++, obj.getQuantityEnd() == null ? null : BigDecimal.valueOf(obj.getQuantityEnd()));
       insertProc.setString(index++, userId);
 
       insertProc.execute();
@@ -176,7 +177,7 @@ public class AarmDAO extends OracleDAO {
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
         
         int index = 1;
-        proc.setInt(index++, importVersionId);
+        proc.setLong(index++, importVersionId == null ? null : importVersionId.longValue());
         proc.setString(index++, userId);
         
         proc.execute();
