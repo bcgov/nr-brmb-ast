@@ -78,12 +78,30 @@ public class FmvDAO extends OracleDAO {
     DAOStoredProcedure proc = null;
     final int paramCount = 0;
     String procName = PACKAGE_NAME + "." + CLEAR_PROC;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       proc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -100,31 +118,52 @@ public class FmvDAO extends OracleDAO {
   public final void insert(final FmvCsvRow obj, final String userId,
     final int rowNum) throws SQLException {
 
-    if (insertProc == null) {
-      final int paramCount = 9;
-      String procName = PACKAGE_NAME + "." + INSERT_PROC;
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      insertProc = new DAOStoredProcedure(connection,
-          procName,
-          paramCount,
-          false);
-    } else {
-      insertProc.clearParameters();
+      if (insertProc == null) {
+        final int paramCount = 9;
+        String procName = PACKAGE_NAME + "." + INSERT_PROC;
+
+        insertProc = new DAOStoredProcedure(connection,
+            procName,
+            paramCount,
+            false);
+      } else {
+        insertProc.clearParameters();
+      }
+
+      int index = 1;
+
+      insertProc.setInt(index++, rowNum);
+      insertProc.setInt(index++, obj.getProgramYear());
+      insertProc.setInt(index++, obj.getPeriod());
+      insertProc.setDouble(index++, obj.getAveragePrice());
+      insertProc.setDouble(index++, obj.getPercentVariance());
+      insertProc.setString(index++, obj.getMunicipalityCode());
+      insertProc.setString(index++, obj.getUnitCode());
+      insertProc.setString(index++, obj.getInventoryCode());
+      insertProc.setString(index++, userId);
+
+      insertProc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
-
-    int index = 1;
-
-    insertProc.setInt(index++, rowNum);
-    insertProc.setInt(index++, obj.getProgramYear());
-    insertProc.setInt(index++, obj.getPeriod());
-    insertProc.setDouble(index++, obj.getAveragePrice());
-    insertProc.setDouble(index++, obj.getPercentVariance());
-    insertProc.setString(index++, obj.getMunicipalityCode());
-    insertProc.setString(index++, obj.getUnitCode());
-    insertProc.setString(index++, obj.getInventoryCode());
-    insertProc.setString(index++, userId);
-
-    insertProc.execute();
   }
 
 
@@ -141,14 +180,32 @@ public class FmvDAO extends OracleDAO {
     final int paramCount = 1;
     String procName = PACKAGE_NAME + "." + VALIDATE_PROC;
 
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
       proc.setInt(index++, importVersionId);
       proc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -166,14 +223,32 @@ public class FmvDAO extends OracleDAO {
     final int paramCount = 1;
     String procName = PACKAGE_NAME + "." + DELETE_ERRORS_PROC;
 
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
       proc.setInt(index++, importVersionId);
       proc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -195,7 +270,11 @@ public class FmvDAO extends OracleDAO {
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int index = 1;
@@ -206,11 +285,23 @@ public class FmvDAO extends OracleDAO {
       while (resultSet.next()) {
         errors.add(resultSet.getString("LOG_MESSAGE"));
       }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return errors;
@@ -231,7 +322,11 @@ public class FmvDAO extends OracleDAO {
     final int paramCount = 2;
     String procName = PACKAGE_NAME + "." + OPERATIONAL_PROC;
 
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
@@ -239,8 +334,22 @@ public class FmvDAO extends OracleDAO {
       proc.setString(index++, userId);
 
       proc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
