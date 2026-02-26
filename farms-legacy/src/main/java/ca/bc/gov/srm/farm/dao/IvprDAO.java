@@ -10,6 +10,7 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -134,11 +135,11 @@ public class IvprDAO extends OracleDAO {
 
       int index = 1;
 
-      insertProc.setInt(index++, rowNum);
-      insertProc.setInt(index++, obj.getProgramYear());
+      insertProc.setLong(index++, (long)rowNum);
+      insertProc.setShort(index++, obj.getProgramYear() == null ? null : obj.getProgramYear().shortValue());
       insertProc.setString(index++, obj.getInventoryItemCode());
-      insertProc.setDouble(index++, obj.getInsurableValue());
-      insertProc.setDouble(index++, obj.getPremiumRate());
+      insertProc.setBigDecimal(index++, obj.getInsurableValue() == null ? null : BigDecimal.valueOf(obj.getInsurableValue()));
+      insertProc.setBigDecimal(index++, obj.getPremiumRate() == null ? null : BigDecimal.valueOf(obj.getPremiumRate()));
       insertProc.setString(index++, userId);
 
       insertProc.execute();
@@ -179,7 +180,7 @@ public class IvprDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
 
         int index = 1;
-        proc.setInt(index++, importVersionId);
+        proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
         proc.execute();
       }
 
@@ -219,7 +220,7 @@ public class IvprDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
 
         int index = 1;
-        proc.setInt(index++, importVersionId);
+        proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
         proc.execute();
       }
 
@@ -261,7 +262,7 @@ public class IvprDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
 
         int index = 1;
-        proc.setInt(index++, importVersionId);
+        proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
         proc.execute();
         try (ResultSet resultSet = proc.getResultSet();) {
 
@@ -315,7 +316,7 @@ public class IvprDAO extends OracleDAO {
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
         int index = 1;
-        proc.setInt(index++, importVersionId);
+        proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
         proc.setString(index++, userId);
 
         proc.execute();
