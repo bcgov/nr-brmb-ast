@@ -113,35 +113,53 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_RSNBLTY_TEST_MESSAGE_PROC, CREATE_RSNBLTY_TEST_MESSAGE_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<ReasonabilityTestResultMessage> messages = new ArrayList<>();
-      messages.addAll(result.getErrorMessages());
-      messages.addAll(result.getWarningMessages());
-      messages.addAll(result.getInfoMessages());
-      
-      for (ReasonabilityTestResultMessage message : messages) {
-        param = 1;
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + CREATE_RSNBLTY_TEST_MESSAGE_PROC, CREATE_RSNBLTY_TEST_MESSAGE_PARAM, false);) {      
         
-        proc.setString(param++, result.getName());
-        proc.setString(param++, message.getMessage());
-        proc.setString(param++, message.getMessageTypeCode());
-        proc.setInt(param++, reasonabilityTestResultId);        
-        proc.setString(param++, user);
+        int param = 1;
         
-        proc.addBatch();
+        List<ReasonabilityTestResultMessage> messages = new ArrayList<>();
+        messages.addAll(result.getErrorMessages());
+        messages.addAll(result.getWarningMessages());
+        messages.addAll(result.getInfoMessages());
+        
+        for (ReasonabilityTestResultMessage message : messages) {
+          param = 1;
+          
+          proc.setString(param++, result.getName());
+          proc.setString(param++, message.getMessage());
+          proc.setString(param++, message.getMessageTypeCode());
+          proc.setInt(param++, reasonabilityTestResultId);        
+          proc.setString(param++, user);
+          
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }  
   
   
@@ -152,19 +170,37 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + DELETE_REASONABILITY_RESULTS_PROC, DELETE_REASONABILITY_RESULTS_PARAM, false);) {      
-      
-      int param = 1;
-            
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.execute();            
-      
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + DELETE_REASONABILITY_RESULTS_PROC, DELETE_REASONABILITY_RESULTS_PARAM, false);) {      
+        
+        int param = 1;
+              
+          proc.setInt(param++, reasonabilityTestResultId);
+          proc.execute();            
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -177,62 +213,97 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + UPDATE_RSN_PRDCTN_FRUT_INVNTRIES_PROC, UPDATE_RSN_PRDCTN_FRUT_INVNTRIES_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<ProductionInventoryItemTestResult> testResults = productionTest.getFruitVegInventoryItems();
-      
-      for (ProductionInventoryItemTestResult inventoryResult : testResults) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, inventoryResult.getProductiveCapacityAmount());
-        proc.setDouble(param++, inventoryResult.getReportedProduction());
-        proc.setDouble(param++, inventoryResult.getExpectedProductionPerUnit());
-        proc.setDouble(param++, inventoryResult.getExpectedQuantityProduced());
-        proc.setString(param++, inventoryResult.getInventoryItemCode());
-        proc.setString(param++, inventoryResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + UPDATE_RSN_PRDCTN_FRUT_INVNTRIES_PROC, UPDATE_RSN_PRDCTN_FRUT_INVNTRIES_PARAM, false);) {      
+        
+        int param = 1;
+        
+        List<ProductionInventoryItemTestResult> testResults = productionTest.getFruitVegInventoryItems();
+        
+        for (ProductionInventoryItemTestResult inventoryResult : testResults) {
+          param = 1;
+          proc.setInt(param++, reasonabilityTestResultId);
+          proc.setDouble(param++, inventoryResult.getProductiveCapacityAmount());
+          proc.setDouble(param++, inventoryResult.getReportedProduction());
+          proc.setDouble(param++, inventoryResult.getExpectedProductionPerUnit());
+          proc.setDouble(param++, inventoryResult.getExpectedQuantityProduced());
+          proc.setString(param++, inventoryResult.getInventoryItemCode());
+          proc.setString(param++, inventoryResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
-    
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_RSNBLTY_PRDCTN_FRUIT_VEG_RSLTS_PROC, UPDATE_RSNBLTY_PRDCTN_FRUIT_VEG_RSLTS_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<FruitVegProductionResult> testResults = productionTest.getFruitVegTestResults();
-            
-      for (FruitVegProductionResult testResult : testResults) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, testResult.getProductiveCapacityAmount());
-        proc.setDouble(param++, testResult.getReportedProduction());
-        proc.setDouble(param++, testResult.getExpectedQuantityProduced());
-        proc.setDouble(param++, testResult.getVariance());
-        proc.setIndicator(param++, testResult.getPass());
-        proc.setString(param++, testResult.getFruitVegTypeCode());
-        proc.setString(param++, testResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
       }
-      
-      proc.executeBatch();
-      
+    }
+    
+    
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_RSNBLTY_PRDCTN_FRUIT_VEG_RSLTS_PROC, UPDATE_RSNBLTY_PRDCTN_FRUIT_VEG_RSLTS_PARAM, false);) {      
+        
+        int param = 1;
+        
+        List<FruitVegProductionResult> testResults = productionTest.getFruitVegTestResults();
+              
+        for (FruitVegProductionResult testResult : testResults) {
+          param = 1;
+          proc.setInt(param++, reasonabilityTestResultId);
+          proc.setDouble(param++, testResult.getProductiveCapacityAmount());
+          proc.setDouble(param++, testResult.getReportedProduction());
+          proc.setDouble(param++, testResult.getExpectedQuantityProduced());
+          proc.setDouble(param++, testResult.getVariance());
+          proc.setIndicator(param++, testResult.getPass());
+          proc.setString(param++, testResult.getFruitVegTypeCode());
+          proc.setString(param++, testResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   private void updateGrainProductionTest(
@@ -244,35 +315,53 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_FARM_RSNBLTY_PRDCTN_GRAINS_RSLTS_PROC, UPDATE_FARM_RSNBLTY_PRDCTN_GRAINS_RSLTS_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<ProductionInventoryItemTestResult> testResults = productionTest.getGrainItemTestResults();
-            
-      for (ProductionInventoryItemTestResult testResult : testResults) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, testResult.getProductiveCapacityAmount());
-        proc.setDouble(param++, testResult.getReportedProduction());
-        proc.setDouble(param++, testResult.getExpectedProductionPerUnit());
-        proc.setDouble(param++, testResult.getExpectedQuantityProduced());
-        proc.setDouble(param++, testResult.getVariance());
-        proc.setIndicator(param++, testResult.getPass());
-        proc.setString(param++, testResult.getInventoryItemCode());
-        proc.setString(param++, testResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_FARM_RSNBLTY_PRDCTN_GRAINS_RSLTS_PROC, UPDATE_FARM_RSNBLTY_PRDCTN_GRAINS_RSLTS_PARAM, false);) {      
+        
+        int param = 1;
+        
+        List<ProductionInventoryItemTestResult> testResults = productionTest.getGrainItemTestResults();
+              
+        for (ProductionInventoryItemTestResult testResult : testResults) {
+          param = 1;
+          proc.setInt(param++, reasonabilityTestResultId);
+          proc.setDouble(param++, testResult.getProductiveCapacityAmount());
+          proc.setDouble(param++, testResult.getReportedProduction());
+          proc.setDouble(param++, testResult.getExpectedProductionPerUnit());
+          proc.setDouble(param++, testResult.getExpectedQuantityProduced());
+          proc.setDouble(param++, testResult.getVariance());
+          proc.setIndicator(param++, testResult.getPass());
+          proc.setString(param++, testResult.getInventoryItemCode());
+          proc.setString(param++, testResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -285,37 +374,55 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_FARM_RSNBLTY_PRDCTN_FORAGE_RSLTS_PROC, UPDATE_FARM_RSNBLTY_PRDCTN_FORAGE_RSLTS_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<ProductionInventoryItemTestResult> forageAndForageSeedResults = new ArrayList<>();
-      forageAndForageSeedResults.addAll(productionTest.getForageTestResults());
-      forageAndForageSeedResults.addAll(productionTest.getForageSeedTestResults());
-            
-      for (ProductionInventoryItemTestResult testResult : forageAndForageSeedResults) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, testResult.getProductiveCapacityAmount());
-        proc.setDouble(param++, testResult.getReportedProduction());
-        proc.setDouble(param++, testResult.getExpectedProductionPerUnit());
-        proc.setDouble(param++, testResult.getExpectedQuantityProduced());
-        proc.setDouble(param++, testResult.getVariance());
-        proc.setIndicator(param++, testResult.getPass());
-        proc.setString(param++, testResult.getInventoryItemCode());
-        proc.setString(param++, testResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_FARM_RSNBLTY_PRDCTN_FORAGE_RSLTS_PROC, UPDATE_FARM_RSNBLTY_PRDCTN_FORAGE_RSLTS_PARAM, false);) {      
+        
+        int param = 1;
+        
+        List<ProductionInventoryItemTestResult> forageAndForageSeedResults = new ArrayList<>();
+        forageAndForageSeedResults.addAll(productionTest.getForageTestResults());
+        forageAndForageSeedResults.addAll(productionTest.getForageSeedTestResults());
+              
+        for (ProductionInventoryItemTestResult testResult : forageAndForageSeedResults) {
+          param = 1;
+          proc.setInt(param++, reasonabilityTestResultId);
+          proc.setDouble(param++, testResult.getProductiveCapacityAmount());
+          proc.setDouble(param++, testResult.getReportedProduction());
+          proc.setDouble(param++, testResult.getExpectedProductionPerUnit());
+          proc.setDouble(param++, testResult.getExpectedQuantityProduced());
+          proc.setDouble(param++, testResult.getVariance());
+          proc.setIndicator(param++, testResult.getPass());
+          proc.setString(param++, testResult.getInventoryItemCode());
+          proc.setString(param++, testResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -328,8 +435,12 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
+    boolean originalAutoCommit = true;
+
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PROC, UPDATE_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PARAM, false);) {      
       
@@ -378,10 +489,21 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         proc.executeBatch();
       }
       
-      
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -394,61 +516,96 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PROCS, UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PARAM, false);) {      
-      
-      int param = 1;
-      List<RevenueRiskInventoryItem> results = revenueRiskTest.getFruitVegInventory();
-            
-      for (RevenueRiskInventoryItem inventoryResult : results) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, inventoryResult.getQuantityProduced());
-        proc.setDouble(param++, inventoryResult.getFmvPrice());
-        proc.setDouble(param++, inventoryResult.getExpectedRevenue());
-        proc.setString(param++, inventoryResult.getInventoryItemCode());
-        proc.setString(param++, inventoryResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PROCS, UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PARAM, false);) {      
+        
+        int param = 1;
+        List<RevenueRiskInventoryItem> results = revenueRiskTest.getFruitVegInventory();
+              
+        for (RevenueRiskInventoryItem inventoryResult : results) {
+          param = 1;
+          proc.setInt(param++, reasonabilityTestResultId);
+          proc.setDouble(param++, inventoryResult.getQuantityProduced());
+          proc.setDouble(param++, inventoryResult.getFmvPrice());
+          proc.setDouble(param++, inventoryResult.getExpectedRevenue());
+          proc.setString(param++, inventoryResult.getInventoryItemCode());
+          proc.setString(param++, inventoryResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
-    
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_RESULTS_PROCS, UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_RESULTS_PARAM, false);) {      
-      
-      int param = 1;
-      List<RevenueRiskFruitVegItemTestResult> results = revenueRiskTest.getFruitVegResults();
-      
-      for (RevenueRiskFruitVegItemTestResult testResult : results) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, testResult.getReportedRevenue());
-        proc.setDouble(param++, testResult.getQuantityProduced());
-        proc.setDouble(param++, testResult.getExpectedPrice());
-        proc.setDouble(param++, testResult.getExpectedRevenue());
-        proc.setDouble(param++, testResult.getVariance());
-        proc.setIndicator(param++, testResult.getPass());
-        proc.setDouble(param++, testResult.getVarianceLimit());
-        proc.setString(param++, testResult.getFruitVegTypeCode());
-        proc.setString(param++, testResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
       }
-      
-      proc.executeBatch();
-      
+    }
+    
+    
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_RESULTS_PROCS, UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_RESULTS_PARAM, false);) {      
+        
+        int param = 1;
+        List<RevenueRiskFruitVegItemTestResult> results = revenueRiskTest.getFruitVegResults();
+        
+        for (RevenueRiskFruitVegItemTestResult testResult : results) {
+          param = 1;
+          proc.setInt(param++, reasonabilityTestResultId);
+          proc.setDouble(param++, testResult.getReportedRevenue());
+          proc.setDouble(param++, testResult.getQuantityProduced());
+          proc.setDouble(param++, testResult.getExpectedPrice());
+          proc.setDouble(param++, testResult.getExpectedRevenue());
+          proc.setDouble(param++, testResult.getVariance());
+          proc.setIndicator(param++, testResult.getPass());
+          proc.setDouble(param++, testResult.getVarianceLimit());
+          proc.setString(param++, testResult.getFruitVegTypeCode());
+          proc.setString(param++, testResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   @SuppressWarnings("resource")
@@ -460,8 +617,11 @@ public class ReasonabilityWriteDAO extends OracleDAO {
   throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
       
       // Nursery main results
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -523,10 +683,22 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         proc.executeBatch();
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -539,42 +711,60 @@ public class ReasonabilityWriteDAO extends OracleDAO {
   throws DataAccessException {
     
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + INSERT_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PROC, INSERT_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PARAM, false);) {
-          
-      int param = 1;
-      proc.setInt(param++, reasonabilityTestResultId);
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasPoultryBroilers());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getSubTestPass());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasChickens());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getChickenPass());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenAverageWeightKg());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenExpectedSoldCount());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenPricePerBird());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenExpectedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenReportedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenKgProduced());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenVariance());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenVarianceLimit());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasTurkeys());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getTurkeyPass());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyAverageWeightKg());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyExpectedSoldCount());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyPricePerBird());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyExpectedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyReportedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyKgProduced());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyVariance());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyVarianceLimit());
-      proc.setString(param++, user);  
-      
-      proc.execute();
-      
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + INSERT_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PROC, INSERT_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PARAM, false);) {
+            
+        int param = 1;
+        proc.setInt(param++, reasonabilityTestResultId);
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasPoultryBroilers());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getSubTestPass());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasChickens());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getChickenPass());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenAverageWeightKg());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenExpectedSoldCount());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenPricePerBird());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenExpectedRevenue());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenReportedRevenue());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenKgProduced());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenVariance());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenVarianceLimit());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasTurkeys());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getTurkeyPass());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyAverageWeightKg());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyExpectedSoldCount());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyPricePerBird());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyExpectedRevenue());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyReportedRevenue());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyKgProduced());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyVariance());
+        proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyVarianceLimit());
+        proc.setString(param++, user);  
+        
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    } 
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
     
   }
   
@@ -588,42 +778,60 @@ public class ReasonabilityWriteDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + INSERT_FARM_RSNBLTY_REV_EGG_RSLTS_PROC, INSERT_FARM_RSNBLTY_REV_EGG_RSLTS_PARAM, false);) {
-      
-      int param = 1;
-      proc.setInt(param++, reasonabilityTestResultId);
-      proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getHasPoultryEggs());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getSubTestPass());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getConsumptionPass());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionLayers());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionAverageEggsPerLayer());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsTotal());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsDozen());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsDozenPrice());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionExpectedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionReportedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionVariance());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionVarianceLimit());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getHatchingPass());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingLayers());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingAverageEggsPerLayer());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsTotal());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsDozen());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsDozenPrice());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingExpectedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingReportedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingVariance());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingVarianceLimit());
-      proc.setString(param++, user);  
-      
-      proc.execute();
-      
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + INSERT_FARM_RSNBLTY_REV_EGG_RSLTS_PROC, INSERT_FARM_RSNBLTY_REV_EGG_RSLTS_PARAM, false);) {
+        
+        int param = 1;
+        proc.setInt(param++, reasonabilityTestResultId);
+        proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getHasPoultryEggs());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getSubTestPass());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getConsumptionPass());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionLayers());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionAverageEggsPerLayer());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsTotal());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsDozen());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsDozenPrice());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionExpectedRevenue());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionReportedRevenue());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionVariance());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionVarianceLimit());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getHatchingPass());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingLayers());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingAverageEggsPerLayer());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsTotal());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsDozen());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsDozenPrice());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingExpectedRevenue());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingReportedRevenue());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingVariance());
+        proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingVarianceLimit());
+        proc.setString(param++, user);  
+        
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    } 
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
     
   }
   
@@ -637,8 +845,11 @@ public class ReasonabilityWriteDAO extends OracleDAO {
   throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
       
       // Hogs main results
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -703,10 +914,22 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         proc.executeBatch();
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -718,9 +941,12 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_RSN_FORAGE_CONSUMERS_PROC, UPDATE_RSN_FORAGE_CONSUMERS_PARAM, false);) {      
         
@@ -741,10 +967,22 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         
         proc.executeBatch();
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -757,9 +995,12 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       if (results.getReasonabilityTestResultId() != null) {
         deleteReasonabilityResults(transaction, results.getReasonabilityTestResultId());
       }
@@ -844,6 +1085,7 @@ public class ReasonabilityWriteDAO extends OracleDAO {
       }
       
       updateForageConsumers(transaction, results, user);
+      connection.setAutoCommit(false);
       
       // Create Productive Units for the test
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -883,10 +1125,22 @@ public class ReasonabilityWriteDAO extends OracleDAO {
       for(ReasonabilityTestResult testResult : results.getTestResults()) {
         createReasonabilityTestMessages(transaction, testResult, results.getReasonabilityTestResultId(), user);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
   }
@@ -900,19 +1154,37 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     
     if(results != null && results.getReasonabilityTestResultId() != null) {
-      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + FLAG_REASONABILITY_TESTS_STALE_PROC, FLAG_REASONABILITY_TESTS_STALE_PARAM, false);) {
-        
-        int param = 1;
-        proc.setInt(param++, results.getReasonabilityTestResultId());
-        proc.setString(param++, user);
-        proc.execute();
-        
+      try {
+        originalAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+
+        try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+              + FLAG_REASONABILITY_TESTS_STALE_PROC, FLAG_REASONABILITY_TESTS_STALE_PARAM, false);) {
+          
+          int param = 1;
+          proc.setInt(param++, results.getReasonabilityTestResultId());
+          proc.setString(param++, user);
+          proc.execute();
+        }
+
+        connection.commit();
       } catch (SQLException e) {
+        try {
+          connection.rollback();
+        } catch (SQLException rollbackEx) {
+          e.addSuppressed(rollbackEx);
+        }
         logSqlException(e);
         handleException(e);
+      } finally {
+        try {
+          connection.setAutoCommit(originalAutoCommit);
+        } catch (SQLException ex) {
+          handleException(ex);
+        }
       }
     }
     
