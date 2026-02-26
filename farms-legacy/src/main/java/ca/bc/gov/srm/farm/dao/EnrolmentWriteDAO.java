@@ -30,7 +30,7 @@ import ca.bc.gov.webade.dbpool.WrapperConnection;
 public class EnrolmentWriteDAO extends OracleDAO {
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_ENROLMENT_WRITE_PKG";
+  private static final String PACKAGE_NAME = "FARMS_ENROLMENT_WRITE_PKG";
 
   private static final String GENERATE_ENROLMENTS_PROC = "GENERATE_ENROLMENTS";
 
@@ -82,31 +82,49 @@ public class EnrolmentWriteDAO extends OracleDAO {
       throws DataAccessException {
 
     List<Integer> pinsForCalculation = new ArrayList<>();
+    boolean originalAutoCommit = true;
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + GENERATE_ENROLMENTS_PROC, GENERATE_ENROLMENTS_PARAM, true)) {
-  
-      Integer[] pinArray = pins.toArray(new Integer[pins.size()]);
-  
-      Array oracleArray = createNumbersOracleArray(conn, pinArray);
-  
-      int param = 1;
-      proc.setInt(param++, enrolmentYear);
-      proc.setIndicator(param++, createTaskInBarn);
-      proc.setString(param++, user);
-      proc.setArray(param++, oracleArray);
-      proc.execute();
-  
-      try (ResultSet rs = proc.getResultSet();) {
-      
-        while(rs.next()) {
-          pinsForCalculation.add(getInteger(rs, 1));
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + GENERATE_ENROLMENTS_PROC, GENERATE_ENROLMENTS_PARAM, true)) {
+    
+        Integer[] pinArray = pins.toArray(new Integer[pins.size()]);
+    
+        Array oracleArray = createNumbersOracleArray(conn, pinArray);
+    
+        int param = 1;
+        proc.setInt(param++, enrolmentYear);
+        proc.setIndicator(param++, createTaskInBarn);
+        proc.setString(param++, user);
+        proc.setArray(param++, oracleArray);
+        proc.execute();
+    
+        try (ResultSet rs = proc.getResultSet();) {
+        
+          while(rs.next()) {
+            pinsForCalculation.add(getInteger(rs, 1));
+          }
         }
       }
 
+      conn.commit();
     } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return pinsForCalculation;
@@ -122,42 +140,61 @@ public class EnrolmentWriteDAO extends OracleDAO {
       final List<EnrolmentStaging> enrolments,
       final String user)
   throws DataAccessException {
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + UPDATE_STAGING_PROC, UPDATE_STAGING_PARAM, false);) {
-      
-      for(EnrolmentStaging enrolment : enrolments) {
-        int param = 1;
-        proc.setInt(param++, enrolment.getPin());
-        proc.setInt(param++, enrolment.getEnrolmentYear());
-        proc.setDouble(param++, enrolment.getEnrolmentFee());
-        proc.setIndicator(param++, enrolment.getFailedToGenerate());
-        proc.setIndicator(param++, enrolment.getIsError());
-        proc.setString(param++, enrolment.getFailedReason());
-        proc.setDouble(param++, enrolment.getContributionMarginAverage());
-        proc.setDouble(param++, enrolment.getMarginYearMinus2());
-        proc.setDouble(param++, enrolment.getMarginYearMinus3());
-        proc.setDouble(param++, enrolment.getMarginYearMinus4());
-        proc.setDouble(param++, enrolment.getMarginYearMinus5());
-        proc.setDouble(param++, enrolment.getMarginYearMinus6());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus2Used());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus3Used());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus4Used());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus5Used());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus6Used());
-        proc.setIndicator(param++, enrolment.getIsGeneratedFromCra());
-        proc.setIndicator(param++, enrolment.getIsGeneratedFromEnw());
-        proc.setIndicator(param++, enrolment.getIsCreateTaskInBarn());
-        proc.setDouble(param++, enrolment.getCombinedFarmPercent());
-        proc.setInt(param++, enrolment.getMarginScenarioId());
-        proc.setString(param++, user);
-        proc.addBatch();
+
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + UPDATE_STAGING_PROC, UPDATE_STAGING_PARAM, false);) {
+        
+        for(EnrolmentStaging enrolment : enrolments) {
+          int param = 1;
+          proc.setInt(param++, enrolment.getPin());
+          proc.setInt(param++, enrolment.getEnrolmentYear());
+          proc.setDouble(param++, enrolment.getEnrolmentFee());
+          proc.setIndicator(param++, enrolment.getFailedToGenerate());
+          proc.setIndicator(param++, enrolment.getIsError());
+          proc.setString(param++, enrolment.getFailedReason());
+          proc.setDouble(param++, enrolment.getContributionMarginAverage());
+          proc.setDouble(param++, enrolment.getMarginYearMinus2());
+          proc.setDouble(param++, enrolment.getMarginYearMinus3());
+          proc.setDouble(param++, enrolment.getMarginYearMinus4());
+          proc.setDouble(param++, enrolment.getMarginYearMinus5());
+          proc.setDouble(param++, enrolment.getMarginYearMinus6());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus2Used());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus3Used());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus4Used());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus5Used());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus6Used());
+          proc.setIndicator(param++, enrolment.getIsGeneratedFromCra());
+          proc.setIndicator(param++, enrolment.getIsGeneratedFromEnw());
+          proc.setIndicator(param++, enrolment.getIsCreateTaskInBarn());
+          proc.setDouble(param++, enrolment.getCombinedFarmPercent());
+          proc.setInt(param++, enrolment.getMarginScenarioId());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
+
+      conn.commit();
     } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
   }
@@ -167,42 +204,61 @@ public class EnrolmentWriteDAO extends OracleDAO {
       final List<Enrolment> enrolments,
       final String user)
   throws DataAccessException {
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + UPSERT_OPERATIONAL_PROC, UPSERT_OPERATIONAL_PARAM, false);) {
-      
-      for(Enrolment enrolment : enrolments) {
-        int param = 1;
-        proc.setInt(param++, enrolment.getClientId());
-        proc.setInt(param++, enrolment.getEnrolmentYear());
-        proc.setDouble(param++, enrolment.getEnrolmentFee());
-        proc.setIndicator(param++, enrolment.getFailedToGenerate());
-        proc.setIndicator(param++, enrolment.getIsGeneratedFromCra());
-        proc.setIndicator(param++, enrolment.getIsGeneratedFromEnw());
-        proc.setString(param++, enrolment.getFailedReason());
-        proc.setDate(param++, enrolment.getGeneratedDate());
-        proc.setDouble(param++, enrolment.getContributionMarginAverage());
-        proc.setDouble(param++, enrolment.getMarginYearMinus2());
-        proc.setDouble(param++, enrolment.getMarginYearMinus3());
-        proc.setDouble(param++, enrolment.getMarginYearMinus4());
-        proc.setDouble(param++, enrolment.getMarginYearMinus5());
-        proc.setDouble(param++, enrolment.getMarginYearMinus6());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus2Used());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus3Used());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus4Used());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus5Used());
-        proc.setIndicator(param++, enrolment.getIsMarginYearMinus6Used());
-        proc.setIndicator(param++, enrolment.getIsCreateTaskInBarn());
-        proc.setDouble(param++, enrolment.getCombinedFarmPercent());
-        proc.setInt(param++, enrolment.getMarginScenarioId());
-        proc.setString(param++, user);
-        proc.addBatch();
+
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + UPSERT_OPERATIONAL_PROC, UPSERT_OPERATIONAL_PARAM, false);) {
+        
+        for(Enrolment enrolment : enrolments) {
+          int param = 1;
+          proc.setInt(param++, enrolment.getClientId());
+          proc.setInt(param++, enrolment.getEnrolmentYear());
+          proc.setDouble(param++, enrolment.getEnrolmentFee());
+          proc.setIndicator(param++, enrolment.getFailedToGenerate());
+          proc.setIndicator(param++, enrolment.getIsGeneratedFromCra());
+          proc.setIndicator(param++, enrolment.getIsGeneratedFromEnw());
+          proc.setString(param++, enrolment.getFailedReason());
+          proc.setDate(param++, enrolment.getGeneratedDate());
+          proc.setDouble(param++, enrolment.getContributionMarginAverage());
+          proc.setDouble(param++, enrolment.getMarginYearMinus2());
+          proc.setDouble(param++, enrolment.getMarginYearMinus3());
+          proc.setDouble(param++, enrolment.getMarginYearMinus4());
+          proc.setDouble(param++, enrolment.getMarginYearMinus5());
+          proc.setDouble(param++, enrolment.getMarginYearMinus6());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus2Used());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus3Used());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus4Used());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus5Used());
+          proc.setIndicator(param++, enrolment.getIsMarginYearMinus6Used());
+          proc.setIndicator(param++, enrolment.getIsCreateTaskInBarn());
+          proc.setDouble(param++, enrolment.getCombinedFarmPercent());
+          proc.setInt(param++, enrolment.getMarginScenarioId());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
+
+      conn.commit();
     } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
   }
@@ -213,15 +269,33 @@ public class EnrolmentWriteDAO extends OracleDAO {
    */
   public void copyStagingToOperational()
   throws DataAccessException {
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-        + COPY_STAGING_TO_OPERATIONAL_PROC, COPY_STAGING_TO_OPERATIONAL_PARAM, false);) {
-      
-      proc.execute();
-      
+
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
+          + COPY_STAGING_TO_OPERATIONAL_PROC, COPY_STAGING_TO_OPERATIONAL_PARAM, false);) {
+        
+        proc.execute();
+      }
+
+      conn.commit();
     } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
