@@ -39,13 +39,13 @@ begin
                    fmv.program_year fmv_year,
                    fmv.period fmv_period
             from (
-                select distinct to_number(to_char(op.fiscal_year_start, 'YYYY')) fiscal_start_year,
-                       to_number(to_char(op.fiscal_year_start, 'MM')) fiscal_start_month,
-                       to_number(to_char(op.fiscal_year_end, 'YYYY')) fiscal_end_year,
-                       to_number(to_char(op.fiscal_year_end, 'MM')) fiscal_end_month,
+                select distinct to_char(op.fiscal_year_start, 'YYYY')::numeric fiscal_start_year,
+                       to_char(op.fiscal_year_start, 'MM')::numeric fiscal_start_month,
+                       to_char(op.fiscal_year_end, 'YYYY')::numeric fiscal_end_year,
+                       to_char(op.fiscal_year_end, 'MM')::numeric fiscal_end_month,
                        (
-                           (to_number(to_char(op.fiscal_year_end, 'YYYY')) - to_number(to_char(op.fiscal_year_start, 'YYYY'))) * 12 +
-                           (to_number(to_char(op.fiscal_year_end, 'MM')) - to_number(to_char(op.fiscal_year_start, 'MM'))) + 1
+                           (to_char(op.fiscal_year_end, 'YYYY')::numeric - to_char(op.fiscal_year_start, 'YYYY')::numeric) * 12 +
+                           (to_char(op.fiscal_year_end, 'MM')::numeric - to_char(op.fiscal_year_start, 'MM')::numeric) + 1
                        ) fiscal_months,
                        pyv.municipality_code,
                        x.inventory_item_code,
