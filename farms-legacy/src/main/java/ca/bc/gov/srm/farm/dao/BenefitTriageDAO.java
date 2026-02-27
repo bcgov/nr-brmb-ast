@@ -24,7 +24,7 @@ import ca.bc.gov.webade.dbpool.WrapperConnection;
 
 public class BenefitTriageDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_FIFO_PKG";
+  private static final String PACKAGE_NAME = "FARMS_FIFO_PKG";
   private static final String READ_FIFO_STATUS_BY_YEAR_PROC = "READ_FIFO_STATUS_BY_YEAR";
   private static final String READ_FIFO_CALCULATION_ITEMS_PROC = "READ_FIFO_CALCULATION_ITEMS";
 
