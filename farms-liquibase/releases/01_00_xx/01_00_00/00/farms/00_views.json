@@ -14,6 +14,12 @@
                     {
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms/views/farm_tip_income_ranges_vw.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
                             "path": "../../../../../database/farms/views/farm_agri_scenarios_vw.sql"
                         }
                     },

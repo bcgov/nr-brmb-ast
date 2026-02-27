@@ -168,6 +168,7 @@ GRANT SELECT ON farms.farm_agri_scenarios_vw TO "app_farms_rest_proxy";
 GRANT SELECT ON farms.farm_chef_statement_a_years_vw TO "app_farms_rest_proxy";
 GRANT SELECT ON farms.farm_operations_vw TO "app_farms_rest_proxy";
 GRANT SELECT ON farms.farm_scenarios_vw TO "app_farms_rest_proxy";
+GRANT SELECT ON farms.farm_tip_income_ranges_vw TO "app_farms_rest_proxy";
 
 -- sequences
 GRANT USAGE ON SEQUENCE farms.farm_acl_seq TO "app_farms_rest_proxy";
