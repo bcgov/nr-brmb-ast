@@ -77,35 +77,53 @@ public class ChefsDatabaseDAO extends OracleDAO {
       throws DataAccessException {
 
     final int paramCount = 7;
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_SUBMISSION_PROC, paramCount, false); ){
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      for (ChefsSubmission submission : submissions) {
-        
-        int param = 1;
-        proc.setString(param++, submission.getSubmissionGuid());
-        proc.setString(param++, submission.getValidationTaskGuid());
-        proc.setString(param++, submission.getMainTaskGuid());
-        proc.setString(param++, submission.getBceidFormInd());
-        proc.setString(param++, submission.getFormTypeCode());
-        proc.setString(param++, submission.getSubmissionStatusCode());
-        proc.setString(param++, user);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + CREATE_SUBMISSION_PROC, paramCount, false); ){
+
+        for (ChefsSubmission submission : submissions) {
+          
+          int param = 1;
+          proc.setString(param++, submission.getSubmissionGuid());
+          proc.setString(param++, submission.getValidationTaskGuid());
+          proc.setString(param++, submission.getMainTaskGuid());
+          proc.setString(param++, submission.getBceidFormInd());
+          proc.setString(param++, submission.getFormTypeCode());
+          proc.setString(param++, submission.getSubmissionStatusCode());
+          proc.setString(param++, user);
+          
+          if(submissions.size() > 1) {
+            proc.addBatch();
+          } else {
+            proc.execute();
+          }
+        }
         
         if(submissions.size() > 1) {
-          proc.addBatch();
-        } else {
-          proc.execute();
+          proc.executeBatch();
         }
       }
-      
-      if(submissions.size() > 1) {
-        proc.executeBatch();
-      }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
