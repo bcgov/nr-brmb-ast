@@ -170,7 +170,7 @@ public class VersionDAO {
             UPDATE_CONTROL_FILE_PARAM, false);) {
 
         int c = 1;
-        proc.setInt(c++, pVersionId);
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
         proc.setString(c++, userId);
 
         proc.execute();
@@ -218,7 +218,8 @@ public class VersionDAO {
           UPLOADED_VERSION_PARAM, true);) {
 
         int c = 1;
-        proc.setInt(c++, pVersionId);
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
+        proc.setString(c++, xml);
         proc.setIndicator(c++, hasErrors);
         proc.setString(c++, userId);
         proc.execute();
@@ -274,7 +275,7 @@ public class VersionDAO {
             START_UPLOAD_PARAM, false);) {
 
         int c = 1;
-        proc.setInt(c++, pVersionId);
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
         proc.setString(c++, userId);
 
         proc.execute();
@@ -317,7 +318,7 @@ public class VersionDAO {
             START_IMPORT_PARAM, false);) {
 
         int c = 1;
-        proc.setInt(c++, pVersionId);
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
         proc.setString(c++, userId);
 
         proc.execute();
@@ -358,7 +359,7 @@ public class VersionDAO {
             PERFORM_IMPORT_PARAM, false);) {
 
         int c = 1;
-        proc.setInt(c++, pVersionId);
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
         proc.setString(c++, userId);
 
         proc.execute();
@@ -402,7 +403,7 @@ public class VersionDAO {
               UPLOAD_FAILURE_PARAM, false);) {
 
         int c = 1;
-        proc.setInt(c++, pImportVersionId);
+        proc.setLong(c++, pImportVersionId == null ? null : pImportVersionId.longValue());
         proc.setString(c++, pMessage);
         proc.setString(c++, pUserId);
 
@@ -452,7 +453,8 @@ public class VersionDAO {
             IMPORT_FAILURE_PARAM, true);) {
 
         int c = 1;
-        proc.setInt(c++, pImportVersionId);
+        proc.setLong(c++, pImportVersionId == null ? null : pImportVersionId.longValue());
+        proc.setString(c++, pMessage);
         proc.setString(c++, pUserId);
 
         proc.execute();
@@ -510,7 +512,8 @@ public class VersionDAO {
             IMPORT_COMPLETE_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, pImportVersionId);
+        proc.setLong(c++, pImportVersionId == null ? null : pImportVersionId.longValue());
+        proc.setString(c++, pMessage);
         proc.setString(c++, pUserId);
         
         proc.execute();
