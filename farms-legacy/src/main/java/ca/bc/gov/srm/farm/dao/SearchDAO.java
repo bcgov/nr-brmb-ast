@@ -63,7 +63,7 @@ public class SearchDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int param = 1;
-      proc.setString(param++, pin);
+      proc.setInt(param++, pin);
       proc.setString(param++, name);
       proc.setString(param++, city);
       proc.setString(param++, postalCode);
