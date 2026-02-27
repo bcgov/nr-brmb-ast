@@ -793,7 +793,7 @@ public class DAOStoredProcedure implements AutoCloseable {
   public final void setInt(final int index, final int x) throws SQLException {
 
     if (x == NullConstants.INT) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.INTEGER);
     } else {
       addParamValue(index, new Integer(x));
       stmt.setInt(getBindIndex(index), x);
@@ -812,7 +812,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if (x == null) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.INTEGER);
     } else {
       addParamValue(index, x);
       stmt.setInt(getBindIndex(index), x.intValue());
@@ -831,7 +831,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if (x == NullConstants.INT) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.INTEGER);
     } else {
       setInt(index, x);
     }
@@ -849,7 +849,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if ((x == null) || (x.trim().length() == 0)) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.INTEGER);
     } else {
       setInt(index, Integer.parseInt(x));
     }

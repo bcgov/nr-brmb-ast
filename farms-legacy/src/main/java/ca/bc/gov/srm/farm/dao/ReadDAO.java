@@ -2939,7 +2939,7 @@ public class ReadDAO {
           + READ_ENW_ENROLMENT_PROC, READ_ENW_ENROLMENT_PARAM, true);
       
       int c = 1;
-      proc.setInt(c++, scenarioId);
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
       proc.execute();
       
       rs = proc.getResultSet();
