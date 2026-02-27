@@ -76,11 +76,15 @@ public class SubscriptionDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + USERS_PROC;
     List items = new ArrayList();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int param = 1;
@@ -103,11 +107,22 @@ public class SubscriptionDAO extends OracleDAO {
         items.add(user);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return items;
@@ -206,10 +221,14 @@ public class SubscriptionDAO extends OracleDAO {
   throws DataAccessException {
     String procName = PACKAGE_NAME + "." + INSERT_SUB_PROC;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     final int paramCount = 5;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int param = 1;
@@ -224,12 +243,24 @@ public class SubscriptionDAO extends OracleDAO {
 
       param = 1;
       sub.setClientSubscriptionId(new Integer(proc.getInt(param)));
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       getLog().error(String.valueOf(proc));
       handleException(e);
     } finally {
       close(null, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -249,11 +280,15 @@ public class SubscriptionDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + SUBS_PROC;
     List items = new ArrayList();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int param = 1;
@@ -299,11 +334,22 @@ public class SubscriptionDAO extends OracleDAO {
         items.add(sub);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return items;
@@ -329,10 +375,14 @@ public class SubscriptionDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + UPDATE_STATUS_PROC;
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     final int paramCount = 4;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int param = 1;
@@ -341,11 +391,23 @@ public class SubscriptionDAO extends OracleDAO {
       proc.setInt(param++, revisionCount);
       proc.setString(param++, userid);
       proc.execute();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -365,11 +427,15 @@ public class SubscriptionDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + GET_REP_PROC;
     Integer id = null;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int param = 1;
@@ -381,11 +447,22 @@ public class SubscriptionDAO extends OracleDAO {
         id = new Integer(resultSet.getInt("AGRISTABILITY_REPRESNTVE_ID"));
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return id;
@@ -409,10 +486,14 @@ public class SubscriptionDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + INSERT_REP_PROC;
     Integer id = null;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     final int paramCount = 3;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int param = 1;
@@ -425,12 +506,24 @@ public class SubscriptionDAO extends OracleDAO {
 
       param = 1;
       id = new Integer(proc.getInt(param));
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       getLog().error(String.valueOf(proc));
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return id;
@@ -454,25 +547,44 @@ public class SubscriptionDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + ACTIVATE_PROC;
     int numRowsUpdated = 0;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     final int paramCount = 4;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.registerOutParameter(param, Types.INTEGER);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
 
-      proc.setInt(param++, (Integer) null);
-      proc.setInt(param++, representativeId);
-      proc.setString(param++, subscriptionNumber);
-      proc.setString(param++, userid);
-      proc.execute();
+        int param = 1;
+        proc.registerOutParameter(param, Types.INTEGER);
 
-      param = 1;
-      numRowsUpdated = proc.getInt(param);
+        proc.setInt(param++, (Integer) null);
+        proc.setInt(param++, representativeId);
+        proc.setString(param++, subscriptionNumber);
+        proc.setString(param++, userid);
+        proc.execute();
+
+        param = 1;
+        numRowsUpdated = proc.getInt(param);
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       getLog().error(procName);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return numRowsUpdated;
