@@ -70,11 +70,15 @@ public final class WriteDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     final int paramCount = 3;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
@@ -84,11 +88,22 @@ public final class WriteDAO extends OracleDAO {
       
       proc.execute();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -111,11 +126,15 @@ public final class WriteDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     final int paramCount = 68;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
@@ -200,11 +219,23 @@ public final class WriteDAO extends OracleDAO {
       index = 1;
       benefit.setClaimId(new Integer(proc.getInt(index++)));
       benefit.setRevisionCount(new Integer(proc.getInt(index++)));
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -230,11 +261,15 @@ public final class WriteDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     final int paramCount = 28;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
@@ -277,11 +312,23 @@ public final class WriteDAO extends OracleDAO {
       index = 1;
       margin.setMarginId(new Integer(proc.getInt(index++)));
       margin.setRevisionCount(new Integer(proc.getInt(index++)));
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -305,11 +352,15 @@ public final class WriteDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     final int paramCount = 40;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
@@ -365,11 +416,23 @@ public final class WriteDAO extends OracleDAO {
       index = 1;
       mt.setMarginTotalId(new Integer(proc.getInt(index++)));
       mt.setRevisionCount(new Integer(proc.getInt(index++)));
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -393,11 +456,15 @@ public final class WriteDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     final int paramCount = 5;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
@@ -408,11 +475,23 @@ public final class WriteDAO extends OracleDAO {
       proc.setString(index++, userId);
       
       proc.execute();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -428,11 +507,15 @@ public final class WriteDAO extends OracleDAO {
     DAOStoredProcedure proc = null;
     ResultSet resultSet = null;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Clob clob = null;
     final int paramCount = 2;
     String procName = PACKAGE_NAME + "." + WRITE_FINAL_VERIFICATION_NOTES;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       
       int index = 1;
@@ -448,12 +531,23 @@ public final class WriteDAO extends OracleDAO {
           writer.flush();
         }
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -468,11 +562,15 @@ public final class WriteDAO extends OracleDAO {
     DAOStoredProcedure proc = null;
     ResultSet resultSet = null;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Clob clob = null;
     final int paramCount = 2;
     String procName = PACKAGE_NAME + "." + WRITE_INTERIM_VERIFICATION_NOTES;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       
       int index = 1;
@@ -488,12 +586,23 @@ public final class WriteDAO extends OracleDAO {
           writer.flush();
         }
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -508,11 +617,15 @@ public final class WriteDAO extends OracleDAO {
     DAOStoredProcedure proc = null;
     ResultSet resultSet = null;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Clob clob = null;
     final int paramCount = 2;
     String procName = PACKAGE_NAME + "." + WRITE_ADJUSTMENT_VERIFICATION_NOTES;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       
       int index = 1;
@@ -528,12 +641,23 @@ public final class WriteDAO extends OracleDAO {
           writer.flush();
         }
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 }
