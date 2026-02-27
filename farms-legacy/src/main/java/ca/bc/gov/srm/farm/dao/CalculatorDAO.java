@@ -1058,7 +1058,7 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + SAVE_SCENARIO_AS_NEW_PROC, paramCount, Types.INTEGER); ) {
+            + SAVE_SCENARIO_AS_NEW_PROC, paramCount, Types.BIGINT); ) {
         
         int param = 1;
         proc.setInt(param++, scenarioId);
@@ -1068,7 +1068,7 @@ public class CalculatorDAO extends OracleDAO {
         proc.setString(param++, user);
         proc.execute();
         
-        scenarioNumber = (Integer) proc.getResult();
+        scenarioNumber = new Integer((int)proc.getLong(1));
       }
 
       connection.commit();
