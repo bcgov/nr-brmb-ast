@@ -192,8 +192,8 @@ public class ReasonabilityReadDAO {
           + READ_REASONABILITY_FORAGE_PRODUCTION_TEST_PROC, READ_REASONABILITY_FORAGE_PRODUCTION_TEST_PARAM, true);) {
       
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
-        proc.setInt(c++, programYear);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setShort(c++, programYear == null ? null : programYear.shortValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -236,8 +236,8 @@ public class ReasonabilityReadDAO {
           + READ_PRODUCTION_FRUIT_VEG_INVENTORY_PROC, READ_PRODUCTION_FRUIT_VEG_INVENTORY_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
-        proc.setInt(c++, programYear);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setShort(c++, programYear == null ? null : programYear.shortValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -277,7 +277,7 @@ public class ReasonabilityReadDAO {
           + READ_REASONABILITY_FRUIT_VEG_PRODUCTION_TEST_PROC, READ_REASONABILITY_FRUIT_VEG_PRODUCTION_TEST_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -315,8 +315,8 @@ public class ReasonabilityReadDAO {
           + READ_REASONABILITY_GRAINS_PRODUCTION_TEST_PROC, READ_REASONABILITY_GRAINS_PRODUCTION_TEST_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
-        proc.setInt(c++, programYear);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setShort(c++, programYear == null ? null : programYear.shortValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -388,8 +388,8 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PROC, READ_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
-        proc.setInt(c++, programYear);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setShort(c++, programYear == null ? null : programYear.shortValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -432,8 +432,8 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_G_F_FS_INCM_RSLTS_PROC, READ_FARM_RSNBLTY_REV_G_F_FS_INCM_RSLTS_PARAM, true);) {
       
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
-        proc.setInt(c++, programYear);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setShort(c++, programYear == null ? null : programYear.shortValue());
         proc.setDate(c++, verifiedDate);
         proc.execute();
         
@@ -476,7 +476,7 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSN_FORAGE_CONSUMERS_PROC, READ_FARM_RSN_FORAGE_CONSUMERS_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, results.getReasonabilityTestResultId());
+        proc.setLong(c++, results.getReasonabilityTestResultId() == null ? null : results.getReasonabilityTestResultId().longValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -519,8 +519,8 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PROC, READ_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
-        proc.setInt(c++, programYear);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setShort(c++, programYear == null ? null : programYear.shortValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -562,7 +562,7 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_FRUIT_VEG_RSLTS_PROC, READ_FARM_RSNBLTY_REV_FRUIT_VEG_RSLTS_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -612,7 +612,7 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_NRSRY_RESULTS_PROC, READ_FARM_RSNBLTY_REV_NRSRY_RESULTS_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -643,8 +643,8 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_NRSRY_INVN_RSLTS_PROC, READ_FARM_RSNBLTY_REV_NRSRY_INVN_RSLTS_PARAM, true);) {      
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
-        proc.setInt(c++, programYear);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setShort(c++, programYear == null ? null : programYear.shortValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -681,8 +681,8 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_NRSRY_INCM_RSLTS_PROC, READ_FARM_RSNBLTY_REV_NRSRY_INCM_RSLTS_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
-        proc.setInt(c++, programYear);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setShort(c++, programYear == null ? null : programYear.shortValue());
         proc.setDate(c++, verifiedDate);
         proc.execute();
         
@@ -719,7 +719,7 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PROC, READ_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -774,7 +774,7 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_PLTRY_EGG_RSLTS_PROC, READ_FARM_RSNBLTY_REV_PLTRY_EGG_RSLTS_PARAM, true);) {
 
           int c = 1;
-          proc.setInt(c++, reasonabilityTestResultId);
+          proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
           proc.execute();
           
           try(ResultSet rs = proc.getResultSet();) {
@@ -843,7 +843,7 @@ public class ReasonabilityReadDAO {
           + READ_FARM_RSNBLTY_REV_HOGS_RSLTS_PROC, READ_FARM_RSNBLTY_REV_HOGS_RSLTS_PARAM, true);) {
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet();) {
@@ -903,7 +903,7 @@ public class ReasonabilityReadDAO {
             + READ_FARM_RSNBLTY_REV_HOGS_INVN_RSLTS_PROC, READ_FARM_RSNBLTY_REV_HOGS_INVN_RSLTS_PARAM, true);) {      
           
           int c = 1;
-          proc.setInt(c++, reasonabilityTestResultId);
+          proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
           proc.execute();
           
           try(ResultSet rs = proc.getResultSet();) {
@@ -951,7 +951,7 @@ public class ReasonabilityReadDAO {
           + READ_REASONABILITY_TEST_MESSAGES_PROC, READ_REASONABILITY_TEST_MESSAGES_PARAM, true);) {      
         
         int c = 1;
-        proc.setInt(c++, reasonabilityTestResultId);
+        proc.setLong(c++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
         proc.setString(c++, testName);
         proc.execute();
         
@@ -995,7 +995,7 @@ public class ReasonabilityReadDAO {
             + READ_REASONABILITY_TESTS_PROC, READ_REASONABILITY_TESTS_PARAM, true);) {
 
         int c = 1;
-        proc.setInt(c++, scenario.getScenarioId());
+        proc.setLong(c++, scenario.getScenarioId() == null ? null : scenario.getScenarioId().longValue());
         proc.execute();
 
         try(ResultSet rs = proc.getResultSet();) {
@@ -1137,8 +1137,8 @@ public class ReasonabilityReadDAO {
         
         // productive units
         c = 1;
-        puProc.setInt(c++, results.getReasonabilityTestResultId());
-        puProc.setInt(c++, scenario.getYear());
+        puProc.setLong(c++, results.getReasonabilityTestResultId() == null ? null : results.getReasonabilityTestResultId().longValue());
+        puProc.setShort(c++, scenario.getYear() == null ? null : scenario.getYear().shortValue());
         puProc.execute();
         
         try(ResultSet puRs = puProc.getResultSet();) {
