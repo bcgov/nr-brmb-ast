@@ -2604,7 +2604,7 @@ public class ReadDAO {
           + READ_BPU_ALL_PROC, READ_BPU_ALL_PARAM, true);
 
       int c = 1;
-      proc.setInt(c++, scid);
+      proc.setLong(c++, scid == null ? null : scid.longValue());
       proc.setArray(c++, oracleArrayInventoryCodes);
       proc.setArray(c++, oracleArrayStructureGroupCodes);
 
