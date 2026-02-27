@@ -234,8 +234,8 @@ public class SubscriptionDAO extends OracleDAO {
       int param = 1;
       proc.registerOutParameter(param, Types.INTEGER);
 
-      proc.setInt(param++, (Integer) null);
-      proc.setInt(param++, clientId);
+      proc.setLong(param++, (Long) null);
+      proc.setLong(param++, clientId == null ? null : clientId.longValue());
       proc.setString(param++, sub.getSubscriptionNumber());
       proc.setString(param++, sub.getGeneratedByUserid());
       proc.setDate(param++, sub.getActivationExpiryDate());
@@ -386,7 +386,7 @@ public class SubscriptionDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int param = 1;
-      proc.setInt(param++, clientSubscriptionId);
+      proc.setLong(param++, clientSubscriptionId == null ? null : clientSubscriptionId.longValue());
       proc.setString(param++, newStatusCode);
       proc.setInt(param++, revisionCount);
       proc.setString(param++, userid);
@@ -499,7 +499,7 @@ public class SubscriptionDAO extends OracleDAO {
       int param = 1;
       proc.registerOutParameter(param, Types.INTEGER);
 
-      proc.setInt(param++, (Integer) null);
+      proc.setLong(param++, (Long) null);
       proc.setString(param++, guid);
       proc.setString(param++, userid);
       proc.execute();
@@ -557,16 +557,16 @@ public class SubscriptionDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
 
         int param = 1;
-        proc.registerOutParameter(param, Types.INTEGER);
+        proc.registerOutParameter(param, Types.BIGINT);
 
-        proc.setInt(param++, (Integer) null);
-        proc.setInt(param++, representativeId);
+        proc.setLong(param++, (Long) null);
+        proc.setLong(param++, representativeId == null ? null : representativeId.longValue());
         proc.setString(param++, subscriptionNumber);
         proc.setString(param++, userid);
         proc.execute();
 
         param = 1;
-        numRowsUpdated = proc.getInt(param);
+        numRowsUpdated = (int)proc.getLong(param);
       }
 
       connection.commit();
