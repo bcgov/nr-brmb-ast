@@ -1994,7 +1994,7 @@ abstract class OracleDAO {
 
   @SuppressWarnings("resource")
   protected Array createGuidOracleArray(Connection connection, List<String> values) throws SQLException {
-    return getOracleConnection(connection).createOracleArray(GUID_COLLECTION_TYPE_NAME, toArray(values));
+    return connection.createArrayOf("varchar", toArray(values));
   }
 
 }
