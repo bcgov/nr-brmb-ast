@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.webade.dbpool.WrapperConnection;
-import oracle.jdbc.OracleResultSet;
 
 
 /**
@@ -229,7 +228,7 @@ public class VersionDAO {
           if (resultSet.next()) {
     
             // get clob from cursor
-            clob = ((OracleResultSet) resultSet).getClob(1);
+            clob = resultSet.getClob(1);
             
             try(Writer writer = clob.setCharacterStream(0);) {
               writer.write(xml);
@@ -464,7 +463,7 @@ public class VersionDAO {
           if (resultSet.next()) {
     
             // get clob from cursor
-            Clob clob = ((OracleResultSet) resultSet).getClob(1);
+            Clob clob = resultSet.getClob(1);
             
             try(Writer writer = clob.setCharacterStream(0);) {
               writer.write(pMessage);
@@ -523,7 +522,7 @@ public class VersionDAO {
           if (resultSet.next()) {
     
             // get clob from cursor
-            Clob clob = ((OracleResultSet) resultSet).getClob(1);
+            Clob clob = resultSet.getClob(1);
             
             try(Writer writer = clob.setCharacterStream(0);) {
               writer.write(pMessage);
