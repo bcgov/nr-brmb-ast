@@ -1810,10 +1810,14 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     HashMap<String, List<FmvFullResult>> r;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_OP_FMV_PROC, READ_OP_FMV_PARAM, true);
 
@@ -1824,9 +1828,22 @@ public class ReadDAO {
       rs = proc.getResultSet();
       
       r = readFMVResultSet(opId, rs);
-    } finally {
 
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
     
     readFairMarketValuePreviousYear(opId, r);
@@ -1849,11 +1866,15 @@ public class ReadDAO {
       String cropUnitCode) throws SQLException {
     
     DAOStoredProcedure proc = null;
+    boolean originalAutoCommit = true;
     ResultSet rs = null;
     
     HashMap<String, List<FmvFullResult>> r;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_OP_SINGLE_FMV_PROC, READ_OP_SINGLE_FMV_PARAM, true);
       
@@ -1866,9 +1887,22 @@ public class ReadDAO {
       rs = proc.getResultSet();
       
       r = readFMVResultSet(opId, rs);
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
-      
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
     
     readFairMarketValuePreviousYear(opId, r);
@@ -1885,8 +1919,12 @@ public class ReadDAO {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     Integer programYearId = null;
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PROC, READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PARAM, true);
       
@@ -1900,10 +1938,22 @@ public class ReadDAO {
       while (rs.next()) {
         programYearId = getInteger(rs, 1);
       }
-      
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
-      
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
     return programYearId;
   }
@@ -1972,9 +2022,13 @@ public class ReadDAO {
   private void readFairMarketValuePreviousYear(Integer opId, HashMap<String, List<FmvFullResult>> r) throws SQLException {
     
     DAOStoredProcedure proc = null;
+    boolean originalAutoCommit = true;
     ResultSet rs = null;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_OP_FMV_PREV_YEAR_PROC, READ_OP_FMV_PREV_YEAR_PARAM, true);
       
@@ -2017,9 +2071,22 @@ public class ReadDAO {
               null, null, prevYearEndPrice ));
         }
       }
-      
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
   
@@ -2635,8 +2702,12 @@ public class ReadDAO {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 2;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_BPU_XREF_PROC, paramCount, true);
 
@@ -2657,13 +2728,27 @@ public class ReadDAO {
         processBpuResults(rs, r1, r2);
       }
 
+      conn.commit();
+
       @SuppressWarnings("unchecked")
       HashMap<String, BasePricePerUnit>[] result = new HashMap[2];
       result[0] = r1.size() > 0 ? r1 : null;
       result[1] = r2.size() > 0 ? r2 : null;
       return result;
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
     	close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -2939,8 +3024,12 @@ public class ReadDAO {
   public final List<CombinedFarmClient> readCombinedFarmClients(final Integer combinedFarmNumber) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_COMBINED_FARM_CLIENTS_PROC, READ_COMBINED_FARM_CLIENTS_PARAM, true);
 
@@ -2970,10 +3059,23 @@ public class ReadDAO {
         l.add(cfc);
       }
 
-      return l;
-    } finally {
+      conn.commit();
 
+      return l;
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
