@@ -3225,14 +3225,14 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + COPY_FORWARD_YEAR_CONFIG_PROC, COPY_FORWARD_YEAR_CONFIG_PARAM, Types.INTEGER);) {
+          + COPY_FORWARD_YEAR_CONFIG_PROC, COPY_FORWARD_YEAR_CONFIG_PARAM, Types.BIGINT);) {
         
         int param = 1;
-        proc.setInt(param++, programYear);
+        proc.setShort(param++, programYear == null ? null : programYear.shortValue());
         proc.setString(param++, user);
         proc.execute();
         
-        rowsCreated = proc.getInt(1);
+        rowsCreated = (int)proc.getLong(1);
       }
 
       connection.commit();
