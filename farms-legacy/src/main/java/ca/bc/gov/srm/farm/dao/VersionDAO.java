@@ -129,7 +129,7 @@ public class VersionDAO {
 
         proc.execute();
 
-        r = proc.getIntObj(1);
+        r = proc.getInt(1);
       }
 
       conn.commit();
