@@ -1113,17 +1113,17 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_REFERENCE_SCENARIO_PROC, CREATE_REFERENCE_SCENARIO_PARAM, Types.INTEGER);
+          + CREATE_REFERENCE_SCENARIO_PROC, CREATE_REFERENCE_SCENARIO_PARAM, Types.BIGINT);
       
       int param = 1;
-      proc.setInt(param++, forScenario.getScenarioId());
-      proc.setInt(param++, fromScenarioId);
+      proc.setLong(param++, forScenario.getScenarioId() == null ? null : forScenario.getScenarioId().longValue());
+      proc.setLong(param++, fromScenarioId == null ? null : fromScenarioId.longValue());
       proc.setString(param++, scenarioStateCode);
       proc.setString(param++, applicationVersion);
       proc.setString(param++, user);
       proc.execute();
       
-      newScenarioId = new Integer(proc.getInt(1));
+      newScenarioId = new Integer((int)proc.getLong(1));
 
       connection.commit();
     } catch (SQLException e) {
