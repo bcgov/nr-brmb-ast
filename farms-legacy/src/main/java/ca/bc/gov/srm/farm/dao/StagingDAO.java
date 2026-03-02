@@ -1354,7 +1354,7 @@ public class StagingDAO {
 
       if (statusProc == null) {
         statusProc = new DAOStoredProcedure(conn,
-            "FARM_IMPORT_PKG." + UPDATE_STATUS_PROC,
+            "FARMS_IMPORT_PKG." + UPDATE_STATUS_PROC,
             UPDATE_STATUS_PARAM, false);
       } else {
         statusProc.clearParameters();
@@ -1398,7 +1398,7 @@ public class StagingDAO {
 
       if (statusNonAutonomousProc == null) {
         statusNonAutonomousProc = new DAOStoredProcedure(conn,
-            "FARM_IMPORT_PKG." + UPDATE_STATUS_NON_AUTONOMOUS_PROC,
+            "FARMS_IMPORT_PKG." + UPDATE_STATUS_NON_AUTONOMOUS_PROC,
             UPDATE_STATUS_NON_AUTONOMOUS_PARAM, false);
       } else {
         statusNonAutonomousProc.clearParameters();
