@@ -25,7 +25,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class NegativeMarginDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_NEGATIVE_MARGIN_PKG";
+  private static final String PACKAGE_NAME = "FARMS_NEGATIVE_MARGIN_PKG";
 
 
   private static final String GET_NEGATIVE_MARGINS_PROC = "GET_NEGATIVE_MARGINS";

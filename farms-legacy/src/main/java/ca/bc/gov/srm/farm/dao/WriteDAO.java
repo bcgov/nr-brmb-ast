@@ -33,7 +33,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public final class WriteDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_WRITE_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WRITE_PKG";
 
   private static final String CLAIM_PROC = "WRITE_CLAIM";
   

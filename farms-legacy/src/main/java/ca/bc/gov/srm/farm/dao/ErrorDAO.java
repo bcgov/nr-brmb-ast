@@ -22,7 +22,7 @@ import ca.bc.gov.srm.farm.exception.DataAccessException;
  */
 public class ErrorDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_ERROR_PKG";
+  private static final String PACKAGE_NAME = "FARMS_ERROR_PKG";
 
   private static final String CODIFY_PROC = "Codify";
 

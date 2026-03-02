@@ -25,7 +25,7 @@ import ca.bc.gov.srm.farm.exception.DataAccessException;
  */
 public class IvprDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_IVPR_PKG";
+  private static final String PACKAGE_NAME = "FARMS_IVPR_PKG";
 
   /** INSERT_PROC. */
   private static final String INSERT_PROC = "INSERT_STAGING_ROW";

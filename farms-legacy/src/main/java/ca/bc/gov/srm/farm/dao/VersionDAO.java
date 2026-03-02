@@ -34,7 +34,7 @@ public class VersionDAO {
   private Logger logger = LoggerFactory.getLogger(VersionDAO.class);
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_VERSION_PKG";
+  private static final String PACKAGE_NAME = "FARMS_VERSION_PKG";
 
   private static final String CREATE_VERSION_PROC = "CREATE_VERSION";
 

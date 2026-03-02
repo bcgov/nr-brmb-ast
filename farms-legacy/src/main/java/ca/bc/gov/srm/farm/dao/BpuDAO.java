@@ -28,7 +28,7 @@ import ca.bc.gov.srm.farm.exception.DataAccessException;
  */
 public class BpuDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_BPU_PKG";
+  private static final String PACKAGE_NAME = "FARMS_BPU_PKG";
 
   /** INSERT_PROC. */
   private static final String INSERT_PROC = "INSERT_STAGING_ROW";

@@ -69,7 +69,7 @@ public final class ExportDAO {
   }
 
   
-  private static final String PACKAGE_NAME = "FARM_EXPORT_PKG";
+  private static final String PACKAGE_NAME = "FARMS_EXPORT_PKG";
   
   private static final String ANALYTICAL_DATA_EXTRACT_PROC_SUFFIX = "_ADE";
   

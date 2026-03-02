@@ -29,7 +29,7 @@ import java.util.List;
 public class FmvDAO extends OracleDAO {
 
   /** DOCUMENT ME! */
-  private static final String PACKAGE_NAME = "FARM_FMV_PKG";
+  private static final String PACKAGE_NAME = "FARMS_FMV_PKG";
 
   /** INSERT_PROC. */
   private static final String INSERT_PROC = "INSERT_STAGING_ROW";

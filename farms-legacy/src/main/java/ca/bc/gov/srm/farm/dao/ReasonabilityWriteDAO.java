@@ -38,7 +38,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class ReasonabilityWriteDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_REASONABILITY_WRITE_PKG";
+  private static final String PACKAGE_NAME = "FARMS_REASONABILITY_WRITE_PKG";
   
   
   private static final String UPDATE_REASONABILITY_TESTS_PROC = "UPDATE_REASONABILITY_TESTS";

@@ -45,7 +45,7 @@ import java.sql.SQLException;
  */
 public class StagingDAO {
 
-  private static final String PACKAGE_NAME = "FARM_STAGING_PKG";
+  private static final String PACKAGE_NAME = "FARMS_STAGING_PKG";
   
   private static final String CLEAR_PROC = "CLEAR";
 
