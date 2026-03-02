@@ -11,10 +11,10 @@
  */
 package ca.bc.gov.srm.farm.service.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
@@ -30,7 +30,6 @@ import ca.bc.gov.srm.farm.cache.CacheFactory;
 import ca.bc.gov.srm.farm.cache.CacheKeys;
 import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
 import ca.bc.gov.srm.farm.configuration.ConfigurationUtility;
-import ca.bc.gov.srm.farm.dao.BlobReaderWriter;
 import ca.bc.gov.srm.farm.dao.ImportDAO;
 import ca.bc.gov.srm.farm.dao.ImportXmlDAO;
 import ca.bc.gov.srm.farm.dao.SearchDAO;
@@ -765,8 +764,8 @@ final class ImportServiceImpl extends BaseService implements ImportService {
       fileExt = ".zip";
     }
 
-    Blob blob = dao.getBlob(connection, importVersionId, false);
-    File tempFile = fu.write(blob.getBinaryStream(), fileExt);
+    byte[] blob = dao.getBlob(connection, importVersionId, false);
+    File tempFile = fu.write(new ByteArrayInputStream(blob), fileExt);
 
     return tempFile;
   }

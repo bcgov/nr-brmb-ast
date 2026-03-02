@@ -11,7 +11,6 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -305,7 +304,7 @@ public class ImportDAO extends OracleDAO {
   throws DataAccessException {
     String procName = PACKAGE_NAME + "." + INSERT_PROC;
     DAOStoredProcedure proc = null;
-    final int paramCount = 7;
+    final int paramCount = 8;
     boolean originalAutoCommit = true;
 
     try {
@@ -330,7 +329,7 @@ public class ImportDAO extends OracleDAO {
       proc.execute();
 
       index = 1;
-      importVersion.setImportVersionId(new Integer(proc.getInt(index)));
+      importVersion.setImportVersionId(new Integer((int)proc.getLong(index)));
 
       connection.commit();
     } catch (SQLException e) {
@@ -487,10 +486,10 @@ public class ImportDAO extends OracleDAO {
 
 
 
-  public Blob getBlob(final Connection connection,
+  public byte[] getBlob(final Connection connection,
     final Integer importVersionId, final boolean update)
     throws DataAccessException {
-    Blob blob = null;
+    byte[] blob = null;
     final int paramCount = 1;
     String procName = PACKAGE_NAME + "." + GET_BLOB_PROC;
     boolean originalAutoCommit = true;
@@ -510,7 +509,7 @@ public class ImportDAO extends OracleDAO {
         try (ResultSet resultSet = proc.getResultSet();) {
 
           if (resultSet.next()) {
-            blob = (resultSet.getBlob(1));
+            blob = (resultSet.getBytes(1));
           }
         }
       }
