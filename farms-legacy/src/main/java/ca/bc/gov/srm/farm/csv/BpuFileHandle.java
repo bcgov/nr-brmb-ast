@@ -87,6 +87,7 @@ public final class BpuFileHandle extends FileHandle {
     row.setYearMinus3Expense(ParseUtils.dbl(cols[index++].trim()));
     row.setYearMinus2Expense(ParseUtils.dbl(cols[index++].trim()));
     row.setYearMinus1Expense(ParseUtils.dbl(cols[index++].trim()));
+    row.setFileLocation(cols[index++].trim());
 
     return row;
   }

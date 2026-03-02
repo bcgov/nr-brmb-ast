@@ -129,7 +129,7 @@ public class BpuDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       if (insertProc == null) {
-        final int paramCount = 18;
+        final int paramCount = 19;
         String procName = PACKAGE_NAME + "." + INSERT_PROC;
         
         insertProc = new DAOStoredProcedure(connection,
@@ -159,6 +159,7 @@ public class BpuDAO extends OracleDAO {
       insertProc.setBigDecimal(index++, obj.getYearMinus3Expense() == null ? null : BigDecimal.valueOf(obj.getYearMinus3Expense()));
       insertProc.setBigDecimal(index++, obj.getYearMinus2Expense() == null ? null : BigDecimal.valueOf(obj.getYearMinus2Expense()));
       insertProc.setBigDecimal(index++, obj.getYearMinus1Expense() == null ? null : BigDecimal.valueOf(obj.getYearMinus1Expense()));
+      insertProc.setString(index++, obj.getFileLocation());
       insertProc.setString(index++, userId);
 
       insertProc.execute();
