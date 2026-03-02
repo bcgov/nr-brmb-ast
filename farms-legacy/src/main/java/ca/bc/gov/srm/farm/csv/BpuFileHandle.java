@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public final class BpuFileHandle extends FileHandle {
 	/** NUM_COLS. */
-  private static final int NUM_COLS = 16;
+  private static final int NUM_COLS = 17;
 
   /**
    * Parses and filters a file based on the path and pin set provided.
