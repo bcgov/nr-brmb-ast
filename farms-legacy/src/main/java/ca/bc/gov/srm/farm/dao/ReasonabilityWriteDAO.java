@@ -1010,7 +1010,7 @@ public class ReasonabilityWriteDAO extends OracleDAO {
           + UPDATE_REASONABILITY_TESTS_PROC, UPDATE_REASONABILITY_TESTS_PARAM, false);) {
       
         int param = 1;
-        proc.registerOutParameter(param++, Types.INTEGER);
+        proc.registerOutParameter(param++, Types.BIGINT);
   
         param = 1;
         proc.setLong(param++, results.getReasonabilityTestResultId() == null ? null : results.getReasonabilityTestResultId().longValue());
@@ -1082,7 +1082,7 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         proc.execute();
       
         param = 1;
-        results.setReasonabilityTestResultId(new Integer(proc.getInt(param++)));
+        results.setReasonabilityTestResultId(new Integer((int)proc.getLong(param++)));
       }
       
       updateForageConsumers(transaction, results, user);
