@@ -1180,19 +1180,19 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + CREATE_YEAR_PROC, paramCount, Types.INTEGER); ) {
+            + CREATE_YEAR_PROC, paramCount, Types.BIGINT); ) {
 
         int c = 1;
 
         proc.setInt(c++, pin);
-        proc.setInt(c++, programYearToCreate);
-        proc.setInt(c++, numOperations);
+        proc.setShort(c++, programYearToCreate == null ? null : programYearToCreate.shortValue());
+        proc.setLong(c++, numOperations == null ? null : numOperations.longValue());
         proc.setString(c++, scenarioClassCode);
         proc.setString(c++, scenarioCategoryCode);
         proc.setString(c++, user);
 
         proc.execute();
-        programYearVersionId = new Integer(proc.getInt(1));
+        programYearVersionId = new Integer((int)proc.getLong(1));
       }
 
       connection.commit();
