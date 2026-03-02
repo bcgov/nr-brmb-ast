@@ -125,7 +125,7 @@ public class IvprDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       if (insertProc == null) {
-        final int paramCount = 6;
+        final int paramCount = 7;
         String procName = PACKAGE_NAME + "." + INSERT_PROC;
 
         insertProc = new DAOStoredProcedure(connection, procName, paramCount, false);
@@ -140,6 +140,7 @@ public class IvprDAO extends OracleDAO {
       insertProc.setString(index++, obj.getInventoryItemCode());
       insertProc.setBigDecimal(index++, obj.getInsurableValue() == null ? null : BigDecimal.valueOf(obj.getInsurableValue()));
       insertProc.setBigDecimal(index++, obj.getPremiumRate() == null ? null : BigDecimal.valueOf(obj.getPremiumRate()));
+      insertProc.setString(index++, obj.getFileLocation());
       insertProc.setString(index++, userId);
 
       insertProc.execute();

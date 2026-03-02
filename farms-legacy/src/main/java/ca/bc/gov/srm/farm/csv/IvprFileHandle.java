@@ -22,7 +22,7 @@ import ca.bc.gov.srm.farm.domain.staging.IvprCsvRow;
  */
 public final class IvprFileHandle extends FileHandle {
   /** NUM_COLS. */
-  private static final int NUM_COLS = 5;
+  private static final int NUM_COLS = 6;
 
   /**
    * Parses and filters a file based on the path provided.
@@ -75,6 +75,7 @@ public final class IvprFileHandle extends FileHandle {
     row.setInventoryItemCodeDescription(cols[index++].trim());
     row.setInsurableValue(ParseUtils.dbl(cols[index++]));
     row.setPremiumRate(ParseUtils.dbl(cols[index++]));
+    row.setFileLocation(cols[index++].trim());
 
     return row;
   }
@@ -113,6 +114,7 @@ public final class IvprFileHandle extends FileHandle {
     headers.add("Description");
     headers.add("IV");
     headers.add("PR");
+    headers.add("FileLocation");
 
     return headers;
   }
