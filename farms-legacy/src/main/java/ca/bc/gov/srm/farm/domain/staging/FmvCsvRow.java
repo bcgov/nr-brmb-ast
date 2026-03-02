@@ -18,6 +18,8 @@ public final class FmvCsvRow {
 	private Double averagePrice;
 	/** document me **/
 	private Double percentVariance;
+	/** document me */
+	private String fileLocation;
 
 	/**
 	 * @return the averagePrice
@@ -77,6 +79,20 @@ public final class FmvCsvRow {
 	 */
 	public void setPercentVariance(Double percentVariance) {
 		this.percentVariance = percentVariance;
+	}
+
+	/**
+	 * @return the fileLocation
+	 */
+	public String getFileLocation() {
+		return fileLocation;
+	}
+
+	/**
+	 * @param fileLocation the fileLocation to set
+	 */
+	public void setFileLocation(String fileLocation) {
+		this.fileLocation = fileLocation;
 	}
 
 	/**

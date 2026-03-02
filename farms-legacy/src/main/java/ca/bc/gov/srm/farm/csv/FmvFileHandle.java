@@ -25,7 +25,7 @@ import java.util.ArrayList;
  */
 public final class FmvFileHandle extends FileHandle {
 	/** NUM_COLS. */
-  private static final int NUM_COLS = 7;
+  private static final int NUM_COLS = 8;
 
   /**
    * Parses and filters a file based on the path and pin set provided.
@@ -82,6 +82,7 @@ public final class FmvFileHandle extends FileHandle {
     row.setUnitCode(cols[index++].trim());
     row.setAveragePrice(ParseUtils.dbl(cols[index++].trim()));
     row.setPercentVariance(ParseUtils.dbl(cols[index++].trim()));
+    row.setFileLocation(cols[index++].trim());
 
     return row;
   }
@@ -122,6 +123,7 @@ public final class FmvFileHandle extends FileHandle {
     headers.add("UNIT_CODE");
     headers.add("VALUE");
     headers.add("PERCENT_VARIANCE");
+    headers.add("FILE_LOCATION");
 
     return headers;
   }

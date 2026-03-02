@@ -125,7 +125,7 @@ public class FmvDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       if (insertProc == null) {
-        final int paramCount = 9;
+        final int paramCount = 10;
         String procName = PACKAGE_NAME + "." + INSERT_PROC;
 
         insertProc = new DAOStoredProcedure(connection,
@@ -146,6 +146,7 @@ public class FmvDAO extends OracleDAO {
       insertProc.setString(index++, obj.getMunicipalityCode());
       insertProc.setString(index++, obj.getUnitCode());
       insertProc.setString(index++, obj.getInventoryCode());
+      insertProc.setString(index++, obj.getFileLocation());
       insertProc.setString(index++, userId);
 
       insertProc.execute();
