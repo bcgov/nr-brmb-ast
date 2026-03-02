@@ -2,7 +2,7 @@ create or replace procedure farms_calculator_pkg.update_pyv_copy_old(
     in in_old_pyv_id farms.farm_program_year_versions.program_year_version_id%type,
     in in_new_pyv_id farms.farm_program_year_versions.program_year_version_id%type,
     in in_pyv_copy_old_data text,
-    in in_op_nums_copy_old_data varchar[],
+    in in_op_nums_copy_old_data integer[],
     in in_user text
 )
 language plpgsql

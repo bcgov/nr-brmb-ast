@@ -1961,7 +1961,7 @@ abstract class OracleDAO {
   
   @SuppressWarnings("resource")
   protected Array createNumbersOracleArray(Transaction transaction, List<Integer> values) throws SQLException {
-    return ((Connection)transaction.getDatastore()).createArrayOf("numeric", toArray(values));
+    return ((Connection)transaction.getDatastore()).createArrayOf("integer", toArray(values));
   }
 
   protected Array createStringOracleArray(Connection connection, List<String> values) throws SQLException {

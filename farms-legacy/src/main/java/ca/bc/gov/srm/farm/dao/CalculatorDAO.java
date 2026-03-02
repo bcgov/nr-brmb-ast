@@ -1246,20 +1246,20 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_SCENARIO_PYV_PROC, UPDATE_SCENARIO_PYV_PARAM, Types.INTEGER);
+          + UPDATE_SCENARIO_PYV_PROC, UPDATE_SCENARIO_PYV_PARAM, Types.BIGINT);
       
       Array oracleArray = createNumbersOracleArray(transaction, opNumsKeepOldData);
       
       int c = 1;
       
-      proc.setInt(c++, scenarioId);
-      proc.setInt(c++, newPyvNumber);
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
+      proc.setLong(c++, newPyvNumber == null ? null : newPyvNumber.longValue());
       proc.setString(c++, getIndicatorYN(pyvKeepOldData));
       proc.setArray(c++, oracleArray);
       proc.setString(c++, user);
       
       proc.execute();
-      newScenarioNumber = new Integer(proc.getInt(1));
+      newScenarioNumber = new Integer((int)proc.getLong(1));
 
       connection.commit();
     } catch (SQLException e) {
