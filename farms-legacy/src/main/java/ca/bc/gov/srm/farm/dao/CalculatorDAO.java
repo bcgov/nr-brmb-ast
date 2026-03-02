@@ -1652,7 +1652,7 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + PIN_CHECKED_OUT_BY_USER_PROC, PIN_CHECKED_OUT_BY_USER_PARAM, Types.INTEGER);
+          + PIN_CHECKED_OUT_BY_USER_PROC, PIN_CHECKED_OUT_BY_USER_PARAM, Types.BIGINT);
 
       int c = 1;
 
@@ -1660,7 +1660,7 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(c++, userGuid);
 
       proc.execute();
-      pinCheckedOutByUserInteger = new Integer(proc.getInt(1));
+      pinCheckedOutByUserInteger = new Integer((int)proc.getLong(1));
       
       result = pinCheckedOutByUserInteger.intValue() == 1;
 
@@ -1714,17 +1714,17 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + MATCHING_SC_EXISTS_PROC, MATCHING_SC_EXISTS_PARAM, Types.INTEGER);
+          + MATCHING_SC_EXISTS_PROC, MATCHING_SC_EXISTS_PARAM, Types.BIGINT);
       
       int c = 1;
       
       proc.setInt(c++, pin);
-      proc.setInt(c++, programYear);
+      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
       proc.setString(c++, municipalityCode);
       proc.setString(c++, scenarioCategoryCode);
       
       proc.execute();
-      pinExistsInteger = new Integer(proc.getInt(1));
+      pinExistsInteger = new Integer((int)proc.getLong(1));
       
       exists = pinExistsInteger.intValue() == 1;
 
@@ -1776,16 +1776,16 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CF_HAS_ACCOUNTING_CODE_ERROR_PROC, CF_HAS_ACCOUNTING_CODE_ERROR_PARAM, Types.INTEGER);
+          + CF_HAS_ACCOUNTING_CODE_ERROR_PROC, CF_HAS_ACCOUNTING_CODE_ERROR_PARAM, Types.BIGINT);
       
       int c = 1;
       
       proc.setInt(c++, pin);
-      proc.setInt(c++, programYear);
-      proc.setInt(c++, scenarioId);
+      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
       
       proc.execute();
-      resultInteger = new Integer(proc.getInt(1));
+      resultInteger = new Integer((int)proc.getLong(1));
       
       result = resultInteger.intValue() == 1;
 
@@ -1835,15 +1835,15 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CF_MATCHES_VERIFIED_PROC, CF_MATCHES_VERIFIED_PARAM, Types.INTEGER);
+          + CF_MATCHES_VERIFIED_PROC, CF_MATCHES_VERIFIED_PARAM, Types.BIGINT);
       
       int c = 1;
       
-      proc.setInt(c++, scenarioId);
-      proc.setInt(c++, verifiedCombinedFarmNumber);
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
+      proc.setLong(c++, verifiedCombinedFarmNumber == null ? null : verifiedCombinedFarmNumber.longValue());
       
       proc.execute();
-      resultInteger = new Integer(proc.getInt(1));
+      resultInteger = new Integer((int)proc.getLong(1));
       
       result = resultInteger.intValue() == 1;
 
@@ -1895,16 +1895,16 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CF_REF_YEARS_MISMATCH_ERROR_PROC, CF_REF_YEARS_MISMATCH_ERROR_PARAM, Types.INTEGER);
+          + CF_REF_YEARS_MISMATCH_ERROR_PROC, CF_REF_YEARS_MISMATCH_ERROR_PARAM, Types.BIGINT);
       
       int c = 1;
       
       proc.setInt(c++, pin);
-      proc.setInt(c++, programYear);
-      proc.setInt(c++, scenarioId);
+      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
       
       proc.execute();
-      resultInteger = new Integer(proc.getInt(1));
+      resultInteger = new Integer((int)proc.getLong(1));
       
       result = resultInteger.intValue() == 1;
 
@@ -3126,15 +3126,15 @@ public class CalculatorDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + COPY_SCENARIO_PYV_PROC, paramCount, Types.INTEGER);) {
+            + COPY_SCENARIO_PYV_PROC, paramCount, Types.BIGINT);) {
 
         int c = 1;
 
-        proc.setInt(c++, scenarioId);
+        proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
         proc.setString(c++, user);
 
         proc.execute();
-        newProgramYearVersionNumber = new Integer(proc.getInt(1));
+        newProgramYearVersionNumber = new Integer((int)proc.getLong(1));
       }
 
       connection.commit();
