@@ -136,6 +136,7 @@ public final class BpuFileHandle extends FileHandle {
     headers.add("YEAR_MINUS_3_EXPENSE");
     headers.add("YEAR_MINUS_2_EXPENSE");
     headers.add("YEAR_MINUS_1_EXPENSE");
+    headers.add("FILE_LOCATION");
 
     return headers;
   }
