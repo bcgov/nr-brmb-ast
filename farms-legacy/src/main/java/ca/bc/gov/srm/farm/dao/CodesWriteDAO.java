@@ -1664,13 +1664,13 @@ public class CodesWriteDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + IN_USE_INVENTORY_ITEM_CODE_PROC, IN_USE_INVENTORY_ITEM_CODE_PARAM, Types.INTEGER);
+          + IN_USE_INVENTORY_ITEM_CODE_PROC, IN_USE_INVENTORY_ITEM_CODE_PARAM, Types.NUMERIC);
       
       int param = 1;
       proc.setString(param++, code);
       proc.execute();
 
-      inUseInt = proc.getInt(1);
+      inUseInt = proc.getIntObj(1);
       result = inUseInt == 1;
 
       connection.commit();
@@ -1871,13 +1871,13 @@ public class CodesWriteDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + IN_USE_INVENTORY_XREF_PROC, IN_USE_INVENTORY_XREF_PARAM, Types.INTEGER);
+          + IN_USE_INVENTORY_XREF_PROC, IN_USE_INVENTORY_XREF_PARAM, Types.NUMERIC);
 
       int param = 1;
-      proc.setInt(param++, commodityXrefId);
+      proc.setLong(param++, commodityXrefId == null ? null : commodityXrefId.longValue());
       proc.execute();
 
-      inUseInt = proc.getInt(1);
+      inUseInt = proc.getIntObj(1);
       result = inUseInt == 1;
 
       connection.commit();
@@ -1923,7 +1923,7 @@ public class CodesWriteDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_INVENTORY_XREF_PROC, CREATE_INVENTORY_XREF_PARAM, Types.INTEGER);
+          + CREATE_INVENTORY_XREF_PROC, CREATE_INVENTORY_XREF_PARAM, Types.BIGINT);
 
       int param = 1;
       proc.setString(param++, xref.getInventoryClassCode());
@@ -1933,7 +1933,7 @@ public class CodesWriteDAO extends OracleDAO {
       proc.setString(param++, user);
       proc.execute();
       
-      xref.setCommodityXrefId(new Integer(proc.getInt(1)));
+      xref.setCommodityXrefId(new Integer((int)proc.getLong(1)));
 
       connection.commit();
     } catch (SQLException e) {
@@ -3132,12 +3132,12 @@ public class CodesWriteDAO extends OracleDAO {
           + CREATE_FARM_TYPE_3_PROC, CREATE_FARM_TYPE_3_PARAM, false);
     
       int param = 1;
-      proc.registerOutParameter(param, Types.INTEGER);
-      proc.setInt(param++, 0);
+      proc.registerOutParameter(param, Types.BIGINT);
+      proc.setLong(param++, 0);
       proc.setString(param++, farmType.getFarmTypeName().trim());
       proc.setString(param++, user);
       proc.execute();
-      id = proc.getInt(1);
+      id = (int)proc.getLong(1);
 
       connection.commit();
     } catch (SQLException e) {
@@ -3311,14 +3311,14 @@ public class CodesWriteDAO extends OracleDAO {
           + CREATE_FARM_TYPE_2_PROC, CREATE_FARM_SUBTYPE_A_ITEM_CODE_PARAM, false); 
       
       int param = 1;
-      proc.registerOutParameter(param, Types.INTEGER);
-      proc.setInt(param++, 0);
-      proc.setInt(param++, farmSubtype.getParentId());
+      proc.registerOutParameter(param, Types.BIGINT);
+      proc.setLong(param++, 0);
+      proc.setLong(param++, farmSubtype.getParentId() == null ? null : farmSubtype.getParentId().longValue());
       proc.setString(param++, farmSubtype.getName().trim());
       proc.setString(param++, user);
       proc.execute();
       
-      id = proc.getInt(1);
+      id = (int)proc.getLong(1);
 
       connection.commit();
     } catch (SQLException e) {
@@ -3452,14 +3452,14 @@ public class CodesWriteDAO extends OracleDAO {
           + CREATE_FARM_TYPE_1_PROC, CREATE_FARM_TYPE_1_PARAM, false);
     
       int param = 1;
-      proc.registerOutParameter(param, Types.INTEGER);
-      proc.setInt(param++, 0);
+      proc.registerOutParameter(param, Types.BIGINT);
+      proc.setLong(param++, 0);
       proc.setString(param++, farmSubtype.getName().trim());
-      proc.setInt(param++, farmSubtype.getParentId());
+      proc.setLong(param++, farmSubtype.getParentId() == null ? null : farmSubtype.getParentId().longValue());
       proc.setString(param++, user);
       proc.execute();
       
-      id = proc.getInt(1);
+      id = (int)proc.getLong(1);
 
       connection.commit();
     } catch (SQLException e) {
