@@ -232,7 +232,7 @@ public class SubscriptionDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int param = 1;
-      proc.registerOutParameter(param, Types.INTEGER);
+      proc.registerOutParameter(param, Types.BIGINT);
 
       proc.setLong(param++, (Long) null);
       proc.setLong(param++, clientId == null ? null : clientId.longValue());
@@ -242,7 +242,7 @@ public class SubscriptionDAO extends OracleDAO {
       proc.execute();
 
       param = 1;
-      sub.setClientSubscriptionId(new Integer(proc.getInt(param)));
+      sub.setClientSubscriptionId(new Integer((int)proc.getLong(param)));
 
       connection.commit();
     } catch (SQLException e) {
@@ -497,7 +497,7 @@ public class SubscriptionDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int param = 1;
-      proc.registerOutParameter(param, Types.INTEGER);
+      proc.registerOutParameter(param, Types.BIGINT);
 
       proc.setLong(param++, (Long) null);
       proc.setString(param++, guid);
@@ -505,7 +505,7 @@ public class SubscriptionDAO extends OracleDAO {
       proc.execute();
 
       param = 1;
-      id = new Integer(proc.getInt(param));
+      id = new Integer((int)proc.getLong(param));
 
       connection.commit();
     } catch (SQLException e) {
