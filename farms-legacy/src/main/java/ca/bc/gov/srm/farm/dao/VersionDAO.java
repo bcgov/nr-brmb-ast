@@ -47,7 +47,7 @@ public class VersionDAO {
 
   private static final String UPLOADED_VERSION_PROC = "UPLOADED_VERSION";
 
-  private static final int UPLOADED_VERSION_PARAM = 3;
+  private static final int UPLOADED_VERSION_PARAM = 4;
 
   private static final String START_IMPORT_PROC = "START_IMPORT";
 
@@ -67,11 +67,11 @@ public class VersionDAO {
 
   private static final String IMPORT_FAILURE_PROC = "IMPORT_FAILURE";
 
-  private static final int IMPORT_FAILURE_PARAM = 2;
+  private static final int IMPORT_FAILURE_PARAM = 3;
   
   private static final String IMPORT_COMPLETE_PROC = "IMPORT_COMPLETE";
   
-  private static final int IMPORT_COMPLETE_PARAM = 2;
+  private static final int IMPORT_COMPLETE_PARAM = 3;
   
   private static final String CLEAR_SUCCESSFUL_TRANSFERS_PROC = "CLEAR_SUCCESSFUL_TRANSFERS";
   
