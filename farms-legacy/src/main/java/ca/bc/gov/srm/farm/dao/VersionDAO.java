@@ -205,8 +205,6 @@ public class VersionDAO {
     final Boolean hasErrors, final String userId) throws SQLException,
     IOException {
 
-    Clob clob = null;
-
     boolean originalAutoCommit = true;
     try {
       originalAutoCommit = conn.getAutoCommit();
@@ -214,7 +212,7 @@ public class VersionDAO {
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + UPLOADED_VERSION_PROC,
-          UPLOADED_VERSION_PARAM, true);) {
+          UPLOADED_VERSION_PARAM, false);) {
 
         int c = 1;
         proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
@@ -222,21 +220,6 @@ public class VersionDAO {
         proc.setIndicator(c++, hasErrors);
         proc.setString(c++, userId);
         proc.execute();
-
-        try (ResultSet resultSet = proc.getResultSet();) {
-
-          if (resultSet.next()) {
-    
-            // get clob from cursor
-            clob = resultSet.getClob(1);
-            
-            try(Writer writer = clob.setCharacterStream(0);) {
-              writer.write(xml);
-              writer.flush();
-            }
-          }
-        }
-
       }
 
       conn.commit();
