@@ -11,6 +11,7 @@
  */
 package ca.bc.gov.srm.farm.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Blob;
@@ -201,12 +202,16 @@ final class ImportServiceImpl extends BaseService implements ImportService {
       importVersion.setImportedByUser(userId);
       importVersion.setImportFileName(fileName);
 
-      dao.insertImportVersion(connection, importVersion);
+      // read file content
+      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+      byte[] data = new byte[8192];
+      int nRead;
+      while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+        buffer.write(data, 0, nRead);
+      }
+      importVersion.setImportFileContent(buffer.toByteArray());
 
-      Integer importVersionId = importVersion.getImportVersionId();
-      BlobReaderWriter blobReaderWriter = new BlobReaderWriter();
-      Blob blob = dao.getBlob(connection, importVersionId, true);
-      blobReaderWriter.writeBlob(blob, inputStream);
+      dao.insertImportVersion(connection, importVersion);
 
     } catch (Exception e) {
       throw new ServiceException(e);

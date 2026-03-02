@@ -315,16 +315,17 @@ public class ImportDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.registerOutParameter(index, Types.INTEGER);
+      proc.registerOutParameter(index, Types.BIGINT);
       
       String importStateCode = importVersion.getImportStateCode() == null ? ImportStateCodes.SCHEDULED_FOR_STAGING : importVersion.getImportStateCode();
 
-      proc.setInt(index++, (Integer) null);
+      proc.setLong(index++, (Long) null);
       proc.setString(index++, importVersion.getImportClassCode());
       proc.setString(index++, importStateCode);
       proc.setString(index++, importVersion.getDescription());
       proc.setString(index++, importVersion.getImportFileName());
       proc.setString(index++, null);  // passwords no longer used
+      proc.setBytes(index++, importVersion.getImportFileContent());
       proc.setString(index++, importVersion.getImportedByUser());
       proc.execute();
 
