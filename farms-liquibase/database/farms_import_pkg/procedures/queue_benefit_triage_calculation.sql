@@ -1,4 +1,4 @@
-create or replace procedure farms_import_pkg.queue_fifo_calculation(
+create or replace procedure farms_import_pkg.queue_benefit_triage_calculation(
    in in_cra_version_id bigint,
    in in_user varchar
 )
@@ -23,11 +23,11 @@ begin
 
     call farms_webapp_pkg.insert_import_version(
         transfer_version_id,
-        'FIFO',
+        'TRIAGE',
         'SS',
-        'FIFO Calculation for Import Version Id: ' || in_cra_version_id || ', Import Date: ' ||
+        'Benefit Triage Calculation for Import Version Id: ' || in_cra_version_id || ', Import Date: ' ||
         to_char(import_date, 'YYYY/MM/DD') || ', Description: ' || import_description,
-        'fifo.csv',
+        'benefitTriage.csv',
         null,
         import_file,
         in_user
@@ -39,14 +39,14 @@ begin
 
     call farms_import_pkg.update_status(
         in_cra_version_id,
-        'Queued FIFO Calculation'
+        'Queued Benefit Triage Calculation'
     );
 
 exception
     when others then
         call farms_import_pkg.append_imp1(
             in_cra_version_id,
-            '<WARNING>Encountered a warning when queuing FIFO Calculation: ' || farms_import_pkg.scrub(sqlerrm) || '</WARNING>'
+            '<WARNING>Encountered a warning when queuing Benefit Triage Calculation: ' || farms_import_pkg.scrub(sqlerrm) || '</WARNING>'
         );
 end;
 $$;
