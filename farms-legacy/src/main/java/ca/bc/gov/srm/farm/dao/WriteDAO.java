@@ -12,9 +12,7 @@
 package ca.bc.gov.srm.farm.dao;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.math.BigDecimal;
-import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -601,29 +599,20 @@ public final class WriteDAO extends OracleDAO {
     ResultSet resultSet = null;
     Connection connection = getConnection(transaction);
     boolean originalAutoCommit = true;
-    Clob clob = null;
-    final int paramCount = 2;
+    final int paramCount = 3;
     String procName = PACKAGE_NAME + "." + WRITE_ADJUSTMENT_VERIFICATION_NOTES;
 
     try {
       originalAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(connection, procName, paramCount, true);
+      proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       
       int index = 1;
       proc.setInt(index++, programYearId);
+      proc.setString(index++, comments);
       proc.setString(index++, userId);
       proc.execute();
-      resultSet = proc.getResultSet();
-
-      if (resultSet.next()) {
-        clob = resultSet.getClob(1);
-        try(Writer writer = clob.setCharacterStream(0);) {
-          writer.write(comments);
-          writer.flush();
-        }
-      }
 
       connection.commit();
     } catch (SQLException e) {
