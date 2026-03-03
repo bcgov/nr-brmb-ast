@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import ca.bc.gov.srm.farm.service.ExportService;
 import ca.bc.gov.srm.farm.service.ReportService;
 import ca.bc.gov.srm.farm.service.impl.ExportServiceFactory;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
 
 /**
  * @author dzwiers
@@ -55,12 +54,7 @@ public final class ExportDAO {
    */
   public ExportDAO(final Connection pConn) {
     neverUse = pConn;
-    if (pConn instanceof WrapperConnection) {
-      WrapperConnection wc = (WrapperConnection) pConn;
-      this.conn = wc.getWrappedConnection();
-    } else {
-      this.conn = pConn;
-    }
+    this.conn = pConn;
   }
 
   

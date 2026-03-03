@@ -22,7 +22,6 @@ import java.util.List;
 import ca.bc.gov.srm.farm.domain.enrolment.Enrolment;
 import ca.bc.gov.srm.farm.domain.staging.EnrolmentStaging;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
 
 /**
  * @author awilkinson
@@ -59,12 +58,7 @@ public class EnrolmentWriteDAO extends OracleDAO {
   public EnrolmentWriteDAO(final Connection c) {
     neverUse = c;
     if(neverUse != null) {
-      if (c instanceof WrapperConnection) {
-        WrapperConnection wc = (WrapperConnection) c;
-        this.conn = wc.getWrappedConnection();
-      } else {
-        this.conn = c;
-      }
+      this.conn = c;
     }
   }
 

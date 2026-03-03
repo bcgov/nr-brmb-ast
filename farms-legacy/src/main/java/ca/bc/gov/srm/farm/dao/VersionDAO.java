@@ -19,8 +19,6 @@ import java.sql.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.bc.gov.webade.dbpool.WrapperConnection;
-
 
 /**
  * @author  dzwiers
@@ -88,12 +86,7 @@ public class VersionDAO {
    */
   public VersionDAO(final Connection c) {
     neverUse = c;
-    if(c instanceof WrapperConnection){
-      WrapperConnection wc = (WrapperConnection)c;
-      this.conn = wc.getWrappedConnection();
-    }else{
-      this.conn = c;
-    }
+    this.conn = c;
   }
 
   /**
