@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wde:users xmlns:wde="http://www.webade.org/webade-xml-user-info" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.webade.org/webade-xml-user-info webade-xml-user-info.xsd ">
+
+<!-- ANONYMOUS USER -->
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="" emailAddress="appmail@vividsolutions.com" expiryDate="5228-09-13T23:59:59"
+                        userType="BUP" guid="WEBADE_ANONYMOUS0000000000000000" accountName="WEBADE_ANONYMOUS"
+                        displayName="Ymous, Anon" firstName="Anon" lastName="Ymous" phoneNumber="2503856040" password="password"
+                        businessGUID="ANONYMOUSBUSINESS000000000000000">
+</business-partner-user-info>
+
+<!-- SYSTEM USER -->
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="WEBADE_SYSTEM0000000000000000000" accountName="WEBADE_SYSTEM"
+                        displayName="Admin, Adam" firstName="Adam" lastName="Admin" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000011" password="password">
+</government-user-info>
+
+
+<!-- ADAM USERIDS START -->
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="ADAM_ADMADMIN0000000000000000000" accountName="ADAM_ADMADMIN"
+                        displayName="Admin, Adam" firstName="Adam" lastName="Admin" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000022" password="password">
+</government-user-info>
+<!-- ADAM USERIDS END -->
+
+<!-- IDIR START -->
+<government-user-info sourceDirectory="IDIR" middleInitial="H" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="5FCF4100000C48C7B2D7BF173C7DB970" accountName="CHBOREEN"
+                        displayName="Boreen, Chris" firstName="Chris" lastName="Boreen" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000045" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="AHOPKINS000000000000000000000000" accountName="AHOPKINS"
+                        displayName="Hopkins, Anthony" firstName="Anthony" lastName="Hopkins" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000044" password="password"
+                        preferredName="Tony" department="Department of QA"
+                        contactAddressLine1="1175 Douglas St" contactAddressLine2="Suite 200"
+                        contactAddressCity="Victoria" contactAddressProvince="BC" contactAddressCountry="Canada"
+                        contactAddressPostalCode="V8W 2E6" contactAddressUnstructured="1234 Baker St London, England"
+                        title="Quality Assurance Analyst" company="QA Associates" organizationCode="1122334455"
+                        governmentDepartment="Department of Quality Assurance" office="Office of the Chief Tester"
+                        description="Ensures quality.">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="BGRABLE0000000000000000000000000" accountName="BGRABLE"
+                        displayName="Grable, Betty" firstName="Betty" lastName="Grable" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000056" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="BPITT000000000000000000000000000" accountName="BPITT"
+                        displayName="Pitt, Brad" firstName="Brad" lastName="Pitt" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000055" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="CEASTWOOD00000000000000000000000" accountName="CEASTWOOD"
+                        displayName="Eastwood, Clint" firstName="Clint" lastName="Eastwood" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000077" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="DLETTERMAN0000000000000000000000" accountName="DLETTERMAN"
+                        displayName="Letterman, David" firstName="David" lastName="Letterman" phoneNumber="2503856040"
+                        accountType="abcdefg" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="DMOORE00000000000000000000000000" accountName="DMOORE"
+                        displayName="Moore, Demi" firstName="Demi" lastName="Moore" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000066" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="ETAYLOR0000000000000000000000000" accountName="ETAYLOR"
+                        displayName="Taylor, Elizabeth" firstName="Elizabeth" lastName="Taylor" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000077" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="FASTAIRE000000000000000000000000" accountName="FASTAIRE"
+                        displayName="Astaire, Fred" firstName="Fred" lastName="Astaire" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000088" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="GGARBO00000000000000000000000000" accountName="GGARBO"
+                        displayName="Garbo, Greta" firstName="Greta" lastName="Garbo" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000099" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="HFORD000000000000000000000000000" accountName="HFORD"
+                        displayName="Ford, Harrison" firstName="Harrison" lastName="Ford" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000111" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="IBERGMAN000000000000000000000000" accountName="IBERGMAN"
+                        displayName="Bergman, Ingrid" firstName="Ingrid" lastName="Bergman" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000222" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="JCHAN000000000000000000000000000" accountName="JCHAN"
+                        displayName="Chan, Jackie" firstName="Jackie" lastName="Chan" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000333" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="KHEPBURN000000000000000000000000" accountName="KHEPBURN"
+                        displayName="Hepburn, Katherine" firstName="Katherine" lastName="Hepburn" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000444" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="LBACALL0000000000000000000000000" accountName="LBACALL"
+                        displayName="Bacall, Lauren" firstName="Lauren" lastName="Bacall" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000555" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="MBRANDO0000000000000000000000000" accountName="MBRANDO"
+                        displayName="Brando, Marlon" firstName="Marlon" lastName="Brando" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000666" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="MRYAN000000000000000000000000000" accountName="MRYAN"
+                        displayName="Ryan, Meg" firstName="Meg" lastName="Ryan" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000667" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="NCAGE000000000000000000000000000" accountName="NCAGE"
+                        displayName="Cage, Nicolas" firstName="Nicolas" lastName="Cage" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000777" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="OWINFREY000000000000000000000000" accountName="OWINFREY"
+                        displayName="Winfrey, Oprah" firstName="Oprah" lastName="Winfrey" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000888" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="PANDERSON00000000000000000000000" accountName="PANDERSON"
+                        displayName="Anderson, Pamela" firstName="Pamela" lastName="Anderson" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000999" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="IDIRPOTOOLE000000000000000000000" accountName="POTOOLE"
+                        displayName="O'Toole, Peter" firstName="Peter" lastName="O'Toole" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000998" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="QTARANTINO0000000000000000000000" accountName="QTARANTINO"
+                        displayName="Tarantino, Quentin" firstName="Quentin" lastName="Tarantino" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000001111" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="RROMANO0000000000000000000000000" accountName="RROMANO"
+                        displayName="Romano, Ray" firstName="Ray" lastName="Romano" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000002222" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="SCOWELL0000000000000000000000000" accountName="SCOWELL"
+                        displayName="Baldwin, Alec" firstName="Simon" lastName="Cowell" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000003333" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="THANKS00000000000000000000000000" accountName="THANKS"
+                        displayName="Hanks, Tom" firstName="Tom" lastName="Hanks" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000004444" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="UTHRUMAN000000000000000000000000" accountName="UTHURMAN"
+                        displayName="Thurman, Uma" firstName="Uma" lastName="Thurman" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000005555" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="VROSSI00000000000000000000000000" accountName="VROSSI"
+                        displayName="Rossi, Valentino" firstName="Valentino" lastName="Rossi" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000006666" password="password">
+</government-user-info>
+<government-user-info sourceDirectory="IDIR" middleInitial="A" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="WALLEN00000000000000000000000000" accountName="WALLEN"
+                        displayName="Allen, Woody" firstName="Woody" lastName="Allen" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000007777" password="password">
+</government-user-info>
+<!-- IDIR END -->
+
+<!-- BCEID START -->
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="B" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="AALDA000000000000000000000000000" accountName="AALDA"
+                        displayName="Alda, Alan" firstName="Alan" lastName="Alda" phoneNumber="2503856040" password="password"
+                        businessGUID="AALDABUSINESS0000000000000000000"
+                        businessTradingName="Bob's Car Emporium" businessNumber="123" incorporationNumber="456"
+                        extraProvRegistrationNumber="789" businessLegalName="Bob's Car Emporium Ltd" 
+                        businessLUID="ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF" businessNumberVerified="true"
+                        businessType="Partnership" businessUserTypeOther="" bnHubBusinessType="GeneralPartnership"
+                        statementOfRegistrationNumber="987654321012345" jurisdictionOfIncorporation="BC"
+                        doingBusinessAs="Bob's Cars" suspended="true"
+                        businessAddressLine1="4321 Government St" businessAddressLine2="Suite #1"
+                        businessAddressCity="Edmonton" businessAddressProvince="AB" businessAddressCountry="Canada"
+                        businessAddressPostalCode="A1A 1A1" businessAddressUnstructured="98745 Rue du Renard Paris, France">
+</business-partner-user-info>
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="B" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="RALDA000000000000000000000000000" accountName="RALDA"
+                        displayName="Alda, Robert" firstName="Robert" lastName="Alda" phoneNumber="2503856040" password="password"
+                        businessGUID="AALDABUSINESS0000000000000000000">
+</business-partner-user-info>
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="B" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="BBOXLEITNER000000000000000000000" accountName="BBOXLEITNER"
+                        displayName="Boxleitner, Bruce" firstName="Bruce" lastName="Boxleitner" phoneNumber="2503856040" password="password"
+                        businessGUID="BBOXLEITNERBUSINESS0000000000000">
+</business-partner-user-info>
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="B" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="CCHUNG00000000000000000000000000" accountName="CCHUNG"
+                        displayName="Chung, Connie" firstName="Connie" lastName="Chung" phoneNumber="2503856040" password="password"
+                        businessGUID="CCHUNGBUSINESS000000000000000000">
+</business-partner-user-info>
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="B" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="DDELANY0000000000000000000000000" accountName="DDELANY"
+                        displayName="Delany, Dana" firstName="Dana" lastName="Delany" phoneNumber="2503856040" password="password"
+                        businessGUID="DDELANYBUSINESS00000000000000000">
+</business-partner-user-info>
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="B" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="EESTEVEZ000000000000000000000000" accountName="EESTEVEZ"
+                        displayName="Estevez, Emilio" firstName="Emilio" lastName="Estevez" phoneNumber="2503856040" password="password"
+                        businessGUID="EESTEVEZBUSINESS0000000000000000">
+</business-partner-user-info>
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="B" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="FFERDINAND0000000000000000000000" accountName="FFERDINAND"
+                        displayName="Ferdinand, Franz" firstName="Franz" lastName="Ferdinand" phoneNumber="2503856040" password="password"
+                        businessGUID="FFERDINANDBUSINESS00000000000000">
+</business-partner-user-info>
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="B" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="GGRUNBERG00000000000000000000000" accountName="GGRUNBERG"
+                        displayName="Grunberg, Greg" firstName="Greg" lastName="Grunberg" phoneNumber="2503856040" password="password"
+                        businessGUID="GGRUNBERGBUSINESS000000000000000">
+</business-partner-user-info>
+<business-partner-user-info sourceDirectory="BCEID" middleInitial="B" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="HHUNT000000000000000000000000000" accountName="HHUNT"
+                        displayName="Hunt, Helen" firstName="Helen" lastName="Hunt" phoneNumber="2503856040" password="password"
+                        businessGUID="HHUNTBUSINESS0000000000000000000">
+</business-partner-user-info>
+<!-- BCEID END -->
+
+<!-- No email BUP -->
+<business-partner-user-info
+  sourceDirectory="BCEID"
+  middleInitial="A"
+  emailAddress=""
+  expiryDate="9999-12-31T23:59:59"
+  userType="BUP"
+  guid="NOEMAILTESTER1000000000000000000"
+  accountName="NOEMAILTESTER"
+  displayName="Tester1, No-Email"
+  firstName="No-Email"
+  lastName="Tester1"
+  phoneNumber="2503856040"
+  password="password"
+  businessGUID="NOEMAILTESTERBUS1000000000000000">
+</business-partner-user-info>
+
+<!-- No email GOV -->
+<government-user-info
+  sourceDirectory="IDIR"
+  middleInitial="A"
+  emailAddress=""
+  expiryDate="9999-12-31T23:59:59"
+  userType="GOV"
+  guid="NOEMAILTESTER2000000000000000000"
+  accountName="NOEMAILTESTER"
+  displayName="Tester2, No-Email"
+  firstName="No-Email"
+  lastName="Tester2"
+  phoneNumber="2503856040"
+  accountType="abcdefg"
+  employeeId="0000000000"
+  password="password"
+  city="Victoria">
+</government-user-info>
+
+<!-- Not visible BUP -->
+<business-partner-user-info
+  sourceDirectory="BCEID"
+  middleInitial="A"
+  emailAddress="appmail@vividsolutions.com"
+  expiryDate="9999-12-31T23:59:59"
+  userType="BUP"
+  guid="NOTVISIBLETESTER0000000000000000"
+  accountName="NOTVISIBLETESTER"
+  displayName="Tester, Not Visible"
+  firstName="Not Visible"
+  lastName="Tester"
+  phoneNumber="2503856040"
+  password="password"
+  businessGUID="NOTVISIBLETESTERBUS0000000000000"
+  visible="false">
+</business-partner-user-info>
+
+<!-- Expired BUP -->
+<business-partner-user-info
+  sourceDirectory="BCEID"
+  middleInitial="A"
+  emailAddress="appmail@vividsolutions.com"
+  expiryDate="1900-12-31T23:59:59"
+  userType="BUP"
+  guid="EXPIREDTESTER0000000000000000000"
+  accountName="EXPIREDTESTER"
+  displayName="Tester, Expired"
+  firstName="Expired"
+  lastName="Tester"
+  phoneNumber="2503856040"
+  password="password"
+  businessGUID="EXPIREDTESTERBUS0000000000000000"
+  visible="false">
+</business-partner-user-info>
+
+<!-- UIN START -->
+<individual-user-info sourceDirectory="MYID" middleInitial="B" emailAddress="webade@vividsolutions.com" expiryDate="9999-12-31T23:59:59" userType="UIN" guid="DHANNAH0000000000000000000000000"
+  accountName="DHANNAH" displayName="Hannah, Darryl" firstName="Darryl" lastName="Hannah" phoneNumber="2503856040" password="password">
+</individual-user-info>
+<individual-user-info sourceDirectory="MYID" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59" 
+                  userType="UIN" guid="INDIVIDUALUSER100000000000000000" accountName="INDIVIDUALUSER1" 
+                  displayName="Individual User 1" firstName="Individual" middleInitial="1" lastName="User" phoneNumber="2503856040" password="password">
+</individual-user-info>
+<individual-user-info sourceDirectory="MYID" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59" 
+                  userType="UIN" guid="INDIVIDUALUSER200000000000000000" accountName="INDIVIDUALUSER2" 
+                  displayName="Individual User 2" firstName="Individual" middleInitial="2" lastName="User" phoneNumber="2503856040" password="password">
+</individual-user-info>
+<individual-user-info sourceDirectory="MYID" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59" 
+                  userType="UIN" guid="INDIVIDUALUSER300000000000000000" accountName="INDIVIDUALUSER3" 
+                  displayName="Individual User 3" firstName="Individual" middleInitial="3" lastName="User" phoneNumber="2503856040" password="password">
+</individual-user-info>
+<individual-user-info sourceDirectory="MYID" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59" 
+                  userType="UIN" guid="INDIVIDUALUSER400000000000000000" accountName="INDIVIDUALUSER4" 
+                  displayName="Individual User 4" firstName="Individual" middleInitial="4" lastName="User" phoneNumber="2503856040" password="password">
+</individual-user-info>
+<!-- UIN END -->
+
+<!-- VIN START -->
+<verified-individual-user-info sourceDirectory="VFDID" middleInitial="L" emailAddress="webade@vividsolutions.com" expiryDate="9999-12-31T23:59:59" userType="VIN" guid="JBRIDGES000000000000000000000000" 
+  accountName="JBRIDGES" displayName="Bridges, Jeff" firstName="Jeff" lastName="Bridges" phoneNumber="2503856040" password="password"
+  preferredName="The Dude" department="Department of Dudes"
+  contactAddressLine1="2151 Cranmore Rd" contactAddressLine2=""
+  contactAddressCity="Victoria" contactAddressProvince="BC" contactAddressCountry="Canada"
+  contactAddressPostalCode="V8R 1Z2" contactAddressUnstructured="6789 Calle de la Cruz Madrid, Spain"
+  dateOfBirth="1949-12-04T00:00:00" residentialAddressLine1="12345 Hollywood Blvd" residentialAddressLine2="#1"
+  residentialAddressCity="Los Angeles" residentialAddressProvince="CA" residentialAddressCountry="Canada"
+  residentialAddressPostalCode="90210" residentialAddressUnstructured="12345 Hollywood Blvd Los Angeles CA USA 90210"
+  mailingAddressLine1="600 Garden St" mailingAddressLine2="Suite #100" mailingAddressCity="Santa Barbara"
+  mailingAddressProvince="CA" mailingAddressCountry="USA" mailingAddressPostalCode="90212" mailingAddressUnstructured="">
+</verified-individual-user-info>
+<!-- VIN END -->
+
+<!-- OAUTH Users -->
+<government-user-info sourceDirectory="IDIR" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="OAUTHGOV100000000000000000000000" accountName="OAUTHGOV1"
+                        displayName="Oauth 1 Gov" firstName="Oauth" middleInitial="1" lastName="Gov" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000001" password="password"></government-user-info>
+                        
+<government-user-info sourceDirectory="IDIR" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="GOV" guid="OAUTHGOV200000000000000000000000" accountName="OAUTHGOV2"
+                        displayName="Oauth 2 Gov" firstName="Oauth" middleInitial="2" lastName="Gov" phoneNumber="2503856040"
+                        accountType="abcdefg" employeeId="0000000002" password="password"></government-user-info>
+
+<business-partner-user-info sourceDirectory="BCEID" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="OAUTHBUS100000000000000000000000" accountName="OAUTHBUS1"
+                        displayName="Oauth 1 Bus" firstName="Oauth" middleInitial="1" lastName="Bus" phoneNumber="2503856040" password="password"
+                        businessGUID="OAUTHBUS1BUSINESS000000000000000">
+</business-partner-user-info>
+
+<business-partner-user-info sourceDirectory="BCEID" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59"
+                        userType="BUP" guid="OAUTHBUS200000000000000000000000" accountName="OAUTHBUS2"
+                        displayName="Oauth 2 Bus" firstName="Oauth" middleInitial="2" lastName="Bus" phoneNumber="2503856040" password="password"
+                        businessGUID="OAUTHBUS2BUSINESS000000000000000">
+</business-partner-user-info>
+
+<individual-user-info sourceDirectory="MYID" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59" 
+                  userType="UIN" guid="OAUTHUIN100000000000000000000000" accountName="OAUTHUIN1" 
+                  displayName="Oauth 1 Inv" firstName="Oauth" middleInitial="1" lastName="Inv" phoneNumber="2503856040" password="password">
+</individual-user-info>
+
+<individual-user-info sourceDirectory="MYID" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59" 
+                  userType="UIN" guid="OAUTHUIN200000000000000000000000" accountName="OAUTHUIN2" 
+                  displayName="Oauth 2 Inv" firstName="Oauth" middleInitial="2" lastName="Inv" phoneNumber="2503856040" password="password">
+</individual-user-info>
+
+<verified-individual-user-info sourceDirectory="VFDID" emailAddress="appmail@vividsolutions.com" expiryDate="9999-12-31T23:59:59" 
+		userType="VIN" guid="OAUTHVIN100000000000000000000000" accountName="OAUTHVIN1"
+		displayName="Oauth 1 Vin" firstName="Oauth" middleInitial="1" lastName="Vin" phoneNumber="2503856040" password="password">
+</verified-individual-user-info>
+
+</wde:users>
