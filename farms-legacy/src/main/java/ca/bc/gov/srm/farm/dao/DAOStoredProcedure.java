@@ -16,7 +16,6 @@ import java.math.BigInteger;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
-import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.Ref;
 import java.sql.ResultSet;
@@ -537,19 +536,6 @@ public class DAOStoredProcedure implements AutoCloseable {
    */
   public final Blob getBlob(final int index) throws SQLException {
     return stmt.getBlob(index);
-  }
-
-  /**
-   * getClob.
-   *
-   * @param   index  Input parameter.
-   *
-   * @return  The return value.
-   *
-   * @throws  SQLException  On exception.
-   */
-  public final Clob getClob(final int index) throws SQLException {
-    return stmt.getClob(index);
   }
 
   /**
@@ -1477,19 +1463,6 @@ public class DAOStoredProcedure implements AutoCloseable {
   public final void setBlob(final int index, final Blob x) throws SQLException {
     addParamValue(index, x);
     stmt.setBlob(getBindIndex(index), x);
-  }
-
-  /**
-   * Sets the value for clob.
-   *
-   * @param   index  Input parameter.
-   * @param   x      Input parameter.
-   *
-   * @throws  SQLException  On exception.
-   */
-  public final void setClob(final int index, final Clob x) throws SQLException {
-    addParamValue(index, x);
-    stmt.setClob(getBindIndex(index), x);
   }
 
   /**
