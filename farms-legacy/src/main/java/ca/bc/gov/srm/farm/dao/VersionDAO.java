@@ -12,10 +12,7 @@
 package ca.bc.gov.srm.farm.dao;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.sql.Clob;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -440,20 +437,6 @@ public class VersionDAO {
         proc.setString(c++, pUserId);
 
         proc.execute();
-
-        try (ResultSet resultSet = proc.getResultSet();) {
-
-          if (resultSet.next()) {
-    
-            // get clob from cursor
-            Clob clob = resultSet.getClob(1);
-            
-            try(Writer writer = clob.setCharacterStream(0);) {
-              writer.write(pMessage);
-              writer.flush();
-            }
-          }
-        }
       }
 
       conn.commit();
@@ -499,20 +482,6 @@ public class VersionDAO {
         proc.setString(c++, pUserId);
         
         proc.execute();
-
-        try (ResultSet resultSet = proc.getResultSet();) {
-
-          if (resultSet.next()) {
-    
-            // get clob from cursor
-            Clob clob = resultSet.getClob(1);
-            
-            try(Writer writer = clob.setCharacterStream(0);) {
-              writer.write(pMessage);
-              writer.flush();
-            }
-          }
-        }
       }
 
       conn.commit();
