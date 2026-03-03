@@ -144,7 +144,7 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
             fileInputStream,
             userId);
       } else {
-        Connection connection = OracleUtils.getOracleConnection(transaction);
+        Connection connection = (Connection) transaction.getDatastore();
         service.createImportVersion(
             connection,
             ImportClassCodes.XSTATE,
@@ -329,7 +329,7 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
             fileInputStream,
             userId);
       } else {
-        Connection connection = OracleUtils.getOracleConnection(transaction);
+        Connection connection = (Connection) transaction.getDatastore();
         service.createImportVersion(
             connection,
             ImportClassCodes.XCONTACT,
@@ -488,7 +488,7 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
   public void clearSuccessfulTransfers() throws ServiceException {
     
     Transaction transaction = openTransaction();
-    Connection connection = OracleUtils.getOracleConnection(transaction);
+    Connection connection = (Connection) transaction.getDatastore();
     VersionDAO vdao = null;
 
     try {

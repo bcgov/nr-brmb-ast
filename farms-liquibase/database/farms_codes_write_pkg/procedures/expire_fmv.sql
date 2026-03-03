@@ -10,6 +10,7 @@ create or replace procedure farms_codes_write_pkg.expire_fmv(
 language plpgsql
 as $$
 declare
+    v_rows_affected  bigint := null;
     v_default_crop_unit_code farms.farm_crop_unit_defaults.crop_unit_code%type;
 begin
 
@@ -22,7 +23,8 @@ begin
         where fair_market_value_id = in_fair_market_value_id
         and revision_count = in_revision_count;
 
-        if sql%rowcount <> 1 then
+        get diagnostics v_rows_affected = row_count;
+        if v_rows_affected = 0 then
             raise exception 'Invalid revision count';
         end if;
     end if;

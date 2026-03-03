@@ -14,6 +14,7 @@ package ca.bc.gov.srm.farm.dao;
 import ca.bc.gov.srm.farm.domain.staging.FmvCsvRow;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,7 +29,7 @@ import java.util.List;
 public class FmvDAO extends OracleDAO {
 
   /** DOCUMENT ME! */
-  private static final String PACKAGE_NAME = "FARM_FMV_PKG";
+  private static final String PACKAGE_NAME = "FARMS_FMV_PKG";
 
   /** INSERT_PROC. */
   private static final String INSERT_PROC = "INSERT_STAGING_ROW";
@@ -78,12 +79,30 @@ public class FmvDAO extends OracleDAO {
     DAOStoredProcedure proc = null;
     final int paramCount = 0;
     String procName = PACKAGE_NAME + "." + CLEAR_PROC;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       proc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -100,31 +119,53 @@ public class FmvDAO extends OracleDAO {
   public final void insert(final FmvCsvRow obj, final String userId,
     final int rowNum) throws SQLException {
 
-    if (insertProc == null) {
-      final int paramCount = 9;
-      String procName = PACKAGE_NAME + "." + INSERT_PROC;
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      insertProc = new DAOStoredProcedure(connection,
-          procName,
-          paramCount,
-          false);
-    } else {
-      insertProc.clearParameters();
+      if (insertProc == null) {
+        final int paramCount = 10;
+        String procName = PACKAGE_NAME + "." + INSERT_PROC;
+
+        insertProc = new DAOStoredProcedure(connection,
+            procName,
+            paramCount,
+            false);
+      } else {
+        insertProc.clearParameters();
+      }
+
+      int index = 1;
+
+      insertProc.setLong(index++, (long)rowNum);
+      insertProc.setShort(index++, obj.getProgramYear() == null ? null : obj.getProgramYear().shortValue());
+      insertProc.setShort(index++, obj.getPeriod() == null ? null : obj.getPeriod().shortValue());
+      insertProc.setBigDecimal(index++, obj.getAveragePrice() == null ? null : BigDecimal.valueOf(obj.getAveragePrice()));
+      insertProc.setBigDecimal(index++, obj.getPercentVariance() == null ? null : BigDecimal.valueOf(obj.getPercentVariance()));
+      insertProc.setString(index++, obj.getMunicipalityCode());
+      insertProc.setString(index++, obj.getUnitCode());
+      insertProc.setString(index++, obj.getInventoryCode());
+      insertProc.setString(index++, obj.getFileLocation());
+      insertProc.setString(index++, userId);
+
+      insertProc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
-
-    int index = 1;
-
-    insertProc.setInt(index++, rowNum);
-    insertProc.setInt(index++, obj.getProgramYear());
-    insertProc.setInt(index++, obj.getPeriod());
-    insertProc.setDouble(index++, obj.getAveragePrice());
-    insertProc.setDouble(index++, obj.getPercentVariance());
-    insertProc.setString(index++, obj.getMunicipalityCode());
-    insertProc.setString(index++, obj.getUnitCode());
-    insertProc.setString(index++, obj.getInventoryCode());
-    insertProc.setString(index++, userId);
-
-    insertProc.execute();
   }
 
 
@@ -141,14 +182,32 @@ public class FmvDAO extends OracleDAO {
     final int paramCount = 1;
     String procName = PACKAGE_NAME + "." + VALIDATE_PROC;
 
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
       proc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -166,14 +225,32 @@ public class FmvDAO extends OracleDAO {
     final int paramCount = 1;
     String procName = PACKAGE_NAME + "." + DELETE_ERRORS_PROC;
 
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
       proc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -195,22 +272,38 @@ public class FmvDAO extends OracleDAO {
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
       proc.execute();
       resultSet = proc.getResultSet();
 
       while (resultSet.next()) {
         errors.add(resultSet.getString("LOG_MESSAGE"));
       }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return errors;
@@ -231,16 +324,34 @@ public class FmvDAO extends OracleDAO {
     final int paramCount = 2;
     String procName = PACKAGE_NAME + "." + OPERATIONAL_PROC;
 
+    boolean originalAutoCommit = true;
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setBigDecimal(index++, importVersionId == null ? null : BigDecimal.valueOf(importVersionId));
       proc.setString(index++, userId);
 
       proc.execute();
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 

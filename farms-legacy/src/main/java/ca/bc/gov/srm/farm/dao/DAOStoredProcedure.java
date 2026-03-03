@@ -72,7 +72,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     final int paramCount, final boolean returnsValue) throws SQLException {
 
     if (returnsValue) {
-      init(connection, procName, paramCount, oracle.jdbc.OracleTypes.CURSOR);
+      init(connection, procName, paramCount, Types.REF_CURSOR);
     } else {
       init(connection, procName, paramCount, NO_RETURN_TYPE);
     }
@@ -111,7 +111,7 @@ public class DAOStoredProcedure implements AutoCloseable {
       result.append("\r\nParameter Values:");
 
       if (returnsValue()) {
-        result.append("\r\n\tReturn Value " + getReturnTypeString());
+        result.append("\r\n\tReturn Value " + getReturnType());
       }
 
       for (int i = 0; i < paramValues.length; i++) {
@@ -121,22 +121,6 @@ public class DAOStoredProcedure implements AutoCloseable {
     }
 
     return result.toString();
-  }
-
-
-  /**
-   * @return  x
-   */
-  protected final String getReturnTypeString() {
-    String str = "";
-
-    if (getReturnType() == oracle.jdbc.OracleTypes.CURSOR) {
-      str = "CURSOR";
-    } else if (getReturnType() == oracle.jdbc.OracleTypes.VARCHAR) {
-      str = "VARCHAR";
-    }
-
-    return str;
   }
 
   /**
@@ -757,7 +741,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if (x == null) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.SMALLINT);
     } else {
       addParamValue(index, x);
       stmt.setShort(getBindIndex(index), x.shortValue());
@@ -776,7 +760,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if ((x == null) || (x.trim().length() == 0)) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.SMALLINT);
     } else {
       setShort(index, Short.parseShort(x));
     }
@@ -793,7 +777,7 @@ public class DAOStoredProcedure implements AutoCloseable {
   public final void setInt(final int index, final int x) throws SQLException {
 
     if (x == NullConstants.INT) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.INTEGER);
     } else {
       addParamValue(index, new Integer(x));
       stmt.setInt(getBindIndex(index), x);
@@ -812,7 +796,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if (x == null) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.INTEGER);
     } else {
       addParamValue(index, x);
       stmt.setInt(getBindIndex(index), x.intValue());
@@ -831,7 +815,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if (x == NullConstants.INT) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.INTEGER);
     } else {
       setInt(index, x);
     }
@@ -849,7 +833,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if ((x == null) || (x.trim().length() == 0)) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.INTEGER);
     } else {
       setInt(index, Integer.parseInt(x));
     }
@@ -903,7 +887,7 @@ public class DAOStoredProcedure implements AutoCloseable {
   public final void setLong(final int index, final long x) throws SQLException {
 
     if (x == NullConstants.LONG) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.BIGINT);
     } else {
       addParamValue(index, new Long(x));
       stmt.setLong(getBindIndex(index), x);
@@ -921,7 +905,7 @@ public class DAOStoredProcedure implements AutoCloseable {
   public final void setLong(final int index, final Long x) throws SQLException {
 
     if (x == null) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.BIGINT);
     } else {
       setLong(index, x.longValue());
     }
@@ -939,7 +923,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if ((x == null) || (x.trim().length() == 0)) {
-      setNull(index, Types.NUMERIC);
+      setNull(index, Types.BIGINT);
     } else {
       setLong(index, Long.parseLong(x));
     }
@@ -1115,7 +1099,7 @@ public class DAOStoredProcedure implements AutoCloseable {
     throws SQLException {
 
     if ((x == null) || (x.trim().length() == 0)) {
-      setNull(index, Types.VARCHAR);
+      setNull(index, Types.NUMERIC);
     } else {
       setBigDecimal(index, BigDecimal.valueOf(Long.parseLong(x)));
     }
@@ -1590,15 +1574,18 @@ public class DAOStoredProcedure implements AutoCloseable {
   protected final String getPrepareCallSql() {
     StringBuffer result = new StringBuffer();
 
-    result.append("{");
-
     if (returnsValue()) {
+      result.append("{");
       result.append("? = ");
     }
 
     result.append("call " + getProcName() + "(");
     result.append(getParamListString());
-    result.append(") }");
+    result.append(")");
+
+    if (returnsValue()) {
+      result.append("}");
+    }
 
     return result.toString();
   }

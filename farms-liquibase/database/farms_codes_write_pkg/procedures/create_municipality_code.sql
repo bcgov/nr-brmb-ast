@@ -39,6 +39,5 @@ begin
         in_user
     );
 
-    commit;
 end;
 $$;

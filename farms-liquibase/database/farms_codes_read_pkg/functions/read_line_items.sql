@@ -26,9 +26,9 @@ begin
                li.expiry_date,
                li.revision_count,
                li.fruit_veg_type_code,
-               ftvc.description fruit_vegetable_type_code_description,
+               fvtc.description fruit_veg_type_code_desc,
                li.commodity_type_code,
-               ctc.description commodity_type_code_description,
+               ctc.description commodity_type_code_desc,
                sdli.sector_detail_line_item_id,
                sc.sector_code,
                sc.description sector_code_description,
@@ -44,8 +44,8 @@ begin
         left outer join farms.farm_commodity_type_codes ctc on ctc.commodity_type_code = li.commodity_type_code
         where li.program_year = in_program_year
         and (in_line_item is null or li.line_item = in_line_item)
-        and li.expiry_date > current_date
-        and li.established_date < current_date
+        and li.expiry_date > current_timestamp
+        and li.established_date < current_timestamp
         order by lower(li.description);
 
     return cur;

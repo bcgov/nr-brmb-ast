@@ -11,6 +11,7 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
+import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -39,7 +40,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class CalculatorDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_CALCULATOR_PKG";
+  private static final String PACKAGE_NAME = "FARMS_CALCULATOR_PKG";
   
 
   private static final String UPDATE_SCENARIO_REVISION_COUNT_PROC = "UPDATE_SC_REV";
@@ -195,9 +196,13 @@ public class CalculatorDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_CLIENT_PROC, UPDATE_CLIENT_PARAM, false);
 
@@ -212,11 +217,22 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(param++, user);
       proc.execute();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -234,9 +250,13 @@ public class CalculatorDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_PROGRAM_YEAR_VERSION_PROC, UPDATE_PROGRAM_YEAR_VERSION_PARAM, false);
 
@@ -270,11 +290,22 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(param++, user);
       proc.execute();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -293,10 +324,14 @@ public class CalculatorDAO extends OracleDAO {
   throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     String schedule = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + GET_NEW_OP_SCHEDULE_PROC, GET_NEW_OP_SCHEDULE_PARAM, Types.VARCHAR);
       
@@ -305,12 +340,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.execute();
       
       schedule = proc.getString(1);
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return schedule;
@@ -325,48 +371,66 @@ public class CalculatorDAO extends OracleDAO {
   throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Integer scenarioId = null;
     
     if(fo.getFarmingYear().getReferenceScenario() != null
         && fo.getFarmingYear().getReferenceScenario().getParentScenario() != null) {
       scenarioId = fo.getFarmingYear().getReferenceScenario().getParentScenario().getScenarioId();
     }
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_OPERATION_PROC, CREATE_OPERATION_PARAM, Types.INTEGER);) {
-      
-      int param = 1;
-      proc.setInt(param++, fo.getFarmingYear().getProgramYearVersionId());
-      proc.setInt(param++, scenarioId);
-      proc.setInt(param++, fo.getOperationNumber());
-      proc.setString(param++, fo.getSchedule());
-      proc.setString(param++, fo.getAccountingCode());
-      proc.setDate(param++, fo.getFiscalYearStart());
-      proc.setDate(param++, fo.getFiscalYearEnd());
-      proc.setInt(param++, fo.getPartnershipPin());
-      proc.setString(param++, fo.getPartnershipName());
-      proc.setDouble(param++, fo.getPartnershipPercent());
-      proc.setString(param++, getIndicatorYN(fo.getIsCropDisaster()));
-      proc.setString(param++, getIndicatorYN(fo.getIsCropShare()));
-      proc.setString(param++, getIndicatorYN(fo.getIsFeederMember()));
-      proc.setString(param++, getIndicatorYN(fo.getIsLandlord()));
-      proc.setString(param++, getIndicatorYN(fo.getIsLivestockDisaster()));
-      proc.setDouble(param++, fo.getBusinessUseHomeExpense());
-      proc.setDouble(param++, fo.getFarmingExpenses());
-      proc.setDouble(param++, fo.getGrossIncome());
-      proc.setDouble(param++, fo.getInventoryAdjustments());
-      proc.setDouble(param++, fo.getNetFarmIncome());
-      proc.setDouble(param++, fo.getNetIncomeAfterAdj());
-      proc.setDouble(param++, fo.getNetIncomeBeforeAdj());
-      proc.setDouble(param++, fo.getOtherDeductions());
-      proc.setString(param++, user);
-      proc.execute();
-      
-      fo.setFarmingOperationId(new Integer(proc.getInt(1)));
-      
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + CREATE_OPERATION_PROC, CREATE_OPERATION_PARAM, Types.BIGINT);) {
+        
+        int param = 1;
+        proc.setLong(param++, fo.getFarmingYear().getProgramYearVersionId() == null ? null : fo.getFarmingYear().getProgramYearVersionId().longValue());
+        proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
+        proc.setShort(param++, fo.getOperationNumber() == null ? null : fo.getOperationNumber().shortValue());
+        proc.setString(param++, fo.getSchedule());
+        proc.setString(param++, fo.getAccountingCode());
+        proc.setDate(param++, fo.getFiscalYearStart());
+        proc.setDate(param++, fo.getFiscalYearEnd());
+        proc.setInt(param++, fo.getPartnershipPin());
+        proc.setString(param++, fo.getPartnershipName());
+        proc.setBigDecimal(param++, fo.getPartnershipPercent() == null ? null : BigDecimal.valueOf(fo.getPartnershipPercent()));
+        proc.setString(param++, getIndicatorYN(fo.getIsCropDisaster()));
+        proc.setString(param++, getIndicatorYN(fo.getIsCropShare()));
+        proc.setString(param++, getIndicatorYN(fo.getIsFeederMember()));
+        proc.setString(param++, getIndicatorYN(fo.getIsLandlord()));
+        proc.setString(param++, getIndicatorYN(fo.getIsLivestockDisaster()));
+        proc.setBigDecimal(param++, fo.getBusinessUseHomeExpense() == null ? null : BigDecimal.valueOf(fo.getBusinessUseHomeExpense()));
+        proc.setBigDecimal(param++, fo.getFarmingExpenses() == null ? null : BigDecimal.valueOf(fo.getFarmingExpenses()));
+        proc.setBigDecimal(param++, fo.getGrossIncome() == null ? null : BigDecimal.valueOf(fo.getGrossIncome()));
+        proc.setBigDecimal(param++, fo.getInventoryAdjustments() == null ? null : BigDecimal.valueOf(fo.getInventoryAdjustments()));
+        proc.setBigDecimal(param++, fo.getNetFarmIncome() == null ? null : BigDecimal.valueOf(fo.getNetFarmIncome()));
+        proc.setBigDecimal(param++, fo.getNetIncomeAfterAdj() == null ? null : BigDecimal.valueOf(fo.getNetIncomeAfterAdj()));
+        proc.setBigDecimal(param++, fo.getNetIncomeBeforeAdj() == null ? null : BigDecimal.valueOf(fo.getNetIncomeBeforeAdj()));
+        proc.setBigDecimal(param++, fo.getOtherDeductions() == null ? null : BigDecimal.valueOf(fo.getOtherDeductions()));
+        proc.setString(param++, user);
+        proc.execute();
+        
+        fo.setFarmingOperationId(new Integer((int)proc.getLong(1)));
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -386,9 +450,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_OPERATION_PROC, UPDATE_OPERATION_PARAM, false);
       
@@ -417,12 +485,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setInt(param++, fo.getRevisionCount());
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -447,9 +526,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + DELETE_OPERATION_PROC, DELETE_OPERATION_PARAM, false);
       
@@ -460,12 +543,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setInt(param++, operationRevisionCount);
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -492,10 +586,14 @@ public class CalculatorDAO extends OracleDAO {
       }
   
       @SuppressWarnings("resource")
-      Connection connection = getOracleConnection(transaction);
+      Connection connection = getConnection(transaction);
+      boolean originalAutoCommit = true;
       DAOStoredProcedure proc = null;
       
       try {
+        originalAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+
         proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
             + UPDATE_PRODUCTION_INSURANCE_PROC, UPDATE_PRODUCTION_INSURANCE_PARAM, false);
   
@@ -507,12 +605,23 @@ public class CalculatorDAO extends OracleDAO {
         proc.setArray(param++, oracleArray);
         proc.setString(param++, user);
         proc.execute();
-        
+
+        connection.commit();
       } catch (SQLException e) {
+        try {
+          connection.rollback();
+        } catch (SQLException rollbackEx) {
+          e.addSuppressed(rollbackEx);
+        }
         logSqlException(e);
         handleException(e);
       } finally {
         close(proc);
+        try {
+          connection.setAutoCommit(originalAutoCommit);
+        } catch (SQLException ex) {
+          handleException(ex);
+        }
       }
     }
   }
@@ -536,9 +645,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_SCENARIO_PROC, UPDATE_SCENARIO_PARAM, false);
       
@@ -552,12 +665,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setInt(param++, scenario.getVerifierUserId());
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
   }
@@ -578,9 +702,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_PARTICIPANT_DATA_SRC_PROC, UPDATE_PARTICIPANT_DATA_SRC_PARAM, false);
       
@@ -589,12 +717,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(param++, participantDataSrcCode);
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
   }
@@ -614,46 +753,64 @@ public class CalculatorDAO extends OracleDAO {
       final Integer excludedProgramYearVersionNumber)
   throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     List<FarmingOperationImportOption> schedules = new ArrayList<>();
 
     final int paramCount = 3;
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, 
-        PACKAGE_NAME + "." + READ_OPERATIONS_FOR_PUC_IMPORT_PROC, paramCount, true)) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.setInt(param++, participantPin);
-      proc.setInt(param++, year);
-      proc.setInt(param++, excludedProgramYearVersionNumber);
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, 
+          PACKAGE_NAME + "." + READ_OPERATIONS_FOR_PUC_IMPORT_PROC, paramCount, true)) {
 
-      try (ResultSet rs = proc.getResultSet();) {
+        int param = 1;
+        proc.setInt(param++, participantPin);
+        proc.setShort(param++, (short)year);
+        proc.setLong(param++, excludedProgramYearVersionNumber == null ? null : excludedProgramYearVersionNumber.longValue());
+        proc.execute();
 
-        while (rs.next()) {
-          FarmingOperationImportOption op = new FarmingOperationImportOption();
-          op.setProgramYearVersion(getInteger(rs, "Program_Year_Version_Number"));
-          op.setScenarioNumber(getInteger(rs, "Scenario_Number"));
-          op.setScenarioClassCode(getString(rs, "Scenario_Class_Code"));
-          op.setScenarioClassDescription(getString(rs, "Scenario_Class_Desc"));
-          op.setScenarioCategoryCode(getString(rs, "Scenario_Category_Code"));
-          op.setScenarioCategoryDescription(getString(rs, "Scenario_Category_Code_Desc"));
-          op.setScenarioStateCode(getString(rs, "Scenario_State_Code"));
-          op.setScenarioStateDescription(getString(rs, "Scenario_State_Desc"));
-          op.setScenarioCreatedDate(getDate(rs, "When_Created"));
-          op.setAlignmentKey(getString(rs, "Alignment_Key"));
-          op.setPartnershipPin(getInteger(rs, "Partnership_Pin"));
-          op.setPartnershipName(getString(rs, "Partnership_Name"));
-          op.setFarminOperationId(getInteger(rs, "Farming_Operation_Id"));
-          op.setHasCraProductiveUnits(getIndicator(rs, "Has_CRA_Productive_Units"));
-          op.setHasLocalProductiveUnits(getIndicator(rs, "Has_Local_Productive_Units"));
-          schedules.add(op);
+        try (ResultSet rs = proc.getResultSet();) {
+
+          while (rs.next()) {
+            FarmingOperationImportOption op = new FarmingOperationImportOption();
+            op.setProgramYearVersion(getInteger(rs, "Program_Year_Version_Number"));
+            op.setScenarioNumber(getInteger(rs, "Scenario_Number"));
+            op.setScenarioClassCode(getString(rs, "Scenario_Class_Code"));
+            op.setScenarioClassDescription(getString(rs, "Scenario_Class_Desc"));
+            op.setScenarioCategoryCode(getString(rs, "Scenario_Category_Code"));
+            op.setScenarioCategoryDescription(getString(rs, "Scenario_Category_Code_Desc"));
+            op.setScenarioStateCode(getString(rs, "Scenario_State_Code"));
+            op.setScenarioStateDescription(getString(rs, "Scenario_State_Desc"));
+            op.setScenarioCreatedDate(getDate(rs, "When_Created"));
+            op.setAlignmentKey(getString(rs, "Alignment_Key"));
+            op.setPartnershipPin(getInteger(rs, "Partnership_Pin"));
+            op.setPartnershipName(getString(rs, "Partnership_Name"));
+            op.setFarminOperationId(getInteger(rs, "Farming_Operation_Id"));
+            op.setHasCraProductiveUnits(getIndicator(rs, "Has_CRA_Productive_Units"));
+            op.setHasLocalProductiveUnits(getIndicator(rs, "Has_Local_Productive_Units"));
+            schedules.add(op);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
-    } 
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
     return schedules;
   }
   
@@ -672,44 +829,62 @@ public class CalculatorDAO extends OracleDAO {
       final Integer excludedProgramYearVersionNumber)
   throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     List<FarmingOperationImportOption> schedules = new ArrayList<>();
 
     final int paramCount = 3;
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, 
-        PACKAGE_NAME + "." + READ_OPERATIONS_FOR_INVENTORY_IMPORT_PROC, paramCount, true)) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.setInt(param++, participantPin);
-      proc.setInt(param++, year);
-      proc.setInt(param++, excludedProgramYearVersionNumber);
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, 
+          PACKAGE_NAME + "." + READ_OPERATIONS_FOR_INVENTORY_IMPORT_PROC, paramCount, true)) {
 
-      try (ResultSet rs = proc.getResultSet();) {
+        int param = 1;
+        proc.setInt(param++, participantPin);
+        proc.setInt(param++, year);
+        proc.setInt(param++, excludedProgramYearVersionNumber);
+        proc.execute();
 
-        while (rs.next()) {
-          FarmingOperationImportOption op = new FarmingOperationImportOption();
-          op.setProgramYearVersion(getInteger(rs, "Program_Year_Version_Number"));
-          op.setScenarioNumber(getInteger(rs, "Scenario_Number"));
-          op.setScenarioClassCode(getString(rs, "Scenario_Class_Code"));
-          op.setScenarioClassDescription(getString(rs, "Scenario_Class_Desc"));
-          op.setScenarioCategoryCode(getString(rs, "Scenario_Category_Code"));
-          op.setScenarioCategoryDescription(getString(rs, "Scenario_Category_Code_Desc"));
-          op.setScenarioStateCode(getString(rs, "Scenario_State_Code"));
-          op.setScenarioStateDescription(getString(rs, "Scenario_State_Desc"));
-          op.setScenarioCreatedDate(getDate(rs, "When_Created"));
-          op.setAlignmentKey(getString(rs, "Alignment_Key"));
-          op.setPartnershipPin(getInteger(rs, "Partnership_Pin"));
-          op.setPartnershipName(getString(rs, "Partnership_Name"));
-          op.setFarminOperationId(getInteger(rs, "Farming_Operation_Id"));
-          schedules.add(op);
+        try (ResultSet rs = proc.getResultSet();) {
+
+          while (rs.next()) {
+            FarmingOperationImportOption op = new FarmingOperationImportOption();
+            op.setProgramYearVersion(getInteger(rs, "Program_Year_Version_Number"));
+            op.setScenarioNumber(getInteger(rs, "Scenario_Number"));
+            op.setScenarioClassCode(getString(rs, "Scenario_Class_Code"));
+            op.setScenarioClassDescription(getString(rs, "Scenario_Class_Desc"));
+            op.setScenarioCategoryCode(getString(rs, "Scenario_Category_Code"));
+            op.setScenarioCategoryDescription(getString(rs, "Scenario_Category_Code_Desc"));
+            op.setScenarioStateCode(getString(rs, "Scenario_State_Code"));
+            op.setScenarioStateDescription(getString(rs, "Scenario_State_Desc"));
+            op.setScenarioCreatedDate(getDate(rs, "When_Created"));
+            op.setAlignmentKey(getString(rs, "Alignment_Key"));
+            op.setPartnershipPin(getInteger(rs, "Partnership_Pin"));
+            op.setPartnershipName(getString(rs, "Partnership_Name"));
+            op.setFarminOperationId(getInteger(rs, "Farming_Operation_Id"));
+            schedules.add(op);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
-    } 
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
     return schedules;
   }
 
@@ -729,44 +904,62 @@ public class CalculatorDAO extends OracleDAO {
       final Integer excludedProgramYearVersionNumber)
   throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     List<FarmingOperationImportOption> schedules = new ArrayList<>();
 
     final int paramCount = 3;
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, 
-        PACKAGE_NAME + "." + READ_OPERATIONS_FOR_ACCRUAL_IMPORT_PROC, paramCount, true)) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = 1;
-      proc.setInt(param++, participantPin);
-      proc.setInt(param++, year);
-      proc.setInt(param++, excludedProgramYearVersionNumber);
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, 
+          PACKAGE_NAME + "." + READ_OPERATIONS_FOR_ACCRUAL_IMPORT_PROC, paramCount, true)) {
 
-      try (ResultSet rs = proc.getResultSet();) {
+        int param = 1;
+        proc.setInt(param++, participantPin);
+        proc.setInt(param++, year);
+        proc.setInt(param++, excludedProgramYearVersionNumber);
+        proc.execute();
 
-        while (rs.next()) {
-          FarmingOperationImportOption op = new FarmingOperationImportOption();
-          op.setProgramYearVersion(getInteger(rs, "Program_Year_Version_Number"));
-          op.setScenarioNumber(getInteger(rs, "Scenario_Number"));
-          op.setScenarioClassCode(getString(rs, "Scenario_Class_Code"));
-          op.setScenarioClassDescription(getString(rs, "Scenario_Class_Desc"));
-          op.setScenarioCategoryCode(getString(rs, "Scenario_Category_Code"));
-          op.setScenarioCategoryDescription(getString(rs, "Scenario_Category_Code_Desc"));
-          op.setScenarioStateCode(getString(rs, "Scenario_State_Code"));
-          op.setScenarioStateDescription(getString(rs, "Scenario_State_Desc"));
-          op.setScenarioCreatedDate(getDate(rs, "When_Created"));
-          op.setAlignmentKey(getString(rs, "Alignment_Key"));
-          op.setPartnershipPin(getInteger(rs, "Partnership_Pin"));
-          op.setPartnershipName(getString(rs, "Partnership_Name"));
-          op.setFarminOperationId(getInteger(rs, "Farming_Operation_Id"));
-          schedules.add(op);
+        try (ResultSet rs = proc.getResultSet();) {
+
+          while (rs.next()) {
+            FarmingOperationImportOption op = new FarmingOperationImportOption();
+            op.setProgramYearVersion(getInteger(rs, "Program_Year_Version_Number"));
+            op.setScenarioNumber(getInteger(rs, "Scenario_Number"));
+            op.setScenarioClassCode(getString(rs, "Scenario_Class_Code"));
+            op.setScenarioClassDescription(getString(rs, "Scenario_Class_Desc"));
+            op.setScenarioCategoryCode(getString(rs, "Scenario_Category_Code"));
+            op.setScenarioCategoryDescription(getString(rs, "Scenario_Category_Code_Desc"));
+            op.setScenarioStateCode(getString(rs, "Scenario_State_Code"));
+            op.setScenarioStateDescription(getString(rs, "Scenario_State_Desc"));
+            op.setScenarioCreatedDate(getDate(rs, "When_Created"));
+            op.setAlignmentKey(getString(rs, "Alignment_Key"));
+            op.setPartnershipPin(getInteger(rs, "Partnership_Pin"));
+            op.setPartnershipName(getString(rs, "Partnership_Name"));
+            op.setFarminOperationId(getInteger(rs, "Farming_Operation_Id"));
+            schedules.add(op);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
-    } 
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
     return schedules;
   }
 
@@ -789,9 +982,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + ASSIGN_TO_USER_PROC, ASSIGN_TO_USER_PARAM, false);
       
@@ -801,12 +998,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(param++, userGuid);
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -842,24 +1050,42 @@ public class CalculatorDAO extends OracleDAO {
   throws DataAccessException {
     
     Integer scenarioNumber = null;
+    boolean originalAutoCommit = true;
     
     final int paramCount = 5;
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + SAVE_SCENARIO_AS_NEW_PROC, paramCount, Types.INTEGER); ) {
-      
-      int param = 1;
-      proc.setInt(param++, scenarioId);
-      proc.setString(param++, scenarioTypeCode);
-      proc.setString(param++, scenarioCategoryCode);
-      proc.setString(param++, applicationVersion);
-      proc.setString(param++, user);
-      proc.execute();
-      
-      scenarioNumber = (Integer) proc.getResult();
-      
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + SAVE_SCENARIO_AS_NEW_PROC, paramCount, Types.BIGINT); ) {
+        
+        int param = 1;
+        proc.setInt(param++, scenarioId);
+        proc.setString(param++, scenarioTypeCode);
+        proc.setString(param++, scenarioCategoryCode);
+        proc.setString(param++, applicationVersion);
+        proc.setString(param++, user);
+        proc.execute();
+        
+        scenarioNumber = new Integer((int)proc.getLong(1));
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return scenarioNumber;
@@ -879,27 +1105,42 @@ public class CalculatorDAO extends OracleDAO {
     Integer newScenarioId = null;
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_REFERENCE_SCENARIO_PROC, CREATE_REFERENCE_SCENARIO_PARAM, Types.INTEGER);
+          + CREATE_REFERENCE_SCENARIO_PROC, CREATE_REFERENCE_SCENARIO_PARAM, Types.BIGINT);
       
       int param = 1;
-      proc.setInt(param++, forScenario.getScenarioId());
-      proc.setInt(param++, fromScenarioId);
+      proc.setLong(param++, forScenario.getScenarioId() == null ? null : forScenario.getScenarioId().longValue());
+      proc.setLong(param++, fromScenarioId == null ? null : fromScenarioId.longValue());
       proc.setString(param++, scenarioStateCode);
       proc.setString(param++, applicationVersion);
       proc.setString(param++, user);
       proc.execute();
       
-      newScenarioId = new Integer(proc.getInt(1));
-      
+      newScenarioId = new Integer((int)proc.getLong(1));
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return newScenarioId;
@@ -931,26 +1172,44 @@ public class CalculatorDAO extends OracleDAO {
       final String user) throws DataAccessException {
 
     Integer programYearVersionId = null;
+    boolean originalAutoCommit = true;
 
     final int paramCount = 6;
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_YEAR_PROC, paramCount, Types.INTEGER); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int c = 1;
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + CREATE_YEAR_PROC, paramCount, Types.BIGINT); ) {
 
-      proc.setInt(c++, pin);
-      proc.setInt(c++, programYearToCreate);
-      proc.setInt(c++, numOperations);
-      proc.setString(c++, scenarioClassCode);
-      proc.setString(c++, scenarioCategoryCode);
-      proc.setString(c++, user);
+        int c = 1;
 
-      proc.execute();
-      programYearVersionId = new Integer(proc.getInt(1));
+        proc.setInt(c++, pin);
+        proc.setShort(c++, programYearToCreate == null ? null : programYearToCreate.shortValue());
+        proc.setLong(c++, numOperations == null ? null : numOperations.longValue());
+        proc.setString(c++, scenarioClassCode);
+        proc.setString(c++, scenarioCategoryCode);
+        proc.setString(c++, user);
 
+        proc.execute();
+        programYearVersionId = new Integer((int)proc.getLong(1));
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return programYearVersionId;
@@ -977,32 +1236,47 @@ public class CalculatorDAO extends OracleDAO {
       final List<Integer> opNumsKeepOldData,
       final String user) throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     Integer newScenarioNumber = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_SCENARIO_PYV_PROC, UPDATE_SCENARIO_PYV_PARAM, Types.INTEGER);
+          + UPDATE_SCENARIO_PYV_PROC, UPDATE_SCENARIO_PYV_PARAM, Types.BIGINT);
       
       Array oracleArray = createNumbersOracleArray(transaction, opNumsKeepOldData);
       
       int c = 1;
       
-      proc.setInt(c++, scenarioId);
-      proc.setInt(c++, newPyvNumber);
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
+      proc.setLong(c++, newPyvNumber == null ? null : newPyvNumber.longValue());
       proc.setString(c++, getIndicatorYN(pyvKeepOldData));
       proc.setArray(c++, oracleArray);
       proc.setString(c++, user);
       
       proc.execute();
-      newScenarioNumber = new Integer(proc.getInt(1));
-      
+      newScenarioNumber = new Integer((int)proc.getLong(1));
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return newScenarioNumber;
@@ -1022,9 +1296,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_OPERATION_SCHEDULE_PROC, UPDATE_OPERATION_SCHEDULE_PARAM, false);
       
@@ -1042,12 +1320,22 @@ public class CalculatorDAO extends OracleDAO {
 
       proc.executeBatch();
       
-
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -1068,9 +1356,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_SCENARIO_REVISION_COUNT_PROC, UPDATE_SCENARIO_REVISION_COUNT_PARAM, false);
       
@@ -1079,12 +1371,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setInt(param++, revisionCount);
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -1127,9 +1430,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + ADD_SCENARIO_LOG_PROC, ADD_SCENARIO_LOG_PARAM, false);
       
@@ -1138,12 +1445,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(param++, logMessage);
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -1160,21 +1478,36 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + DELETE_BPU_XREFS_PROC, paramCount, false);
       
       proc.setInt(paramCount, scenarioId);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -1196,10 +1529,14 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     final int paramCount = 4;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + SAVE_BPU_XREF_PROC, paramCount, false);
       
@@ -1215,11 +1552,23 @@ public class CalculatorDAO extends OracleDAO {
       }
       
       proc.executeBatch();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -1236,28 +1585,43 @@ public class CalculatorDAO extends OracleDAO {
       final Integer pin) throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     Integer pinExistsInteger = null;
     boolean exists = false;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + PIN_EXISTS_PROC, PIN_EXISTS_PARAM, Types.INTEGER);
+          + PIN_EXISTS_PROC, PIN_EXISTS_PARAM, Types.BIGINT);
 
       int c = 1;
 
       proc.setInt(c++, pin);
 
       proc.execute();
-      pinExistsInteger = new Integer(proc.getInt(1));
+      pinExistsInteger = new Integer((int)proc.getLong(1));
       
       exists = pinExistsInteger.intValue() == 1;
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return exists;
@@ -1278,13 +1642,17 @@ public class CalculatorDAO extends OracleDAO {
       final String userGuid) throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     Integer pinCheckedOutByUserInteger = null;
     boolean result = false;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + PIN_CHECKED_OUT_BY_USER_PROC, PIN_CHECKED_OUT_BY_USER_PARAM, Types.INTEGER);
+          + PIN_CHECKED_OUT_BY_USER_PROC, PIN_CHECKED_OUT_BY_USER_PARAM, Types.BIGINT);
 
       int c = 1;
 
@@ -1292,15 +1660,26 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(c++, userGuid);
 
       proc.execute();
-      pinCheckedOutByUserInteger = new Integer(proc.getInt(1));
+      pinCheckedOutByUserInteger = new Integer((int)proc.getLong(1));
       
       result = pinCheckedOutByUserInteger.intValue() == 1;
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return result;
@@ -1325,31 +1704,46 @@ public class CalculatorDAO extends OracleDAO {
       final String scenarioCategoryCode) throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     Integer pinExistsInteger = null;
     boolean exists = false;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + MATCHING_SC_EXISTS_PROC, MATCHING_SC_EXISTS_PARAM, Types.INTEGER);
+          + MATCHING_SC_EXISTS_PROC, MATCHING_SC_EXISTS_PARAM, Types.BIGINT);
       
       int c = 1;
       
       proc.setInt(c++, pin);
-      proc.setInt(c++, programYear);
+      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
       proc.setString(c++, municipalityCode);
       proc.setString(c++, scenarioCategoryCode);
       
       proc.execute();
-      pinExistsInteger = new Integer(proc.getInt(1));
+      pinExistsInteger = new Integer((int)proc.getLong(1));
       
       exists = pinExistsInteger.intValue() == 1;
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return exists;
@@ -1372,30 +1766,45 @@ public class CalculatorDAO extends OracleDAO {
       final Integer scenarioId) throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     Integer resultInteger = null;
     boolean result = false;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CF_HAS_ACCOUNTING_CODE_ERROR_PROC, CF_HAS_ACCOUNTING_CODE_ERROR_PARAM, Types.INTEGER);
+          + CF_HAS_ACCOUNTING_CODE_ERROR_PROC, CF_HAS_ACCOUNTING_CODE_ERROR_PARAM, Types.BIGINT);
       
       int c = 1;
       
       proc.setInt(c++, pin);
-      proc.setInt(c++, programYear);
-      proc.setInt(c++, scenarioId);
+      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
       
       proc.execute();
-      resultInteger = new Integer(proc.getInt(1));
+      resultInteger = new Integer((int)proc.getLong(1));
       
       result = resultInteger.intValue() == 1;
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return result;
@@ -1416,29 +1825,44 @@ public class CalculatorDAO extends OracleDAO {
       final Integer verifiedCombinedFarmNumber) throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     Integer resultInteger = null;
     boolean result = false;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CF_MATCHES_VERIFIED_PROC, CF_MATCHES_VERIFIED_PARAM, Types.INTEGER);
+          + CF_MATCHES_VERIFIED_PROC, CF_MATCHES_VERIFIED_PARAM, Types.BIGINT);
       
       int c = 1;
       
-      proc.setInt(c++, scenarioId);
-      proc.setInt(c++, verifiedCombinedFarmNumber);
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
+      proc.setLong(c++, verifiedCombinedFarmNumber == null ? null : verifiedCombinedFarmNumber.longValue());
       
       proc.execute();
-      resultInteger = new Integer(proc.getInt(1));
+      resultInteger = new Integer((int)proc.getLong(1));
       
       result = resultInteger.intValue() == 1;
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return result;
@@ -1461,30 +1885,45 @@ public class CalculatorDAO extends OracleDAO {
       final Integer scenarioId) throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     Integer resultInteger = null;
     boolean result = false;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CF_REF_YEARS_MISMATCH_ERROR_PROC, CF_REF_YEARS_MISMATCH_ERROR_PARAM, Types.INTEGER);
+          + CF_REF_YEARS_MISMATCH_ERROR_PROC, CF_REF_YEARS_MISMATCH_ERROR_PARAM, Types.BIGINT);
       
       int c = 1;
       
       proc.setInt(c++, pin);
-      proc.setInt(c++, programYear);
-      proc.setInt(c++, scenarioId);
+      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
       
       proc.execute();
-      resultInteger = new Integer(proc.getInt(1));
+      resultInteger = new Integer((int)proc.getLong(1));
       
       result = resultInteger.intValue() == 1;
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return result;
@@ -1511,9 +1950,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + COMBINED_FARM_UPDATE_PROC, COMBINED_FARM_UPDATE_PARAM, false);
       
@@ -1524,12 +1967,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setInt(param++, scenarioNumber);
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -1552,9 +2006,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + COMBINED_FARM_ADD_PROC, COMBINED_FARM_ADD_PARAM, false);
       
@@ -1564,12 +2022,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setInt(param++, programYear);
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -1590,9 +2059,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + COMBINED_FARM_REMOVE_PROC, COMBINED_FARM_REMOVE_PARAM, false);
       
@@ -1601,12 +2074,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setInt(param++, combinedFarmNumber);
       proc.setString(param++, user);
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -1620,24 +2104,42 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     @SuppressWarnings("resource")
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     final int paramCount = 4;
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_PIN_REV_COUNTS_PROC, paramCount, false); ) {
-      
-      Array oracleArray = createNumbersOracleArray(transaction, participantPins);
-      
-      int param = 1;
-      proc.setArray(param++, oracleArray);
-      proc.setInt(param++, programYear);
-      proc.setIndicator(param++, flagReasonabilityTestsStale);
-      proc.setString(param++, user);
-      proc.execute();
-      
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_PIN_REV_COUNTS_PROC, paramCount, false); ) {
+        
+        Array oracleArray = createNumbersOracleArray(transaction, participantPins);
+        
+        int param = 1;
+        proc.setArray(param++, oracleArray);
+        proc.setInt(param++, programYear);
+        proc.setIndicator(param++, flagReasonabilityTestsStale);
+        proc.setString(param++, user);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -1659,9 +2161,13 @@ public class CalculatorDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_CASH_MARGINS_IND_PROC, UPDATE_CASH_MARGINS_IND_PARAM, false);
 
@@ -1672,11 +2178,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(index++, userId);
       
       proc.execute();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -1698,9 +2216,13 @@ public class CalculatorDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_NON_PARTICIPANT_IND_PROC, UPDATE_NON_PARTICIPANT_IND_PARAM, false);
 
@@ -1711,11 +2233,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(index++, userId);
       
       proc.execute();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -1738,9 +2272,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_LATE_PARTICIPANT_IND_PROC, UPDATE_LATE_PARTICIPANT_IND_PARAM, false);
       
@@ -1751,11 +2289,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(index++, userId);
       
       proc.execute();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -1768,21 +2318,39 @@ public class CalculatorDAO extends OracleDAO {
 
       @SuppressWarnings("resource")
       Connection connection = getConnection(transaction);
+      boolean originalAutoCommit = true;
       final int paramCount = 4;
 
-      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + UPDATE_FARM_TYPE_PROC, paramCount, false); ) {
+      try {
+        originalAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
 
-        int param = 1;
-        proc.setInt(param++, scenario.getScenarioId());
-        proc.setInt(param++, scenario.getFarmingYear().getProgramYearId());
-        proc.setString(param++, farmType);
-        proc.setString(param++, user);
-        proc.execute();
+        try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+              + UPDATE_FARM_TYPE_PROC, paramCount, false); ) {
 
+          int param = 1;
+          proc.setInt(param++, scenario.getScenarioId());
+          proc.setInt(param++, scenario.getFarmingYear().getProgramYearId());
+          proc.setString(param++, farmType);
+          proc.setString(param++, user);
+          proc.execute();
+        }
+
+        connection.commit();
       } catch (SQLException e) {
+        try {
+          connection.rollback();
+        } catch (SQLException rollbackEx) {
+          e.addSuppressed(rollbackEx);
+        }
         logSqlException(e);
         handleException(e);
+      } finally {
+        try {
+          connection.setAutoCommit(originalAutoCommit);
+        } catch (SQLException ex) {
+          handleException(ex);
+        }
       }
 
   }
@@ -1797,22 +2365,40 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     final int paramCount = 5;
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_PY_LOCAL_RECEIVED_DATES_PROC, paramCount, false); ) {
-      
-      int param = 1;
-      proc.setInt(param++, scenario.getScenarioId());
-      proc.setInt(param++, scenario.getFarmingYear().getProgramYearId());
-      proc.setDate(param++, localStatementAReceivedDate);
-      proc.setDate(param++, localSupplementalReceivedDate);
-      proc.setString(param++, user);
-      proc.execute();
-      
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_PY_LOCAL_RECEIVED_DATES_PROC, paramCount, false); ) {
+        
+        int param = 1;
+        proc.setInt(param++, scenario.getScenarioId());
+        proc.setInt(param++, scenario.getFarmingYear().getProgramYearId());
+        proc.setDate(param++, localStatementAReceivedDate);
+        proc.setDate(param++, localSupplementalReceivedDate);
+        proc.setString(param++, user);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
   }
@@ -1825,9 +2411,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CREATE_ENW_ENROLMENT_PROC, CREATE_ENW_ENROLMENT_PARAM, false);
       
@@ -1885,12 +2475,23 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(param++, user);
       
       proc.execute();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -1902,9 +2503,13 @@ public class CalculatorDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_ENW_ENROLMENT_PROC, UPDATE_ENW_ENROLMENT_PARAM, false);
 
@@ -1963,11 +2568,22 @@ public class CalculatorDAO extends OracleDAO {
       proc.setString(param++, user);
       proc.execute();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -1979,34 +2595,52 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Integer personId = null;
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_PERSON_PROC, CREATE_PERSON_PARAM, Types.INTEGER);) {
-      
-      int param = 1;
-      proc.setString(param++, person.getAddressLine1());
-      proc.setString(param++, person.getAddressLine2());
-      proc.setString(param++, person.getCity());
-      proc.setString(param++, person.getCorpName());
-      proc.setString(param++, person.getCountry());
-      proc.setString(param++, person.getDaytimePhone());
-      proc.setString(param++, person.getEveningPhone());
-      proc.setString(param++, person.getFaxNumber());
-      proc.setString(param++, person.getCellNumber());
-      proc.setString(param++, person.getFirstName());
-      proc.setString(param++, person.getLastName());
-      proc.setString(param++, person.getPostalCode());
-      proc.setString(param++, person.getProvinceState());
-      proc.setString(param++, person.getEmailAddress());
-      proc.setString(param++, user);
-      proc.execute();
-      
-      personId = proc.getInt(1);
-      
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + CREATE_PERSON_PROC, CREATE_PERSON_PARAM, Types.BIGINT);) {
+        
+        int param = 1;
+        proc.setString(param++, person.getAddressLine1());
+        proc.setString(param++, person.getAddressLine2());
+        proc.setString(param++, person.getCity());
+        proc.setString(param++, person.getCorpName());
+        proc.setString(param++, person.getCountry());
+        proc.setString(param++, person.getDaytimePhone());
+        proc.setString(param++, person.getEveningPhone());
+        proc.setString(param++, person.getFaxNumber());
+        proc.setString(param++, person.getCellNumber());
+        proc.setString(param++, person.getFirstName());
+        proc.setString(param++, person.getLastName());
+        proc.setString(param++, person.getPostalCode());
+        proc.setString(param++, person.getProvinceState());
+        proc.setString(param++, person.getEmailAddress());
+        proc.setString(param++, user);
+        proc.execute();
+        
+        personId = (int)proc.getLong(1);
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return personId;
@@ -2020,33 +2654,51 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + UPDATE_PERSON_PROC, UPDATE_PERSON_PARAM, false);) {
-      
-      int param = 1;
-      proc.setInt(param++, person.getPersonId());
-      proc.setString(param++, person.getAddressLine1());
-      proc.setString(param++, person.getAddressLine2());
-      proc.setString(param++, person.getCity());
-      proc.setString(param++, person.getCorpName());
-      proc.setString(param++, person.getCountry());
-      proc.setString(param++, person.getDaytimePhone());
-      proc.setString(param++, person.getEveningPhone());
-      proc.setString(param++, person.getFaxNumber());
-      proc.setString(param++, person.getCellNumber());
-      proc.setString(param++, person.getFirstName());
-      proc.setString(param++, person.getLastName());
-      proc.setString(param++, person.getPostalCode());
-      proc.setString(param++, person.getProvinceState());
-      proc.setString(param++, person.getEmailAddress());
-      proc.setInt(param++, person.getRevisionCount());
-      proc.setString(param++, user);
-      proc.execute();
-      
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + UPDATE_PERSON_PROC, UPDATE_PERSON_PARAM, false);) {
+        
+        int param = 1;
+        proc.setInt(param++, person.getPersonId());
+        proc.setString(param++, person.getAddressLine1());
+        proc.setString(param++, person.getAddressLine2());
+        proc.setString(param++, person.getCity());
+        proc.setString(param++, person.getCorpName());
+        proc.setString(param++, person.getCountry());
+        proc.setString(param++, person.getDaytimePhone());
+        proc.setString(param++, person.getEveningPhone());
+        proc.setString(param++, person.getFaxNumber());
+        proc.setString(param++, person.getCellNumber());
+        proc.setString(param++, person.getFirstName());
+        proc.setString(param++, person.getLastName());
+        proc.setString(param++, person.getPostalCode());
+        proc.setString(param++, person.getProvinceState());
+        proc.setString(param++, person.getEmailAddress());
+        proc.setInt(param++, person.getRevisionCount());
+        proc.setString(param++, user);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -2058,29 +2710,47 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Integer clientId = null;
     Client client = participant.getClient();
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_CLIENT_PROC, CREATE_CLIENT_PARAM, Types.INTEGER);) {
-      
-      int param = 1;
-      proc.setInt(param++, client.getParticipantPin());
-      proc.setString(param++, client.getSin());
-      proc.setString(param++, client.getBusinessNumber());
-      proc.setString(param++, client.getTrustNumber());
-      proc.setString(param++, client.getParticipantClassCode());
-      proc.setInt(param++, client.getOwner().getPersonId());
-      proc.setInt(param++, client.getContact().getPersonId());
-      proc.setString(param++, user);
-      proc.execute();
-      
-      clientId = proc.getInt(1);
-      client.setClientId(clientId);
-      
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + CREATE_CLIENT_PROC, CREATE_CLIENT_PARAM, Types.BIGINT);) {
+        
+        int param = 1;
+        proc.setInt(param++, client.getParticipantPin());
+        proc.setString(param++, client.getSin());
+        proc.setString(param++, client.getBusinessNumber());
+        proc.setString(param++, client.getTrustNumber());
+        proc.setString(param++, client.getParticipantClassCode());
+        proc.setInt(param++, client.getOwner().getPersonId());
+        proc.setInt(param++, client.getContact().getPersonId());
+        proc.setString(param++, user);
+        proc.execute();
+        
+        clientId = (int)proc.getLong(1);
+        client.setClientId(clientId);
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return clientId;
@@ -2095,22 +2765,40 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Integer programYearId = null;
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + CREATE_PY_PROC, CREATE_PY_PARAM, Types.INTEGER);) {
-      
-      int param = 1;
-      proc.setInt(param++, clientId);
-      proc.setInt(param++, year);
-      proc.setString(param++, user);
-      proc.execute();
-      
-      programYearId = proc.getInt(1);
-      
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + CREATE_PY_PROC, CREATE_PY_PARAM, Types.BIGINT);) {
+        
+        int param = 1;
+        proc.setLong(param++, clientId == null ? null : clientId.longValue());
+        proc.setShort(param++, year == null ? null : year.shortValue());
+        proc.setString(param++, user);
+        proc.execute();
+        
+        programYearId = (int)proc.getLong(1);
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return programYearId;
@@ -2125,22 +2813,40 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Integer programYearVersionId = null;
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + CREATE_PYV_PROC, CREATE_PYV_PARAM, Types.INTEGER);) {
-      
-      int param = 1;
-      proc.setInt(param++, programYearId);
-      proc.setString(param++, municipalityCode);
-      proc.setString(param++, user);
-      proc.execute();
-      
-      programYearVersionId = proc.getInt(1);
-      
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + CREATE_PYV_PROC, CREATE_PYV_PARAM, Types.BIGINT);) {
+        
+        int param = 1;
+        proc.setInt(param++, programYearId);
+        proc.setString(param++, municipalityCode);
+        proc.setString(param++, user);
+        proc.execute();
+        
+        programYearVersionId = (int)proc.getLong(1);
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return programYearVersionId;
@@ -2156,24 +2862,42 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Integer scenarioId = null;
     
     final int paramCount = 4;
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + CREATE_SCENARIO_PROC, paramCount, Types.INTEGER); ) {
-      
-      int param = 1;
-      proc.setInt(param++, programYearVersionId);
-      proc.setString(param++, scenarioClassCode);
-      proc.setString(param++, scenarioCategoryCode);
-      proc.setString(param++, user);
-      proc.execute();
-      
-      scenarioId = proc.getInt(1);
-      
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + CREATE_SCENARIO_PROC, paramCount, Types.BIGINT); ) {
+        
+        int param = 1;
+        proc.setInt(param++, programYearVersionId);
+        proc.setString(param++, scenarioClassCode);
+        proc.setString(param++, scenarioCategoryCode);
+        proc.setString(param++, user);
+        proc.execute();
+        
+        scenarioId = (int)proc.getLong(1);
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return scenarioId;
@@ -2187,29 +2911,48 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + CREATE_PARTNER_PROC, CREATE_PARTNER_PARAM, false);) {
-      
-      for (FarmingOperationPartner p : partners) {
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + CREATE_PARTNER_PROC, CREATE_PARTNER_PARAM, false);) {
         
-        int param = 1;
-        proc.setBigDecimal(param++, p.getPartnerPercent());
-        proc.setInt(param++, p.getParticipantPin());
-        proc.setString(param++, p.getPartnerSin());
-        proc.setString(param++, p.getFirstName());
-        proc.setString(param++, p.getLastName());
-        proc.setString(param++, p.getCorpName());
-        proc.setInt(param++, p.getFarmingOperation().getFarmingOperationId());
-        proc.setString(param++, user);
+        for (FarmingOperationPartner p : partners) {
+          
+          int param = 1;
+          proc.setBigDecimal(param++, p.getPartnerPercent());
+          proc.setInt(param++, p.getParticipantPin());
+          proc.setString(param++, p.getPartnerSin());
+          proc.setString(param++, p.getFirstName());
+          proc.setString(param++, p.getLastName());
+          proc.setString(param++, p.getCorpName());
+          proc.setInt(param++, p.getFarmingOperation().getFarmingOperationId());
+          proc.setString(param++, user);
+          
+          proc.addBatch();
+        }
         
-        proc.addBatch();
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -2221,31 +2964,50 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + UPDATE_PARTNER_PROC, UPDATE_PARTNER_PARAM, false);) {
-      
-      for (FarmingOperationPartner p : partners) {
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + UPDATE_PARTNER_PROC, UPDATE_PARTNER_PARAM, false);) {
         
-        int param = 1;
-        proc.setInt(param++, p.getFarmingOperationPartnerId());
-        proc.setBigDecimal(param++, p.getPartnerPercent());
-        proc.setInt(param++, p.getParticipantPin());
-        proc.setString(param++, p.getPartnerSin());
-        proc.setString(param++, p.getFirstName());
-        proc.setString(param++, p.getLastName());
-        proc.setString(param++, p.getCorpName());
-        proc.setInt(param++, p.getFarmingOperation().getFarmingOperationId());
-        proc.setInt(param++, p.getRevisionCount());
-        proc.setString(param++, user);
+        for (FarmingOperationPartner p : partners) {
+          
+          int param = 1;
+          proc.setInt(param++, p.getFarmingOperationPartnerId());
+          proc.setBigDecimal(param++, p.getPartnerPercent());
+          proc.setInt(param++, p.getParticipantPin());
+          proc.setString(param++, p.getPartnerSin());
+          proc.setString(param++, p.getFirstName());
+          proc.setString(param++, p.getLastName());
+          proc.setString(param++, p.getCorpName());
+          proc.setInt(param++, p.getFarmingOperation().getFarmingOperationId());
+          proc.setInt(param++, p.getRevisionCount());
+          proc.setString(param++, user);
+          
+          proc.addBatch();
+        }
         
-        proc.addBatch();
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -2256,23 +3018,42 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + DELETE_PARTNER_PROC, DELETE_PARTNER_PARAM, false);) {
-      
-      for (FarmingOperationPartner partner : partners) {
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + DELETE_PARTNER_PROC, DELETE_PARTNER_PARAM, false);) {
         
-        int param = 1;
-        proc.setInt(param++, partner.getFarmingOperationPartnerId());
-        proc.setInt(param++, partner.getRevisionCount());
+        for (FarmingOperationPartner partner : partners) {
+          
+          int param = 1;
+          proc.setInt(param++, partner.getFarmingOperationPartnerId());
+          proc.setInt(param++, partner.getRevisionCount());
+          
+          proc.addBatch();
+        }
         
-        proc.addBatch();
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -2281,30 +3062,48 @@ public class CalculatorDAO extends OracleDAO {
   public List<FarmingOperationPartner> readAllPartners(Transaction transaction)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     List<FarmingOperationPartner> partners = new ArrayList<>();
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + READ_ALL_PARTNERS_PROC, READ_ALL_PARTNERS_PARAM, true)) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      proc.execute();
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + READ_ALL_PARTNERS_PROC, READ_ALL_PARTNERS_PARAM, true)) {
 
-      try(ResultSet rs = proc.getResultSet();) {
+        proc.execute();
 
-        while (rs.next()) {
-          FarmingOperationPartner p = new FarmingOperationPartner();
-          p.setParticipantPin(getInteger(rs, "Partnership_Pin"));
-          p.setPartnerPercent(rs.getBigDecimal("Partner_Percent"));
-          p.setFirstName(getString(rs, "First_Name"));
-          p.setLastName(getString(rs, "Last_Name"));
-          p.setCorpName(getString(rs, "Corp_Name"));
-          partners.add(p);
+        try(ResultSet rs = proc.getResultSet();) {
+
+          while (rs.next()) {
+            FarmingOperationPartner p = new FarmingOperationPartner();
+            p.setParticipantPin(getInteger(rs, "Partnership_Pin"));
+            p.setPartnerPercent(rs.getBigDecimal("Partner_Percent"));
+            p.setFirstName(getString(rs, "First_Name"));
+            p.setLastName(getString(rs, "Last_Name"));
+            p.setCorpName(getString(rs, "Corp_Name"));
+            partners.add(p);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return partners;
@@ -2318,23 +3117,41 @@ public class CalculatorDAO extends OracleDAO {
       final String user) throws DataAccessException {
 
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Integer newProgramYearVersionNumber = null;
 
     final int paramCount = 2;
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + COPY_SCENARIO_PYV_PROC, paramCount, Types.INTEGER);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int c = 1;
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + COPY_SCENARIO_PYV_PROC, paramCount, Types.BIGINT);) {
 
-      proc.setInt(c++, scenarioId);
-      proc.setString(c++, user);
+        int c = 1;
 
-      proc.execute();
-      newProgramYearVersionNumber = new Integer(proc.getInt(1));
+        proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
+        proc.setString(c++, user);
 
+        proc.execute();
+        newProgramYearVersionNumber = new Integer((int)proc.getLong(1));
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return newProgramYearVersionNumber;
@@ -2349,9 +3166,13 @@ public class CalculatorDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       final int paramCount = 4;
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPSERT_SCENARIO_CONFIG_PARAM_PROC, paramCount, false);
@@ -2371,12 +3192,22 @@ public class CalculatorDAO extends OracleDAO {
 
       proc.executeBatch();
       
-
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -2386,21 +3217,39 @@ public class CalculatorDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     Integer rowsCreated = null;
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + COPY_FORWARD_YEAR_CONFIG_PROC, COPY_FORWARD_YEAR_CONFIG_PARAM, Types.INTEGER);) {
-      
-      int param = 1;
-      proc.setInt(param++, programYear);
-      proc.setString(param++, user);
-      proc.execute();
-      
-      rowsCreated = proc.getInt(1);
-      
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + COPY_FORWARD_YEAR_CONFIG_PROC, COPY_FORWARD_YEAR_CONFIG_PARAM, Types.BIGINT);) {
+        
+        int param = 1;
+        proc.setShort(param++, programYear == null ? null : programYear.shortValue());
+        proc.setString(param++, user);
+        proc.execute();
+        
+        rowsCreated = (int)proc.getLong(1);
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return rowsCreated;
@@ -2417,16 +3266,34 @@ public class CalculatorDAO extends OracleDAO {
   throws DataAccessException {
     
     final int paramCount = 1;
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + DELETE_USER_SCENARIO_PROC, paramCount, false); ) {
-      
-      int param = 1;
-      proc.setInt(param++, scenarioId);
-      proc.execute();
-      
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + DELETE_USER_SCENARIO_PROC, paramCount, false); ) {
+        
+        int param = 1;
+        proc.setInt(param++, scenarioId);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -2441,16 +3308,34 @@ public class CalculatorDAO extends OracleDAO {
   throws DataAccessException {
     
     final int paramCount = 1;
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + DELETE_PIN_PROC, paramCount, false); ) {
-      
-      int param = 1;
-      proc.setInt(param++, participantPin);
-      proc.execute();
-      
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + DELETE_PIN_PROC, paramCount, false); ) {
+        
+        int param = 1;
+        proc.setInt(param++, participantPin);
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 

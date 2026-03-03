@@ -1,6 +1,7 @@
 create or replace function farms_search_pkg.search_imports(
     in in_search_by_class_code text,
-    in in_import_class_codes varchar[]
+    in in_import_class_codes varchar[],
+    in in_created_after_date date
 )
 returns refcursor
 language plpgsql
@@ -21,8 +22,9 @@ begin
         from farms.farm_import_versions iv
         join farms.farm_import_state_codes isc on isc.import_state_code = iv.import_state_code
         join farms.farm_import_class_codes icc on icc.import_class_code = iv.import_class_code
-        where ((in_search_by_class_code = 'Y' and iv.import_class_code = any(in_import_class_codes)))
-        or (in_search_by_class_code = 'N' and iv.import_class_code not in ('ENROL', 'XENROL', 'XCONTACT', 'XSTATE', 'TIP_REPORT', 'FIFO'))
+        where (((in_search_by_class_code = 'Y' and iv.import_class_code = any(in_import_class_codes)))
+        or (in_search_by_class_code = 'N' and iv.import_class_code not in ('ENROL', 'XENROL', 'XCONTACT', 'XSTATE', 'TIP_REPORT', 'FIFO')))
+        and iv.when_created > in_created_after_date
         order by when_updated desc;
     return v_cursor;
 end;

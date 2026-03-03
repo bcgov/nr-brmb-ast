@@ -18,8 +18,8 @@ begin
                    max(prev_fy_fmv.municipality_code) over (partition by prev_fy_fmv.inventory_item_code, prev_fy_fmv.crop_unit_code, prev_fy_fmv.program_year, prev_fy_fmv.period) mx_municipality_code,
                    prev_fy_fmv.average_price prev_fy_end_average_price
             from (
-                select distinct to_number(to_char(op.fiscal_year_start - interval '1 month', 'YYYY')) prev_fiscal_end_year,
-                       to_number(to_char(op.fiscal_year_start - interval '1 month', 'MM')) prev_fiscal_end_month,
+                select distinct to_char(op.fiscal_year_start - interval '1 month', 'YYYY')::numeric prev_fiscal_end_year,
+                       to_char(op.fiscal_year_start - interval '1 month', 'MM')::numeric prev_fiscal_end_month,
                        pyv.municipality_code,
                        x.inventory_item_code,
                        x.inventory_class_code,

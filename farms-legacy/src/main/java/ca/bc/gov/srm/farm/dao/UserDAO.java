@@ -25,7 +25,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
 
 public class UserDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_USER_PKG";
+  private static final String PACKAGE_NAME = "FARMS_USER_PKG";
 
   private static final String CREATE_USER_PROC = "CREATE_USER";
   private static final String UPDATE_USER_PROC = "UPDATE_USER";
@@ -44,34 +44,52 @@ public class UserDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + CREATE_USER_PROC, paramCount, false);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      for (FarmUser farmUser : farmUsers) {
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + CREATE_USER_PROC, paramCount, false);) {
 
-        int param = 1;
-        proc.setString(param++, farmUser.getUserGuid());
-        proc.setString(param++, farmUser.getSourceDirectory());
-        proc.setString(param++, farmUser.getAccountName());
-        proc.setString(param++, farmUser.getEmailAddress());
-        proc.setIndicator(param++, farmUser.getVerifierInd());
-        proc.setIndicator(param++, farmUser.getDeletedInd());
-        proc.setString(param++, user);
+        for (FarmUser farmUser : farmUsers) {
+
+          int param = 1;
+          proc.setString(param++, farmUser.getUserGuid());
+          proc.setString(param++, farmUser.getSourceDirectory());
+          proc.setString(param++, farmUser.getAccountName());
+          proc.setString(param++, farmUser.getEmailAddress());
+          proc.setIndicator(param++, farmUser.getVerifierInd());
+          proc.setIndicator(param++, farmUser.getDeletedInd());
+          proc.setString(param++, user);
+
+          if (farmUsers.size() > 1) {
+            proc.addBatch();
+          } else {
+            proc.execute();
+          }
+        }
 
         if (farmUsers.size() > 1) {
-          proc.addBatch();
-        } else {
-          proc.execute();
+          proc.executeBatch();
         }
       }
 
-      if (farmUsers.size() > 1) {
-        proc.executeBatch();
-      }
-
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -84,35 +102,53 @@ public class UserDAO extends OracleDAO {
     final int paramCount = 8;
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + UPDATE_USER_PROC, paramCount, false)) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      for (FarmUser farmUser : farmUsers) {
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + UPDATE_USER_PROC, paramCount, false)) {
 
-        int param = 1;
-        proc.setString(param++, farmUser.getUserId());
-        proc.setString(param++, farmUser.getUserGuid());
-        proc.setString(param++, farmUser.getSourceDirectory());
-        proc.setString(param++, farmUser.getAccountName());
-        proc.setString(param++, farmUser.getEmailAddress());
-        proc.setIndicator(param++, farmUser.getVerifierInd());
-        proc.setIndicator(param++, farmUser.getDeletedInd());
-        proc.setString(param++, user);
+        for (FarmUser farmUser : farmUsers) {
+
+          int param = 1;
+          proc.setLong(param++, farmUser.getUserId());
+          proc.setString(param++, farmUser.getUserGuid());
+          proc.setString(param++, farmUser.getSourceDirectory());
+          proc.setString(param++, farmUser.getAccountName());
+          proc.setString(param++, farmUser.getEmailAddress());
+          proc.setIndicator(param++, farmUser.getVerifierInd());
+          proc.setIndicator(param++, farmUser.getDeletedInd());
+          proc.setString(param++, user);
+
+          if (farmUsers.size() > 1) {
+            proc.addBatch();
+          } else {
+            proc.execute();
+          }
+        }
 
         if (farmUsers.size() > 1) {
-          proc.addBatch();
-        } else {
-          proc.execute();
+          proc.executeBatch();
         }
       }
 
-      if (farmUsers.size() > 1) {
-        proc.executeBatch();
-      }
-
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -126,28 +162,46 @@ public class UserDAO extends OracleDAO {
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + DELETE_USER_PROC, paramCount, false); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      for (String userGuid : userGuids) {
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "." + DELETE_USER_PROC, paramCount, false); ) {
 
-        int param = 1;
-        proc.setString(param++, userGuid);
+        for (String userGuid : userGuids) {
+
+          int param = 1;
+          proc.setString(param++, userGuid);
+
+          if (userGuids.size() > 1) {
+            proc.addBatch();
+          } else {
+            proc.execute();
+          }
+        }
 
         if (userGuids.size() > 1) {
-          proc.addBatch();
-        } else {
-          proc.execute();
+          proc.executeBatch();
         }
       }
 
-      if (userGuids.size() > 1) {
-        proc.executeBatch();
-      }
-
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -159,22 +213,40 @@ public class UserDAO extends OracleDAO {
     FarmUser farmUser = null;
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
-      
-      int param = 1;
-      proc.setString(param++, userGuid);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet() ) {
-        if (rs.next()) {
-          farmUser = buildFarmUser(rs);
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
+        
+        int param = 1;
+        proc.setString(param++, userGuid);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet() ) {
+          if (rs.next()) {
+            farmUser = buildFarmUser(rs);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return farmUser;
@@ -188,22 +260,40 @@ public class UserDAO extends OracleDAO {
     FarmUser farmUser = null;
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
-      
-      int param = 1;
-      proc.setInt(param++, userId);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet() ) {
-        if (rs.next()) {
-          farmUser = buildFarmUser(rs);
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
+        
+        int param = 1;
+        proc.setInt(param++, userId);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet() ) {
+          if (rs.next()) {
+            farmUser = buildFarmUser(rs);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return farmUser;
@@ -215,6 +305,7 @@ public class UserDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + GET_ALL_USERS_PROC;
     List<FarmUser> users = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     final int paramCount = 1;
     
     String deletedInd = null;
@@ -222,23 +313,40 @@ public class UserDAO extends OracleDAO {
       deletedInd = getIndicatorYN(isDeleted);
     }
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true)) {
-      
-      int param = 1;
-      proc.setString(param++, deletedInd);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet()) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-        while (rs.next()) {
-          FarmUser user = buildFarmUser(rs);
-          users.add(user);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true)) {
+        
+        int param = 1;
+        proc.setString(param++, deletedInd);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet()) {
+
+          while (rs.next()) {
+            FarmUser user = buildFarmUser(rs);
+            users.add(user);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return users;

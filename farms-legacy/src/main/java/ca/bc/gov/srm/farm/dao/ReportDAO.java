@@ -27,7 +27,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class ReportDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_REPORT_PKG";
+  private static final String PACKAGE_NAME = "FARMS_REPORT_PKG";
   
   private static final String NATIONAL_SURVEILLANCE_STRATEGY_PROC = "NATIONAL_SURVEILLANCE_STRATEGY";
   private static final int NATIONAL_SURVEILLANCE_STRATEGY_PARAM = 1;
@@ -45,7 +45,8 @@ public class ReportDAO extends OracleDAO {
       File outputFile)
       throws IOException, DataAccessException {
     @SuppressWarnings("resource")
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     
     String surveillanceStrategyProc = null;
     int surveillanceStrategyParam = 0;
@@ -56,21 +57,38 @@ public class ReportDAO extends OracleDAO {
       surveillanceStrategyProc = ANALYTICAL_SURVEILLANCE_STRATEGY_PROC;
       surveillanceStrategyParam = ANALYTICAL_SURVEILLANCE_STRATEGY_PARAM;
     }
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection,
-        PACKAGE_NAME + "." + surveillanceStrategyProc, surveillanceStrategyParam, true);) {
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection,
+          PACKAGE_NAME + "." + surveillanceStrategyProc, surveillanceStrategyParam, true);) {
+          
+        int param = 1;
+        proc.setShort(param++, year == null ? null : year.shortValue());
+        proc.execute();
         
-      int param = 1;
-      proc.setInt(param++, year);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet();) {
-        CSVWriter.writeOutputFile(headerLines, columnHeadings, columnFormats, outputFile, rs);
+        try(ResultSet rs = proc.getResultSet();) {
+          CSVWriter.writeOutputFile(headerLines, columnHeadings, columnFormats, outputFile, rs);
+        }
       }
-        
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 

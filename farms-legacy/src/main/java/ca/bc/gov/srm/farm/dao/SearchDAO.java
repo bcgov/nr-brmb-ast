@@ -32,7 +32,7 @@ import ca.bc.gov.srm.farm.ui.domain.dataimport.ImportSearchResult;
  */
 public class SearchDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_SEARCH_PKG";
+  private static final String PACKAGE_NAME = "FARMS_SEARCH_PKG";
 
   private static final String ACCOUNTS_PROC = "SEARCH_ACCOUNTS";
   
@@ -51,15 +51,19 @@ public class SearchDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + ACCOUNTS_PROC;
     List<AccountSearchResult> items = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 5;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       int param = 1;
-      proc.setString(param++, pin);
+      proc.setInt(param++, pin);
       proc.setString(param++, name);
       proc.setString(param++, city);
       proc.setString(param++, postalCode);
@@ -78,11 +82,22 @@ public class SearchDAO extends OracleDAO {
         items.add(result);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return items;
@@ -95,12 +110,16 @@ public class SearchDAO extends OracleDAO {
     throws DataAccessException {
     String procName = PACKAGE_NAME + "." + IMPORTS_PROC;
     List<ImportSearchResult> items = new ArrayList<>();
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 3;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       Array oracleArrayInventoryCodes = createStringOracleArray(transaction, importTypes);
 
@@ -151,11 +170,22 @@ public class SearchDAO extends OracleDAO {
         items.add(result);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return items;

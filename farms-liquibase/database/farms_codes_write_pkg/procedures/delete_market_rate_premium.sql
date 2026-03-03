@@ -4,12 +4,15 @@ create or replace procedure farms_codes_write_pkg.delete_market_rate_premium(
 )
 language plpgsql
 as $$
+declare
+    v_rows_affected  bigint := null;
 begin
     delete from farms.farm_market_rate_premium m
     where m.market_rate_premium_id = in_market_rate_premium_id
     and m.revision_count = in_revision_count;
 
-    if sql%rowcount <> 1 then
+    get diagnostics v_rows_affected = row_count;
+    if v_rows_affected = 0 then
         raise exception 'Invalid revision count';
     end if;
 end;

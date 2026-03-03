@@ -24,7 +24,7 @@ import ca.bc.gov.webade.dbpool.WrapperConnection;
 
 public class BenefitTriageDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_FIFO_PKG";
+  private static final String PACKAGE_NAME = "FARMS_FIFO_PKG";
   private static final String READ_FIFO_STATUS_BY_YEAR_PROC = "READ_FIFO_STATUS_BY_YEAR";
   private static final String READ_FIFO_CALCULATION_ITEMS_PROC = "READ_FIFO_CALCULATION_ITEMS";
 
@@ -33,33 +33,51 @@ public class BenefitTriageDAO extends OracleDAO {
 
     final int paramCount = 1;
     List<BenefitTriageStatus> triageStatusList = new ArrayList<>();
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(
-        connection, PACKAGE_NAME + "." + READ_FIFO_STATUS_BY_YEAR_PROC, paramCount, true);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      int param = paramCount;
-      proc.setInt(param++, year);
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(
+          connection, PACKAGE_NAME + "." + READ_FIFO_STATUS_BY_YEAR_PROC, paramCount, true);) {
 
-      try (ResultSet rs = proc.getResultSet();) {
+        int param = paramCount;
+        proc.setShort(param++, (short)year);
+        proc.execute();
 
-        while (rs.next()) {
-          BenefitTriageStatus triageStatus = new BenefitTriageStatus();
-          triageStatus.setParticipantPin(getInteger(rs, "participant_pin"));
-          triageStatus.setClientName(getString(rs, "client_name"));
-          triageStatus.setScenarioStateCodeDesc(getString(rs, "scenario_state_code_desc"));
-          triageStatus.setEstimatedBenefit(getDouble(rs, "estimated_benefit"));
-          triageStatus.setIsPaymentFile(getString(rs, "is_payment_file"));
-          triageStatus.setScenarioNumber(getInteger(rs, "scenario_number"));
+        try (ResultSet rs = proc.getResultSet();) {
 
-          triageStatusList.add(triageStatus);
+          while (rs.next()) {
+            BenefitTriageStatus triageStatus = new BenefitTriageStatus();
+            triageStatus.setParticipantPin(getInteger(rs, "participant_pin"));
+            triageStatus.setClientName(getString(rs, "client_name"));
+            triageStatus.setScenarioStateCodeDesc(getString(rs, "scenario_state_code_desc"));
+            triageStatus.setEstimatedBenefit(getDouble(rs, "estimated_benefit"));
+            triageStatus.setIsPaymentFile(getString(rs, "is_payment_file"));
+            triageStatus.setScenarioNumber(getInteger(rs, "scenario_number"));
+
+            triageStatusList.add(triageStatus);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return triageStatusList;
@@ -72,30 +90,48 @@ public class BenefitTriageDAO extends OracleDAO {
     final int paramCount = 0;
     List<BenefitTriageCalculationItem> triageCalculationItemList = new ArrayList<>();
     
-    Connection connection = getWrappedConnection(conn);
+    Connection connection = conn;
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(
-        connection, PACKAGE_NAME + "." + READ_FIFO_CALCULATION_ITEMS_PROC, paramCount, true);) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      proc.execute();
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(
+          connection, PACKAGE_NAME + "." + READ_FIFO_CALCULATION_ITEMS_PROC, paramCount, true);) {
 
-      try (ResultSet rs = proc.getResultSet();) {
+        proc.execute();
 
-        while (rs.next()) {
-          BenefitTriageCalculationItem triageStatus = new BenefitTriageCalculationItem();
-          triageStatus.setParticipantPin(getInteger(rs, "Participant_Pin"));
-          triageStatus.setProgramYear(getInteger(rs, "Program_Year"));
-          triageStatus.setCraProgramYearVersionId(getInteger(rs, "Cra_Pyv_Id"));
-          triageStatus.setCraScenarioId(getInteger(rs, "Cra_Scenario_Id"));
-          triageStatus.setCraScenarioNumber(getInteger(rs, "Cra_Scenario_Number"));
+        try (ResultSet rs = proc.getResultSet();) {
 
-          triageCalculationItemList.add(triageStatus);
+          while (rs.next()) {
+            BenefitTriageCalculationItem triageStatus = new BenefitTriageCalculationItem();
+            triageStatus.setParticipantPin(getInteger(rs, "Participant_Pin"));
+            triageStatus.setProgramYear(getInteger(rs, "Program_Year"));
+            triageStatus.setCraProgramYearVersionId(getInteger(rs, "Cra_Pyv_Id"));
+            triageStatus.setCraScenarioId(getInteger(rs, "Cra_Scenario_Id"));
+            triageStatus.setCraScenarioNumber(getInteger(rs, "Cra_Scenario_Number"));
+
+            triageCalculationItemList.add(triageStatus);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return triageCalculationItemList;

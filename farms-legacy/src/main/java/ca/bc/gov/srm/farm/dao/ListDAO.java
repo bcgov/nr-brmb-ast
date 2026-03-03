@@ -38,7 +38,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
 public class ListDAO extends OracleDAO {
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_WEBAPP_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WEBAPP_PKG";
 
   /**
    * @param   transaction  transaction
@@ -325,11 +325,15 @@ public class ListDAO extends OracleDAO {
     String qualifiedProcName = PACKAGE_NAME + "." + procName;
     List<CodeListView> rows = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     CallableStatement cstmt = null;
     ResultSet resultSet = null;
     final int paramCount = 0;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       cstmt = prepareFunction(connection, qualifiedProcName, paramCount);
       cstmt.execute();
       resultSet = (ResultSet) cstmt.getObject(1);
@@ -340,10 +344,21 @@ public class ListDAO extends OracleDAO {
         rows.add(new CodeListView(code, desc));
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       handleException(e);
     } finally {
       close(resultSet, cstmt);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return rows;
@@ -383,12 +398,16 @@ public class ListDAO extends OracleDAO {
     throws DataAccessException {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_LINE_ITEMS";
     List<LineItemListView> rows = new ArrayList<>();
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 2;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, qualifiedProcName, paramCount, true);
 
       int param = 1;
@@ -408,10 +427,21 @@ public class ListDAO extends OracleDAO {
         rows.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return rows;
@@ -428,12 +458,16 @@ public class ListDAO extends OracleDAO {
   throws DataAccessException {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_INVENTORY_VALID_ITEMS";
     List<InventoryItemListView> items = new ArrayList<>();
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 0;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, qualifiedProcName, paramCount, true);
       
       proc.execute();
@@ -456,11 +490,22 @@ public class ListDAO extends OracleDAO {
         
         items.add(item);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     
@@ -481,12 +526,16 @@ public class ListDAO extends OracleDAO {
       throws DataAccessException {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_SECTOR_DETAIL_CODES";
     List<SectorDetailCodeListView> items = new ArrayList<>();
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 0;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, qualifiedProcName, paramCount, true);
       
       proc.execute();
@@ -502,11 +551,22 @@ public class ListDAO extends OracleDAO {
         
         items.add(item);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     
@@ -538,11 +598,15 @@ public class ListDAO extends OracleDAO {
     String qualifiedProcName = PACKAGE_NAME + "." + "GET_VERIFIERS";
     List<UserListView> rows = new ArrayList<>();
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     CallableStatement cstmt = null;
     ResultSet resultSet = null;
     final int paramCount = 0;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       cstmt = prepareFunction(connection, qualifiedProcName, paramCount);
       cstmt.execute();
       resultSet = (ResultSet) cstmt.getObject(1);
@@ -555,10 +619,21 @@ public class ListDAO extends OracleDAO {
         rows.add(ulw);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       handleException(e);
     } finally {
       close(resultSet, cstmt);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return rows.toArray(new UserListView[rows.size()]);

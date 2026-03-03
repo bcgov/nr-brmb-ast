@@ -52,6 +52,9 @@ public final class BpuCsvRow {
 	/** document me * */
 	private Double yearMinus1Expense;
 
+  /** document me * */
+  private String fileLocation;
+
 	/**
 	 * @return the inventoryCode
 	 */
@@ -276,5 +279,18 @@ public final class BpuCsvRow {
     this.yearMinus1Expense = yearMinus1Expense;
   }
 
-	
+	/**
+   * @return the fileLocation
+   */
+  public String getFileLocation() {
+    return fileLocation;
+  }
+
+  /**
+   * @param fileLocation the fileLocation to set
+   */
+  public void setFileLocation(String fileLocation) {
+    this.fileLocation = fileLocation;
+  }
+
 }

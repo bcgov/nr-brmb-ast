@@ -29,6 +29,6 @@ begin
         return convert_from(v_clean::bytea, 'UTF8');
     end if;
 
-    return v_return_string;
+    return null;
 end;
 $$;

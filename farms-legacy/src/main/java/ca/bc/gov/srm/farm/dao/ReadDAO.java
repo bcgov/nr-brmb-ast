@@ -61,18 +61,13 @@ import ca.bc.gov.srm.farm.domain.codes.InventoryClassCodes;
 import ca.bc.gov.srm.farm.domain.enrolment.Enrolment;
 import ca.bc.gov.srm.farm.domain.enrolment.EnwEnrolment;
 import ca.bc.gov.srm.farm.util.DataParseUtils;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
-import oracle.jdbc.driver.OracleConnection;
 
 /**
  * @author dzwiers
  */
 public class ReadDAO {
 
-  private static final String NUM_COLLECTION_TYPE_NAME = "FARM_ID_TBL";
-  private static final String CODE_COLLECTION_TYPE_NAME = "FARM_CD_TBL";
-
-  private static final String PACKAGE_NAME = "FARM_READ_PKG";
+  private static final String PACKAGE_NAME = "FARMS_READ_PKG";
 
   private static final String READ_OPERATION_PROC = "READ_PYV_OP";
   private static final int READ_OPERATION_PARAM = 1;
@@ -171,12 +166,7 @@ public class ReadDAO {
    */
   public ReadDAO(final Connection c) {
     neverUse = c;
-    if (c instanceof WrapperConnection) {
-      WrapperConnection wc = (WrapperConnection) c;
-      this.conn = wc.getWrappedConnection();
-    } else {
-      this.conn = c;
-    }
+    this.conn = c;
   }
 
   /*
@@ -196,8 +186,12 @@ public class ReadDAO {
   public final Client readClient(final Integer pin) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_CLIENT_PROC, READ_CLIENT_PARAM, true);
 
@@ -275,10 +269,15 @@ public class ReadDAO {
         throw new SQLException("Too many Agristability Clients found.");
       }
 
+      conn.commit();
       return ac;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -298,14 +297,18 @@ public class ReadDAO {
       final Integer year) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_PROGRAM_YEAR_META_PROC, READ_PROGRAM_YEAR_META_PARAM, true);
 
       int c = 1;
       proc.setInt(c++, pin);
-      proc.setInt(c++, year);
+      proc.setShort(c++, year == null ? null : year.shortValue());
       proc.execute();
 
       rs = proc.getResultSet();
@@ -352,10 +355,15 @@ public class ReadDAO {
         l.add(pyv);
       }
 
+      conn.commit();
       return l;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -507,14 +515,18 @@ public class ReadDAO {
       final Integer scnum, String pMode) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_PROGRAM_YEAR_ID_PROC, READ_PROGRAM_YEAR_ID_PARAM, true);
 
       int c = 1;
       proc.setInt(c++, pin);
-      proc.setInt(c++, year);
+      proc.setShort(c++, year == null ? null : year.shortValue());
       proc.setInt(c++, scnum);
       proc.setString(c++, pMode);
       proc.execute();
@@ -545,10 +557,15 @@ public class ReadDAO {
         return l.toArray(new int[l.size()][]);
       }
 
+      conn.commit();
       return null;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -566,8 +583,12 @@ public class ReadDAO {
       throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_PROGRAM_YEAR_VER_PROC, READ_PROGRAM_YEAR_VER_PARAM, true);
 
@@ -582,9 +603,14 @@ public class ReadDAO {
         buildPyv(rs, sc);
       }
 
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -603,8 +629,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_OPERATION_PROC, READ_OPERATION_PARAM, true);
 
@@ -659,11 +689,16 @@ public class ReadDAO {
         }
         l.add(op);
       }
-      
+
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -683,8 +718,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_OPERATION_PART_PROC, READ_OPERATION_PART_PARAM, true);
 
@@ -720,10 +759,15 @@ public class ReadDAO {
         l.add(op);
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -743,8 +787,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_PRODUCTION_INSURANCE_PROC, READ_PRODUCTION_INSURANCE_PARAM,
           true);
@@ -777,10 +825,15 @@ public class ReadDAO {
         l.add(op);
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -801,8 +854,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_SCENARIO_PROC, READ_SCENARIO_PARAM, true);
 
@@ -873,8 +930,13 @@ public class ReadDAO {
         sc.setIsInCombinedFarmInd(false);
       }
 
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -900,25 +962,38 @@ public class ReadDAO {
   public final String[] readVerificationNotes(Integer pyId) throws SQLException {
     final int numberOfNotes = 3;
     String verificationNotes[] = new String[numberOfNotes];
+    boolean originalAutoCommit = true;
 
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-        PACKAGE_NAME + "." + READ_VERIFICATION_NOTES, READ_VERIFICATION_NOTES_PARAM, true);) {
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setInt(c, pyId);
-      proc.execute();
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+          PACKAGE_NAME + "." + READ_VERIFICATION_NOTES, READ_VERIFICATION_NOTES_PARAM, true);) {
 
-      try(ResultSet rs = proc.getResultSet();) {
+        int c = 1;
+        proc.setInt(c, pyId);
+        proc.execute();
 
-        if (rs.next()) {
-          c = 1;
-          verificationNotes[c-1] = getString(rs, c++);
-          verificationNotes[c-1] = getString(rs, c++);
-          verificationNotes[c-1] = getString(rs, c++);
+        try(ResultSet rs = proc.getResultSet();) {
+
+          if (rs.next()) {
+            c = 1;
+            verificationNotes[c-1] = getString(rs, c++);
+            verificationNotes[c-1] = getString(rs, c++);
+            verificationNotes[c-1] = getString(rs, c++);
+          }
         }
+
       }
 
+      conn.commit();
       return verificationNotes;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
+    } finally {
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -939,8 +1014,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_WHOLE_FARM_PROC, READ_WHOLE_FARM_PARAM, true);
 
@@ -973,10 +1052,15 @@ public class ReadDAO {
         l.add(wp);
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -996,8 +1080,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_CLAIM_PROC,
           READ_CLAIM_PARAM, true);
 
@@ -1091,10 +1179,15 @@ public class ReadDAO {
         r.put(scId, cl);
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -1113,8 +1206,12 @@ public class ReadDAO {
     
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_STATE_AUDITS_PROC,
           READ_STATE_AUDITS_PARAM, true);
       
@@ -1141,11 +1238,16 @@ public class ReadDAO {
         
         audits.add(ssa);
       }
-      
+
+      conn.commit();
       return audits;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       
       close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -1164,8 +1266,12 @@ public class ReadDAO {
   	List<ScenarioLog> logs = new ArrayList<>();
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(
       		conn, 
       		PACKAGE_NAME + "." + READ_SC_LOGS_PROC,
@@ -1187,8 +1293,14 @@ public class ReadDAO {
         
         logs.add(log);
       }
+
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
     
     return logs;
@@ -1210,8 +1322,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_TOT_MGN_PROC, READ_TOT_MGN_PARAM, true);
 
@@ -1282,9 +1398,14 @@ public class ReadDAO {
         r.put(scId, mt);
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -1302,8 +1423,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_MARGIN_PROC, READ_MARGIN_PARAM, true);
 
@@ -1354,12 +1479,17 @@ public class ReadDAO {
         r.put(opId, m);
       }
 
+      conn.commit();
       if(r.size() > 0) {
         return r;
       }
       return null;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -1380,8 +1510,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_CROP_UNIT_CONVERSIONS_PROC,
           READ_CROP_UNIT_CONVERSIONS_PARAM, true);
 
@@ -1426,9 +1560,14 @@ public class ReadDAO {
         
       }
 
+      conn.commit();
       return invCropConversions;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
         close(rs, proc);
+        conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -1452,8 +1591,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_INV_PROC,
           READ_INV_PARAM, true);
 
@@ -1641,10 +1784,15 @@ public class ReadDAO {
         inventoryItem.setRevisionCount(getInteger(rs, c++));
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -1658,10 +1806,14 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     HashMap<String, List<FmvFullResult>> r;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_OP_FMV_PROC, READ_OP_FMV_PARAM, true);
 
@@ -1672,9 +1824,22 @@ public class ReadDAO {
       rs = proc.getResultSet();
       
       r = readFMVResultSet(opId, rs);
-    } finally {
 
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
     
     readFairMarketValuePreviousYear(opId, r);
@@ -1697,11 +1862,15 @@ public class ReadDAO {
       String cropUnitCode) throws SQLException {
     
     DAOStoredProcedure proc = null;
+    boolean originalAutoCommit = true;
     ResultSet rs = null;
     
     HashMap<String, List<FmvFullResult>> r;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_OP_SINGLE_FMV_PROC, READ_OP_SINGLE_FMV_PARAM, true);
       
@@ -1714,9 +1883,22 @@ public class ReadDAO {
       rs = proc.getResultSet();
       
       r = readFMVResultSet(opId, rs);
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
-      
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
     
     readFairMarketValuePreviousYear(opId, r);
@@ -1733,8 +1915,12 @@ public class ReadDAO {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     Integer programYearId = null;
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PROC, READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PARAM, true);
       
@@ -1748,10 +1934,22 @@ public class ReadDAO {
       while (rs.next()) {
         programYearId = getInteger(rs, 1);
       }
-      
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
-      
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
     return programYearId;
   }
@@ -1820,9 +2018,13 @@ public class ReadDAO {
   private void readFairMarketValuePreviousYear(Integer opId, HashMap<String, List<FmvFullResult>> r) throws SQLException {
     
     DAOStoredProcedure proc = null;
+    boolean originalAutoCommit = true;
     ResultSet rs = null;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn,
           PACKAGE_NAME + "." + READ_OP_FMV_PREV_YEAR_PROC, READ_OP_FMV_PREV_YEAR_PARAM, true);
       
@@ -1865,9 +2067,22 @@ public class ReadDAO {
               null, null, prevYearEndPrice ));
         }
       }
-      
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
   
@@ -2029,8 +2244,12 @@ public class ReadDAO {
     final int paramCount = 2;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_PUC_PROC,
           paramCount, true);
 
@@ -2097,10 +2316,15 @@ public class ReadDAO {
         }
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -2124,8 +2348,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_IE_PROC,
           READ_IE_PARAM, true);
 
@@ -2136,7 +2364,7 @@ public class ReadDAO {
       Array oracleArrayScenarioIds = createNumbersOracleArray(scenarioIds);
       proc.setArray(c++, oracleArrayScenarioIds);
 
-      proc.setInt(c++, programYear);
+      proc.setShort(c++, (short) programYear);
       proc.setDate(c++, verifiedDate);
       proc.execute();
 
@@ -2195,10 +2423,15 @@ public class ReadDAO {
         l.add(ie);
       }
 
+      conn.commit();
       return r;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
 
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -2354,8 +2587,12 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       Array oracleArrayInventoryCodes = createStringOracleArray(pInvCodes);
       Array oracleArrayStructureGroupCodes = createStringOracleArray(pStructCodes);
       
@@ -2363,11 +2600,11 @@ public class ReadDAO {
           + READ_BPU_ALL_PROC, READ_BPU_ALL_PARAM, true);
 
       int c = 1;
-      proc.setInt(c++, scid);
+      proc.setLong(c++, scid == null ? null : scid.longValue());
       proc.setArray(c++, oracleArrayInventoryCodes);
       proc.setArray(c++, oracleArrayStructureGroupCodes);
 
-      proc.setInt(c++, programYear);
+      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
       proc.execute();
 
       rs = proc.getResultSet();
@@ -2387,10 +2624,15 @@ public class ReadDAO {
       if(result[0] != null) {
         addZeroValueCodes(result[0], programYear);
       }
-      
+
+      conn.commit();
       return result;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
     	close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -2456,8 +2698,12 @@ public class ReadDAO {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     final int paramCount = 2;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_BPU_XREF_PROC, paramCount, true);
 
@@ -2478,13 +2724,27 @@ public class ReadDAO {
         processBpuResults(rs, r1, r2);
       }
 
+      conn.commit();
+
       @SuppressWarnings("unchecked")
       HashMap<String, BasePricePerUnit>[] result = new HashMap[2];
       result[0] = r1.size() > 0 ? r1 : null;
       result[1] = r2.size() > 0 ? r2 : null;
       return result;
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
     	close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -2553,10 +2813,14 @@ public class ReadDAO {
 
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     Date cobGenerationDate = null;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_COB_GEN_DATE_PROC, READ_COB_GEN_DATE_PARAM, true);
 
@@ -2571,9 +2835,14 @@ public class ReadDAO {
         cobGenerationDate = getDate(rs, c++);
       }
 
+      conn.commit();
       return cobGenerationDate;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -2590,16 +2859,20 @@ public class ReadDAO {
     
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     Enrolment e = null;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_ENROLMENT_PROC, READ_ENROLMENT_PARAM, true);
       
       int c = 1;
       proc.setInt(c++, pin);
-      proc.setInt(c++, enrolmentYear);
+      proc.setShort(c++, enrolmentYear == null ? null : enrolmentYear.shortValue());
       proc.execute();
       
       rs = proc.getResultSet();
@@ -2631,10 +2904,15 @@ public class ReadDAO {
         e.setIsCreateTaskInBarn(getIndicator(rs, c++));
         e.setRevisionCount(getInteger(rs, c++));
       }
-      
+
+      conn.commit();
       return e;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
   
@@ -2645,15 +2923,19 @@ public class ReadDAO {
     
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
     
     EnwEnrolment e = null;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_ENW_ENROLMENT_PROC, READ_ENW_ENROLMENT_PARAM, true);
       
       int c = 1;
-      proc.setInt(c++, scenarioId);
+      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
       proc.execute();
       
       rs = proc.getResultSet();
@@ -2713,10 +2995,15 @@ public class ReadDAO {
         e.setEnrolmentCalculationTypeCode(getString(rs, c++));
         e.setRevisionCount(getInteger(rs, c++));
       }
-      
+
+      conn.commit();
       return e;
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
 
@@ -2733,8 +3020,12 @@ public class ReadDAO {
   public final List<CombinedFarmClient> readCombinedFarmClients(final Integer combinedFarmNumber) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_COMBINED_FARM_CLIENTS_PROC, READ_COMBINED_FARM_CLIENTS_PARAM, true);
 
@@ -2764,10 +3055,23 @@ public class ReadDAO {
         l.add(cfc);
       }
 
-      return l;
-    } finally {
+      conn.commit();
 
+      return l;
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
       close(rs, proc);
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -2779,8 +3083,12 @@ public class ReadDAO {
   public final void readFarmType(Scenario scenario) throws SQLException {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
           + READ_FARM_TYPE_PROC, READ_FARM_TYPE_PARAM, true);
 
@@ -2795,8 +3103,13 @@ public class ReadDAO {
         scenario.setFarmTypeCodeDescription(getString(rs, c++));
       }
 
+      conn.commit();
+    } catch (SQLException ex) {
+      conn.rollback();
+      throw ex;
     } finally {
       close(rs, proc);
+      conn.setAutoCommit(originalAutoCommit);
     }
   }
    
@@ -2810,28 +3123,13 @@ public class ReadDAO {
     }
   }
 
-  protected OracleConnection getOracleConnection() {
-    OracleConnection oracleConnection = (OracleConnection) conn;
-    return oracleConnection;
-  }
-
   @SuppressWarnings("resource")
   protected Array createStringOracleArray(List<String> values) throws SQLException {
-    return getOracleConnection().createOracleArray(CODE_COLLECTION_TYPE_NAME, values.toArray());
-  }
-  
-  @SuppressWarnings("resource")
-  protected Array createNumbersOracleArray(List<Integer> values) throws SQLException {
-    return getOracleConnection().createOracleArray(NUM_COLLECTION_TYPE_NAME, values.toArray());
-  }
-
-  @SuppressWarnings("resource")
-  protected Array createCodesOracleArray(String[] values) throws SQLException {
-    return getOracleConnection().createOracleArray(CODE_COLLECTION_TYPE_NAME, values);
+    return conn.createArrayOf("varchar", values.toArray());
   }
   
   @SuppressWarnings("resource")
   protected Array createNumbersOracleArray(Integer[] values) throws SQLException {
-    return getOracleConnection().createOracleArray(NUM_COLLECTION_TYPE_NAME, values);
+    return conn.createArrayOf("numeric", values);
   }
 }

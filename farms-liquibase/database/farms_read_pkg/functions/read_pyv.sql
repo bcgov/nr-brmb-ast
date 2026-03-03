@@ -14,7 +14,7 @@ begin
                py.assigned_to_user_guid,
                py.assigned_to_userid,
                py.revision_count py_revision_count,
-               py.who_created py_create_user,
+               py.when_created py_when_created,
 
                pyv.program_year_version_id,
                pyv.program_year_version_number,

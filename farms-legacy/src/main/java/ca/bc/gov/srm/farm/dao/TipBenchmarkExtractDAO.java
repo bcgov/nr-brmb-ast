@@ -13,6 +13,7 @@ package ca.bc.gov.srm.farm.dao;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -35,7 +36,7 @@ public final class TipBenchmarkExtractDAO extends OracleDAO {
 
   private Logger logger = LoggerFactory.getLogger(TipBenchmarkExtractDAO.class);
 
-  private static final String PACKAGE_NAME = "FARM_TIP_USER_PKG";
+  private static final String PACKAGE_NAME = "FARMS_TIP_USER_PKG";
   
   private static final String READ_TIP_BENCHMARK_YEARS_PROC = "Read_Tip_Benchmark_Years";
   private static final String READ_TIP_BENCHMARK_EXPENSES_PROC = "Read_Tip_Benchmark_Expenses";
@@ -76,31 +77,51 @@ public final class TipBenchmarkExtractDAO extends OracleDAO {
       procName = READ_TIP_INDIVIDUAL_EXPENSES_PROC;
       columnFormats = getIndividualExpensesFormats();
     }
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + procName, paramCount, true);
-        FileWriter osw = new FileWriter(outFilePath.toFile());) {
-      
-      CSVWriter writer = new CSVWriter(osw, CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
-      
-      // All procs have the same parameters
-      int index = 1;
-      proc.setInt(index++, programYear);
-      proc.setString(index++, farmType3Name);
-      proc.setString(index++, farmType2Name);
-      proc.setString(index++, farmType1Name);
-      proc.setDouble(index++, incomeRangeLow);
-      proc.setDouble(index++, incomeRangeHigh);
-      proc.execute();
 
-      try(ResultSet rs = proc.getResultSet(); ) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + procName, paramCount, true);
+          FileWriter osw = new FileWriter(outFilePath.toFile());) {
         
-        int recordCount = writer.writeAll(rs, true, columnFormats);
-        logger.debug(">exportDataToFile " + name + " - recordCount: " + recordCount);
+        CSVWriter writer = new CSVWriter(osw, CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
         
-        writer.flush();
-        osw.flush();
+        // All procs have the same parameters
+        int index = 1;
+        proc.setShort(index++, programYear == null ? null : programYear.shortValue());
+        proc.setString(index++, farmType3Name);
+        proc.setString(index++, farmType2Name);
+        proc.setString(index++, farmType1Name);
+        proc.setBigDecimal(index++, incomeRangeLow == null ? null : BigDecimal.valueOf(incomeRangeLow));
+        proc.setBigDecimal(index++, incomeRangeHigh == null ? null : BigDecimal.valueOf(incomeRangeHigh));
+        proc.execute();
+
+        try(ResultSet rs = proc.getResultSet(); ) {
+          
+          int recordCount = writer.writeAll(rs, true, columnFormats);
+          logger.debug(">exportDataToFile " + name + " - recordCount: " + recordCount);
+          
+          writer.flush();
+          osw.flush();
+        }
       }
-      
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
     
     LoggingUtils.logMethodEnd(logger);

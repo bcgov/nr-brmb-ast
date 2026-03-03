@@ -16,7 +16,7 @@ begin
                pe.program_enrolment_id,
                pe.enrolment_year,
                pe.enrolment_fee,
-               pe.enrolment_date,
+               pe.generated_date,
                pe.contribution_margin_average,
                pe.margin_year_minus_2,
                pe.margin_year_minus_3,

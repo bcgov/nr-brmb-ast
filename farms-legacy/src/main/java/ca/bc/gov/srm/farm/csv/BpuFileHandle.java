@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public final class BpuFileHandle extends FileHandle {
 	/** NUM_COLS. */
-  private static final int NUM_COLS = 16;
+  private static final int NUM_COLS = 17;
 
   /**
    * Parses and filters a file based on the path and pin set provided.
@@ -87,6 +87,7 @@ public final class BpuFileHandle extends FileHandle {
     row.setYearMinus3Expense(ParseUtils.dbl(cols[index++].trim()));
     row.setYearMinus2Expense(ParseUtils.dbl(cols[index++].trim()));
     row.setYearMinus1Expense(ParseUtils.dbl(cols[index++].trim()));
+    row.setFileLocation(cols[index++].trim());
 
     return row;
   }
@@ -136,6 +137,7 @@ public final class BpuFileHandle extends FileHandle {
     headers.add("YEAR_MINUS_3_EXPENSE");
     headers.add("YEAR_MINUS_2_EXPENSE");
     headers.add("YEAR_MINUS_1_EXPENSE");
+    headers.add("FILE_LOCATION");
 
     return headers;
   }

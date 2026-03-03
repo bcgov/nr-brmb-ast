@@ -26,6 +26,9 @@ public class IvprCsvRow {
     /** document me * */
     private Double premiumRate;
 
+    /** document me * */
+    private String fileLocation;
+
     /**
      * @return the programYear
      */
@@ -94,5 +97,19 @@ public class IvprCsvRow {
      */
     public void setPremiumRate(final Double premiumRate) {
         this.premiumRate = premiumRate;
+    }
+
+    /**
+     * @return the fileLocation
+     */
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
+    /**
+     * @param fileLocation the fileLocation to set
+     */
+    public void setFileLocation(final String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 }

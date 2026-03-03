@@ -56,7 +56,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
 public class CodesReadDAO extends OracleDAO {
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_CODES_READ_PKG";
+  private static final String PACKAGE_NAME = "FARMS_CODES_READ_PKG";
 
 
   // Line Item procs
@@ -230,13 +230,16 @@ public class CodesReadDAO extends OracleDAO {
       final String code)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<Code> codes = null;
     String procName = getCodeTableReadProcName(codeTable);
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + procName, READ_GENERIC_CODES_PARAM, true);
@@ -260,11 +263,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -294,19 +308,22 @@ public class CodesReadDAO extends OracleDAO {
       final Integer lineItem)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<LineItemCode> codes = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_LINE_ITEMS_PROC, READ_LINE_ITEMS_PARAM, true);
 
       int param = 1;
-      proc.setInt(param++, year);
-      proc.setInt(param++, lineItem);
+      proc.setShort(param++, year == null ? null : year.shortValue());
+      proc.setShort(param++, lineItem == null ? null : lineItem.shortValue());
       proc.execute();
 
       rs = proc.getResultSet();
@@ -343,11 +360,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -372,18 +400,21 @@ public class CodesReadDAO extends OracleDAO {
       final String cropUnitCode)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<FMV> fmvs = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FMV_PROC, READ_FMV_PARAM, true);
 
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.setString(param++, inventoryItemCode);
       proc.setString(param++, municipalityCode);
       proc.setString(param++, cropUnitCode);
@@ -445,11 +476,22 @@ public class CodesReadDAO extends OracleDAO {
         periods[periodIndex] = period;
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return fmvs;
@@ -476,18 +518,21 @@ public class CodesReadDAO extends OracleDAO {
       final String cropUnitDescriptionFilter)
           throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<String> fmvExportRecords = new ArrayList<>();
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + EXPORT_FMV_PROC, EXPORT_FMV_PARAM, true);
       
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.setString(param++, inventoryItemCodeFilter);
       proc.setString(param++, inventoryItemDescriptionFilter);
       proc.setString(param++, municipalityDescriptionFilter);
@@ -501,12 +546,23 @@ public class CodesReadDAO extends OracleDAO {
         String exportRecord = getString(rs, 1);
         fmvExportRecords.add(exportRecord);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return fmvExportRecords;
@@ -525,18 +581,21 @@ public class CodesReadDAO extends OracleDAO {
       final Integer year)
           throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<String> fmvExportRecords = new ArrayList<>();
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + EXPORT_MISSING_FMV_PROC, EXPORT_MISSING_FMV_PARAM, true);
       
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.execute();
       
       rs = proc.getResultSet();
@@ -546,12 +605,23 @@ public class CodesReadDAO extends OracleDAO {
         String exportRecord = getString(rs, 1);
         fmvExportRecords.add(exportRecord);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return fmvExportRecords;
@@ -570,12 +640,15 @@ public class CodesReadDAO extends OracleDAO {
       final String code)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<MunicipalityCode> codes = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_MUNICIPALITY_CODES_PROC, READ_MUNICIPALITY_CODES_PARAM, true);
@@ -599,11 +672,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -622,13 +706,16 @@ public class CodesReadDAO extends OracleDAO {
       final String code)
   throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     Map<String, List<String>> muniOfficeCodes = new HashMap<>();
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_MUNICIPALITY_OFFICE_CODES_PROC, READ_MUNICIPALITY_OFFICE_CODES_PARAM, true);
       
@@ -649,12 +736,23 @@ public class CodesReadDAO extends OracleDAO {
         }
         officeCodes.add(roc);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return muniOfficeCodes;
@@ -675,18 +773,21 @@ public class CodesReadDAO extends OracleDAO {
   public List<BPU> readBPUs(final Transaction transaction, final Integer year)
   throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<BPU> bpus = new ArrayList<>();
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_BPU_PROC, READ_BPU_PARAM, true);
 
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.execute();
 
       rs = proc.getResultSet();
@@ -734,11 +835,22 @@ public class CodesReadDAO extends OracleDAO {
         yearIndex++;
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return bpus;
@@ -763,18 +875,21 @@ public class CodesReadDAO extends OracleDAO {
       final String municipalityDescriptionFilter)
           throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<String> bpuExportRecords = new ArrayList<>();
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + EXPORT_BPU_PROC, EXPORT_BPU_PARAM, true);
       
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.setString(param++, inventoryItemCodeFilter);
       proc.setString(param++, inventoryItemDescriptionFilter);
       proc.setString(param++, municipalityDescriptionFilter);
@@ -787,12 +902,23 @@ public class CodesReadDAO extends OracleDAO {
         String exportRecord = getString(rs, 1);
         bpuExportRecords.add(exportRecord);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return bpuExportRecords;
@@ -811,18 +937,21 @@ public class CodesReadDAO extends OracleDAO {
       final Integer year)
           throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<String> bpuExportRecords = new ArrayList<>();
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + EXPORT_MISSING_BPU_PROC, EXPORT_MISSING_BPU_PARAM, true);
       
       int param = 1;
-      proc.setInt(param++, year);
+      proc.setShort(param++, year == null ? null : year.shortValue());
       proc.execute();
       
       rs = proc.getResultSet();
@@ -832,12 +961,23 @@ public class CodesReadDAO extends OracleDAO {
         String exportRecord = getString(rs, 1);
         bpuExportRecords.add(exportRecord);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return bpuExportRecords;
@@ -856,13 +996,16 @@ public class CodesReadDAO extends OracleDAO {
       final String code)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<InventoryItemCode> codes = null;
     Map<String, InventoryItemCode> codesMap = new HashMap<>();
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_INVENTORY_ITEM_CODES_PROC, READ_INVENTORY_ITEM_CODES_PARAM, true);
@@ -890,22 +1033,35 @@ public class CodesReadDAO extends OracleDAO {
         codesMap.put(itemCode, item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_INVENTORY_ITEM_DETAILS_PROC, READ_INVENTORY_ITEM_DETAILS_PARAM, true);
       
       Integer programYearParam = null;
       int param = 1;
       proc.setString(param++, code);
-      proc.setInt(param++, programYearParam);
+      proc.setShort(param++, programYearParam == null ? null : programYearParam.shortValue());
       proc.execute();
       
       rs = proc.getResultSet();
@@ -932,12 +1088,23 @@ public class CodesReadDAO extends OracleDAO {
         InventoryItemCode item = codesMap.get(itemCode);
         item.getDetails().put(programYear, detail);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -960,12 +1127,15 @@ public class CodesReadDAO extends OracleDAO {
       final Integer commodityXrefId)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<InventoryXref> codes = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_INVENTORY_XREFS_PROC, READ_INVENTORY_XREFS_PARAM, true);
@@ -973,7 +1143,7 @@ public class CodesReadDAO extends OracleDAO {
       int param = 1;
       proc.setString(param++, inventoryClassCode);
       proc.setString(param++, inventoryItemCode);
-      proc.setInt(param++, commodityXrefId);
+      proc.setLong(param++, commodityXrefId == null ? null : commodityXrefId.longValue());
       proc.execute();
 
       rs = proc.getResultSet();
@@ -995,11 +1165,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -1018,12 +1199,15 @@ public class CodesReadDAO extends OracleDAO {
       final Long id)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<MarketRatePremium> codes = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_MARKET_RATE_PREMIUMS_PROC, READ_MARKET_RATE_PREMIUMS_PARAM, true);
@@ -1049,11 +1233,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return codes;
@@ -1072,12 +1267,15 @@ public class CodesReadDAO extends OracleDAO {
       final String code)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<StructureGroupCode> codes = null;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_STRUCTURE_GROUP_CODES_PROC, READ_STRUCTURE_GROUP_CODES_PARAM, true);
@@ -1103,11 +1301,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return codes;
@@ -1124,13 +1333,16 @@ public class CodesReadDAO extends OracleDAO {
   public List<Integer> readProgramYears(final Transaction transaction)
           throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<Integer> programYears = null;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_PROGRAM_YEARS_PROC, READ_PROGRAM_YEARS_PARAM, true);
       
@@ -1145,12 +1357,23 @@ public class CodesReadDAO extends OracleDAO {
         
         programYears.add(year);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return programYears;
@@ -1169,12 +1392,15 @@ public class CodesReadDAO extends OracleDAO {
       final String inventoryItemCode)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<CropUnitConversion> cropUnitConversions = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_CROP_UNIT_CONVERSIONS_PROC, READ_CROP_UNIT_CONVERSIONS_PARAM, true);
@@ -1230,11 +1456,22 @@ public class CodesReadDAO extends OracleDAO {
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return cropUnitConversions;
@@ -1249,12 +1486,15 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<FruitVegTypeCode> readFruitVegCodes(final Transaction transaction) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<FruitVegTypeCode> codes = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FRUIT_VEG_CODES_PROC, READ_FRUIT_VEG_CODES_PARAM, true);
@@ -1275,11 +1515,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -1294,12 +1545,15 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<CommodityTypeCode> readCommodityTypeCodes(final Transaction transaction) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<CommodityTypeCode> codes = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_COMMODITY_TYPE_CODES_PROC, READ_COMMODITY_TYPE_CODES_PARAM, true);
@@ -1316,11 +1570,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -1335,12 +1600,15 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public Double readVarianceLimitForFruitVegCode(final FruitVegTypeCode fruitVegCode, final Transaction transaction) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     Double varianceLimit = 0.0;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_VARIANCE_LIMIT_FOR_FRUIT_VEG_CODE_PROC, READ_VARIANCE_LIMIT_FOR_FRUIT_VEG_CODE_PARAM, true);
@@ -1355,11 +1623,22 @@ public class CodesReadDAO extends OracleDAO {
         varianceLimit = getDouble(rs,"");
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return varianceLimit;
@@ -1370,13 +1649,16 @@ public class CodesReadDAO extends OracleDAO {
   public boolean checkFruitVegCodeInUse(final FruitVegTypeCode fruitVegCode, final Transaction transaction) throws DataAccessException {
     boolean inUse = false;
   
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_FRUIT_VEG_CODE_IN_USE_PROC, CHECK_FRUIT_VEG_CODE_IN_USE_PARAM, true);
       
@@ -1386,11 +1668,22 @@ public class CodesReadDAO extends OracleDAO {
       rs = proc.getResultSet();
       inUse = rs.next();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return inUse;
@@ -1405,18 +1698,21 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<ExpectedProduction> readExpectedProductionItems(final Transaction transaction, Integer id) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<ExpectedProduction> codes = null;
     int param = 1;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_EXPECTED_PRODUCTION_ITEMS_PROC, READ_EXPECTED_PRODUCTION_ITEMS_PARAM, true);
       
-      proc.setInt(param++, id);
+      proc.setLong(param++, id == null ? null : id.longValue());
       
       proc.execute();
       rs = proc.getResultSet();
@@ -1436,11 +1732,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -1451,13 +1758,16 @@ public class CodesReadDAO extends OracleDAO {
   public boolean checkExpectedProductionItemExists(final ExpectedProduction expectedProduction, final Transaction transaction) throws DataAccessException {
     boolean inUse = false;
   
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_EXPECTED_PRODUCTION_ITEM_EXISTS_PROC, CHECK_EXPECTED_PRODUCTION_ITEM_EXISTS_PARAM, true);
       
@@ -1467,11 +1777,22 @@ public class CodesReadDAO extends OracleDAO {
       rs = proc.getResultSet();
       inUse = rs.next();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return inUse;
@@ -1482,28 +1803,42 @@ public class CodesReadDAO extends OracleDAO {
   public boolean checkLineItemExistsForProgramYear(final Integer programYear, final Integer lineItem, final Transaction transaction) throws DataAccessException {
     boolean exists = false;
   
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_LINE_ITEM_EXISTS_FOR_PROGRAM_YEAR_PROC, CHECK_LINE_ITEM_EXISTS_FOR_PROGRAM_YEAR_PARAM, true);
       
-      proc.setInt(param++, lineItem);
-      proc.setInt(param++, programYear);
+      proc.setShort(param++, lineItem == null ? null : lineItem.shortValue());
+      proc.setShort(param++, programYear == null ? null : programYear.shortValue());
       
       proc.execute();
       rs = proc.getResultSet();
       exists = rs.next();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return exists;
@@ -1512,34 +1847,52 @@ public class CodesReadDAO extends OracleDAO {
   
   @SuppressWarnings("resource")
   public List<ConfigurationParameter> readConfigurationParameters(final Transaction transaction) throws DataAccessException {
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     List<ConfigurationParameter> parameters = null;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + READ_CONFIGURATION_PARAMETERS_PROC, READ_CONFIGURATION_PARAMETERS_PARAM, true);) {
+        
+        proc.execute();
+        
+        try (ResultSet rs = proc.getResultSet();) {
+          parameters = new ArrayList<>();
     
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + READ_CONFIGURATION_PARAMETERS_PROC, READ_CONFIGURATION_PARAMETERS_PARAM, true);) {
-      
-      proc.execute();
-      
-      try (ResultSet rs = proc.getResultSet();) {
-        parameters = new ArrayList<>();
-  
-        while (rs.next()) {
-          ConfigurationParameter parameter = new ConfigurationParameter();  
-          parameter.setId(getInteger(rs, "configuration_parameter_id"));
-          parameter.setEstablishedDate(getDate(rs, "when_created"));
-          parameter.setName(getString(rs, "parameter_name"));
-          parameter.setValue(getString(rs, "parameter_value"));
-          parameter.setSensitiveDataInd(getIndicator(rs, "sensitive_data_ind"));
-          parameter.setType(getString(rs, "config_param_type_code"));
-          parameter.setRevisionCount(getInteger(rs, "revision_count"));
-          parameter.setTypeDescription(getString(rs, "description"));
-          parameters.add(parameter);
+          while (rs.next()) {
+            ConfigurationParameter parameter = new ConfigurationParameter();  
+            parameter.setId(getInteger(rs, "configuration_parameter_id"));
+            parameter.setEstablishedDate(getDate(rs, "when_created"));
+            parameter.setName(getString(rs, "parameter_name"));
+            parameter.setValue(getString(rs, "parameter_value"));
+            parameter.setSensitiveDataInd(getIndicator(rs, "sensitive_data_ind"));
+            parameter.setType(getString(rs, "config_param_type_code"));
+            parameter.setRevisionCount(getInteger(rs, "revision_count"));
+            parameter.setTypeDescription(getString(rs, "description"));
+            parameters.add(parameter);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return parameters;    
@@ -1549,13 +1902,16 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public ConfigurationParameter readConfigurationParameter(final Transaction transaction, Integer id, String name) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     ConfigurationParameter parameter = new ConfigurationParameter();
     int param = 1;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_CONFIGURATION_PARAMETER_PROC, READ_CONFIGURATION_PARAMETER_PARAM, true);
@@ -1577,11 +1933,22 @@ public class CodesReadDAO extends OracleDAO {
         parameter.setRevisionCount(getInteger(rs, "revision_count"));
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return parameter;
@@ -1591,36 +1958,54 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<YearConfigurationParameter> readYearConfigurationParams(Transaction transaction,
       Integer programYear) throws DataAccessException {
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     List<YearConfigurationParameter> parameters = null;
     int param = 1;
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + READ_YEAR_CONFIGURATION_PARAMS_PROC, READ_YEAR_CONFIGURATION_PARAMS_PARAM, true);) {
-      
-      proc.setInt(param++, programYear);
-      proc.execute();
-      
-      try (ResultSet rs = proc.getResultSet();) {
-        parameters = new ArrayList<>();
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + READ_YEAR_CONFIGURATION_PARAMS_PROC, READ_YEAR_CONFIGURATION_PARAMS_PARAM, true);) {
         
-        while (rs.next()) {
-          YearConfigurationParameter parameter = new YearConfigurationParameter();  
-          parameter.setId(getInteger(rs, "year_configuration_param_id"));
-          parameter.setProgramYear(getInteger(rs, "program_year"));
-          parameter.setEstablishedDate(getDate(rs, "when_created"));
-          parameter.setName(getString(rs, "parameter_name"));
-          parameter.setValue(getString(rs, "parameter_value"));
-          parameter.setType(getString(rs, "config_param_type_code"));
-          parameter.setRevisionCount(getInteger(rs, "revision_count"));
-          parameter.setTypeDescription(getString(rs, "description"));
-          parameters.add(parameter);
+        proc.setShort(param++, programYear == null ? null : programYear.shortValue());
+        proc.execute();
+        
+        try (ResultSet rs = proc.getResultSet();) {
+          parameters = new ArrayList<>();
+          
+          while (rs.next()) {
+            YearConfigurationParameter parameter = new YearConfigurationParameter();  
+            parameter.setId(getInteger(rs, "year_configuration_param_id"));
+            parameter.setProgramYear(getInteger(rs, "program_year"));
+            parameter.setEstablishedDate(getDate(rs, "when_created"));
+            parameter.setName(getString(rs, "parameter_name"));
+            parameter.setValue(getString(rs, "parameter_value"));
+            parameter.setType(getString(rs, "config_param_type_code"));
+            parameter.setRevisionCount(getInteger(rs, "revision_count"));
+            parameter.setTypeDescription(getString(rs, "description"));
+            parameters.add(parameter);
+          }
         }
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return parameters;    
@@ -1630,14 +2015,17 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public YearConfigurationParameter readYearConfigurationParam(Transaction transaction, Integer id) throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     YearConfigurationParameter parameter = new YearConfigurationParameter();
     int param = 1;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_YEAR_CONFIGURATION_PARAM_PROC, READ_YEAR_CONFIGURATION_PARAM_PARAM, true);
       
@@ -1656,12 +2044,23 @@ public class CodesReadDAO extends OracleDAO {
         parameter.setTypeDescription(getString(rs, "description"));
         parameter.setRevisionCount(getInteger(rs, "revision_count"));
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return parameter;
@@ -1677,12 +2076,15 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<FarmType3> readFarmType3Codes(final Transaction transaction) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<FarmType3> codes = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_3_CODES_PROC, READ_FARM_TYPE_3_CODES_PARAM, true);
@@ -1701,11 +2103,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -1715,13 +2128,16 @@ public class CodesReadDAO extends OracleDAO {
   public boolean checkFarmType3InUse(final FarmType3 farmType, final Transaction transaction) throws DataAccessException {
     boolean inUse = false;
   
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_FARM_TYPE_3_IN_USE_PROC, CHECK_FARM_TYPE_3_IN_USE_PARAM, true);
       
@@ -1731,11 +2147,22 @@ public class CodesReadDAO extends OracleDAO {
       rs = proc.getResultSet();
       inUse = rs.next();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }    
     
     return inUse;
@@ -1745,7 +2172,8 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<TipFarmTypeIncomeRange> readFarmType3IncomeRange(Transaction transaction, Integer farmType3Id) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
@@ -1754,6 +2182,8 @@ public class CodesReadDAO extends OracleDAO {
     List<TipFarmTypeIncomeRange> customRange = new ArrayList<>();
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_3_INCOME_RANGE_PROC, READ_FARM_TYPE_3_INCOME_RANGE_PARAM, true);
@@ -1778,11 +2208,22 @@ public class CodesReadDAO extends OracleDAO {
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     if (customRange.size() == 0) {
@@ -1796,7 +2237,8 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<TipFarmTypeIncomeRange> readFarmType2IncomeRange(Transaction transaction, Integer farmType2Id, Integer farmType3Id) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
@@ -1806,6 +2248,8 @@ public class CodesReadDAO extends OracleDAO {
     List<TipFarmTypeIncomeRange> customRange = new ArrayList<>();
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_2_INCOME_RANGE_PROC, READ_FARM_TYPE_2_INCOME_RANGE_PARAM, true);
@@ -1839,11 +2283,22 @@ public class CodesReadDAO extends OracleDAO {
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     if (customRange.size() != 0) {
@@ -1863,13 +2318,16 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<TipFarmTypeIncomeRange> readFarmTypeDefaultIncomeRange(final Transaction transaction) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     
     List<TipFarmTypeIncomeRange> defaultRange = new ArrayList<>();
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_DEFAULT_INCOME_RANGE_PROC, READ_FARM_TYPE_DEFAULT_INCOME_RANGE_PARAM, true);
@@ -1888,11 +2346,22 @@ public class CodesReadDAO extends OracleDAO {
         defaultRange.add(range);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return defaultRange;
@@ -1912,7 +2381,8 @@ public class CodesReadDAO extends OracleDAO {
       Integer farmType3Id)
           throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
@@ -1923,6 +2393,8 @@ public class CodesReadDAO extends OracleDAO {
     List<TipFarmTypeIncomeRange> customRange = new ArrayList<>();
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_1_INCOME_RANGE_PROC, READ_FARM_TYPE_1_INCOME_RANGE_PARAM, true);
@@ -1961,11 +2433,22 @@ public class CodesReadDAO extends OracleDAO {
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     if (customRange.size() != 0) {
@@ -1987,12 +2470,15 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<FarmSubtype> readFarmType2Codes(final Transaction transaction) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<FarmSubtype> codes = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_2_CODES_PROC, READ_FARM_TYPE_2_CODES_PARAM, true);
@@ -2013,11 +2499,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -2031,13 +2528,16 @@ public class CodesReadDAO extends OracleDAO {
     
     boolean inUse = false;
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_FARM_TYPE_2_IN_USE_PROC, CHECK_FARM_TYPE_2_IN_USE_PARAM, true);
       
@@ -2047,11 +2547,22 @@ public class CodesReadDAO extends OracleDAO {
       rs = proc.getResultSet();
       inUse = rs.next();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }    
     
     return inUse;    
@@ -2066,13 +2577,16 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<FarmSubtype> readFarmType1ItemCodes(final Transaction transaction) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     
     List<FarmSubtype> codes = null;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_1_CODES_PROC, READ_FARM_TYPE_1_CODES_PARAM, true);
@@ -2095,11 +2609,22 @@ public class CodesReadDAO extends OracleDAO {
         codes.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -2113,13 +2638,16 @@ public class CodesReadDAO extends OracleDAO {
     
     boolean inUse = false;
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_FARM_TYPE_1_IN_USE_PROC, CHECK_FARM_TYPE_1_IN_USE_PARAM, true);
       
@@ -2129,11 +2657,22 @@ public class CodesReadDAO extends OracleDAO {
       rs = proc.getResultSet();
       inUse = rs.next();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }    
     
     return inUse;    
@@ -2148,12 +2687,15 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<TipLineItem> readTipLineItems(final Transaction transaction) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<TipLineItem> lineItems = new ArrayList<>();
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TIP_LINE_ITEMS_PROC, READ_FARM_TIP_LINE_ITEMS_PARAM, true);
@@ -2178,11 +2720,22 @@ public class CodesReadDAO extends OracleDAO {
         lineItems.add(item);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return lineItems;
@@ -2197,12 +2750,15 @@ public class CodesReadDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public TipLineItem readTipLineItem(final Transaction transaction, Integer id) throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     TipLineItem lineItem = new TipLineItem();
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TIP_LINE_ITEM_PROC, READ_FARM_TIP_LINE_ITEM_PARAM, true);
@@ -2225,11 +2781,22 @@ public class CodesReadDAO extends OracleDAO {
         lineItem.setFarmSubtypeBName(getString(rs, "farm_type_1_name"));
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return lineItem;
@@ -2238,10 +2805,13 @@ public class CodesReadDAO extends OracleDAO {
   
   @SuppressWarnings("resource")
   public List<TipBenchmarkInfo> readTipBenchmarkInfos(Transaction transaction) throws DataAccessException {
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     List<TipBenchmarkInfo> parameters = new ArrayList<>();
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
       
       final int paramCount = 0;
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -2262,10 +2832,22 @@ public class CodesReadDAO extends OracleDAO {
         }
         
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return parameters;    
@@ -2279,13 +2861,16 @@ public class CodesReadDAO extends OracleDAO {
     
     boolean inUse = false;
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     int param = 1;
     ResultSet rs = null;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_TIP_LINE_ITEM_EXISTS_PROC, CHECK_TIP_LINE_ITEM_EXISTS_PARAM, true);
       
@@ -2295,11 +2880,22 @@ public class CodesReadDAO extends OracleDAO {
       rs = proc.getResultSet();
       inUse = rs.next();
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }    
     
     return inUse;
@@ -2308,13 +2904,16 @@ public class CodesReadDAO extends OracleDAO {
   
   @SuppressWarnings("resource")
   public List<DocumentTemplate> readDocumentTemplates(final Transaction transaction, String templateName) throws DataAccessException {
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     List<DocumentTemplate> parameters = null;
     int param = 1;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_DOCUMENT_TEMPLATES_PROC, READ_DOCUMENT_TEMPLATES_PARAM, true);
@@ -2332,11 +2931,22 @@ public class CodesReadDAO extends OracleDAO {
         parameters.add(docuemntTemplate);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return parameters;    
@@ -2348,34 +2958,52 @@ public class CodesReadDAO extends OracleDAO {
       final String code)
       throws DataAccessException {
 
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     List<SectorCode> codes = new ArrayList<>();
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + READ_SECTOR_CODES_PROC, READ_SECTOR_PARAM, true);) {
 
-      int param = 1;
-      proc.setString(param++, code);
-      proc.execute();
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      try(ResultSet rs = proc.getResultSet(); ) {
-        
-        while (rs.next()) {
-          SectorCode item = new SectorCode();
-          item.setCode(getString(rs, "sector_code"));
-          item.setDescription(getString(rs, "description"));
-          item.setEstablishedDate(getDate(rs, "established_date"));
-          item.setExpiryDate(getDate(rs, "expiry_date"));
-          item.setRevisionCount(getInteger(rs, "revision_count"));
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + READ_SECTOR_CODES_PROC, READ_SECTOR_PARAM, true);) {
+
+        int param = 1;
+        proc.setString(param++, code);
+        proc.execute();
+
+        try(ResultSet rs = proc.getResultSet(); ) {
           
-          codes.add(item);
+          while (rs.next()) {
+            SectorCode item = new SectorCode();
+            item.setCode(getString(rs, "sector_code"));
+            item.setDescription(getString(rs, "description"));
+            item.setEstablishedDate(getDate(rs, "established_date"));
+            item.setExpiryDate(getDate(rs, "expiry_date"));
+            item.setRevisionCount(getInteger(rs, "revision_count"));
+            
+            codes.add(item);
+          }
+          
         }
-        
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;
@@ -2387,36 +3015,54 @@ public class CodesReadDAO extends OracleDAO {
       final String code)
           throws DataAccessException {
     
-    Connection connection = getOracleConnection(transaction);
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     List<SectorDetailCode> codes = new ArrayList<>();
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + READ_SECTOR_DETAIL_CODES_PROC, READ_SECTOR_DETAIL_PARAM, true);) {
-      
-      int param = 1;
-      proc.setString(param++, code);
-      proc.execute();
-      
-      try(ResultSet rs = proc.getResultSet(); ) {
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + READ_SECTOR_DETAIL_CODES_PROC, READ_SECTOR_DETAIL_PARAM, true);) {
         
-        while (rs.next()) {
-          SectorDetailCode item = new SectorDetailCode();
-          item.setSectorCode(getString(rs, "sector_code"));
-          item.setSectorCodeDescription(getString(rs, "sector_code_desc"));
-          item.setSectorDetailCode(getString(rs, "sector_detail_code"));
-          item.setDescription(getString(rs, "sector_detail_code_desc"));
-          item.setEstablishedDate(getDate(rs, "established_date"));
-          item.setExpiryDate(getDate(rs, "expiry_date"));
-          item.setRevisionCount(getInteger(rs, "revision_count"));
+        int param = 1;
+        proc.setString(param++, code);
+        proc.execute();
+        
+        try(ResultSet rs = proc.getResultSet(); ) {
           
-          codes.add(item);
+          while (rs.next()) {
+            SectorDetailCode item = new SectorDetailCode();
+            item.setSectorCode(getString(rs, "sector_code"));
+            item.setSectorCodeDescription(getString(rs, "sector_code_desc"));
+            item.setSectorDetailCode(getString(rs, "sector_detail_code"));
+            item.setDescription(getString(rs, "sector_detail_code_desc"));
+            item.setEstablishedDate(getDate(rs, "established_date"));
+            item.setExpiryDate(getDate(rs, "expiry_date"));
+            item.setRevisionCount(getInteger(rs, "revision_count"));
+            
+            codes.add(item);
+          }
+          
         }
-        
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
     return codes;

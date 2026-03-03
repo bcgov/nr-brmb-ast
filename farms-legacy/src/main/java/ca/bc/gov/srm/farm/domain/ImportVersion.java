@@ -57,6 +57,9 @@ public final class ImportVersion implements Serializable {
   /** importFileName identifies the name of the uploaded import file. */
   private String importFileName;
 
+  /** importFileContent is the binary content of the uploaded import file. */
+  private byte[] importFileContent;
+
   /**
    * importControlFileDate identifies the federal extract date for the import
    * file.
@@ -194,6 +197,24 @@ public final class ImportVersion implements Serializable {
    */
   public void setImportFileName(final String newVal) {
     importFileName = newVal;
+  }
+
+  /**
+   * ImportFileContent is the binary content of the uploaded import file.
+   * 
+   * @return  byte[]
+   */
+  public byte[] getImportFileContent() {
+    return importFileContent;
+  }
+
+  /**
+   * ImportFileContent is the binary content of the uploaded import file.
+   * 
+   * @param  newVal  The new value for this property
+   */
+  public void setImportFileContent(final byte[] newVal) {
+    importFileContent = newVal;
   }
 
   /**

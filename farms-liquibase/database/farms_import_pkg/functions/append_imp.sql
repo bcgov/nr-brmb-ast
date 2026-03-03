@@ -1,6 +1,6 @@
 create or replace function farms_import_pkg.append_imp(
     in in_version_id bigint,
-    in in_msg varchar
+    in in_msg text
 )
 returns bigint
 language plpgsql

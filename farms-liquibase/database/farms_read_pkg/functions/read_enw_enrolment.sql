@@ -49,7 +49,7 @@ begin
                se.manual_margin_year_minus_2,
                se.manual_margin_year_minus_3,
                se.manual_margin_year_minus_4,
-               se.combined_farm_number,
+               se.combined_farm_percent,
                se.enrolment_calc_type_code,
                se.revision_count
         from farms.farm_scenario_enrolments se

@@ -142,6 +142,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zivpr_iv_premium_rates TO "ap
 GRANT SELECT, INSERT, UPDATE, DELETE ON farms.farm_zprogram_enrolments TO "app_farms_rest_proxy";
 
 -- tables (truncate)
+GRANT TRUNCATE ON TABLE farms.farm_zaarm_margins TO "app_farms_rest_proxy";
 GRANT TRUNCATE ON TABLE farms.farm_zbpu_benchmark_per_units TO "app_farms_rest_proxy";
 GRANT TRUNCATE ON TABLE farms.farm_zfmv_fair_market_values TO "app_farms_rest_proxy";
 GRANT TRUNCATE ON TABLE farms.farm_zivpr_iv_premium_rates TO "app_farms_rest_proxy";
@@ -167,6 +168,7 @@ GRANT SELECT ON farms.farm_agri_scenarios_vw TO "app_farms_rest_proxy";
 GRANT SELECT ON farms.farm_chef_statement_a_years_vw TO "app_farms_rest_proxy";
 GRANT SELECT ON farms.farm_operations_vw TO "app_farms_rest_proxy";
 GRANT SELECT ON farms.farm_scenarios_vw TO "app_farms_rest_proxy";
+GRANT SELECT ON farms.farm_tip_income_ranges_vw TO "app_farms_rest_proxy";
 
 -- sequences
 GRANT USAGE ON SEQUENCE farms.farm_acl_seq TO "app_farms_rest_proxy";

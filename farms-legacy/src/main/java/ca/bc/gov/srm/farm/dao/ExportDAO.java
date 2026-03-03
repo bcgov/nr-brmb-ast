@@ -35,7 +35,6 @@ import ca.bc.gov.srm.farm.service.ExportService;
 import ca.bc.gov.srm.farm.service.ReportService;
 import ca.bc.gov.srm.farm.service.impl.ExportServiceFactory;
 import ca.bc.gov.webade.dbpool.WrapperConnection;
-import oracle.jdbc.driver.OracleDriver;
 
 /**
  * @author dzwiers
@@ -62,14 +61,10 @@ public final class ExportDAO {
     } else {
       this.conn = pConn;
     }
-
-    OracleDriver od = new OracleDriver();
-    logger.info("Oracle Driver: " + od.getMajorVersion() + "."
-        + od.getMinorVersion());
   }
 
   
-  private static final String PACKAGE_NAME = "FARM_EXPORT_PKG";
+  private static final String PACKAGE_NAME = "FARMS_EXPORT_PKG";
   
   private static final String ANALYTICAL_DATA_EXTRACT_PROC_SUFFIX = "_ADE";
   
@@ -163,8 +158,12 @@ public final class ExportDAO {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     int c = 1;
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       if(name.equals(ExportService.FILE_01)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F01_PROC, exportType), F01_PARAM, true);
         proc.setInt(c++, pProgramYear);
@@ -242,12 +241,25 @@ public final class ExportDAO {
           ExportServiceFactory.STATEMENT_A_EXTRACT_SENT_TO
           });
 
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       if (rs != null) {
         rs.close();
       }
       if (proc != null) {
         proc.close();
+      }
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
       }
     }
     
@@ -352,10 +364,14 @@ public final class ExportDAO {
     DAOStoredProcedure proc = null;
     ResultSet rs = null;
     int c = 1;
-    
+    boolean originalAutoCommit = true;
+
     try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + DETAILED_SCENARIO_EXTRACT_PROC, DETAILED_SCENARIO_EXTRACT_PARAM, true);
-      proc.setInt(c++, pProgramYear);
+      proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
 
       proc.execute();
 
@@ -366,13 +382,26 @@ public final class ExportDAO {
 
       writer.flush();
       osw.flush();
-      
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
     } finally {
       if (rs != null) {
         rs.close();
       }
       if (proc != null) {
         proc.close();
+      }
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
       }
     }
     

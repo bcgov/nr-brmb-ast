@@ -36,9 +36,6 @@ import ca.bc.gov.srm.farm.exception.InvalidRevisionCountException;
 import ca.bc.gov.srm.farm.exception.LineItemNotFoundException;
 import ca.bc.gov.srm.farm.transaction.Transaction;
 import ca.bc.gov.srm.farm.util.DataParseUtils;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
-import oracle.jdbc.OracleTypes;
-import oracle.jdbc.driver.OracleConnection;
 
 
 /**
@@ -756,48 +753,6 @@ abstract class OracleDAO {
   }
 
   /**
-   * getOracleConnection.
-   *
-   * @param   transaction  Input parameter.
-   *
-   * @return  The return value.
-   */
-  protected OracleConnection getOracleConnection(
-    final Transaction transaction) {
-    @SuppressWarnings("resource")
-    Connection c = null;
-    try {
-      c = wrappedConnection(getConnection(transaction));
-    } catch (SQLException ex) {
-      // do nothing
-    }
-
-    if (c instanceof OracleConnection) {
-      return (OracleConnection) c;
-    }
-
-    return null;
-  }
-
-
-  protected OracleConnection getOracleConnection(final Connection connection) {
-
-    Connection c = null;
-    try {
-      c = wrappedConnection(connection);
-    } catch (SQLException ex) {
-      // do nothing
-    }
-
-    if (c instanceof OracleConnection) {
-      return (OracleConnection) c;
-    }
-
-    return null;
-  }
-
-
-  /**
    * getShort.
    *
    * @param   statement  Input parameter.
@@ -1066,7 +1021,7 @@ abstract class OracleDAO {
     CallableStatement result = null;
     String sql = createPrepareCallSql(procedureName, parameterCount, true);
     result = connection.prepareCall(sql);
-    result.registerOutParameter(1, OracleTypes.CURSOR);
+    result.registerOutParameter(1, Types.REF_CURSOR);
 
     return result;
   }
@@ -1768,18 +1723,6 @@ abstract class OracleDAO {
     setSqlTimestamp(statement, index, sqlTS);
   }
 
-
-  /**
-   * wrappedConnection.
-   *
-   * @param   connection  The parameter value.
-   *
-   * @return  The return value.
-   */
-  protected Connection wrappedConnection(final Connection connection) throws SQLException {
-    return connection.unwrap(OracleConnection.class);
-  }
-
   /**
    * writeBlob.
    *
@@ -1958,45 +1901,30 @@ abstract class OracleDAO {
 
   @SuppressWarnings("resource")
   protected Array createStringOracleArray(Transaction transaction, List<String> values) throws SQLException {
-    return getOracleConnection(transaction).createOracleArray(CODE_COLLECTION_TYPE_NAME, toArray(values));
+    return ((Connection)transaction.getDatastore()).createArrayOf("varchar", toArray(values));
   }
   
   @SuppressWarnings("resource")
   protected Array createNumbersOracleArray(Transaction transaction, List<Integer> values) throws SQLException {
-    return getOracleConnection(transaction).createOracleArray(NUM_COLLECTION_TYPE_NAME, toArray(values));
+    return ((Connection)transaction.getDatastore()).createArrayOf("integer", toArray(values));
   }
 
   protected Array createStringOracleArray(Connection connection, List<String> values) throws SQLException {
-    return ((OracleConnection)connection).createOracleArray(CODE_COLLECTION_TYPE_NAME, toArray(values));
+    return connection.createArrayOf("varchar", toArray(values));
   }
   
   protected Array createNumbersOracleArray(Connection connection, List<Integer> values) throws SQLException {
-    return ((OracleConnection)connection).createOracleArray(NUM_COLLECTION_TYPE_NAME, toArray(values));
-  }
-
-  @SuppressWarnings("resource")
-  protected Array createStringOracleArray(Transaction transaction, String[] values) throws SQLException {
-    return getOracleConnection(transaction).createOracleArray(CODE_COLLECTION_TYPE_NAME, values);
-  }
-  
-  @SuppressWarnings("resource")
-  protected Array createNumbersOracleArray(Transaction transaction, Integer[] values) throws SQLException {
-    return getOracleConnection(transaction).createOracleArray(NUM_COLLECTION_TYPE_NAME, values);
-  }
-  
-  @SuppressWarnings("resource")
-  protected Array createStringOracleArray(Connection connection, String[] values) throws SQLException {
-    return getOracleConnection(connection).createOracleArray(CODE_COLLECTION_TYPE_NAME, values);
+    return connection.createArrayOf("numeric", toArray(values));
   }
   
   @SuppressWarnings("resource")
   protected Array createNumbersOracleArray(Connection connection, Integer[] values) throws SQLException {
-    return getOracleConnection(connection).createOracleArray(NUM_COLLECTION_TYPE_NAME, values);
+    return connection.createArrayOf("numeric", values);
   }
 
   @SuppressWarnings("resource")
   protected Array createGuidOracleArray(Connection connection, List<String> values) throws SQLException {
-    return getOracleConnection(connection).createOracleArray(GUID_COLLECTION_TYPE_NAME, toArray(values));
+    return connection.createArrayOf("varchar", toArray(values));
   }
 
 }

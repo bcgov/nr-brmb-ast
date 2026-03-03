@@ -11,6 +11,7 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -37,7 +38,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class ReasonabilityWriteDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_REASONABILITY_WRITE_PKG";
+  private static final String PACKAGE_NAME = "FARMS_REASONABILITY_WRITE_PKG";
   
   
   private static final String UPDATE_REASONABILITY_TESTS_PROC = "UPDATE_REASONABILITY_TESTS";
@@ -113,35 +114,53 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + CREATE_RSNBLTY_TEST_MESSAGE_PROC, CREATE_RSNBLTY_TEST_MESSAGE_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<ReasonabilityTestResultMessage> messages = new ArrayList<>();
-      messages.addAll(result.getErrorMessages());
-      messages.addAll(result.getWarningMessages());
-      messages.addAll(result.getInfoMessages());
-      
-      for (ReasonabilityTestResultMessage message : messages) {
-        param = 1;
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + CREATE_RSNBLTY_TEST_MESSAGE_PROC, CREATE_RSNBLTY_TEST_MESSAGE_PARAM, false);) {      
         
-        proc.setString(param++, result.getName());
-        proc.setString(param++, message.getMessage());
-        proc.setString(param++, message.getMessageTypeCode());
-        proc.setInt(param++, reasonabilityTestResultId);        
-        proc.setString(param++, user);
+        int param = 1;
         
-        proc.addBatch();
+        List<ReasonabilityTestResultMessage> messages = new ArrayList<>();
+        messages.addAll(result.getErrorMessages());
+        messages.addAll(result.getWarningMessages());
+        messages.addAll(result.getInfoMessages());
+        
+        for (ReasonabilityTestResultMessage message : messages) {
+          param = 1;
+          
+          proc.setString(param++, result.getName());
+          proc.setString(param++, message.getMessage());
+          proc.setString(param++, message.getMessageTypeCode());
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());        
+          proc.setString(param++, user);
+          
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }  
   
   
@@ -152,19 +171,37 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + DELETE_REASONABILITY_RESULTS_PROC, DELETE_REASONABILITY_RESULTS_PARAM, false);) {      
-      
-      int param = 1;
-            
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.execute();            
-      
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + DELETE_REASONABILITY_RESULTS_PROC, DELETE_REASONABILITY_RESULTS_PARAM, false);) {      
+        
+        int param = 1;
+              
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.execute();            
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -177,62 +214,97 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + UPDATE_RSN_PRDCTN_FRUT_INVNTRIES_PROC, UPDATE_RSN_PRDCTN_FRUT_INVNTRIES_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<ProductionInventoryItemTestResult> testResults = productionTest.getFruitVegInventoryItems();
-      
-      for (ProductionInventoryItemTestResult inventoryResult : testResults) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, inventoryResult.getProductiveCapacityAmount());
-        proc.setDouble(param++, inventoryResult.getReportedProduction());
-        proc.setDouble(param++, inventoryResult.getExpectedProductionPerUnit());
-        proc.setDouble(param++, inventoryResult.getExpectedQuantityProduced());
-        proc.setString(param++, inventoryResult.getInventoryItemCode());
-        proc.setString(param++, inventoryResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + UPDATE_RSN_PRDCTN_FRUT_INVNTRIES_PROC, UPDATE_RSN_PRDCTN_FRUT_INVNTRIES_PARAM, false);) {      
+        
+        int param = 1;
+        
+        List<ProductionInventoryItemTestResult> testResults = productionTest.getFruitVegInventoryItems();
+        
+        for (ProductionInventoryItemTestResult inventoryResult : testResults) {
+          param = 1;
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, inventoryResult.getProductiveCapacityAmount() == null ? null : BigDecimal.valueOf(inventoryResult.getProductiveCapacityAmount()));
+          proc.setBigDecimal(param++, inventoryResult.getReportedProduction() == null ? null : BigDecimal.valueOf(inventoryResult.getReportedProduction()));
+          proc.setBigDecimal(param++, inventoryResult.getExpectedProductionPerUnit() == null ? null : BigDecimal.valueOf(inventoryResult.getExpectedProductionPerUnit()));
+          proc.setBigDecimal(param++, inventoryResult.getExpectedQuantityProduced() == null ? null : BigDecimal.valueOf(inventoryResult.getExpectedQuantityProduced()));
+          proc.setString(param++, inventoryResult.getInventoryItemCode());
+          proc.setString(param++, inventoryResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
-    
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_RSNBLTY_PRDCTN_FRUIT_VEG_RSLTS_PROC, UPDATE_RSNBLTY_PRDCTN_FRUIT_VEG_RSLTS_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<FruitVegProductionResult> testResults = productionTest.getFruitVegTestResults();
-            
-      for (FruitVegProductionResult testResult : testResults) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, testResult.getProductiveCapacityAmount());
-        proc.setDouble(param++, testResult.getReportedProduction());
-        proc.setDouble(param++, testResult.getExpectedQuantityProduced());
-        proc.setDouble(param++, testResult.getVariance());
-        proc.setIndicator(param++, testResult.getPass());
-        proc.setString(param++, testResult.getFruitVegTypeCode());
-        proc.setString(param++, testResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
       }
-      
-      proc.executeBatch();
-      
+    }
+    
+    
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_RSNBLTY_PRDCTN_FRUIT_VEG_RSLTS_PROC, UPDATE_RSNBLTY_PRDCTN_FRUIT_VEG_RSLTS_PARAM, false);) {      
+        
+        int param = 1;
+        
+        List<FruitVegProductionResult> testResults = productionTest.getFruitVegTestResults();
+              
+        for (FruitVegProductionResult testResult : testResults) {
+          param = 1;
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, testResult.getProductiveCapacityAmount() == null ? null : BigDecimal.valueOf(testResult.getProductiveCapacityAmount()));
+          proc.setBigDecimal(param++, testResult.getReportedProduction() == null ? null : BigDecimal.valueOf(testResult.getReportedProduction()));
+          proc.setBigDecimal(param++, testResult.getExpectedQuantityProduced() == null ? null : BigDecimal.valueOf(testResult.getExpectedQuantityProduced()));
+          proc.setBigDecimal(param++, testResult.getVariance() == null ? null : BigDecimal.valueOf(testResult.getVariance()));
+          proc.setIndicator(param++, testResult.getPass());
+          proc.setString(param++, testResult.getFruitVegTypeCode());
+          proc.setString(param++, testResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   private void updateGrainProductionTest(
@@ -244,35 +316,53 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_FARM_RSNBLTY_PRDCTN_GRAINS_RSLTS_PROC, UPDATE_FARM_RSNBLTY_PRDCTN_GRAINS_RSLTS_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<ProductionInventoryItemTestResult> testResults = productionTest.getGrainItemTestResults();
-            
-      for (ProductionInventoryItemTestResult testResult : testResults) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, testResult.getProductiveCapacityAmount());
-        proc.setDouble(param++, testResult.getReportedProduction());
-        proc.setDouble(param++, testResult.getExpectedProductionPerUnit());
-        proc.setDouble(param++, testResult.getExpectedQuantityProduced());
-        proc.setDouble(param++, testResult.getVariance());
-        proc.setIndicator(param++, testResult.getPass());
-        proc.setString(param++, testResult.getInventoryItemCode());
-        proc.setString(param++, testResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_FARM_RSNBLTY_PRDCTN_GRAINS_RSLTS_PROC, UPDATE_FARM_RSNBLTY_PRDCTN_GRAINS_RSLTS_PARAM, false);) {      
+        
+        int param = 1;
+        
+        List<ProductionInventoryItemTestResult> testResults = productionTest.getGrainItemTestResults();
+              
+        for (ProductionInventoryItemTestResult testResult : testResults) {
+          param = 1;
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, testResult.getProductiveCapacityAmount() == null ? null : BigDecimal.valueOf(testResult.getProductiveCapacityAmount()));
+          proc.setBigDecimal(param++, testResult.getReportedProduction() == null ? null : BigDecimal.valueOf(testResult.getReportedProduction()));
+          proc.setBigDecimal(param++, testResult.getExpectedProductionPerUnit() == null ? null : BigDecimal.valueOf(testResult.getExpectedProductionPerUnit()));
+          proc.setBigDecimal(param++, testResult.getExpectedQuantityProduced() == null ? null : BigDecimal.valueOf(testResult.getExpectedQuantityProduced()));
+          proc.setBigDecimal(param++, testResult.getVariance() == null ? null : BigDecimal.valueOf(testResult.getVariance()));
+          proc.setIndicator(param++, testResult.getPass());
+          proc.setString(param++, testResult.getInventoryItemCode());
+          proc.setString(param++, testResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -285,37 +375,55 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_FARM_RSNBLTY_PRDCTN_FORAGE_RSLTS_PROC, UPDATE_FARM_RSNBLTY_PRDCTN_FORAGE_RSLTS_PARAM, false);) {      
-      
-      int param = 1;
-      
-      List<ProductionInventoryItemTestResult> forageAndForageSeedResults = new ArrayList<>();
-      forageAndForageSeedResults.addAll(productionTest.getForageTestResults());
-      forageAndForageSeedResults.addAll(productionTest.getForageSeedTestResults());
-            
-      for (ProductionInventoryItemTestResult testResult : forageAndForageSeedResults) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, testResult.getProductiveCapacityAmount());
-        proc.setDouble(param++, testResult.getReportedProduction());
-        proc.setDouble(param++, testResult.getExpectedProductionPerUnit());
-        proc.setDouble(param++, testResult.getExpectedQuantityProduced());
-        proc.setDouble(param++, testResult.getVariance());
-        proc.setIndicator(param++, testResult.getPass());
-        proc.setString(param++, testResult.getInventoryItemCode());
-        proc.setString(param++, testResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_FARM_RSNBLTY_PRDCTN_FORAGE_RSLTS_PROC, UPDATE_FARM_RSNBLTY_PRDCTN_FORAGE_RSLTS_PARAM, false);) {      
+        
+        int param = 1;
+        
+        List<ProductionInventoryItemTestResult> forageAndForageSeedResults = new ArrayList<>();
+        forageAndForageSeedResults.addAll(productionTest.getForageTestResults());
+        forageAndForageSeedResults.addAll(productionTest.getForageSeedTestResults());
+              
+        for (ProductionInventoryItemTestResult testResult : forageAndForageSeedResults) {
+          param = 1;
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, testResult.getProductiveCapacityAmount() == null ? null : BigDecimal.valueOf(testResult.getProductiveCapacityAmount()));
+          proc.setBigDecimal(param++, testResult.getReportedProduction() == null ? null : BigDecimal.valueOf(testResult.getReportedProduction()));
+          proc.setBigDecimal(param++, testResult.getExpectedProductionPerUnit() == null ? null : BigDecimal.valueOf(testResult.getExpectedProductionPerUnit()));
+          proc.setBigDecimal(param++, testResult.getExpectedQuantityProduced() == null ? null : BigDecimal.valueOf(testResult.getExpectedQuantityProduced()));
+          proc.setBigDecimal(param++, testResult.getVariance() == null ? null : BigDecimal.valueOf(testResult.getVariance()));
+          proc.setIndicator(param++, testResult.getPass());
+          proc.setString(param++, testResult.getInventoryItemCode());
+          proc.setString(param++, testResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -328,8 +436,12 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
+    boolean originalAutoCommit = true;
+
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PROC, UPDATE_FARM_RSNBLTY_REV_G_F_FS_INVN_RSLTS_PARAM, false);) {      
       
@@ -338,14 +450,14 @@ public class ReasonabilityWriteDAO extends OracleDAO {
               
         for (RevenueRiskInventoryItem testResult : forageGrainInventory) {
           param = 1;
-          proc.setInt(param++, reasonabilityTestResultId);
-          proc.setDouble(param++, testResult.getQuantityProduced());
-          proc.setDouble(param++, testResult.getQuantityStart());
-          proc.setDouble(param++, testResult.getQuantityEnd());
-          proc.setDouble(param++, testResult.getQuantityConsumed());
-          proc.setDouble(param++, testResult.getQuantitySold());
-          proc.setDouble(param++, testResult.getExpectedRevenue());
-          proc.setDouble(param++, testResult.getReportedPrice());
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, testResult.getQuantityProduced() == null ? null : BigDecimal.valueOf(testResult.getQuantityProduced()));
+          proc.setBigDecimal(param++, testResult.getQuantityStart() == null ? null : BigDecimal.valueOf(testResult.getQuantityStart()));
+          proc.setBigDecimal(param++, testResult.getQuantityEnd() == null ? null : BigDecimal.valueOf(testResult.getQuantityEnd()));
+          proc.setBigDecimal(param++, testResult.getQuantityConsumed() == null ? null : BigDecimal.valueOf(testResult.getQuantityConsumed()));
+          proc.setBigDecimal(param++, testResult.getQuantitySold() == null ? null : BigDecimal.valueOf(testResult.getQuantitySold()));
+          proc.setBigDecimal(param++, testResult.getExpectedRevenue() == null ? null : BigDecimal.valueOf(testResult.getExpectedRevenue()));
+          proc.setBigDecimal(param++, testResult.getReportedPrice() == null ? null : BigDecimal.valueOf(testResult.getReportedPrice()));
           proc.setString(param++, testResult.getInventoryItemCode());
           proc.setString(param++, testResult.getCropUnitCode());
           proc.setString(param++, user);
@@ -365,12 +477,12 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         
         for (RevenueRiskIncomeTestResult forageGrainIncomeItem : forageGrainIncomes) {
           param = 1;
-          proc.setInt(param++, reasonabilityTestResultId);
-          proc.setDouble(param++, forageGrainIncomeItem.getReportedRevenue());
-          proc.setDouble(param++, forageGrainIncomeItem.getExpectedRevenue());
-          proc.setDouble(param++, forageGrainIncomeItem.getVariance());
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, forageGrainIncomeItem.getReportedRevenue() == null ? null : BigDecimal.valueOf(forageGrainIncomeItem.getReportedRevenue()));
+          proc.setBigDecimal(param++, forageGrainIncomeItem.getExpectedRevenue() == null ? null : BigDecimal.valueOf(forageGrainIncomeItem.getExpectedRevenue()));
+          proc.setBigDecimal(param++, forageGrainIncomeItem.getVariance() == null ? null : BigDecimal.valueOf(forageGrainIncomeItem.getVariance()));
           proc.setIndicator(param++, forageGrainIncomeItem.getPass());
-          proc.setString(param++, forageGrainIncomeItem.getLineItemCode());
+          proc.setShort(param++, forageGrainIncomeItem.getLineItemCode() == null ? null : forageGrainIncomeItem.getLineItemCode().shortValue());
           proc.setString(param++, user);
           proc.addBatch();
         }
@@ -378,10 +490,21 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         proc.executeBatch();
       }
       
-      
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -394,61 +517,96 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PROCS, UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PARAM, false);) {      
-      
-      int param = 1;
-      List<RevenueRiskInventoryItem> results = revenueRiskTest.getFruitVegInventory();
-            
-      for (RevenueRiskInventoryItem inventoryResult : results) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, inventoryResult.getQuantityProduced());
-        proc.setDouble(param++, inventoryResult.getFmvPrice());
-        proc.setDouble(param++, inventoryResult.getExpectedRevenue());
-        proc.setString(param++, inventoryResult.getInventoryItemCode());
-        proc.setString(param++, inventoryResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PROCS, UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_INVENTORY_PARAM, false);) {      
+        
+        int param = 1;
+        List<RevenueRiskInventoryItem> results = revenueRiskTest.getFruitVegInventory();
+              
+        for (RevenueRiskInventoryItem inventoryResult : results) {
+          param = 1;
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, inventoryResult.getQuantityProduced() == null ? null : BigDecimal.valueOf(inventoryResult.getQuantityProduced()));
+          proc.setBigDecimal(param++, inventoryResult.getFmvPrice() == null ? null : BigDecimal.valueOf(inventoryResult.getFmvPrice()));
+          proc.setBigDecimal(param++, inventoryResult.getExpectedRevenue() == null ? null : BigDecimal.valueOf(inventoryResult.getExpectedRevenue()));
+          proc.setString(param++, inventoryResult.getInventoryItemCode());
+          proc.setString(param++, inventoryResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
       }
-      
-      proc.executeBatch();
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
-    
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_RESULTS_PROCS, UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_RESULTS_PARAM, false);) {      
-      
-      int param = 1;
-      List<RevenueRiskFruitVegItemTestResult> results = revenueRiskTest.getFruitVegResults();
-      
-      for (RevenueRiskFruitVegItemTestResult testResult : results) {
-        param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
-        proc.setDouble(param++, testResult.getReportedRevenue());
-        proc.setDouble(param++, testResult.getQuantityProduced());
-        proc.setDouble(param++, testResult.getExpectedPrice());
-        proc.setDouble(param++, testResult.getExpectedRevenue());
-        proc.setDouble(param++, testResult.getVariance());
-        proc.setIndicator(param++, testResult.getPass());
-        proc.setDouble(param++, testResult.getVarianceLimit());
-        proc.setString(param++, testResult.getFruitVegTypeCode());
-        proc.setString(param++, testResult.getCropUnitCode());
-        proc.setString(param++, user);
-        proc.addBatch();
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
       }
-      
-      proc.executeBatch();
-      
+    }
+    
+    
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_RESULTS_PROCS, UPDATE_FARM_RSNBLTY_REV_FRUIT_VEG_RESULTS_PARAM, false);) {      
+        
+        int param = 1;
+        List<RevenueRiskFruitVegItemTestResult> results = revenueRiskTest.getFruitVegResults();
+        
+        for (RevenueRiskFruitVegItemTestResult testResult : results) {
+          param = 1;
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, testResult.getReportedRevenue() == null ? null : BigDecimal.valueOf(testResult.getReportedRevenue()));
+          proc.setBigDecimal(param++, testResult.getQuantityProduced() == null ? null : BigDecimal.valueOf(testResult.getQuantityProduced()));
+          proc.setBigDecimal(param++, testResult.getExpectedPrice() == null ? null : BigDecimal.valueOf(testResult.getExpectedPrice()));
+          proc.setBigDecimal(param++, testResult.getExpectedRevenue() == null ? null : BigDecimal.valueOf(testResult.getExpectedRevenue()));
+          proc.setBigDecimal(param++, testResult.getVariance() == null ? null : BigDecimal.valueOf(testResult.getVariance()));
+          proc.setIndicator(param++, testResult.getPass());
+          proc.setBigDecimal(param++, testResult.getVarianceLimit() == null ? null : BigDecimal.valueOf(testResult.getVarianceLimit()));
+          proc.setString(param++, testResult.getFruitVegTypeCode());
+          proc.setString(param++, testResult.getCropUnitCode());
+          proc.setString(param++, user);
+          proc.addBatch();
+        }
+        
+        proc.executeBatch();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   @SuppressWarnings("resource")
@@ -460,20 +618,23 @@ public class ReasonabilityWriteDAO extends OracleDAO {
   throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
       
       // Nursery main results
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
             + UPDATE_FARM_RSNBLTY_REV_NRSRY_RESULTS_PROC, UPDATE_FARM_RSNBLTY_REV_NRSRY_RESULTS_PARAM, false);) {      
         
         int param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
+        proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
         proc.setIndicator(param++, revenueRiskTest.getNursery().getSubTestPass());
-        proc.setDouble(param++, revenueRiskTest.getNursery().getReportedRevenue());
-        proc.setDouble(param++, revenueRiskTest.getNursery().getExpectedRevenue());
-        proc.setDouble(param++, revenueRiskTest.getNursery().getVariance());
-        proc.setDouble(param++, revenueRiskTest.getNursery().getVarianceLimit());
+        proc.setBigDecimal(param++, revenueRiskTest.getNursery().getReportedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getNursery().getReportedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getNursery().getExpectedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getNursery().getExpectedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getNursery().getVariance() == null ? null : BigDecimal.valueOf(revenueRiskTest.getNursery().getVariance()));
+        proc.setBigDecimal(param++, revenueRiskTest.getNursery().getVarianceLimit() == null ? null : BigDecimal.valueOf(revenueRiskTest.getNursery().getVarianceLimit()));
         proc.setString(param++, user);  
         
         proc.execute();
@@ -488,9 +649,9 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         
         for (RevenueRiskIncomeTestResult nurseryIncomeItem : nurseryIncomes) {
           int param = 1;
-          proc.setInt(param++, reasonabilityTestResultId);
-          proc.setInt(param++, nurseryIncomeItem.getLineItemCode());
-          proc.setDouble(param++, nurseryIncomeItem.getReportedRevenue());
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setShort(param++, nurseryIncomeItem.getLineItemCode() == null ? null : nurseryIncomeItem.getLineItemCode().shortValue());
+          proc.setBigDecimal(param++, nurseryIncomeItem.getReportedRevenue() == null ? null : BigDecimal.valueOf(nurseryIncomeItem.getReportedRevenue()));
           proc.setString(param++, user);
           proc.addBatch();
         }
@@ -507,13 +668,13 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         
         for (RevenueRiskInventoryItem nurseryInvItem : nurseryInvItems) {
           int param = 1;
-          proc.setInt(param++, reasonabilityTestResultId);
-          proc.setDouble(param++, nurseryInvItem.getQuantityProduced());
-          proc.setDouble(param++, nurseryInvItem.getQuantityStart());
-          proc.setDouble(param++, nurseryInvItem.getQuantityEnd());
-          proc.setDouble(param++, nurseryInvItem.getQuantitySold());
-          proc.setDouble(param++, nurseryInvItem.getExpectedRevenue());
-          proc.setDouble(param++, nurseryInvItem.getFmvPrice());
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, nurseryInvItem.getQuantityProduced() == null ? null : BigDecimal.valueOf(nurseryInvItem.getQuantityProduced()));
+          proc.setBigDecimal(param++, nurseryInvItem.getQuantityStart() == null ? null : BigDecimal.valueOf(nurseryInvItem.getQuantityStart()));
+          proc.setBigDecimal(param++, nurseryInvItem.getQuantityEnd() == null ? null : BigDecimal.valueOf(nurseryInvItem.getQuantityEnd()));
+          proc.setBigDecimal(param++, nurseryInvItem.getQuantitySold() == null ? null : BigDecimal.valueOf(nurseryInvItem.getQuantitySold()));
+          proc.setBigDecimal(param++, nurseryInvItem.getExpectedRevenue() == null ? null : BigDecimal.valueOf(nurseryInvItem.getExpectedRevenue()));
+          proc.setBigDecimal(param++, nurseryInvItem.getFmvPrice() == null ? null : BigDecimal.valueOf(nurseryInvItem.getFmvPrice()));
           proc.setString(param++, nurseryInvItem.getInventoryItemCode());
           proc.setString(param++, nurseryInvItem.getCropUnitCode());
           proc.setString(param++, user);
@@ -523,10 +684,22 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         proc.executeBatch();
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -539,42 +712,60 @@ public class ReasonabilityWriteDAO extends OracleDAO {
   throws DataAccessException {
     
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + INSERT_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PROC, INSERT_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PARAM, false);) {
-          
-      int param = 1;
-      proc.setInt(param++, reasonabilityTestResultId);
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasPoultryBroilers());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getSubTestPass());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasChickens());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getChickenPass());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenAverageWeightKg());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenExpectedSoldCount());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenPricePerBird());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenExpectedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenReportedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenKgProduced());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenVariance());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getChickenVarianceLimit());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasTurkeys());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getTurkeyPass());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyAverageWeightKg());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyExpectedSoldCount());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyPricePerBird());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyExpectedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyReportedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyKgProduced());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyVariance());
-      proc.setDouble(param++, revenueRiskTest.getPoultryBroilers().getTurkeyVarianceLimit());
-      proc.setString(param++, user);  
-      
-      proc.execute();
-      
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + INSERT_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PROC, INSERT_FARM_RSNBLTY_REV_PLTRY_BRL_RSLTS_PARAM, false);) {
+            
+        int param = 1;
+        proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasPoultryBroilers());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getSubTestPass());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasChickens());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getChickenPass());
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getChickenAverageWeightKg() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getChickenAverageWeightKg()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getChickenExpectedSoldCount() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getChickenExpectedSoldCount()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getChickenPricePerBird() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getChickenPricePerBird()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getChickenExpectedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getChickenExpectedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getChickenReportedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getChickenReportedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getChickenKgProduced() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getChickenKgProduced()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getChickenVariance() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getChickenVariance()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getChickenVarianceLimit() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getChickenVarianceLimit()));
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getHasTurkeys());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryBroilers().getTurkeyPass());
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getTurkeyAverageWeightKg() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getTurkeyAverageWeightKg()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getTurkeyExpectedSoldCount() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getTurkeyExpectedSoldCount()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getTurkeyPricePerBird() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getTurkeyPricePerBird()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getTurkeyExpectedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getTurkeyExpectedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getTurkeyReportedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getTurkeyReportedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getTurkeyKgProduced() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getTurkeyKgProduced()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getTurkeyVariance() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getTurkeyVariance()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryBroilers().getTurkeyVarianceLimit() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryBroilers().getTurkeyVarianceLimit()));
+        proc.setString(param++, user);  
+        
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    } 
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
     
   }
   
@@ -588,42 +779,60 @@ public class ReasonabilityWriteDAO extends OracleDAO {
           throws DataAccessException {
     
     Connection connection = getConnection(transaction);
-    
-    try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-        + INSERT_FARM_RSNBLTY_REV_EGG_RSLTS_PROC, INSERT_FARM_RSNBLTY_REV_EGG_RSLTS_PARAM, false);) {
-      
-      int param = 1;
-      proc.setInt(param++, reasonabilityTestResultId);
-      proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getHasPoultryEggs());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getSubTestPass());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getConsumptionPass());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionLayers());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionAverageEggsPerLayer());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsTotal());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsDozen());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsDozenPrice());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionExpectedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionReportedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionVariance());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getConsumptionVarianceLimit());
-      proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getHatchingPass());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingLayers());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingAverageEggsPerLayer());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsTotal());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsDozen());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsDozenPrice());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingExpectedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingReportedRevenue());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingVariance());
-      proc.setDouble(param++, revenueRiskTest.getPoultryEggs().getHatchingVarianceLimit());
-      proc.setString(param++, user);  
-      
-      proc.execute();
-      
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+          + INSERT_FARM_RSNBLTY_REV_EGG_RSLTS_PROC, INSERT_FARM_RSNBLTY_REV_EGG_RSLTS_PARAM, false);) {
+        
+        int param = 1;
+        proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getHasPoultryEggs());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getSubTestPass());
+        proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getConsumptionPass());
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getConsumptionLayers() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getConsumptionLayers()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getConsumptionAverageEggsPerLayer() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getConsumptionAverageEggsPerLayer()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsTotal() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getConsumptionEggsTotal()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsDozen() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getConsumptionEggsDozen()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getConsumptionEggsDozenPrice() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getConsumptionEggsDozenPrice()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getConsumptionExpectedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getConsumptionExpectedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getConsumptionReportedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getConsumptionReportedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getConsumptionVariance() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getConsumptionVariance()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getConsumptionVarianceLimit() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getConsumptionVarianceLimit()));
+        proc.setIndicator(param++, revenueRiskTest.getPoultryEggs().getHatchingPass());
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getHatchingLayers() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getHatchingLayers()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getHatchingAverageEggsPerLayer() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getHatchingAverageEggsPerLayer()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsTotal() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getHatchingEggsTotal()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsDozen() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getHatchingEggsDozen()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getHatchingEggsDozenPrice() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getHatchingEggsDozenPrice()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getHatchingExpectedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getHatchingExpectedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getHatchingReportedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getHatchingReportedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getHatchingVariance() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getHatchingVariance()));
+        proc.setBigDecimal(param++, revenueRiskTest.getPoultryEggs().getHatchingVarianceLimit() == null ? null : BigDecimal.valueOf(revenueRiskTest.getPoultryEggs().getHatchingVarianceLimit()));
+        proc.setString(param++, user);  
+        
+        proc.execute();
+      }
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    } 
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
     
   }
   
@@ -637,46 +846,49 @@ public class ReasonabilityWriteDAO extends OracleDAO {
   throws DataAccessException {
     
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
       
       // Hogs main results
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
             + INSERT_FARM_RSN_REV_HOG_RSLTS_PROC, INSERT_FARM_RSN_REV_HOG_RSLTS_PARAM, false);) {      
         
         int param = 1;
-        proc.setInt(param++, reasonabilityTestResultId);
+        proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
         proc.setIndicator(param++, revenueRiskTest.getHogs().getHasHogs());
         proc.setIndicator(param++, revenueRiskTest.getHogs().getHogsPass());
         proc.setIndicator(param++, revenueRiskTest.getHogs().getFarrowToFinishOperation());
         proc.setIndicator(param++, revenueRiskTest.getHogs().getFeederOperation());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getReportedExpenses());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getTotalQuantityStart());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getTotalQuantityEnd());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getSowsBreeding());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getBirthsPerCycle());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getBirthCyclesPerYear());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getTotalBirthsPerCycle());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getTotalBirthsAllCycles());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getDeathRate());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getDeaths());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getBoarPurchaseCount());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getBoarPurchasePrice());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getBoarPurchaseExpense());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getSowPurchaseExpense());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getSowPurchaseCount());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getSowPurchasePrice());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getFeederProductiveUnits());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getWeanlingPurchaseExpense());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getWeanlingPurchasePrice());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getWeanlingPurchaseCount());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getTotalPurchaseCount());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getExpectedSold());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getHeaviestHogFmvPrice());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getReportedRevenue());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getExpectedRevenue());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getRevenueVariance());
-        proc.setDouble(param++, revenueRiskTest.getHogs().getVarianceLimit());
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getReportedExpenses() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getReportedExpenses()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getTotalQuantityStart() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getTotalQuantityStart()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getTotalQuantityEnd() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getTotalQuantityEnd()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getSowsBreeding() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getSowsBreeding()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getBirthsPerCycle() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getBirthsPerCycle()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getBirthCyclesPerYear() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getBirthCyclesPerYear()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getTotalBirthsPerCycle() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getTotalBirthsPerCycle()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getTotalBirthsAllCycles() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getTotalBirthsAllCycles()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getDeathRate() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getDeathRate()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getDeaths() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getDeaths()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getBoarPurchaseCount() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getBoarPurchaseCount()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getBoarPurchasePrice() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getBoarPurchasePrice()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getBoarPurchaseExpense() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getBoarPurchaseExpense()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getSowPurchaseExpense() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getSowPurchaseExpense()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getSowPurchaseCount() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getSowPurchaseCount()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getSowPurchasePrice() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getSowPurchasePrice()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getFeederProductiveUnits() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getFeederProductiveUnits()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getWeanlingPurchaseExpense() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getWeanlingPurchaseExpense()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getWeanlingPurchasePrice() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getWeanlingPurchasePrice()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getWeanlingPurchaseCount() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getWeanlingPurchaseCount()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getTotalPurchaseCount() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getTotalPurchaseCount()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getExpectedSold() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getExpectedSold()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getHeaviestHogFmvPrice() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getHeaviestHogFmvPrice()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getReportedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getReportedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getExpectedRevenue() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getExpectedRevenue()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getRevenueVariance() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getRevenueVariance()));
+        proc.setBigDecimal(param++, revenueRiskTest.getHogs().getVarianceLimit() == null ? null : BigDecimal.valueOf(revenueRiskTest.getHogs().getVarianceLimit()));
         proc.setString(param++, user);  
         
         proc.execute();
@@ -691,10 +903,10 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         
         for (RevenueRiskInventoryItem hogsInvItem : hogsInvItems) {
           int param = 1;
-          proc.setInt(param++, reasonabilityTestResultId);
-          proc.setDouble(param++, hogsInvItem.getQuantityStart());
-          proc.setDouble(param++, hogsInvItem.getQuantityEnd());
-          proc.setDouble(param++, hogsInvItem.getFmvPrice());
+          proc.setLong(param++, reasonabilityTestResultId == null ? null : reasonabilityTestResultId.longValue());
+          proc.setBigDecimal(param++, hogsInvItem.getQuantityStart() == null ? null : BigDecimal.valueOf(hogsInvItem.getQuantityStart()));
+          proc.setBigDecimal(param++, hogsInvItem.getQuantityEnd() == null ? null : BigDecimal.valueOf(hogsInvItem.getQuantityEnd()));
+          proc.setBigDecimal(param++, hogsInvItem.getFmvPrice() == null ? null : BigDecimal.valueOf(hogsInvItem.getFmvPrice()));
           proc.setString(param++, hogsInvItem.getInventoryItemCode());
           proc.setString(param++, user);
           proc.addBatch();
@@ -703,10 +915,22 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         proc.executeBatch();
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
-    }    
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
   
   
@@ -718,9 +942,12 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + UPDATE_RSN_FORAGE_CONSUMERS_PROC, UPDATE_RSN_FORAGE_CONSUMERS_PARAM, false);) {      
         
@@ -730,10 +957,10 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         
         for (ForageConsumer forageGrainIncomeItem : forageConsumers) {
           param = 1;
-          proc.setInt(param++, results.getReasonabilityTestResultId());
-          proc.setDouble(param++, forageGrainIncomeItem.getProductiveUnitCapacity());
-          proc.setDouble(param++, forageGrainIncomeItem.getQuantityConsumedPerUnit());
-          proc.setDouble(param++, forageGrainIncomeItem.getQuantityConsumed());
+          proc.setLong(param++, results.getReasonabilityTestResultId() == null ? null : results.getReasonabilityTestResultId().longValue());
+          proc.setBigDecimal(param++, forageGrainIncomeItem.getProductiveUnitCapacity() == null ? null : BigDecimal.valueOf(forageGrainIncomeItem.getProductiveUnitCapacity()));
+          proc.setBigDecimal(param++, forageGrainIncomeItem.getQuantityConsumedPerUnit() == null ? null : BigDecimal.valueOf(forageGrainIncomeItem.getQuantityConsumedPerUnit()));
+          proc.setBigDecimal(param++, forageGrainIncomeItem.getQuantityConsumed() == null ? null : BigDecimal.valueOf(forageGrainIncomeItem.getQuantityConsumed()));
           proc.setString(param++, forageGrainIncomeItem.getStructureGroupCode());
           proc.setString(param++, user);
           proc.addBatch();
@@ -741,10 +968,22 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         
         proc.executeBatch();
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -757,9 +996,12 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
 
     try {
-      
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       if (results.getReasonabilityTestResultId() != null) {
         deleteReasonabilityResults(transaction, results.getReasonabilityTestResultId());
       }
@@ -768,82 +1010,83 @@ public class ReasonabilityWriteDAO extends OracleDAO {
           + UPDATE_REASONABILITY_TESTS_PROC, UPDATE_REASONABILITY_TESTS_PARAM, false);) {
       
         int param = 1;
-        proc.registerOutParameter(param++, Types.INTEGER);
+        proc.registerOutParameter(param++, Types.BIGINT);
   
         param = 1;
-        proc.setInt(param++, results.getReasonabilityTestResultId());
+        proc.setLong(param++, results.getReasonabilityTestResultId() == null ? null : results.getReasonabilityTestResultId().longValue());
         proc.setIndicator(param++, results.getIsFresh());
-        proc.setDouble(param++, results.getForageConsumerCapacity());
+        proc.setBigDecimal(param++, results.getForageConsumerCapacity() == null ? null : BigDecimal.valueOf(results.getForageConsumerCapacity()));
         proc.setIndicator(param++, results.getBenefitRisk().getResult());
-        proc.setDouble(param++, results.getBenefitRisk().getProgramYearMargin());
-        proc.setDouble(param++, results.getBenefitRisk().getTotalBenefit());
-        proc.setDouble(param++, results.getBenefitRisk().getBenchmarkMargin());
-        proc.setDouble(param++, results.getBenefitRisk().getBenefitRiskDeductible());
-        proc.setDouble(param++, results.getBenefitRisk().getBenefitBenchmarkLessDeductible());
-        proc.setDouble(param++, results.getBenefitRisk().getBenefitBenchmarkLessProgramYearMargin());
-        proc.setDouble(param++, results.getBenefitRisk().getBenefitRiskPayoutLevel());
-        proc.setDouble(param++, results.getBenefitRisk().getBenefitBenchmarkBeforeCombinedFarmPercent());
-        proc.setDouble(param++, results.getBenefitRisk().getCombinedFarmPercent());
-        proc.setDouble(param++, results.getBenefitRisk().getBenefitBenchmark());
-        proc.setDouble(param++, results.getBenefitRisk().getVariance());
-        proc.setDouble(param++, results.getBenefitRisk().getVarianceLimit());
+        proc.setBigDecimal(param++, results.getBenefitRisk().getProgramYearMargin() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getProgramYearMargin()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getTotalBenefit() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getTotalBenefit()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getBenchmarkMargin() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getBenchmarkMargin()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getBenefitRiskDeductible() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getBenefitRiskDeductible()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getBenefitBenchmarkLessDeductible() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getBenefitBenchmarkLessDeductible()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getBenefitBenchmarkLessProgramYearMargin() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getBenefitBenchmarkLessProgramYearMargin()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getBenefitRiskPayoutLevel() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getBenefitRiskPayoutLevel()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getBenefitBenchmarkBeforeCombinedFarmPercent() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getBenefitBenchmarkBeforeCombinedFarmPercent()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getCombinedFarmPercent() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getCombinedFarmPercent()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getBenefitBenchmark() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getBenefitBenchmark()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getVariance() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getVariance()));
+        proc.setBigDecimal(param++, results.getBenefitRisk().getVarianceLimit() == null ? null : BigDecimal.valueOf(results.getBenefitRisk().getVarianceLimit()));
         proc.setIndicator(param++, results.getMarginTest().getResult());
-        proc.setDouble(param++, results.getMarginTest().getAdjustedReferenceMargin());
-        proc.setDouble(param++, results.getMarginTest().getAdjustedReferenceMarginVariance());
-        proc.setDouble(param++, results.getMarginTest().getAdjustedReferenceMarginVarianceLimit());
+        proc.setBigDecimal(param++, results.getMarginTest().getAdjustedReferenceMargin() == null ? null : BigDecimal.valueOf(results.getMarginTest().getAdjustedReferenceMargin()));
+        proc.setBigDecimal(param++, results.getMarginTest().getAdjustedReferenceMarginVariance() == null ? null : BigDecimal.valueOf(results.getMarginTest().getAdjustedReferenceMarginVariance()));
+        proc.setBigDecimal(param++, results.getMarginTest().getAdjustedReferenceMarginVarianceLimit() == null ? null : BigDecimal.valueOf(results.getMarginTest().getAdjustedReferenceMarginVarianceLimit()));
         proc.setIndicator(param++, results.getMarginTest().getWithinLimitOfReferenceMargin());
-        proc.setDouble(param++, results.getMarginTest().getIndustryAverage());
-        proc.setDouble(param++, results.getMarginTest().getIndustryVariance());
-        proc.setDouble(param++, results.getMarginTest().getIndustryVarianceLimit());
+        proc.setBigDecimal(param++, results.getMarginTest().getIndustryAverage() == null ? null : BigDecimal.valueOf(results.getMarginTest().getIndustryAverage()));
+        proc.setBigDecimal(param++, results.getMarginTest().getIndustryVariance() == null ? null : BigDecimal.valueOf(results.getMarginTest().getIndustryVariance()));
+        proc.setBigDecimal(param++, results.getMarginTest().getIndustryVarianceLimit() == null ? null : BigDecimal.valueOf(results.getMarginTest().getIndustryVarianceLimit()));
         proc.setIndicator(param++, results.getMarginTest().getWithinLimitOfIndustryAverage());
         proc.setIndicator(param++, results.getStructuralChangeTest().getResult());
-        proc.setDouble(param++, results.getStructuralChangeTest().getProductionMargAccrAdjs());
-        proc.setDouble(param++, results.getStructuralChangeTest().getRatioReferenceMargin());
-        proc.setDouble(param++, results.getStructuralChangeTest().getAdditiveReferenceMargin());
-        proc.setDouble(param++, results.getStructuralChangeTest().getRatioAdditiveDiffVariance());
-        proc.setDouble(param++, results.getStructuralChangeTest().getRatioAdditiveDiffVarianceLimit());
+        proc.setBigDecimal(param++, results.getStructuralChangeTest().getProductionMargAccrAdjs() == null ? null : BigDecimal.valueOf(results.getStructuralChangeTest().getProductionMargAccrAdjs()));
+        proc.setBigDecimal(param++, results.getStructuralChangeTest().getRatioReferenceMargin() == null ? null : BigDecimal.valueOf(results.getStructuralChangeTest().getRatioReferenceMargin()));
+        proc.setBigDecimal(param++, results.getStructuralChangeTest().getAdditiveReferenceMargin() == null ? null : BigDecimal.valueOf(results.getStructuralChangeTest().getAdditiveReferenceMargin()));
+        proc.setBigDecimal(param++, results.getStructuralChangeTest().getRatioAdditiveDiffVariance() == null ? null : BigDecimal.valueOf(results.getStructuralChangeTest().getRatioAdditiveDiffVariance()));
+        proc.setBigDecimal(param++, results.getStructuralChangeTest().getRatioAdditiveDiffVarianceLimit() == null ? null : BigDecimal.valueOf(results.getStructuralChangeTest().getRatioAdditiveDiffVarianceLimit()));
         proc.setIndicator(param++, results.getStructuralChangeTest().getWithinRatioAdditiveDiffLimit());
-        proc.setDouble(param++, results.getStructuralChangeTest().getAdditiveDivisionRatio());
-        proc.setDouble(param++, results.getStructuralChangeTest().getAdditiveDivisionRatioLimit());
+        proc.setBigDecimal(param++, results.getStructuralChangeTest().getAdditiveDivisionRatio() == null ? null : BigDecimal.valueOf(results.getStructuralChangeTest().getAdditiveDivisionRatio()));
+        proc.setBigDecimal(param++, results.getStructuralChangeTest().getAdditiveDivisionRatioLimit() == null ? null : BigDecimal.valueOf(results.getStructuralChangeTest().getAdditiveDivisionRatioLimit()));
         proc.setIndicator(param++, results.getStructuralChangeTest().getWithinAdditiveDivisionLimit());
         proc.setString(param++, results.getStructuralChangeTest().getMethodToUse());
-        proc.setDouble(param++, results.getStructuralChangeTest().getFarmSizeRatioLimit());
+        proc.setBigDecimal(param++, results.getStructuralChangeTest().getFarmSizeRatioLimit() == null ? null : BigDecimal.valueOf(results.getStructuralChangeTest().getFarmSizeRatioLimit()));
         proc.setIndicator(param++, results.getStructuralChangeTest().getWithinFarmSizeRatioLimit());
         proc.setIndicator(param++, results.getExpenseTestIAC().getResult());
-        proc.setDouble(param++, results.getExpenseTestIAC().getExpenseAccrualAdjs());
-        proc.setDouble(param++, results.getExpenseTestIAC().getIndustryAverage());
-        proc.setDouble(param++, results.getExpenseTestIAC().getIndustryVariance());
-        proc.setDouble(param++, results.getExpenseTestIAC().getIndustryVarianceLimit());
-        proc.setInt(param++, results.getScenario().getScenarioId());
+        proc.setBigDecimal(param++, results.getExpenseTestIAC().getExpenseAccrualAdjs() == null ? null : BigDecimal.valueOf(results.getExpenseTestIAC().getExpenseAccrualAdjs()));
+        proc.setBigDecimal(param++, results.getExpenseTestIAC().getIndustryAverage() == null ? null : BigDecimal.valueOf(results.getExpenseTestIAC().getIndustryAverage()));
+        proc.setBigDecimal(param++, results.getExpenseTestIAC().getIndustryVariance() == null ? null : BigDecimal.valueOf(results.getExpenseTestIAC().getIndustryVariance()));
+        proc.setBigDecimal(param++, results.getExpenseTestIAC().getIndustryVarianceLimit() == null ? null : BigDecimal.valueOf(results.getExpenseTestIAC().getIndustryVarianceLimit()));
+        proc.setLong(param++, results.getScenario().getScenarioId() == null ? null : results.getScenario().getScenarioId().longValue());
         proc.setIndicator(param++, results.getProductionTest().getResult());
         proc.setIndicator(param++, results.getProductionTest().isPassForageAndForageSeedTest());
         proc.setIndicator(param++, results.getProductionTest().getPassFruitVegTest());
-        proc.setDouble(param++, results.getProductionTest().getForageProducedVarianceLimit());
-        proc.setDouble(param++, results.getProductionTest().getFruitVegProducedVarianceLimit());
-        proc.setDouble(param++, results.getProductionTest().getGrainProducedVarianceLimit());
+        proc.setBigDecimal(param++, results.getProductionTest().getForageProducedVarianceLimit() == null ? null : BigDecimal.valueOf(results.getProductionTest().getForageProducedVarianceLimit()));
+        proc.setBigDecimal(param++, results.getProductionTest().getFruitVegProducedVarianceLimit() == null ? null : BigDecimal.valueOf(results.getProductionTest().getFruitVegProducedVarianceLimit()));
+        proc.setBigDecimal(param++, results.getProductionTest().getGrainProducedVarianceLimit() == null ? null : BigDecimal.valueOf(results.getProductionTest().getGrainProducedVarianceLimit()));
         proc.setIndicator(param++, results.getProductionTest().getPassGrainTest());
         proc.setIndicator(param++, results.getExpenseTestRefYearCompGC().getResult());
-        proc.setDouble(param++, results.getExpenseTestRefYearCompGC().getProgramYearAcrAdjExpense());
-        proc.setDouble(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus1());
-        proc.setDouble(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus2());
-        proc.setDouble(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus3());
-        proc.setDouble(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus4());
-        proc.setDouble(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus5());
-        proc.setDouble(param++, results.getExpenseTestRefYearCompGC().getExpenseStructrualChangeAverage());
-        proc.setDouble(param++, results.getExpenseTestRefYearCompGC().getVariance());
-        proc.setDouble(param++, results.getExpenseTestRefYearCompGC().getVarianceLimit());
+        proc.setBigDecimal(param++, results.getExpenseTestRefYearCompGC().getProgramYearAcrAdjExpense() == null ? null : BigDecimal.valueOf(results.getExpenseTestRefYearCompGC().getProgramYearAcrAdjExpense()));
+        proc.setBigDecimal(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus1() == null ? null : BigDecimal.valueOf(results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus1()));
+        proc.setBigDecimal(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus2() == null ? null : BigDecimal.valueOf(results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus2()));
+        proc.setBigDecimal(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus3() == null ? null : BigDecimal.valueOf(results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus3()));
+        proc.setBigDecimal(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus4() == null ? null : BigDecimal.valueOf(results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus4()));
+        proc.setBigDecimal(param++, results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus5() == null ? null : BigDecimal.valueOf(results.getExpenseTestRefYearCompGC().getExpenseStructuralChangeYearMinus5()));
+        proc.setBigDecimal(param++, results.getExpenseTestRefYearCompGC().getExpenseStructrualChangeAverage() == null ? null : BigDecimal.valueOf(results.getExpenseTestRefYearCompGC().getExpenseStructrualChangeAverage()));
+        proc.setBigDecimal(param++, results.getExpenseTestRefYearCompGC().getVariance() == null ? null : BigDecimal.valueOf(results.getExpenseTestRefYearCompGC().getVariance()));
+        proc.setBigDecimal(param++, results.getExpenseTestRefYearCompGC().getVarianceLimit() == null ? null : BigDecimal.valueOf(results.getExpenseTestRefYearCompGC().getVarianceLimit()));
         proc.setIndicator(param++, results.getRevenueRiskTest().getForageGrainPass());
         proc.setIndicator(param++, results.getRevenueRiskTest().getResult());
-        proc.setDouble(param++, results.getRevenueRiskTest().getForageGrainVarianceLimit());
+        proc.setBigDecimal(param++, results.getRevenueRiskTest().getForageGrainVarianceLimit() == null ? null : BigDecimal.valueOf(results.getRevenueRiskTest().getForageGrainVarianceLimit()));
         proc.setIndicator(param++, results.getRevenueRiskTest().getFruitVegTestPass());
         proc.setString(param++, user);
         proc.execute();
       
         param = 1;
-        results.setReasonabilityTestResultId(new Integer(proc.getInt(param++)));
+        results.setReasonabilityTestResultId(new Integer((int)proc.getLong(param++)));
       }
       
       updateForageConsumers(transaction, results, user);
+      connection.setAutoCommit(false);
       
       // Create Productive Units for the test
       try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
@@ -852,12 +1095,12 @@ public class ReasonabilityWriteDAO extends OracleDAO {
         for(BenefitRiskProductiveUnit unit : results.getBenefitRisk().getBenefitRiskProductiveUnits()) {
           
           int param = 1;
-          proc.setInt(param++, results.getReasonabilityTestResultId());
-          proc.setDouble(param++, unit.getReportedProductiveCapacityAmount());
-          proc.setDouble(param++, unit.getConsumedProductiveCapacityAmount());
-          proc.setDouble(param++, unit.getNetProductiveCapacityAmount());
-          proc.setDouble(param++, unit.getBpuCalculated());
-          proc.setDouble(param++, unit.getEstimatedIncome());
+          proc.setLong(param++, results.getReasonabilityTestResultId() == null ? null : results.getReasonabilityTestResultId().longValue());
+          proc.setBigDecimal(param++, unit.getReportedProductiveCapacityAmount() == null ? null : BigDecimal.valueOf(unit.getReportedProductiveCapacityAmount()));
+          proc.setBigDecimal(param++, unit.getConsumedProductiveCapacityAmount() == null ? null : BigDecimal.valueOf(unit.getConsumedProductiveCapacityAmount()));
+          proc.setBigDecimal(param++, unit.getNetProductiveCapacityAmount() == null ? null : BigDecimal.valueOf(unit.getNetProductiveCapacityAmount()));
+          proc.setBigDecimal(param++, unit.getBpuCalculated() == null ? null : BigDecimal.valueOf(unit.getBpuCalculated()));
+          proc.setBigDecimal(param++, unit.getEstimatedIncome() == null ? null : BigDecimal.valueOf(unit.getEstimatedIncome()));
           proc.setString(param++, unit.getInventoryItemCode());
           proc.setString(param++, unit.getStructureGroupCode());
           proc.setString(param++, user);
@@ -883,10 +1126,22 @@ public class ReasonabilityWriteDAO extends OracleDAO {
       for(ReasonabilityTestResult testResult : results.getTestResults()) {
         createReasonabilityTestMessages(transaction, testResult, results.getReasonabilityTestResultId(), user);
       }
-      
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       logSqlException(e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
     
   }
@@ -900,19 +1155,37 @@ public class ReasonabilityWriteDAO extends OracleDAO {
     
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     
     if(results != null && results.getReasonabilityTestResultId() != null) {
-      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + FLAG_REASONABILITY_TESTS_STALE_PROC, FLAG_REASONABILITY_TESTS_STALE_PARAM, false);) {
-        
-        int param = 1;
-        proc.setInt(param++, results.getReasonabilityTestResultId());
-        proc.setString(param++, user);
-        proc.execute();
-        
+      try {
+        originalAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+
+        try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+              + FLAG_REASONABILITY_TESTS_STALE_PROC, FLAG_REASONABILITY_TESTS_STALE_PARAM, false);) {
+          
+          int param = 1;
+          proc.setLong(param++, results.getReasonabilityTestResultId() == null ? null : results.getReasonabilityTestResultId().longValue());
+          proc.setString(param++, user);
+          proc.execute();
+        }
+
+        connection.commit();
       } catch (SQLException e) {
+        try {
+          connection.rollback();
+        } catch (SQLException rollbackEx) {
+          e.addSuppressed(rollbackEx);
+        }
         logSqlException(e);
         handleException(e);
+      } finally {
+        try {
+          connection.setAutoCommit(originalAutoCommit);
+        } catch (SQLException ex) {
+          handleException(ex);
+        }
       }
     }
     

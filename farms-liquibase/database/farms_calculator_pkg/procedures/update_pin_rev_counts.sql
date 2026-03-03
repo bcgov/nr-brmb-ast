@@ -1,5 +1,5 @@
 create or replace procedure farms_calculator_pkg.update_pin_rev_counts(
-    in in_pins varchar[],
+    in in_pins integer[],
     in in_program_year farms.farm_program_years.year%type,
     in in_flag_reasonabilitytests_stale text,
     in in_user farms.farm_agristability_scenarios.who_updated%type

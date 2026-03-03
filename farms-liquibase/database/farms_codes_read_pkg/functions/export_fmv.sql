@@ -38,9 +38,9 @@ begin
             (in_unit_desc_filter is null) or
             (in_unit_desc_filter is not null and lower(cuc.description) like lower(in_unit_desc_filter || '%'))
         )
-        order by to_number(fmv.inventory_item_code),
+        order by fmv.inventory_item_code::numeric,
                  fmv.period,
-                 to_number(fmv.municipality_code);
+                 fmv.municipality_code::numeric;
     return cur;
 end;
 $$;

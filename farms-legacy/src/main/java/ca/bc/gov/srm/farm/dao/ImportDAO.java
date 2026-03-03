@@ -11,7 +11,6 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +26,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  */
 public class ImportDAO extends OracleDAO {
 
-  private static final String PACKAGE_NAME = "FARM_WEBAPP_PKG";
+  private static final String PACKAGE_NAME = "FARMS_WEBAPP_PKG";
 
   private static final String GET_PROC = "GET_IMPORT_VERSION";
 
@@ -68,11 +67,15 @@ public class ImportDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + GET_PROC;
     String stateCode = null;
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     ResultSet resultSet = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
       proc.setInt(paramCount, importVersionId);
@@ -83,11 +86,22 @@ public class ImportDAO extends OracleDAO {
         stateCode = resultSet.getString("IMPORT_STATE_CODE");
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(resultSet, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return stateCode;
@@ -118,22 +132,40 @@ public class ImportDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + GET_PROC;
     ImportVersion iv = null;
     final int paramCount = 1;
+    boolean originalAutoCommit = true;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true); ) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-      proc.setInt(paramCount, importVersionId);
-      proc.execute();
-      
-      try (ResultSet rs = proc.getResultSet(); ) {
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true); ) {
 
-        if (rs.next()) {
-          iv = createImportVersion(rs);
+        proc.setInt(paramCount, importVersionId);
+        proc.execute();
+        
+        try (ResultSet rs = proc.getResultSet(); ) {
+
+          if (rs.next()) {
+            iv = createImportVersion(rs);
+          }
         }
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return iv;
@@ -157,8 +189,12 @@ public class ImportDAO extends OracleDAO {
     ResultSet rs = null;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       
       int index = 1;
@@ -171,11 +207,22 @@ public class ImportDAO extends OracleDAO {
         iv = createImportVersion(rs);
       }
 
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(rs, proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
 
     return iv;
@@ -192,15 +239,31 @@ public class ImportDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + IN_PROGRESS_PROC;
     DAOStoredProcedure proc = null;
     final int paramCount = 0;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       proc.execute();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -241,32 +304,49 @@ public class ImportDAO extends OracleDAO {
   throws DataAccessException {
     String procName = PACKAGE_NAME + "." + INSERT_PROC;
     DAOStoredProcedure proc = null;
-    final int paramCount = 7;
+    final int paramCount = 8;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.registerOutParameter(index, Types.INTEGER);
+      proc.registerOutParameter(index, Types.BIGINT);
       
       String importStateCode = importVersion.getImportStateCode() == null ? ImportStateCodes.SCHEDULED_FOR_STAGING : importVersion.getImportStateCode();
 
-      proc.setInt(index++, (Integer) null);
+      proc.setLong(index++, (Long) null);
       proc.setString(index++, importVersion.getImportClassCode());
       proc.setString(index++, importStateCode);
       proc.setString(index++, importVersion.getDescription());
       proc.setString(index++, importVersion.getImportFileName());
       proc.setString(index++, null);  // passwords no longer used
+      proc.setBytes(index++, importVersion.getImportFileContent());
       proc.setString(index++, importVersion.getImportedByUser());
       proc.execute();
 
       index = 1;
-      importVersion.setImportVersionId(new Integer(proc.getInt(index)));
+      importVersion.setImportVersionId(new Integer((int)proc.getLong(index)));
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -295,16 +375,32 @@ public class ImportDAO extends OracleDAO {
     Connection connection = getConnection(transaction);
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       proc.setInt(paramCount, importVersionId);
       proc.execute();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
@@ -322,16 +418,32 @@ public class ImportDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + CONFIRM_PROC;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
+    boolean originalAutoCommit = true;
 
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       proc.setInt(paramCount, importVersionId);
       proc.execute();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
   
@@ -341,46 +453,81 @@ public class ImportDAO extends OracleDAO {
     String procName = PACKAGE_NAME + "." + RETRY_STAGING_PROC;
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
     DAOStoredProcedure proc = null;
     final int paramCount = 1;
     
     try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       proc.setInt(paramCount, importVersionId);
       proc.execute();
+
+      connection.commit();
     } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
       close(proc);
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
     }
   }
 
 
 
-  public Blob getBlob(final Connection connection,
+  public byte[] getBlob(final Connection connection,
     final Integer importVersionId, final boolean update)
     throws DataAccessException {
-    Blob blob = null;
+    byte[] blob = null;
     final int paramCount = 1;
     String procName = PACKAGE_NAME + "." + GET_BLOB_PROC;
+    boolean originalAutoCommit = true;
 
     if (update) {
       procName = PACKAGE_NAME + "." + BLOB_UPDATE_PROC;
     }
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
-      proc.setInt(paramCount, importVersionId);
-      proc.execute();
-      
-      try (ResultSet resultSet = proc.getResultSet();) {
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
 
-        if (resultSet.next()) {
-          blob = (resultSet.getBlob(1));
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
+        proc.setInt(paramCount, importVersionId);
+        proc.execute();
+        
+        try (ResultSet resultSet = proc.getResultSet();) {
+
+          if (resultSet.next()) {
+            blob = (resultSet.getBytes(1));
+          }
         }
       }
+
+      connection.commit();
     } catch (SQLException ex) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        ex.addSuppressed(rollbackEx);
+      }
       throw new DataAccessException(ex);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw new DataAccessException(ex);
+      }
     }
 
     return blob;

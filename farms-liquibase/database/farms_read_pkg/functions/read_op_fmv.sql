@@ -27,11 +27,17 @@ begin
                    fmv.percent_variance,
                    fmv.municipality_code,
                    max(fmv.municipality_code) over (partition by fmv.inventory_item_code, fmv.crop_unit_code, fmv.program_year, fmv.period) mx_municipality_code,
-                   avg(fmv.average_price) over (
-                       partition by fmv.inventory_item_code, fmv.crop_unit_code, fmv.municipality_code
-                       order by fmv.program_year, fmv.period
-                       rows between t.fiscal_months preceding and current row
-                   ) yearly_avg,
+                   (
+                       select avg(f2.average_price)
+                       from farms.farm_fair_market_values f2
+                       where f2.inventory_item_code = fmv.inventory_item_code
+                       and f2.crop_unit_code = fmv.crop_unit_code
+                       and f2.municipality_code = fmv.municipality_code
+                       and (f2.program_year * 12 + f2.period) between
+                           (fmv.program_year * 12 + fmv.period - t.fiscal_months)
+                           and
+                           (fmv.program_year * 12 + fmv.period)
+                   ) as yearly_avg,
                    t.fiscal_start_year,
                    t.fiscal_end_year,
                    t.fiscal_start_month,
@@ -39,13 +45,13 @@ begin
                    fmv.program_year fmv_year,
                    fmv.period fmv_period
             from (
-                select distinct to_number(to_char(op.fiscal_year_start, 'YYYY')) fiscal_start_year,
-                       to_number(to_char(op.fiscal_year_start, 'MM')) fiscal_start_month,
-                       to_number(to_char(op.fiscal_year_end, 'YYYY')) fiscal_end_year,
-                       to_number(to_char(op.fiscal_year_end, 'MM')) fiscal_end_month,
+                select distinct to_char(op.fiscal_year_start, 'YYYY')::numeric fiscal_start_year,
+                       to_char(op.fiscal_year_start, 'MM')::numeric fiscal_start_month,
+                       to_char(op.fiscal_year_end, 'YYYY')::numeric fiscal_end_year,
+                       to_char(op.fiscal_year_end, 'MM')::numeric fiscal_end_month,
                        (
-                           (to_number(to_char(op.fiscal_year_end, 'YYYY')) - to_number(to_char(op.fiscal_year_start, 'YYYY'))) * 12 +
-                           (to_number(to_char(op.fiscal_year_end, 'MM')) - to_number(to_char(op.fiscal_year_start, 'MM'))) + 1
+                           (to_char(op.fiscal_year_end, 'YYYY')::numeric - to_char(op.fiscal_year_start, 'YYYY')::numeric) * 12 +
+                           (to_char(op.fiscal_year_end, 'MM')::numeric - to_char(op.fiscal_year_start, 'MM')::numeric) + 1
                        ) fiscal_months,
                        pyv.municipality_code,
                        x.inventory_item_code,

@@ -21,7 +21,7 @@ declare
 begin
     open c_xref;
     fetch c_xref into v_xref;
-    if c_xref%found then
+    if found then
         v_result := 1;
     end if;
     close c_xref;
@@ -39,9 +39,9 @@ begin
                 join farms.farm_productve_unit_capacities puc on puc.farming_operation_id = fo.farming_operation_id
                 where (v_bpu.municipality_code = '0' or pyv.municipality_code = v_bpu.municipality_code)
                 and (
-                    (to_number(to_char(fo.fiscal_year_start, 'YYYY')) = v_bpu.program_year)
+                    (to_char(fo.fiscal_year_start, 'YYYY')::numeric = v_bpu.program_year)
                     or
-                    (to_number(to_char(fo.fiscal_year_end, 'YYYY')) = v_bpu.program_year)
+                    (to_char(fo.fiscal_year_end, 'YYYY')::numeric = v_bpu.program_year)
                 )
                 and (
                     (puc.inventory_item_code is not null and puc.inventory_item_code = v_bpu.inventory_item_code)

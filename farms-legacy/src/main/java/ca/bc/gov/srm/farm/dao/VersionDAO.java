@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.webade.dbpool.WrapperConnection;
-import oracle.jdbc.OracleResultSet;
 
 
 /**
@@ -35,7 +34,7 @@ public class VersionDAO {
   private Logger logger = LoggerFactory.getLogger(VersionDAO.class);
 
   /** PACKAGE_NAME. */
-  private static final String PACKAGE_NAME = "FARM_VERSION_PKG";
+  private static final String PACKAGE_NAME = "FARMS_VERSION_PKG";
 
   private static final String CREATE_VERSION_PROC = "CREATE_VERSION";
 
@@ -48,7 +47,7 @@ public class VersionDAO {
 
   private static final String UPLOADED_VERSION_PROC = "UPLOADED_VERSION";
 
-  private static final int UPLOADED_VERSION_PARAM = 3;
+  private static final int UPLOADED_VERSION_PARAM = 4;
 
   private static final String START_IMPORT_PROC = "START_IMPORT";
 
@@ -68,11 +67,11 @@ public class VersionDAO {
 
   private static final String IMPORT_FAILURE_PROC = "IMPORT_FAILURE";
 
-  private static final int IMPORT_FAILURE_PARAM = 2;
+  private static final int IMPORT_FAILURE_PARAM = 3;
   
   private static final String IMPORT_COMPLETE_PROC = "IMPORT_COMPLETE";
   
-  private static final int IMPORT_COMPLETE_PARAM = 2;
+  private static final int IMPORT_COMPLETE_PARAM = 3;
   
   private static final String CLEAR_SUCCESSFUL_TRANSFERS_PROC = "CLEAR_SUCCESSFUL_TRANSFERS";
   
@@ -114,18 +113,39 @@ public class VersionDAO {
 
     Integer r = null;
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + CREATE_VERSION_PROC,
-          CREATE_VERSION_PARAM, Types.INTEGER);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setString(c++, description);
-      proc.setString(c++, uploadFileName);
-      proc.setString(c++, importUser);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+            PACKAGE_NAME + "." + CREATE_VERSION_PROC,
+            CREATE_VERSION_PARAM, Types.INTEGER);) {
 
-      proc.execute();
+        int c = 1;
+        proc.setString(c++, description);
+        proc.setString(c++, uploadFileName);
+        proc.setString(c++, importUser);
 
-      r = proc.getIntObj(1);
+        proc.execute();
+
+        r = proc.getInt(1);
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
 
     return r;
@@ -139,15 +159,36 @@ public class VersionDAO {
   public final void updateControlFileInfo(final Integer pVersionId,
     final String userId) throws SQLException {
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + UPDATE_CONTROL_FILE_PROC,
-          UPDATE_CONTROL_FILE_PARAM, false);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setInt(c++, pVersionId);
-      proc.setString(c++, userId);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+            PACKAGE_NAME + "." + UPDATE_CONTROL_FILE_PROC,
+            UPDATE_CONTROL_FILE_PARAM, false);) {
 
-      proc.execute();
+        int c = 1;
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
+        proc.setString(c++, userId);
+
+        proc.execute();
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -164,32 +205,37 @@ public class VersionDAO {
     final Boolean hasErrors, final String userId) throws SQLException,
     IOException {
 
-    Clob clob = null;
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-        PACKAGE_NAME + "." + UPLOADED_VERSION_PROC,
-        UPLOADED_VERSION_PARAM, true);) {
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+          PACKAGE_NAME + "." + UPLOADED_VERSION_PROC,
+          UPLOADED_VERSION_PARAM, false);) {
 
-      int c = 1;
-      proc.setInt(c++, pVersionId);
-      proc.setIndicator(c++, hasErrors);
-      proc.setString(c++, userId);
-      proc.execute();
-
-      try (ResultSet resultSet = proc.getResultSet();) {
-
-        if (resultSet.next()) {
-  
-          // get clob from cursor
-          clob = ((OracleResultSet) resultSet).getClob(1);
-          
-          try(Writer writer = clob.setCharacterStream(0);) {
-            writer.write(xml);
-            writer.flush();
-          }
-        }
+        int c = 1;
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
+        proc.setString(c++, xml);
+        proc.setIndicator(c++, hasErrors);
+        proc.setString(c++, userId);
+        proc.execute();
       }
 
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -201,16 +247,37 @@ public class VersionDAO {
   public final void startUpload(final Integer pVersionId, final String userId)
     throws SQLException {
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + START_UPLOAD_PROC,
-          START_UPLOAD_PARAM, false);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setInt(c++, pVersionId);
-      proc.setString(c++, userId);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+            PACKAGE_NAME + "." + START_UPLOAD_PROC,
+            START_UPLOAD_PARAM, false);) {
 
-      proc.execute();
+        int c = 1;
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
+        proc.setString(c++, userId);
 
+        proc.execute();
+
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -223,15 +290,36 @@ public class VersionDAO {
   public final void startImport(final Integer pVersionId, final String userId)
     throws SQLException {
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + START_IMPORT_PROC,
-          START_IMPORT_PARAM, false);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setInt(c++, pVersionId);
-      proc.setString(c++, userId);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+            PACKAGE_NAME + "." + START_IMPORT_PROC,
+            START_IMPORT_PARAM, false);) {
 
-      proc.execute();
+        int c = 1;
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
+        proc.setString(c++, userId);
+
+        proc.execute();
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -243,15 +331,36 @@ public class VersionDAO {
   public final void performImport(final Integer pVersionId, final String userId)
     throws SQLException {
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + PERFORM_IMPORT_PROC,
-          PERFORM_IMPORT_PARAM, false);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setInt(c++, pVersionId);
-      proc.setString(c++, userId);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+            PACKAGE_NAME + "." + PERFORM_IMPORT_PROC,
+            PERFORM_IMPORT_PARAM, false);) {
 
-      proc.execute();
+        int c = 1;
+        proc.setLong(c++, pVersionId == null ? null : pVersionId.longValue());
+        proc.setString(c++, userId);
+
+        proc.execute();
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 
@@ -266,21 +375,38 @@ public class VersionDAO {
   public final void uploadFailed(final Integer pImportVersionId,
     final String pMessage, final String pUserId) {
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-            PACKAGE_NAME + "." + UPLOAD_FAILURE_PROC,
-            UPLOAD_FAILURE_PARAM, false);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setInt(c++, pImportVersionId);
-      proc.setString(c++, pMessage);
-      proc.setString(c++, pUserId);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+              PACKAGE_NAME + "." + UPLOAD_FAILURE_PROC,
+              UPLOAD_FAILURE_PARAM, false);) {
 
-      proc.execute();
+        int c = 1;
+        proc.setLong(c++, pImportVersionId == null ? null : pImportVersionId.longValue());
+        proc.setString(c++, pMessage);
+        proc.setString(c++, pUserId);
 
+        proc.execute();
+      }
+
+      conn.commit();
     } catch (SQLException e) {
-
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
       // eat it
       logger.error("Unexpected error: ", e);
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        logger.error("Unexpected error: ", ex);
+      }
     }
   }
   
@@ -299,28 +425,50 @@ public class VersionDAO {
   public final void importFailed(final Integer pImportVersionId,
     final String pMessage, final String pUserId) throws SQLException, IOException {
 
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + IMPORT_FAILURE_PROC,
-          IMPORT_FAILURE_PARAM, true);) {
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
 
-      int c = 1;
-      proc.setInt(c++, pImportVersionId);
-      proc.setString(c++, pUserId);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+            PACKAGE_NAME + "." + IMPORT_FAILURE_PROC,
+            IMPORT_FAILURE_PARAM, true);) {
 
-      proc.execute();
+        int c = 1;
+        proc.setLong(c++, pImportVersionId == null ? null : pImportVersionId.longValue());
+        proc.setString(c++, pMessage);
+        proc.setString(c++, pUserId);
 
-      try (ResultSet resultSet = proc.getResultSet();) {
+        proc.execute();
 
-        if (resultSet.next()) {
-  
-          // get clob from cursor
-          Clob clob = ((OracleResultSet) resultSet).getClob(1);
-          
-          try(Writer writer = clob.setCharacterStream(0);) {
-            writer.write(pMessage);
-            writer.flush();
+        try (ResultSet resultSet = proc.getResultSet();) {
+
+          if (resultSet.next()) {
+    
+            // get clob from cursor
+            Clob clob = resultSet.getClob(1);
+            
+            try(Writer writer = clob.setCharacterStream(0);) {
+              writer.write(pMessage);
+              writer.flush();
+            }
           }
         }
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
       }
     }
   }
@@ -335,29 +483,51 @@ public class VersionDAO {
    */
   public final void importCompleted(final Integer pImportVersionId,
       final String pMessage, final String pUserId) throws SQLException, IOException {
+
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+            PACKAGE_NAME + "." + IMPORT_COMPLETE_PROC,
+            IMPORT_COMPLETE_PARAM, true);) {
+        
+        int c = 1;
+        proc.setLong(c++, pImportVersionId == null ? null : pImportVersionId.longValue());
+        proc.setString(c++, pMessage);
+        proc.setString(c++, pUserId);
+        
+        proc.execute();
+
+        try (ResultSet resultSet = proc.getResultSet();) {
+
+          if (resultSet.next()) {
     
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + IMPORT_COMPLETE_PROC,
-          IMPORT_COMPLETE_PARAM, true);) {
-      
-      int c = 1;
-      proc.setInt(c++, pImportVersionId);
-      proc.setString(c++, pUserId);
-      
-      proc.execute();
-
-      try (ResultSet resultSet = proc.getResultSet();) {
-
-        if (resultSet.next()) {
-  
-          // get clob from cursor
-          Clob clob = ((OracleResultSet) resultSet).getClob(1);
-          
-          try(Writer writer = clob.setCharacterStream(0);) {
-            writer.write(pMessage);
-            writer.flush();
+            // get clob from cursor
+            Clob clob = resultSet.getClob(1);
+            
+            try(Writer writer = clob.setCharacterStream(0);) {
+              writer.write(pMessage);
+              writer.flush();
+            }
           }
         }
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
       }
     }
   }
@@ -367,12 +537,33 @@ public class VersionDAO {
    * @throws  SQLException  SQLException
    */
   public final void clearSuccessfulTransfers() throws SQLException {
-    
-    try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + CLEAR_SUCCESSFUL_TRANSFERS_PROC,
-          CLEAR_SUCCESSFUL_TRANSFERS_PARAM, false);) {
-      
-      proc.execute();
+
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = conn.getAutoCommit();
+      conn.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
+            PACKAGE_NAME + "." + CLEAR_SUCCESSFUL_TRANSFERS_PROC,
+            CLEAR_SUCCESSFUL_TRANSFERS_PARAM, false);) {
+        
+        proc.execute();
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      try {
+        conn.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      throw e;
+    } finally {
+      try {
+        conn.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        throw ex;
+      }
     }
   }
 }
