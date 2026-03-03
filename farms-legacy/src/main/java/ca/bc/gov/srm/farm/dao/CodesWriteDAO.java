@@ -11,12 +11,9 @@
 package ca.bc.gov.srm.farm.dao;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.math.BigDecimal;
 import java.sql.Array;
-import java.sql.Clob;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
