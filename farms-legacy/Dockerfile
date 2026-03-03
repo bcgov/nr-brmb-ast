@@ -7,7 +7,8 @@ RUN ls
 
 ENV TOMCAT_HOME=/usr/local/tomcat \
   CATALINA_HOME=/usr/local/tomcat \
-  CATALINA_OPTS='-Xmx400m -Xms200m -server'
+  CATALINA_OPTS='-Xmx400m -Xms200m -server' \
+  VIRUS_SCAN_DIR=/app6/apps/data/farm/dev
 
 RUN rm -rf /usr/local/tomcat/webapps/ROOT  &&\
   mkdir /usr/local/tomcat/webapps/farms-legacy &&\
@@ -17,7 +18,9 @@ RUN rm -rf /usr/local/tomcat/webapps/ROOT  &&\
   cp ./deploy-tools/setenv.sh /usr/local/tomcat/bin/setenv.sh &&\
   cp ./deploy-tools/server.xml /usr/local/tomcat/conf/server.xml &&\
   cp ./deploy-tools/log4j2.xml /usr/local/tomcat/webapps/farms-legacy/WEB-INF/classes/log4j2.xml &&\
-  mkdir -p /app6/apps/data/farm/dev &&\
+  mkdir -p ${VIRUS_SCAN_DIR} &&\
+  chown -R tomcat:0 ${VIRUS_SCAN_DIR} &&\
+  chmod -R 770 ${VIRUS_SCAN_DIR} &&\
   mkdir -p /app6/userInfoFileLocation &&\
   cp ./deploy-tools/ora2-webade-user-info.xml /app6/userInfoFileLocation/ora2-webade-user-info.xml &&\
   adduser --system tomcat &&\
