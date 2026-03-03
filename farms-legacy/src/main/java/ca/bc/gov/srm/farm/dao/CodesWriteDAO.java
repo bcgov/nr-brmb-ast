@@ -313,7 +313,7 @@ public class CodesWriteDAO extends OracleDAO {
   
   // Document Template procs
   private static final String UPDATE_DOCUMENT_TEMPLATE_PROC = "UPDATE_DOCUMENT_TEMPLATE";
-  private static final int UPDATE_DOCUMENT_TEMPLATE_PARAM = 2;
+  private static final int UPDATE_DOCUMENT_TEMPLATE_PARAM = 3;
   
   private static final String IN_USE_SECTOR_DETAIL_CODE_PROC = "IN_USE_SECTOR_DETAIL_CODE";
   
@@ -3729,7 +3729,6 @@ public class CodesWriteDAO extends OracleDAO {
 
     Connection connection = getConnection(transaction);
     boolean originalAutoCommit = true;
-    Clob clob = null;
 
     try {
       originalAutoCommit = connection.getAutoCommit();
@@ -3740,19 +3739,9 @@ public class CodesWriteDAO extends OracleDAO {
       
         int param = 1;
         proc.setString(param++, documentTemplate.getTemplateName());
+        proc.setString(param++, documentTemplate.getTemplateContent());
         proc.setString(param++, user);
         proc.execute();
-        
-        try(ResultSet resultSet = proc.getResultSet();) {
-
-          if (resultSet.next()) {
-            clob = resultSet.getClob(1);
-            try(Writer writer = clob.setCharacterStream(0);) {
-              writer.write(documentTemplate.getTemplateContent());
-              writer.flush();
-            }
-          }
-        }
       }
 
       connection.commit();
