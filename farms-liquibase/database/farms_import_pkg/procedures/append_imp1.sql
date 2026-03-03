@@ -1,6 +1,6 @@
 create or replace procedure farms_import_pkg.append_imp1(
    in in_version_id bigint,
-   in in_msg varchar
+   in in_msg text
 )
 language plpgsql
 as $$
