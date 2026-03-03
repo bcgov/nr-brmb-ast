@@ -1,4 +1,4 @@
-FROM tomcat:9.0.86-jre17
+FROM tomcat:9.0.86-jre8
 
 COPY ./target/farms-legacy-1.0-SNAPSHOT.war .
 COPY ./deploy-tools ./deploy-tools
