@@ -9,6 +9,13 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "../../../../../database/farms_write_pkg/procedures/write_adjustment_verification_notes.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "../../../../../database/farms_write_pkg/procedures/write_calc_version.sql"
                         }
                     },
@@ -17,6 +24,20 @@
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
                             "path": "../../../../../database/farms_write_pkg/procedures/write_claim.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_write_pkg/procedures/write_final_verification_notes.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
+                            "path": "../../../../../database/farms_write_pkg/procedures/write_interim_verification_notes.sql"
                         }
                     },
                     {

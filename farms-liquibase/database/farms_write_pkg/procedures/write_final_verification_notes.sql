@@ -1,15 +1,10 @@
-create or replace function farms_write_pkg.write_final_verification_notes(
+create or replace procedure farms_write_pkg.write_final_verification_notes(
     in in_py_id farms.farm_program_years.program_year_id%type,
     in in_final_verification_notes farms.farm_program_years.final_verification_notes%type,
     in in_user_id farms.farm_benefit_calc_totals.who_updated%type
-) returns refcursor
+)
 language plpgsql
-as
-$$
-declare
-
-    v_cursor refcursor;
-
+as $$
 begin
     --
     -- We aren't using the revision_count stuff correctly because
