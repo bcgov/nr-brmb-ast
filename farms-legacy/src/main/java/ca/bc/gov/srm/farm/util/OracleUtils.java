@@ -12,7 +12,6 @@ package ca.bc.gov.srm.farm.util;
 
 import java.sql.Connection;
 
-import oracle.jdbc.OracleConnection;
 import ca.bc.gov.srm.farm.transaction.Transaction;
 import ca.bc.gov.webade.dbpool.WrapperConnection;
 
@@ -24,25 +23,6 @@ public final class OracleUtils {
   /** */
   private OracleUtils() {
   }
-
-  /**
-   * getOracleConnection.
-   *
-   * @param   transaction  Input parameter.
-   *
-   * @return  The return value.
-   */
-  public static OracleConnection getOracleConnection(
-    final Transaction transaction) {
-    Connection c = wrappedConnection(getConnection(transaction));
-
-    if (c instanceof OracleConnection) {
-      return (OracleConnection) c;
-    }
-
-    return null;
-  }
-
 
   /**
    * wrappedConnection.

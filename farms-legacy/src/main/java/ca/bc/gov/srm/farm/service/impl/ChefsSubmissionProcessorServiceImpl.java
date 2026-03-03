@@ -231,7 +231,7 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
       createProductiveUnitCapacities(transaction, pucList, user);
       
       @SuppressWarnings("resource")
-      Connection connection = OracleUtils.getOracleConnection(transaction);
+      Connection connection = (Connection) transaction.getDatastore();
       chefsDatabaseDao.updateScenarioSubmissionId(connection, chefsScenarioId, submissionId, user);
       
       logger.debug("scenario: " + chefsScenarioId);

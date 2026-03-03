@@ -20,7 +20,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import ca.bc.gov.srm.farm.util.TestUtils;
-import oracle.jdbc.OracleResultSet;
 
 
 public class TestValidateImportXml {
@@ -50,7 +49,7 @@ public class TestValidateImportXml {
           try(ResultSet resultSet = stmt.executeQuery(sqlText);) {
     
             if (resultSet.next()) {
-              Clob clob = ((OracleResultSet) resultSet).getCLOB(1);
+              Clob clob = resultSet.getClob(1);
               
               // errors are sent to stderr
               try (InputStream asciiStream = clob.getAsciiStream();) {

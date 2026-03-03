@@ -61,15 +61,11 @@ import ca.bc.gov.srm.farm.domain.codes.InventoryClassCodes;
 import ca.bc.gov.srm.farm.domain.enrolment.Enrolment;
 import ca.bc.gov.srm.farm.domain.enrolment.EnwEnrolment;
 import ca.bc.gov.srm.farm.util.DataParseUtils;
-import oracle.jdbc.driver.OracleConnection;
 
 /**
  * @author dzwiers
  */
 public class ReadDAO {
-
-  private static final String NUM_COLLECTION_TYPE_NAME = "FARM_ID_TBL";
-  private static final String CODE_COLLECTION_TYPE_NAME = "FARM_CD_TBL";
 
   private static final String PACKAGE_NAME = "FARMS_READ_PKG";
 
@@ -3127,24 +3123,9 @@ public class ReadDAO {
     }
   }
 
-  protected OracleConnection getOracleConnection() {
-    OracleConnection oracleConnection = (OracleConnection) conn;
-    return oracleConnection;
-  }
-
   @SuppressWarnings("resource")
   protected Array createStringOracleArray(List<String> values) throws SQLException {
     return conn.createArrayOf("varchar", values.toArray());
-  }
-  
-  @SuppressWarnings("resource")
-  protected Array createNumbersOracleArray(List<Integer> values) throws SQLException {
-    return getOracleConnection().createOracleArray(NUM_COLLECTION_TYPE_NAME, values.toArray());
-  }
-
-  @SuppressWarnings("resource")
-  protected Array createCodesOracleArray(String[] values) throws SQLException {
-    return getOracleConnection().createOracleArray(CODE_COLLECTION_TYPE_NAME, values);
   }
   
   @SuppressWarnings("resource")

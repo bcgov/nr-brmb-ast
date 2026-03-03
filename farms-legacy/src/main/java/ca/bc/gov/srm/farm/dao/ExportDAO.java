@@ -35,7 +35,6 @@ import ca.bc.gov.srm.farm.service.ExportService;
 import ca.bc.gov.srm.farm.service.ReportService;
 import ca.bc.gov.srm.farm.service.impl.ExportServiceFactory;
 import ca.bc.gov.webade.dbpool.WrapperConnection;
-import oracle.jdbc.driver.OracleDriver;
 
 /**
  * @author dzwiers
@@ -62,10 +61,6 @@ public final class ExportDAO {
     } else {
       this.conn = pConn;
     }
-
-    OracleDriver od = new OracleDriver();
-    logger.info("Oracle Driver: " + od.getMajorVersion() + "."
-        + od.getMinorVersion());
   }
 
   

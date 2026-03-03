@@ -36,7 +36,6 @@ import ca.bc.gov.srm.farm.exception.InvalidRevisionCountException;
 import ca.bc.gov.srm.farm.exception.LineItemNotFoundException;
 import ca.bc.gov.srm.farm.transaction.Transaction;
 import ca.bc.gov.srm.farm.util.DataParseUtils;
-import oracle.jdbc.driver.OracleConnection;
 
 
 /**
@@ -752,48 +751,6 @@ abstract class OracleDAO {
     throws SQLException {
     return statement.getObject(index);
   }
-
-  /**
-   * getOracleConnection.
-   *
-   * @param   transaction  Input parameter.
-   *
-   * @return  The return value.
-   */
-  protected OracleConnection getOracleConnection(
-    final Transaction transaction) {
-    @SuppressWarnings("resource")
-    Connection c = null;
-    try {
-      c = wrappedConnection(getConnection(transaction));
-    } catch (SQLException ex) {
-      // do nothing
-    }
-
-    if (c instanceof OracleConnection) {
-      return (OracleConnection) c;
-    }
-
-    return null;
-  }
-
-
-  protected OracleConnection getOracleConnection(final Connection connection) {
-
-    Connection c = null;
-    try {
-      c = wrappedConnection(connection);
-    } catch (SQLException ex) {
-      // do nothing
-    }
-
-    if (c instanceof OracleConnection) {
-      return (OracleConnection) c;
-    }
-
-    return null;
-  }
-
 
   /**
    * getShort.
@@ -1766,18 +1723,6 @@ abstract class OracleDAO {
     setSqlTimestamp(statement, index, sqlTS);
   }
 
-
-  /**
-   * wrappedConnection.
-   *
-   * @param   connection  The parameter value.
-   *
-   * @return  The return value.
-   */
-  protected Connection wrappedConnection(final Connection connection) throws SQLException {
-    return connection.unwrap(OracleConnection.class);
-  }
-
   /**
    * writeBlob.
    *
@@ -1970,21 +1915,6 @@ abstract class OracleDAO {
   
   protected Array createNumbersOracleArray(Connection connection, List<Integer> values) throws SQLException {
     return connection.createArrayOf("numeric", toArray(values));
-  }
-
-  @SuppressWarnings("resource")
-  protected Array createStringOracleArray(Transaction transaction, String[] values) throws SQLException {
-    return getOracleConnection(transaction).createOracleArray(CODE_COLLECTION_TYPE_NAME, values);
-  }
-  
-  @SuppressWarnings("resource")
-  protected Array createNumbersOracleArray(Transaction transaction, Integer[] values) throws SQLException {
-    return getOracleConnection(transaction).createOracleArray(NUM_COLLECTION_TYPE_NAME, values);
-  }
-  
-  @SuppressWarnings("resource")
-  protected Array createStringOracleArray(Connection connection, String[] values) throws SQLException {
-    return getOracleConnection(connection).createOracleArray(CODE_COLLECTION_TYPE_NAME, values);
   }
   
   @SuppressWarnings("resource")

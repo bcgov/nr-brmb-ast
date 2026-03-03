@@ -111,7 +111,7 @@ public class DAOStoredProcedure implements AutoCloseable {
       result.append("\r\nParameter Values:");
 
       if (returnsValue()) {
-        result.append("\r\n\tReturn Value " + getReturnTypeString());
+        result.append("\r\n\tReturn Value " + getReturnType());
       }
 
       for (int i = 0; i < paramValues.length; i++) {
@@ -121,22 +121,6 @@ public class DAOStoredProcedure implements AutoCloseable {
     }
 
     return result.toString();
-  }
-
-
-  /**
-   * @return  x
-   */
-  protected final String getReturnTypeString() {
-    String str = "";
-
-    if (getReturnType() == oracle.jdbc.OracleTypes.CURSOR) {
-      str = "CURSOR";
-    } else if (getReturnType() == oracle.jdbc.OracleTypes.VARCHAR) {
-      str = "VARCHAR";
-    }
-
-    return str;
   }
 
   /**
