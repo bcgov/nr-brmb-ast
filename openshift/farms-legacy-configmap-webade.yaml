@@ -836,7 +836,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{BCEID_ONLINE_SERVICE_ID}"
+            "value": "#{BCEID_ONLINE_SERVICE_ID}#"
         },
         {
             "subTypeCode": "app-config",
@@ -845,7 +845,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{BCEID_USER_ID}"
+            "value": "#{BCEID_USER_ID}#"
         },
         {
             "subTypeCode": "app-config",
@@ -863,7 +863,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{BCEID_WEB_SERVICE_URL}"
+            "value": "#{BCEID_WEB_SERVICE_URL}#"
         },
         {
             "subTypeCode": "app-config",
@@ -998,7 +998,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{REPORTS_JASPER_REST_URL}"
+            "value": "#{REPORTS_JASPER_REST_URL}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1007,7 +1007,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{REPORTS_JASPER_USER_NAME}"
+            "value": "#{REPORTS_JASPER_USER_NAME}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1016,7 +1016,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": true,
-            "value": "#{REPORTS_JASPER_USER_PASSWORD}"
+            "value": "#{REPORTS_JASPER_USER_PASSWORD}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1025,7 +1025,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{REPORTS_JAVA_REPORTS_SERVER}"
+            "value": "#{REPORTS_JAVA_REPORTS_SERVER}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1034,7 +1034,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{REPORTS_ORACLE_REPORTS_SERVER}"
+            "value": "#{REPORTS_ORACLE_REPORTS_SERVER}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1043,7 +1043,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{CRM_DYNAMICS_URL}"
+            "value": "#{CRM_DYNAMICS_URL}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1061,7 +1061,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{CRM_AUTHORITY_URL}"
+            "value": "#{CRM_AUTHORITY_URL}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1070,7 +1070,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{CRM_CLIENT_ID}"
+            "value": "#{CRM_CLIENT_ID}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1079,7 +1079,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": true,
-            "value": "#{CRM_CLIENT_SECRET}"
+            "value": "#{CRM_CLIENT_SECRET}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1088,7 +1088,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{CRM_ENROLMENT_FEE_MODIFIED_BY_USER_OVERRIDE}"
+            "value": "#{CRM_ENROLMENT_FEE_MODIFIED_BY_USER_OVERRIDE}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1106,7 +1106,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{WEBAPP_SIGN_OUT_URL}"
+            "value": "#{WEBAPP_SIGN_OUT_URL}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1115,7 +1115,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{WEBSERVICE_ALLOWABLE_IP_REGEX}"
+            "value": "#{WEBSERVICE_ALLOWABLE_IP_REGEX}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1124,7 +1124,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{CHEFS_API_URL}"
+            "value": "#{CHEFS_API_URL}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1133,7 +1133,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{CHEFS_API_VERSION}"
+            "value": "#{CHEFS_API_VERSION}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1142,7 +1142,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{CHEFS_AGENT_ENABLED}"
+            "value": "#{CHEFS_AGENT_ENABLED}#"
         },
         {
             "subTypeCode": "app-config",
@@ -1151,7 +1151,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{FIFO_AGENT_ENABLED}"
+            "value": "#{FIFO_AGENT_ENABLED}#"
         }
     ],
     "globalPreferences": [],
