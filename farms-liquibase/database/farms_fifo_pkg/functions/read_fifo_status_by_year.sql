@@ -20,7 +20,7 @@ begin
         join farms.farm_scenario_state_codes ssc on ssc.scenario_state_code = sv.scenario_state_code
         left outer join farms.farm_agristability_claims cl on cl.agristability_scenario_id = sv.agristability_scenario_id
         where sv.year = in_year
-        and sv.scenario_class_code = 'FIFO';
+        and sv.scenario_class_code = 'TRIAGE';
 
     return cur;
 end;
