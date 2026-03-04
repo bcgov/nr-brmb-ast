@@ -93,11 +93,11 @@ spec:
                   key: LOG_LEVEL
           resources:
             requests:
-              cpu: #{API_CPU_REQUEST}#
-              memory: #{API_MEMORY_REQUEST}#
+              cpu: #{LEGACY_CPU_REQUEST}#
+              memory: #{LEGACY_MEMORY_REQUEST}#
             limits:
-              cpu: #{API_CPU_LIMIT}#
-              memory: #{API_MEMORY_LIMIT}#
+              cpu: #{LEGACY_CPU_LIMIT}#
+              memory: #{LEGACY_MEMORY_LIMIT}#
           volumeMounts:
             - name: config-webade-volume
               mountPath: /usr/local/tomcat/webapps/farms-legacy/WEB-INF/classes/webadeConfig/applicationConfiguration.json

@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: farms-legacy-deployment-#{ENV}#
   minReplicas: 1
-  maxReplicas: #{MAX_API_COUNT}#
+  maxReplicas: #{MAX_LEGACY_COUNT}#
   metrics:
     # These define triggers based on % request value, not % limit value
     - type: Resource

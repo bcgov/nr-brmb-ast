@@ -108,6 +108,13 @@ jobs:
           API_MEMORY_LIMIT: ${{ vars.API_MEMORY_LIMIT }}
           MAX_API_COUNT: ${{ vars.MAX_APP_COUNT }}
 
+          #API variables
+          LEGACY_CPU_REQUEST: ${{ vars.LEGACY_CPU_REQUEST }}
+          LEGACY_CPU_LIMIT: ${{ vars.LEGACY_CPU_LIMIT }}
+          LEGACY_MEMORY_REQUEST: ${{ vars.LEGACY_MEMORY_REQUEST }}
+          LEGACY_MEMORY_LIMIT: ${{ vars.LEGACY_MEMORY_LIMIT }}
+          MAX_LEGACY_COUNT: ${{ vars.MAX_APP_COUNT }}
+
           POSTGRES_RESOURCE_NAME: ${{ vars.POSTGRES_RESOURCE_NAME }}
 
           TOMCAT_MAX_THREADS: ${{ vars.TOMCAT_MAX_THREADS }}
