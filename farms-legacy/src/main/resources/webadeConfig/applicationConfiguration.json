@@ -799,7 +799,7 @@
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "/app6/userInfoFileLocation/ora2-webade-user-info.xml"
+            "value": "\\\\app6\\userInfoFileLocation\\ora2-webade-user-info.xml"
         },
         {
             "subTypeCode": "webade-user-provider",
@@ -972,7 +972,7 @@
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "/app6/apps/data/farm/dev"
+            "value": "\\\\app6\\apps\\data\\farm\\dev"
         },
         {
             "subTypeCode": "app-config",
