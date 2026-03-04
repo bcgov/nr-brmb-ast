@@ -73,7 +73,6 @@ import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsSubmissionProcessorService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.transaction.Transaction;
-import ca.bc.gov.srm.farm.util.OracleUtils;
 
 public class ChefsSubmissionProcessorServiceImpl extends BaseService implements ChefsSubmissionProcessorService {
 

@@ -67,7 +67,6 @@ import ca.bc.gov.srm.farm.service.ImportService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.transaction.Transaction;
 import ca.bc.gov.srm.farm.util.IOUtils;
-import ca.bc.gov.srm.farm.util.OracleUtils;
 import ca.bc.gov.srm.farm.util.StringUtils;
 
 /**
