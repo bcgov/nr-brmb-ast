@@ -1,0 +1,1325 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: farms-legacy-config-webade-#{ENV}#
+  namespace: '#{NAMESPACE}#'
+immutable: false
+data:
+  applicationConfiguration.json: |
+    {
+      "@type": "http://webade.gov.bc.ca/applicationConfiguration",
+      "applicationAcronym": "FARM",
+      "custodianNumber": 0,
+      "applicationName": "Farmer Access to Risk Management",
+      "applicationDescription": "Manage BC Agri-stability grant data",
+      "applicationObjectPrefix": null,
+      "enabledInd": true,
+      "distributeTypeCd": null,
+      "managementEnabledInd": false,
+      "applicationVersion": null,
+      "reportedWebadeVersion": "04_07_00",
+      "actions": [
+        {
+            "name": "calculatorInbox",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "copyProgramYearVersion",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "copyYear",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "editCodes",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "editInvitation",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "editScenario",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "editTipCodes",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "exportData",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "generateEnrolments",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "generateTipBenchmarks",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "generateTipReports",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "importCRA",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "importCodes",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "importData",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "manageTransfers",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "myAccount",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "newParticipant",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "opAlignEditAllYears",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "regenerateCob",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "reopenVerifiedScenario",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "scenariosViewAllYears",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "searchScenario",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "system",
+            "description": null,
+            "privilegedInd": true
+        },
+        {
+            "name": "viewAccount",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "viewCodes",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "viewEnrolments",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "viewInvitation",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "viewReasonabilityTests",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "viewReport",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "viewScenario",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "viewTipCodes",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "welcome",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "verifyScenario",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "chefsManagement",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "fifoView",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "editPin",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "editCashMarginsFlag",
+            "description": null,
+            "privilegedInd": false
+        },
+        {
+            "name": "newOperation",
+            "description": null,
+            "privilegedInd": false
+        }
+    ],
+    "roles": [
+        {
+            "name": "ADMIN",
+            "description": "Administrative access",
+            "actionNames": [
+                "calculatorInbox",
+                "copyProgramYearVersion",
+                "copyYear",
+                "editCodes",
+                "editInvitation",
+                "editScenario",
+                "exportData",
+                "generateEnrolments",
+                "importCRA",
+                "importCodes",
+                "importData",
+                "manageTransfers",
+                "newOperation",
+                "newParticipant",
+                "opAlignEditAllYears",
+                "regenerateCob",
+                "reopenVerifiedScenario",
+                "scenariosViewAllYears",
+                "searchScenario",
+                "system",
+                "viewAccount",
+                "viewCodes",
+                "viewEnrolments",
+                "viewInvitation",
+                "viewReasonabilityTests",
+                "viewReport",
+                "viewScenario",
+                "verifyScenario",
+                "welcome",
+                "chefsManagement",
+                "fifoView",
+                "editPin",
+                "editCashMarginsFlag"
+            ]
+        },
+        {
+            "name": "CLIENT",
+            "description": "Client access",
+            "actionNames": [
+                "myAccount",
+                "viewAccount",
+                "viewInvitation",
+                "viewScenario",
+                "welcome"
+            ]
+        },
+        {
+            "name": "INBOX_VIEWER",
+            "description": "Access to Inbox",
+            "actionNames": [
+                "calculatorInbox"
+            ]
+        },
+        {
+            "name": "NEW_PARTICIPANT_ADMIN",
+            "description": "Ability to enter new participants without doing a CRA import",
+            "actionNames": [
+                "copyProgramYearVersion",
+                "newParticipant",
+                "welcome"
+            ]
+        },
+        {
+            "name": "PROGRAM_ANALYST",
+            "description": "Ability to generate benchmarks for Tip Reports",
+            "actionNames": [
+                "calculatorInbox",
+                "editCodes",
+                "exportData",
+                "importCodes",
+                "importData",
+                "scenariosViewAllYears",
+                "searchScenario",
+                "viewCodes",
+                "viewEnrolments",
+                "viewReasonabilityTests",
+                "viewReport",
+                "viewScenario",
+                "welcome"
+            ]
+        },
+        {
+            "name": "SENIOR_VERIFIER",
+            "description": "Senior Verifier access",
+            "actionNames": [
+                "calculatorInbox",
+                "copyProgramYearVersion",
+                "copyYear",
+                "editInvitation",
+                "editScenario",
+                "exportData",
+                "newOperation",
+                "opAlignEditAllYears",
+                "regenerateCob",
+                "reopenVerifiedScenario",
+                "searchScenario",
+                "viewCodes",
+                "viewInvitation",
+                "viewReasonabilityTests",
+                "viewReport",
+                "viewScenario",
+                "verifyScenario",
+                "welcome"
+            ]
+        },
+        {
+            "name": "STAFF",
+            "description": "Staff access",
+            "actionNames": [
+                "calculatorInbox",
+                "editInvitation",
+                "generateEnrolments",
+                "searchScenario",
+                "viewAccount",
+                "viewEnrolments",
+                "viewInvitation",
+                "viewReport",
+                "viewScenario",
+                "welcome"
+            ]
+        },
+        {
+            "name": "TIP_REPORT_ADMIN",
+            "description": "Ability to generate benchmarks for Tip Reports",
+            "actionNames": [
+                "editTipCodes",
+                "generateTipBenchmarks",
+                "generateTipReports",
+                "viewTipCodes",
+                "welcome"
+            ]
+        },
+        {
+            "name": "TIP_REPORT_USER",
+            "description": "Ability to generate Tip Reports",
+            "actionNames": [
+                "generateTipReports",
+                "viewTipCodes",
+                "welcome"
+            ]
+        },
+        {
+            "name": "VERIFIER",
+            "description": "Verifier access",
+            "actionNames": [
+                "calculatorInbox",
+                "copyYear",
+                "editInvitation",
+                "editScenario",
+                "exportData",
+                "searchScenario",
+                "viewCodes",
+                "viewInvitation",
+                "viewReasonabilityTests",
+                "viewReport",
+                "viewScenario",
+                "verifyScenario",
+                "welcome"
+            ]
+        },
+        {
+            "name": "DATA_ADMIN",
+            "description": "Verifier access",
+            "actionNames": [
+                "calculatorInbox",
+                "copyYear",
+                "editInvitation",
+                "editScenario",
+                "exportData",
+                "searchScenario",
+                "viewCodes",
+                "viewInvitation",
+                "viewReasonabilityTests",
+                "viewReport",
+                "viewScenario",
+                "welcome"
+            ]
+        }
+    ],
+    "wdePreferences": [
+        {
+            "subTypeCode": "app-config",
+            "setName": null,
+            "name": "anonymous-user",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "BCEID\\WEBADE_ANONYMOUS"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": null,
+            "name": "group-max-cache-time",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "86400000"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": null,
+            "name": "user-max-cache-time",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "86400000"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "chain-order",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "-1"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "class-name",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "ca.bc.gov.webade.developer.j2ee.WebADEDeveloperFilter"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "enabled",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-ALL-SMGOV_EMAIL_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-ALL-SMGOV_GIVENNAMES_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-ALL-SMGOV_USERDISPLAYNAME_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-ALL-SMGOV_USERGUID_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-ALL-SMGOV_USERIDENTIFIERTYPE_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-ALL-SMGOV_USERTYPE_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_ADDRESSBLOCK_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_AGE19OROVER_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_AGE_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_AUTHORITATIVEPARTYIDENTIFIER_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_AUTHORITATIVEPARTYNAME_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_BIRTHDATE_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_CITY_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_COUNTRY_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_GIVENNAME_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_IDENTITYASSURANCELEVEL1_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_IDENTITYASSURANCELEVEL2_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_IDENTITYASSURANCELEVEL3_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_IDENTITYASSURANCELEVEL_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_POSTALCODE_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_PROVINCE_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_SEX_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_STREETADDRESS_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_SURNAME_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BCS-SMGOV_TRANSACTIONIDENTIFIER_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BUP-SMGOV_BUSINESSGUID_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BUP-SMGOV_BUSINESSLEGALNAME_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-BUP-SMGOV_BUSINESSNUMBER_HEADER",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-authentication-method",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "form+basic"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-filter-users-by-access",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-password-enabled",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "false"
+        },
+        {
+            "subTypeCode": "dynamic-filter",
+            "setName": "webade-developer-filter",
+            "name": "init-param-use-cookie",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "BUP-user-type-domain",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "BCEID"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "GOV-user-type-domain",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "IDIR"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "UIN-user-type-domain",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "MYID"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "VIN-user-type-domain",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "VFDID"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "class-name",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "ca.bc.gov.webade.developer.user.provider.WebADEDeveloperUserProvider"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "enabled",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "true"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "supported-user-types",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "GOV,BUP,UIN,VIN"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "user-info-file-location",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "/app6/userInfoFileLocation/ora2-webade-user-info.xml"
+        },
+        {
+            "subTypeCode": "webade-user-provider",
+            "setName": "webade-developer-provider",
+            "name": "user-info-response-delay",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "300"
+        }
+    ],
+    "applicationPreferences": [
+        {
+            "subTypeCode": "app-config",
+            "setName": "bceid",
+            "name": "expiry.period",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "85"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "bceid",
+            "name": "online.service.id",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{BCEID_ONLINE_SERVICE_ID}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "bceid",
+            "name": "user.id",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{BCEID_USER_ID}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "bceid",
+            "name": "user.password",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "Fake password. This preference is no longer used, but have not removed it yet."
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "bceid",
+            "name": "web.service.url",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{BCEID_WEB_SERVICE_URL}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "enrolment",
+            "name": "start.year",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "2009"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "enrolment",
+            "name": "years.ahead",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "1"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "help",
+            "name": "file.prefix",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "farmhelp"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "help",
+            "name": "file.suffix",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": ".html"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "help",
+            "name": "url",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "http://agristability/farm/"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "import",
+            "name": "business.window.end",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "19:00"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "import",
+            "name": "business.window.start",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "07:00"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "import",
+            "name": "import.window.end",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "23:59"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "import",
+            "name": "import.window.start",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "0:00"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "import",
+            "name": "staging.window.end",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "23:59"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "import",
+            "name": "staging.window.start",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "0:00"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "import",
+            "name": "timer.frequency",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "60"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "import",
+            "name": "virus.scan.dir",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "/app6/apps/data/farm"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "reports",
+            "name": "jasper.reports.path",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "JCRS/FARM/Reports/"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "reports",
+            "name": "jasper.rest.url",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{REPORTS_JASPER_REST_URL}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "reports",
+            "name": "jasper.user.name",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{REPORTS_JASPER_USER_NAME}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "reports",
+            "name": "jasper.user.password",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": true,
+            "value": "#{REPORTS_JASPER_USER_PASSWORD}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "reports",
+            "name": "java.reports.server",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{REPORTS_JAVA_REPORTS_SERVER}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "reports",
+            "name": "oracle.reports.server",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{REPORTS_ORACLE_REPORTS_SERVER}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "crm",
+            "name": "dynamics.url",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{CRM_DYNAMICS_URL}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "crm",
+            "name": "api.version",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "9.1"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "crm",
+            "name": "authority.url",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{CRM_AUTHORITY_URL}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "crm",
+            "name": "client.id",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{CRM_CLIENT_ID}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "crm",
+            "name": "client.secret",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": true,
+            "value": "#{CRM_CLIENT_SECRET}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "crm",
+            "name": "enrolment.fee.modified.by.user.override",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{CRM_ENROLMENT_FEE_MODIFIED_BY_USER_OVERRIDE}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "webapp",
+            "name": "first.bc.admin.year",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "2009"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "webapp",
+            "name": "sign.out.url",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{WEBAPP_SIGN_OUT_URL}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "webservice",
+            "name": "allowable.ip.regex",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{WEBSERVICE_ALLOWABLE_IP_REGEX}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "chefs",
+            "name": "api.url",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{CHEFS_API_URL}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "chefs",
+            "name": "api.version",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{CHEFS_API_VERSION}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "chefs",
+            "name": "agent.enabled",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{CHEFS_AGENT_ENABLED}"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "fifo",
+            "name": "agent.enabled",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{FIFO_AGENT_ENABLED}"
+        }
+    ],
+    "globalPreferences": [],
+    "defaultUserPreferences": [],
+    "profiles": [
+        {
+            "name": "FARM_ADMIN",
+            "description": "Administrative access to the FARM application",
+            "secureByOrganization": false,
+            "availibleTo": [
+                "BUP",
+                "GOV"
+            ],
+            "effectiveDate": 28800000,
+            "expiryDate": 253402243200000,
+            "profileRoles": [
+                {
+                    "applicationCode": "FARM",
+                    "name": "ADMIN"
+                }
+            ]
+        },
+        {
+            "name": "FARM_CLIENT",
+            "description": "Allows a client to access the FARM application",
+            "secureByOrganization": false,
+            "availibleTo": [
+                "BUP",
+                "GOV"
+            ],
+            "effectiveDate": 28800000,
+            "expiryDate": 253402243200000,
+            "profileRoles": [
+                {
+                    "applicationCode": "FARM",
+                    "name": "CLIENT"
+                }
+            ]
+        },
+        {
+            "name": "FARM_INBOX_VIEWER",
+            "description": "Access to the Inbox in the FARM application",
+            "secureByOrganization": false,
+            "availibleTo": [
+                "BUP",
+                "GOV"
+            ],
+            "effectiveDate": 28800000,
+            "expiryDate": 1726012800000,
+            "profileRoles": [
+                {
+                    "applicationCode": "FARM",
+                    "name": "INBOX_VIEWER"
+                }
+            ]
+        },
+        {
+            "name": "FARM_SENIOR_VERIFIER",
+            "description": "Senior Verifier access to the FARM application",
+            "secureByOrganization": false,
+            "availibleTo": [
+                "BUP",
+                "GOV"
+            ],
+            "effectiveDate": 28800000,
+            "expiryDate": 253402243200000,
+            "profileRoles": [
+                {
+                    "applicationCode": "FARM",
+                    "name": "SENIOR_VERIFIER"
+                }
+            ]
+        },
+        {
+            "name": "FARM_STAFF",
+            "description": "Allows staff to access the FARM application",
+            "secureByOrganization": false,
+            "availibleTo": [
+                "BUP",
+                "GOV"
+            ],
+            "effectiveDate": 28800000,
+            "expiryDate": 253402243200000,
+            "profileRoles": [
+                {
+                    "applicationCode": "FARM",
+                    "name": "STAFF"
+                }
+            ]
+        },
+        {
+            "name": "FARM_TIP_REPORT_ADMIN",
+            "description": "Tip report benchmark data generation access to the FARM application",
+            "secureByOrganization": false,
+            "availibleTo": [
+                "BUP",
+                "GOV"
+            ],
+            "effectiveDate": 28800000,
+            "expiryDate": 253402243200000,
+            "profileRoles": [
+                {
+                    "applicationCode": "FARM",
+                    "name": "TIP_REPORT_ADMIN"
+                }
+            ]
+        },
+        {
+            "name": "FARM_TIP_REPORT_USER",
+            "description": "Tip report generation access to the FARM application",
+            "secureByOrganization": false,
+            "availibleTo": [
+                "BUP",
+                "GOV"
+            ],
+            "effectiveDate": 28800000,
+            "expiryDate": 253402243200000,
+            "profileRoles": [
+                {
+                    "applicationCode": "FARM",
+                    "name": "TIP_REPORT_USER"
+                }
+            ]
+        },
+        {
+            "name": "FARM_VERIFIER",
+            "description": "Verifier access to the FARM application",
+            "secureByOrganization": false,
+            "availibleTo": [
+                "BUP",
+                "GOV"
+            ],
+            "effectiveDate": 28800000,
+            "expiryDate": 253402243200000,
+            "profileRoles": [
+                {
+                    "applicationCode": "FARM",
+                    "name": "VERIFIER"
+                }
+            ]
+        },
+        {
+            "name": "FARM_DATA_ADMIN",
+            "description": "Administrative access to the FARM application",
+            "secureByOrganization": false,
+            "availibleTo": [
+                "BUP",
+                "GOV"
+            ],
+            "effectiveDate": 28800000,
+            "expiryDate": 253402243200000,
+            "profileRoles": [
+                {
+                    "applicationCode": "FARM",
+                    "name": "DATA_ADMIN"
+                }
+            ]
+        }
+    ],
+    "serviceClients": [],
+    "groupAuthorizations": [
+        {
+            "profileName": "FARM_CLIENT",
+            "profileDescription": "Allows a client to access the FARM application",
+            "effectiveDate": 1267084800000,
+            "expiryDate": 253402243200000,
+            "groupName": "Business Partner Users",
+            "enabled": true
+        }
+      ]
+    }

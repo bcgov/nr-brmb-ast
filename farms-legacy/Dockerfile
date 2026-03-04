@@ -8,7 +8,7 @@ RUN ls
 ENV TOMCAT_HOME=/usr/local/tomcat \
   CATALINA_HOME=/usr/local/tomcat \
   CATALINA_OPTS='-Xmx400m -Xms200m -server' \
-  VIRUS_SCAN_DIR=/app6/apps/data/farm/dev
+  VIRUS_SCAN_DIR=/app6/apps/data/farm
 
 RUN rm -rf /usr/local/tomcat/webapps/ROOT  &&\
   mkdir /usr/local/tomcat/webapps/farms-legacy &&\

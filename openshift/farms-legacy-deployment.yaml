@@ -98,6 +98,13 @@ spec:
             limits:
               cpu: #{API_CPU_LIMIT}#
               memory: #{API_MEMORY_LIMIT}#
+          volumeMounts:
+            - name: config-webade-volume
+              mountPath: /usr/local/tomcat/webapps/farms-legacy/WEB-INF/classes/webadeConfig
+      volumes:
+        - name: config-webade-volume
+          configMap:
+            name: farms-legacy-config-webade-#{ENV}#
   strategy:
     type: RollingUpdate
     rollingUpdate:
