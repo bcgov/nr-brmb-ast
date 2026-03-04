@@ -21,7 +21,7 @@ declare
                null allocated_reference_margin,
                (case
                    when exists (
-                       select 1
+                       select *
                        from farms.farm_farming_operations fo
                        join farms.farm_farming_operatin_prtnrs fop on fop.farming_operation_id = fo.farming_operation_id
                        where fo.program_year_version_id = pyv.program_year_version_id
@@ -38,7 +38,7 @@ declare
                        )
                    ) then 'Y'
                    else 'N'
-               end) partnership_indicator,
+               end) partnership_ind,
                mc.description municipality_description,
                py.non_participant_ind,
                null negative_margin_decline,
@@ -191,7 +191,11 @@ begin
                         null || ',' || -- CHEF form submission GUID
                         null || ',' || -- Expecting Payment Indicator
                         null || ',' || -- CHEFS form type
-                        null ||        -- FIFO Result Type
+                        null || ',' || -- Cash Margins Opt In Flag
+                        null || ',' || -- Cash Margins Opt In Date
+                        null || ',' || -- Farm Type Detailed Codes
+                        null || ',' || -- Benefit Triage Result Type
+                        null ||        -- Transaction Benefit
                         chr(10);
 
             b := coalesce(b, ''::bytea) || convert_to(cur_line, 'UTF8');
