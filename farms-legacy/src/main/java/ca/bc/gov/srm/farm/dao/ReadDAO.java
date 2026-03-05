@@ -97,13 +97,11 @@ public class ReadDAO {
   private static final int READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PARAM = 2;
 
   private static final String READ_PROGRAM_YEAR_VER_PROC = "READ_PYV";
-  private static final int READ_PROGRAM_YEAR_VER_PARAM = 1;
 
   private static final String READ_PRODUCTION_INSURANCE_PROC = "READ_OP_PI";
   private static final int READ_PRODUCTION_INSURANCE_PARAM = 1;
 
   private static final String READ_SCENARIO_PROC = "READ_PYV_SC";
-  private static final int READ_SCENARIO_PARAM = 1;
 
   private static final String READ_VERIFICATION_NOTES = "READ_VERIFICATION_NOTES";
   private static final int READ_VERIFICATION_NOTES_PARAM = 1;
@@ -858,8 +856,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final void readScenario(final Integer[] scids, Scenario sc)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_SCENARIO_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -867,15 +866,16 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_SCENARIO_PROC, READ_SCENARIO_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
       Array oracleArray = createNumbersOracleArray(scids);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      ps.setArray(c++, oracleArray);
+      ps.execute();
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       while (rs.next()) {
 
@@ -942,8 +942,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
