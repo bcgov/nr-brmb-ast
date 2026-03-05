@@ -248,9 +248,10 @@ public class DAOStoredProcedure implements AutoCloseable {
    * @throws  SQLException  On exception.
    */
   public final boolean execute() throws SQLException {
+    boolean result = stmt.execute();
     long duration = System.currentTimeMillis() - startTime;
     logger.debug("{} took {} ms", prcName, duration);
-    return stmt.execute();
+    return result;
   }
   
   /**
@@ -260,9 +261,10 @@ public class DAOStoredProcedure implements AutoCloseable {
    * @throws SQLException On exception.
    */
   public final int[] executeBatch() throws SQLException {
+    int[] result = stmt.executeBatch();
     long duration = System.currentTimeMillis() - startTime;
     logger.debug("{} took {} ms", prcName, duration);
-    return stmt.executeBatch();
+    return result;
   }
 
   /**
