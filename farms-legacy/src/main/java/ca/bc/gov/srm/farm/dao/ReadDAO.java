@@ -13,6 +13,7 @@ package ca.bc.gov.srm.farm.dao;
 import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -24,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.calculator.BenefitValidator;
 import ca.bc.gov.srm.farm.chefs.ChefsConfigurationUtil;
@@ -66,6 +69,7 @@ import ca.bc.gov.srm.farm.util.DataParseUtils;
  * @author dzwiers
  */
 public class ReadDAO {
+  private Logger logger = LoggerFactory.getLogger(ReadDAO.class);
 
   private static final String PACKAGE_NAME = "FARMS_READ_PKG";
 
@@ -581,7 +585,9 @@ public class ReadDAO {
    */
   public final void readProgramYear(final Integer[] pyvid, Scenario sc)
       throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_VER_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -589,15 +595,15 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_PROGRAM_YEAR_VER_PROC, READ_PROGRAM_YEAR_VER_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
       Array oracleArray = createNumbersOracleArray(pyvid);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       while (rs.next()) {
         buildPyv(rs, sc);
@@ -608,9 +614,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -3120,6 +3127,16 @@ public class ReadDAO {
 
     if (proc != null) {
       proc.close();
+    }
+  }
+
+  private void close(ResultSet rs, PreparedStatement ps) throws SQLException{
+  	if (rs != null) {
+      rs.close();
+    }
+
+    if (ps != null) {
+      ps.close();
     }
   }
 
