@@ -122,7 +122,6 @@ public class ReadDAO {
   private static final int READ_MARGIN_PARAM = 1;
 
   private static final String READ_INV_PROC = "READ_INV";
-  private static final int READ_INV_PARAM = 3;
   
   private static final String READ_CROP_UNIT_CONVERSIONS_PROC = "READ_CROP_UNIT_CONVERSIONS";
   private static final int READ_CROP_UNIT_CONVERSIONS_PARAM = 2;  
@@ -1597,8 +1596,9 @@ public class ReadDAO {
   public final HashMap<Integer, List<Object>[]> readSupplementalInv(final Integer[] operationIds,
       final Integer[] scenarioIds,
       final Date verifiedDate) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_INV_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -1606,21 +1606,20 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_INV_PROC,
-          READ_INV_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArrayOperationIds = createNumbersOracleArray(operationIds);
-      proc.setArray(c++, oracleArrayOperationIds);
+      Array oracleArrayOperationIds = createIntegersOracleArray(operationIds);
+      ps.setArray(c++, oracleArrayOperationIds);
 
-      Array oracleArrayScenarioIds = createNumbersOracleArray(scenarioIds);
-      proc.setArray(c++, oracleArrayScenarioIds);
+      Array oracleArrayScenarioIds = createIntegersOracleArray(scenarioIds);
+      ps.setArray(c++, oracleArrayScenarioIds);
       
-      proc.setDate(c++, verifiedDate);
+      ps.setDate(c++, verifiedDate == null ? null : new java.sql.Date(verifiedDate.getTime()));
 
-      proc.execute();
-
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<Object>[]> r = new HashMap<>();
 
@@ -1799,9 +1798,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -3150,5 +3150,10 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   protected Array createNumbersOracleArray(Integer[] values) throws SQLException {
     return conn.createArrayOf("numeric", values);
+  }
+  
+  @SuppressWarnings("resource")
+  protected Array createIntegersOracleArray(Integer[] values) throws SQLException {
+    return conn.createArrayOf("bigint", values);
   }
 }
