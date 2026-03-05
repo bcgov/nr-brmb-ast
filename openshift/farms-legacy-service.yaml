@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: farms-legacy-service-#{ENV}#
+  namespace: '#{NAMESPACE}#'
+spec:
+  selector:
+    app: farms-legacy-#{ENV}#
+  ports:
+    - protocol: TCP
+      port: #{TOMCAT_PORT}#
+      targetPort: #{TOMCAT_PORT}#

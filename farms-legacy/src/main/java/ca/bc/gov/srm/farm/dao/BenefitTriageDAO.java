@@ -20,7 +20,6 @@ import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageCalculationItem;
 import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageStatus;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.transaction.Transaction;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
 
 public class BenefitTriageDAO extends OracleDAO {
 
@@ -135,19 +134,5 @@ public class BenefitTriageDAO extends OracleDAO {
     }
 
     return triageCalculationItemList;
-  }
-
-  
-  @SuppressWarnings("resource")
-  private Connection getWrappedConnection(Connection connection) {
-    Connection result;
-    if(connection instanceof WrapperConnection){
-      WrapperConnection wc = (WrapperConnection)connection;
-      result = wc.getWrappedConnection();
-    }else{
-      result = connection;
-    }
-    return result;
-    
   }
 }

@@ -35,7 +35,6 @@ import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.security.BusinessAction;
 import ca.bc.gov.srm.farm.service.BaseService;
 import ca.bc.gov.srm.farm.service.ChefsService;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
 
 /**
  * @author awilkinson
@@ -60,7 +59,7 @@ public class ChefsServiceImpl extends BaseService implements ChefsService {
       CacheFactory.getRequestCache().addItem(CacheKeys.CURRENT_BUSINESS_ACTION, BusinessAction.system());
 
       @SuppressWarnings("resource")
-      Connection connection = getWrappedConnection(webadeConnection);
+      Connection connection = webadeConnection;
       
       processSubmissions(new NolSubmissionProcessor(connection, USER_TYPE_IDIR));
       processSubmissions(new NolSubmissionProcessor(connection, USER_TYPE_BASIC_BCEID));
@@ -121,20 +120,4 @@ public class ChefsServiceImpl extends BaseService implements ChefsService {
       logger.warn(String.format("API Key not set for %s %s. Skipping this form.", formTypeCode, formUserType));
     }
   }
-
-
-  private Connection getWrappedConnection(final Connection webadeConnection) {
-    Connection connection = webadeConnection;
-
-    //
-    // If we use the webade connection then we'll run into alot of problems
-    // with the clobs and blobs.
-    //
-    if (webadeConnection instanceof WrapperConnection) {
-      connection = ((WrapperConnection) webadeConnection).getWrappedConnection();
-    }
-    return connection;
-  }
-  
-  
 }

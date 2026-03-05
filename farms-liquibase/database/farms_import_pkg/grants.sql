@@ -46,7 +46,7 @@ GRANT EXECUTE ON PROCEDURE farms_import_pkg.contact_transfer TO "app_farms_rest_
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.create_config_data TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.inventory_details TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.line_items TO "app_farms_rest_proxy";
-GRANT EXECUTE ON PROCEDURE farms_import_pkg.queue_fifo_calculation TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_import_pkg.queue_benefit_triage_calculation TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.setup_unknown_codes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.update_imp TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_import_pkg.update_status_non_autonomous TO "app_farms_rest_proxy";

@@ -1,0 +1,26 @@
+create or replace procedure farms_write_pkg.write_adjustment_verification_notes(
+    in in_py_id farms.farm_program_years.program_year_id%type,
+    in in_adjustment_verification_notes farms.farm_program_years.adjustment_verification_notes%type,
+    in in_user_id farms.farm_benefit_calc_totals.who_updated%type
+)
+language plpgsql
+as $$
+declare
+
+    v_rows_affected  bigint := null;
+
+begin
+    update farms.farm_program_years
+    set adjustment_verification_notes = in_adjustment_verification_notes,
+        revision_count = revision_count + 1,
+        who_updated = in_user_id,
+        when_updated = current_timestamp
+    where program_year_id = in_py_id;
+
+    get diagnostics v_rows_affected = row_count;
+    if v_rows_affected = 0 then
+        raise exception '%', farms_types_pkg.invalid_revision_count_msg()
+        using errcode = farms_types_pkg.invalid_revision_count_code()::text;
+    end if;
+end;
+$$;

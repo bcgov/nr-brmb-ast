@@ -61,7 +61,6 @@ import ca.bc.gov.srm.farm.ui.domain.dataimport.StagingResults;
 import ca.bc.gov.srm.farm.ui.domain.resultsimport.IMPORTLOG;
 import ca.bc.gov.srm.farm.ui.domain.resultsstaging.STAGINGLOG;
 import ca.bc.gov.srm.farm.util.DateUtils;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
 
 /**
  * ImportServiceImpl.
@@ -148,7 +147,7 @@ final class ImportServiceImpl extends BaseService implements ImportService {
 
     try {
       transaction = openTransaction();
-      connection = getOracleConnection(transaction);
+      connection = (Connection) transaction.getDatastore();
       connection.setAutoCommit(false);
 
       importVersion = createImportVersion(connection, importClassCode, importStateCode, description, fileName,
@@ -353,7 +352,7 @@ final class ImportServiceImpl extends BaseService implements ImportService {
         ImportXmlDAO xdao = new ImportXmlDAO();
 
         @SuppressWarnings("resource")
-        Connection connection = getOracleConnection(transaction);
+        Connection connection = (Connection) transaction.getDatastore();
 
         logger.debug("> getStagingLog");
         STAGINGLOG log = xdao.getStagingLog(connection, importVersionId);
@@ -428,7 +427,7 @@ final class ImportServiceImpl extends BaseService implements ImportService {
           //
           logger.debug("> getImportLog");
           @SuppressWarnings("resource")
-          Connection connection = getOracleConnection(transaction);
+          Connection connection = (Connection) transaction.getDatastore();
 
           IMPORTLOG log = xdao.getImportLog(connection, importVersionId);
 
@@ -551,10 +550,6 @@ final class ImportServiceImpl extends BaseService implements ImportService {
       // with the clobs and blobs.
       //
       Connection connection = webadeConnection;
-
-      if (webadeConnection instanceof WrapperConnection) {
-        connection = ((WrapperConnection) webadeConnection).getWrappedConnection();
-      }
 
       ImportDAO dao = new ImportDAO();
       ImportVersion scheduledImport = dao.getScheduledJob(connection, jobType);
@@ -807,21 +802,5 @@ final class ImportServiceImpl extends BaseService implements ImportService {
       stateDescription = currentStateDescription;
     }
     return stateDescription;
-  }
-
-  /**
-   * 
-   * @param transaction Transaction
-   * @return Connection
-   */
-  @SuppressWarnings("resource")
-  private Connection getOracleConnection(Transaction transaction) {
-    Connection connection = (Connection) transaction.getDatastore();
-
-    if (connection instanceof WrapperConnection) {
-      connection = ((WrapperConnection) connection).getWrappedConnection();
-    }
-
-    return connection;
   }
 }

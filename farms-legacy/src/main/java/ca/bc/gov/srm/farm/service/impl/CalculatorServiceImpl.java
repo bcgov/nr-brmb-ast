@@ -97,7 +97,6 @@ import ca.bc.gov.srm.farm.ui.cache.CurrentUser;
 import ca.bc.gov.srm.farm.ui.domain.CalculatorInboxItem;
 import ca.bc.gov.srm.farm.util.CacheUtils;
 import ca.bc.gov.srm.farm.util.DateUtils;
-import ca.bc.gov.srm.farm.util.OracleUtils;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
 import ca.bc.gov.srm.farm.util.StringUtils;
 

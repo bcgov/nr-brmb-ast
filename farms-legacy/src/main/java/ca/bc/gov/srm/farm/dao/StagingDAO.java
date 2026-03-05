@@ -31,7 +31,6 @@ import ca.bc.gov.srm.farm.domain.staging.Z42ParticipantRefYear;
 import ca.bc.gov.srm.farm.domain.staging.Z50ParticipntBnftCalc;
 import ca.bc.gov.srm.farm.domain.staging.Z51ParticipantContrib;
 import ca.bc.gov.srm.farm.domain.staging.Z99ExtractFileCtl;
-import ca.bc.gov.webade.dbpool.WrapperConnection;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -130,12 +129,7 @@ public class StagingDAO {
    */
   public StagingDAO(final Connection c) {
     neverUse = c;
-    if(c instanceof WrapperConnection){
-      WrapperConnection wc = (WrapperConnection)c;
-      this.conn = wc.getWrappedConnection();
-    }else{
-      this.conn = c;
-    }
+    this.conn = c;
   }
 
   /**

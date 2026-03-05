@@ -61,7 +61,7 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
 
     public WebADEDatabaseDatastore() {
         try (InputStream is = WebADEDatabaseDatastore.class
-                .getResourceAsStream("/config/applicationConfiguration.json")) {
+                .getResourceAsStream("/webadeConfig/applicationConfiguration.json")) {
             if (is != null) {
                 applicationConfiguration = JsonUtils.getJsonObjectMapper()
                         .readValue(is, JsonApplicationConfiguration.class);

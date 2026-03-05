@@ -136,7 +136,7 @@ begin
     call farms_import_pkg.update_status(in_version_id, 'Processing State Transfers');
     call farms_import_pkg.benefit_update_transfer(in_version_id, in_user);
 
-    call farms_import_pkg.queue_fifo_calculation(in_version_id, in_user);
+    call farms_import_pkg.queue_benefit_triage_calculation(in_version_id, in_user);
 
     if imp_opened > 0 then
         call farms_import_pkg.append_imp1(in_version_id, '</IMPORT_LOG>');
