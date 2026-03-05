@@ -26,11 +26,15 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * DAOStoredProcedure.
  */
 public class DAOStoredProcedure implements AutoCloseable {
+  private Logger logger = LoggerFactory.getLogger(DAOStoredProcedure.class);
 
   /** NO. */
   public static final String NO = "N";
@@ -53,8 +57,12 @@ public class DAOStoredProcedure implements AutoCloseable {
   /** returnType. */
   private int rtrnType;
 
+  /** startTime. */
+  private long startTime;
+
   /** Creates a new DAOStoredProcedure object. */
   protected DAOStoredProcedure() {
+    startTime = System.currentTimeMillis();
   }
 
   /**
@@ -69,7 +77,7 @@ public class DAOStoredProcedure implements AutoCloseable {
    */
   public DAOStoredProcedure(final Connection connection, final String procName,
     final int paramCount, final boolean returnsValue) throws SQLException {
-
+    this();
     if (returnsValue) {
       init(connection, procName, paramCount, Types.REF_CURSOR);
     } else {
@@ -89,6 +97,7 @@ public class DAOStoredProcedure implements AutoCloseable {
    */
   public DAOStoredProcedure(final Connection connection, final String procName,
     final int paramCount, final int returnType) throws SQLException {
+    this();
     init(connection, procName, paramCount, returnType);
   }
 
@@ -239,6 +248,8 @@ public class DAOStoredProcedure implements AutoCloseable {
    * @throws  SQLException  On exception.
    */
   public final boolean execute() throws SQLException {
+    long duration = System.currentTimeMillis() - startTime;
+    logger.debug("{} took {} ms", prcName, duration);
     return stmt.execute();
   }
   
@@ -249,6 +260,8 @@ public class DAOStoredProcedure implements AutoCloseable {
    * @throws SQLException On exception.
    */
   public final int[] executeBatch() throws SQLException {
+    long duration = System.currentTimeMillis() - startTime;
+    logger.debug("{} took {} ms", prcName, duration);
     return stmt.executeBatch();
   }
 
