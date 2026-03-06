@@ -2248,9 +2248,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, List<ProductiveUnitCapacity>> readProductiveUnitCapacity(final Integer[] operationIds,
       final Integer[] scenarioIds) throws SQLException {
-
-    final int paramCount = 2;
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PUC_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -2258,19 +2258,18 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_PUC_PROC,
-          paramCount, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArrayOperationIds = createNumbersOracleArray(operationIds);
-      proc.setArray(c++, oracleArrayOperationIds);
+      Array oracleArrayOperationIds = createIntegersOracleArray(operationIds);
+      ps.setArray(c++, oracleArrayOperationIds);
 
-      Array oracleArrayScenarioIds = createNumbersOracleArray(scenarioIds);
-      proc.setArray(c++, oracleArrayScenarioIds);
+      Array oracleArrayScenarioIds = createIntegersOracleArray(scenarioIds);
+      ps.setArray(c++, oracleArrayScenarioIds);
 
-      proc.execute();
-
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<ProductiveUnitCapacity>> r = new HashMap<>();
 
@@ -2330,9 +2329,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
