@@ -74,7 +74,6 @@ public class ReadDAO {
   private static final String PACKAGE_NAME = "FARMS_READ_PKG";
 
   private static final String READ_OPERATION_PROC = "READ_PYV_OP";
-  private static final int READ_OPERATION_PARAM = 1;
 
   private static final String READ_CLIENT_PROC = "READ_CLIENT";
   private static final int READ_CLIENT_PARAM = 1;
@@ -629,8 +628,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, List<FarmingOperation>> readOperation(final Integer[] programYearVersions)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_OPERATION_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -638,15 +638,15 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_OPERATION_PROC, READ_OPERATION_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(programYearVersions);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(programYearVersions);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<FarmingOperation>> r = new HashMap<>();
 
@@ -699,9 +699,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
