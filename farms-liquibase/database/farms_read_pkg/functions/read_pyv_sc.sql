@@ -1,5 +1,5 @@
 create or replace function farms_read_pkg.read_pyv_sc(
-    in sc_ids numeric[]
+    in sc_ids bigint[]
 )
 returns table(
     agristability_scenario_id       farms.farm_agristability_scenarios.agristability_scenario_id%type,

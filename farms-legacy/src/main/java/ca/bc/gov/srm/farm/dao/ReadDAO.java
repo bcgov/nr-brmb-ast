@@ -870,7 +870,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(scids);
+      Array oracleArray = createIntegersOracleArray(scids);
       ps.setArray(c++, oracleArray);
       ps.execute();
 
