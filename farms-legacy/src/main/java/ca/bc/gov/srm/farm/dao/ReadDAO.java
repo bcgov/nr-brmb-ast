@@ -872,7 +872,6 @@ public class ReadDAO {
       int c = 1;
       Array oracleArray = createIntegersOracleArray(scids);
       ps.setArray(c++, oracleArray);
-      ps.execute();
 
       rs = ps.executeQuery();
 
