@@ -39,6 +39,15 @@ returns table(
 )
 language sql
 as $$
+    with scenarios as(
+        select sc.agristability_scenario_id,
+               pyv.program_year_version_id,
+               py.program_year_id
+        from farms.farm_agristability_scenarios sc
+        join farms.farm_program_year_versions pyv on sc.program_year_version_id = pyv.program_year_version_id
+        join farms.farm_program_years py on pyv.program_year_id = py.program_year_id
+        where sc.agristability_scenario_id = any(sc_ids)
+    )
     select sc.agristability_scenario_id,
            sc.scenario_number,
            sc.benefits_calculator_version,
@@ -72,9 +81,9 @@ as $$
                when sc.scenario_class_code = 'USER' and sc.scenario_state_code in ('COMP', 'AMEND', 'EN_COMP', 'PREVERIFID') then sc.combined_farm_number
                when sc.scenario_class_code = 'USER' and sc.scenario_state_code = 'IP' then (
                    select min(s2.combined_farm_number)
-                   from farms.farm_scenarios_vw sv
+                   from scenarios sv
                    join farms.farm_program_year_versions pyv on pyv.program_year_version_id = sv.program_year_version_id
-                   join farms.farm_scenarios_vw sv2 on sv2.program_year_id = sv.program_year_id
+                   join scenarios sv2 on sv2.program_year_id = sv.program_year_id
                    join farms.farm_agristability_scenarios s2 on s2.agristability_scenario_id = sv2.agristability_scenario_id
                    join farms.farm_program_year_versions pyv2 on pyv2.program_year_version_id = sv2.program_year_version_id
                    where sv.agristability_scenario_id = sc.agristability_scenario_id
