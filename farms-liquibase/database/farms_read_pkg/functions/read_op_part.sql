@@ -12,7 +12,7 @@ returns table(
     farming_operation_id        farms.farm_farming_operatin_prtnrs.farming_operation_id%type,
     revision_count              farms.farm_farming_operatin_prtnrs.revision_count%type
 )
-language plpgsql
+language sql
 as $$
     select farming_operatin_prtnr_id,
            partner_percent,
