@@ -117,7 +117,6 @@ public class ReadDAO {
   private static final int READ_SC_LOGS_PARAM = 1;
 
   private static final String READ_MARGIN_PROC = "READ_SC_MGN";
-  private static final int READ_MARGIN_PARAM = 1;
 
   private static final String READ_INV_PROC = "READ_INV";
   
@@ -1429,8 +1428,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, Margin> readScenarioMargin(final Integer[] scIds)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_MARGIN_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -1438,15 +1438,15 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_MARGIN_PROC, READ_MARGIN_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(scIds);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(scIds);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, Margin> r = new HashMap<>();
 
@@ -1497,8 +1497,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
