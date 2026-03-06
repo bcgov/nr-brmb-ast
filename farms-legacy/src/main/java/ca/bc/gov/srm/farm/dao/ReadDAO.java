@@ -597,7 +597,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(pyvid);
+      Array oracleArray = createIntegersOracleArray(pyvid);
       ps.setArray(c++, oracleArray);
 
       rs = ps.executeQuery();

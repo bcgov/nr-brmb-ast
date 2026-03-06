@@ -1,5 +1,5 @@
 create or replace function farms_read_pkg.read_pyv(
-    in pyv_ids numeric[]
+    in pyv_ids bigint[]
 )
 returns table(
     program_year_id                 farms.farm_program_years.program_year_id%type,
