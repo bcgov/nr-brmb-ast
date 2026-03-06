@@ -124,7 +124,6 @@ public class ReadDAO {
   private static final String READ_INV_PROC = "READ_INV";
   
   private static final String READ_CROP_UNIT_CONVERSIONS_PROC = "READ_CROP_UNIT_CONVERSIONS";
-  private static final int READ_CROP_UNIT_CONVERSIONS_PARAM = 2;  
 
   private static final String READ_OP_FMV_PROC = "READ_OP_FMV";
   private static final int READ_OP_FMV_PARAM = 1;
@@ -1514,8 +1513,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<String, CropUnitConversion> readSupplementalInvCropConvInfo(final Integer[] operationIds,
       final Integer[] scenarioIds) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_CROP_UNIT_CONVERSIONS_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -1523,19 +1523,18 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_CROP_UNIT_CONVERSIONS_PROC,
-          READ_CROP_UNIT_CONVERSIONS_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArrayOperationIds = createNumbersOracleArray(operationIds);
-      proc.setArray(c++, oracleArrayOperationIds);
+      Array oracleArrayOperationIds = createIntegersOracleArray(operationIds);
+      ps.setArray(c++, oracleArrayOperationIds);
 
-      Array oracleArrayScenarioIds = createNumbersOracleArray(scenarioIds);
-      proc.setArray(c++, oracleArrayScenarioIds);
+      Array oracleArrayScenarioIds = createIntegersOracleArray(scenarioIds);
+      ps.setArray(c++, oracleArrayScenarioIds);
 
-      proc.execute();
-
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<String, CropUnitConversion> invCropConversions = new HashMap<>();
 
@@ -1573,8 +1572,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-        close(rs, proc);
+        close(rs, ps);
         conn.setAutoCommit(originalAutoCommit);
+        long duration = System.currentTimeMillis() - startTime;
+        logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
