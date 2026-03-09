@@ -175,7 +175,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setInt(c++, pin);
+      ps.setInt(c++, pin == null ? null : pin.intValue());
 
       rs = ps.executeQuery();
 
@@ -289,7 +289,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setInt(c++, pin);
+      ps.setInt(c++, pin == null ? null : pin.intValue());
       ps.setShort(c++, year == null ? null : year.shortValue());
 
       rs = ps.executeQuery();
@@ -510,9 +510,9 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setInt(c++, pin);
+      ps.setInt(c++, pin == null ? null : pin.intValue());
       ps.setShort(c++, year == null ? null : year.shortValue());
-      ps.setInt(c++, scnum);
+      ps.setInt(c++, scnum == null ? null : scnum.intValue());
       ps.setString(c++, pMode);
 
       rs = ps.executeQuery();
@@ -2912,7 +2912,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
       
       int c = 1;
-      ps.setInt(c++, pin);
+      ps.setInt(c++, pin == null ? null : pin.intValue());
       ps.setShort(c++, enrolmentYear == null ? null : enrolmentYear.shortValue());
       
       rs = ps.executeQuery();
