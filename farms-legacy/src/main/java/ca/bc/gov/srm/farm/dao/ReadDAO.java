@@ -85,7 +85,6 @@ public class ReadDAO {
   private static final String READ_BPU_XREF_PROC = "READ_BPU_XREF";
 
   private static final String READ_PROGRAM_YEAR_META_PROC = "READ_PY_META";
-  private static final int READ_PROGRAM_YEAR_META_PARAM = 2;
 
   private static final String READ_PROGRAM_YEAR_ID_PROC = "READ_PY_ID";
   private static final int READ_PROGRAM_YEAR_ID_PARAM = 4;
@@ -291,7 +290,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final List<ScenarioMetaData> readProgramYearMetadata(final Integer pin,
       final Integer year) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_META_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -299,15 +300,15 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_PROGRAM_YEAR_META_PROC, READ_PROGRAM_YEAR_META_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, pin);
-      proc.setShort(c++, year == null ? null : year.shortValue());
-      proc.execute();
+      ps.setInt(c++, pin);
+      ps.setShort(c++, year == null ? null : year.shortValue());
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       ArrayList<ScenarioMetaData> l = new ArrayList<>();
 
@@ -357,9 +358,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
