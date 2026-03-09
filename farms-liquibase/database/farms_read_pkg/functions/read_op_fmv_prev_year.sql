@@ -18,8 +18,8 @@ as $$
                max(prev_fy_fmv.municipality_code) over (partition by prev_fy_fmv.inventory_item_code, prev_fy_fmv.crop_unit_code, prev_fy_fmv.program_year, prev_fy_fmv.period) mx_municipality_code,
                prev_fy_fmv.average_price prev_fy_end_average_price
         from (
-            select distinct to_char(op.fiscal_year_start - interval '1 month', 'YYYY')::numeric prev_fiscal_end_year,
-                   to_char(op.fiscal_year_start - interval '1 month', 'MM')::numeric prev_fiscal_end_month,
+            select distinct extract(year from op.fiscal_year_start - interval '1 month') prev_fiscal_end_year,
+                   extract(month from op.fiscal_year_start - interval '1 month') prev_fiscal_end_month,
                    pyv.municipality_code,
                    x.inventory_item_code,
                    x.inventory_class_code,
@@ -33,8 +33,8 @@ as $$
         join farms.farm_fair_market_values prev_fy_fmv on prev_fy_fmv.inventory_item_code = t.inventory_item_code
                                                     -- either the crop code matches, or it's livestock
                                                     and ((t.inventory_class_code = '1' and prev_fy_fmv.crop_unit_code = t.crop_unit_code) or t.inventory_class_code = '2')
-                                                    and (prev_fy_fmv.municipality_code = '0' or prev_fy_fmv.municipality_code = t.municipality_code)
-                                                    and (prev_fy_fmv.expiry_date is null or prev_fy_fmv.expiry_date > current_date)
+                                                    and prev_fy_fmv.municipality_code in ('0', t.municipality_code)
+                                                    and coalesce(prev_fy_fmv.expiry_date, '9999-12-31') > current_date
                                                     and prev_fy_fmv.program_year = t.prev_fiscal_end_year
                                                     and prev_fy_fmv.period = t.prev_fiscal_end_month
         where prev_fy_fmv.program_year = prev_fiscal_end_year
