@@ -116,7 +116,6 @@ public class ReadDAO {
   private static final String READ_OP_FMV_PROC = "READ_OP_FMV";
   
   private static final String READ_OP_SINGLE_FMV_PROC = "READ_OP_SINGLE_FMV";
-  private static final int READ_OP_SINGLE_FMV_PARAM = 3;
   
   private static final String READ_OP_FMV_PREV_YEAR_PROC = "READ_OP_FMV_PREV_YEAR";
   private static final int READ_OP_FMV_PREV_YEAR_PARAM = 1;
@@ -1888,8 +1887,9 @@ public class ReadDAO {
   public HashMap<String, List<FmvFullResult>> readFairMarketValue(Integer opId,
       String inventoryItemCode,
       String cropUnitCode) throws SQLException {
-    
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_OP_SINGLE_FMV_PROC;
+    PreparedStatement ps = null;
     boolean originalAutoCommit = true;
     ResultSet rs = null;
     
@@ -1899,16 +1899,16 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_OP_SINGLE_FMV_PROC, READ_OP_SINGLE_FMV_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?,?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, opId);
-      proc.setString(c++, inventoryItemCode);
-      proc.setString(c++, cropUnitCode);
-      proc.execute();
-      
-      rs = proc.getResultSet();
+      ps.setLong(c++, opId == null ? null : opId.longValue());
+      ps.setString(c++, inventoryItemCode);
+      ps.setString(c++, cropUnitCode);
+
+      rs = ps.executeQuery();
       
       r = readFMVResultSet(opId, rs);
 
@@ -1921,12 +1921,14 @@ public class ReadDAO {
       }
       throw e;
     } finally {
-      close(rs, proc);
+      close(rs, ps);
       try {
         conn.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         throw ex;
       }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     
     readFairMarketValuePreviousYear(opId, r);

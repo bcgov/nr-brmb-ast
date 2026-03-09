@@ -36,6 +36,7 @@ as $$
                    where f2.inventory_item_code = fmv.inventory_item_code
                    and f2.crop_unit_code = fmv.crop_unit_code
                    and f2.municipality_code = fmv.municipality_code
+                   and f2.expiry_date > current_date
                    and (f2.program_year * 12 + f2.period) between
                        (fmv.program_year * 12 + fmv.period - t.fiscal_months)
                        and
