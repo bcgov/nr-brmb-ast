@@ -87,8 +87,7 @@ public class ReadDAO {
   private static final String READ_PROGRAM_YEAR_META_PROC = "READ_PY_META";
 
   private static final String READ_PROGRAM_YEAR_ID_PROC = "READ_PY_ID";
-  private static final int READ_PROGRAM_YEAR_ID_PARAM = 4;
-  
+
   private static final String READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PROC = "READ_PY_ID_BY_CLIENT_ID";
   private static final int READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PARAM = 2;
 
@@ -301,7 +300,7 @@ public class ReadDAO {
       conn.setAutoCommit(false);
 
       startTime = System.currentTimeMillis();
-      String sql = "SELECT * FROM " + prcName + "(?)";
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
       ps = conn.prepareStatement(sql);
 
       int c = 1;
@@ -511,7 +510,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final int[][] readPyIds(final Integer pin, final Integer year,
       final Integer scnum, String pMode) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_ID_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -519,17 +520,17 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_PROGRAM_YEAR_ID_PROC, READ_PROGRAM_YEAR_ID_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?,?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, pin);
-      proc.setShort(c++, year == null ? null : year.shortValue());
-      proc.setInt(c++, scnum);
-      proc.setString(c++, pMode);
-      proc.execute();
+      ps.setInt(c++, pin);
+      ps.setShort(c++, year == null ? null : year.shortValue());
+      ps.setInt(c++, scnum);
+      ps.setString(c++, pMode);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       ArrayList<int[]> l = new ArrayList<>();
 
@@ -561,9 +562,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
