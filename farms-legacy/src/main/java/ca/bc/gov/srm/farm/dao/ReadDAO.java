@@ -123,7 +123,6 @@ public class ReadDAO {
   private static final String READ_TOT_MGN_PROC = "READ_SC_TOT_MGN";
   
   private static final String READ_COB_GEN_DATE_PROC = "READ_COB_GEN_DATE";
-  private static final int READ_COB_GEN_DATE_PARAM = 1;
   
   private static final String READ_ENROLMENT_PROC = "READ_ENROLMENT";
   private static final int READ_ENROLMENT_PARAM = 2;
@@ -2851,8 +2850,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final Date readCobGenerationDate(final Integer scenarioId)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_COB_GEN_DATE_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
     
@@ -2862,14 +2862,14 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_COB_GEN_DATE_PROC, READ_COB_GEN_DATE_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, scenarioId);
-      proc.execute();
+      ps.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       if (rs.next()) {
         c = 1;
@@ -2882,8 +2882,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      close(rs, proc);
+      close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
