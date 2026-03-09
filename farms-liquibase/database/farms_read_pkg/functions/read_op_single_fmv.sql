@@ -32,18 +32,7 @@ as $$
                fmv.percent_variance,
                fmv.municipality_code,
                max(fmv.municipality_code) over (partition by fmv.inventory_item_code, fmv.crop_unit_code, fmv.program_year, fmv.period) mx_municipality_code,
-               (
-                   select avg(f2.average_price)
-                   from farms.farm_fair_market_values f2
-                   where f2.inventory_item_code = fmv.inventory_item_code
-                   and f2.crop_unit_code = fmv.crop_unit_code
-                   and f2.municipality_code = fmv.municipality_code
-                   and f2.expiry_date > current_date
-                   and (f2.program_year * 12 + f2.period) between
-                       (fmv.program_year * 12 + fmv.period - t.fiscal_months)
-                       and
-                       (fmv.program_year * 12 + fmv.period)
-               ) as yearly_avg,
+               avg_calc.yearly_avg,
                t.fiscal_start_year,
                t.fiscal_end_year,
                t.fiscal_start_month,
@@ -51,13 +40,13 @@ as $$
                fmv.program_year fmv_year,
                fmv.period fmv_period
         from (
-            select distinct to_char(op.fiscal_year_start, 'YYYY')::numeric fiscal_start_year,
-                   to_char(op.fiscal_year_start, 'MM')::numeric fiscal_start_month,
-                   to_char(op.fiscal_year_end, 'YYYY')::numeric fiscal_end_year,
-                   to_char(op.fiscal_year_end, 'MM')::numeric fiscal_end_month,
+            select distinct extract(year from op.fiscal_year_start) fiscal_start_year,
+                   extract(month from op.fiscal_year_start) fiscal_start_month,
+                   extract(year from op.fiscal_year_end) fiscal_end_year,
+                   extract(month from op.fiscal_year_end) fiscal_end_month,
                    (
-                       (to_char(op.fiscal_year_end, 'YYYY')::numeric - to_char(op.fiscal_year_start, 'YYYY')::numeric) * 12 +
-                       (to_char(op.fiscal_year_end, 'MM')::numeric - to_char(op.fiscal_year_start, 'MM')::numeric) + 1
+                       (extract(year from op.fiscal_year_end) - extract(year from op.fiscal_year_start)) * 12 +
+                       (extract(month from op.fiscal_year_end) - extract(month from op.fiscal_year_start)) + 1
                    ) fiscal_months,
                    pyv.municipality_code
             from farms.farm_farming_operations op
@@ -68,6 +57,18 @@ as $$
                                             and fmv.crop_unit_code = in_crop_unit_code
                                             and (fmv.municipality_code = '0' or fmv.municipality_code = t.municipality_code)
                                             and (fmv.expiry_date is null or fmv.expiry_date > current_date)
+        left join lateral (
+            select avg(f2.average_price) as yearly_avg
+            from farms.farm_fair_market_values f2
+            where f2.inventory_item_code = fmv.inventory_item_code
+            and f2.crop_unit_code = fmv.crop_unit_code
+            and f2.municipality_code = fmv.municipality_code
+            and (f2.expiry_date is null or f2.expiry_date > current_date)
+            and (f2.program_year * 12 + f2.period) between
+                (fmv.program_year * 12 + fmv.period - t.fiscal_months)
+                and
+                (fmv.program_year * 12 + fmv.period)
+        ) avg_calc on true
         -- check fiscal year window
         where fmv.program_year between t.fiscal_start_year and t.fiscal_end_year
     ) g
