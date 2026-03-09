@@ -2733,27 +2733,28 @@ public class ReadDAO {
    */
   @SuppressWarnings("resource")
   public HashMap<String, BasePricePerUnit>[] readBasePricePerUnitXrefs(List<Integer> scIds, String scenarioBpuPurposeCode) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_BPU_XREF_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    final int paramCount = 2;
     boolean originalAutoCommit = true;
 
     try {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_BPU_XREF_PROC, paramCount, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
 
       Integer[] scIdArray = scIds.toArray(new Integer[scIds.size()]);
-      Array oracleArray = createNumbersOracleArray(scIdArray);
+      Array oracleArray = createIntegersOracleArray(scIdArray);
       
       int c = 1;
-      proc.setArray(c++, oracleArray);
-      proc.setString(c++, scenarioBpuPurposeCode);
-      proc.execute();
+      ps.setArray(c++, oracleArray);
+      ps.setString(c++, scenarioBpuPurposeCode);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<String, BasePricePerUnit> r1 = new HashMap<>();
       HashMap<String, BasePricePerUnit> r2 = new HashMap<>();
@@ -2777,12 +2778,14 @@ public class ReadDAO {
       }
       throw e;
     } finally {
-    	close(rs, proc);
+    	close(rs, ps);
       try {
         conn.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         throw ex;
       }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
