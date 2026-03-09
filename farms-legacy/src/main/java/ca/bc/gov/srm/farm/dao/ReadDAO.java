@@ -76,7 +76,6 @@ public class ReadDAO {
   private static final String READ_OPERATION_PROC = "READ_PYV_OP";
 
   private static final String READ_CLIENT_PROC = "READ_CLIENT";
-  private static final int READ_CLIENT_PARAM = 1;
 
   private static final String READ_OPERATION_PART_PROC = "READ_OP_PART";
 
@@ -178,7 +177,9 @@ public class ReadDAO {
    */
   @SuppressWarnings("resource")
   public final Client readClient(final Integer pin) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_CLIENT_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -186,14 +187,14 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_CLIENT_PROC, READ_CLIENT_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, pin);
-      proc.execute();
+      ps.setInt(c++, pin);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       Client ac = null;
 
@@ -269,9 +270,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
