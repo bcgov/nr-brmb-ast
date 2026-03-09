@@ -104,7 +104,6 @@ public class ReadDAO {
   private static final String READ_CLAIM_PROC = "READ_SC_CLM";
   
   private static final String READ_STATE_AUDITS_PROC = "READ_SC_STATE_AUDITS";
-  private static final int READ_STATE_AUDITS_PARAM = 1;
   
   private static final String READ_SC_LOGS_PROC = "READ_SC_LOGS";
   private static final int READ_SC_LOGS_PARAM = 1;
@@ -1219,8 +1218,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final List<ScenarioStateAudit> readScenarioStateAudits(final Integer scenarioId)
   throws SQLException {
-    
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_STATE_AUDITS_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
     
@@ -1228,14 +1228,14 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_STATE_AUDITS_PROC,
-          READ_STATE_AUDITS_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, scenarioId);
-      proc.execute();
+      ps.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
       
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       List<ScenarioStateAudit> audits = new ArrayList<>();
       
@@ -1261,9 +1261,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      
-      close(rs, proc);
+      close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
