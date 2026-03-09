@@ -125,7 +125,6 @@ public class ReadDAO {
   private static final String READ_COB_GEN_DATE_PROC = "READ_COB_GEN_DATE";
   
   private static final String READ_ENROLMENT_PROC = "READ_ENROLMENT";
-  private static final int READ_ENROLMENT_PARAM = 2;
   
   private static final String READ_ENW_ENROLMENT_PROC = "READ_ENW_ENROLMENT";
   private static final int READ_ENW_ENROLMENT_PARAM = 1;
@@ -2899,8 +2898,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final Enrolment readEnrolment(final Integer pin, final Integer enrolmentYear)
   throws SQLException {
-    
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_ENROLMENT_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
     
@@ -2910,15 +2910,15 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_ENROLMENT_PROC, READ_ENROLMENT_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, pin);
-      proc.setShort(c++, enrolmentYear == null ? null : enrolmentYear.shortValue());
-      proc.execute();
+      ps.setInt(c++, pin);
+      ps.setShort(c++, enrolmentYear == null ? null : enrolmentYear.shortValue());
       
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       if (rs.next()) {
         e = new Enrolment();
@@ -2954,8 +2954,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      close(rs, proc);
+      close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
