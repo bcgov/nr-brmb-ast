@@ -80,7 +80,6 @@ public class ReadDAO {
   private static final String READ_OPERATION_PART_PROC = "READ_OP_PART";
 
   private static final String READ_BPU_ALL_PROC = "READ_BPU_ALL";
-  private static final int READ_BPU_ALL_PARAM = 4;
   
   private static final String READ_BPU_XREF_PROC = "READ_BPU_XREF";
 
@@ -2620,8 +2619,9 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public HashMap<String, BasePricePerUnit>[] readBasePricePerUnit(List<String> pInvCodes, List<String> pStructCodes,
       Integer scid, Integer programYear) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_BPU_ALL_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -2632,18 +2632,18 @@ public class ReadDAO {
       Array oracleArrayInventoryCodes = createStringOracleArray(pInvCodes);
       Array oracleArrayStructureGroupCodes = createStringOracleArray(pStructCodes);
       
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_BPU_ALL_PROC, READ_BPU_ALL_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?,?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setLong(c++, scid == null ? null : scid.longValue());
-      proc.setArray(c++, oracleArrayInventoryCodes);
-      proc.setArray(c++, oracleArrayStructureGroupCodes);
+      ps.setLong(c++, scid == null ? null : scid.longValue());
+      ps.setArray(c++, oracleArrayInventoryCodes);
+      ps.setArray(c++, oracleArrayStructureGroupCodes);
 
-      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
-      proc.execute();
+      ps.setShort(c++, programYear == null ? null : programYear.shortValue());
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<String, BasePricePerUnit> r1 = new HashMap<>();
       HashMap<String, BasePricePerUnit> r2 = new HashMap<>();
@@ -2667,8 +2667,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-    	close(rs, proc);
+    	close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
