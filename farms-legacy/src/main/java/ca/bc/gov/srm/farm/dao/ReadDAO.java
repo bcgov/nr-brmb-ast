@@ -131,7 +131,6 @@ public class ReadDAO {
   private static final String READ_COMBINED_FARM_CLIENTS_PROC = "READ_COMBINED_FARM_CLIENTS";
 
   private static final String READ_FARM_TYPE_PROC = "READ_FARM_TYPE";
-  private static final int READ_FARM_TYPE_PARAM = 1;
   
   private Connection conn = null;
   
@@ -3131,7 +3130,9 @@ public class ReadDAO {
    * @throws SQLException SQLException
    */
   public final void readFarmType(Scenario scenario) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_FARM_TYPE_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -3139,14 +3140,14 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_FARM_TYPE_PROC, READ_FARM_TYPE_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c, scenario.getScenarioId());
-      proc.execute();
+      ps.setLong(c, scenario.getScenarioId() == null ? null : scenario.getScenarioId().longValue());
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       if (rs.next()) {
         scenario.setFarmTypeCode(getString(rs, c++));
@@ -3158,18 +3159,10 @@ public class ReadDAO {
       conn.rollback();
       throw ex;
     } finally {
-      close(rs, proc);
+      close(rs, ps);
       conn.setAutoCommit(originalAutoCommit);
-    }
-  }
-   
-  private void close(ResultSet rs, DAOStoredProcedure proc) throws SQLException{
-  	if (rs != null) {
-      rs.close();
-    }
-
-    if (proc != null) {
-      proc.close();
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
