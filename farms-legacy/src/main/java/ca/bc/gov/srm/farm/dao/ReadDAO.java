@@ -89,7 +89,6 @@ public class ReadDAO {
   private static final String READ_PROGRAM_YEAR_ID_PROC = "READ_PY_ID";
 
   private static final String READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PROC = "READ_PY_ID_BY_CLIENT_ID";
-  private static final int READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PARAM = 2;
 
   private static final String READ_PROGRAM_YEAR_VER_PROC = "READ_PYV";
 
@@ -1941,8 +1940,9 @@ public class ReadDAO {
   }
   
   public Integer readProgramYearId(Integer clientId, Integer programYear) throws SQLException {
-    
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     Integer programYearId = null;
     boolean originalAutoCommit = true;
@@ -1951,15 +1951,15 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PROC, READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, clientId);
-      proc.setInt(c++, programYear);
-      proc.execute();
+      ps.setLong(c++, clientId == null ? null : clientId.longValue());
+      ps.setShort(c++, programYear == null ? null : programYear.shortValue());
       
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       while (rs.next()) {
         programYearId = getInteger(rs, 1);
@@ -1974,12 +1974,14 @@ public class ReadDAO {
       }
       throw e;
     } finally {
-      close(rs, proc);
+      close(rs, ps);
       try {
         conn.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         throw ex;
       }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     return programYearId;
   }
