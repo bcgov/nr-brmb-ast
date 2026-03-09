@@ -175,7 +175,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setInt(c++, pin == null ? null : pin.intValue());
+      DAOUtils.setInt(ps, c++, pin);
 
       rs = ps.executeQuery();
 
@@ -289,8 +289,8 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setInt(c++, pin == null ? null : pin.intValue());
-      ps.setShort(c++, year == null ? null : year.shortValue());
+      DAOUtils.setInt(ps, c++, pin);
+      DAOUtils.setShort(ps, c++, year);
 
       rs = ps.executeQuery();
 
@@ -510,9 +510,9 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setInt(c++, pin == null ? null : pin.intValue());
-      ps.setShort(c++, year == null ? null : year.shortValue());
-      ps.setInt(c++, scnum == null ? null : scnum.intValue());
+      DAOUtils.setInt(ps, c++, pin);
+      DAOUtils.setShort(ps, c++, year);
+      DAOUtils.setInt(ps, c++, scnum);
       ps.setString(c++, pMode);
 
       rs = ps.executeQuery();
@@ -971,7 +971,7 @@ public class ReadDAO {
       try(PreparedStatement ps = conn.prepareStatement(sql);) {
 
         int c = 1;
-        ps.setLong(c, pyId == null ? null : pyId.longValue());
+        DAOUtils.setLong(ps, c, pyId);
 
         try(ResultSet rs = ps.executeQuery();) {
 
@@ -1222,7 +1222,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
       
       int c = 1;
-      ps.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
+      DAOUtils.setLong(ps, c++, scenarioId);
       
       rs = ps.executeQuery();
       
@@ -1285,7 +1285,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
       
       int c = 1;
-      ps.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
+      DAOUtils.setLong(ps, c++, scenarioId);
       rs = ps.executeQuery();
       
       while (rs.next()) {
@@ -1624,7 +1624,7 @@ public class ReadDAO {
       Array oracleArrayScenarioIds = createIntegersOracleArray(scenarioIds);
       ps.setArray(c++, oracleArrayScenarioIds);
       
-      ps.setDate(c++, verifiedDate == null ? null : new java.sql.Date(verifiedDate.getTime()));
+      DAOUtils.setDate(ps, c++, verifiedDate);
 
       rs = ps.executeQuery();
 
@@ -1836,7 +1836,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setLong(c++, opId == null ? null : opId.longValue());
+      DAOUtils.setLong(ps, c++, opId);
 
       rs = ps.executeQuery();
       
@@ -1896,7 +1896,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
       
       int c = 1;
-      ps.setLong(c++, opId == null ? null : opId.longValue());
+      DAOUtils.setLong(ps, c++, opId);
       ps.setString(c++, inventoryItemCode);
       ps.setString(c++, cropUnitCode);
 
@@ -1949,8 +1949,8 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
       
       int c = 1;
-      ps.setLong(c++, clientId == null ? null : clientId.longValue());
-      ps.setShort(c++, programYear == null ? null : programYear.shortValue());
+      DAOUtils.setLong(ps, c++, clientId);
+      DAOUtils.setShort(ps, c++, programYear);
       
       rs = ps.executeQuery();
       
@@ -2056,7 +2056,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
       
       int c = 1;
-      ps.setLong(c++, opId == null ? null : opId.longValue());
+      DAOUtils.setLong(ps, c++, opId);
       
       rs = ps.executeQuery();
       
@@ -2395,7 +2395,7 @@ public class ReadDAO {
       ps.setArray(c++, oracleArrayScenarioIds);
 
       ps.setShort(c++, (short) programYear);
-      ps.setDate(c++, verifiedDate == null ? null : new java.sql.Date(verifiedDate.getTime()));
+      DAOUtils.setDate(ps, c++, verifiedDate);
 
       rs = ps.executeQuery();
 
@@ -2632,11 +2632,11 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setLong(c++, scid == null ? null : scid.longValue());
+      DAOUtils.setLong(ps, c++, scid);
       ps.setArray(c++, oracleArrayInventoryCodes);
       ps.setArray(c++, oracleArrayStructureGroupCodes);
 
-      ps.setShort(c++, programYear == null ? null : programYear.shortValue());
+      DAOUtils.setShort(ps, c++, programYear);
 
       rs = ps.executeQuery();
 
@@ -2863,7 +2863,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
+      DAOUtils.setLong(ps, c++, scenarioId);
 
       rs = ps.executeQuery();
 
@@ -2912,8 +2912,8 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
       
       int c = 1;
-      ps.setInt(c++, pin == null ? null : pin.intValue());
-      ps.setShort(c++, enrolmentYear == null ? null : enrolmentYear.shortValue());
+      DAOUtils.setInt(ps, c++, pin);
+      DAOUtils.setShort(ps, c++, enrolmentYear);
       
       rs = ps.executeQuery();
       
@@ -2979,7 +2979,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
       
       int c = 1;
-      ps.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
+      DAOUtils.setLong(ps, c++, scenarioId);
       
       rs = ps.executeQuery();
       
@@ -3078,7 +3078,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setLong(c++, combinedFarmNumber == null ? null : combinedFarmNumber.longValue());
+      DAOUtils.setLong(ps, c++, combinedFarmNumber);
 
       rs = ps.executeQuery();
 
@@ -3145,7 +3145,7 @@ public class ReadDAO {
       ps = conn.prepareStatement(sql);
 
       int c = 1;
-      ps.setLong(c, scenario.getScenarioId() == null ? null : scenario.getScenarioId().longValue());
+      DAOUtils.setLong(ps, c, scenario.getScenarioId());
 
       rs = ps.executeQuery();
 
