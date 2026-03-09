@@ -117,7 +117,6 @@ public class ReadDAO {
   private static final String READ_OP_SINGLE_FMV_PROC = "READ_OP_SINGLE_FMV";
   
   private static final String READ_OP_FMV_PREV_YEAR_PROC = "READ_OP_FMV_PREV_YEAR";
-  private static final int READ_OP_FMV_PREV_YEAR_PARAM = 1;
 
   private static final String READ_PUC_PROC = "READ_PUC";
   private static final String READ_IE_PROC = "READ_IE";
@@ -2048,8 +2047,9 @@ public class ReadDAO {
    */
   @SuppressWarnings("resource")
   private void readFairMarketValuePreviousYear(Integer opId, HashMap<String, List<FmvFullResult>> r) throws SQLException {
-    
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_OP_FMV_PREV_YEAR_PROC;
+    PreparedStatement ps = null;
     boolean originalAutoCommit = true;
     ResultSet rs = null;
     
@@ -2057,14 +2057,14 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_OP_FMV_PREV_YEAR_PROC, READ_OP_FMV_PREV_YEAR_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, opId);
-      proc.execute();
+      ps.setLong(c++, opId == null ? null : opId.longValue());
       
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       while (rs.next()) {
         
@@ -2109,12 +2109,14 @@ public class ReadDAO {
       }
       throw e;
     } finally {
-      close(rs, proc);
+      close(rs, ps);
       try {
         conn.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         throw ex;
       }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
