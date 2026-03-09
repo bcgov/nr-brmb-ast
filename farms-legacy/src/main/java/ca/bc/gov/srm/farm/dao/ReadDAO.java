@@ -98,7 +98,6 @@ public class ReadDAO {
   private static final String READ_SCENARIO_PROC = "READ_PYV_SC";
 
   private static final String READ_VERIFICATION_NOTES = "READ_VERIFICATION_NOTES";
-  private static final int READ_VERIFICATION_NOTES_PARAM = 1;
 
   private static final String READ_WHOLE_FARM_PROC = "READ_PYV_WF";
   private static final int READ_WHOLE_FARM_PARAM = 1;
@@ -970,6 +969,8 @@ public class ReadDAO {
 
   
   public final String[] readVerificationNotes(Integer pyId) throws SQLException {
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_VERIFICATION_NOTES;
     final int numberOfNotes = 3;
     String verificationNotes[] = new String[numberOfNotes];
     boolean originalAutoCommit = true;
@@ -978,14 +979,14 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_VERIFICATION_NOTES, READ_VERIFICATION_NOTES_PARAM, true);) {
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      try(PreparedStatement ps = conn.prepareStatement(sql);) {
 
         int c = 1;
-        proc.setInt(c, pyId);
-        proc.execute();
+        ps.setLong(c, pyId == null ? null : pyId.longValue());
 
-        try(ResultSet rs = proc.getResultSet();) {
+        try(ResultSet rs = ps.executeQuery();) {
 
           if (rs.next()) {
             c = 1;
@@ -1004,6 +1005,8 @@ public class ReadDAO {
       throw ex;
     } finally {
       conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
