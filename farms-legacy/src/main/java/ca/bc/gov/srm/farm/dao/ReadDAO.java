@@ -129,7 +129,6 @@ public class ReadDAO {
   private static final String READ_ENW_ENROLMENT_PROC = "READ_ENW_ENROLMENT";
   
   private static final String READ_COMBINED_FARM_CLIENTS_PROC = "READ_COMBINED_FARM_CLIENTS";
-  private static final int READ_COMBINED_FARM_CLIENTS_PARAM = 1;
 
   private static final String READ_FARM_TYPE_PROC = "READ_FARM_TYPE";
   private static final int READ_FARM_TYPE_PARAM = 1;
@@ -3065,7 +3064,9 @@ public class ReadDAO {
    */
   @SuppressWarnings("resource")
   public final List<CombinedFarmClient> readCombinedFarmClients(final Integer combinedFarmNumber) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_COMBINED_FARM_CLIENTS_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     boolean originalAutoCommit = true;
 
@@ -3073,14 +3074,14 @@ public class ReadDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_COMBINED_FARM_CLIENTS_PROC, READ_COMBINED_FARM_CLIENTS_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, combinedFarmNumber);
-      proc.execute();
+      ps.setLong(c++, combinedFarmNumber == null ? null : combinedFarmNumber.longValue());
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       List<CombinedFarmClient> l = new ArrayList<>();
 
@@ -3113,12 +3114,14 @@ public class ReadDAO {
       }
       throw e;
     } finally {
-      close(rs, proc);
+      close(rs, ps);
       try {
         conn.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
         throw ex;
       }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
