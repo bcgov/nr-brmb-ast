@@ -39,7 +39,7 @@ returns table(
 )
 language sql
 as $$
-    with scenarios as(
+    with scenarios as (
         select sc.agristability_scenario_id,
                pyv.program_year_version_id,
                py.program_year_id

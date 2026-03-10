@@ -9,14 +9,22 @@ $$
 begin
     merge into farms.farm_negative_margins as o
     using (
-        with ivpr as (
+        with scenarios as (
+            select sc.agristability_scenario_id,
+                   py.year,
+                   pyv.program_year_version_id
+            from farms.farm_agristability_scenarios sc
+            join farms.farm_program_year_versions pyv on sc.program_year_version_id = pyv.program_year_version_id
+            join farms.farm_program_years py on pyv.program_year_id = py.program_year_id
+            where sc.agristability_scenario_id = in_agristability_scenario_id
+        ), ivpr as (
             select case when sv.year = 2024 then sv.year
                         when bct.bpu_lead_ind = 'N' then (sv.year - 1)
                         else sv.year
                    end ivpr_year
-            from farms.farm_scenarios_vw sv
+            from scenarios sv
             join farms.farm_reference_scenarios rs on rs.for_agristability_scenario_id = sv.agristability_scenario_id
-            join farms.farm_scenarios_vw rsv on rsv.agristability_scenario_id = rs.agristability_scenario_id
+            join scenarios rsv on rsv.agristability_scenario_id = rs.agristability_scenario_id
                                              and rsv.year = (sv.year - 1)
             join farms.farm_benefit_calc_totals bct on bct.agristability_scenario_id = rsv.agristability_scenario_id
             where sv.agristability_scenario_id = in_agristability_scenario_id
@@ -37,7 +45,7 @@ begin
                    iid.premium_rate,
                    ycp.parameter_value::numeric / 100 as negative_margin_purchase_requirement
             from farms.farm_farming_operations fo
-            join farms.farm_scenarios_vw sv on sv.program_year_version_id = fo.program_year_version_id
+            join scenarios sv on sv.program_year_version_id = fo.program_year_version_id
             join farms.farm_reported_inventories ri on fo.farming_operation_id = ri.farming_operation_id
                                                     and (
                                                         ri.agristability_scenario_id = sv.agristability_scenario_id
