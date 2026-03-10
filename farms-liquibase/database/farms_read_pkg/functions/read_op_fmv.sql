@@ -36,12 +36,14 @@ as $$
         join farms.farm_reported_inventories inv on op.farming_operation_id = inv.farming_operation_id
         join farms.farm_agristabilty_cmmdty_xref x on inv.agristabilty_cmmdty_xref_id = x.agristabilty_cmmdty_xref_id
         join farms.farm_fair_market_values fmv on fmv.inventory_item_code = x.inventory_item_code
+                                            -- either the crop code matches, or it's livestock
                                             and (
                                                 (x.inventory_class_code = '1' and fmv.crop_unit_code = inv.crop_unit_code)
                                                 or x.inventory_class_code = '2'
                                             )
                                             and fmv.municipality_code in ('0', pyv.municipality_code)
                                             and coalesce(fmv.expiry_date, '9999-12-31') > current_date
+                                            -- check fiscal year window
                                             and fmv.program_year between extract(year from op.fiscal_year_start) and extract(year from op.fiscal_year_end)
         where op.farming_operation_id = op_id
     ), g as (
