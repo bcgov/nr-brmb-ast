@@ -164,12 +164,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_CLIENT_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -247,14 +243,9 @@ public class ReadDAO {
         throw new SQLException("Too many Agristability Clients found.");
       }
 
-      conn.commit();
       return ac;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -278,12 +269,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_META_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?)";
       ps = conn.prepareStatement(sql);
@@ -336,14 +323,9 @@ public class ReadDAO {
         l.add(pyv);
       }
 
-      conn.commit();
       return l;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -499,12 +481,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_ID_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?,?,?)";
       ps = conn.prepareStatement(sql);
@@ -541,14 +519,9 @@ public class ReadDAO {
         return l.toArray(new int[l.size()][]);
       }
 
-      conn.commit();
       return null;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -570,12 +543,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_VER_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -589,14 +558,8 @@ public class ReadDAO {
       while (rs.next()) {
         buildPyv(rs, sc);
       }
-
-      conn.commit();
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -618,12 +581,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_OPERATION_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -679,14 +638,9 @@ public class ReadDAO {
         l.add(op);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -709,12 +663,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_OPERATION_PART_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -750,14 +700,9 @@ public class ReadDAO {
         l.add(op);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -780,12 +725,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_PRODUCTION_INSURANCE_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -817,14 +758,9 @@ public class ReadDAO {
         l.add(op);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -848,12 +784,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_SCENARIO_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -923,14 +855,8 @@ public class ReadDAO {
       if(sc.getIsInCombinedFarmInd() == null) {
         sc.setIsInCombinedFarmInd(false);
       }
-
-      conn.commit();
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -960,12 +886,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_VERIFICATION_NOTES;
     final int numberOfNotes = 3;
     String verificationNotes[] = new String[numberOfNotes];
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       try(PreparedStatement ps = conn.prepareStatement(sql);) {
@@ -985,13 +907,8 @@ public class ReadDAO {
 
       }
 
-      conn.commit();
       return verificationNotes;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1015,12 +932,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_WHOLE_FARM_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -1053,14 +966,9 @@ public class ReadDAO {
         l.add(wp);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1083,12 +991,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_CLAIM_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -1182,14 +1086,9 @@ public class ReadDAO {
         r.put(scId, cl);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1211,12 +1110,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_STATE_AUDITS_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -1244,14 +1139,9 @@ public class ReadDAO {
         audits.add(ssa);
       }
 
-      conn.commit();
       return audits;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
       close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1274,12 +1164,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_SC_LOGS_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -1298,14 +1184,8 @@ public class ReadDAO {
         
         logs.add(log);
       }
-
-      conn.commit();
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
       close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1330,12 +1210,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_TOT_MGN_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -1406,14 +1282,9 @@ public class ReadDAO {
         r.put(scId, mt);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1434,12 +1305,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_MARGIN_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -1490,17 +1357,12 @@ public class ReadDAO {
         r.put(opId, m);
       }
 
-      conn.commit();
       if(r.size() > 0) {
         return r;
       }
       return null;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1524,12 +1386,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_CROP_UNIT_CONVERSIONS_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?)";
       ps = conn.prepareStatement(sql);
@@ -1573,14 +1431,9 @@ public class ReadDAO {
         
       }
 
-      conn.commit();
       return invCropConversions;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
         close(rs, ps);
-        conn.setAutoCommit(originalAutoCommit);
         long duration = System.currentTimeMillis() - startTime;
         logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1607,12 +1460,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_INV_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?,?)";
       ps = conn.prepareStatement(sql);
@@ -1799,14 +1648,9 @@ public class ReadDAO {
         inventoryItem.setRevisionCount(getInteger(rs, c++));
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1823,14 +1667,10 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_OP_FMV_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     HashMap<String, List<FmvFullResult>> r;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -1841,22 +1681,8 @@ public class ReadDAO {
       rs = ps.executeQuery();
       
       r = readFMVResultSet(opId, rs);
-
-      conn.commit();
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
       close(rs, ps);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1882,15 +1708,11 @@ public class ReadDAO {
     long startTime = 0;
     String prcName = PACKAGE_NAME + "." + READ_OP_SINGLE_FMV_PROC;
     PreparedStatement ps = null;
-    boolean originalAutoCommit = true;
     ResultSet rs = null;
     
     HashMap<String, List<FmvFullResult>> r;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?,?)";
       ps = conn.prepareStatement(sql);
@@ -1903,22 +1725,8 @@ public class ReadDAO {
       rs = ps.executeQuery();
       
       r = readFMVResultSet(opId, rs);
-
-      conn.commit();
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
       close(rs, ps);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -1938,12 +1746,8 @@ public class ReadDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
     Integer programYearId = null;
-    boolean originalAutoCommit = true;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?)";
       ps = conn.prepareStatement(sql);
@@ -1957,22 +1761,8 @@ public class ReadDAO {
       while (rs.next()) {
         programYearId = getInteger(rs, 1);
       }
-
-      conn.commit();
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
       close(rs, ps);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -2044,13 +1834,9 @@ public class ReadDAO {
     long startTime = 0;
     String prcName = PACKAGE_NAME + "." + READ_OP_FMV_PREV_YEAR_PROC;
     PreparedStatement ps = null;
-    boolean originalAutoCommit = true;
     ResultSet rs = null;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -2093,22 +1879,8 @@ public class ReadDAO {
               null, null, prevYearEndPrice ));
         }
       }
-
-      conn.commit();
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
       close(rs, ps);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -2272,12 +2044,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_PUC_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?)";
       ps = conn.prepareStatement(sql);
@@ -2343,14 +2111,9 @@ public class ReadDAO {
         }
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -2377,12 +2140,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_IE_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?,?,?)";
       ps = conn.prepareStatement(sql);
@@ -2452,14 +2211,9 @@ public class ReadDAO {
         l.add(ie);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -2618,12 +2372,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_BPU_ALL_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       Array oracleArrayInventoryCodes = createStringOracleArray(pInvCodes);
       Array oracleArrayStructureGroupCodes = createStringOracleArray(pStructCodes);
       
@@ -2656,14 +2406,9 @@ public class ReadDAO {
         addZeroValueCodes(result[0], programYear);
       }
 
-      conn.commit();
       return result;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
     	close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -2732,12 +2477,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_BPU_XREF_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?)";
       ps = conn.prepareStatement(sql);
@@ -2758,27 +2499,13 @@ public class ReadDAO {
         processBpuResults(rs, r1, r2);
       }
 
-      conn.commit();
-
       @SuppressWarnings("unchecked")
       HashMap<String, BasePricePerUnit>[] result = new HashMap[2];
       result[0] = r1.size() > 0 ? r1 : null;
       result[1] = r2.size() > 0 ? r2 : null;
       return result;
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
     	close(rs, ps);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -2850,14 +2577,10 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_COB_GEN_DATE_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     Date cobGenerationDate = null;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -2872,14 +2595,9 @@ public class ReadDAO {
         cobGenerationDate = getDate(rs, c++);
       }
 
-      conn.commit();
       return cobGenerationDate;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
       close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -2899,14 +2617,10 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_ENROLMENT_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     Enrolment e = null;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?,?)";
       ps = conn.prepareStatement(sql);
@@ -2945,14 +2659,9 @@ public class ReadDAO {
         e.setRevisionCount(getInteger(rs, c++));
       }
 
-      conn.commit();
       return e;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
       close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -2966,14 +2675,10 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_ENW_ENROLMENT_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     EnwEnrolment e = null;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -3039,14 +2744,9 @@ public class ReadDAO {
         e.setRevisionCount(getInteger(rs, c++));
       }
 
-      conn.commit();
       return e;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
       close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -3067,12 +2767,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_COMBINED_FARM_CLIENTS_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -3102,23 +2798,9 @@ public class ReadDAO {
         l.add(cfc);
       }
 
-      conn.commit();
-
       return l;
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
       close(rs, ps);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
@@ -3134,12 +2816,8 @@ public class ReadDAO {
     String prcName = PACKAGE_NAME + "." + READ_FARM_TYPE_PROC;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
       ps = conn.prepareStatement(sql);
@@ -3153,14 +2831,8 @@ public class ReadDAO {
         scenario.setFarmTypeCode(getString(rs, c++));
         scenario.setFarmTypeCodeDescription(getString(rs, c++));
       }
-
-      conn.commit();
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
       close(rs, ps);
-      conn.setAutoCommit(originalAutoCommit);
       long duration = System.currentTimeMillis() - startTime;
       logger.debug("{} took {} ms", prcName, duration);
     }
