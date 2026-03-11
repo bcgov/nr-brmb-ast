@@ -18,11 +18,15 @@ import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.domain.enrolment.Enrolment;
 import ca.bc.gov.srm.farm.domain.enrolment.EnrolmentCombinedFarmOwner;
@@ -36,6 +40,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  * @created Dec 6, 2010
  */
 public class EnrolmentReadDAO extends OracleDAO {
+  private Logger logger = LoggerFactory.getLogger(EnrolmentReadDAO.class);
 
   /** PACKAGE_NAME. */
   private static final String PACKAGE_NAME = "FARMS_ENROLMENT_READ_PKG";
@@ -68,66 +73,52 @@ public class EnrolmentReadDAO extends OracleDAO {
       final Integer enrolmentYear,
       final String regionCode)
       throws DataAccessException {
-
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_ENROLMENTS_PROC;
+    PreparedStatement ps = null;
     Connection connection = getConnection(transaction);
-    boolean originalAutoCommit = true;
     List<Enrolment> enrolments = new ArrayList<>();
-    final int paramCount = 2;
 
     try {
-      originalAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = connection.prepareStatement(sql);
 
-      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + READ_ENROLMENTS_PROC, paramCount , true); ) {
+      int param = 1;
+      DAOUtils.setShort(ps, param++, enrolmentYear);
+      ps.setString(param++, regionCode);
 
-        int param = 1;
-        proc.setShort(param++, enrolmentYear == null ? null : enrolmentYear.shortValue());
-        proc.setString(param++, regionCode);
-        proc.execute();
+      try (ResultSet rs = ps.executeQuery(); ) {
 
-        try (ResultSet rs = proc.getResultSet(); ) {
-
-          while (rs.next()) {
-            Enrolment e = new Enrolment();
-            e.setClientId(getInteger(rs, "agristability_client_id"));
-            e.setPin(getInteger(rs, "participant_pin"));
-            e.setProducerName(getString(rs, "producer_name"));
-            e.setScenarioState(getString(rs, "scenario_state"));
-            e.setFailedToGenerate(getIndicator(rs, "failed_to_generate_ind"));
-            e.setFailedReason(getString(rs, "failed_reason"));
-            e.setEnrolmentId(getInteger(rs, "program_enrolment_id"));
-            e.setEnrolmentYear(getInteger(rs, "enrolment_year"));
-            e.setEnrolmentFee(getDouble(rs, "enrolment_fee"));
-            e.setGeneratedDate(getDate(rs, "generated_date"));
-            e.setIsGeneratedFromCra(getIndicator(rs, "generated_from_cra_ind"));
-            e.setIsGeneratedFromEnw(getIndicator(rs, "generated_from_enw_ind"));
-            e.setCombinedFarmPercent(getDouble(rs, "combined_farm_percent"));
-            e.setWhenUpdated(getDate(rs, "when_updated"));
-            e.setRevisionCount(getInteger(rs, "enrolment_revision_count"));
-            
-            enrolments.add(e);
-          }
+        while (rs.next()) {
+          Enrolment e = new Enrolment();
+          e.setClientId(getInteger(rs, "agristability_client_id"));
+          e.setPin(getInteger(rs, "participant_pin"));
+          e.setProducerName(getString(rs, "producer_name"));
+          e.setScenarioState(getString(rs, "scenario_state"));
+          e.setFailedToGenerate(getIndicator(rs, "failed_to_generate_ind"));
+          e.setFailedReason(getString(rs, "failed_reason"));
+          e.setEnrolmentId(getInteger(rs, "program_enrolment_id"));
+          e.setEnrolmentYear(getInteger(rs, "enrolment_year"));
+          e.setEnrolmentFee(getDouble(rs, "enrolment_fee"));
+          e.setGeneratedDate(getDate(rs, "generated_date"));
+          e.setIsGeneratedFromCra(getIndicator(rs, "generated_from_cra_ind"));
+          e.setIsGeneratedFromEnw(getIndicator(rs, "generated_from_enw_ind"));
+          e.setCombinedFarmPercent(getDouble(rs, "combined_farm_percent"));
+          e.setWhenUpdated(getDate(rs, "when_updated"));
+          e.setRevisionCount(getInteger(rs, "enrolment_revision_count"));
+          
+          enrolments.add(e);
         }
       }
-
-      connection.commit();
     } catch (SQLException e) {
-      try {
-        connection.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
-      try {
-        connection.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        handleException(ex);
-      }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
-    
+
     return enrolments;
   }
   
