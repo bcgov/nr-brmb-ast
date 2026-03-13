@@ -146,21 +146,17 @@ public class EnrolmentReadDAO extends OracleDAO {
    */
   public List<EnrolmentStaging> getStagingResults(final Connection connection)
       throws DataAccessException {
-    
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_STAGING_RESULTS_PROC;
     List<EnrolmentStaging> enrolments = null;
-    boolean originalAutoCommit = true;
-    
-    int readStagingResultsParam = 0;
-    try {
-      originalAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
 
-      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + READ_STAGING_RESULTS_PROC, readStagingResultsParam , true);){
-        
-        proc.execute();
-        
-        try(ResultSet rs = proc.getResultSet();) {
+    try {
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "()";
+
+      try (PreparedStatement ps = connection.prepareStatement(sql);){
+
+        try(ResultSet rs = ps.executeQuery();) {
         
           enrolments = new ArrayList<>();
           
@@ -175,22 +171,12 @@ public class EnrolmentReadDAO extends OracleDAO {
           }
         }
       }
-
-      connection.commit();
     } catch (SQLException e) {
-      try {
-        connection.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
-      try {
-        connection.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        handleException(ex);
-      }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     
     return enrolments;
