@@ -305,29 +305,27 @@ public class EnrolmentReadDAO extends OracleDAO {
       final Integer enrolmentYear,
       final List<Integer> pins)
       throws DataAccessException {
-
+    long startTime = 0;
+    String prcName = null;
     List<Enrolment> enrolments = new ArrayList<>();
     List<Integer> enrolmentIds = new ArrayList<>();
-    boolean originalAutoCommit = true;
 
-    int readTransferParam = 2;
     try {
-      originalAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
+      prcName = PACKAGE_NAME + "." + READ_TRANSFER_PROC;
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
 
-      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-            + READ_TRANSFER_PROC, readTransferParam, true);) {
+      try(PreparedStatement ps = connection.prepareStatement(sql);) {
 
         Integer[] pinArray = pins.toArray(new Integer[pins.size()]);
 
-        Array oracleArray = createNumbersOracleArray(connection, pinArray);
+        Array oracleArray = createIntegersOracleArray(connection, pinArray);
         
         int param = 1;
-        proc.setInt(param++, enrolmentYear);
-        proc.setArray(param++, oracleArray);
-        proc.execute();
+        DAOUtils.setInt(ps, param++, enrolmentYear);
+        ps.setArray(param++, oracleArray);
 
-        try(ResultSet rs = proc.getResultSet();) {
+        try(ResultSet rs = ps.executeQuery();) {
 
           while (rs.next()) {
             Enrolment e = new Enrolment();
@@ -365,41 +363,28 @@ public class EnrolmentReadDAO extends OracleDAO {
           }
         }
       }
-
-      connection.commit();
     } catch (SQLException e) {
-      try {
-        connection.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
-      try {
-        connection.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        handleException(ex);
-      }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
-    
-    
-    int readTransferPartnersParam = 1;
-    try {
-      originalAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
 
-      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + READ_TRANSFER_PARTNERS_PROC, readTransferPartnersParam , true);) {
+    try {
+      prcName = PACKAGE_NAME + READ_TRANSFER_PARTNERS_PROC;
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+
+      try(PreparedStatement ps = connection.prepareStatement(sql);) {
         
         Integer[] enrolmentIdArray = enrolmentIds.toArray(new Integer[pins.size()]);
-        Array oracleArray = createNumbersOracleArray(connection, enrolmentIdArray);
+        Array oracleArray = createBigIntsOracleArray(connection, enrolmentIdArray);
         
         int param = 1;
-        proc.setArray(param++, oracleArray);
-        proc.execute();
+        ps.setArray(param++, oracleArray);
         
-        try(ResultSet rs = proc.getResultSet();) {
+        try(ResultSet rs = ps.executeQuery();) {
           while (rs.next()) {
             
             Integer enrolmentId = getInteger(rs, "Program_Enrolment_Id");
@@ -422,41 +407,28 @@ public class EnrolmentReadDAO extends OracleDAO {
           }
         }
       }
-
-      connection.commit();
     } catch (SQLException e) {
-      try {
-        connection.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
-      try {
-        connection.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        handleException(ex);
-      }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
-    
-    
-    int readTransferCombinedFarmOwnersParam = 1;
-    try {
-      originalAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
 
-      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + READ_TRANSFER_COMBINED_FARM_OWNERS_PROC, readTransferCombinedFarmOwnersParam , true);) {
+    try {
+      prcName = PACKAGE_NAME + "." + READ_TRANSFER_COMBINED_FARM_OWNERS_PROC;
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+
+      try(PreparedStatement ps = connection.prepareStatement(sql);) {
         
         Integer[] enrolmentIdArray = enrolmentIds.toArray(new Integer[pins.size()]);
-        Array oracleArray = createNumbersOracleArray(connection, enrolmentIdArray);
+        Array oracleArray = createBigIntsOracleArray(connection, enrolmentIdArray);
         
         int param = 1;
-        proc.setArray(param++, oracleArray);
-        proc.execute();
-        
-        try(ResultSet rs = proc.getResultSet();) {
+        ps.setArray(param++, oracleArray);
+
+        try(ResultSet rs = ps.executeQuery();) {
           while (rs.next()) {
             
             Integer enrolmentId = getInteger(rs, "Program_Enrolment_Id");
@@ -477,22 +449,12 @@ public class EnrolmentReadDAO extends OracleDAO {
           }
         }
       }
-
-      connection.commit();
     } catch (SQLException e) {
-      try {
-        connection.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
-      try {
-        connection.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        handleException(ex);
-      }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     
     return enrolments;
