@@ -21,111 +21,113 @@ returns table(
 )
 language sql
 as $$
-with max_scenarios as (
-     select distinct on (py.agristability_client_id)
-            py.agristability_client_id,
-            sc.agristability_scenario_id as max_sc,
-            py.year,
-            sc.scenario_state_code,
-            sc.scenario_category_code,
-            sc.scenario_class_code
-     from farms.farm_agristability_clients ac
-     join farms.farm_program_years py on ac.agristability_client_id = py.agristability_client_id
-     join farms.farm_program_year_versions pyv on py.program_year_id = pyv.program_year_id
-     join farms.farm_agristability_scenarios sc on pyv.program_year_version_id = sc.program_year_version_id
-     left outer join farms.farm_office_municipality_xref omx on omx.municipality_code = pyv.municipality_code
-                                                            and (omx.regional_office_code = in_regional_office_code or in_regional_office_code = 'ALL')
-     where py.year <= (in_enrolment_year - 2)
-     order by py.agristability_client_id,
-              case
-                   when py.year between (in_enrolment_year - 3) and (in_enrolment_year - 2)
-                        and sc.scenario_state_code in ('COMP','AMEND')
-                        and sc.scenario_category_code = 'FIN'
-                        and sc.scenario_class_code = 'USER'
-                   then 0 else 1
-              end,
-              case
-                   when py.year = (in_enrolment_year - 2)
-                        and sc.scenario_state_code = 'EN_COMP'
-                        and sc.scenario_category_code = 'ENW'
-                   then 0 else 1
-              end,
-              case
-                   when py.year = (in_enrolment_year - 2)
-                        and sc.scenario_state_code = 'IP'
-                        and sc.scenario_category_code = 'ENW'
-                   then 0 else 1
-              end,
-              py.year desc,
-              case
-                   when sc.scenario_state_code in ('REC') then 0
-                   else 1
-              end,
-              sc.scenario_number desc
-), populated_scenarios as (
-     select ac.agristability_client_id,
-            ac.participant_pin,
-            coalesce(o.corp_name, o.last_name || ', ' || o.first_name) producer_name,
-            case when (
-                         sc.year = (in_enrolment_year - 2)
-                         and sc.scenario_state_code in ('COMP', 'AMEND')
-                         and sc.scenario_category_code = 'FIN'
-                         and sc.scenario_class_code = 'USER'
-                     ) or (
-                         sc.year = (in_enrolment_year - 2)
-                         and sc.scenario_state_code in ('COMP', 'AMEND')
-                         and sc.scenario_category_code = 'FIN'
-                         and sc.scenario_class_code = 'USER'
-                         and exists (
-                             select 1
-                             from farms.farm_agristability_scenarios sc2
-                             join farms.farm_program_year_versions pyv2 on sc2.program_year_version_id = pyv2.program_year_version_id
-                             join farms.farm_program_years py2 on pyv2.program_year_id = py2.program_year_id
-                             where py2.year = (in_enrolment_year - 2)
-                             and py2.agristability_client_id = sc.agristability_client_id
-                             and exists (
-                                 select 1
-                                 from farms.farm_farming_operations fo
-                                 join farms.farm_reported_income_expenses rie on rie.farming_operation_id = fo.farming_operation_id
-                                                                              and rie.agristability_scenario_id is null
-                                 where fo.program_year_version_id = sc2.program_year_version_id
-                             )
-                             and sc2.scenario_class_code in ('CRA', 'CHEF', 'LOCAL', 'GEN')
-                             and sc2.scenario_number = (
-                                 select max(sc3.scenario_number)
-                                 from farms.farm_agristability_scenarios sc3
-                                 join farms.farm_program_year_versions pyv3 on sc3.program_year_version_id = pyv3.program_year_version_id
-                                 join farms.farm_program_years py3 on pyv3.program_year_id = py3.program_year_id
-                                 where py3.program_year_id = py2.program_year_id
-                                 and sc3.scenario_class_code in ('CRA', 'CHEF', 'LOCAL', 'GEN')
-                             )
-                         )
-                     ) then 'COMP'
-                when sc.year = (in_enrolment_year - 2)
-                     and sc.scenario_state_code = 'EN_COMP'
-                     and sc.scenario_category_code = 'ENW' then 'EN_COMP'
-                when sc.year = (in_enrolment_year - 2)
-                     and sc.scenario_state_code = 'IP'
-                     and sc.scenario_category_code = 'ENW' then 'EN_IP'
-                else 'REC'
-           end scenario_state,
-           pe.failed_to_generate_ind,
-           pe.failed_reason,
-           pe.program_enrolment_id,
-           pe.enrolment_year,
-           pe.enrolment_fee,
-           pe.generated_date,
-           pe.generated_from_cra_ind,
-           pe.generated_from_enw_ind,
-           pe.combined_farm_percent,
-           pe.when_updated,
-           pe.revision_count enrolment_revision_count
-     from farms.farm_agristability_clients ac
-     join farms.farm_persons o on o.person_id = ac.person_id
-     join max_scenarios sc on ac.agristability_client_id = sc.agristability_client_id
-     join farms.farm_program_enrolments pe on pe.agristability_client_id = ac.agristability_client_id
-                                           and pe.enrolment_year = in_enrolment_year
+WITH params AS (
+  SELECT in_enrolment_year::smallint AS enrol_year
+),
+
+-- Flatten the PY/PYV/SC chain, keep only what we need
+py_sc AS (
+  SELECT
+    py.agristability_client_id,
+    py.program_year_id,
+    py.year,
+    pyv.program_year_version_id,
+    sc.agristability_scenario_id,
+    sc.scenario_state_code,
+    sc.scenario_category_code,
+    sc.scenario_class_code,
+    sc.scenario_number
+  FROM farms.farm_program_years py
+  JOIN farms.farm_program_year_versions pyv ON py.program_year_id = pyv.program_year_id
+  JOIN farms.farm_agristability_scenarios sc ON pyv.program_year_version_id = sc.program_year_version_id
+  LEFT OUTER JOIN farms.farm_office_municipality_xref omx ON omx.municipality_code = pyv.municipality_code
+  WHERE py.year <= (SELECT enrol_year - 2 FROM params)
+  AND in_regional_office_code IN (omx.regional_office_code, 'ALL')
+),
+
+-- Rank scenarios per client according to your rules
+ranked AS (
+  SELECT
+    s.*,
+    row_number() OVER (
+      PARTITION BY s.agristability_client_id
+      ORDER BY
+        -- priority 1: true -> first (use NOT so true becomes false=0)
+        NOT (
+          s.year BETWEEN (SELECT enrol_year - 3 FROM params) AND (SELECT enrol_year - 2 FROM params)
+          AND s.scenario_state_code IN ('COMP','AMEND')
+          AND s.scenario_category_code = 'FIN'
+          AND s.scenario_class_code = 'USER'
+        ),
+        -- priority 2:
+        NOT (
+          s.year = (SELECT enrol_year - 2 FROM params)
+          AND s.scenario_state_code = 'EN_COMP'
+          AND s.scenario_category_code = 'ENW'
+        ),
+        -- priority 3:
+        NOT (
+          s.year = (SELECT enrol_year - 2 FROM params)
+          AND s.scenario_state_code = 'IP'
+          AND s.scenario_category_code = 'ENW'
+        ),
+        s.year DESC,
+        -- REC first within same year:
+        NOT (s.scenario_state_code IN ('REC')),
+        s.scenario_number DESC
+    ) AS rn
+  FROM py_sc s
+),
+
+-- Choose best scenario per client
+best AS (
+  SELECT * FROM ranked WHERE rn = 1
+),
+
+-- Base client/person info
+clients AS (
+  SELECT
+    ac.agristability_client_id,
+    ac.participant_pin,
+    COALESCE(o.corp_name, o.last_name || ', ' || o.first_name) AS producer_name
+  FROM farms.farm_agristability_clients ac
+  JOIN farms.farm_persons o ON o.person_id = ac.person_id
 )
-select sc.*
-from populated_scenarios sc;
+
+SELECT
+  b.agristability_client_id,
+  c.participant_pin,
+  c.producer_name,
+  CASE
+    WHEN b.year = (SELECT enrol_year - 2 FROM params)
+         AND b.scenario_state_code IN ('COMP','AMEND')
+         AND b.scenario_category_code = 'FIN'
+         AND b.scenario_class_code = 'USER'
+      THEN 'COMP'
+    WHEN b.year = (SELECT enrol_year - 2 FROM params)
+         AND b.scenario_state_code = 'EN_COMP'
+         AND b.scenario_category_code = 'ENW'
+      THEN 'EN_COMP'
+    WHEN b.year = (SELECT enrol_year - 2 FROM params)
+         AND b.scenario_state_code = 'IP'
+         AND b.scenario_category_code = 'ENW'
+      THEN 'EN_IP'
+    ELSE 'REC'
+  END AS scenario_state,
+  pe.failed_to_generate_ind,
+  pe.failed_reason,
+  pe.program_enrolment_id,
+  pe.enrolment_year,
+  pe.enrolment_fee,
+  pe.generated_date,
+  pe.generated_from_cra_ind,
+  pe.generated_from_enw_ind,
+  pe.combined_farm_percent,
+  pe.when_updated,
+  pe.revision_count AS enrolment_revision_count
+FROM best b
+JOIN clients c USING (agristability_client_id)
+LEFT JOIN farms.farm_program_enrolments pe
+  ON pe.agristability_client_id = b.agristability_client_id
+ AND pe.enrolment_year = (SELECT enrol_year FROM params);
 $$;
