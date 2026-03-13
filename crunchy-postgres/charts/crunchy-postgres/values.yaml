@@ -20,8 +20,8 @@ instances:
     - name: TZ
       value: America/New_York
   requests:
-    cpu: 1m
-    memory: 19Mi
+    cpu: #{DB_MAX_CPU}#
+    memory: #{DB_MAX_MEMORY}#
   limits:
     cpu: #{DB_MAX_CPU}#
     memory: #{DB_MAX_MEMORY}#
@@ -88,7 +88,8 @@ patroni:
   postgresql:
     pg_hba: "host all all 0.0.0.0/0 md5"
     parameters:
-      shared_buffers: 16MB # default is 128MB; a good tuned default for shared_buffers is 25% of the memory allocated to the pod
+      shared_buffers: 96MB # default is 128MB; a good tuned default for shared_buffers is 25% of the memory allocated to the pod
+      work_mem: 16MB
       wal_buffers: "64kB" # this can be set to -1 to automatically set as 1/32 of shared_buffers or 64kB, whichever is larger
       min_wal_size: 32MB
       max_wal_size: 64MB # default is 1GB
