@@ -1923,6 +1923,16 @@ abstract class OracleDAO {
   }
 
   @SuppressWarnings("resource")
+  protected Array createIntegersOracleArray(Connection connection, Integer[] values) throws SQLException {
+    return connection.createArrayOf("integer", values);
+  }
+  
+  @SuppressWarnings("resource")
+  protected Array createBigIntsOracleArray(Connection connection, Integer[] values) throws SQLException {
+    return connection.createArrayOf("bigint", values);
+  }
+
+  @SuppressWarnings("resource")
   protected Array createGuidOracleArray(Connection connection, List<String> values) throws SQLException {
     return connection.createArrayOf("varchar", toArray(values));
   }

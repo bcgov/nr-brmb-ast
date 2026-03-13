@@ -13,6 +13,7 @@ package ca.bc.gov.srm.farm.dao;
 import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -24,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.calculator.BenefitValidator;
 import ca.bc.gov.srm.farm.chefs.ChefsConfigurationUtil;
@@ -66,95 +69,68 @@ import ca.bc.gov.srm.farm.util.DataParseUtils;
  * @author dzwiers
  */
 public class ReadDAO {
+  private Logger logger = LoggerFactory.getLogger(ReadDAO.class);
 
   private static final String PACKAGE_NAME = "FARMS_READ_PKG";
 
   private static final String READ_OPERATION_PROC = "READ_PYV_OP";
-  private static final int READ_OPERATION_PARAM = 1;
 
   private static final String READ_CLIENT_PROC = "READ_CLIENT";
-  private static final int READ_CLIENT_PARAM = 1;
 
   private static final String READ_OPERATION_PART_PROC = "READ_OP_PART";
-  private static final int READ_OPERATION_PART_PARAM = 1;
 
   private static final String READ_BPU_ALL_PROC = "READ_BPU_ALL";
-  private static final int READ_BPU_ALL_PARAM = 4;
   
   private static final String READ_BPU_XREF_PROC = "READ_BPU_XREF";
 
   private static final String READ_PROGRAM_YEAR_META_PROC = "READ_PY_META";
-  private static final int READ_PROGRAM_YEAR_META_PARAM = 2;
 
   private static final String READ_PROGRAM_YEAR_ID_PROC = "READ_PY_ID";
-  private static final int READ_PROGRAM_YEAR_ID_PARAM = 4;
-  
+
   private static final String READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PROC = "READ_PY_ID_BY_CLIENT_ID";
-  private static final int READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PARAM = 2;
 
   private static final String READ_PROGRAM_YEAR_VER_PROC = "READ_PYV";
-  private static final int READ_PROGRAM_YEAR_VER_PARAM = 1;
 
   private static final String READ_PRODUCTION_INSURANCE_PROC = "READ_OP_PI";
-  private static final int READ_PRODUCTION_INSURANCE_PARAM = 1;
 
   private static final String READ_SCENARIO_PROC = "READ_PYV_SC";
-  private static final int READ_SCENARIO_PARAM = 1;
 
   private static final String READ_VERIFICATION_NOTES = "READ_VERIFICATION_NOTES";
-  private static final int READ_VERIFICATION_NOTES_PARAM = 1;
 
   private static final String READ_WHOLE_FARM_PROC = "READ_PYV_WF";
-  private static final int READ_WHOLE_FARM_PARAM = 1;
 
   private static final String READ_CLAIM_PROC = "READ_SC_CLM";
-  private static final int READ_CLAIM_PARAM = 1;
   
   private static final String READ_STATE_AUDITS_PROC = "READ_SC_STATE_AUDITS";
-  private static final int READ_STATE_AUDITS_PARAM = 1;
   
   private static final String READ_SC_LOGS_PROC = "READ_SC_LOGS";
-  private static final int READ_SC_LOGS_PARAM = 1;
 
   private static final String READ_MARGIN_PROC = "READ_SC_MGN";
-  private static final int READ_MARGIN_PARAM = 1;
 
   private static final String READ_INV_PROC = "READ_INV";
-  private static final int READ_INV_PARAM = 3;
   
   private static final String READ_CROP_UNIT_CONVERSIONS_PROC = "READ_CROP_UNIT_CONVERSIONS";
-  private static final int READ_CROP_UNIT_CONVERSIONS_PARAM = 2;  
 
   private static final String READ_OP_FMV_PROC = "READ_OP_FMV";
-  private static final int READ_OP_FMV_PARAM = 1;
   
   private static final String READ_OP_SINGLE_FMV_PROC = "READ_OP_SINGLE_FMV";
-  private static final int READ_OP_SINGLE_FMV_PARAM = 3;
   
   private static final String READ_OP_FMV_PREV_YEAR_PROC = "READ_OP_FMV_PREV_YEAR";
-  private static final int READ_OP_FMV_PREV_YEAR_PARAM = 1;
 
   private static final String READ_PUC_PROC = "READ_PUC";
   private static final String READ_IE_PROC = "READ_IE";
-  private static final int READ_IE_PARAM = 4;
 
   private static final String READ_TOT_MGN_PROC = "READ_SC_TOT_MGN";
-  private static final int READ_TOT_MGN_PARAM = 1;
   
   private static final String READ_COB_GEN_DATE_PROC = "READ_COB_GEN_DATE";
-  private static final int READ_COB_GEN_DATE_PARAM = 1;
   
   private static final String READ_ENROLMENT_PROC = "READ_ENROLMENT";
-  private static final int READ_ENROLMENT_PARAM = 2;
   
   private static final String READ_ENW_ENROLMENT_PROC = "READ_ENW_ENROLMENT";
-  private static final int READ_ENW_ENROLMENT_PARAM = 1;
   
   private static final String READ_COMBINED_FARM_CLIENTS_PROC = "READ_COMBINED_FARM_CLIENTS";
-  private static final int READ_COMBINED_FARM_CLIENTS_PARAM = 1;
 
   private static final String READ_FARM_TYPE_PROC = "READ_FARM_TYPE";
-  private static final int READ_FARM_TYPE_PARAM = 1;
   
   private Connection conn = null;
   
@@ -184,22 +160,20 @@ public class ReadDAO {
    */
   @SuppressWarnings("resource")
   public final Client readClient(final Integer pin) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_CLIENT_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_CLIENT_PROC, READ_CLIENT_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, pin);
-      proc.execute();
+      DAOUtils.setInt(ps, c++, pin);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       Client ac = null;
 
@@ -269,15 +243,11 @@ public class ReadDAO {
         throw new SQLException("Too many Agristability Clients found.");
       }
 
-      conn.commit();
       return ac;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -295,23 +265,21 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final List<ScenarioMetaData> readProgramYearMetadata(final Integer pin,
       final Integer year) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_META_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_PROGRAM_YEAR_META_PROC, READ_PROGRAM_YEAR_META_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, pin);
-      proc.setShort(c++, year == null ? null : year.shortValue());
-      proc.execute();
+      DAOUtils.setInt(ps, c++, pin);
+      DAOUtils.setShort(ps, c++, year);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       ArrayList<ScenarioMetaData> l = new ArrayList<>();
 
@@ -355,15 +323,11 @@ public class ReadDAO {
         l.add(pyv);
       }
 
-      conn.commit();
       return l;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -513,25 +477,23 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final int[][] readPyIds(final Integer pin, final Integer year,
       final Integer scnum, String pMode) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_ID_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_PROGRAM_YEAR_ID_PROC, READ_PROGRAM_YEAR_ID_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?,?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, pin);
-      proc.setShort(c++, year == null ? null : year.shortValue());
-      proc.setInt(c++, scnum);
-      proc.setString(c++, pMode);
-      proc.execute();
+      DAOUtils.setInt(ps, c++, pin);
+      DAOUtils.setShort(ps, c++, year);
+      DAOUtils.setInt(ps, c++, scnum);
+      ps.setString(c++, pMode);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       ArrayList<int[]> l = new ArrayList<>();
 
@@ -557,15 +519,11 @@ public class ReadDAO {
         return l.toArray(new int[l.size()][]);
       }
 
-      conn.commit();
       return null;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
@@ -581,36 +539,29 @@ public class ReadDAO {
    */
   public final void readProgramYear(final Integer[] pyvid, Scenario sc)
       throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_VER_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_PROGRAM_YEAR_VER_PROC, READ_PROGRAM_YEAR_VER_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(pyvid);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(pyvid);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       while (rs.next()) {
         buildPyv(rs, sc);
       }
-
-      conn.commit();
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -626,24 +577,21 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, List<FarmingOperation>> readOperation(final Integer[] programYearVersions)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_OPERATION_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_OPERATION_PROC, READ_OPERATION_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(programYearVersions);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(programYearVersions);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<FarmingOperation>> r = new HashMap<>();
 
@@ -690,15 +638,11 @@ public class ReadDAO {
         l.add(op);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -715,24 +659,21 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, List<FarmingOperationPartner>> readOperationPartners(final Integer[] operationIds)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_OPERATION_PART_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_OPERATION_PART_PROC, READ_OPERATION_PART_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(operationIds);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(operationIds);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<FarmingOperationPartner>> r = new HashMap<>();
 
@@ -759,15 +700,11 @@ public class ReadDAO {
         l.add(op);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -784,25 +721,21 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, List<ProductionInsurance>> readOperationProductionInsurance(
       final Integer[] operationIds) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PRODUCTION_INSURANCE_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_PRODUCTION_INSURANCE_PROC, READ_PRODUCTION_INSURANCE_PARAM,
-          true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(operationIds);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(operationIds);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<ProductionInsurance>> r = new HashMap<>();
 
@@ -825,15 +758,11 @@ public class ReadDAO {
         l.add(op);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -851,24 +780,21 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final void readScenario(final Integer[] scids, Scenario sc)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_SCENARIO_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_SCENARIO_PROC, READ_SCENARIO_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(scids);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(scids);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       while (rs.next()) {
 
@@ -929,14 +855,10 @@ public class ReadDAO {
       if(sc.getIsInCombinedFarmInd() == null) {
         sc.setIsInCombinedFarmInd(false);
       }
-
-      conn.commit();
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -960,22 +882,20 @@ public class ReadDAO {
 
   
   public final String[] readVerificationNotes(Integer pyId) throws SQLException {
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_VERIFICATION_NOTES;
     final int numberOfNotes = 3;
     String verificationNotes[] = new String[numberOfNotes];
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      try(DAOStoredProcedure proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_VERIFICATION_NOTES, READ_VERIFICATION_NOTES_PARAM, true);) {
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      try(PreparedStatement ps = conn.prepareStatement(sql);) {
 
         int c = 1;
-        proc.setInt(c, pyId);
-        proc.execute();
+        DAOUtils.setLong(ps, c, pyId);
 
-        try(ResultSet rs = proc.getResultSet();) {
+        try(ResultSet rs = ps.executeQuery();) {
 
           if (rs.next()) {
             c = 1;
@@ -987,13 +907,10 @@ public class ReadDAO {
 
       }
 
-      conn.commit();
       return verificationNotes;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-      conn.setAutoCommit(originalAutoCommit);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -1011,24 +928,21 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, List<WholeFarmParticipant>> readWholeFarmParticipant(
       final Integer[] programYearVersions) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_WHOLE_FARM_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_WHOLE_FARM_PROC, READ_WHOLE_FARM_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(programYearVersions);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(programYearVersions);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<WholeFarmParticipant>> r = new HashMap<>();
 
@@ -1052,15 +966,11 @@ public class ReadDAO {
         l.add(wp);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -1077,24 +987,21 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, Benefit> readScenarioClaim(final Integer[] scenarioIds)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_CLAIM_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_CLAIM_PROC,
-          READ_CLAIM_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(scenarioIds);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(scenarioIds);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, Benefit> r = new HashMap<>();
 
@@ -1179,15 +1086,11 @@ public class ReadDAO {
         r.put(scId, cl);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
@@ -1203,23 +1106,20 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final List<ScenarioStateAudit> readScenarioStateAudits(final Integer scenarioId)
   throws SQLException {
-    
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_STATE_AUDITS_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_STATE_AUDITS_PROC,
-          READ_STATE_AUDITS_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, scenarioId);
-      proc.execute();
+      DAOUtils.setLong(ps, c++, scenarioId);
       
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       List<ScenarioStateAudit> audits = new ArrayList<>();
       
@@ -1239,15 +1139,11 @@ public class ReadDAO {
         audits.add(ssa);
       }
 
-      conn.commit();
       return audits;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-      
-      close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
@@ -1264,24 +1160,19 @@ public class ReadDAO {
   public final List<ScenarioLog> readScenarioLogs(final Integer scenarioId)
   throws SQLException {
   	List<ScenarioLog> logs = new ArrayList<>();
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_SC_LOGS_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(
-      		conn, 
-      		PACKAGE_NAME + "." + READ_SC_LOGS_PROC,
-          READ_SC_LOGS_PARAM, 
-          true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, scenarioId);
-      proc.execute();
-      rs = proc.getResultSet();
+      DAOUtils.setLong(ps, c++, scenarioId);
+      rs = ps.executeQuery();
       
       while (rs.next()) {
         ScenarioLog log = new ScenarioLog();
@@ -1293,14 +1184,10 @@ public class ReadDAO {
         
         logs.add(log);
       }
-
-      conn.commit();
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-      close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     
     return logs;
@@ -1319,24 +1206,21 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, MarginTotal> readScenarioTotalMargin(final Integer[] scenarioIds)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_TOT_MGN_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_TOT_MGN_PROC, READ_TOT_MGN_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(scenarioIds);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(scenarioIds);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, MarginTotal> r = new HashMap<>();
 
@@ -1398,14 +1282,11 @@ public class ReadDAO {
         r.put(scId, mt);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -1420,24 +1301,21 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, Margin> readScenarioMargin(final Integer[] scIds)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_MARGIN_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_MARGIN_PROC, READ_MARGIN_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArray = createNumbersOracleArray(scIds);
-      proc.setArray(c++, oracleArray);
-      proc.execute();
+      Array oracleArray = createIntegersOracleArray(scIds);
+      ps.setArray(c++, oracleArray);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, Margin> r = new HashMap<>();
 
@@ -1479,17 +1357,14 @@ public class ReadDAO {
         r.put(opId, m);
       }
 
-      conn.commit();
       if(r.size() > 0) {
         return r;
       }
       return null;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -1507,28 +1382,24 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<String, CropUnitConversion> readSupplementalInvCropConvInfo(final Integer[] operationIds,
       final Integer[] scenarioIds) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_CROP_UNIT_CONVERSIONS_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_CROP_UNIT_CONVERSIONS_PROC,
-          READ_CROP_UNIT_CONVERSIONS_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArrayOperationIds = createNumbersOracleArray(operationIds);
-      proc.setArray(c++, oracleArrayOperationIds);
+      Array oracleArrayOperationIds = createIntegersOracleArray(operationIds);
+      ps.setArray(c++, oracleArrayOperationIds);
 
-      Array oracleArrayScenarioIds = createNumbersOracleArray(scenarioIds);
-      proc.setArray(c++, oracleArrayScenarioIds);
+      Array oracleArrayScenarioIds = createIntegersOracleArray(scenarioIds);
+      ps.setArray(c++, oracleArrayScenarioIds);
 
-      proc.execute();
-
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<String, CropUnitConversion> invCropConversions = new HashMap<>();
 
@@ -1560,14 +1431,11 @@ public class ReadDAO {
         
       }
 
-      conn.commit();
       return invCropConversions;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-        close(rs, proc);
-        conn.setAutoCommit(originalAutoCommit);
+        close(rs, ps);
+        long duration = System.currentTimeMillis() - startTime;
+        logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
@@ -1588,30 +1456,26 @@ public class ReadDAO {
   public final HashMap<Integer, List<Object>[]> readSupplementalInv(final Integer[] operationIds,
       final Integer[] scenarioIds,
       final Date verifiedDate) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_INV_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_INV_PROC,
-          READ_INV_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArrayOperationIds = createNumbersOracleArray(operationIds);
-      proc.setArray(c++, oracleArrayOperationIds);
+      Array oracleArrayOperationIds = createIntegersOracleArray(operationIds);
+      ps.setArray(c++, oracleArrayOperationIds);
 
-      Array oracleArrayScenarioIds = createNumbersOracleArray(scenarioIds);
-      proc.setArray(c++, oracleArrayScenarioIds);
+      Array oracleArrayScenarioIds = createIntegersOracleArray(scenarioIds);
+      ps.setArray(c++, oracleArrayScenarioIds);
       
-      proc.setDate(c++, verifiedDate);
+      DAOUtils.setDate(ps, c++, verifiedDate);
 
-      proc.execute();
-
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<Object>[]> r = new HashMap<>();
 
@@ -1784,15 +1648,11 @@ public class ReadDAO {
         inventoryItem.setRevisionCount(getInteger(rs, c++));
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -1803,43 +1663,28 @@ public class ReadDAO {
    * @throws SQLException SQLException
    */
   public HashMap<String, List<FmvFullResult>> readFairMarketValue(Integer opId) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_OP_FMV_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     HashMap<String, List<FmvFullResult>> r;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_OP_FMV_PROC, READ_OP_FMV_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, opId);
-      proc.execute();
+      DAOUtils.setLong(ps, c++, opId);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       r = readFMVResultSet(opId, rs);
-
-      conn.commit();
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
-      close(rs, proc);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     
     readFairMarketValuePreviousYear(opId, r);
@@ -1860,45 +1705,30 @@ public class ReadDAO {
   public HashMap<String, List<FmvFullResult>> readFairMarketValue(Integer opId,
       String inventoryItemCode,
       String cropUnitCode) throws SQLException {
-    
-    DAOStoredProcedure proc = null;
-    boolean originalAutoCommit = true;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_OP_SINGLE_FMV_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     
     HashMap<String, List<FmvFullResult>> r;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_OP_SINGLE_FMV_PROC, READ_OP_SINGLE_FMV_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?,?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, opId);
-      proc.setString(c++, inventoryItemCode);
-      proc.setString(c++, cropUnitCode);
-      proc.execute();
-      
-      rs = proc.getResultSet();
+      DAOUtils.setLong(ps, c++, opId);
+      ps.setString(c++, inventoryItemCode);
+      ps.setString(c++, cropUnitCode);
+
+      rs = ps.executeQuery();
       
       r = readFMVResultSet(opId, rs);
-
-      conn.commit();
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
-      close(rs, proc);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     
     readFairMarketValuePreviousYear(opId, r);
@@ -1911,45 +1741,30 @@ public class ReadDAO {
   }
   
   public Integer readProgramYearId(Integer clientId, Integer programYear) throws SQLException {
-    
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     Integer programYearId = null;
-    boolean originalAutoCommit = true;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PROC, READ_PROGRAM_YEAR_ID_BY_CLIENT_ID_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, clientId);
-      proc.setInt(c++, programYear);
-      proc.execute();
+      DAOUtils.setLong(ps, c++, clientId);
+      DAOUtils.setShort(ps, c++, programYear);
       
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       while (rs.next()) {
         programYearId = getInteger(rs, 1);
       }
-
-      conn.commit();
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
-      close(rs, proc);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     return programYearId;
   }
@@ -2016,23 +1831,20 @@ public class ReadDAO {
    */
   @SuppressWarnings("resource")
   private void readFairMarketValuePreviousYear(Integer opId, HashMap<String, List<FmvFullResult>> r) throws SQLException {
-    
-    DAOStoredProcedure proc = null;
-    boolean originalAutoCommit = true;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_OP_FMV_PREV_YEAR_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn,
-          PACKAGE_NAME + "." + READ_OP_FMV_PREV_YEAR_PROC, READ_OP_FMV_PREV_YEAR_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, opId);
-      proc.execute();
+      DAOUtils.setLong(ps, c++, opId);
       
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       while (rs.next()) {
         
@@ -2067,22 +1879,10 @@ public class ReadDAO {
               null, null, prevYearEndPrice ));
         }
       }
-
-      conn.commit();
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
-      close(rs, proc);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
@@ -2240,29 +2040,24 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final HashMap<Integer, List<ProductiveUnitCapacity>> readProductiveUnitCapacity(final Integer[] operationIds,
       final Integer[] scenarioIds) throws SQLException {
-
-    final int paramCount = 2;
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_PUC_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_PUC_PROC,
-          paramCount, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArrayOperationIds = createNumbersOracleArray(operationIds);
-      proc.setArray(c++, oracleArrayOperationIds);
+      Array oracleArrayOperationIds = createIntegersOracleArray(operationIds);
+      ps.setArray(c++, oracleArrayOperationIds);
 
-      Array oracleArrayScenarioIds = createNumbersOracleArray(scenarioIds);
-      proc.setArray(c++, oracleArrayScenarioIds);
+      Array oracleArrayScenarioIds = createIntegersOracleArray(scenarioIds);
+      ps.setArray(c++, oracleArrayScenarioIds);
 
-      proc.execute();
-
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<ProductiveUnitCapacity>> r = new HashMap<>();
 
@@ -2316,15 +2111,11 @@ public class ReadDAO {
         }
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -2345,30 +2136,27 @@ public class ReadDAO {
       final Integer[] scenarioIds,
       final int programYear,
       final Date verifiedDate) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_IE_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + READ_IE_PROC,
-          READ_IE_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?,?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      Array oracleArrayOperationIds = createNumbersOracleArray(operationIds);
-      proc.setArray(c++, oracleArrayOperationIds);
+      Array oracleArrayOperationIds = createIntegersOracleArray(operationIds);
+      ps.setArray(c++, oracleArrayOperationIds);
 
-      Array oracleArrayScenarioIds = createNumbersOracleArray(scenarioIds);
-      proc.setArray(c++, oracleArrayScenarioIds);
+      Array oracleArrayScenarioIds = createIntegersOracleArray(scenarioIds);
+      ps.setArray(c++, oracleArrayScenarioIds);
 
-      proc.setShort(c++, (short) programYear);
-      proc.setDate(c++, verifiedDate);
-      proc.execute();
+      ps.setShort(c++, (short) programYear);
+      DAOUtils.setDate(ps, c++, verifiedDate);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<Integer, List<IncomeExpense>> r = new HashMap<>();
 
@@ -2423,15 +2211,11 @@ public class ReadDAO {
         l.add(ie);
       }
 
-      conn.commit();
       return r;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -2584,30 +2368,27 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public HashMap<String, BasePricePerUnit>[] readBasePricePerUnit(List<String> pInvCodes, List<String> pStructCodes,
       Integer scid, Integer programYear) throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_BPU_ALL_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
       Array oracleArrayInventoryCodes = createStringOracleArray(pInvCodes);
       Array oracleArrayStructureGroupCodes = createStringOracleArray(pStructCodes);
       
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_BPU_ALL_PROC, READ_BPU_ALL_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?,?,?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setLong(c++, scid == null ? null : scid.longValue());
-      proc.setArray(c++, oracleArrayInventoryCodes);
-      proc.setArray(c++, oracleArrayStructureGroupCodes);
+      DAOUtils.setLong(ps, c++, scid);
+      ps.setArray(c++, oracleArrayInventoryCodes);
+      ps.setArray(c++, oracleArrayStructureGroupCodes);
 
-      proc.setShort(c++, programYear == null ? null : programYear.shortValue());
-      proc.execute();
+      DAOUtils.setShort(ps, c++, programYear);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<String, BasePricePerUnit> r1 = new HashMap<>();
       HashMap<String, BasePricePerUnit> r2 = new HashMap<>();
@@ -2625,14 +2406,11 @@ public class ReadDAO {
         addZeroValueCodes(result[0], programYear);
       }
 
-      conn.commit();
       return result;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-    	close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
@@ -2695,27 +2473,24 @@ public class ReadDAO {
    */
   @SuppressWarnings("resource")
   public HashMap<String, BasePricePerUnit>[] readBasePricePerUnitXrefs(List<Integer> scIds, String scenarioBpuPurposeCode) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_BPU_XREF_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    final int paramCount = 2;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_BPU_XREF_PROC, paramCount, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
 
       Integer[] scIdArray = scIds.toArray(new Integer[scIds.size()]);
-      Array oracleArray = createNumbersOracleArray(scIdArray);
+      Array oracleArray = createIntegersOracleArray(scIdArray);
       
       int c = 1;
-      proc.setArray(c++, oracleArray);
-      proc.setString(c++, scenarioBpuPurposeCode);
-      proc.execute();
+      ps.setArray(c++, oracleArray);
+      ps.setString(c++, scenarioBpuPurposeCode);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       HashMap<String, BasePricePerUnit> r1 = new HashMap<>();
       HashMap<String, BasePricePerUnit> r2 = new HashMap<>();
@@ -2724,27 +2499,15 @@ public class ReadDAO {
         processBpuResults(rs, r1, r2);
       }
 
-      conn.commit();
-
       @SuppressWarnings("unchecked")
       HashMap<String, BasePricePerUnit>[] result = new HashMap[2];
       result[0] = r1.size() > 0 ? r1 : null;
       result[1] = r2.size() > 0 ? r2 : null;
       return result;
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
-    	close(rs, proc);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
+    	close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -2810,39 +2573,33 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final Date readCobGenerationDate(final Integer scenarioId)
       throws SQLException {
-
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_COB_GEN_DATE_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     Date cobGenerationDate = null;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_COB_GEN_DATE_PROC, READ_COB_GEN_DATE_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, scenarioId);
-      proc.execute();
+      DAOUtils.setLong(ps, c++, scenarioId);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       if (rs.next()) {
         c = 1;
         cobGenerationDate = getDate(rs, c++);
       }
 
-      conn.commit();
       return cobGenerationDate;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-      close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
@@ -2856,26 +2613,23 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final Enrolment readEnrolment(final Integer pin, final Integer enrolmentYear)
   throws SQLException {
-    
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_ENROLMENT_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     Enrolment e = null;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_ENROLMENT_PROC, READ_ENROLMENT_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setInt(c++, pin);
-      proc.setShort(c++, enrolmentYear == null ? null : enrolmentYear.shortValue());
-      proc.execute();
+      DAOUtils.setInt(ps, c++, pin);
+      DAOUtils.setShort(ps, c++, enrolmentYear);
       
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       if (rs.next()) {
         e = new Enrolment();
@@ -2905,14 +2659,11 @@ public class ReadDAO {
         e.setRevisionCount(getInteger(rs, c++));
       }
 
-      conn.commit();
       return e;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-      close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
   
@@ -2920,25 +2671,22 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   public final EnwEnrolment readEnwEnrolment(final Integer scenarioId)
       throws SQLException {
-    
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_ENW_ENROLMENT_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
     
     EnwEnrolment e = null;
     
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_ENW_ENROLMENT_PROC, READ_ENW_ENROLMENT_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
       
       int c = 1;
-      proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
-      proc.execute();
+      DAOUtils.setLong(ps, c++, scenarioId);
       
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
       
       if (rs.next()) {
         e = new EnwEnrolment();
@@ -2996,14 +2744,11 @@ public class ReadDAO {
         e.setRevisionCount(getInteger(rs, c++));
       }
 
-      conn.commit();
       return e;
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-      close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -3018,22 +2763,20 @@ public class ReadDAO {
    */
   @SuppressWarnings("resource")
   public final List<CombinedFarmClient> readCombinedFarmClients(final Integer combinedFarmNumber) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_COMBINED_FARM_CLIENTS_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_COMBINED_FARM_CLIENTS_PROC, READ_COMBINED_FARM_CLIENTS_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c++, combinedFarmNumber);
-      proc.execute();
+      DAOUtils.setLong(ps, c++, combinedFarmNumber);
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       List<CombinedFarmClient> l = new ArrayList<>();
 
@@ -3055,23 +2798,11 @@ public class ReadDAO {
         l.add(cfc);
       }
 
-      conn.commit();
-
       return l;
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
-      throw e;
     } finally {
-      close(rs, proc);
-      try {
-        conn.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        throw ex;
-      }
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
 
@@ -3081,45 +2812,39 @@ public class ReadDAO {
    * @throws SQLException SQLException
    */
   public final void readFarmType(Scenario scenario) throws SQLException {
-    DAOStoredProcedure proc = null;
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_FARM_TYPE_PROC;
+    PreparedStatement ps = null;
     ResultSet rs = null;
-    boolean originalAutoCommit = true;
 
     try {
-      originalAutoCommit = conn.getAutoCommit();
-      conn.setAutoCommit(false);
-
-      proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "."
-          + READ_FARM_TYPE_PROC, READ_FARM_TYPE_PARAM, true);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?)";
+      ps = conn.prepareStatement(sql);
 
       int c = 1;
-      proc.setInt(c, scenario.getScenarioId());
-      proc.execute();
+      DAOUtils.setLong(ps, c, scenario.getScenarioId());
 
-      rs = proc.getResultSet();
+      rs = ps.executeQuery();
 
       if (rs.next()) {
         scenario.setFarmTypeCode(getString(rs, c++));
         scenario.setFarmTypeCodeDescription(getString(rs, c++));
       }
-
-      conn.commit();
-    } catch (SQLException ex) {
-      conn.rollback();
-      throw ex;
     } finally {
-      close(rs, proc);
-      conn.setAutoCommit(originalAutoCommit);
+      close(rs, ps);
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
   }
-   
-  private void close(ResultSet rs, DAOStoredProcedure proc) throws SQLException{
+
+  private void close(ResultSet rs, PreparedStatement ps) throws SQLException{
   	if (rs != null) {
       rs.close();
     }
 
-    if (proc != null) {
-      proc.close();
+    if (ps != null) {
+      ps.close();
     }
   }
 
@@ -3131,5 +2856,10 @@ public class ReadDAO {
   @SuppressWarnings("resource")
   protected Array createNumbersOracleArray(Integer[] values) throws SQLException {
     return conn.createArrayOf("numeric", values);
+  }
+  
+  @SuppressWarnings("resource")
+  protected Array createIntegersOracleArray(Integer[] values) throws SQLException {
+    return conn.createArrayOf("bigint", values);
   }
 }

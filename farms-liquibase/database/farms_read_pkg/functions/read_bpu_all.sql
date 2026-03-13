@@ -4,51 +4,54 @@ create or replace function farms_read_pkg.read_bpu_all(
     in str_cds varchar[],
     in in_base_year farms.farm_program_years.year%type
 )
-returns refcursor
-language plpgsql
+returns table(
+    benchmark_per_unit_id       farms.farm_benchmark_per_units.benchmark_per_unit_id%type,
+    municipality_code           farms.farm_benchmark_per_units.municipality_code%type,
+    inventory_item_code         farms.farm_benchmark_per_units.inventory_item_code%type,
+    structure_group_code        farms.farm_benchmark_per_units.structure_group_code%type,
+    unit_comment                farms.farm_benchmark_per_units.unit_comment%type,
+    bpu_revision_count          farms.farm_benchmark_per_units.revision_count%type,
+    benchmark_year              farms.farm_benchmark_years.benchmark_year%type,
+    average_margin              farms.farm_benchmark_years.average_margin%type,
+    average_expense             farms.farm_benchmark_years.average_expense%type,
+    bnch_revision_count         farms.farm_benchmark_years.revision_count%type
+)
+language sql
 as $$
-declare
-    cur refcursor;
-begin
-
-    open cur for
-        select x.benchmark_per_unit_id,
-               x.municipality_code,
-               x.inventory_item_code,
-               x.structure_group_code,
-               x.unit_comment,
-               x.bpu_revision_count,
-               x.benchmark_year,
-               x.average_margin,
-               x.average_expense,
-               x.bnch_revision_count
-        from (
-            select bpu.benchmark_per_unit_id,
-                   bpu.municipality_code,
-                   -- Municipality_Code for 'All Municipalities' is zero so if a matching municipality is found
-                   -- that is not zero, MAX will return that code instead of 'All Municipalities' (the default).
-                   max(bpu.municipality_code) over (partition by bpu.program_year, bpu.inventory_item_code, bpu.structure_group_code) mx_municipality_code,
-                   bpu.inventory_item_code,
-                   bpu.structure_group_code,
-                   bpu.unit_comment,
-                   bpu.revision_count bpu_revision_count,
-                   bnch.benchmark_year,
-                   bnch.average_margin,
-                   bnch.average_expense,
-                   bnch.revision_count as bnch_revision_count
-            from farms.farm_benchmark_per_units bpu
-            join farms.farm_benchmark_years bnch on bpu.benchmark_per_unit_id = bnch.benchmark_per_unit_id
-            join farms.farm_agristability_scenarios sc on sc.agristability_scenario_id = in_sc_id
-            join farms.farm_program_year_versions pyv on sc.program_year_version_id = pyv.program_year_version_id
-                                                and (bpu.municipality_code = pyv.municipality_code or bpu.municipality_code = '0')
-            where bpu.program_year = in_base_year
-            and (bpu.expiry_date is null or bpu.expiry_date >= current_date)
-            and (bpu.inventory_item_code = any(inv_cds) or bpu.structure_group_code = any(str_cds))
-        ) x
-        where x.municipality_code = mx_municipality_code
-        order by x.benchmark_per_unit_id,
-                 x.benchmark_year desc;
-
-    return cur;
-end;
+    select x.benchmark_per_unit_id,
+           x.municipality_code,
+           x.inventory_item_code,
+           x.structure_group_code,
+           x.unit_comment,
+           x.bpu_revision_count,
+           x.benchmark_year,
+           x.average_margin,
+           x.average_expense,
+           x.bnch_revision_count
+    from (
+        select bpu.benchmark_per_unit_id,
+               bpu.municipality_code,
+               -- Municipality_Code for 'All Municipalities' is zero so if a matching municipality is found
+               -- that is not zero, MAX will return that code instead of 'All Municipalities' (the default).
+               max(bpu.municipality_code) over (partition by bpu.program_year, bpu.inventory_item_code, bpu.structure_group_code) mx_municipality_code,
+               bpu.inventory_item_code,
+               bpu.structure_group_code,
+               bpu.unit_comment,
+               bpu.revision_count bpu_revision_count,
+               bnch.benchmark_year,
+               bnch.average_margin,
+               bnch.average_expense,
+               bnch.revision_count as bnch_revision_count
+        from farms.farm_benchmark_per_units bpu
+        join farms.farm_benchmark_years bnch on bpu.benchmark_per_unit_id = bnch.benchmark_per_unit_id
+        join farms.farm_agristability_scenarios sc on sc.agristability_scenario_id = in_sc_id
+        join farms.farm_program_year_versions pyv on sc.program_year_version_id = pyv.program_year_version_id
+                                            and (bpu.municipality_code = pyv.municipality_code or bpu.municipality_code = '0')
+        where bpu.program_year = in_base_year
+        and (bpu.expiry_date is null or bpu.expiry_date >= current_date)
+        and (bpu.inventory_item_code = any(inv_cds) or bpu.structure_group_code = any(str_cds))
+    ) x
+    where x.municipality_code = mx_municipality_code
+    order by x.benchmark_per_unit_id,
+             x.benchmark_year desc;
 $$;

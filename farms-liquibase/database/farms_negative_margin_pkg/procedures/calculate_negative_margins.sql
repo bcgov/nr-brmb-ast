@@ -7,17 +7,24 @@ language plpgsql
 as
 $$
 begin
-    execute $q$
     merge into farms.farm_negative_margins as o
     using (
-        with ivpr as (
+        with scenarios as (
+            select sc.agristability_scenario_id,
+                   py.year,
+                   pyv.program_year_version_id
+            from farms.farm_agristability_scenarios sc
+            join farms.farm_program_year_versions pyv on sc.program_year_version_id = pyv.program_year_version_id
+            join farms.farm_program_years py on pyv.program_year_id = py.program_year_id
+            where sc.agristability_scenario_id = in_agristability_scenario_id
+        ), ivpr as (
             select case when sv.year = 2024 then sv.year
-                       when bct.bpu_lead_ind = 'N' then (sv.year - 1)
-                       else sv.year
+                        when bct.bpu_lead_ind = 'N' then (sv.year - 1)
+                        else sv.year
                    end ivpr_year
-            from farms.farm_scenarios_vw sv
+            from scenarios sv
             join farms.farm_reference_scenarios rs on rs.for_agristability_scenario_id = sv.agristability_scenario_id
-            join farms.farm_scenarios_vw rsv on rsv.agristability_scenario_id = rs.agristability_scenario_id
+            join scenarios rsv on rsv.agristability_scenario_id = rs.agristability_scenario_id
                                              and rsv.year = (sv.year - 1)
             join farms.farm_benefit_calc_totals bct on bct.agristability_scenario_id = rsv.agristability_scenario_id
             where sv.agristability_scenario_id = in_agristability_scenario_id
@@ -38,11 +45,11 @@ begin
                    iid.premium_rate,
                    ycp.parameter_value::numeric / 100 as negative_margin_purchase_requirement
             from farms.farm_farming_operations fo
-            join farms.farm_scenarios_vw sv on sv.program_year_version_id = fo.program_year_version_id
+            join scenarios sv on sv.program_year_version_id = fo.program_year_version_id
             join farms.farm_reported_inventories ri on fo.farming_operation_id = ri.farming_operation_id
                                                     and (
                                                         ri.agristability_scenario_id = sv.agristability_scenario_id
-                                                        or coalesce(ri.agristability_scenario_id::text, '') = ''
+                                                        or ri.agristability_scenario_id is null
                                                     )
             join farms.farm_agristabilty_cmmdty_xref acx on ri.agristabilty_cmmdty_xref_id = acx.agristabilty_cmmdty_xref_id
                                                          and acx.inventory_class_code in ('1','2')
@@ -51,14 +58,11 @@ begin
             left join farms.farm_negative_margins nm on fo.farming_operation_id = nm.farming_operation_id
                                                      and acx.inventory_item_code = nm.inventory_item_code
                                                      and nm.agristability_scenario_id = sv.agristability_scenario_id
-            left join farm_year_configuration_params ycp on iid.program_year = ycp.program_year
+            left join farms.farm_year_configuration_params ycp on iid.program_year = ycp.program_year
                                                        and 'Negative Margin Purchase Requirement' = ycp.parameter_name
             where fo.farming_operation_id = in_farming_operation_id
             and iid.program_year = coalesce((select ivpr_year from ivpr), sv.year)
-            and (
-                (iid.insurable_value is not null and iid.insurable_value::text <> '')
-                or (iid.premium_rate is not null and iid.premium_rate::text <> '')
-            )
+            and (iid.insurable_value is not null or iid.premium_rate is not null)
             and sv.agristability_scenario_id = in_agristability_scenario_id
             group by nm.negative_margin_id,
                      fo.farming_operation_id,
@@ -130,7 +134,7 @@ begin
                round((dpvc.required_premium)::numeric, 2) as required_premium,
                round((dpvc.mrp_value)::numeric, 2) as market_rate_premium,
                round((dpvc.deemed_premium)::numeric, 2) as deemed_premium,
-               case when coalesce(dpvc.farming_operation_id::text, '') = '' then 'Y' else 'N' end delete_row
+               case when dpvc.farming_operation_id::text is null then 'Y' else 'N' end delete_row
         from deemed_pi_value_calc dpvc
         full outer join (
             select *
@@ -143,6 +147,9 @@ begin
           and o.farming_operation_id = n.farming_operation_id
           and o.inventory_item_code = n.inventory_item_code
           and o.agristability_scenario_id = n.agristability_scenario_id
+      when matched and delete_row = 'Y' then
+          delete
+
       when matched then
           update set
               required_insurable_value = n.required_insurable_value,
@@ -154,12 +161,9 @@ begin
               deemed_premium = n.deemed_premium,
               deemed_received = n.deemed_received,
               deemed_pi_value = n.deemed_pi_value,
-              revision_count = revision_count + 1,
+              revision_count = o.revision_count + 1,
               who_updated = in_user,
               when_updated = current_timestamp
-
-      when matched and delete_row = 'Y' then
-          delete
 
       when not matched then
           insert (
@@ -211,6 +215,5 @@ begin
               in_user,
               current_timestamp
           );
-    $q$;
 end;
 $$;

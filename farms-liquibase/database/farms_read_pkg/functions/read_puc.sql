@@ -1,133 +1,155 @@
 create or replace function farms_read_pkg.read_puc(
-    in op_ids numeric[],
-    in sc_ids numeric[]
+    in op_ids bigint[],
+    in sc_ids bigint[]
 )
-returns refcursor
-language plpgsql
+returns table(
+    farming_operation_id                farms.farm_productve_unit_capacities.farming_operation_id%type,
+    structure_group_code                farms.farm_structure_group_codes.structure_group_code%type,
+    structure_group_description         farms.farm_structure_group_codes.description%type,
+    rollup_structure_group_code         farms.farm_structure_group_attributs.rollup_structure_group_code%type,
+    rollup_structure_group_description  farms.farm_structure_group_codes.description%type,
+    inventory_item_code                 farms.farm_inventory_item_codes.inventory_item_code%type,
+    inventory_item_description          farms.farm_inventory_item_codes.description%type,
+    rollup_inventory_item_code          farms.farm_inventory_item_attributes.rollup_inventory_item_code%type,
+    rollup_inventory_item_description   farms.farm_inventory_item_codes.description%type,
+    commodity_type_code                 farms.farm_inventory_item_details.commodity_type_code%type,
+    commodity_type_code_description     farms.farm_commodity_type_codes.description%type,
+    fruit_veg_type_code                 farms.farm_inventory_item_details.fruit_veg_type_code%type,
+    fruit_veg_type_code_description     farms.farm_fruit_veg_type_codes.description%type,
+    multi_stage_commdty_code            farms.farm_inventory_item_details.multi_stage_commdty_code%type,
+    multi_stage_commdty_code_desc       farms.farm_multi_stage_commdty_codes.description%type,
+    expected_prod_crop_unit_code        farms.farm_expected_productions.crop_unit_code%type,
+    expected_prodctn_per_prod_unit      farms.farm_expected_productions.expected_prodctn_per_prod_unit%type,
+    cra_productve_unit_capacity_id      farms.farm_productve_unit_capacities.cra_productve_unit_capacity_id%type,
+    cra_productive_capacity_amount      farms.farm_productve_unit_capacities.productive_capacity_amount%type,
+    cra_revision_count                  farms.farm_productve_unit_capacities.revision_count%type,
+    adj_productve_unit_capacity_id      farms.farm_productve_unit_capacities.productve_unit_capacity_id%type,
+    adj_productive_capacity_amount      farms.farm_productve_unit_capacities.productive_capacity_amount%type,
+    adj_agristability_scenario_id       farms.farm_productve_unit_capacities.agristability_scenario_id%type,
+    participnt_data_src_code            farms.farm_productve_unit_capacities.participnt_data_src_code%type,
+    adjusted_by_user_id                 farms.farm_productve_unit_capacities.who_updated%type,
+    adj_revision_count                  farms.farm_productve_unit_capacities.revision_count%type,
+    cra_on_farm_acres                   farms.farm_reported_inventories.on_farm_acres%type,
+    cra_unseedable_acres                farms.farm_reported_inventories.unseedable_acres%type,
+    row_num                             bigint
+)
+language sql
 as $$
-declare
-    cur refcursor;
-begin
-
-    open cur for
-        with a as (
-            select puc.productve_unit_capacity_id,
-                   puc.productive_capacity_amount,
-                   puc.farming_operation_id,
-                   puc.structure_group_code,
-                   puc.agristability_scenario_id,
-                   puc.inventory_item_code,
-                   puc.participnt_data_src_code,
-                   puc.revision_count
-            from farms.farm_productve_unit_capacities puc
-            where puc.farming_operation_id = any(op_ids)
-            and puc.agristability_scenario_id is null
-        ), b as (
-            select puc.productve_unit_capacity_id,
-                   puc.cra_productve_unit_capacity_id,
-                   puc.productive_capacity_amount,
-                   puc.farming_operation_id,
-                   puc.structure_group_code,
-                   puc.agristability_scenario_id,
-                   puc.inventory_item_code,
-                   puc.participnt_data_src_code,
-                   puc.who_updated,
-                   puc.revision_count
-            from farms.farm_productve_unit_capacities puc
-            where puc.agristability_scenario_id = any(sc_ids)
-        ), p as (
-            select coalesce(a.farming_operation_id, b.farming_operation_id) as farming_operation_id,
-                   sgc.structure_group_code,
-                   sgc.description as structure_group_description,
-                   coalesce(sga.rollup_structure_group_code, sgc.structure_group_code) as rollup_structure_group_code,
-                   (
-                       select description
-                       from farms.farm_structure_group_codes
-                       where structure_group_code = coalesce(sga.rollup_structure_group_code, sgc.structure_group_code)
-                       limit 1
-                   ) as rollup_structure_group_description,
-                   iic.inventory_item_code,
-                   iic.description as inventory_item_description,
-                   coalesce(iia.rollup_inventory_item_code, iic.inventory_item_code) as rollup_inventory_item_code,
-                   (
-                       select description
-                       from farms.farm_inventory_item_codes
-                       where inventory_item_code = coalesce(iia.rollup_inventory_item_code, iic.inventory_item_code)
-                       limit 1
-                   ) as rollup_inventory_item_description,
-                   iid.commodity_type_code,
-                   ctc.description commodity_type_code_description,
-                   iid.fruit_veg_type_code,
-                   fvtc.description fruit_veg_type_code_description,
-                   iid.multi_stage_commdty_code,
-                   mscc.description multi_stage_commdty_code_desc,
-                   coalesce(a.participnt_data_src_code, b.participnt_data_src_code) participnt_data_src_code,
-                   a.productve_unit_capacity_id as cra_productve_unit_capacity_id,
-                   a.productive_capacity_amount as cra_productive_capacity_amount,
-                   a.revision_count as cra_revision_count,
-                   b.productve_unit_capacity_id as adj_productve_unit_capacity_id,
-                   b.productive_capacity_amount as adj_productive_capacity_amount,
-                   b.agristability_scenario_id as adj_agristability_scenario_id,
-                   b.who_updated as adjusted_by_user_id,
-                   b.revision_count as adj_revision_count
-            from a
-            full outer join b on a.productve_unit_capacity_id = b.cra_productve_unit_capacity_id
-            join farms.farm_farming_operations fo on fo.farming_operation_id = coalesce(a.farming_operation_id, b.farming_operation_id)
-            join farms.farm_program_year_versions pyv on pyv.program_year_version_id = fo.program_year_version_id
-            join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
-            left outer join farms.farm_inventory_item_codes iic on a.inventory_item_code = iic.inventory_item_code
-                                                          or b.inventory_item_code = iic.inventory_item_code
-            left outer join farms.farm_inventory_item_attributes iia on iic.inventory_item_code = iia.inventory_item_code
-            left outer join farms.farm_inventory_item_details iid on iic.inventory_item_code = iid.inventory_item_code
-                                                            and iid.program_year = py.year
-            left outer join farms.farm_fruit_veg_type_codes fvtc on fvtc.fruit_veg_type_code = iid.fruit_veg_type_code
-            left outer join farms.farm_commodity_type_codes ctc on ctc.commodity_type_code = iid.commodity_type_code
-            left outer join farms.farm_multi_stage_commdty_codes mscc on mscc.multi_stage_commdty_code = iid.multi_stage_commdty_code
-            left outer join farms.farm_structure_group_codes sgc on a.structure_group_code = sgc.structure_group_code
-                                                           or b.structure_group_code = sgc.structure_group_code
-            left outer join farms.farm_structure_group_attributs sga on sgc.structure_group_code = sga.structure_group_code
-        ), i as (
-            select p.farming_operation_id,
-                   p.structure_group_code,
-                   p.structure_group_description,
-                   p.rollup_structure_group_code,
-                   p.rollup_structure_group_description,
-                   p.inventory_item_code,
-                   p.inventory_item_description,
-                   p.rollup_inventory_item_code,
-                   p.rollup_inventory_item_description,
-                   p.commodity_type_code,
-                   p.commodity_type_code_description,
-                   p.fruit_veg_type_code,
-                   p.fruit_veg_type_code_description,
-                   p.multi_stage_commdty_code,
-                   p.multi_stage_commdty_code_desc,
-                   ep.crop_unit_code expected_prod_crop_unit_code,
-                   ep.expected_prodctn_per_prod_unit,
-                   p.cra_productve_unit_capacity_id,
-                   p.cra_productive_capacity_amount,
-                   p.cra_revision_count,
-                   p.adj_productve_unit_capacity_id,
-                   p.adj_productive_capacity_amount,
-                   p.adj_agristability_scenario_id,
-                   p.participnt_data_src_code,
-                   p.adjusted_by_user_id,
-                   p.adj_revision_count,
-                   sum(ri.on_farm_acres) over (partition by p.cra_productve_unit_capacity_id, p.adj_productve_unit_capacity_id) cra_on_farm_acres,
-                   sum(ri.unseedable_acres) over (partition by p.cra_productve_unit_capacity_id, p.adj_productve_unit_capacity_id) cra_unseedable_acres,
-                   row_number() over (partition by p.cra_productve_unit_capacity_id, p.adj_productve_unit_capacity_id order by ri.reported_inventory_id) row_num
-            from p
-            left outer join farms.farm_agristabilty_cmmdty_xref x on x.inventory_item_code = p.inventory_item_code
-                                                                and x.inventory_class_code = '1'
-            left outer join farms.farm_reported_inventories ri on ri.agristabilty_cmmdty_xref_id = x.agristabilty_cmmdty_xref_id
-                                                        and ri.farming_operation_id = p.farming_operation_id
-                                                        and ri.agristability_scenario_id is null
-            left outer join farms.farm_expected_productions ep on ep.inventory_item_code = p.inventory_item_code
-        )
-        select *
-        from i
-        where i.row_num = 1;
-
-    return cur;
-end;
+    with a as (
+        select puc.productve_unit_capacity_id,
+               puc.productive_capacity_amount,
+               puc.farming_operation_id,
+               puc.structure_group_code,
+               puc.agristability_scenario_id,
+               puc.inventory_item_code,
+               puc.participnt_data_src_code,
+               puc.revision_count
+        from farms.farm_productve_unit_capacities puc
+        where puc.farming_operation_id = any(op_ids)
+        and puc.agristability_scenario_id is null
+    ), b as (
+        select puc.productve_unit_capacity_id,
+               puc.cra_productve_unit_capacity_id,
+               puc.productive_capacity_amount,
+               puc.farming_operation_id,
+               puc.structure_group_code,
+               puc.agristability_scenario_id,
+               puc.inventory_item_code,
+               puc.participnt_data_src_code,
+               puc.who_updated,
+               puc.revision_count
+        from farms.farm_productve_unit_capacities puc
+        where puc.agristability_scenario_id = any(sc_ids)
+    ), p as (
+        select coalesce(a.farming_operation_id, b.farming_operation_id) as farming_operation_id,
+               sgc.structure_group_code,
+               sgc.description as structure_group_description,
+               coalesce(sga.rollup_structure_group_code, sgc.structure_group_code) as rollup_structure_group_code,
+               (
+                   select description
+                   from farms.farm_structure_group_codes
+                   where structure_group_code = coalesce(sga.rollup_structure_group_code, sgc.structure_group_code)
+                   limit 1
+               ) as rollup_structure_group_description,
+               iic.inventory_item_code,
+               iic.description as inventory_item_description,
+               coalesce(iia.rollup_inventory_item_code, iic.inventory_item_code) as rollup_inventory_item_code,
+               (
+                   select description
+                   from farms.farm_inventory_item_codes
+                   where inventory_item_code = coalesce(iia.rollup_inventory_item_code, iic.inventory_item_code)
+                   limit 1
+               ) as rollup_inventory_item_description,
+               iid.commodity_type_code,
+               ctc.description commodity_type_code_description,
+               iid.fruit_veg_type_code,
+               fvtc.description fruit_veg_type_code_description,
+               iid.multi_stage_commdty_code,
+               mscc.description multi_stage_commdty_code_desc,
+               coalesce(a.participnt_data_src_code, b.participnt_data_src_code) participnt_data_src_code,
+               a.productve_unit_capacity_id as cra_productve_unit_capacity_id,
+               a.productive_capacity_amount as cra_productive_capacity_amount,
+               a.revision_count as cra_revision_count,
+               b.productve_unit_capacity_id as adj_productve_unit_capacity_id,
+               b.productive_capacity_amount as adj_productive_capacity_amount,
+               b.agristability_scenario_id as adj_agristability_scenario_id,
+               b.who_updated as adjusted_by_user_id,
+               b.revision_count as adj_revision_count
+        from a
+        full outer join b on a.productve_unit_capacity_id = b.cra_productve_unit_capacity_id
+        join farms.farm_farming_operations fo on fo.farming_operation_id = coalesce(a.farming_operation_id, b.farming_operation_id)
+        join farms.farm_program_year_versions pyv on pyv.program_year_version_id = fo.program_year_version_id
+        join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+        left outer join farms.farm_inventory_item_codes iic on a.inventory_item_code = iic.inventory_item_code
+                                                        or b.inventory_item_code = iic.inventory_item_code
+        left outer join farms.farm_inventory_item_attributes iia on iic.inventory_item_code = iia.inventory_item_code
+        left outer join farms.farm_inventory_item_details iid on iic.inventory_item_code = iid.inventory_item_code
+                                                        and iid.program_year = py.year
+        left outer join farms.farm_fruit_veg_type_codes fvtc on fvtc.fruit_veg_type_code = iid.fruit_veg_type_code
+        left outer join farms.farm_commodity_type_codes ctc on ctc.commodity_type_code = iid.commodity_type_code
+        left outer join farms.farm_multi_stage_commdty_codes mscc on mscc.multi_stage_commdty_code = iid.multi_stage_commdty_code
+        left outer join farms.farm_structure_group_codes sgc on a.structure_group_code = sgc.structure_group_code
+                                                        or b.structure_group_code = sgc.structure_group_code
+        left outer join farms.farm_structure_group_attributs sga on sgc.structure_group_code = sga.structure_group_code
+    ), i as (
+        select p.farming_operation_id,
+               p.structure_group_code,
+               p.structure_group_description,
+               p.rollup_structure_group_code,
+               p.rollup_structure_group_description,
+               p.inventory_item_code,
+               p.inventory_item_description,
+               p.rollup_inventory_item_code,
+               p.rollup_inventory_item_description,
+               p.commodity_type_code,
+               p.commodity_type_code_description,
+               p.fruit_veg_type_code,
+               p.fruit_veg_type_code_description,
+               p.multi_stage_commdty_code,
+               p.multi_stage_commdty_code_desc,
+               ep.crop_unit_code expected_prod_crop_unit_code,
+               ep.expected_prodctn_per_prod_unit,
+               p.cra_productve_unit_capacity_id,
+               p.cra_productive_capacity_amount,
+               p.cra_revision_count,
+               p.adj_productve_unit_capacity_id,
+               p.adj_productive_capacity_amount,
+               p.adj_agristability_scenario_id,
+               p.participnt_data_src_code,
+               p.adjusted_by_user_id,
+               p.adj_revision_count,
+               sum(ri.on_farm_acres) over (partition by p.cra_productve_unit_capacity_id, p.adj_productve_unit_capacity_id) cra_on_farm_acres,
+               sum(ri.unseedable_acres) over (partition by p.cra_productve_unit_capacity_id, p.adj_productve_unit_capacity_id) cra_unseedable_acres,
+               row_number() over (partition by p.cra_productve_unit_capacity_id, p.adj_productve_unit_capacity_id order by ri.reported_inventory_id) row_num
+        from p
+        left outer join farms.farm_agristabilty_cmmdty_xref x on x.inventory_item_code = p.inventory_item_code
+                                                            and x.inventory_class_code = '1'
+        left outer join farms.farm_reported_inventories ri on ri.agristabilty_cmmdty_xref_id = x.agristabilty_cmmdty_xref_id
+                                                    and ri.farming_operation_id = p.farming_operation_id
+                                                    and ri.agristability_scenario_id is null
+        left outer join farms.farm_expected_productions ep on ep.inventory_item_code = p.inventory_item_code
+    )
+    select *
+    from i
+    where i.row_num = 1;
 $$;

@@ -1,69 +1,110 @@
 create or replace function farms_read_pkg.read_client(
     in ppin farms.farm_agristability_clients.participant_pin%type
 )
-returns refcursor
-language plpgsql
+returns table(
+    agristability_client_id             farms.farm_agristability_clients.agristability_client_id%type,
+    federal_identifier                  farms.farm_agristability_clients.federal_identifier%type,
+    sin                                 farms.farm_agristability_clients.sin%type,
+    business_number                     farms.farm_agristability_clients.business_number%type,
+    trust_number                        farms.farm_agristability_clients.trust_number%type,
+    participant_pin                     farms.farm_agristability_clients.participant_pin%type,
+    ident_effective_date                farms.farm_agristability_clients.ident_effective_date%type,
+    public_office_ind                   farms.farm_agristability_clients.public_office_ind%type,
+    locally_updated_ind                 farms.farm_agristability_clients.locally_updated_ind%type,
+    participant_lang_code               farms.farm_agristability_clients.participant_lang_code%type,
+    participant_language_description    farms.farm_participant_lang_codes.description%type,
+    participant_class_code              farms.farm_agristability_clients.participant_class_code%type,
+    participant_class_description       farms.farm_participant_class_codes.description%type,
+    revision_count                      farms.farm_agristability_clients.revision_count%type,
+
+    cl_person_id                        farms.farm_persons.person_id%type,
+    cl_address_line_1                   farms.farm_persons.address_line_1%type,
+    cl_address_line_2                   farms.farm_persons.address_line_2%type,
+    cl_city                             farms.farm_persons.city%type,
+    cl_corp_name                        farms.farm_persons.corp_name%type,
+    cl_daytime_phone                    farms.farm_persons.daytime_phone%type,
+    cl_evening_phone                    farms.farm_persons.evening_phone%type,
+    cl_fax_number                       farms.farm_persons.fax_number%type,
+    cl_cell_number                      farms.farm_persons.cell_number%type,
+    cl_first_name                       farms.farm_persons.first_name%type,
+    cl_last_name                        farms.farm_persons.last_name%type,
+    cl_postal_code                      farms.farm_persons.postal_code%type,
+    cl_province_state                   farms.farm_persons.province_state%type,
+    cl_country                          farms.farm_persons.country%type,
+    cl_email_address                    farms.farm_persons.email_address%type,
+    cl_revision_count                   farms.farm_persons.revision_count%type,
+
+    rp_person_id                        farms.farm_persons.person_id%type,
+    rp_address_line_1                   farms.farm_persons.address_line_1%type,
+    rp_address_line_2                   farms.farm_persons.address_line_2%type,
+    rp_city                             farms.farm_persons.city%type,
+    rp_corp_name                        farms.farm_persons.corp_name%type,
+    rp_daytime_phone                    farms.farm_persons.daytime_phone%type,
+    rp_evening_phone                    farms.farm_persons.evening_phone%type,
+    rp_fax_number                       farms.farm_persons.fax_number%type,
+    rp_cell_number                      farms.farm_persons.cell_number%type,
+    rp_first_name                       farms.farm_persons.first_name%type,
+    rp_last_name                        farms.farm_persons.last_name%type,
+    rp_postal_code                      farms.farm_persons.postal_code%type,
+    rp_province_state                   farms.farm_persons.province_state%type,
+    rp_country                          farms.farm_persons.country%type,
+    rp_email_address                    farms.farm_persons.email_address%type,
+    rp_revision_count                   farms.farm_persons.revision_count%type
+)
+language sql
 as $$
-declare
-    cur refcursor;
-begin
-    open cur for
-        select ac.agristability_client_id,
-               ac.federal_identifier,
-               ac.sin,
-               ac.business_number,
-               ac.trust_number,
-               ac.participant_pin,
-               ac.ident_effective_date,
-               ac.public_office_ind,
-               ac.locally_updated_ind,
-               ac.participant_lang_code,
-               plc.description as participant_language_description,
-               ac.participant_class_code,
-               pcc.description as participant_class_description,
-               ac.revision_count,
+    select ac.agristability_client_id,
+           ac.federal_identifier,
+           ac.sin,
+           ac.business_number,
+           ac.trust_number,
+           ac.participant_pin,
+           ac.ident_effective_date,
+           ac.public_office_ind,
+           ac.locally_updated_ind,
+           ac.participant_lang_code,
+           plc.description as participant_language_description,
+           ac.participant_class_code,
+           pcc.description as participant_class_description,
+           ac.revision_count,
 
-               cl.person_id cl_person_id,
-               cl.address_line_1 cl_address_line_1,
-               cl.address_line_2 cl_address_line_2,
-               cl.city cl_city,
-               cl.corp_name cl_corp_name,
-               cl.daytime_phone cl_daytime_phone,
-               cl.evening_phone cl_evening_phone,
-               cl.fax_number cl_fax_number,
-               cl.cell_number cl_cell_number,
-               cl.first_name cl_first_name,
-               cl.last_name cl_last_name,
-               cl.postal_code cl_postal_code,
-               cl.province_state cl_province_state,
-               cl.country cl_country,
-               cl.email_address cl_email_address,
-               cl.revision_count cl_revision_count,
+           cl.person_id cl_person_id,
+           cl.address_line_1 cl_address_line_1,
+           cl.address_line_2 cl_address_line_2,
+           cl.city cl_city,
+           cl.corp_name cl_corp_name,
+           cl.daytime_phone cl_daytime_phone,
+           cl.evening_phone cl_evening_phone,
+           cl.fax_number cl_fax_number,
+           cl.cell_number cl_cell_number,
+           cl.first_name cl_first_name,
+           cl.last_name cl_last_name,
+           cl.postal_code cl_postal_code,
+           cl.province_state cl_province_state,
+           cl.country cl_country,
+           cl.email_address cl_email_address,
+           cl.revision_count cl_revision_count,
 
-               rp.person_id rp_person_id,
-               rp.address_line_1 rp_address_line_1,
-               rp.address_line_2 rp_address_line_2,
-               rp.city rp_city,
-               rp.corp_name rp_corp_name,
-               rp.daytime_phone rp_daytime_phone,
-               rp.evening_phone rp_evening_phone,
-               rp.fax_number rp_fax_number,
-               rp.cell_number rp_cell_number,
-               rp.first_name rp_first_name,
-               rp.last_name rp_last_name,
-               rp.postal_code rp_postal_code,
-               rp.province_state rp_province_state,
-               rp.country rp_country,
-               rp.email_address rp_email_address,
-               rp.revision_count rp_revision_count
-        from farms.farm_agristability_clients ac
-        left outer join farms.farm_participant_lang_codes plc on ac.participant_lang_code = plc.participant_lang_code
-        left outer join farms.farm_participant_class_codes pcc on ac.participant_class_code = pcc.participant_class_code
-        left outer join farms.farm_persons cl on ac.person_id = cl.person_id
-        left outer join farms.farm_persons rp on ac.person_id_client_contacted_by = rp.person_id
-        where ac.participant_pin = ppin;
-
-    return cur;
-
-end;
+           rp.person_id rp_person_id,
+           rp.address_line_1 rp_address_line_1,
+           rp.address_line_2 rp_address_line_2,
+           rp.city rp_city,
+           rp.corp_name rp_corp_name,
+           rp.daytime_phone rp_daytime_phone,
+           rp.evening_phone rp_evening_phone,
+           rp.fax_number rp_fax_number,
+           rp.cell_number rp_cell_number,
+           rp.first_name rp_first_name,
+           rp.last_name rp_last_name,
+           rp.postal_code rp_postal_code,
+           rp.province_state rp_province_state,
+           rp.country rp_country,
+           rp.email_address rp_email_address,
+           rp.revision_count rp_revision_count
+    from farms.farm_agristability_clients ac
+    left outer join farms.farm_participant_lang_codes plc on ac.participant_lang_code = plc.participant_lang_code
+    left outer join farms.farm_participant_class_codes pcc on ac.participant_class_code = pcc.participant_class_code
+    left outer join farms.farm_persons cl on ac.person_id = cl.person_id
+    left outer join farms.farm_persons rp on ac.person_id_client_contacted_by = rp.person_id
+    where ac.participant_pin = ppin;
 $$;
