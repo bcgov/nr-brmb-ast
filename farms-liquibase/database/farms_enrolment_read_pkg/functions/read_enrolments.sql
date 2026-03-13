@@ -99,10 +99,41 @@ SELECT
   c.participant_pin,
   c.producer_name,
   CASE
-    WHEN b.year = (SELECT enrol_year - 2 FROM params)
-         AND b.scenario_state_code IN ('COMP','AMEND')
-         AND b.scenario_category_code = 'FIN'
-         AND b.scenario_class_code = 'USER'
+    WHEN (
+           b.year = (SELECT enrol_year - 2 FROM params)
+           AND b.scenario_state_code IN ('COMP','AMEND')
+           AND b.scenario_category_code = 'FIN'
+           AND b.scenario_class_code = 'USER'
+         ) OR (
+           b.year = (SELECT enrol_year - 3 FROM params)
+           AND b.scenario_state_code IN ('COMP','AMEND')
+           AND b.scenario_category_code = 'FIN'
+           AND b.scenario_class_code = 'USER'
+           AND EXISTS (
+             SELECT 1
+             FROM farms.farm_agristability_scenarios sc2
+             JOIN farms.farm_program_year_versions pyv2 ON sc2.program_year_version_id = pyv2.program_year_version_id
+             JOIN farms.farm_program_years py2 ON pyv2.program_year_id = py2.program_year_id
+             WHERE py2.year = (SELECT enrol_year - 2 FROM params)
+             AND py2.agristability_client_id = b.agristability_client_id
+             AND EXISTS (
+               SELECT 1
+               FROM farms.farm_farming_operations fo
+               JOIN farms.farm_reported_income_expenses rie ON rie.farming_operation_id = fo.farming_operation_id
+                                                            AND rie.agristability_scenario_id IS NULL
+               WHERE fo.program_year_version_id = sc2.program_year_version_id
+             )
+             AND sc2.scenario_class_code IN ('CRA', 'CHEF', 'LOCAL', 'GEN')
+             AND sc2.scenario_number = (
+               SELECT max(sc3.scenario_number)
+               FROM farms.farm_agristability_scenarios sc3
+               JOIN farms.farm_program_year_versions pyv3 ON sc3.program_year_version_id = pyv3.program_year_version_id
+               JOIN farms.farm_program_years py3 ON pyv3.program_year_id = py3.program_year_id
+               WHERE py3.program_year_id = py2.program_year_id
+               AND sc3.scenario_class_code IN ('CRA', 'CHEF', 'LOCAL', 'GEN')
+             )
+           )
+         )
       THEN 'COMP'
     WHEN b.year = (SELECT enrol_year - 2 FROM params)
          AND b.scenario_state_code = 'EN_COMP'
