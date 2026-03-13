@@ -281,54 +281,41 @@ public class EnrolmentReadDAO extends OracleDAO {
       final Format[] columnFormats,
       final File csvFile)
       throws DataAccessException, IOException {
-
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_CSV_PROC;
     Connection connection = getConnection(transaction);
-    boolean originalAutoCommit = true;
 
-    int readCsvParam = 2;
     try {
-      originalAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
 
       try(FileOutputStream fos = new FileOutputStream(csvFile);
           OutputStreamWriter osw = new OutputStreamWriter(fos);
-          DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-              + READ_CSV_PROC, readCsvParam , true);) {
+          PreparedStatement ps = connection.prepareStatement(sql);) {
         
         CSVWriter writer = new CSVWriter(osw, CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
         
         Integer[] pinArray = pins.toArray(new Integer[pins.size()]);
         
-        Array oracleArray = createNumbersOracleArray(connection, pinArray);
+        Array oracleArray = createIntegersOracleArray(connection, pinArray);
         
         int param = 1;
-        proc.setInt(param++, enrolmentYear);
-        proc.setArray(param++, oracleArray);
-        proc.execute();
+        DAOUtils.setInt(ps, param++, enrolmentYear);
+        ps.setArray(param++, oracleArray);
 
-        try(ResultSet rs = proc.getResultSet();) {
+        try(ResultSet rs = ps.executeQuery();) {
     
           writer.writeAll(rs, true, columnFormats);
           writer.flush();
           osw.flush();
         }
       }
-
-      connection.commit();
     } catch (SQLException e) {
-      try {
-        connection.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
-      try {
-        connection.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        handleException(ex);
-      }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     
   }
