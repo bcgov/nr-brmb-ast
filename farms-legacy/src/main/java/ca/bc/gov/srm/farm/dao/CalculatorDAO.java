@@ -14,6 +14,7 @@ package ca.bc.gov.srm.farm.dao;
 import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -21,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.domain.Client;
 import ca.bc.gov.srm.farm.domain.FarmingOperation;
@@ -39,6 +43,7 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
  * @author awilkinson
  */
 public class CalculatorDAO extends OracleDAO {
+  private Logger logger = LoggerFactory.getLogger(CalculatorDAO.class);
 
   private static final String PACKAGE_NAME = "FARMS_CALCULATOR_PKG";
   
@@ -176,8 +181,7 @@ public class CalculatorDAO extends OracleDAO {
   private static final int DELETE_PARTNER_PARAM = 2;
   
   private static final String READ_ALL_PARTNERS_PROC = "READ_ALL_PARTNERS";
-  private static final int READ_ALL_PARTNERS_PARAM = 0;
-  
+
   private static final String COPY_SCENARIO_PYV_PROC = "COPY_SCENARIO_PYV";
   
   private static final String UPSERT_SCENARIO_CONFIG_PARAM_PROC = "UPSERT_SCENARIO_CONFIG_PARAM";
@@ -3061,21 +3065,18 @@ public class CalculatorDAO extends OracleDAO {
   @SuppressWarnings("resource")
   public List<FarmingOperationPartner> readAllPartners(Transaction transaction)
       throws DataAccessException {
-
+    long startTime = 0;
+    String prcName = PACKAGE_NAME + "." + READ_ALL_PARTNERS_PROC;
     Connection connection = getConnection(transaction);
-    boolean originalAutoCommit = true;
     List<FarmingOperationPartner> partners = new ArrayList<>();
 
     try {
-      originalAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
+      startTime = System.currentTimeMillis();
+      String sql = "SELECT * FROM " + prcName + "()";
 
-      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
-          + READ_ALL_PARTNERS_PROC, READ_ALL_PARTNERS_PARAM, true)) {
+      try(PreparedStatement ps = connection.prepareStatement(sql);) {
 
-        proc.execute();
-
-        try(ResultSet rs = proc.getResultSet();) {
+        try(ResultSet rs = ps.executeQuery();) {
 
           while (rs.next()) {
             FarmingOperationPartner p = new FarmingOperationPartner();
@@ -3088,22 +3089,12 @@ public class CalculatorDAO extends OracleDAO {
           }
         }
       }
-
-      connection.commit();
     } catch (SQLException e) {
-      try {
-        connection.rollback();
-      } catch (SQLException rollbackEx) {
-        e.addSuppressed(rollbackEx);
-      }
       getLog().error("Unexpected error: ", e);
       handleException(e);
     } finally {
-      try {
-        connection.setAutoCommit(originalAutoCommit);
-      } catch (SQLException ex) {
-        handleException(ex);
-      }
+      long duration = System.currentTimeMillis() - startTime;
+      logger.debug("{} took {} ms", prcName, duration);
     }
     
     return partners;
