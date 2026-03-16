@@ -13,16 +13,16 @@
     <param-value>config.applicationResources</param-value>
   </context-param>
 
-  <!-- WebADE Filter for authenticating user -->
-  <filter>
-    <filter-name>WebADE Filter</filter-name>
-    <filter-class>ca.bc.gov.webade.j2ee.WebADEFilter</filter-class>
-  </filter>
-
   <!-- AAD Filter for authenticating user -->
   <filter>
     <filter-name>AAD Filter</filter-name>
     <filter-class>ca.bc.gov.aad.authservlets.AuthenticationFilter</filter-class>
+  </filter>
+
+  <!-- WebADE Filter for authenticating user -->
+  <filter>
+    <filter-name>WebADE Filter</filter-name>
+    <filter-class>ca.bc.gov.webade.j2ee.WebADEFilter</filter-class>
   </filter>
 
   <!-- Data Service Filter for initializing the current user and user cache -->
@@ -81,12 +81,12 @@
   </filter>
   
   <filter-mapping>
-    <filter-name>WebADE Filter</filter-name>
+    <filter-name>AAD Filter</filter-name>
     <servlet-name>action</servlet-name>
   </filter-mapping>
   
   <filter-mapping>
-    <filter-name>AAD Filter</filter-name>
+    <filter-name>WebADE Filter</filter-name>
     <servlet-name>action</servlet-name>
   </filter-mapping>
   
@@ -101,12 +101,12 @@
   </filter-mapping>
   
   <filter-mapping>
-    <filter-name>WebADE Filter</filter-name>
+    <filter-name>AAD Filter</filter-name>
     <servlet-name>AxisServlet</servlet-name>
   </filter-mapping>
   
   <filter-mapping>
-    <filter-name>AAD Filter</filter-name>
+    <filter-name>WebADE Filter</filter-name>
     <servlet-name>AxisServlet</servlet-name>
   </filter-mapping>
   

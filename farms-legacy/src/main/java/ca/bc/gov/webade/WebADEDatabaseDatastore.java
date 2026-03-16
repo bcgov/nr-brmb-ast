@@ -468,6 +468,10 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
             databaseUserCredentials.setEUserId(503L);
         } else if (userGuid.equals(new GUID("OAUTHGOV200000000000000000000000"))) {
             databaseUserCredentials.setEUserId(504L);
+        } else { // AAD login
+            databaseUserCredentials.setEUserId(1000L);
+            databaseUserCredentials.setAccountName(credentials.getAccountName());
+            databaseUserCredentials.setSourceDirectory("IDIR");
         }
 
         return databaseUserCredentials;
@@ -588,6 +592,12 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
                 put(504L, new ArrayList<Role>() {
                     {
                         add(roleMap.get("CLIENT"));
+                    }
+                });
+                put(1000L, new ArrayList<Role>() {
+                    {
+                        add(roleMap.get("ADMIN"));
+                        add(roleMap.get("TIP_REPORT_ADMIN"));
                     }
                 });
             }
@@ -746,6 +756,14 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
                 info.setUserCredentials(givenCredentials);
                 info.setFirstName("Oauth");
                 info.setLastName("Gov");
+                info.setMiddleInitial(null);
+                info.setEmailAddress(null);
+                info.setPhoneNumber(null);
+            } else if (eUserId == 1000L) {
+                info.setEmployeeId("Y");
+                info.setUserCredentials(givenCredentials);
+                info.setFirstName("AAD");
+                info.setLastName("Login");
                 info.setMiddleInitial(null);
                 info.setEmailAddress(null);
                 info.setPhoneNumber(null);
