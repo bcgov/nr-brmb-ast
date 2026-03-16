@@ -147,7 +147,7 @@
           <td id="bcgov-content">
             <!-- START BREADCRUMB -->
             <div id="bcgov-breadcrumb">
-              <p id="bcgov-screen-number"><w:currentUser/></p>
+              <p id="bcgov-screen-number"><w:currentAccountName/></p>
               <ul>
                 <li><a href="<fmt:message key="bc.gov.url"/>" title="B.C. Home" >B.C. Home</a></li>
                 <li> &gt; <a href="<fmt:message key="bc.gov.al.url"/>" title="<fmt:message key="Ministry.Name"/>" ><fmt:message key="Ministry.Name"/></a></li>

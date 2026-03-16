@@ -36,7 +36,7 @@ The following data may assist them in diagnosing the problem.
 DETAILS
 
 Application: <w:applicationCode/>
-Current User: <w:currentUser/>
+Current User: <w:currentAccountName/>
 
 
 Exception:
