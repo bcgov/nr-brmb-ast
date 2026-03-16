@@ -70,7 +70,7 @@ public class AuthenticationFilter implements Filter {
     private String toGuid(String input) {
         String guid = input.replace("-", "").toUpperCase();
         int pos = guid.indexOf('.');
-        guid = (pos == -1) ? input : input.substring(0, pos);
+        guid = (pos == -1) ? guid : guid.substring(0, pos);
         return guid;
     }
 
