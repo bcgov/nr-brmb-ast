@@ -58,13 +58,20 @@ public class AuthenticationFilter implements Filter {
         } else {
             IAccount account = context.getAccount();
             String userType = SiteminderConstants.INTERNAL_USERTYPE;
-            String userIdentifier = account.homeAccountId().replace("-", "").toUpperCase();
+            String userIdentifier = toGuid(account.homeAccountId());
             String userGuid = userIdentifier;
             String email = account.username();
             HttpServletRequest wrappedRequest = new HeaderRequestWrapper(request, userType, userIdentifier, userGuid,
                     email);
             chain.doFilter(wrappedRequest, response);
         }
+    }
+
+    private String toGuid(String input) {
+        String guid = input.replace("-", "").toUpperCase();
+        int pos = guid.indexOf('.');
+        guid = (pos == -1) ? input : input.substring(0, pos);
+        return guid;
     }
 
     @Override
