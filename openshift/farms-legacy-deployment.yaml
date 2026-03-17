@@ -102,10 +102,16 @@ spec:
             - name: config-webade-volume
               mountPath: /usr/local/tomcat/webapps/farms-legacy/WEB-INF/classes/webadeConfig/applicationConfiguration.json
               subPath: applicationConfiguration.json
+            - name: config-aad-volume
+              mountPath: /usr/local/tomcat/webapps/farms-legacy/WEB-INF/classes/aadConfig/authentication.properties
+              subPath: authentication.properties
       volumes:
         - name: config-webade-volume
           configMap:
             name: farms-legacy-config-webade-#{ENV}#
+        - name: config-aad-volume
+          configMap:
+            name: farms-legacy-config-aad-#{ENV}#
   strategy:
     type: RollingUpdate
     rollingUpdate:
