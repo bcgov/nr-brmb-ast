@@ -40,6 +40,12 @@
                             "relativeToChangeLogFile": "true",
                             "path": "ddl/tables/farm_zivpr_iv_premium_rates.sql"
                         }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "ddl/users.sql"
+                        }
                     }
                 ]
             }
