@@ -9,7 +9,6 @@ import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
-import ca.bc.gov.brmb.common.service.api.code.UserUtil;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.MarketRatePremium;
 import ca.bc.gov.farms.model.v1.MarketRatePremiumList;
@@ -91,7 +90,7 @@ public class MarketRatePremiumServiceImpl implements MarketRatePremiumService {
         logger.debug("<createMarketRatePremium");
 
         MarketRatePremium result = null;
-        String userId = UserUtil.toUserId(resource.getUserEmail());
+        String userId = resource.getUserEmail();
 
         try {
 
@@ -122,7 +121,7 @@ public class MarketRatePremiumServiceImpl implements MarketRatePremiumService {
         logger.debug("<updateMarketRatePremium");
 
         MarketRatePremium result = null;
-        String userId = UserUtil.toUserId(marketRatePremium.getUserEmail());
+        String userId = marketRatePremium.getUserEmail();
 
         try {
 

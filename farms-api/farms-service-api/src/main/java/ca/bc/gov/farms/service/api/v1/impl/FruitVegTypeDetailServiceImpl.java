@@ -9,7 +9,6 @@ import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
-import ca.bc.gov.brmb.common.service.api.code.UserUtil;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.FruitVegTypeDetail;
 import ca.bc.gov.farms.model.v1.FruitVegTypeDetailList;
@@ -92,7 +91,7 @@ public class FruitVegTypeDetailServiceImpl implements FruitVegTypeDetailService 
         logger.debug("<createFruitVegTypeDetail");
 
         FruitVegTypeDetail result = null;
-        String userId = UserUtil.toUserId(resource.getUserEmail());
+        String userId = resource.getUserEmail();
 
         try {
 
@@ -123,7 +122,7 @@ public class FruitVegTypeDetailServiceImpl implements FruitVegTypeDetailService 
         logger.debug("<updateFruitVegTypeDetail");
 
         FruitVegTypeDetail result = null;
-        String userId = UserUtil.toUserId(fruitVegTypeDetail.getUserEmail());
+        String userId = fruitVegTypeDetail.getUserEmail();
 
         try {
 

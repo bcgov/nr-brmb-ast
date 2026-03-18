@@ -63,7 +63,6 @@
     <w:ifUserCanPerformAction action="fifoView">
       <li><a href="<html:rewrite action="farm258"/>"><fmt:message key="Benefit.Triage"/></a></li>
     </w:ifUserCanPerformAction>
-    <li><u:signOut /></li>
   </ul>
 </div>
 <!-- END NAVIGATION -->

@@ -159,6 +159,9 @@ jobs:
           CHEFS_API_VERSION: ${{ vars.CHEFS_API_VERSION }}
           CHEFS_AGENT_ENABLED: ${{ vars.CHEFS_AGENT_ENABLED }}
           FIFO_AGENT_ENABLED: ${{ vars.FIFO_AGENT_ENABLED }}
+          BCFARMS_CLIENT_ID: ${{ secrets.BCFARMS_CLIENT_ID }}
+          BCFARMS_CLIENT_SECRET: ${{ secrets.BCFARMS_CLIENT_SECRET }}
+          BCFARMS_HOME_PAGE: ${{ vars.BCFARMS_HOME_PAGE }}
 
       #Explicit install of oc cli tool
       - name: Install oc

@@ -697,13 +697,6 @@
   </tag>
   
   <tag>
-      <name>signOut</name>
-      <tag-class>ca.bc.gov.srm.farm.ui.tag.SignOutTag</tag-class>
-      <display-name>Display Sign Out Link</display-name>
-      <description>Display Sign Out Link</description>
-  </tag>
-  
-  <tag>
     <name>importParticipantLog</name>
     <tag-class>ca.bc.gov.srm.farm.ui.tag.GetImportParticipantLogTag</tag-class>
     <display-name>GetImportParticipantLogTag</display-name>

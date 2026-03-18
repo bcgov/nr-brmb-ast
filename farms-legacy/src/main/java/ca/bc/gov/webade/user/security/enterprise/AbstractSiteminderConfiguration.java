@@ -209,7 +209,10 @@ abstract class AbstractSiteminderConfiguration implements SiteminderConfiguratio
 
 		GUID guid = new GUID(guidString);
 		credentials.setUserGuid(guid);
-		
+
+		String accountName = request.getHeader(SiteminderConstants.SMGOV_EMAIL_HEADER);
+		credentials.setAccountName(accountName);
+
 		return credentials;
 	}
 
