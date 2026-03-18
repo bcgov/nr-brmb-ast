@@ -9,7 +9,6 @@ import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
-import ca.bc.gov.brmb.common.service.api.code.UserUtil;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.YearConfigurationParameter;
 import ca.bc.gov.farms.model.v1.YearConfigurationParameterList;
@@ -94,7 +93,7 @@ public class YearConfigurationParameterServiceImpl implements YearConfigurationP
         logger.debug("<createYearConfigurationParameter");
 
         YearConfigurationParameter result = null;
-        String userId = UserUtil.toUserId(resource.getUserEmail());
+        String userId = resource.getUserEmail();
 
         try {
 
@@ -125,7 +124,7 @@ public class YearConfigurationParameterServiceImpl implements YearConfigurationP
         logger.debug("<updateYearConfigurationParameter");
 
         YearConfigurationParameter result = null;
-        String userId = UserUtil.toUserId(yearConfigurationParameter.getUserEmail());
+        String userId = yearConfigurationParameter.getUserEmail();
 
         try {
 

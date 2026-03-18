@@ -11,7 +11,6 @@ import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.brmb.common.service.api.ValidationFailureException;
-import ca.bc.gov.brmb.common.service.api.code.UserUtil;
 import ca.bc.gov.brmb.common.service.api.model.factory.FactoryContext;
 import ca.bc.gov.farms.model.v1.LineItem;
 import ca.bc.gov.farms.model.v1.LineItemList;
@@ -94,7 +93,7 @@ public class LineItemServiceImpl implements LineItemService {
         logger.debug("<createLineItem");
 
         LineItem result = null;
-        String userId = UserUtil.toUserId(resource.getUserEmail());
+        String userId = resource.getUserEmail();
 
         try {
 
@@ -124,7 +123,7 @@ public class LineItemServiceImpl implements LineItemService {
         logger.debug("<updateLineItem");
 
         LineItem result = null;
-        String userId = UserUtil.toUserId(lineItem.getUserEmail());
+        String userId = lineItem.getUserEmail();
 
         try {
 
