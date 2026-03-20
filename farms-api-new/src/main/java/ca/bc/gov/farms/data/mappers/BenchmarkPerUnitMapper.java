@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.data.mappers;
 
+import java.math.BigDecimal;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,9 +13,17 @@ public interface BenchmarkPerUnitMapper {
 
     List<BenchmarkPerUnitEntity> fetchByProgramYear(Integer programYear);
 
-    void insert(BenchmarkPerUnitEntity dto, String userId);
+    void insertBenchmarkPerUnit(BenchmarkPerUnitEntity dto, String userId);
 
-    void update(BenchmarkPerUnitEntity dto, String userId);
+    void insertBenchmarkYear(Long benchmarkPerUnitId, Integer benchmarkYear, BigDecimal averageMargin,
+            BigDecimal averageExpense, String userId);
 
-    void delete(Long benchmarkPerUnitId);
+    void updateBenchmarkPerUnit(BenchmarkPerUnitEntity dto, String userId);
+
+    void updateBenchmarkYear(Long benchmarkPerUnitId, Integer benchmarkYear, BigDecimal averageMargin,
+            BigDecimal averageExpense, String userId);
+
+    void deleteBenchmarkYear(Long benchmarkPerUnitId);
+
+    void deleteBenchmarkPerUnit(Long benchmarkPerUnitId);
 }

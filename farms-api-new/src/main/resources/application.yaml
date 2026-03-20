@@ -1,3 +1,7 @@
 spring:
   application:
     name: farms-api
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: ca.bc.gov.farms.data.entities
