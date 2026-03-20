@@ -13,17 +13,17 @@ public interface BenchmarkPerUnitMapper {
 
     List<BenchmarkPerUnitEntity> fetchByProgramYear(Integer programYear);
 
-    void insertBenchmarkPerUnit(BenchmarkPerUnitEntity dto, String userId);
+    int insertBenchmarkPerUnit(BenchmarkPerUnitEntity dto, String userId);
 
-    void insertBenchmarkYear(Long benchmarkPerUnitId, Integer benchmarkYear, BigDecimal averageMargin,
+    int insertBenchmarkYear(Long benchmarkPerUnitId, Integer benchmarkYear, BigDecimal averageMargin,
             BigDecimal averageExpense, String userId);
 
-    void updateBenchmarkPerUnit(BenchmarkPerUnitEntity dto, String userId);
+    int updateBenchmarkPerUnit(BenchmarkPerUnitEntity dto, String userId);
 
-    void updateBenchmarkYear(Long benchmarkPerUnitId, Integer benchmarkYear, BigDecimal averageMargin,
+    int updateBenchmarkYear(Long benchmarkPerUnitId, Integer benchmarkYear, BigDecimal averageMargin,
             BigDecimal averageExpense, String userId);
 
-    void deleteBenchmarkYear(Long benchmarkPerUnitId);
+    int deleteBenchmarkYear(Long benchmarkPerUnitId);
 
-    void deleteBenchmarkPerUnit(Long benchmarkPerUnitId);
+    int deleteBenchmarkPerUnit(Long benchmarkPerUnitId);
 }

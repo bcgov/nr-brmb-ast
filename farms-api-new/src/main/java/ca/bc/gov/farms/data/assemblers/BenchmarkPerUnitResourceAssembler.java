@@ -60,7 +60,7 @@ public class BenchmarkPerUnitResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateBenchmarkPerUnit(BenchmarkPerUnitEntity entity, BenchmarkPerUnitListModel resource) {
-        BeanUtils.copyProperties(entity, resource);
+    public void updateBenchmarkPerUnit(BenchmarkPerUnitModel resource, BenchmarkPerUnitEntity entity) {
+        BeanUtils.copyProperties(resource, entity);
     }
 }
