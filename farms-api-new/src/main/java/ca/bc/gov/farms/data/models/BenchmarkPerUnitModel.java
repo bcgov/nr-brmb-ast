@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import ca.bc.gov.brmb.common.rest.resource.BaseResource;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BenchmarkPerUnitModel {
+public class BenchmarkPerUnitModel extends BaseResource {
 
     private Long benchmarkPerUnitId;
 
