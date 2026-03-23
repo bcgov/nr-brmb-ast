@@ -20,7 +20,7 @@ instances:
     - name: TZ
       value: America/New_York
   requests:
-    cpu: #{DB_MAX_CPU}#
+    cpu: 100m
     memory: #{DB_MAX_MEMORY}#
   limits:
     cpu: #{DB_MAX_CPU}#
