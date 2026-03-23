@@ -150,6 +150,8 @@ public class Scenario extends ReferenceScenario {
   private String chefsFormTypeCode;
   
   private Integer verifierUserId;
+  
+  private String verifierAccountName;
 
   private String verifiedByEmail;
   
@@ -1128,6 +1130,14 @@ public class Scenario extends ReferenceScenario {
   public void setVerifiedByEmail(String verifiedByEmail) {
     this.verifiedByEmail = verifiedByEmail;
   }
+
+  public String getVerifierAccountName() {
+    return verifierAccountName;
+  }
+
+  public void setVerifierAccountName(String verifierAccountName) {
+    this.verifierAccountName = verifierAccountName;
+  }
   
   @JsonIgnore
   public boolean isNegativeMarginCalculationEnabled() {
@@ -1211,6 +1221,7 @@ public class Scenario extends ReferenceScenario {
     "\t revisionCount : "+revisionCount+"\n"+
     "\t verifiyUserId : "+verifierUserId+"\n"+
     "\t verifiedByEmail : "+verifiedByEmail+"\n"+
+    "\t verifierAccountName : "+verifierAccountName+"\n"+
     "[ : "+super.toString()+"]\n";
   }
 
