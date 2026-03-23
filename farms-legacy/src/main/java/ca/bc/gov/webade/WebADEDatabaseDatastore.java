@@ -471,7 +471,7 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
         } else { // AAD login
             databaseUserCredentials.setEUserId(1000L);
             databaseUserCredentials.setAccountName(credentials.getAccountName());
-            databaseUserCredentials.setSourceDirectory("IDIR");
+            databaseUserCredentials.setSourceDirectory(null);
         }
 
         return databaseUserCredentials;
