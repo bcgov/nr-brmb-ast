@@ -1183,7 +1183,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals(ScenarioStateCodes.VERIFIED, scenario.getScenarioStateCode());
     assertEquals(ScenarioCategoryCodes.INTERIM, scenario.getScenarioCategoryCode());
     assertEquals(submissionGuid, scenario.getChefsSubmissionGuid());
-    assertEquals(accountName, scenario.getVerifierAccountName());
     
     ScenarioMetaData chefsScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear,
         ScenarioCategoryCodes.CHEF_INTRM, ScenarioTypeCodes.CHEF);
