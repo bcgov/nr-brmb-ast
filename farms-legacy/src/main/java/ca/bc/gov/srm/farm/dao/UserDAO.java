@@ -40,7 +40,7 @@ public class UserDAO extends OracleDAO {
 
   public void createUsers(Transaction transaction, Collection<FarmUser> farmUsers, String user) throws DataAccessException {
 
-    final int paramCount = 7;
+    final int paramCount = 5;
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
@@ -97,7 +97,7 @@ public class UserDAO extends OracleDAO {
 
   public void updateUsers(Transaction transaction, Collection<FarmUser> farmUsers, String user) throws DataAccessException {
 
-    final int paramCount = 8;
+    final int paramCount = 6;
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
     boolean originalAutoCommit = true;
