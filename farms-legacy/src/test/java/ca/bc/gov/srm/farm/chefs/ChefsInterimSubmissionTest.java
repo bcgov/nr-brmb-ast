@@ -1150,7 +1150,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     FarmUser farmUser = null;
     try {
       farmUser = userService.getUserByUserGuid(userGuid);
-      assertEquals(accountName, farmUser.getAccountName());
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected Exception");

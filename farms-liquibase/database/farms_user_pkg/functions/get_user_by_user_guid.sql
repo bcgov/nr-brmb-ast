@@ -12,8 +12,6 @@ begin
     open cur for
         select fu.user_id,
                fu.user_guid,
-               fu.source_directory,
-               fu.account_name,
                fu.email_address,
                fu.verifier_ind,
                fu.deleted_ind,
