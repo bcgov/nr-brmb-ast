@@ -16,6 +16,8 @@ public class FarmUser {
 
   private Integer userId;
   private String userGuid;
+  private String sourceDirectory;
+  private String accountName;
   private String emailAddress;
   private Boolean verifierInd;
   private Boolean deletedInd;
@@ -41,6 +43,22 @@ public class FarmUser {
 
   public void setUserGuid(String userGuid) {
     this.userGuid = userGuid;
+  }
+
+  public String getSourceDirectory() {
+    return sourceDirectory;
+  }
+
+  public void setSourceDirectory(String sourceDirectory) {
+    this.sourceDirectory = sourceDirectory;
+  }
+
+  public String getAccountName() {
+    return accountName;
+  }
+
+  public void setAccountName(String accountName) {
+    this.accountName = accountName;
   }
 
   public String getEmailAddress() {
@@ -109,7 +127,7 @@ public class FarmUser {
 
   @Override
   public String toString() {
-    return "FarmUser [userId=" + userId + ", userGuid=" + userGuid
+    return "FarmUser [userId=" + userId + ", userGuid=" + userGuid + ", sourceDirectory=" + sourceDirectory + ", accountName=" + accountName
         + ", emailAddress=" + emailAddress + ", verifierInd=" + verifierInd + ", deletedInd=" + deletedInd + ", revisionCount=" + revisionCount
         + ", whenCreated=" + whenCreated + ", whoCreated=" + whoCreated + ", whenUpdated=" + whenUpdated + ", whoUpdated=" + whoUpdated + "]";
   }
