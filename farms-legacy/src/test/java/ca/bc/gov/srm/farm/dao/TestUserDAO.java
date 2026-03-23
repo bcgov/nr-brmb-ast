@@ -48,8 +48,6 @@ private static final String USER_ID = "JUNIT";
 
     FarmUser user = new FarmUser();
     user.setUserGuid("TESTER00000000");
-    user.setSourceDirectory("IDIR");
-    user.setAccountName("TESTER");
     user.setEmailAddress("TESTER@mail.com");
     user.setVerifierInd(true);
     user.setDeletedInd(false);

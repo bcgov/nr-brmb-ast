@@ -1150,7 +1150,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     FarmUser farmUser = null;
     try {
       farmUser = userService.getUserByUserGuid(userGuid);
-      assertEquals(accountName, farmUser.getAccountName());
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected Exception");
@@ -1184,7 +1183,6 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals(ScenarioStateCodes.VERIFIED, scenario.getScenarioStateCode());
     assertEquals(ScenarioCategoryCodes.INTERIM, scenario.getScenarioCategoryCode());
     assertEquals(submissionGuid, scenario.getChefsSubmissionGuid());
-    assertEquals(accountName, scenario.getVerifierAccountName());
     
     ScenarioMetaData chefsScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear,
         ScenarioCategoryCodes.CHEF_INTRM, ScenarioTypeCodes.CHEF);

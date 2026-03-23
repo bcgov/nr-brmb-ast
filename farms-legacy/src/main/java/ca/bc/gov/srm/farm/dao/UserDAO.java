@@ -40,7 +40,7 @@ public class UserDAO extends OracleDAO {
 
   public void createUsers(Transaction transaction, Collection<FarmUser> farmUsers, String user) throws DataAccessException {
 
-    final int paramCount = 7;
+    final int paramCount = 5;
 
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
@@ -56,8 +56,6 @@ public class UserDAO extends OracleDAO {
 
           int param = 1;
           proc.setString(param++, farmUser.getUserGuid());
-          proc.setString(param++, farmUser.getSourceDirectory());
-          proc.setString(param++, farmUser.getAccountName());
           proc.setString(param++, farmUser.getEmailAddress());
           proc.setIndicator(param++, farmUser.getVerifierInd());
           proc.setIndicator(param++, farmUser.getDeletedInd());
@@ -99,7 +97,7 @@ public class UserDAO extends OracleDAO {
 
   public void updateUsers(Transaction transaction, Collection<FarmUser> farmUsers, String user) throws DataAccessException {
 
-    final int paramCount = 8;
+    final int paramCount = 6;
     @SuppressWarnings("resource")
     Connection connection = getConnection(transaction);
     boolean originalAutoCommit = true;
@@ -115,8 +113,6 @@ public class UserDAO extends OracleDAO {
           int param = 1;
           proc.setLong(param++, farmUser.getUserId());
           proc.setString(param++, farmUser.getUserGuid());
-          proc.setString(param++, farmUser.getSourceDirectory());
-          proc.setString(param++, farmUser.getAccountName());
           proc.setString(param++, farmUser.getEmailAddress());
           proc.setIndicator(param++, farmUser.getVerifierInd());
           proc.setIndicator(param++, farmUser.getDeletedInd());
@@ -357,8 +353,6 @@ public class UserDAO extends OracleDAO {
 
     user.setUserId(new Integer(rs.getInt("user_id")));
     user.setUserGuid(rs.getString("user_guid"));
-    user.setSourceDirectory(rs.getString("source_directory"));
-    user.setAccountName(rs.getString("account_name"));
     user.setEmailAddress(rs.getString("email_address"));
     user.setVerifierInd(Boolean.valueOf(getIndicator(rs, "verifier_ind")));
     user.setDeletedInd(Boolean.valueOf(getIndicator(rs, "deleted_ind")));

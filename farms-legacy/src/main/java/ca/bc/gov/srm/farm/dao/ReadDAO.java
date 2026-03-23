@@ -847,7 +847,6 @@ public class ReadDAO {
           sc.setChefsFormTypeCode(getString(rs, c++));
           sc.setVerifierUserId(getInteger(rs, c++));
           sc.setVerifiedByEmail(getString(rs, c++));
-          sc.setVerifierAccountName(getString(rs, c++));
         }
 
       }

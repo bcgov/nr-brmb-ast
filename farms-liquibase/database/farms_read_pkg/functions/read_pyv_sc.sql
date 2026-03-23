@@ -34,8 +34,7 @@ returns table(
     combined_farm_number            farms.farm_agristability_scenarios.combined_farm_number%type,
     chef_form_type_code             farms.farm_chef_submissions.chef_form_type_code%type,
     verifier_user_id                farms.farm_agristability_scenarios.verifier_user_id%type,
-    verified_by_email               farms.farm_users.email_address%type,
-    verifier_account_name           farms.farm_users.account_name%type
+    verified_by_email               farms.farm_users.email_address%type
 )
 language sql
 as $$
@@ -95,8 +94,7 @@ as $$
            end) combined_farm_number,
            cs.chef_form_type_code,
            sc.verifier_user_id,
-           u.email_address verified_by_email,
-           u.account_name verifier_account_name
+           u.email_address verified_by_email
     from farms.farm_agristability_scenarios sc
     join farms.farm_program_year_versions pyv on pyv.program_year_version_id = sc.program_year_version_id
     join farms.farm_program_years py on py.program_year_id = pyv.program_year_id

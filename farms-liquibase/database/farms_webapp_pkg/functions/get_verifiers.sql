@@ -9,11 +9,11 @@ declare
 
 begin
     open v_cursor for
-        select fu.account_name,
+        select fu.email_address,
                fu.user_id
         from farms.farm_users fu
         where fu.verifier_ind = 'Y' and fu.deleted_ind = 'N'
-        order by fu.account_name asc;
+        order by fu.email_address asc;
     return v_cursor;
 end;
 $$;

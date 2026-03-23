@@ -44,8 +44,6 @@ public class UserServiceTest {
     String userGuid = "TESTERuserService";
     FarmUser farmUser = new FarmUser();
     farmUser.setUserGuid(userGuid);
-    farmUser.setSourceDirectory("IDIR");
-    farmUser.setAccountName("TESTER");
     farmUser.setEmailAddress("TESTER@mail.com");
     farmUser.setVerifierInd(true);
     farmUser.setDeletedInd(false);
@@ -57,9 +55,7 @@ public class UserServiceTest {
       FarmUser foundUser = service.getUserByUserGuid(userGuid);
 
       assertEquals(farmUser.getUserGuid(), foundUser.getUserGuid());
-      assertEquals(farmUser.getAccountName(), foundUser.getAccountName());
       assertEquals(farmUser.getEmailAddress(), foundUser.getEmailAddress());
-      assertEquals(farmUser.getSourceDirectory(), foundUser.getSourceDirectory());
       assertEquals(farmUser.getUserGuid(), foundUser.getUserGuid());
       assertEquals(farmUser.getVerifierInd(), foundUser.getVerifierInd());
       assertEquals(farmUser.getDeletedInd(), foundUser.getDeletedInd());
@@ -67,9 +63,7 @@ public class UserServiceTest {
       foundUser = service.getUserByUserId(foundUser.getUserId());
 
       assertEquals(farmUser.getUserGuid(), foundUser.getUserGuid());
-      assertEquals(farmUser.getAccountName(), foundUser.getAccountName());
       assertEquals(farmUser.getEmailAddress(), foundUser.getEmailAddress());
-      assertEquals(farmUser.getSourceDirectory(), foundUser.getSourceDirectory());
       assertEquals(farmUser.getUserGuid(), foundUser.getUserGuid());
       assertEquals(farmUser.getVerifierInd(), foundUser.getVerifierInd());
       assertEquals(farmUser.getDeletedInd(), foundUser.getDeletedInd());
@@ -85,8 +79,6 @@ public class UserServiceTest {
   public final void testUpdateUser() {
     FarmUser farmUser = new FarmUser();
     farmUser.setUserGuid("TESTER0001service");
-    farmUser.setSourceDirectory("IDIR");
-    farmUser.setAccountName("TESTERChanged");
     farmUser.setEmailAddress("TESTER@mail.com");
     farmUser.setVerifierInd(true);
     farmUser.setDeletedInd(false);
@@ -99,7 +91,6 @@ public class UserServiceTest {
       assertNotNull(foundUser);
       foundUser.setVerifierInd(false);
       service.updateUser(foundUser, user);
-      assertEquals(farmUser.getAccountName(), foundUser.getAccountName());
       assertFalse(foundUser.getVerifierInd());
       assertEquals(farmUser.getDeletedInd(), foundUser.getDeletedInd());
       logger.debug(foundUser.toString());
