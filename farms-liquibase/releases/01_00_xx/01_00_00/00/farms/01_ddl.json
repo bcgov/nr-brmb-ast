@@ -44,6 +44,12 @@
                     {
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
+                            "path": "ddl/tables/farm_users.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
                             "path": "ddl/users.sql"
                         }
                     }
