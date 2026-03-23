@@ -613,7 +613,7 @@ public class ListDAO extends OracleDAO {
 
       while (resultSet.next()) {
         User user = new UserVerifiedIndividualView();
-        user.setAccountName(resultSet.getString("ACCOUNT_NAME"));
+        user.setEmailAddress(resultSet.getString("EMAIL_ADDRESS"));
         user.setId(resultSet.getLong("USER_ID"));
         UserListView ulw = new UserListView(user);
         rows.add(ulw);
