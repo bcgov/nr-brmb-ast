@@ -5,3 +5,5 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: ca.bc.gov.farms.data.entities
+  configuration:
+    map-underscore-to-camel-case: true
