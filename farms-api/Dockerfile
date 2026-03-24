@@ -1,6 +1,6 @@
 FROM tomcat:10.1.44-jre21
 
-COPY ./farms-api-rest-endpoints/target/farms-api-rest-endpoints-1.0.0-SNAPSHOT.war .
+COPY ./target/farms-api-1.0.0-SNAPSHOT.war .
 COPY ./deploy-tools ./deploy-tools
 
 RUN ls
