@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/benchmarkPerUnits")
 public class BenchmarkPerUnitController extends CommonController {
 
-    protected BenchmarkPerUnitController(String name) {
+    protected BenchmarkPerUnitController() {
         super(BenchmarkPerUnitController.class.getName());
     }
 
