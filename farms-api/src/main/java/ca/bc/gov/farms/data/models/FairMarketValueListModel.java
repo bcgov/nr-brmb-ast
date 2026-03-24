@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FairMarketValueListModel extends BaseResource {
 
-    private List<FairMarketValueModel> fairMarketValueModelList;
+    private List<FairMarketValueModel> fairMarketValueList;
 }

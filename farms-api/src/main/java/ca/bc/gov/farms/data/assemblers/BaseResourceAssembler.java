@@ -78,7 +78,7 @@ public abstract class BaseResourceAssembler {
         return result;
     }
 
-    protected static <T extends BaseResource> void setSelfLink(Long id, T resource, URI baseUri) {
+    protected static <T extends BaseResource> void setSelfLink(Object id, T resource, URI baseUri) {
 
         String resourcePath = resource.getClass().getSimpleName();
         resourcePath.replace("Model", "s");
@@ -86,7 +86,7 @@ public abstract class BaseResourceAssembler {
 
         String selfUri = UriBuilder.fromUri(baseUri)
                 .path(resourcePath + "/{id}")
-                .build(id).toString();
+                .build(id.toString()).toString();
 
         resource.getLinks().add(new RelLink(BaseResourceTypes.SELF, selfUri, "GET"));
     }
