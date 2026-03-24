@@ -64,6 +64,16 @@ public abstract class CommonController {
     }
 
     /**
+     * 204 No Content
+     *
+     * @param <T>
+     * @return
+     */
+    protected final <T> ResponseEntity<T> noContent() {
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
      * 400 Bad Request
      *
      * @param <T>
