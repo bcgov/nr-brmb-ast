@@ -7,20 +7,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
+import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitListModel;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitModel;
-import ca.bc.gov.farms.services.BenchmarkPerUnitService;
+import ca.bc.gov.farms.data.models.FairMarketValueListModel;
+import ca.bc.gov.farms.data.models.FairMarketValueModel;
+import ca.bc.gov.farms.services.FairMarketValueService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -28,76 +29,76 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping(value = "/benchmarkPerUnits")
-public class BenchmarkPerUnitController extends CommonController {
+@RequestMapping(value = "/fairMarketValues")
+public class FairMarketValueController extends CommonController {
 
-    protected BenchmarkPerUnitController() {
-        super(BenchmarkPerUnitController.class.getName());
+    protected FairMarketValueController() {
+        super(FairMarketValueController.class.getName());
     }
 
     @Autowired
-    private BenchmarkPerUnitService benchmarkPerUnitService;
+    private FairMarketValueService fairMarketValueService;
 
     @GetMapping
     @Operation(
-            operationId = "Get Benchmark Per Unit resources by Program Year.",
-            summary = "Get Benchmark Per Unit resources by Program Year."
+            operationId = "Get Fair Market Value resources by Program Year.",
+            summary = "Get Fair Market Value resources by Program Year."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = BenchmarkPerUnitListModel.class))),
+                    content = @Content(schema = @Schema(implementation = FairMarketValueListModel.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<BenchmarkPerUnitListModel> getBenchmarkPerUnitsByProgramYear(
+    public ResponseEntity<FairMarketValueListModel> getFairMarketValuesByProgramYear(
             @RequestParam Integer programYear) {
-        log.debug(" >> getBenchmarkPerUnitsByProgramYear: {}", programYear);
+        log.debug(" >> getFairMarketValuesByProgramYear: {}", programYear);
 
         try {
-            BenchmarkPerUnitListModel resource = benchmarkPerUnitService.getBenchmarkPerUnitsByProgramYear(programYear);
+            FairMarketValueListModel resource = fairMarketValueService.getFairMarketValuesByProgramYear(programYear);
             return ok(resource);
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while fetching Benchmark Per Units", e);
+            log.error(" ### RuntimeException while fetching Fair Market Values", e);
             return internalServerError();
         }
     }
 
-    @GetMapping("/{benchmarkPerUnitId}")
+    @GetMapping("/{fairMarketValueId}")
     @Operation(
-            operationId = "Get Benchmark Per Unit resource by Benchmark Per Unit Id.",
-            summary = "Get Benchmark Per Unit resource by Benchmark Per Unit Id."
+            operationId = "Get Fair Market Value resource by Fair Market Value Id.",
+            summary = "Get Fair Market Value resource by Fair Market Value Id."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = BenchmarkPerUnitModel.class))),
+                    content = @Content(schema = @Schema(implementation = FairMarketValueModel.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<BenchmarkPerUnitModel> getBenchmarkPerUnit(
-            @PathVariable Long benchmarkPerUnitId) {
-        log.debug(" >> getBenchmarkPerUnit: {}", benchmarkPerUnitId);
+    public ResponseEntity<FairMarketValueModel> getFairMarketValue(
+            @PathVariable String fairMarketValueId) {
+        log.debug(" >> getFairMarketValue: {}", fairMarketValueId);
 
         try {
-            BenchmarkPerUnitModel resource = benchmarkPerUnitService.getBenchmarkPerUnit(benchmarkPerUnitId);
+            FairMarketValueModel resource = fairMarketValueService.getFairMarketValue(fairMarketValueId);
             return ok(resource);
         } catch (NotFoundException e) {
-            log.warn(" ### Benchmark Per Unit not found: {}", benchmarkPerUnitId, e);
+            log.warn(" ### Fair Market Value not found: {}", fairMarketValueId, e);
             return notFound();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while fetching Benchmark Per Unit", e);
+            log.error(" ### RuntimeException while fetching Fair Market Value", e);
             return internalServerError();
         }
     }
 
     @PostMapping
     @Operation(
-            operationId = "Create Benchmark Per Unit resource.",
-            summary = "Create Benchmark Per Unit resource."
+            operationId = "Create Fair Market Value resource.",
+            summary = "Create Fair Market Value resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = BenchmarkPerUnitModel.class))),
+                    content = @Content(schema = @Schema(implementation = FairMarketValueModel.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
@@ -106,72 +107,76 @@ public class BenchmarkPerUnitController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<BenchmarkPerUnitModel> createBenchmarkPerUnit(
-            @Valid @RequestBody BenchmarkPerUnitModel resource) {
-        log.debug(" >> createBenchmarkPerUnit");
+    public ResponseEntity<FairMarketValueModel> createFairMarketValue(
+            @Valid @RequestBody FairMarketValueModel resource) {
+        log.debug(" >> createFairMarketValue");
 
         try {
-            BenchmarkPerUnitModel newResource = benchmarkPerUnitService.createBenchmarkPerUnit(resource);
+            FairMarketValueModel newResource = fairMarketValueService.createFairMarketValue(resource);
             return ResponseEntity.status(201).body(newResource);
+        } catch (ConflictException e) {
+            log.warn(" ### Error while creating Fair Market Value", e);
+            return conflict();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while creating Benchmark Per Unit", e);
+            log.error(" ### RuntimeException while creating Fair Market Value", e);
             return internalServerError();
         }
     }
 
-    @PutMapping("/{benchmarkPerUnitId}")
+    @PutMapping("/{fairMarketValueId}")
     @Operation(
-            operationId = "Update Benchmark Per Unit resource.",
-            summary = "Update Benchmark Per Unit resource."
+            operationId = "Update Fair Market Value resource.",
+            summary = "Update Fair Market Value resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = BenchmarkPerUnitModel.class))),
+                    content = @Content(schema = @Schema(implementation = FairMarketValueModel.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<BenchmarkPerUnitModel> updateBenchmarkPerUnit(
-            @PathVariable Long benchmarkPerUnitId,
-            @Valid @RequestBody BenchmarkPerUnitModel resource) {
-        log.debug(" >> updateBenchmarkPerUnit");
+    public ResponseEntity<FairMarketValueModel> updateFairMarketValue(
+            @PathVariable String fairMarketValueId,
+            @Valid @RequestBody FairMarketValueModel resource) {
+        log.debug(" >> updateFairMarketValue");
 
         try {
-            BenchmarkPerUnitModel updatedResource = benchmarkPerUnitService.updateBenchmarkPerUnit(benchmarkPerUnitId, resource);
+            FairMarketValueModel updatedResource = fairMarketValueService.updateFairMarketValue(fairMarketValueId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
-            log.warn(" ### Benchmark Per Unit not found for update: {}", benchmarkPerUnitId, e);
+            log.warn(" ### Fair Market Value not found for update: {}", fairMarketValueId, e);
             return notFound();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while updating Benchmark Per Unit", e);
+            log.error(" ### RuntimeException while updating Fair Market Value", e);
             return internalServerError();
         }
     }
 
-    @DeleteMapping("/{benchmarkPerUnitId}")
+    @DeleteMapping("/{fairMarketValueId}")
     @Operation(
-            operationId = "Delete Benchmark Per Unit resource.",
-            summary = "Delete Benchmark Per Unit resource."
+            operationId = "Delete Fair Market Value resource.",
+            summary = "Delete Fair Market Value resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content"),
             @ApiResponse(responseCode = "404", description = "Not Found"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<Void> deleteBenchmarkPerUnit(
-            @PathVariable Long benchmarkPerUnitId) {
-        log.debug(" >> deleteBenchmarkPerUnit");
+    public ResponseEntity<Void> deleteFairMarketValue(
+            @PathVariable String fairMarketValueId) {
+        log.debug(" >> deleteFairMarketValue");
 
         try {
-            benchmarkPerUnitService.deleteBenchmarkPerUnit(benchmarkPerUnitId);
+            fairMarketValueService.deleteFairMarketValue(fairMarketValueId);
             return noContent();
         } catch (NotFoundException e) {
-            log.warn(" ### Benchmark Per Unit for deletion not found: {}", benchmarkPerUnitId, e);
+            log.warn(" ### Fair Market Value for deletion not found: {}", fairMarketValueId, e);
             return notFound();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while deleting Benchmark Per Unit", e);
+            log.error(" ### RuntimeException while deleting Fair Market Value", e);
             return internalServerError();
         }
     }
