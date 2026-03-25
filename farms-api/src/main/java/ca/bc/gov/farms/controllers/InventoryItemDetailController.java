@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
-import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.FairMarketValueListModel;
-import ca.bc.gov.farms.data.models.FairMarketValueModel;
-import ca.bc.gov.farms.services.FairMarketValueService;
+import ca.bc.gov.farms.data.models.InventoryItemDetailListModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
+import ca.bc.gov.farms.services.InventoryItemDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,153 +28,148 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping(value = "/fairMarketValues")
-public class FairMarketValueController extends CommonController {
+@RequestMapping(value = "/inventoryItemDetails")
+public class InventoryItemDetailController extends CommonController {
 
-    protected FairMarketValueController() {
-        super(FairMarketValueController.class.getName());
+    protected InventoryItemDetailController() {
+        super(InventoryItemDetailController.class.getName());
     }
 
     @Autowired
-    private FairMarketValueService fairMarketValueService;
+    private InventoryItemDetailService inventoryItemDetailService;
 
     @GetMapping
     @Operation(
-            operationId = "Get Fair Market Value resources by Program Year.",
-            summary = "Get Fair Market Value resources by Program Year."
+            operationId = "Get Inventory Item Detail resources by Inventory Item Code.",
+            summary = "Get Inventory Item Detail resources by Inventory Item Code."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = FairMarketValueListModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryItemDetailListModel.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FairMarketValueListModel> getFairMarketValuesByProgramYear(
-            @RequestParam Integer programYear) {
-        log.debug(" >> getFairMarketValuesByProgramYear: {}", programYear);
+    public ResponseEntity<InventoryItemDetailListModel> getInventoryItemDetailsByInventoryItemCode(
+            @RequestParam String inventoryItemCode) {
+        log.debug(" >> getInventoryItemDetailsByInventoryItemCode: {}", inventoryItemCode);
 
         try {
-            FairMarketValueListModel resource = fairMarketValueService.getFairMarketValuesByProgramYear(programYear);
+            InventoryItemDetailListModel resource = inventoryItemDetailService.getInventoryItemDetailsByInventoryItemCode(inventoryItemCode);
             return ok(resource);
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while fetching Fair Market Values", e);
+            log.error(" ### RuntimeException while fetching Inventory Item Details", e);
             return internalServerError();
         }
     }
 
-    @GetMapping("/{fairMarketValueId}")
+    @GetMapping("/{inventoryItemDetailId}")
     @Operation(
-            operationId = "Get Fair Market Value resource by Fair Market Value Id.",
-            summary = "Get Fair Market Value resource by Fair Market Value Id."
+            operationId = "Get Inventory Item Detail resource by Inventory Item Detail Id.",
+            summary = "Get Inventory Item Detail resource by Inventory Item Detail Id."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = FairMarketValueModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryItemDetailModel.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FairMarketValueModel> getFairMarketValue(
-            @PathVariable String fairMarketValueId) {
-        log.debug(" >> getFairMarketValue: {}", fairMarketValueId);
+    public ResponseEntity<InventoryItemDetailModel> getInventoryItemDetail(
+            @PathVariable Long inventoryItemDetailId) {
+        log.debug(" >> getInventoryItemDetail: {}", inventoryItemDetailId);
 
         try {
-            FairMarketValueModel resource = fairMarketValueService.getFairMarketValue(fairMarketValueId);
+            InventoryItemDetailModel resource = inventoryItemDetailService.getInventoryItemDetail(inventoryItemDetailId);
             return ok(resource);
         } catch (NotFoundException e) {
-            log.warn(" ### Fair Market Value not found: {}", fairMarketValueId, e);
+            log.warn(" ### Inventory Item Detail not found: {}", inventoryItemDetailId, e);
             return notFound();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while fetching Fair Market Value", e);
+            log.error(" ### RuntimeException while fetching Inventory Item Detail", e);
             return internalServerError();
         }
     }
 
     @PostMapping
     @Operation(
-            operationId = "Create Fair Market Value resource.",
-            summary = "Create Fair Market Value resource."
+            operationId = "Create Inventory Item Detail resource.",
+            summary = "Create Inventory Item Detail resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = FairMarketValueModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryItemDetailModel.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
-                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
-            @ApiResponse(responseCode = "409", description = "Conflict",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FairMarketValueModel> createFairMarketValue(
-            @Valid @RequestBody FairMarketValueModel resource) {
-        log.debug(" >> createFairMarketValue");
+    public ResponseEntity<InventoryItemDetailModel> createInventoryItemDetail(
+            @Valid @RequestBody InventoryItemDetailModel resource) {
+        log.debug(" >> createInventoryItemDetail");
 
         try {
-            FairMarketValueModel newResource = fairMarketValueService.createFairMarketValue(resource);
+            InventoryItemDetailModel newResource = inventoryItemDetailService.createInventoryItemDetail(resource);
             return ResponseEntity.status(201).body(newResource);
-        } catch (ConflictException e) {
-            log.warn(" ### Error while creating Fair Market Value", e);
-            return conflict();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while creating Fair Market Value", e);
+            log.error(" ### RuntimeException while creating Inventory Item Detail", e);
             return internalServerError();
         }
     }
 
-    @PutMapping("/{fairMarketValueId}")
+    @PutMapping("/{inventoryItemDetailId}")
     @Operation(
-            operationId = "Update Fair Market Value resource.",
-            summary = "Update Fair Market Value resource."
+            operationId = "Update Inventory Item Detail resource.",
+            summary = "Update Inventory Item Detail resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = FairMarketValueModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryItemDetailModel.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FairMarketValueModel> updateFairMarketValue(
-            @PathVariable String fairMarketValueId,
-            @Valid @RequestBody FairMarketValueModel resource) {
-        log.debug(" >> updateFairMarketValue");
+    public ResponseEntity<InventoryItemDetailModel> updateInventoryItemDetail(
+            @PathVariable Long inventoryItemDetailId,
+            @Valid @RequestBody InventoryItemDetailModel resource) {
+        log.debug(" >> updateInventoryItemDetail");
 
         try {
-            FairMarketValueModel updatedResource = fairMarketValueService.updateFairMarketValue(fairMarketValueId, resource);
+            InventoryItemDetailModel updatedResource = inventoryItemDetailService.updateInventoryItemDetail(inventoryItemDetailId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
-            log.warn(" ### Fair Market Value not found for update: {}", fairMarketValueId, e);
+            log.warn(" ### Inventory Item Detail not found for update: {}", inventoryItemDetailId, e);
             return notFound();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while updating Fair Market Value", e);
+            log.error(" ### RuntimeException while updating Inventory Item Detail", e);
             return internalServerError();
         }
     }
 
-    @DeleteMapping("/{fairMarketValueId}")
+    @DeleteMapping("/{inventoryItemDetailId}")
     @Operation(
-            operationId = "Delete Fair Market Value resource.",
-            summary = "Delete Fair Market Value resource."
+            operationId = "Delete Inventory Item Detail resource.",
+            summary = "Delete Inventory Item Detail resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content"),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
-                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
+                content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<Void> deleteFairMarketValue(
-            @PathVariable String fairMarketValueId) {
-        log.debug(" >> deleteFairMarketValue");
+    public ResponseEntity<InventoryItemDetailModel> deleteInventoryItemDetail(
+            @PathVariable Long inventoryItemDetailId) {
+        log.debug(" >> deleteInventoryItemDetail");
 
         try {
-            fairMarketValueService.deleteFairMarketValue(fairMarketValueId);
+            inventoryItemDetailService.deleteInventoryItemDetail(inventoryItemDetailId);
             return noContent();
         } catch (NotFoundException e) {
-            log.warn(" ### Fair Market Value for deletion not found: {}", fairMarketValueId, e);
+            log.warn(" ### Inventory Item Detail for deletion not found: {}", inventoryItemDetailId, e);
             return notFound();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while deleting Fair Market Value", e);
+            log.error(" ### RuntimeException while deleting Inventory Item Detail", e);
             return internalServerError();
         }
     }
