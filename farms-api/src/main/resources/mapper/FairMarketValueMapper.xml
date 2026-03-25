@@ -115,13 +115,13 @@
             and t.crop_unit_code = cuc.crop_unit_code
     </sql>
 
-    <select id="fetch" resultMap="FairMarketValueEntity">
+    <select id="fetch" resultType="FairMarketValueEntity">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         where apt.group_id = #{fairMarketValueId}
     </select>
 
-    <select id="fetchByProgramYear" resultMap="FairMarketValueEntity">
+    <select id="fetchByProgramYear" resultType="FairMarketValueEntity">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         order by lower(iic.description),
@@ -129,7 +129,7 @@
                  lower(cuc.description)
     </select>
 
-    <select id="fetchBy" resultMap="FairMarketValueEntity">
+    <select id="fetchBy" resultType="FairMarketValueEntity">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         where iic.inventory_item_code = #{inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
