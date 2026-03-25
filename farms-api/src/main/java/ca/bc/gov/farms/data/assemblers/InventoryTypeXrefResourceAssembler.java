@@ -1,10 +1,12 @@
 package ca.bc.gov.farms.data.assemblers;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.InventoryTypeXrefEntity;
@@ -16,8 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class InventoryTypeXrefResourceAssembler extends BaseResourceAssembler {
 
-    @SuppressWarnings("null")
-    public InventoryTypeXrefModel getInventoryTypeXref(InventoryTypeXrefEntity entity) {
+    public InventoryTypeXrefModel getInventoryTypeXref(@NonNull InventoryTypeXrefEntity entity) {
 
         URI baseUri = getBaseURI();
 
@@ -33,21 +34,19 @@ public class InventoryTypeXrefResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    @SuppressWarnings("null")
     public InventoryTypeXrefListModel getInventoryTypeXrefList(List<InventoryTypeXrefEntity> entities) {
 
         URI baseUri = getBaseURI();
 
         InventoryTypeXrefListModel result = null;
 
-        List<InventoryTypeXrefModel> resources = new ArrayList<>();
-
-        for (InventoryTypeXrefEntity entity : entities) {
+        @SuppressWarnings("null")
+        List<InventoryTypeXrefModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
             InventoryTypeXrefModel resource = new InventoryTypeXrefModel();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getAgristabilityCommodityXrefId(), resource, baseUri);
-            resources.add(resource);
-        }
+            return resource;
+        }).collect(Collectors.toList());
 
         result = new InventoryTypeXrefListModel();
         result.setInventoryTypeXrefList(resources);
@@ -60,7 +59,8 @@ public class InventoryTypeXrefResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateInventoryTypeXref(InventoryTypeXrefModel resource, InventoryTypeXrefEntity entity) {
+    public void updateInventoryTypeXref(@NonNull InventoryTypeXrefModel resource,
+            @NonNull InventoryTypeXrefEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }
 }

@@ -1,10 +1,12 @@
 package ca.bc.gov.farms.data.assemblers;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.FairMarketValueEntity;
@@ -16,8 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
 
-    @SuppressWarnings("null")
-    public FairMarketValueModel getFairMarketValue(FairMarketValueEntity entity) {
+    public FairMarketValueModel getFairMarketValue(@NonNull FairMarketValueEntity entity) {
 
         URI baseUri = getBaseURI();
 
@@ -40,14 +41,12 @@ public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
 
         FairMarketValueListModel result = null;
 
-        List<FairMarketValueModel> resources = new ArrayList<>();
-
-        for (FairMarketValueEntity entity : entities) {
+        List<FairMarketValueModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
             FairMarketValueModel resource = new FairMarketValueModel();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getFairMarketValueId(), resource, baseUri);
-            resources.add(resource);
-        }
+            return resource;
+        }).collect(Collectors.toList());
 
         result = new FairMarketValueListModel();
         result.setFairMarketValueList(resources);
@@ -60,7 +59,7 @@ public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateFairMarketValue(FairMarketValueModel resource, FairMarketValueEntity entity) {
+    public void updateFairMarketValue(@NonNull FairMarketValueModel resource, @NonNull FairMarketValueEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }
 }

@@ -1,10 +1,12 @@
 package ca.bc.gov.farms.data.assemblers;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.BenchmarkPerUnitEntity;
@@ -16,8 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class BenchmarkPerUnitResourceAssembler extends BaseResourceAssembler {
 
-    @SuppressWarnings("null")
-    public BenchmarkPerUnitModel getBenchmarkPerUnit(BenchmarkPerUnitEntity entity) {
+    public BenchmarkPerUnitModel getBenchmarkPerUnit(@NonNull BenchmarkPerUnitEntity entity) {
 
         URI baseUri = getBaseURI();
 
@@ -33,21 +34,19 @@ public class BenchmarkPerUnitResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    @SuppressWarnings("null")
     public BenchmarkPerUnitListModel getBenchmarkPerUnitList(List<BenchmarkPerUnitEntity> entities) {
 
         URI baseUri = getBaseURI();
 
         BenchmarkPerUnitListModel result = null;
 
-        List<BenchmarkPerUnitModel> resources = new ArrayList<>();
-
-        for (BenchmarkPerUnitEntity entity : entities) {
+        @SuppressWarnings("null")
+        List<BenchmarkPerUnitModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
             BenchmarkPerUnitModel resource = new BenchmarkPerUnitModel();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getBenchmarkPerUnitId(), resource, baseUri);
-            resources.add(resource);
-        }
+            return resource;
+        }).collect(Collectors.toList());
 
         result = new BenchmarkPerUnitListModel();
         result.setBenchmarkPerUnitList(resources);
@@ -60,7 +59,8 @@ public class BenchmarkPerUnitResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateBenchmarkPerUnit(BenchmarkPerUnitModel resource, BenchmarkPerUnitEntity entity) {
+    public void updateBenchmarkPerUnit(@NonNull BenchmarkPerUnitModel resource,
+            @NonNull BenchmarkPerUnitEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }
 }
