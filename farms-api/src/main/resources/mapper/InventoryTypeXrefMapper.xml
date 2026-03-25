@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.data.mappers.InventoryTypeXrefMapper">
+
+    <sql id="selectColumns">
+        select acx.agristabilty_cmmdty_xref_id,
+               acx.market_commodity_ind,
+               iic.inventory_item_code,
+               iic.description as inventory_item_desc,
+               igc.inventory_group_code,
+               igc.description as inventory_group_desc,
+               icc.inventory_class_code,
+               icc.description as inventory_class_desc
+    </sql>
+
+    <sql id="fromClause">
+        from farms.farm_agristabilty_cmmdty_xref acx
+        left join farms.farm_inventory_item_codes iic using (inventory_item_code)
+        left join farms.farm_inventory_group_codes igc using (inventory_group_code)
+        left join farms.farm_inventory_class_codes icc using (inventory_class_code)
+    </sql>
+
+    <select id="fetch" resultType="InventoryTypeXrefEntity">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where acx.agristabilty_cmmdty_xref_id = #{agristabilityCommodityXrefId}
+    </select>
+
+    <select id="fetchByInventoryClassCode" resultType="InventoryTypeXrefEntity">
+        <include refid="selectColumns"/>
+        <include refid="fromClause"/>
+        where icc.inventory_class_code = #{inventoryClassCode}
+        order by icc.description
+    </select>
+
+    <insert id="insertInventoryTypeXref">
+        <selectKey keyProperty="agristabilityCommodityXrefId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_acx_seq')
+        </selectKey>
+        insert into farms.farm_agristabilty_cmmdty_xref (
+            agristabilty_cmmdty_xref_id,
+            market_commodity_ind,
+            inventory_item_code,
+            inventory_group_code,
+            inventory_class_code,
+            revision_count,
+            who_created,
+            when_created,
+            who_updated,
+            when_updated
+        ) values (
+            #{agristabilityCommodityXrefId},
+            #{dto.marketCommodityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select igc.inventory_group_code
+                from farms.farm_inventory_group_codes igc
+                where igc.inventory_group_code = #{dto.inventoryGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            (
+                select icc.inventory_class_code
+                from farms.farm_inventory_class_codes icc
+                where icc.inventory_class_code = #{dto.inventoryClassCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            1,
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now(),
+            #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            now()
+        )
+    </insert>
+
+    <update id="updateInventoryTypeXref">
+        update farms.farm_agristabilty_cmmdty_xref
+        set market_commodity_ind = #{dto.marketCommodityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            inventory_item_code = (
+                select iic.inventory_item_code
+                from farms.farm_inventory_item_codes iic
+                where iic.inventory_item_code = #{dto.inventoryItemCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            inventory_group_code = (
+                select igc.inventory_group_code
+                from farms.farm_inventory_group_codes igc
+                where igc.inventory_group_code = #{dto.inventoryGroupCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            inventory_class_code = (
+                select icc.inventory_class_code
+                from farms.farm_inventory_class_codes icc
+                where icc.inventory_class_code = #{dto.inventoryClassCode, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN}
+            ),
+            revision_count = revision_count + 1,
+            who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
+            when_updated = now()
+        where agristabilty_cmmdty_xref_id = #{dto.agristabilityCommodityXrefId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+    </update>
+
+    <delete id="deleteInventoryTypeXref">
+        delete from farms.farm_agristabilty_cmmdty_xref
+        where agristabilty_cmmdty_xref_id = #{agristabilityCommodityXrefId}
+    </delete>
+</mapper>
