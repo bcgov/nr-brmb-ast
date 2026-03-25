@@ -44,7 +44,7 @@ public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
 
         for (FairMarketValueEntity entity : entities) {
             FairMarketValueModel resource = new FairMarketValueModel();
-            BeanUtils.copyProperties(entity, resources);
+            BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getFairMarketValueId(), resource, baseUri);
             resources.add(resource);
         }
