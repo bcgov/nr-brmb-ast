@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
@@ -67,6 +68,7 @@ public class InventoryItemAttributeService {
         return result;
     }
 
+    @Transactional
     public InventoryItemAttributeModel createInventoryItemAttribute(InventoryItemAttributeModel resource)
             throws ServiceException, ConstraintViolationException {
 
@@ -94,6 +96,7 @@ public class InventoryItemAttributeService {
         return result;
     }
 
+    @Transactional
     public InventoryItemAttributeModel updateInventoryItemAttribute(Long inventoryItemAttributeId,
             InventoryItemAttributeModel resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
@@ -126,6 +129,7 @@ public class InventoryItemAttributeService {
         return result;
     }
 
+    @Transactional
     public void deleteInventoryItemAttribute(Long inventoryItemAttributeId) throws ServiceException, NotFoundException {
 
         try {

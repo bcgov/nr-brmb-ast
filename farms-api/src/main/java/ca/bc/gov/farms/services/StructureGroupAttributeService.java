@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
@@ -66,6 +67,7 @@ public class StructureGroupAttributeService {
         return result;
     }
 
+    @Transactional
     public StructureGroupAttributeModel createStructureGroupAttribute(StructureGroupAttributeModel resource)
             throws ServiceException, ConstraintViolationException {
 
@@ -93,6 +95,7 @@ public class StructureGroupAttributeService {
         return result;
     }
 
+    @Transactional
     public StructureGroupAttributeModel updateStructureGroupAttribute(Long structureGroupAttributeId,
             StructureGroupAttributeModel resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
@@ -125,6 +128,7 @@ public class StructureGroupAttributeService {
         return result;
     }
 
+    @Transactional
     public void deleteStructureGroupAttribute(Long structureGroupAttributeId)
             throws ServiceException, NotFoundException {
 
