@@ -97,7 +97,7 @@ public class InventoryItemAttributeController extends CommonController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
                     content = @Content(schema = @Schema(implementation = InventoryItemAttributeModel.class))),
-            @ApiResponse(responseCode = "404", description = "Not Found"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
