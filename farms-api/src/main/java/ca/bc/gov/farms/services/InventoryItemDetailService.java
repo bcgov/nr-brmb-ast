@@ -62,6 +62,8 @@ public class InventoryItemDetailService {
             }
 
             result = inventoryItemDetailResourceAssembler.getInventoryItemDetail(entity);
+        } catch (NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }

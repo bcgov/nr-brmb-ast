@@ -68,6 +68,8 @@ public class FairMarketValueService {
 
         } catch (PatternSyntaxException | NumberFormatException e) {
             throw new NotFoundException("Did not find the fair market value: " + fairMarketValueId);
+        } catch (NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
