@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ca.bc.gov.brmb.common.persistence.dao.DaoException;
+import ca.bc.gov.brmb.common.persistence.dao.NotFoundDaoException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.ConfigurationParameterResourceAssembler;
@@ -101,10 +103,15 @@ public class ConfigurationParameterService {
             ConfigurationParameterEntity dto = new ConfigurationParameterEntity();
 
             configurationParameterResourceAssembler.updateConfigurationParameter(resource, dto);
-            configurationParameterMapper.insertConfigurationParameter(dto, userId);
+            int count = configurationParameterMapper.insertConfigurationParameter(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not inserted: " + count);
+            }
 
             dto = configurationParameterMapper.fetch(dto.getConfigurationParameterId());
             result = configurationParameterResourceAssembler.getConfigurationParameter(dto);
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -134,10 +141,15 @@ public class ConfigurationParameterService {
             }
 
             configurationParameterResourceAssembler.updateConfigurationParameter(resource, dto);
-            configurationParameterMapper.updateConfigurationParameter(dto, userId);
+            int count = configurationParameterMapper.updateConfigurationParameter(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not updated: " + count);
+            }
 
             dto = configurationParameterMapper.fetch(dto.getConfigurationParameterId());
             result = configurationParameterResourceAssembler.getConfigurationParameter(dto);
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -155,7 +167,12 @@ public class ConfigurationParameterService {
                 throw new NotFoundException("Did not find the configuration parameter: " + configurationParameterId);
             }
 
-            configurationParameterMapper.deleteConfigurationParameter(configurationParameterId);
+            int count = configurationParameterMapper.deleteConfigurationParameter(configurationParameterId);
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + count);
+            }
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
