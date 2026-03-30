@@ -85,10 +85,15 @@ public class InventoryItemAttributeService {
             InventoryItemAttributeEntity dto = new InventoryItemAttributeEntity();
 
             inventoryItemAttributeResourceAssembler.updateInventoryItemAttribute(resource, dto);
-            inventoryItemAttributeMapper.insertInventoryItemAttribute(dto, userId);
+            int count = inventoryItemAttributeMapper.insertInventoryItemAttribute(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not inserted: " + count);
+            }
 
             dto = inventoryItemAttributeMapper.fetch(dto.getInventoryItemAttributeId());
             result = inventoryItemAttributeResourceAssembler.getInventoryItemAttribute(dto);
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -118,10 +123,15 @@ public class InventoryItemAttributeService {
             }
 
             inventoryItemAttributeResourceAssembler.updateInventoryItemAttribute(resource, dto);
-            inventoryItemAttributeMapper.updateInventoryItemAttribute(dto, userId);
+            int count = inventoryItemAttributeMapper.updateInventoryItemAttribute(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not updated: " + count);
+            }
 
             dto = inventoryItemAttributeMapper.fetch(dto.getInventoryItemAttributeId());
             result = inventoryItemAttributeResourceAssembler.getInventoryItemAttribute(dto);
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -139,7 +149,12 @@ public class InventoryItemAttributeService {
                 throw new NotFoundException("Did not find the inventory item attribute: " + inventoryItemAttributeId);
             }
 
-            inventoryItemAttributeMapper.deleteInventoryItemAttribute(inventoryItemAttributeId);
+            int count = inventoryItemAttributeMapper.deleteInventoryItemAttribute(inventoryItemAttributeId);
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + count);
+            }
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
