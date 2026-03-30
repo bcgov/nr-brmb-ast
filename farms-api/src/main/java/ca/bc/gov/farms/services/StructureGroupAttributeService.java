@@ -84,10 +84,15 @@ public class StructureGroupAttributeService {
             StructureGroupAttributeEntity dto = new StructureGroupAttributeEntity();
 
             structureGroupAttributeResourceAssembler.updateStructureGroupAttribute(resource, dto);
-            structureGroupAttributeMapper.insertStructureGroupAttribute(dto, userId);
+            int count = structureGroupAttributeMapper.insertStructureGroupAttribute(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not inserted: " + count);
+            }
 
             dto = structureGroupAttributeMapper.fetch(dto.getStructureGroupAttributeId());
             result = structureGroupAttributeResourceAssembler.getStructureGroupAttribute(dto);
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -117,10 +122,15 @@ public class StructureGroupAttributeService {
             }
 
             structureGroupAttributeResourceAssembler.updateStructureGroupAttribute(resource, dto);
-            structureGroupAttributeMapper.updateStructureGroupAttribute(dto, userId);
+            int count = structureGroupAttributeMapper.updateStructureGroupAttribute(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not updated: " + count);
+            }
 
             dto = structureGroupAttributeMapper.fetch(dto.getStructureGroupAttributeId());
             result = structureGroupAttributeResourceAssembler.getStructureGroupAttribute(dto);
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -139,7 +149,12 @@ public class StructureGroupAttributeService {
                 throw new NotFoundException("Did not find the structure group attribute: " + structureGroupAttributeId);
             }
 
-            structureGroupAttributeMapper.deleteStructureGroupAttribute(structureGroupAttributeId);
+            int count = structureGroupAttributeMapper.deleteStructureGroupAttribute(structureGroupAttributeId);
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + count);
+            }
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
