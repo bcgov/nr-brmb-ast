@@ -108,13 +108,7 @@ public class ImportBPURepository {
     @SuppressWarnings("unchecked")
     public List<String> getStagingErrors(Long importVersionId) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_import_version_id", importVersionId);
-            }
-        };
-
-        return getStagingErrorsCall.executeFunction(List.class, params);
+        return getStagingErrorsCall.executeFunction(List.class, importVersionId);
     }
 
     public void performImport(Long importVersionId, String userId) {
