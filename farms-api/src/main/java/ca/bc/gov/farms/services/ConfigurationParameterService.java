@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import ca.bc.gov.brmb.common.persistence.dao.DaoException;
-import ca.bc.gov.brmb.common.persistence.dao.NotFoundDaoException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.ConfigurationParameterResourceAssembler;
