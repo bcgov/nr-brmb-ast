@@ -86,10 +86,15 @@ public class InventoryItemDetailService {
             InventoryItemDetailEntity dto = new InventoryItemDetailEntity();
 
             inventoryItemDetailResourceAssembler.updateInventoryItemDetail(resource, dto);
-            inventoryItemDetailMapper.insertInventoryItemDetail(dto, userId);
+            int count = inventoryItemDetailMapper.insertInventoryItemDetail(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not inserted: " + count);
+            }
 
             dto = inventoryItemDetailMapper.fetch(dto.getInventoryItemDetailId());
             result = inventoryItemDetailResourceAssembler.getInventoryItemDetail(dto);
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -119,10 +124,15 @@ public class InventoryItemDetailService {
             }
 
             inventoryItemDetailResourceAssembler.updateInventoryItemDetail(resource, dto);
-            inventoryItemDetailMapper.updateInventoryItemDetail(dto, userId);
+            int count = inventoryItemDetailMapper.updateInventoryItemDetail(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not updated: " + dto.getInventoryItemDetailId());
+            }
 
             dto = inventoryItemDetailMapper.fetch(inventoryItemDetailId);
             result = inventoryItemDetailResourceAssembler.getInventoryItemDetail(dto);
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -140,7 +150,12 @@ public class InventoryItemDetailService {
                 throw new NotFoundException("Did not find the inventory item detail: " + inventoryItemDetailId);
             }
 
-            inventoryItemDetailMapper.deleteInventoryItemDetail(inventoryItemDetailId);
+            int count = inventoryItemDetailMapper.deleteInventoryItemDetail(inventoryItemDetailId);
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + inventoryItemDetailId);
+            }
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
