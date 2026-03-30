@@ -158,7 +158,7 @@ public class InventoryTypeXrefController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryTypeXrefModel> deleteInventoryTypeXref(
+    public ResponseEntity<Void> deleteInventoryTypeXref(
             @PathVariable Long agristabilityCommodityXrefId) {
         log.debug(" >> deleteInventoryTypeXref");
 

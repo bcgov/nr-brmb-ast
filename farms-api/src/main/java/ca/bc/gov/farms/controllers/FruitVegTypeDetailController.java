@@ -156,7 +156,7 @@ public class FruitVegTypeDetailController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FruitVegTypeDetailModel> deleteFruitVegTypeDetail(
+    public ResponseEntity<Void> deleteFruitVegTypeDetail(
             @PathVariable String fruitVegTypeCode) {
         log.debug(" >> deleteFruitVegTypeDetail");
 

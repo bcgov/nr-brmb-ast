@@ -156,7 +156,7 @@ public class MarketRatePremiumController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<MarketRatePremiumModel> deleteMarketRatePremium(
+    public ResponseEntity<Void> deleteMarketRatePremium(
             @PathVariable Long marketRatePremiumId) {
         log.debug(" >> deleteMarketRatePremium");
 

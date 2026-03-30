@@ -157,7 +157,7 @@ public class StructureGroupAttributeController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<StructureGroupAttributeModel> deleteStructureGroupAttribute(
+    public ResponseEntity<Void> deleteStructureGroupAttribute(
             @PathVariable Long structureGroupAttributeId) {
         log.debug(" >> deleteStructureGroupAttribute");
 

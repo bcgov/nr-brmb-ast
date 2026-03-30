@@ -152,7 +152,7 @@ public class YearConfigurationParameterController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<YearConfigurationParameterModel> deleteYearConfigurationParameter(
+    public ResponseEntity<Void> deleteYearConfigurationParameter(
             @PathVariable Long yearConfigurationParameterId) {
         log.debug(" >> deleteYearConfigurationParameter");
 

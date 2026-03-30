@@ -156,7 +156,7 @@ public class InventoryItemAttributeController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemAttributeModel> deleteInventoryItemAttribute(
+    public ResponseEntity<Void> deleteInventoryItemAttribute(
             @PathVariable Long inventoryItemAttributeId) {
         log.debug(" >> deleteInventoryItemAttribute");
 

@@ -158,7 +158,7 @@ public class LineItemController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<LineItemModel> deleteLineItem(
+    public ResponseEntity<Void> deleteLineItem(
             @PathVariable Long lineItemId) {
         log.debug(" >> deleteLineItem");
 

@@ -164,7 +164,7 @@ public class CropUnitConversionController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CropUnitConversionModel> deleteCropUnitConversion(
+    public ResponseEntity<Void> deleteCropUnitConversion(
             @PathVariable Long cropUnitDefaultId) {
         log.debug(" >> deleteCropUnitConversion");
 

@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.controllers;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.InventoryItemDetailListModel;
-import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
-import ca.bc.gov.farms.services.InventoryItemDetailService;
+import ca.bc.gov.farms.data.models.ExpectedProductionListModel;
+import ca.bc.gov.farms.data.models.ExpectedProductionModel;
+import ca.bc.gov.farms.services.ExpectedProductionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,148 +29,152 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping(value = "/inventoryItemDetails")
-public class InventoryItemDetailController extends CommonController {
+@RequestMapping(value = "/expectedProductions")
+public class ExpectedProductionController extends CommonController {
 
-    protected InventoryItemDetailController() {
-        super(InventoryItemDetailController.class.getName());
+    protected ExpectedProductionController() {
+        super(ExpectedProductionController.class.getName());
     }
 
     @Autowired
-    private InventoryItemDetailService inventoryItemDetailService;
+    private ExpectedProductionService expectedProductionService;
 
     @GetMapping
     @Operation(
-            operationId = "Get Inventory Item Detail resources by Inventory Item Code.",
-            summary = "Get Inventory Item Detail resources by Inventory Item Code."
+            operationId = "Get all Expected Production resources.",
+            summary = "Get all Expected Production resources."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = InventoryItemDetailListModel.class))),
+                    content = @Content(schema = @Schema(implementation = ExpectedProductionListModel.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemDetailListModel> getInventoryItemDetailsByInventoryItemCode(
+    public ResponseEntity<ExpectedProductionListModel> getAllExpectedProductions(
             @RequestParam String inventoryItemCode) {
-        log.debug(" >> getInventoryItemDetailsByInventoryItemCode: {}", inventoryItemCode);
+        log.debug(" >> getAllExpectedProductions");
 
+        ExpectedProductionListModel resources = null;
         try {
-            InventoryItemDetailListModel resource = inventoryItemDetailService.getInventoryItemDetailsByInventoryItemCode(inventoryItemCode);
-            return ok(resource);
+            if (StringUtils.isBlank(inventoryItemCode)) {
+                resources = expectedProductionService.getAllExpectedProductions();
+            } else {
+                resources = expectedProductionService.getExpectedProductionByInventoryItemCode(inventoryItemCode);
+            }
+            return ok(resources);
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while fetching Inventory Item Details", e);
+            log.error(" ### RuntimeException while fetching Expected Productions", e);
             return internalServerError();
         }
     }
 
-    @GetMapping("/{inventoryItemDetailId}")
+    @GetMapping("/{expectedProductionId}")
     @Operation(
-            operationId = "Get Inventory Item Detail resource by Inventory Item Detail Id.",
-            summary = "Get Inventory Item Detail resource by Inventory Item Detail Id."
+            operationId = "Get Expected Production resource by Expected Production Id.",
+            summary = "Get Expected Production resource by Expected Production Id."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = InventoryItemDetailModel.class))),
+                    content = @Content(schema = @Schema(implementation = ExpectedProductionModel.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemDetailModel> getInventoryItemDetail(
-            @PathVariable Long inventoryItemDetailId) {
-        log.debug(" >> getInventoryItemDetail: {}", inventoryItemDetailId);
+    public ResponseEntity<ExpectedProductionModel> getExpectedProduction(
+            @PathVariable Long expectedProductionId) {
+        log.debug(" >> getExpectedProduction: {}", expectedProductionId);
 
         try {
-            InventoryItemDetailModel resource = inventoryItemDetailService.getInventoryItemDetail(inventoryItemDetailId);
+            ExpectedProductionModel resource = expectedProductionService.getExpectedProduction(expectedProductionId);
             return ok(resource);
         } catch (NotFoundException e) {
-            log.warn(" ### Inventory Item Detail not found: {}", inventoryItemDetailId, e);
+            log.warn(" ### Expected Production not found: {}", expectedProductionId, e);
             return notFound();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while fetching Inventory Item Detail", e);
+            log.error(" ### RuntimeException while fetching Expected Production", e);
             return internalServerError();
         }
     }
 
     @PostMapping
     @Operation(
-            operationId = "Create Inventory Item Detail resource.",
-            summary = "Create Inventory Item Detail resource."
+            operationId = "Create Expected Production resource.",
+            summary = "Create Expected Production resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = InventoryItemDetailModel.class))),
+                    content = @Content(schema = @Schema(implementation = ExpectedProductionModel.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemDetailModel> createInventoryItemDetail(
-            @Valid @RequestBody InventoryItemDetailModel resource) {
-        log.debug(" >> createInventoryItemDetail");
+    public ResponseEntity<ExpectedProductionModel> createExpectedProduction(
+            @Valid @RequestBody ExpectedProductionModel resource) {
+        log.debug(" >> createExpectedProduction");
 
         try {
-            InventoryItemDetailModel newResource = inventoryItemDetailService.createInventoryItemDetail(resource);
+            ExpectedProductionModel newResource = expectedProductionService.createExpectedProduction(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while creating Inventory Item Detail", e);
+            log.error(" ### RuntimeException while creating Expected Production", e);
             return internalServerError();
         }
     }
 
-    @PutMapping("/{inventoryItemDetailId}")
+    @PutMapping("/{expectedProductionId}")
     @Operation(
-            operationId = "Update Inventory Item Detail resource.",
-            summary = "Update Inventory Item Detail resource."
+            operationId = "Update Expected Production resource.",
+            summary = "Update Expected Production resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = InventoryItemDetailModel.class))),
+                    content = @Content(schema = @Schema(implementation = ExpectedProductionModel.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemDetailModel> updateInventoryItemDetail(
-            @PathVariable Long inventoryItemDetailId,
-            @Valid @RequestBody InventoryItemDetailModel resource) {
-        log.debug(" >> updateInventoryItemDetail");
+    public ResponseEntity<ExpectedProductionModel> updateExpectedProduction(
+            @PathVariable Long expectedProductionId,
+            @Valid @RequestBody ExpectedProductionModel resource) {
+        log.debug(" >> updateExpectedProduction");
 
         try {
-            InventoryItemDetailModel updatedResource = inventoryItemDetailService.updateInventoryItemDetail(inventoryItemDetailId, resource);
+            ExpectedProductionModel updatedResource = expectedProductionService.updateExpectedProduction(expectedProductionId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
-            log.warn(" ### Inventory Item Detail not found for update: {}", inventoryItemDetailId, e);
+            log.warn(" ### Expected Production not found for update: {}", expectedProductionId, e);
             return notFound();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while updating Inventory Item Detail", e);
+            log.error(" ### RuntimeException while updating Expected Production", e);
             return internalServerError();
         }
     }
 
-    @DeleteMapping("/{inventoryItemDetailId}")
+    @DeleteMapping("/{expectedProductionId}")
     @Operation(
-            operationId = "Delete Inventory Item Detail resource.",
-            summary = "Delete Inventory Item Detail resource."
+            operationId = "Delete Expected Production resource.",
+            summary = "Delete Expected Production resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content"),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
-                content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
-    })
-    public ResponseEntity<Void> deleteInventoryItemDetail(
-            @PathVariable Long inventoryItemDetailId) {
-        log.debug(" >> deleteInventoryItemDetail");
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class))) })
+    public ResponseEntity<Void> deleteExpectedProduction(
+            @PathVariable Long expectedProductionId) {
+        log.debug(" >> deleteExpectedProduction");
 
         try {
-            inventoryItemDetailService.deleteInventoryItemDetail(inventoryItemDetailId);
+            expectedProductionService.deleteExpectedProduction(expectedProductionId);
             return noContent();
         } catch (NotFoundException e) {
-            log.warn(" ### Inventory Item Detail for deletion not found: {}", inventoryItemDetailId, e);
+            log.warn(" ### Expected Production for deletion not found: {}", expectedProductionId, e);
             return notFound();
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while deleting Inventory Item Detail", e);
+            log.error(" ### RuntimeException while deleting Expected Production", e);
             return internalServerError();
         }
     }
