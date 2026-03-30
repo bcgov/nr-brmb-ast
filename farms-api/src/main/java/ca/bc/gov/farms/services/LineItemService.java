@@ -84,10 +84,15 @@ public class LineItemService {
             LineItemEntity dto = new LineItemEntity();
 
             lineItemResourceAssembler.updateLineItem(resource, dto);
-            lineItemMapper.insertLineItem(dto, userId);
+            int count = lineItemMapper.insertLineItem(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not inserted: " + count);
+            }
 
             dto = lineItemMapper.fetch(dto.getLineItemId());
             result = lineItemResourceAssembler.getLineItem(dto);
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -116,15 +121,23 @@ public class LineItemService {
             }
 
             // expire old line item
-            lineItemMapper.deleteLineItem(dto.getLineItemId());
+            int count = lineItemMapper.deleteLineItem(dto.getLineItemId());
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + count);
+            }
 
             // insert new line item
             lineItemResourceAssembler.updateLineItem(resource, dto);
             dto.setLineItemId(null);
-            lineItemMapper.insertLineItem(dto, userId);
+            count = lineItemMapper.insertLineItem(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not inserted: " + count);
+            }
 
             dto = lineItemMapper.fetch(dto.getLineItemId());
             result = lineItemResourceAssembler.getLineItem(dto);
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -142,7 +155,12 @@ public class LineItemService {
                 throw new NotFoundException("Did not find the line item: " + lineItemId);
             }
 
-            lineItemMapper.deleteLineItem(lineItemId);
+            int count = lineItemMapper.deleteLineItem(lineItemId);
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + count);
+            }
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -166,13 +184,18 @@ public class LineItemService {
                 if (!currentYearDtoMap.containsKey(dto.getLineItem())) {
                     dto.setLineItemId(null);
                     dto.setProgramYear(currentYear);
-                    lineItemMapper.insertLineItem(dto, dto.getCreateUser());
+                    int count = lineItemMapper.insertLineItem(dto, dto.getCreateUser());
+                    if (count == 0) {
+                        throw new ServiceException("Record not inserted: " + count);
+                    }
                 }
             }
 
             List<LineItemEntity> currentYearDtos = lineItemMapper.fetchByProgramYear(currentYear);
 
             result = lineItemResourceAssembler.getLineItemList(currentYearDtos);
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }

@@ -122,7 +122,7 @@ public class FairMarketValueService {
 
             dto = fairMarketValueMapper.fetch(dto.getProgramYear(), dto.getFairMarketValueId());
             result = fairMarketValueResourceAssembler.getFairMarketValue(dto);
-        } catch (ServiceException ex) {
+        } catch (ServiceException | ConflictException ex) {
             throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
@@ -177,6 +177,8 @@ public class FairMarketValueService {
 
             dto = fairMarketValueMapper.fetch(dto.getProgramYear(), dto.getFairMarketValueId());
             result = fairMarketValueResourceAssembler.getFairMarketValue(dto);
+        } catch (NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -196,9 +198,14 @@ public class FairMarketValueService {
                 throw new NotFoundException("Did not find the fair market value: " + fairMarketValueId);
             }
 
-            fairMarketValueMapper.deleteFairMarketValue(programYear, fairMarketValueId);
+            int count = fairMarketValueMapper.deleteFairMarketValue(programYear, fairMarketValueId);
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + count);
+            }
         } catch (PatternSyntaxException | NumberFormatException e) {
             throw new NotFoundException("Did not find the fair market value: " + fairMarketValueId);
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }

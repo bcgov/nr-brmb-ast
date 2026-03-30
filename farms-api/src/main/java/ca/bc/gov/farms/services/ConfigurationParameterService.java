@@ -146,7 +146,7 @@ public class ConfigurationParameterService {
 
             dto = configurationParameterMapper.fetch(dto.getConfigurationParameterId());
             result = configurationParameterResourceAssembler.getConfigurationParameter(dto);
-        } catch (ServiceException ex) {
+        } catch (ServiceException | NotFoundException ex) {
             throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
@@ -169,7 +169,7 @@ public class ConfigurationParameterService {
             if (count == 0) {
                 throw new ServiceException("Record not deleted: " + count);
             }
-        } catch (ServiceException ex) {
+        } catch (ServiceException | NotFoundException ex) {
             throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);

@@ -130,7 +130,7 @@ public class InventoryItemAttributeService {
 
             dto = inventoryItemAttributeMapper.fetch(dto.getInventoryItemAttributeId());
             result = inventoryItemAttributeResourceAssembler.getInventoryItemAttribute(dto);
-        } catch (ServiceException ex) {
+        } catch (ServiceException | NotFoundException ex) {
             throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
@@ -153,7 +153,7 @@ public class InventoryItemAttributeService {
             if (count == 0) {
                 throw new ServiceException("Record not deleted: " + count);
             }
-        } catch (ServiceException ex) {
+        } catch (ServiceException | NotFoundException ex) {
             throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);

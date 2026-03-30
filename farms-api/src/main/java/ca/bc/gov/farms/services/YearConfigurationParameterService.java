@@ -132,7 +132,7 @@ public class YearConfigurationParameterService {
 
             dto = yearConfigurationParameterMapper.fetch(dto.getYearConfigurationParameterId());
             result = yearConfigurationParameterResourceAssembler.getYearConfigurationParameter(dto);
-        } catch (ServiceException ex) {
+        } catch (ServiceException | NotFoundException ex) {
             throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
@@ -158,7 +158,7 @@ public class YearConfigurationParameterService {
             if (count == 0) {
                 throw new ServiceException("Record not deleted: " + count);
             }
-        } catch (ServiceException ex) {
+        } catch (ServiceException | NotFoundException ex) {
             throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);

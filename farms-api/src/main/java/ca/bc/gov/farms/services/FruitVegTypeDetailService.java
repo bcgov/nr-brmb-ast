@@ -130,7 +130,7 @@ public class FruitVegTypeDetailService {
 
             dto = fruitVegTypeDetailMapper.fetch(dto.getFruitVegTypeCode());
             result = fruitVegTypeDetailResourceAssembler.getFruitVegTypeDetail(dto);
-        } catch (ServiceException ex) {
+        } catch (ServiceException | NotFoundException ex) {
             throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
@@ -149,7 +149,12 @@ public class FruitVegTypeDetailService {
                 throw new NotFoundException("Did not find the fruit and veg type detail: " + fruitVegTypeCode);
             }
 
-            fruitVegTypeDetailMapper.deleteFruitVegTypeDetail(fruitVegTypeCode);
+            int count = fruitVegTypeDetailMapper.deleteFruitVegTypeDetail(fruitVegTypeCode);
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + count);
+            }
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
