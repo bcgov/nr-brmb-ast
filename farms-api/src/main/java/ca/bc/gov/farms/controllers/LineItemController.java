@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -57,7 +61,7 @@ public class LineItemController extends CommonController {
         }
     }
 
-    @GetMapping("/{lineItemId:\\\\d+}")
+    @GetMapping("/{lineItemId:\\d+}")
     @Operation(
             operationId = "Get Line Item resource by Line Item Id.",
             summary = "Get Line Item resource by Line Item Id."
@@ -81,6 +85,63 @@ public class LineItemController extends CommonController {
             return notFound();
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Line Item", e);
+            return internalServerError();
+        }
+    }
+
+    @PostMapping
+    @Operation(
+            operationId = "Create Line Item resource.",
+            summary = "Create Line Item resource."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created",
+                    content = @Content(schema = @Schema(implementation = LineItemModel.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
+    })
+    public ResponseEntity<LineItemModel> createLineItem(
+            @Valid @RequestBody LineItemModel resource) {
+        log.debug(" >> createLineItem");
+
+        try {
+            LineItemModel newResource = lineItemService.createLineItem(resource);
+            return ResponseEntity.status(201).body(newResource);
+        } catch (RuntimeException e) {
+            log.error(" ### RuntimeException while creating Line Item", e);
+            return internalServerError();
+        }
+    }
+
+    @PutMapping("/{lineItemId:\\d+}")
+    @Operation(
+            operationId = "Update Line Item resource.",
+            summary = "Update Line Item resource."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = LineItemModel.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
+    })
+    public ResponseEntity<LineItemModel> updateLineItem(
+            @PathVariable Long lineItemId,
+            @Valid @RequestBody LineItemModel resource) {
+        log.debug(" >> updateLineItem");
+
+        try {
+            LineItemModel updatedResource = lineItemService.updateLineItem(lineItemId, resource);
+            return ok(updatedResource);
+        } catch (NotFoundException e) {
+            log.warn(" ### Line Item not found for update: {}", lineItemId, e);
+            return notFound();
+        } catch (RuntimeException e) {
+            log.error(" ### RuntimeException while updating Line Item", e);
             return internalServerError();
         }
     }
