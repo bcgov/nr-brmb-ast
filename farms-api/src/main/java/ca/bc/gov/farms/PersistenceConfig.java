@@ -7,7 +7,9 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import ca.bc.gov.brmb.common.checkhealth.CheckHealthValidator;
@@ -27,6 +29,11 @@ public class PersistenceConfig {
         result = dsLookup.getDataSource("java:comp/env/jdbc/farms_rest");
 
         return result;
+    }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate(@NonNull DataSource farmsDataSource) {
+        return new JdbcTemplate(farmsDataSource);
     }
 
     @Bean(initMethod = "init")
