@@ -2,6 +2,7 @@ package ca.bc.gov.farms.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -142,6 +143,59 @@ public class LineItemController extends CommonController {
             return notFound();
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while updating Line Item", e);
+            return internalServerError();
+        }
+    }
+
+    @DeleteMapping("/{lineItemId:\\d+}")
+    @Operation(
+            operationId = "Delete Line Item resource.",
+            summary = "Delete Line Item resource."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "No Content"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
+    })
+    public ResponseEntity<LineItemModel> deleteLineItem(
+            @PathVariable Long lineItemId) {
+        log.debug(" >> deleteLineItem");
+
+        try {
+            lineItemService.deleteLineItem(lineItemId);
+            return noContent();
+        } catch (NotFoundException e) {
+            log.warn(" ### Line Item for deletion not found: {}", lineItemId, e);
+            return notFound();
+        } catch (RuntimeException e) {
+            log.error(" ### RuntimeException while deleting Line Item", e);
+            return internalServerError();
+        }
+    }
+
+    @PostMapping("/copy/{currentYear}")
+    @Operation(
+            operationId = "Copy Line Item resources.",
+            summary = "Copy Line Item resources."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = LineItemListModel.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
+    })
+    public ResponseEntity<LineItemListModel> copyLineItems(
+            @PathVariable Integer currentYear) {
+        log.debug(" >> copyLineItems");
+
+        try {
+            LineItemListModel newResources = lineItemService.copyLineItems(currentYear);
+            return ok(newResources);
+        } catch (RuntimeException e) {
+            log.error(" ### RuntimeException while copying Line Items", e);
             return internalServerError();
         }
     }
