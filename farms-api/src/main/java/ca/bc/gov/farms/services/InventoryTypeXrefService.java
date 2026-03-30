@@ -86,10 +86,15 @@ public class InventoryTypeXrefService {
             InventoryTypeXrefEntity dto = new InventoryTypeXrefEntity();
 
             inventoryTypeXrefResourceAssembler.updateInventoryTypeXref(resource, dto);
-            inventoryTypeXrefMapper.insertInventoryTypeXref(dto, userId);
+            int count = inventoryTypeXrefMapper.insertInventoryTypeXref(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not inserted: " + count);
+            }
 
             dto = inventoryTypeXrefMapper.fetch(dto.getAgristabilityCommodityXrefId());
             result = inventoryTypeXrefResourceAssembler.getInventoryTypeXref(dto);
+        } catch (ServiceException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -118,10 +123,15 @@ public class InventoryTypeXrefService {
             }
 
             inventoryTypeXrefResourceAssembler.updateInventoryTypeXref(resource, dto);
-            inventoryTypeXrefMapper.updateInventoryTypeXref(dto, userId);
+            int count = inventoryTypeXrefMapper.updateInventoryTypeXref(dto, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not updated: " + count);
+            }
 
             dto = inventoryTypeXrefMapper.fetch(dto.getAgristabilityCommodityXrefId());
             result = inventoryTypeXrefResourceAssembler.getInventoryTypeXref(dto);
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
@@ -139,7 +149,12 @@ public class InventoryTypeXrefService {
                 throw new NotFoundException("Did not find the inventory type xref: " + agristabilityCommodityXrefId);
             }
 
-            inventoryTypeXrefMapper.deleteInventoryTypeXref(agristabilityCommodityXrefId);
+            int count = inventoryTypeXrefMapper.deleteInventoryTypeXref(agristabilityCommodityXrefId);
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + count);
+            }
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }
