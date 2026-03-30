@@ -5,7 +5,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import ca.bc.gov.brmb.common.rest.resource.BaseResource;
-import ca.bc.gov.farms.data.entities.FruitVegTypeDetailEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FruitVegTypeDetailListModel extends BaseResource {
 
-    private List<FruitVegTypeDetailEntity> fruitVegTypeDetailList;
+    private List<FruitVegTypeDetailModel> fruitVegTypeDetailList;
 }
