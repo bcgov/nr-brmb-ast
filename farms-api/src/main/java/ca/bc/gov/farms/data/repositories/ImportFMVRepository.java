@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.farms.data.entities.ImportFMVEntity;
 
 @Repository
@@ -50,12 +49,12 @@ public class ImportFMVRepository {
                         (rs, rowNum) -> rs.getString("log_message"));
     }
 
-    public void clearStaging() throws DaoException {
+    public void clearStaging() {
 
         clearStagingCall.execute();
     }
 
-    public void insertStagingRow(ImportFMVEntity dto, String userId, int rowNum) throws DaoException {
+    public void insertStagingRow(ImportFMVEntity dto, String userId, int rowNum) {
 
         Map<String, Object> params = new HashMap<>() {
             {
@@ -77,7 +76,7 @@ public class ImportFMVRepository {
         insertStagingCall.execute(params);
     }
 
-    public void validateStaging(Long importVersionId) throws DaoException {
+    public void validateStaging(Long importVersionId) {
 
         Map<String, Object> params = new HashMap<>() {
             {
@@ -88,7 +87,7 @@ public class ImportFMVRepository {
         validateStagingCall.execute(params);
     }
 
-    public void deleteStagingErrors(Long importVersionId) throws DaoException {
+    public void deleteStagingErrors(Long importVersionId) {
 
         Map<String, Object> params = new HashMap<>() {
             {
@@ -100,12 +99,12 @@ public class ImportFMVRepository {
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> getStagingErrors(Long importVersionId) throws DaoException {
+    public List<String> getStagingErrors(Long importVersionId) {
 
         return getErrorsCall.executeFunction(List.class, importVersionId);
     }
 
-    public void performImport(Long importVersionId, String userId) throws DaoException {
+    public void performImport(Long importVersionId, String userId) {
 
         Map<String, Object> params = new HashMap<>() {
             {

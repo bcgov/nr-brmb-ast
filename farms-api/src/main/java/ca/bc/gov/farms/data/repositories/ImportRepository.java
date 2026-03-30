@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import ca.bc.gov.brmb.common.persistence.dao.DaoException;
 import ca.bc.gov.farms.data.entities.ImportVersionEntity;
 
 @Repository
@@ -36,7 +35,7 @@ public class ImportRepository {
                         new SqlParameter("in_user", Types.VARCHAR));
     }
 
-    public void insertImportVersion(ImportVersionEntity dto) throws DaoException {
+    public void insertImportVersion(ImportVersionEntity dto) {
         Map<String, Object> in = new HashMap<>() {
             {
                 put("in_import_class", dto.getImportClassCode());
