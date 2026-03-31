@@ -51,7 +51,7 @@
     </select>
 
     <insert id="insertCropUnitDefault">
-        <selectKey keyProperty="cropUnitDefaultId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.cropUnitDefaultId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_cud_seq')
         </selectKey>
         insert into farms.farm_crop_unit_defaults (
@@ -64,7 +64,7 @@
             who_updated,
             when_updated
         ) values (
-            #{cropUnitDefaultId},
+            #{dto.cropUnitDefaultId},
             (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic

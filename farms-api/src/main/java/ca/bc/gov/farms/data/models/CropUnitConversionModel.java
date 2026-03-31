@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.data.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -35,6 +36,7 @@ public class CropUnitConversionModel extends BaseResource {
     private String cropUnitDesc;
 
     @JsonDeserialize(contentAs = ConversionUnitModel.class)
-    private List<ConversionUnitModel> conversionUnits;
+    @Builder.Default
+    private List<ConversionUnitModel> conversionUnits = new ArrayList<>();
     private String userEmail;
 }

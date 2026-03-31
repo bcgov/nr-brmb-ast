@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.data.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,9 @@ public class CropUnitConversionEntity implements Serializable {
     private String inventoryItemDesc;
     private String cropUnitCode;
     private String cropUnitDesc;
-    private List<ConversionUnitEntity> conversionUnits;
+
+    @Builder.Default
+    private List<ConversionUnitEntity> conversionUnits = new ArrayList<>();
 
     private Integer revisionCount;
     private String createUser;
