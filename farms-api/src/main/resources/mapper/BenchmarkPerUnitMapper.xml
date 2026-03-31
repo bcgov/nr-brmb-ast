@@ -100,7 +100,7 @@
     </select>
 
     <insert id="insertBenchmarkPerUnit">
-        <selectKey keyProperty="benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.benchmarkPerUnitId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_bpu_seq')
         </selectKey>
         insert into farms.farm_benchmark_per_units (
@@ -118,7 +118,7 @@
             who_updated,
             when_updated
         ) values (
-            #{benchmarkPerUnitId},
+            #{dto.benchmarkPerUnitId},
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
