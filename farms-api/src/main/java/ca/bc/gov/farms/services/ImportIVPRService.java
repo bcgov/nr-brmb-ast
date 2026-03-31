@@ -8,22 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import ca.bc.gov.farms.data.entities.ImportFMVEntity;
-import ca.bc.gov.farms.data.repositories.ImportFMVRepository;
+import ca.bc.gov.farms.data.entities.ImportIVPREntity;
+import ca.bc.gov.farms.data.repositories.ImportIVPRRepository;
 import ca.bc.gov.farms.data.repositories.ImportVersionRepository;
 import ca.bc.gov.farms.services.csv.CSVParserException;
-import ca.bc.gov.farms.services.csv.FmvFileHandle;
+import ca.bc.gov.farms.services.csv.IvprFileHandle;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class ImportFMVService {
+public class ImportIVPRService {
 
     @Autowired
     private ImportVersionRepository importVersionRepository;
 
     @Autowired
-    private ImportFMVRepository importFMVRepository;
+    private ImportIVPRRepository importIVPRRepository;
 
     private List<Object> stagingErrors = new ArrayList<>();
 
@@ -38,25 +38,25 @@ public class ImportFMVService {
 
         try {
             // begin
-            importFMVRepository.clearStaging();
+            importIVPRRepository.clearStaging();
 
             importVersionRepository.startUpload(importVersionId, userId);
 
             // validate headers
-            FmvFileHandle fileHandle = new FmvFileHandle(inputStream);
+            IvprFileHandle fileHandle = new IvprFileHandle(inputStream);
             String[] fileErrors = fileHandle.validate();
             int numRows = 0;
 
             if (fileErrors == null || fileErrors.length == 0) {
 
                 // upload the file
-                numRows = uploadToStaging(userId, importFMVRepository, fileHandle);
+                numRows = uploadToStaging(userId, importIVPRRepository, fileHandle);
 
                 // validate what is in the staging table
-                importFMVRepository.validateStaging(importVersionId);
+                importIVPRRepository.validateStaging(importVersionId);
 
-                List<String> valErrors = importFMVRepository.getStagingErrors(importVersionId);
-                importFMVRepository.deleteStagingErrors(importVersionId);
+                List<String> valErrors = importIVPRRepository.getStagingErrors(importVersionId);
+                importIVPRRepository.deleteStagingErrors(importVersionId);
 
                 stagingErrors.addAll(valErrors);
             } else {
@@ -90,7 +90,7 @@ public class ImportFMVService {
         try {
             importVersionRepository.startImport(importVersionId, userId);
 
-            importFMVRepository.performImport(importVersionId, userId);
+            importIVPRRepository.performImport(importVersionId, userId);
         } catch (Exception e) {
             log.error("Unexpected error: ", e);
 
@@ -102,16 +102,16 @@ public class ImportFMVService {
         }
     }
 
-    private int uploadToStaging(String userId, ImportFMVRepository fmvDao, FmvFileHandle fileHandle) {
-        List<ImportFMVEntity> records = fileHandle.getRecords();
+    private int uploadToStaging(String userId, ImportIVPRRepository ivprDao, IvprFileHandle fileHandle) {
+        List<ImportIVPREntity> records = fileHandle.getRecords();
 
         // first row is a header
         final int startRowNum = 2;
         int rowNum = startRowNum;
 
-        for (ImportFMVEntity dto : records) {
+        for (ImportIVPREntity dto : records) {
             try {
-                fmvDao.insertStagingRow(dto, userId, rowNum);
+                ivprDao.insertStagingRow(dto, userId, rowNum);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 stagingErrors.add(new CSVParserException(rowNum, 0, ex));
