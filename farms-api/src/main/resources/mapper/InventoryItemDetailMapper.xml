@@ -45,7 +45,7 @@
     </select>
 
     <insert id="insertInventoryItemDetail">
-        <selectKey keyProperty="inventoryItemDetailId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.inventoryItemDetailId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_iid_seq')
         </selectKey>
         insert into farms.farm_inventory_item_details (
@@ -66,7 +66,7 @@
             who_updated,
             when_updated
         ) values (
-            #{inventoryItemDetailId},
+            #{dto.inventoryItemDetailId},
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             #{dto.eligibilityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             #{dto.lineItem, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
