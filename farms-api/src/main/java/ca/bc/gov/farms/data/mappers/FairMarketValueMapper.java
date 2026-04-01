@@ -19,8 +19,8 @@ public interface FairMarketValueMapper {
     int insertFairMarketValue(FairMarketValueEntity dto, String userId, Integer period, BigDecimal averagePrice,
             BigDecimal percentVariance);
 
-    int updateFairMarketValue(FairMarketValueEntity dto, Long urlId, String userId, Integer period,
-            BigDecimal averagePrice, BigDecimal percentVariance);
+    int updateFairMarketValue(BigDecimal averagePrice, BigDecimal percentVariance, Long urlId, String userId,
+            String fairMarketValueId, Integer period);
 
     int deleteFairMarketValue(Integer programYear, String fairMarketValueId);
 }

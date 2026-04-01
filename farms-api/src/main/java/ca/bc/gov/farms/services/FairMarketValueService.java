@@ -122,7 +122,9 @@ public class FairMarketValueService {
                 }
             }
 
-            dto = fairMarketValueMapper.fetch(dto.getProgramYear(), dto.getFairMarketValueId());
+            String fairMarketValueId = dto.getProgramYear() + "_" + dto.getInventoryItemCode() + "_"
+                    + dto.getMunicipalityCode() + "_" + dto.getCropUnitCode();
+            dto = fairMarketValueMapper.fetch(dto.getProgramYear(), fairMarketValueId);
             result = fairMarketValueResourceAssembler.getFairMarketValue(dto);
         } catch (ServiceException | ConflictException ex) {
             throw ex;
@@ -170,8 +172,8 @@ public class FairMarketValueService {
             for (int period = 1; period <= 12; period++) {
                 BigDecimal averagePrice = averagePrices[period - 1];
                 BigDecimal percentVariance = percentVariances[period - 1];
-                int count = fairMarketValueMapper.updateFairMarketValue(dto, dto.getUrlId(), userId, programYear,
-                        averagePrice, percentVariance);
+                int count = fairMarketValueMapper.updateFairMarketValue(averagePrice, percentVariance, dto.getUrlId(),
+                        userId, fairMarketValueId, period);
                 if (count == 0) {
                     throw new NotFoundException("Record not updated: " + count);
                 }
