@@ -4,7 +4,7 @@
 <mapper namespace="ca.bc.gov.farms.data.mappers.InventoryTypeXrefMapper">
 
     <sql id="selectColumns">
-        select acx.agristabilty_cmmdty_xref_id,
+        select acx.agristabilty_cmmdty_xref_id as agristability_commodity_xref_id,
                acx.market_commodity_ind,
                iic.inventory_item_code,
                iic.description as inventory_item_desc,
@@ -35,7 +35,7 @@
     </select>
 
     <insert id="insertInventoryTypeXref">
-        <selectKey keyProperty="agristabilityCommodityXrefId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.agristabilityCommodityXrefId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_acx_seq')
         </selectKey>
         insert into farms.farm_agristabilty_cmmdty_xref (
@@ -50,7 +50,7 @@
             who_updated,
             when_updated
         ) values (
-            #{agristabilityCommodityXrefId},
+            #{dto.agristabilityCommodityXrefId},
             #{dto.marketCommodityInd, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             (
                 select iic.inventory_item_code
