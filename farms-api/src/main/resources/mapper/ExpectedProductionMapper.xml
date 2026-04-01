@@ -5,7 +5,7 @@
 
     <sql id="selectColumns">
         select ep.expected_production_id,
-               ep.expected_prodctn_per_prod_unit,
+               ep.expected_prodctn_per_prod_unit as expected_production_per_prod_unit,
                iic.inventory_item_code,
                iic.description as inventory_item_desc,
                cuc.crop_unit_code,
