@@ -37,7 +37,7 @@
     </select>
 
     <insert id="insertExpectedProduction">
-        <selectKey keyProperty="expectedProductionId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.expectedProductionId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_ep_seq')
         </selectKey>
         insert into farms.farm_expected_productions (
@@ -51,7 +51,7 @@
             who_updated,
             when_updated
         ) values (
-            #{expectedProductionId},
+            #{dto.expectedProductionId},
             #{dto.expectedProductionPerProdUnit, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             (
                 select iic.inventory_item_code
