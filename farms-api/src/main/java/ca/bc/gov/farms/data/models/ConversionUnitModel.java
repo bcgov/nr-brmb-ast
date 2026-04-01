@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.data.models;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConversionUnitModel {
+public class ConversionUnitModel implements Serializable {
 
     private Long cropUnitConversionFactorId;
     private BigDecimal conversionFactor;

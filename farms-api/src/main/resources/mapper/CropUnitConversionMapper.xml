@@ -3,6 +3,30 @@
 
 <mapper namespace="ca.bc.gov.farms.data.mappers.CropUnitConversionMapper">
 
+    <resultMap id="ConversionUnitMap" type="ca.bc.gov.farms.data.entities.ConversionUnitEntity">
+        <id property="cropUnitConversionFactorId" column="crop_unit_conversion_factor_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+        <result property="conversionFactor" column="conversion_factor" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
+        <result property="targetCropUnitCode" column="target_crop_unit_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="targetCropUnitDesc" column="target_crop_unit_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="CropUnitConversionMap" type="ca.bc.gov.farms.data.entities.CropUnitConversionEntity">
+        <id property="cropUnitDefaultId" column="crop_unit_default_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+
+        <result property="inventoryItemCode" column="inventory_item_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="inventoryItemDesc" column="inventory_item_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="cropUnitCode" column="crop_unit_code" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="cropUnitDesc" column="crop_unit_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
+        <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+
+        <collection property="conversionUnits" ofType="ca.bc.gov.farms.data.entities.ConversionUnitEntity" resultMap="ConversionUnitMap" />
+    </resultMap>
+
     <sql id="selectColumns">
         select cud.crop_unit_default_id,
                iic.inventory_item_code,
@@ -23,13 +47,13 @@
         left join farms.farm_crop_unit_codes tcuc on tcuc.crop_unit_code = cucf.target_crop_unit_code
     </sql>
 
-    <select id="fetch" resultType="CropUnitConversionEntity">
+    <select id="fetch" resultMap="CropUnitConversionMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         where cud.crop_unit_default_id = #{cropUnitDefaultId}
     </select>
 
-    <select id="fetchAll" resultType="CropUnitConversionEntity">
+    <select id="fetchAll" resultMap="CropUnitConversionMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         order by cud.crop_unit_default_id,
@@ -39,7 +63,7 @@
                  tcuc.crop_unit_code
     </select>
 
-    <select id="fetchBy" resultType="CropUnitConversionEntity">
+    <select id="fetchByInventoryItemCode" resultMap="CropUnitConversionMap">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
         where cud.inventory_item_code = #{inventoryItemCode}

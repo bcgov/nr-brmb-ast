@@ -9,7 +9,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
+import ca.bc.gov.farms.data.entities.ConversionUnitEntity;
 import ca.bc.gov.farms.data.entities.CropUnitConversionEntity;
+import ca.bc.gov.farms.data.models.ConversionUnitModel;
 import ca.bc.gov.farms.data.models.CropUnitConversionListModel;
 import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,18 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
 
+    private void populate(CropUnitConversionEntity entity, CropUnitConversionModel resource) {
+
+        @SuppressWarnings("null")
+        List<ConversionUnitModel> conversionUnitResources = entity.getConversionUnits().stream().map(e -> {
+            ConversionUnitModel r = new ConversionUnitModel();
+            BeanUtils.copyProperties(e, r);
+            return r;
+        }).collect(Collectors.toList());
+
+        resource.setConversionUnits(conversionUnitResources);
+    }
+
     public CropUnitConversionModel getCropUnitConversion(@NonNull CropUnitConversionEntity entity) {
 
         URI baseUri = getBaseURI();
@@ -25,6 +39,7 @@ public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
         CropUnitConversionModel resource = new CropUnitConversionModel();
 
         BeanUtils.copyProperties(entity, resource);
+        populate(entity, resource);
 
         String eTag = getEtag(resource);
         resource.setETag(eTag);
@@ -44,6 +59,7 @@ public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
         List<CropUnitConversionModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
             CropUnitConversionModel resource = new CropUnitConversionModel();
             BeanUtils.copyProperties(entity, resource);
+            populate(entity, resource);
             setSelfLink(entity.getCropUnitDefaultId(), resource, baseUri);
             return resource;
         }).collect(Collectors.toList());
@@ -62,5 +78,14 @@ public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
     public void updateCropUnitConversion(@NonNull CropUnitConversionModel resource,
             @NonNull CropUnitConversionEntity entity) {
         BeanUtils.copyProperties(resource, entity);
+
+        @SuppressWarnings("null")
+        List<ConversionUnitEntity> entities = resource.getConversionUnits().stream().map(r -> {
+            ConversionUnitEntity e = new ConversionUnitEntity();
+            BeanUtils.copyProperties(r, e);
+            return e;
+        }).collect(Collectors.toList());
+
+        entity.setConversionUnits(entities);
     }
 }

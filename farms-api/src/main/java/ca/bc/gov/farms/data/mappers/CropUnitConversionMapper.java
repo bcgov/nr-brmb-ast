@@ -16,10 +16,10 @@ public interface CropUnitConversionMapper {
     List<CropUnitConversionEntity> fetchByInventoryItemCode(String inventoryItemCode);
 
     int insertCropUnitDefault(CropUnitConversionEntity dto, String userId);
-    int insertCropUnitConversionFactor(ConversionUnitEntity dto, String userId);
+    int insertCropUnitConversionFactor(String inventoryItemCode, ConversionUnitEntity dto, String userId);
 
     int updateCropUnitDefault(CropUnitConversionEntity dto, String userId);
-    int updateCropUnitConversionFactor(ConversionUnitEntity dto, String userId);
+    int updateCropUnitConversionFactor(String inventoryItemCode, ConversionUnitEntity dto, String userId);
 
     int deleteCropUnitDefault(Long cropUnitDefaultId);
     int deleteCropUnitConversionFactor(Long cropUnitConversionFactorId);

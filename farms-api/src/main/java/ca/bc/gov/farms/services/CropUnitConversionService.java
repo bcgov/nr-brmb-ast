@@ -107,7 +107,8 @@ public class CropUnitConversionService {
             cropUnitConversionResourceAssembler.updateCropUnitConversion(resource, dto);
             cropUnitConversionMapper.insertCropUnitDefault(dto, userId);
             for (ConversionUnitEntity conversionUnitDto : dto.getConversionUnits()) {
-                int count = cropUnitConversionMapper.insertCropUnitConversionFactor(conversionUnitDto, userId);
+                int count = cropUnitConversionMapper.insertCropUnitConversionFactor(dto.getInventoryItemCode(),
+                        conversionUnitDto, userId);
                 if (count == 0) {
                     throw new ServiceException("Record not inserted: " + count);
                 }
@@ -154,7 +155,8 @@ public class CropUnitConversionService {
             for (ConversionUnitEntity conversionUnitDto : dto.getConversionUnits()) {
                 // insert
                 if (conversionUnitDto.getCropUnitConversionFactorId() == null) {
-                    count = cropUnitConversionMapper.insertCropUnitConversionFactor(conversionUnitDto, userId);
+                    count = cropUnitConversionMapper.insertCropUnitConversionFactor(dto.getInventoryItemCode(),
+                            conversionUnitDto, userId);
                     if (count == 0) {
                         throw new ServiceException("Record not inserted: " + count);
                     }
@@ -162,7 +164,8 @@ public class CropUnitConversionService {
                 }
                 // update
                 else {
-                    count = cropUnitConversionMapper.updateCropUnitConversionFactor(conversionUnitDto, userId);
+                    count = cropUnitConversionMapper.updateCropUnitConversionFactor(dto.getInventoryItemCode(),
+                            conversionUnitDto, userId);
                     if (count == 0) {
                         throw new ServiceException("Record not updated: " + count);
                     }
