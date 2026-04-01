@@ -4,7 +4,7 @@
 <mapper namespace="ca.bc.gov.farms.data.mappers.InventoryItemAttributeMapper">
 
     <sql id="selectColumns">
-        select iia.inventory_item_attrib_id,
+        select iia.inventory_item_attrib_id as inventory_item_attribute_id,
                iic.inventory_item_code,
                iic.description as inventory_item_desc,
                iic1.inventory_item_code rollup_inventory_item_code,
@@ -30,7 +30,7 @@
     </select>
 
     <insert id="insertInventoryItemAttribute">
-        <selectKey keyProperty="inventoryItemAttributeId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.inventoryItemAttributeId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_iia_seq')
         </selectKey>
         insert into farms.farm_inventory_item_attributes (
@@ -43,7 +43,7 @@
             who_updated,
             when_updated
         ) values (
-            #{inventoryItemAttributeId},
+            #{dto.inventoryItemAttributeId},
             (
                 select iic.inventory_item_code
                 from farms.farm_inventory_item_codes iic
