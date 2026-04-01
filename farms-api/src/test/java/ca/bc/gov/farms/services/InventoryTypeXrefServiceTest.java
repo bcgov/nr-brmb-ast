@@ -106,7 +106,7 @@ public class InventoryTypeXrefServiceTest {
 
     @Test
     @Order(4)
-    public void testDelete() {
+    public void testDeleteInventoryTypeXref() {
         assertThatNoException().isThrownBy(() -> {
             inventoryTypeXrefService.deleteInventoryTypeXref(agristabilityCommodityXrefId);
         });

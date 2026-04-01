@@ -45,7 +45,7 @@
     </select>
 
     <insert id="insertLineItem">
-        <selectKey keyProperty="lineItemId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.lineItemId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_li_seq')
         </selectKey>
         insert into farms.farm_line_items (
@@ -72,7 +72,7 @@
             who_updated,
             when_updated
         ) values (
-            #{lineItemId},
+            #{dto.lineItemId},
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             #{dto.lineItem, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             #{dto.description, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
