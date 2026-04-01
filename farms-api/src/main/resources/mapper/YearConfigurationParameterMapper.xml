@@ -4,7 +4,7 @@
 <mapper namespace="ca.bc.gov.farms.data.mappers.YearConfigurationParameterMapper">
 
     <sql id="selectColumns">
-        select ycp.year_configuration_param_id,
+        select ycp.year_configuration_param_id as year_configuration_parameter_id,
                ycp.program_year,
                ycp.parameter_name,
                ycp.parameter_value,
@@ -27,7 +27,7 @@
     </select>
 
     <insert id="insertYearConfigurationParameter">
-        <selectKey keyProperty="yearConfigurationParameterId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.yearConfigurationParameterId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_ycp_seq')
         </selectKey>
         insert into farms.farm_year_configuration_params (
@@ -42,7 +42,7 @@
             who_updated,
             when_updated
         ) values (
-            #{yearConfigurationParameterId},
+            #{dto.yearConfigurationParameterId},
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             #{dto.parameterName, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             #{dto.parameterValue, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
