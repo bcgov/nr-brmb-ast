@@ -28,7 +28,7 @@
     </select>
 
     <insert id="insertMarketRatePremium">
-        <selectKey keyProperty="marketRatePremiumId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.marketRatePremiumId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_mrp_seq')
         </selectKey>
         insert into farms.farm_market_rate_premium (
@@ -44,7 +44,7 @@
             who_updated,
             when_updated
         ) values (
-            #{marketRatePremiumId},
+            #{dto.marketRatePremiumId},
             #{dto.minTotalPremiumAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             #{dto.maxTotalPremiumAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             #{dto.riskChargeFlatAmount, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
