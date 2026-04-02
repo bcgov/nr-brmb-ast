@@ -51,7 +51,7 @@ public class ExpectedProductionController extends CommonController {
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
     public ResponseEntity<ExpectedProductionListModel> getAllExpectedProductions(
-            @RequestParam String inventoryItemCode) {
+            @RequestParam(required = false) String inventoryItemCode) {
         log.debug(" >> getAllExpectedProductions");
 
         ExpectedProductionListModel resources = null;
