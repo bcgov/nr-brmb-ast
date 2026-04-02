@@ -30,6 +30,7 @@
     <select id="fetchAll" resultType="FruitVegTypeDetailEntity">
         <include refid="selectColumns"/>
         <include refid="fromClause"/>
+        order by fvtc.description;
     </select>
 
     <insert id="insertFruitVegTypeCode">
