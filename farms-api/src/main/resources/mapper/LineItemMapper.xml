@@ -20,10 +20,10 @@
                li.commodity_type_code,
                li.fruit_veg_type_code,
                li.revision_count,
-               li.who_created,
-               li.when_created,
-               li.who_updated,
-               li.when_updated
+               li.who_created as create_user,
+               li.when_created as create_date,
+               li.who_updated as update_user,
+               li.when_updated as update_date
     </sql>
 
     <sql id="fromClause">
