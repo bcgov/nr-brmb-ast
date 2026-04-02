@@ -51,7 +51,7 @@ public class CropUnitConversionController extends CommonController {
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
     public ResponseEntity<CropUnitConversionListModel> getAllCropUnitConversions(
-            @RequestParam String inventoryItemCode) {
+            @RequestParam(required = false) String inventoryItemCode) {
         log.debug(" >> getAllCropUnitConversions");
 
         CropUnitConversionListModel resources = null;
