@@ -51,15 +51,15 @@ public class ConfigurationParameterController extends CommonController {
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
     public ResponseEntity<ConfigurationParameterListModel> getAllConfigurationParameters(
-            @RequestParam String parameterNamePrefix) {
-        log.debug(" >> getAllConfigurationParameters: {}", parameterNamePrefix);
+            @RequestParam(required = false) String nameStartsWith) {
+        log.debug(" >> getAllConfigurationParameters: {}", nameStartsWith);
 
         ConfigurationParameterListModel resource = null;
         try {
-            if (StringUtils.isBlank(parameterNamePrefix)) {
+            if (StringUtils.isBlank(nameStartsWith)) {
                 resource = configurationParameterService.getAllConfigurationParameters();
             } else {
-                resource = configurationParameterService.getConfigurationParametersByParameterNamePrefix(parameterNamePrefix);
+                resource = configurationParameterService.getConfigurationParametersByParameterNamePrefix(nameStartsWith);
             }
             return ok(resource);
         } catch (RuntimeException e) {
