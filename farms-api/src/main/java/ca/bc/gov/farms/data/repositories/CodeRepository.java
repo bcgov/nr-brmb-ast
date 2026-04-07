@@ -20,7 +20,8 @@ public class CodeRepository {
         String sql = "SELECT " + codeName +
                 " as code, description, null, established_date as effective_date, expiry_date " +
                 "FROM farms." + tableName + " " +
-                "WHERE " + codeName + " = ?";
+                "WHERE " + codeName + " = ? " +
+                "ORDER BY " + codeName;
 
         try {
             return jdbcTemplate.queryForObject(
@@ -35,7 +36,8 @@ public class CodeRepository {
     public List<CodeEntity> fetchAll(String tableName, String codeName) {
         String sql = "SELECT " + codeName
                 + " as code, description, null, established_date as effective_date, expiry_date " +
-                "FROM farms." + tableName;
+                "FROM farms." + tableName + " " +
+                "ORDER BY " + codeName;
 
         return jdbcTemplate.query(
                 sql,

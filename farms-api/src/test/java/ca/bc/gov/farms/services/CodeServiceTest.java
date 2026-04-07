@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.models.CodeModel;
+import ca.bc.gov.farms.data.models.CodeTableModel;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
@@ -67,6 +69,37 @@ public class CodeServiceTest {
 
     @Test
     @Order(3)
+    public void testGetCodeTable() {
+        CodeTableModel resource = null;
+        CodeModel codeResource = null;
+        try {
+            resource = codeService.getCodeTable(TABLE_NAME);
+        } catch (ServiceException | NotFoundException e) {
+            fail(e.getMessage());
+            return;
+        }
+
+        assertThat(resource.getCodeTableName()).isEqualTo(TABLE_NAME);
+        assertThat(resource.getCodeTableDescriptiveName()).isEqualTo(TABLE_NAME);
+        codeResource = resource.getCodes().get(0);
+        assertThat(codeResource.getCode()).isEqualTo("41");
+        assertThat(codeResource.getDescription()).isEqualTo("Cariboo");
+        assertThat(codeResource.getEffectiveDate()).isEqualTo(EFFECTIVE_DATE.toString());
+        assertThat(codeResource.getExpiryDate()).isEqualTo("9999-12-31");
+        codeResource = resource.getCodes().get(1);
+        assertThat(codeResource.getCode()).isEqualTo("43");
+        assertThat(codeResource.getDescription()).isEqualTo("Mount Waddington (Island part)");
+        assertThat(codeResource.getEffectiveDate()).isEqualTo(EFFECTIVE_DATE.toString());
+        assertThat(codeResource.getExpiryDate()).isEqualTo("9999-12-31");
+        codeResource = resource.getCodes().get(2);
+        assertThat(codeResource.getCode()).isEqualTo("45");
+        assertThat(codeResource.getDescription()).isEqualTo("Test Municipality");
+        assertThat(codeResource.getEffectiveDate()).isEqualTo(EFFECTIVE_DATE.toString());
+        assertThat(codeResource.getExpiryDate()).isEqualTo(EXPIRY_DATE.toString());
+    }
+
+    @Test
+    @Order(4)
     public void testUpdateCode() {
         CodeModel resource = null;
         try {
@@ -97,7 +130,7 @@ public class CodeServiceTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void testDeleteCode() {
         CodeModel resource = new CodeModel();
         resource.setCode("45");

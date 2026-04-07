@@ -1,6 +1,7 @@
 package ca.bc.gov.farms.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.CodeResourceAssembler;
+import ca.bc.gov.farms.data.assemblers.CodeTableResourceAssembler;
 import ca.bc.gov.farms.data.entities.CodeEntity;
 import ca.bc.gov.farms.data.models.CodeModel;
+import ca.bc.gov.farms.data.models.CodeTableModel;
 import ca.bc.gov.farms.data.repositories.CodeRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +27,9 @@ public class CodeService {
 
     @Autowired
     private CodeResourceAssembler codeResourceAssembler;
+
+    @Autowired
+    private CodeTableResourceAssembler codeTableResourceAssembler;
 
     private Map<String, String> codeNameMap = new HashMap<>() {
         {
@@ -80,6 +86,21 @@ public class CodeService {
             result = codeResourceAssembler.getCode(entity);
         } catch (NotFoundException ex) {
             throw ex;
+        } catch (Throwable t) {
+            throw new ServiceException("Repository threw an exception", t);
+        }
+
+        return result;
+    }
+
+    public CodeTableModel getCodeTable(String tableName) throws ServiceException, NotFoundException {
+
+        CodeTableModel result = null;
+        String codeName = codeNameMap.get(tableName);
+
+        try {
+            List<CodeEntity> entities = codeRepository.fetchAll(tableName, codeName);
+            result = codeTableResourceAssembler.getCodeTable(tableName, entities);
         } catch (Throwable t) {
             throw new ServiceException("Repository threw an exception", t);
         }
