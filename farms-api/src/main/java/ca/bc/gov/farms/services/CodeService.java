@@ -93,7 +93,7 @@ public class CodeService {
         return result;
     }
 
-    public CodeTableModel getCodeTable(String tableName) throws ServiceException, NotFoundException {
+    public CodeTableModel getCodeTable(String tableName) throws ServiceException {
 
         CodeTableModel result = null;
         String codeName = codeNameMap.get(tableName);

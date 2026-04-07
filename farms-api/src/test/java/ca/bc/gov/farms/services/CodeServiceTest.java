@@ -74,7 +74,7 @@ public class CodeServiceTest {
         CodeModel codeResource = null;
         try {
             resource = codeService.getCodeTable(TABLE_NAME);
-        } catch (ServiceException | NotFoundException e) {
+        } catch (ServiceException e) {
             fail(e.getMessage());
             return;
         }
