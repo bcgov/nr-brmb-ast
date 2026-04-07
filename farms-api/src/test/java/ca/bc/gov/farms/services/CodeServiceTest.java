@@ -99,8 +99,15 @@ public class CodeServiceTest {
     @Test
     @Order(4)
     public void testDeleteCode() {
+        CodeModel resource = new CodeModel();
+        resource.setCode("45");
+        resource.setDescription("Test Municipality");
+        resource.setEffectiveDate(EFFECTIVE_DATE);
+        resource.setExpiryDate(EXPIRY_DATE);
+        resource.setUserEmail("testUser");
+
         assertThatNoException().isThrownBy(() -> {
-            codeService.deleteCode(TABLE_NAME, "45");
+            codeService.deleteCode(TABLE_NAME, "45", resource);
         });
     }
 }

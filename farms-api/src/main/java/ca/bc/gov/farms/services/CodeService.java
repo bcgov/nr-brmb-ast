@@ -149,9 +149,11 @@ public class CodeService {
     }
 
     @Transactional
-    public void deleteCode(String tableName, String codeValue) throws ServiceException, NotFoundException {
+    public void deleteCode(String tableName, String codeValue, CodeModel resource)
+            throws ServiceException, NotFoundException {
 
         String codeName = codeNameMap.get(tableName);
+        String userId = resource.getUserEmail();
 
         try {
             CodeEntity entity = codeRepository.fetchOne(tableName, codeName, codeValue);
@@ -160,7 +162,7 @@ public class CodeService {
                 throw new NotFoundException("Did not find the code: " + codeValue);
             }
 
-            int count = codeRepository.delete(tableName, codeName, codeValue);
+            int count = codeRepository.delete(tableName, codeName, codeValue, userId);
             if (count == 0) {
                 throw new ServiceException("Record not deleted: " + count);
             }

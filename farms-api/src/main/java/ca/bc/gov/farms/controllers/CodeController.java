@@ -137,11 +137,12 @@ public class CodeController extends CommonController {
     })
     public ResponseEntity<Void> deleteCode(
             @PathVariable String codeTableName,
-            @PathVariable String codeValue) {
+            @PathVariable String codeValue,
+            @Valid @RequestBody CodeModel resource) {
         log.debug(" >> deleteCode");
 
         try {
-            codeService.deleteCode(codeTableName, codeValue);
+            codeService.deleteCode(codeTableName, codeValue, resource);
             return noContent();
         } catch (NotFoundException e) {
             log.warn(" ### Code for deletion not found: {}", codeValue, e);

@@ -47,7 +47,7 @@ public class CodeRepository {
                 " (" + codeName
                 + ", description, established_date, expiry_date, who_created, when_created, who_updated, when_updated) "
                 +
-                "VALUES (?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp)";
+                "VALUES (?, ?, ?, ?, ?, current_date, ?, current_date)";
 
         return jdbcTemplate.update(
                 sql,
@@ -77,10 +77,13 @@ public class CodeRepository {
                 entity.getCode());
     }
 
-    public int delete(String tableName, String codeName, String codeValue) {
-        String sql = "DELETE FROM farms." + tableName + " " +
+    public int delete(String tableName, String codeName, String codeValue, String userId) {
+        String sql = "UPDATE farms." + tableName + " " +
+                "SET expiry_date = current_date, " +
+                "who_updated = ?, " +
+                "when_updated = current_timestamp " +
                 "WHERE " + codeName + " = ?";
 
-        return jdbcTemplate.update(sql, codeValue);
+        return jdbcTemplate.update(sql, userId, codeValue);
     }
 }
