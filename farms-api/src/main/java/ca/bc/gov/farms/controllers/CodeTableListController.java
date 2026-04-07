@@ -3,14 +3,13 @@ package ca.bc.gov.farms.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.farms.common.controllers.CommonController;
 import ca.bc.gov.farms.data.models.CodeModel;
-import ca.bc.gov.farms.data.models.CodeTableModel;
+import ca.bc.gov.farms.data.models.CodeTableListModel;
 import ca.bc.gov.farms.services.CodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,11 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping(value = "/codeTables/{codeTableName}")
-public class CodeTableController extends CommonController {
+@RequestMapping(value = "/codeTables")
+public class CodeTableListController extends CommonController {
 
-    protected CodeTableController() {
-        super(CodeTableController.class.getName());
+    protected CodeTableListController() {
+        super(CodeTableListController.class.getName());
     }
 
     @Autowired
@@ -33,8 +32,8 @@ public class CodeTableController extends CommonController {
 
     @GetMapping
     @Operation(
-            operationId = "Get CodeTable resource by code table name.",
-            summary = "Get CodeTable resource by code table name."
+            operationId = "Get CodeTableList resource.",
+            summary = "Get CodeTableList resource."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
@@ -42,12 +41,11 @@ public class CodeTableController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CodeTableModel> getCodeTable(
-            @PathVariable String codeTableName) {
-        log.debug(" >> getCodeTable: {}", codeTableName);
+    public ResponseEntity<CodeTableListModel> getCodeTableList() {
+        log.debug(" >> getCodeTableList");
 
         try {
-            CodeTableModel resource = codeService.getCodeTable(codeTableName);
+            CodeTableListModel resource = codeService.getCodeTableList();
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Code", e);
