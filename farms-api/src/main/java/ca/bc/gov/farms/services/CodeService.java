@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
@@ -85,6 +86,34 @@ public class CodeService {
             throw ex;
         } catch (Throwable t) {
             throw new ServiceException("Repository threw an exception", t);
+        }
+
+        return result;
+    }
+
+    @Transactional
+    public CodeModel createCode(String tableName, CodeModel resource) throws ServiceException {
+
+        CodeModel result = null;
+        String codeName = codeNameMap.get(tableName);
+        String userId = resource.getUserEmail();
+
+        try {
+
+            CodeEntity entity = new CodeEntity();
+
+            codeResourceAssembler.updateCode(resource, entity);
+            int count = codeRepository.insert(tableName, codeName, entity, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not inserted: " + count);
+            }
+
+            entity = codeRepository.fetchOne(tableName, codeName, entity.getCode());
+            result = codeResourceAssembler.getCode(entity);
+        } catch (ServiceException ex) {
+            throw ex;
+        } catch (Throwable t) {
+            throw new ServiceException("Mapper threw an exception", t);
         }
 
         return result;

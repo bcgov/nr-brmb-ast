@@ -17,8 +17,8 @@ public class CodeRepository {
     private JdbcTemplate jdbcTemplate;
 
     public CodeEntity fetchOne(String tableName, String codeName, String codeValue) {
-        String sql = "SELECT " + codeName
-                + " as code, description, null, established_date as effective_date, expiry_date " +
+        String sql = "SELECT " + codeName +
+                " as code, description, null, established_date as effective_date, expiry_date " +
                 "FROM farms." + tableName + " " +
                 "WHERE " + codeName + " = ?";
 
@@ -40,5 +40,22 @@ public class CodeRepository {
         return jdbcTemplate.query(
                 sql,
                 new BeanPropertyRowMapper<>(CodeEntity.class));
+    }
+
+    public int insert(String tableName, String codeName, CodeEntity entity, String userId) {
+        String sql = "INSERT INTO farms." + tableName + " " +
+                " (" + codeName
+                + ", description, established_date, expiry_date, who_created, when_created, who_updated, when_updated) "
+                +
+                "VALUES (?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp)";
+
+        return jdbcTemplate.update(
+                sql,
+                entity.getCode(),
+                entity.getDescription(),
+                entity.getEffectiveDate(),
+                entity.getExpiryDate(),
+                userId,
+                userId);
     }
 }

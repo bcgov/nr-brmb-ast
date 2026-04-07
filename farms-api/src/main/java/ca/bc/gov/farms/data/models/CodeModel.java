@@ -24,4 +24,5 @@ public class CodeModel extends BaseResource {
     private Integer displayOrder;
     private LocalDate effectiveDate;
     private LocalDate expiryDate;
+    private String userEmail;
 }
