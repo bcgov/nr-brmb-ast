@@ -1,8 +1,9 @@
 package ca.bc.gov.farms.services;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.CodeResourceAssembler;
+import ca.bc.gov.farms.data.assemblers.CodeTableListResourceAssembler;
 import ca.bc.gov.farms.data.assemblers.CodeTableResourceAssembler;
 import ca.bc.gov.farms.data.entities.CodeEntity;
 import ca.bc.gov.farms.data.models.CodeModel;
+import ca.bc.gov.farms.data.models.CodeTableListModel;
 import ca.bc.gov.farms.data.models.CodeTableModel;
 import ca.bc.gov.farms.data.repositories.CodeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +34,10 @@ public class CodeService {
     @Autowired
     private CodeTableResourceAssembler codeTableResourceAssembler;
 
-    private Map<String, String> codeNameMap = new HashMap<>() {
+    @Autowired
+    private CodeTableListResourceAssembler codeTableListResourceAssembler;
+
+    private Map<String, String> codeNameMap = new TreeMap<>() {
         {
             put("farm_chef_form_type_codes", "chef_form_type_code");
             put("farm_chef_submssn_status_codes", "chef_submssn_status_code");
@@ -104,6 +110,27 @@ public class CodeService {
         } catch (Throwable t) {
             throw new ServiceException("Repository threw an exception", t);
         }
+
+        return result;
+    }
+
+    public CodeTableListModel getCodeTableList() throws ServiceException {
+
+        CodeTableListModel result = null;
+        Map<String, List<CodeEntity>> entitiesMap = new TreeMap<>();
+
+        for (Entry<String, String> entry : codeNameMap.entrySet()) {
+            String tableName = entry.getKey();
+            String codeName = entry.getValue();
+            try {
+                List<CodeEntity> entities = codeRepository.fetchAll(tableName, codeName);
+                entitiesMap.put(tableName, entities);
+            } catch (Throwable t) {
+                throw new ServiceException("Repository threw an exception", t);
+            }
+        }
+
+        result = codeTableListResourceAssembler.getCodeTableList(entitiesMap);
 
         return result;
     }
