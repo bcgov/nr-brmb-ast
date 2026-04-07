@@ -3,6 +3,7 @@ package ca.bc.gov.farms.data.repositories;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,18 +17,24 @@ public class CodeRepository {
     private JdbcTemplate jdbcTemplate;
 
     public CodeEntity fetchOne(String tableName, String codeName, String codeValue) {
-        String sql = "SELECT " + codeName + ", description, null, established_date as effective_date, expiry_date " +
+        String sql = "SELECT " + codeName
+                + " as code, description, null, established_date as effective_date, expiry_date " +
                 "FROM farms." + tableName + " " +
-                "WHERE code = ?";
+                "WHERE " + codeName + " = ?";
 
-        return jdbcTemplate.queryForObject(
-                sql,
-                new BeanPropertyRowMapper<>(CodeEntity.class),
-                codeValue);
+        try {
+            return jdbcTemplate.queryForObject(
+                    sql,
+                    new BeanPropertyRowMapper<>(CodeEntity.class),
+                    codeValue);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public List<CodeEntity> fetchAll(String tableName, String codeName) {
-        String sql = "SELECT " + codeName + ", description, null, established_date as effective_date, expiry_date " +
+        String sql = "SELECT " + codeName
+                + " as code, description, null, established_date as effective_date, expiry_date " +
                 "FROM farms." + tableName;
 
         return jdbcTemplate.query(
