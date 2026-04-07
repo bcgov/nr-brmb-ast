@@ -13,7 +13,6 @@ import ca.bc.gov.farms.data.assemblers.CodeResourceAssembler;
 import ca.bc.gov.farms.data.entities.CodeEntity;
 import ca.bc.gov.farms.data.models.CodeModel;
 import ca.bc.gov.farms.data.repositories.CodeRepository;
-import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,9 +24,6 @@ public class CodeService {
 
     @Autowired
     private CodeResourceAssembler codeResourceAssembler;
-
-    @Autowired
-    private Validator validator;
 
     private Map<String, String> codeNameMap = new HashMap<>() {
         {
@@ -113,7 +109,39 @@ public class CodeService {
         } catch (ServiceException ex) {
             throw ex;
         } catch (Throwable t) {
-            throw new ServiceException("Mapper threw an exception", t);
+            throw new ServiceException("Repository threw an exception", t);
+        }
+
+        return result;
+    }
+
+    public CodeModel updateCode(String tableName, String codeValue, CodeModel resource)
+            throws ServiceException, NotFoundException {
+
+        CodeModel result = null;
+        String codeName = codeNameMap.get(tableName);
+        String userId = resource.getUserEmail();
+
+        try {
+
+            CodeEntity entity = codeRepository.fetchOne(tableName, codeName, codeValue);
+
+            if (entity == null) {
+                throw new NotFoundException("Did not find the code: " + codeValue);
+            }
+
+            codeResourceAssembler.updateCode(resource, entity);
+            int count = codeRepository.update(tableName, codeName, entity, userId);
+            if (count == 0) {
+                throw new ServiceException("Record not updated: " + count);
+            }
+
+            entity = codeRepository.fetchOne(tableName, codeName, codeValue);
+            result = codeResourceAssembler.getCode(entity);
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
+        } catch (Throwable t) {
+            throw new ServiceException("Repository threw an exception", t);
         }
 
         return result;

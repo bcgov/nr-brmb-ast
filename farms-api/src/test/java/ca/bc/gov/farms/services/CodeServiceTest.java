@@ -63,4 +63,35 @@ public class CodeServiceTest {
         assertThat(resource.getEffectiveDate()).isEqualTo(EFFECTIVE_DATE);
         assertThat(resource.getExpiryDate()).isEqualTo(EXPIRY_DATE);
     }
+
+    @Test
+    @Order(3)
+    public void testUpdateCode() {
+        CodeModel resource = null;
+        try {
+            resource = codeService.getCode(TABLE_NAME, "45");
+        } catch (ServiceException | NotFoundException e) {
+            fail(e.getMessage());
+            return;
+        }
+        assertThat(resource).isNotNull();
+
+        resource.setDescription("Municipality Test");
+        resource.setEffectiveDate(EXPIRY_DATE);
+        resource.setExpiryDate(EFFECTIVE_DATE);
+        resource.setUserEmail("testUser");
+
+        CodeModel updatedResource = null;
+        try {
+            updatedResource = codeService.updateCode(TABLE_NAME, "45", resource);
+        } catch (ServiceException | NotFoundException e) {
+            fail(e.getMessage());
+            return;
+        }
+
+        assertThat(resource.getCode()).isEqualTo("45");
+        assertThat(updatedResource.getDescription()).isEqualTo("Municipality Test");
+        assertThat(resource.getEffectiveDate()).isEqualTo(EXPIRY_DATE);
+        assertThat(resource.getExpiryDate()).isEqualTo(EFFECTIVE_DATE);
+    }
 }

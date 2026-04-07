@@ -58,4 +58,22 @@ public class CodeRepository {
                 userId,
                 userId);
     }
+
+    public int update(String tableName, String codeName, CodeEntity entity, String userId) {
+        String sql = "UPDATE farms." + tableName + " " +
+                "SET description = ?, " +
+                "established_date = ?, " +
+                "expiry_date = ?, " +
+                "who_updated = ?, " +
+                "when_updated = current_timestamp " +
+                "WHERE " + codeName + " = ?";
+
+        return jdbcTemplate.update(
+                sql,
+                entity.getDescription(),
+                entity.getEffectiveDate(),
+                entity.getExpiryDate(),
+                userId,
+                entity.getCode());
+    }
 }
