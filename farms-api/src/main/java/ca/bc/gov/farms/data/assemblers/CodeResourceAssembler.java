@@ -1,7 +1,5 @@
 package ca.bc.gov.farms.data.assemblers;
 
-import java.net.URI;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -16,16 +14,12 @@ public class CodeResourceAssembler extends BaseResourceAssembler {
 
     public CodeModel getCode(@NonNull CodeEntity entity) {
 
-        URI baseUri = getBaseURI();
-
         CodeModel resource = new CodeModel();
 
         BeanUtils.copyProperties(entity, resource);
 
         String eTag = getEtag(resource);
         resource.setETag(eTag);
-
-        setSelfLink(resource.getCode(), resource, baseUri);
 
         return resource;
     }
