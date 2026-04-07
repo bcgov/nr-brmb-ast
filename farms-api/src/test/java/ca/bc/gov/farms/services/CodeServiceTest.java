@@ -15,6 +15,7 @@ import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.models.CodeModel;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -93,5 +94,13 @@ public class CodeServiceTest {
         assertThat(updatedResource.getDescription()).isEqualTo("Municipality Test");
         assertThat(resource.getEffectiveDate()).isEqualTo(EXPIRY_DATE);
         assertThat(resource.getExpiryDate()).isEqualTo(EFFECTIVE_DATE);
+    }
+
+    @Test
+    @Order(4)
+    public void testDeleteCode() {
+        assertThatNoException().isThrownBy(() -> {
+            codeService.deleteCode(TABLE_NAME, "45");
+        });
     }
 }

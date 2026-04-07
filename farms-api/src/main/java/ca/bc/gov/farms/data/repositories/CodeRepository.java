@@ -76,4 +76,11 @@ public class CodeRepository {
                 userId,
                 entity.getCode());
     }
+
+    public int delete(String tableName, String codeName, String codeValue) {
+        String sql = "DELETE FROM farms." + tableName + " " +
+                "WHERE " + codeName + " = ?";
+
+        return jdbcTemplate.update(sql, codeValue);
+    }
 }

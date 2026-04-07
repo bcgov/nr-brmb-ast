@@ -115,6 +115,7 @@ public class CodeService {
         return result;
     }
 
+    @Transactional
     public CodeModel updateCode(String tableName, String codeValue, CodeModel resource)
             throws ServiceException, NotFoundException {
 
@@ -145,5 +146,28 @@ public class CodeService {
         }
 
         return result;
+    }
+
+    @Transactional
+    public void deleteCode(String tableName, String codeValue) throws ServiceException, NotFoundException {
+
+        String codeName = codeNameMap.get(tableName);
+
+        try {
+            CodeEntity entity = codeRepository.fetchOne(tableName, codeName, codeValue);
+
+            if (entity == null) {
+                throw new NotFoundException("Did not find the code: " + codeValue);
+            }
+
+            int count = codeRepository.delete(tableName, codeName, codeValue);
+            if (count == 0) {
+                throw new ServiceException("Record not deleted: " + count);
+            }
+        } catch (ServiceException | NotFoundException ex) {
+            throw ex;
+        } catch (Throwable t) {
+            throw new ServiceException("Repository threw an exception", t);
+        }
     }
 }
