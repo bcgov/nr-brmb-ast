@@ -33,8 +33,8 @@ public class CodeTableController extends CommonController {
 
     @GetMapping
     @Operation(
-            operationId = "Get CodeTable resource by code table name.",
-            summary = "Get CodeTable resource by code table name."
+            operationId = "Get Code Table resource by code table name.",
+            summary = "Get Code Table resource by code table name."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
@@ -50,7 +50,7 @@ public class CodeTableController extends CommonController {
             CodeTableModel resource = codeService.getCodeTable(codeTableName);
             return ok(resource);
         } catch (RuntimeException e) {
-            log.error(" ### RuntimeException while fetching Code", e);
+            log.error(" ### RuntimeException while fetching Code Table", e);
             return internalServerError();
         }
     }
