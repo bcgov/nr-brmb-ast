@@ -20,7 +20,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
-		logger.info("<onStartup");
+		log.info("<onStartup");
 
 		FilterRegistration.Dynamic requestMetricsFilter = servletContext.addFilter("Request Metrics Filter",
 				RequestMetricsFilter.class);
@@ -38,6 +38,6 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 		super.onStartup(servletContext);
 
-		logger.info(">onStartup");
+		log.info(">onStartup");
 	}
 }
