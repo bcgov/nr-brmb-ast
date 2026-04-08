@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: farms-api
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://sts.windows.net/${TENANT_ID}/
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        credential:
+          client-id: ${CLIENT_ID}
+        app-id-uri: api://${CLIENT_ID}
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: ca.bc.gov.farms.data.entities
+  configuration:
+    map-underscore-to-camel-case: true

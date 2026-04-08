@@ -1,0 +1,28 @@
+package ca.bc.gov.farms.data.entities;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ImportFMVEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private Integer programYear;
+    private Integer period;
+    private BigDecimal averagePrice;
+    private BigDecimal percentVariance;
+    private String municipalityCode;
+    private String cropUnitCode;
+    private String inventoryItemCode;
+    private String fileLocation;
+}

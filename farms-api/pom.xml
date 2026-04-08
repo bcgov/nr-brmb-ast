@@ -9,23 +9,16 @@
         <version>3.4.10</version>
     </parent>
     <groupId>ca.bc.gov.farms</groupId>
-    <artifactId>farms-api-parent</artifactId>
-    <name>farms-api-parent</name>
+    <artifactId>farms-api</artifactId>
+    <name>farms-api</name>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>war</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java-source-version>21</java-source-version>
         <java-target-version>21</java-target-version>
         <dollar>$</dollar>
     </properties>
-    <modules>
-        <module>farms-model</module>
-        <module>farms-service-api</module>
-        <module>farms-api-rest-common</module>
-        <module>farms-api-rest-endpoints</module>
-        <module>farms-persistence</module>
-    </modules>
     <distributionManagement>
         <repository>
             <id>openshift-releases</id>
@@ -36,118 +29,166 @@
             <url>${SNAPSHOT_URL}</url>
         </snapshotRepository>
     </distributionManagement>
-    <dependencyManagement>
-        <dependencies>
-            <!-- Wildfire OrgUnit -->
-            <dependency>
-                <groupId>ca.bc.gov.nrs.wforg</groupId>
-                <artifactId>wforg-org-unit-api-rest-common</artifactId>
-                <version>1.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-model</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-rest-common</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-rest-client</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-persistence</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-utils</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-service-api</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-code-service-api</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-code-persistence</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-rest-endpoints</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-code-endpoints</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.bc.gov.brmb.common</groupId>
-                <artifactId>brmb-common-checkhealth</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-            </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
+            <version>4.20.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-            <!-- Miscellaneous -->
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.7.7</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-text</artifactId>
-                <version>1.13.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.18.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.opencsv</groupId>
-                <artifactId>opencsv</artifactId>
-                <version>5.11.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>1.21.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>1.21.3</version>
-            </dependency>
+        <!-- MyBatis Starter -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
+        </dependency>
 
-            <!-- Jakarta changes -->
-            <dependency>
-                <groupId>jakarta.xml.bind</groupId>
-                <artifactId>jakarta.xml.bind-api</artifactId>
-                <version>4.0.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jaxb</groupId>
-                <artifactId>jaxb-runtime</artifactId>
-                <version>4.0.2</version>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.ws.rs</groupId>
-                <artifactId>jakarta.ws.rs-api</artifactId>
-                <version>3.1.0</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Wildfire OrgUnit -->
+        <dependency>
+            <groupId>ca.bc.gov.nrs.wforg</groupId>
+            <artifactId>wforg-org-unit-api-rest-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-model</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-rest-common</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-rest-client</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-persistence</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-utils</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-service-api</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-code-service-api</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-code-persistence</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-rest-endpoints</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-code-endpoints</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.bc.gov.brmb.common</groupId>
+            <artifactId>brmb-common-checkhealth</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Miscellaneous -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.13.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.21.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.21.3</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

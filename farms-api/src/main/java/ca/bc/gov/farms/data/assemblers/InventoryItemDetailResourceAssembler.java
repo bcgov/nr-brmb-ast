@@ -1,0 +1,66 @@
+package ca.bc.gov.farms.data.assemblers;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+
+import ca.bc.gov.farms.data.entities.InventoryItemDetailEntity;
+import ca.bc.gov.farms.data.models.InventoryItemDetailListModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Component
+public class InventoryItemDetailResourceAssembler extends BaseResourceAssembler {
+
+    public InventoryItemDetailModel getInventoryItemDetail(@NonNull InventoryItemDetailEntity entity) {
+
+        URI baseUri = getBaseURI();
+
+        InventoryItemDetailModel resource = new InventoryItemDetailModel();
+
+        BeanUtils.copyProperties(entity, resource);
+
+        String eTag = getEtag(resource);
+        resource.setETag(eTag);
+
+        setSelfLink(resource.getInventoryItemDetailId(), resource, baseUri);
+
+        return resource;
+    }
+
+    public InventoryItemDetailListModel getInventoryItemDetailList(List<InventoryItemDetailEntity> entities) {
+
+        URI baseUri = getBaseURI();
+
+        InventoryItemDetailListModel result = null;
+
+        @SuppressWarnings("null")
+        List<InventoryItemDetailModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            InventoryItemDetailModel resource = new InventoryItemDetailModel();
+            BeanUtils.copyProperties(entity, resource);
+            setSelfLink(entity.getInventoryItemDetailId(), resource, baseUri);
+            return resource;
+        }).collect(Collectors.toList());
+
+        result = new InventoryItemDetailListModel();
+        result.setInventoryItemDetailList(resources);
+
+        String eTag = getEtag(result);
+        result.setETag(eTag);
+
+        setSelfLink(result, baseUri);
+
+        return result;
+    }
+
+    public void updateInventoryItemDetail(@NonNull InventoryItemDetailModel resource,
+            @NonNull InventoryItemDetailEntity entity) {
+        BeanUtils.copyProperties(resource, entity);
+    }
+}
