@@ -1,0 +1,17 @@
+$kind: collection
+name: Root
+variables:
+  tenantId: "{{vault:{{vaultPrefix}}-tenantId}}"
+  clientId: "{{vault:{{vaultPrefix}}-clientId}}"
+  clientSecret: "{{vault:{{vaultPrefix}}-clientSecret}}"
+auth:
+  type: oauth2
+  credentials:
+    scope: api://{{clientId}}/.default
+    clientSecret: "{{clientSecret}}"
+    clientId: "{{clientId}}"
+    accessTokenUrl: https://login.microsoftonline.com/{{tenantId}}/oauth2/v2.0/token
+    client_authentication: body
+    grant_type: client_credentials
+    tokenName: FARMS API Token
+    addTokenTo: header
