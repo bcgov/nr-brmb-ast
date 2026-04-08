@@ -152,7 +152,7 @@ public class CodeService {
     public CodeModel createCode(String tableName, CodeModel resource) throws ServiceException {
 
         CodeModel result = null;
-        String codeName = codeNameMap.get(tableName);
+        String codeName = resolveCodeNameOrThrow(tableName);
         String userId = resource.getUserEmail();
 
         try {
