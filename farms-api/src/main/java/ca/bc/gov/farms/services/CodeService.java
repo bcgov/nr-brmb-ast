@@ -77,10 +77,23 @@ public class CodeService {
         }
     };
 
+    private String resolveCodeNameOrThrow(String tableName) throws ServiceException {
+        if (tableName == null || tableName.trim().isEmpty()) {
+            throw new ServiceException("Invalid code table name");
+        }
+
+        String codeName = codeNameMap.get(tableName);
+        if (codeName == null) {
+            throw new ServiceException("Unknown code table name: " + tableName);
+        }
+
+        return codeName;
+    }
+
     public CodeModel getCode(String tableName, String codeValue) throws ServiceException, NotFoundException {
 
         CodeModel result = null;
-        String codeName = codeNameMap.get(tableName);
+        String codeName = resolveCodeNameOrThrow(tableName);
 
         try {
             CodeEntity entity = codeRepository.fetchOne(tableName, codeName, codeValue);
@@ -102,7 +115,7 @@ public class CodeService {
     public CodeTableModel getCodeTable(String tableName) throws ServiceException {
 
         CodeTableModel result = null;
-        String codeName = codeNameMap.get(tableName);
+        String codeName = resolveCodeNameOrThrow(tableName);
 
         try {
             List<CodeEntity> entities = codeRepository.fetchAll(tableName, codeName);
