@@ -31,7 +31,7 @@ import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 import ca.bc.gov.farms.data.models.FairMarketValueModel;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FairMarketValueControllerTest {

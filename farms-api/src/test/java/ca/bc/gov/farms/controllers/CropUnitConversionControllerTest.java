@@ -29,7 +29,7 @@ import ca.bc.gov.farms.data.models.ConversionUnitModel;
 import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CropUnitConversionControllerTest {

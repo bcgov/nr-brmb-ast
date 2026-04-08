@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ca.bc.gov.farms.data.models.FruitVegTypeDetailModel;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FruitVegTypeDetailControllerTest {
