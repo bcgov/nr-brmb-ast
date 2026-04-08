@@ -1,0 +1,40 @@
+$kind: http-request
+name: Get
+url: "{{baseUrl}}/checkHealth?callstack=test"
+method: GET
+queryParams:
+  callstack: test
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = HealthCheckResponse\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"http://common.brmb.nrs.gov.bc\
+      .ca/v1/HealthCheckResponse\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Response contains validationStatus = GREEN\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"validationStatus\");\r
+
+      \    pm.expect(json.validationStatus).to.be.equal(\"GREEN\");\r
+
+      });"
+    language: text/javascript
+order: 1775690867889

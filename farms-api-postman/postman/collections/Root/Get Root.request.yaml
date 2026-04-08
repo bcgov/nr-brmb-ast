@@ -16,13 +16,16 @@ scripts:
 
       \r
 
-      const response = pm.response.json();\r
+      const json = pm.response.json();\r
 
       \r
 
-      pm.test(\"Response contains releaseVersion\", function () {\r
+      pm.test(\"Response contains releaseVersion = 1.0.0-SNAPSHOT\", function ()
+      {\r
 
-      \    pm.expect(response.releaseVersion).to.be.equal(\"1.0.0-SNAPSHOT\");\r
+      \    pm.expect(json).to.have.property(\"releaseVersion\");\r
+
+      \    pm.expect(json.releaseVersion).to.be.equal(\"1.0.0-SNAPSHOT\");\r
 
       });"
     language: text/javascript
