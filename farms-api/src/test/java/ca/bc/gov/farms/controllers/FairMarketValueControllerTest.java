@@ -9,10 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -26,8 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ca.bc.gov.farms.data.models.ConversionUnitModel;
-import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 import ca.bc.gov.farms.data.models.FairMarketValueModel;
 
 @SpringBootTest
@@ -43,33 +37,13 @@ public class FairMarketValueControllerTest {
     private ObjectMapper objectMapper;
 
     @SuppressWarnings("null")
-    @BeforeAll
-    public void initAll() throws Exception {
-
-        CropUnitConversionModel resource = new CropUnitConversionModel();
-        resource.setInventoryItemCode("5560");
-        resource.setCropUnitCode("2");
-        List<ConversionUnitModel> conversionUnits = new ArrayList<>();
-        ConversionUnitModel conversionUnit = new ConversionUnitModel();
-        conversionUnit.setConversionFactor(new BigDecimal("2204.622600"));
-        conversionUnit.setTargetCropUnitCode("1");
-        conversionUnits.add(conversionUnit);
-        resource.setConversionUnits(conversionUnits);
-        resource.setUserEmail("jsmith@gmail.com");
-
-        mockMvc.perform(post("/cropUnitConversions")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(resource)));
-    }
-
-    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateFairMarketValue() throws Exception {
 
         FairMarketValueModel resource = new FairMarketValueModel();
         resource.setProgramYear(2025);
-        resource.setInventoryItemCode("5560");
+        resource.setInventoryItemCode("5562");
         resource.setMunicipalityCode("41");
         resource.setCropUnitCode("1");
         resource.setDefaultCropUnitCode("2");
@@ -105,10 +79,10 @@ public class FairMarketValueControllerTest {
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("FairMarketValueModel"))
-                .andExpect(jsonPath("$.fairMarketValueId").value("2025_5560_41_1"))
+                .andExpect(jsonPath("$.fairMarketValueId").value("2025_5562_41_1"))
                 .andExpect(jsonPath("$.programYear").value(2025))
-                .andExpect(jsonPath("$.inventoryItemCode").value("5560"))
-                .andExpect(jsonPath("$.inventoryItemDesc").value("Alfalfa Dehy"))
+                .andExpect(jsonPath("$.inventoryItemCode").value("5562"))
+                .andExpect(jsonPath("$.inventoryItemDesc").value("Greenfeed"))
                 .andExpect(jsonPath("$.municipalityCode").value("41"))
                 .andExpect(jsonPath("$.municipalityDesc").value("Cariboo"))
                 .andExpect(jsonPath("$.cropUnitCode").value("1"))
@@ -154,10 +128,10 @@ public class FairMarketValueControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("FairMarketValueListModel"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].@type").value("FairMarketValueModel"))
-                .andExpect(jsonPath("$.fairMarketValueList[0].fairMarketValueId").value("2025_5560_41_1"))
+                .andExpect(jsonPath("$.fairMarketValueList[0].fairMarketValueId").value("2025_5562_41_1"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].programYear").value(2025))
-                .andExpect(jsonPath("$.fairMarketValueList[0].inventoryItemCode").value("5560"))
-                .andExpect(jsonPath("$.fairMarketValueList[0].inventoryItemDesc").value("Alfalfa Dehy"))
+                .andExpect(jsonPath("$.fairMarketValueList[0].inventoryItemCode").value("5562"))
+                .andExpect(jsonPath("$.fairMarketValueList[0].inventoryItemDesc").value("Greenfeed"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].municipalityCode").value("41"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].municipalityDesc").value("Cariboo"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].cropUnitCode").value("1"))
@@ -198,13 +172,13 @@ public class FairMarketValueControllerTest {
     @Order(3)
     public void testGetFairMarketValue() throws Exception {
 
-        mockMvc.perform(get("/fairMarketValues/2025_5560_41_1"))
+        mockMvc.perform(get("/fairMarketValues/2025_5562_41_1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("FairMarketValueModel"))
-                .andExpect(jsonPath("$.fairMarketValueId").value("2025_5560_41_1"))
+                .andExpect(jsonPath("$.fairMarketValueId").value("2025_5562_41_1"))
                 .andExpect(jsonPath("$.programYear").value(2025))
-                .andExpect(jsonPath("$.inventoryItemCode").value("5560"))
-                .andExpect(jsonPath("$.inventoryItemDesc").value("Alfalfa Dehy"))
+                .andExpect(jsonPath("$.inventoryItemCode").value("5562"))
+                .andExpect(jsonPath("$.inventoryItemDesc").value("Greenfeed"))
                 .andExpect(jsonPath("$.municipalityCode").value("41"))
                 .andExpect(jsonPath("$.municipalityDesc").value("Cariboo"))
                 .andExpect(jsonPath("$.cropUnitCode").value("1"))
@@ -246,9 +220,9 @@ public class FairMarketValueControllerTest {
     public void testUpdateFairMarketValue() throws Exception {
 
         FairMarketValueModel resource = new FairMarketValueModel();
-        resource.setFairMarketValueId("2025_5560_41_1");
+        resource.setFairMarketValueId("2025_5562_41_1");
         resource.setProgramYear(2025);
-        resource.setInventoryItemCode("5560");
+        resource.setInventoryItemCode("5562");
         resource.setMunicipalityCode("41");
         resource.setCropUnitCode("1");
         resource.setDefaultCropUnitCode("2");
@@ -279,15 +253,15 @@ public class FairMarketValueControllerTest {
         resource.setUrlId(2L);
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/fairMarketValues/2025_5560_41_1")
+        mockMvc.perform(put("/fairMarketValues/2025_5562_41_1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("FairMarketValueModel"))
-                .andExpect(jsonPath("$.fairMarketValueId").value("2025_5560_41_1"))
+                .andExpect(jsonPath("$.fairMarketValueId").value("2025_5562_41_1"))
                 .andExpect(jsonPath("$.programYear").value(2025))
-                .andExpect(jsonPath("$.inventoryItemCode").value("5560"))
-                .andExpect(jsonPath("$.inventoryItemDesc").value("Alfalfa Dehy"))
+                .andExpect(jsonPath("$.inventoryItemCode").value("5562"))
+                .andExpect(jsonPath("$.inventoryItemDesc").value("Greenfeed"))
                 .andExpect(jsonPath("$.municipalityCode").value("41"))
                 .andExpect(jsonPath("$.municipalityDesc").value("Cariboo"))
                 .andExpect(jsonPath("$.cropUnitCode").value("1"))
@@ -327,7 +301,7 @@ public class FairMarketValueControllerTest {
     @Order(6)
     public void testDeleteFairMarketValue() throws Exception {
 
-        mockMvc.perform(delete("/fairMarketValues/2025_5560_41_1"))
+        mockMvc.perform(delete("/fairMarketValues/2025_5562_41_1"))
                 .andExpect(status().isNoContent());
     }
 }

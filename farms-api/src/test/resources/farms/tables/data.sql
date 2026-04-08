@@ -352,3 +352,45 @@ insert into farms.farm_urls (
     current_user,
     current_timestamp
 );
+
+insert into farms.farm_crop_unit_defaults (
+    crop_unit_default_id,
+    inventory_item_code,
+    crop_unit_code,
+    revision_count,
+    who_created,
+    when_created,
+    who_updated,
+    when_updated
+) values (
+    nextval('farms.farm_cud_seq'),
+    '5562',
+    '2',
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+);
+
+insert into farms.farm_crop_unit_conversn_fctrs (
+    crop_unit_conversion_factor_id,
+    conversion_factor,
+    inventory_item_code,
+    target_crop_unit_code,
+    revision_count,
+    who_created,
+    when_created,
+    who_updated,
+    when_updated
+) values (
+    nextval('farms.farm_cucf_seq'),
+    2204.622600,
+    '5562',
+    '1',
+    1,
+    current_user,
+    current_timestamp,
+    current_user,
+    current_timestamp
+)
