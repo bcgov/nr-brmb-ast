@@ -1,6 +1,11 @@
 $kind: http-request
+name: Get Root
 url: "{{baseUrl}}"
 method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
 scripts:
   - type: afterResponse
     code: "pm.test(\"Status code is 200\", function () {\r
@@ -21,4 +26,4 @@ scripts:
 
       });"
     language: text/javascript
-order: 1000
+order: 1180
