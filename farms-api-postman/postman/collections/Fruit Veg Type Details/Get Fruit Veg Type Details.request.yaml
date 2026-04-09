@@ -1,0 +1,56 @@
+$kind: http-request
+name: Get Fruit Veg Type Details
+url: "{{baseUrl}}/fruitVegTypeDetails"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = FruitVegTypeDetailListModel\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"FruitVegTypeDetailListModel\"\
+      );\r
+
+      });\r
+
+      \r
+
+      pm.test(\"fruitVegTypeDetailList is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"fruitVegTypeDetailList\");\r
+
+      \    pm.expect(json.fruitVegTypeDetailList.length).to.be.greaterThan(0);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"fruitVegTypeDetailList[0] contains @type =
+      FruitVegTypeDetailModel\", function() {\r
+
+      \    pm.expect(json.fruitVegTypeDetailList[0]).to.have.property(\"@type\"\
+      );\r
+
+      \    pm.expect(json.fruitVegTypeDetailList[0]['@type']).to.be.equal(\"Fru\
+      itVegTypeDetailModel\");\r
+
+      });"
+    language: text/javascript
+order: 4375630597236807
