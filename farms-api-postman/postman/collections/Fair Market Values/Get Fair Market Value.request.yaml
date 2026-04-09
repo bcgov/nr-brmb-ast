@@ -3,7 +3,7 @@ name: Get Fair Market Value
 url: "{{baseUrl}}/fairMarketValues/:fairMarketValueId"
 method: GET
 pathVariables:
-  fairMarketValueId: 2024_5560_51_7
+  fairMarketValueId: "2024_5560_51_7"
 auth:
   credentials:
     token: "{{access_token}}"
