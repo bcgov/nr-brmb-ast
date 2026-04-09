@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import ca.bc.gov.brmb.common.rest.resource.RelLink;
 import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
 import ca.bc.gov.farms.data.entities.CodeEntity;
-import ca.bc.gov.farms.data.models.CodeModel;
+import ca.bc.gov.farms.data.models.CodeRsrc;
 import ca.bc.gov.farms.data.models.CodeTableListModel;
 import ca.bc.gov.farms.data.models.CodeTableModel;
 import jakarta.ws.rs.core.UriBuilder;
@@ -37,7 +37,7 @@ public class CodeTableListResourceAssembler extends BaseResourceAssembler {
                     codeTableResource.setCodeTableName(tableName);
                     codeTableResource.setCodeTableDescriptiveName(tableName);
                     codeTableResource.setCodes(entities.stream().filter(Objects::nonNull).map(e -> {
-                        CodeModel r = new CodeModel();
+                        CodeRsrc r = new CodeRsrc();
                         BeanUtils.copyProperties(e, r);
                         return r;
                     }).collect(Collectors.toList()));

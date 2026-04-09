@@ -21,5 +21,5 @@ public class CodeTableModel extends BaseResource {
 
     private String codeTableName;
     private String codeTableDescriptiveName;
-    private List<CodeModel> codes;
+    private List<CodeRsrc> codes;
 }

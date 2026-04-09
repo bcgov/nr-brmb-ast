@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.CodeModel;
+import ca.bc.gov.farms.data.models.CodeRsrc;
 import ca.bc.gov.farms.data.models.CodeTableListModel;
 import ca.bc.gov.farms.services.CodeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +37,7 @@ public class CodeTableListController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = CodeModel.class))),
+                    content = @Content(schema = @Schema(implementation = CodeRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })

@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ca.bc.gov.farms.data.models.CodeModel;
+import ca.bc.gov.farms.data.models.CodeRsrc;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -44,7 +44,7 @@ public class CodeControllerTest {
     @Order(1)
     public void testCreateCode() throws Exception {
 
-        CodeModel resource = new CodeModel();
+        CodeRsrc resource = new CodeRsrc();
         resource.setCode("51");
         resource.setDescription("Test Municipality");
         resource.setEffectiveDate(EFFECTIVE_DATE);
@@ -55,7 +55,7 @@ public class CodeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.@type").value("CodeModel"))
+                .andExpect(jsonPath("$.@type").value("CodeRsrc"))
                 .andExpect(jsonPath("$.code").value("51"))
                 .andExpect(jsonPath("$.description").value("Test Municipality"))
                 .andExpect(jsonPath("$.effectiveDate").value(EFFECTIVE_DATE.toString()))
@@ -68,7 +68,7 @@ public class CodeControllerTest {
 
         mockMvc.perform(get("/codeTables/" + TABLE_NAME + "/codes/51"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("CodeModel"))
+                .andExpect(jsonPath("$.@type").value("CodeRsrc"))
                 .andExpect(jsonPath("$.code").value("51"))
                 .andExpect(jsonPath("$.description").value("Test Municipality"))
                 .andExpect(jsonPath("$.effectiveDate").value(EFFECTIVE_DATE.toString()))
@@ -80,7 +80,7 @@ public class CodeControllerTest {
     @Order(3)
     public void testUpdateCode() throws Exception {
 
-        CodeModel resource = new CodeModel();
+        CodeRsrc resource = new CodeRsrc();
         resource.setCode("51");
         resource.setDescription("Municipality Test");
         resource.setEffectiveDate(EXPIRY_DATE);
@@ -90,7 +90,7 @@ public class CodeControllerTest {
         mockMvc.perform(put("/codeTables/" + TABLE_NAME + "/codes/51")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
-                .andExpect(jsonPath("$.@type").value("CodeModel"))
+                .andExpect(jsonPath("$.@type").value("CodeRsrc"))
                 .andExpect(jsonPath("$.code").value("51"))
                 .andExpect(jsonPath("$.description").value("Municipality Test"))
                 .andExpect(jsonPath("$.effectiveDate").value(EXPIRY_DATE.toString()))
@@ -102,7 +102,7 @@ public class CodeControllerTest {
     @Order(4)
     public void testDeleteCode() throws Exception {
 
-        CodeModel resource = new CodeModel();
+        CodeRsrc resource = new CodeRsrc();
         resource.setCode("51");
         resource.setDescription("Municipality Test");
         resource.setEffectiveDate(EXPIRY_DATE);

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CodeModel extends BaseResource {
+public class CodeRsrc extends BaseResource {
 
     private String code;
     private String description;

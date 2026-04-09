@@ -13,7 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.CodeModel;
+import ca.bc.gov.farms.data.models.CodeRsrc;
 import ca.bc.gov.farms.data.models.CodeTableListModel;
 import ca.bc.gov.farms.data.models.CodeTableModel;
 
@@ -35,14 +35,14 @@ public class CodeServiceTest {
     @Test
     @Order(1)
     public void testCreateCode() {
-        CodeModel resource = new CodeModel();
+        CodeRsrc resource = new CodeRsrc();
         resource.setCode("45");
         resource.setDescription("Test Municipality");
         resource.setEffectiveDate(EFFECTIVE_DATE);
         resource.setExpiryDate(EXPIRY_DATE);
         resource.setUserEmail("testUser");
 
-        CodeModel newResource = codeService.createCode(TABLE_NAME, resource);
+        CodeRsrc newResource = codeService.createCode(TABLE_NAME, resource);
 
         assertThat(newResource.getCode()).isEqualTo("45");
         assertThat(newResource.getDescription()).isEqualTo("Test Municipality");
@@ -53,7 +53,7 @@ public class CodeServiceTest {
     @Test
     @Order(2)
     public void testGetCode() {
-        CodeModel resource = null;
+        CodeRsrc resource = null;
         try {
             resource = codeService.getCode(TABLE_NAME, "45");
         } catch (ServiceException | NotFoundException e) {
@@ -72,7 +72,7 @@ public class CodeServiceTest {
     @Order(3)
     public void testGetCodeTable() {
         CodeTableModel resource = null;
-        CodeModel codeResource = null;
+        CodeRsrc codeResource = null;
         try {
             resource = codeService.getCodeTable(TABLE_NAME);
         } catch (ServiceException e) {
@@ -153,7 +153,7 @@ public class CodeServiceTest {
     @Test
     @Order(5)
     public void testUpdateCode() {
-        CodeModel resource = null;
+        CodeRsrc resource = null;
         try {
             resource = codeService.getCode(TABLE_NAME, "45");
         } catch (ServiceException | NotFoundException e) {
@@ -167,7 +167,7 @@ public class CodeServiceTest {
         resource.setExpiryDate(EFFECTIVE_DATE);
         resource.setUserEmail("testUser");
 
-        CodeModel updatedResource = null;
+        CodeRsrc updatedResource = null;
         try {
             updatedResource = codeService.updateCode(TABLE_NAME, "45", resource);
         } catch (ServiceException | NotFoundException e) {
@@ -184,7 +184,7 @@ public class CodeServiceTest {
     @Test
     @Order(6)
     public void testDeleteCode() {
-        CodeModel resource = new CodeModel();
+        CodeRsrc resource = new CodeRsrc();
         resource.setCode("45");
         resource.setDescription("Test Municipality");
         resource.setEffectiveDate(EFFECTIVE_DATE);

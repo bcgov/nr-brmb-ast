@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.CodeModel;
+import ca.bc.gov.farms.data.models.CodeRsrc;
 import ca.bc.gov.farms.services.CodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,18 +43,18 @@ public class CodeController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = CodeModel.class))),
+                    content = @Content(schema = @Schema(implementation = CodeRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CodeModel> getCode(
+    public ResponseEntity<CodeRsrc> getCode(
             @PathVariable String codeTableName,
             @PathVariable String codeValue) {
         log.debug(" >> getCode: {}", codeValue);
 
         try {
-            CodeModel resource = codeService.getCode(codeTableName, codeValue);
+            CodeRsrc resource = codeService.getCode(codeTableName, codeValue);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Code not found: {}", codeValue, e);
@@ -72,19 +72,19 @@ public class CodeController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = CodeModel.class))),
+                    content = @Content(schema = @Schema(implementation = CodeRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CodeModel> createCode(
+    public ResponseEntity<CodeRsrc> createCode(
             @PathVariable String codeTableName,
-            @Valid @RequestBody CodeModel resource) {
+            @Valid @RequestBody CodeRsrc resource) {
         log.debug(" >> createCode");
 
         try {
-            CodeModel newResource = codeService.createCode(codeTableName, resource);
+            CodeRsrc newResource = codeService.createCode(codeTableName, resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while creating Code", e);
@@ -99,21 +99,21 @@ public class CodeController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = CodeModel.class))),
+                    content = @Content(schema = @Schema(implementation = CodeRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CodeModel> updateCode(
+    public ResponseEntity<CodeRsrc> updateCode(
             @PathVariable String codeTableName,
             @PathVariable String codeValue,
-            @Valid @RequestBody CodeModel resource) {
+            @Valid @RequestBody CodeRsrc resource) {
         log.debug(" >> updateCode");
 
         try {
-            CodeModel updatedResource = codeService.updateCode(codeTableName, codeValue, resource);
+            CodeRsrc updatedResource = codeService.updateCode(codeTableName, codeValue, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Code not found for update: {}", codeValue, e);
@@ -138,7 +138,7 @@ public class CodeController extends CommonController {
     public ResponseEntity<Void> deleteCode(
             @PathVariable String codeTableName,
             @PathVariable String codeValue,
-            @Valid @RequestBody CodeModel resource) {
+            @Valid @RequestBody CodeRsrc resource) {
         log.debug(" >> deleteCode");
 
         try {

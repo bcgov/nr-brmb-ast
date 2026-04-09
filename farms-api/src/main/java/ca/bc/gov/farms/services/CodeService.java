@@ -15,7 +15,7 @@ import ca.bc.gov.farms.data.assemblers.CodeResourceAssembler;
 import ca.bc.gov.farms.data.assemblers.CodeTableListResourceAssembler;
 import ca.bc.gov.farms.data.assemblers.CodeTableResourceAssembler;
 import ca.bc.gov.farms.data.entities.CodeEntity;
-import ca.bc.gov.farms.data.models.CodeModel;
+import ca.bc.gov.farms.data.models.CodeRsrc;
 import ca.bc.gov.farms.data.models.CodeTableListModel;
 import ca.bc.gov.farms.data.models.CodeTableModel;
 import ca.bc.gov.farms.data.repositories.CodeRepository;
@@ -90,9 +90,9 @@ public class CodeService {
         return codeName;
     }
 
-    public CodeModel getCode(String tableName, String codeValue) throws ServiceException, NotFoundException {
+    public CodeRsrc getCode(String tableName, String codeValue) throws ServiceException, NotFoundException {
 
-        CodeModel result = null;
+        CodeRsrc result = null;
         String codeName = resolveCodeNameOrThrow(tableName);
 
         try {
@@ -149,9 +149,9 @@ public class CodeService {
     }
 
     @Transactional
-    public CodeModel createCode(String tableName, CodeModel resource) throws ServiceException {
+    public CodeRsrc createCode(String tableName, CodeRsrc resource) throws ServiceException {
 
-        CodeModel result = null;
+        CodeRsrc result = null;
         String codeName = resolveCodeNameOrThrow(tableName);
         String userId = resource.getUserEmail();
 
@@ -177,10 +177,10 @@ public class CodeService {
     }
 
     @Transactional
-    public CodeModel updateCode(String tableName, String codeValue, CodeModel resource)
+    public CodeRsrc updateCode(String tableName, String codeValue, CodeRsrc resource)
             throws ServiceException, NotFoundException {
 
-        CodeModel result = null;
+        CodeRsrc result = null;
         String codeName = codeNameMap.get(tableName);
         String userId = resource.getUserEmail();
 
@@ -210,7 +210,7 @@ public class CodeService {
     }
 
     @Transactional
-    public void deleteCode(String tableName, String codeValue, CodeModel resource)
+    public void deleteCode(String tableName, String codeValue, CodeRsrc resource)
             throws ServiceException, NotFoundException {
 
         String codeName = codeNameMap.get(tableName);
