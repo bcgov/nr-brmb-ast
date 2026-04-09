@@ -1,0 +1,6 @@
+$kind: collection
+name: Crop Unit Conversions
+variables:
+  tenantId: "{{vault:{{vaultPrefix}}-tenantId}}"
+  clientId: "{{vault:{{vaultPrefix}}-clientId}}"
+  clientSecret: "{{vault:{{vaultPrefix}}-clientSecret}}"
