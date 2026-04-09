@@ -1,0 +1,35 @@
+$kind: http-request
+name: Get Inventory Item Attributes By Inventory Item Code
+url: "{{baseUrl}}/inventoryItemAttributes?inventoryItemCode=4780"
+method: GET
+queryParams:
+  inventoryItemCode: "4780"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = InventoryItemAttributeModel\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"InventoryItemAttributeModel\"\
+      );\r
+
+      });"
+    language: text/javascript
+order: 3955520218611332
