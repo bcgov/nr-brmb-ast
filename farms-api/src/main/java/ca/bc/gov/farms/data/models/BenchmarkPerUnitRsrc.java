@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BenchmarkPerUnitModel extends BaseResource {
+public class BenchmarkPerUnitRsrc extends BaseResource {
 
     private Long benchmarkPerUnitId;
 

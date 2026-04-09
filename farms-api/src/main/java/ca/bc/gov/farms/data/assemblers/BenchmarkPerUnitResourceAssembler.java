@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.BenchmarkPerUnitEntity;
 import ca.bc.gov.farms.data.models.BenchmarkPerUnitListModel;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitModel;
+import ca.bc.gov.farms.data.models.BenchmarkPerUnitRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class BenchmarkPerUnitResourceAssembler extends BaseResourceAssembler {
 
-    public BenchmarkPerUnitModel getBenchmarkPerUnit(@NonNull BenchmarkPerUnitEntity entity) {
+    public BenchmarkPerUnitRsrc getBenchmarkPerUnit(@NonNull BenchmarkPerUnitEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        BenchmarkPerUnitModel resource = new BenchmarkPerUnitModel();
+        BenchmarkPerUnitRsrc resource = new BenchmarkPerUnitRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -41,8 +41,8 @@ public class BenchmarkPerUnitResourceAssembler extends BaseResourceAssembler {
         BenchmarkPerUnitListModel result = null;
 
         @SuppressWarnings("null")
-        List<BenchmarkPerUnitModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            BenchmarkPerUnitModel resource = new BenchmarkPerUnitModel();
+        List<BenchmarkPerUnitRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            BenchmarkPerUnitRsrc resource = new BenchmarkPerUnitRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getBenchmarkPerUnitId(), resource, baseUri);
             return resource;
@@ -59,7 +59,7 @@ public class BenchmarkPerUnitResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateBenchmarkPerUnit(@NonNull BenchmarkPerUnitModel resource,
+    public void updateBenchmarkPerUnit(@NonNull BenchmarkPerUnitRsrc resource,
             @NonNull BenchmarkPerUnitEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }

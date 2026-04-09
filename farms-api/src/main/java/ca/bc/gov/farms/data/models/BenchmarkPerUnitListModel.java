@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BenchmarkPerUnitListModel extends BaseResource {
 
-    private List<BenchmarkPerUnitModel> benchmarkPerUnitList;
+    private List<BenchmarkPerUnitRsrc> benchmarkPerUnitList;
 }
