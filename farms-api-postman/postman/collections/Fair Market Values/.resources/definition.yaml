@@ -1,0 +1,7 @@
+$kind: collection
+id: 007b01DB805bEaF1aD44cbc4
+name: Fair Market Values
+variables:
+  tenantId: "{{vault:{{vaultPrefix}}-tenantId}}"
+  clientId: "{{vault:{{vaultPrefix}}-clientId}}"
+  clientSecret: "{{vault:{{vaultPrefix}}-clientSecret}}"
