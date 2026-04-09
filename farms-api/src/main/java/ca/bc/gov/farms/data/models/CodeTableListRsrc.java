@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CodeTableListRsrc extends BaseResource {
 
-    private List<CodeTableModel> codeTableList;
+    private List<CodeTableRsrc> codeTableList;
 }

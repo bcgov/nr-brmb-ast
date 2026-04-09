@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CodeTableModel extends BaseResource {
+public class CodeTableRsrc extends BaseResource {
 
     private String codeTableName;
     private String codeTableDescriptiveName;

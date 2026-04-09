@@ -14,7 +14,7 @@ import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
 import ca.bc.gov.farms.data.entities.CodeEntity;
 import ca.bc.gov.farms.data.models.CodeRsrc;
 import ca.bc.gov.farms.data.models.CodeTableListRsrc;
-import ca.bc.gov.farms.data.models.CodeTableModel;
+import ca.bc.gov.farms.data.models.CodeTableRsrc;
 import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +33,7 @@ public class CodeTableListResourceAssembler extends BaseResourceAssembler {
                     String tableName = entry.getKey();
                     List<CodeEntity> entities = entry.getValue();
 
-                    CodeTableModel codeTableResource = new CodeTableModel();
+                    CodeTableRsrc codeTableResource = new CodeTableRsrc();
                     codeTableResource.setCodeTableName(tableName);
                     codeTableResource.setCodeTableDescriptiveName(tableName);
                     codeTableResource.setCodes(entities.stream().filter(Objects::nonNull).map(e -> {

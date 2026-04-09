@@ -15,7 +15,7 @@ import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.models.CodeRsrc;
 import ca.bc.gov.farms.data.models.CodeTableListRsrc;
-import ca.bc.gov.farms.data.models.CodeTableModel;
+import ca.bc.gov.farms.data.models.CodeTableRsrc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -71,7 +71,7 @@ public class CodeServiceTest {
     @Test
     @Order(3)
     public void testGetCodeTable() {
-        CodeTableModel resource = null;
+        CodeTableRsrc resource = null;
         CodeRsrc codeResource = null;
         try {
             resource = codeService.getCodeTable(TABLE_NAME);
