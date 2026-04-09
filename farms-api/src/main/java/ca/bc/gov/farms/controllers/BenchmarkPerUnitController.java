@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitListModel;
+import ca.bc.gov.farms.data.models.BenchmarkPerUnitListRsrc;
 import ca.bc.gov.farms.data.models.BenchmarkPerUnitRsrc;
 import ca.bc.gov.farms.services.BenchmarkPerUnitService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,16 +45,16 @@ public class BenchmarkPerUnitController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = BenchmarkPerUnitListModel.class))),
+                    content = @Content(schema = @Schema(implementation = BenchmarkPerUnitListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<BenchmarkPerUnitListModel> getBenchmarkPerUnitsByProgramYear(
+    public ResponseEntity<BenchmarkPerUnitListRsrc> getBenchmarkPerUnitsByProgramYear(
             @RequestParam Integer programYear) {
         log.debug(" >> getBenchmarkPerUnitsByProgramYear: {}", programYear);
 
         try {
-            BenchmarkPerUnitListModel resource = benchmarkPerUnitService.getBenchmarkPerUnitsByProgramYear(programYear);
+            BenchmarkPerUnitListRsrc resource = benchmarkPerUnitService.getBenchmarkPerUnitsByProgramYear(programYear);
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Benchmark Per Units", e);

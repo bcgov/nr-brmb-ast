@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitListModel;
+import ca.bc.gov.farms.data.models.BenchmarkPerUnitListRsrc;
 import ca.bc.gov.farms.data.models.BenchmarkPerUnitRsrc;
 import jakarta.validation.ConstraintViolationException;
 
@@ -86,7 +86,7 @@ public class BenchmarkPerUnitServiceTest {
     @Test
     @Order(2)
     public void testGetBenchmarkPerUnitsByProgramYear() {
-        BenchmarkPerUnitListModel resources = benchmarkPerUnitService.getBenchmarkPerUnitsByProgramYear(2024);
+        BenchmarkPerUnitListRsrc resources = benchmarkPerUnitService.getBenchmarkPerUnitsByProgramYear(2024);
         assertThat(resources).isNotNull();
         assertThat(resources.getBenchmarkPerUnitList()).isNotEmpty();
         assertThat(resources.getBenchmarkPerUnitList().size()).isEqualTo(1);

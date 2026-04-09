@@ -105,7 +105,7 @@ public class BenchmarkPerUnitControllerTest {
         mockMvc.perform(get("/benchmarkPerUnits")
                 .param("programYear", "2024"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("BenchmarkPerUnitListModel"))
+                .andExpect(jsonPath("$.@type").value("BenchmarkPerUnitListRsrc"))
                 .andExpect(jsonPath("$.benchmarkPerUnitList[0].@type").value("BenchmarkPerUnitRsrc"))
                 .andExpect(jsonPath("$.benchmarkPerUnitList[0].benchmarkPerUnitId").value(60584))
                 .andExpect(jsonPath("$.benchmarkPerUnitList[0].programYear").value(2024))

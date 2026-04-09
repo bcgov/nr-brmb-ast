@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.BenchmarkPerUnitEntity;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitListModel;
+import ca.bc.gov.farms.data.models.BenchmarkPerUnitListRsrc;
 import ca.bc.gov.farms.data.models.BenchmarkPerUnitRsrc;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,11 +34,11 @@ public class BenchmarkPerUnitResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    public BenchmarkPerUnitListModel getBenchmarkPerUnitList(List<BenchmarkPerUnitEntity> entities) {
+    public BenchmarkPerUnitListRsrc getBenchmarkPerUnitList(List<BenchmarkPerUnitEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        BenchmarkPerUnitListModel result = null;
+        BenchmarkPerUnitListRsrc result = null;
 
         @SuppressWarnings("null")
         List<BenchmarkPerUnitRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -48,7 +48,7 @@ public class BenchmarkPerUnitResourceAssembler extends BaseResourceAssembler {
             return resource;
         }).collect(Collectors.toList());
 
-        result = new BenchmarkPerUnitListModel();
+        result = new BenchmarkPerUnitListRsrc();
         result.setBenchmarkPerUnitList(resources);
 
         String eTag = getEtag(result);

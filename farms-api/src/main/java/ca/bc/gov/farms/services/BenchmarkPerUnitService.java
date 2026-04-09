@@ -13,7 +13,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.BenchmarkPerUnitResourceAssembler;
 import ca.bc.gov.farms.data.entities.BenchmarkPerUnitEntity;
 import ca.bc.gov.farms.data.mappers.BenchmarkPerUnitMapper;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitListModel;
+import ca.bc.gov.farms.data.models.BenchmarkPerUnitListRsrc;
 import ca.bc.gov.farms.data.models.BenchmarkPerUnitRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -33,9 +33,9 @@ public class BenchmarkPerUnitService {
     @Autowired
     private Validator validator;
 
-    public BenchmarkPerUnitListModel getBenchmarkPerUnitsByProgramYear(Integer programYear) throws ServiceException {
+    public BenchmarkPerUnitListRsrc getBenchmarkPerUnitsByProgramYear(Integer programYear) throws ServiceException {
 
-        BenchmarkPerUnitListModel result = null;
+        BenchmarkPerUnitListRsrc result = null;
 
         try {
             List<BenchmarkPerUnitEntity> entities = benchmarkPerUnitMapper.fetchByProgramYear(programYear);
