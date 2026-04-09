@@ -81,7 +81,8 @@ public abstract class BaseResourceAssembler {
     protected static <T extends BaseResource> void setSelfLink(Object id, T resource, URI baseUri) {
 
         String resourcePath = resource.getClass().getSimpleName();
-        resourcePath.replace("Model", "s");
+        resourcePath = resourcePath.replace("ListModel", "s");
+        resourcePath = resourcePath.replace("Model", "s");
         resourcePath = Character.toLowerCase(resourcePath.charAt(0)) + resourcePath.substring(1);
 
         String selfUri = UriBuilder.fromUri(baseUri)
@@ -94,7 +95,8 @@ public abstract class BaseResourceAssembler {
     protected static <T extends BaseResource> void setSelfLink(T resource, URI baseUri) {
 
         String resourcePath = resource.getClass().getSimpleName();
-        resourcePath.replace("Model", "s");
+        resourcePath = resourcePath.replace("ListModel", "s");
+        resourcePath = resourcePath.replace("Model", "s");
         resourcePath = Character.toLowerCase(resourcePath.charAt(0)) + resourcePath.substring(1);
 
         String selfUri = UriBuilder.fromUri(baseUri)
