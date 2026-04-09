@@ -1,0 +1,54 @@
+$kind: http-request
+name: Get Line Items By Program Year
+url: "{{baseUrl}}/lineItems?programYear=2025"
+method: GET
+queryParams:
+  programYear: "2025"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = LineItemListModel\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"LineItemListModel\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"lineItemList is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"lineItemList\");\r
+
+      \    pm.expect(json.lineItemList.length).to.be.greaterThan(0);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"lineItemList[0] contains @type = LineItemModel\", function() {\r
+
+      \    pm.expect(json.lineItemList[0]).to.have.property(\"@type\");\r
+
+      \    pm.expect(json.lineItemList[0]['@type']).to.be.equal(\"LineItemModel\
+      \");\r
+
+      });"
+    language: text/javascript
+order: 4342929528545068
