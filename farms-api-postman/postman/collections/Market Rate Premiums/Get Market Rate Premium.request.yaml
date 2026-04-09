@@ -1,0 +1,34 @@
+$kind: http-request
+name: Get Market Rate Premium
+url: "{{baseUrl}}/marketRatePremiums/:marketRatePremiumId"
+method: GET
+pathVariables:
+  marketRatePremiumId: "6"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = MarketRatePremiumModel\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"MarketRatePremiumModel\");\r
+
+      });"
+    language: text/javascript
+order: 3916344288298649
