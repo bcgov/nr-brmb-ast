@@ -1,0 +1,33 @@
+$kind: http-request
+name: Get Fair Market Value
+url: "{{baseUrl}}/fairMarketValues/:fairMarketValueId"
+method: GET
+pathVariables:
+  fairMarketValueId: 2024_5560_51_7
+auth:
+  credentials:
+    token: "{{access_token}}"
+  type: bearer
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = FairMarketValueModel\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"FairMarketValueModel\");\r
+
+      });"
+    language: text/javascript
+order: 3540235063171679

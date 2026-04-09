@@ -17,4 +17,4 @@ scripts:
 
       pm.environment.set(\"access_token\", json.access_token);"
     language: text/javascript
-order: 2000
+order: 1000
