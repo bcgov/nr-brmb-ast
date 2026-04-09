@@ -16,7 +16,7 @@ import ca.bc.gov.farms.data.assemblers.CodeTableListResourceAssembler;
 import ca.bc.gov.farms.data.assemblers.CodeTableResourceAssembler;
 import ca.bc.gov.farms.data.entities.CodeEntity;
 import ca.bc.gov.farms.data.models.CodeRsrc;
-import ca.bc.gov.farms.data.models.CodeTableListModel;
+import ca.bc.gov.farms.data.models.CodeTableListRsrc;
 import ca.bc.gov.farms.data.models.CodeTableModel;
 import ca.bc.gov.farms.data.repositories.CodeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -127,9 +127,9 @@ public class CodeService {
         return result;
     }
 
-    public CodeTableListModel getCodeTableList() throws ServiceException {
+    public CodeTableListRsrc getCodeTableList() throws ServiceException {
 
-        CodeTableListModel result = null;
+        CodeTableListRsrc result = null;
         Map<String, List<CodeEntity>> entitiesMap = new TreeMap<>();
 
         for (Entry<String, String> entry : codeNameMap.entrySet()) {

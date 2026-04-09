@@ -13,7 +13,7 @@ import ca.bc.gov.brmb.common.rest.resource.RelLink;
 import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
 import ca.bc.gov.farms.data.entities.CodeEntity;
 import ca.bc.gov.farms.data.models.CodeRsrc;
-import ca.bc.gov.farms.data.models.CodeTableListModel;
+import ca.bc.gov.farms.data.models.CodeTableListRsrc;
 import ca.bc.gov.farms.data.models.CodeTableModel;
 import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 public class CodeTableListResourceAssembler extends BaseResourceAssembler {
 
     @SuppressWarnings("null")
-    public CodeTableListModel getCodeTableList(Map<String, List<CodeEntity>> entitiesMap) {
+    public CodeTableListRsrc getCodeTableList(Map<String, List<CodeEntity>> entitiesMap) {
 
         URI baseUri = getBaseURI();
 
-        CodeTableListModel resource = new CodeTableListModel();
+        CodeTableListRsrc resource = new CodeTableListRsrc();
         resource.setCodeTableList(entitiesMap.entrySet().stream()
                 .map(entry -> {
                     String tableName = entry.getKey();

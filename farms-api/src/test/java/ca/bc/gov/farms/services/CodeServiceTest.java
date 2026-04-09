@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.models.CodeRsrc;
-import ca.bc.gov.farms.data.models.CodeTableListModel;
+import ca.bc.gov.farms.data.models.CodeTableListRsrc;
 import ca.bc.gov.farms.data.models.CodeTableModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,7 +102,7 @@ public class CodeServiceTest {
     @Test
     @Order(4)
     public void testGetCodeTableList() {
-        CodeTableListModel resource = null;
+        CodeTableListRsrc resource = null;
         try {
             resource = codeService.getCodeTableList();
         } catch (ServiceException e) {

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CodeTableListModel extends BaseResource {
+public class CodeTableListRsrc extends BaseResource {
 
     private List<CodeTableModel> codeTableList;
 }

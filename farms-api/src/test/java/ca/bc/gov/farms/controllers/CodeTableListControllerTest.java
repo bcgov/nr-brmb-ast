@@ -29,7 +29,7 @@ public class CodeTableListControllerTest {
 
         mockMvc.perform(get("/codeTables"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("CodeTableListModel"))
+                .andExpect(jsonPath("$.@type").value("CodeTableListRsrc"))
                 .andExpect(jsonPath("$.codeTableList[0].codeTableName").value("farm_chef_form_type_codes"))
                 .andExpect(jsonPath("$.codeTableList[1].codeTableName").value("farm_chef_submssn_status_codes"))
                 .andExpect(jsonPath("$.codeTableList[2].codeTableName").value("farm_commodity_type_codes"))
