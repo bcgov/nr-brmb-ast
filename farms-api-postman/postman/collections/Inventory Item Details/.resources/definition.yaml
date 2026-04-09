@@ -1,0 +1,6 @@
+$kind: collection
+name: Inventory Item Details
+variables:
+  tenantId: "{{vault:{{vaultPrefix}}-tenantId}}"
+  clientId: "{{vault:{{vaultPrefix}}-clientId}}"
+  clientSecret: "{{vault:{{vaultPrefix}}-clientSecret}}"
