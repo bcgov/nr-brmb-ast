@@ -1,0 +1,34 @@
+$kind: http-request
+name: Get Inventory Item Detail
+url: "{{baseUrl}}/inventoryItemDetails/:inventoryItemDetailId"
+method: GET
+pathVariables:
+  inventoryItemDetailId: "863"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = InventoryItemDetailModel\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"InventoryItemDetailModel\");\r
+
+      });"
+    language: text/javascript
+order: 2624404497032119
