@@ -1,0 +1,58 @@
+$kind: http-request
+name: Get Expected Productions By Inventory Item Code
+url: "{{baseUrl}}/expectedProductions?inventoryItemCode=4824"
+method: GET
+queryParams:
+  inventoryItemCode: "4824"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = ExpectedProductionListModel\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"ExpectedProductionListModel\"\
+      );\r
+
+      });\r
+
+      \r
+
+      pm.test(\"expectedProductionList is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"expectedProductionList\");\r
+
+      \    pm.expect(json.expectedProductionList.length).to.be.greaterThan(0);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"expectedProductionList[0] contains @type =
+      ExpectedProductionModel\", function() {\r
+
+      \    pm.expect(json.expectedProductionList[0]).to.have.property(\"@type\"\
+      );\r
+
+      \    pm.expect(json.expectedProductionList[0]['@type']).to.be.equal(\"Exp\
+      ectedProductionModel\");\r
+
+      });"
+    language: text/javascript
+order: 4433926007778689
