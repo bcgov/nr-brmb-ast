@@ -1,0 +1,6 @@
+$kind: collection
+name: Expected Productions
+variables:
+  tenantId: "{{vault:{{vaultPrefix}}-tenantId}}"
+  clientId: "{{vault:{{vaultPrefix}}-clientId}}"
+  clientSecret: "{{vault:{{vaultPrefix}}-clientSecret}}"
