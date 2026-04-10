@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.models.LineItemListRsrc;
-import ca.bc.gov.farms.data.models.LineItemModel;
+import ca.bc.gov.farms.data.models.LineItemRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +32,7 @@ public class LineItemServiceTest {
     @Test
     @Order(1)
     public void testCreateLineItem() {
-        LineItemModel resource = new LineItemModel();
+        LineItemRsrc resource = new LineItemRsrc();
         resource.setProgramYear(2025);
         resource.setLineItem(9798);
         resource.setDescription("Agricultural Contract work");
@@ -49,7 +49,7 @@ public class LineItemServiceTest {
         resource.setFruitVegTypeCode(null);
         resource.setUserEmail("testUser");
 
-        LineItemModel newResource = lineItemService.createLineItem(resource);
+        LineItemRsrc newResource = lineItemService.createLineItem(resource);
         lineItemId = newResource.getLineItemId();
 
         assertThat(newResource.getProgramYear()).isEqualTo(2025);
@@ -76,7 +76,7 @@ public class LineItemServiceTest {
         assertThat(resources.getLineItemList()).isNotEmpty();
         assertThat(resources.getLineItemList().size()).isEqualTo(1);
 
-        LineItemModel resource = resources.getLineItemList().iterator().next();
+        LineItemRsrc resource = resources.getLineItemList().iterator().next();
         assertThat(resource.getProgramYear()).isEqualTo(2025);
         assertThat(resource.getLineItem()).isEqualTo(9798);
         assertThat(resource.getDescription()).isEqualTo("Agricultural Contract work");
@@ -96,7 +96,7 @@ public class LineItemServiceTest {
     @Test
     @Order(3)
     public void testUpdateLineItem() {
-        LineItemModel resource = null;
+        LineItemRsrc resource = null;
         try {
             resource = lineItemService.getLineItem(lineItemId);
         } catch (ServiceException | NotFoundException e) {
@@ -119,7 +119,7 @@ public class LineItemServiceTest {
         resource.setFruitVegTypeCode("APPLE");
         resource.setUserEmail("testUser");
 
-        LineItemModel updatedResource = null;
+        LineItemRsrc updatedResource = null;
         try {
             updatedResource = lineItemService.updateLineItem(lineItemId, resource);
             lineItemId = updatedResource.getLineItemId();

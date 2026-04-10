@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LineItemListRsrc extends BaseResource {
 
-    private List<LineItemModel> lineItemList;
+    private List<LineItemRsrc> lineItemList;
 }

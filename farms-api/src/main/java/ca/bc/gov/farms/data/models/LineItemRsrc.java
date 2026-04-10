@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LineItemModel extends BaseResource {
+public class LineItemRsrc extends BaseResource {
 
     private Long lineItemId;
 
