@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InventoryItemAttributeListRsrc extends BaseResource {
 
-    private List<InventoryItemAttributeModel> inventoryItemAttributeList;
+    private List<InventoryItemAttributeRsrc> inventoryItemAttributeList;
 }

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class InventoryItemAttributeModel extends BaseResource {
+public class InventoryItemAttributeRsrc extends BaseResource {
 
     private Long inventoryItemAttributeId;
 

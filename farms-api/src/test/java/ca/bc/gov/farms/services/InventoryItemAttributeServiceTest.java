@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.InventoryItemAttributeModel;
+import ca.bc.gov.farms.data.models.InventoryItemAttributeRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,12 +31,12 @@ public class InventoryItemAttributeServiceTest {
     @Test
     @Order(1)
     public void testCreateInventoryItemAttribute() {
-        InventoryItemAttributeModel resource = new InventoryItemAttributeModel();
+        InventoryItemAttributeRsrc resource = new InventoryItemAttributeRsrc();
         resource.setInventoryItemCode("73");
         resource.setRollupInventoryItemCode("73");
         resource.setUserEmail("testUser");
 
-        InventoryItemAttributeModel newResource = inventoryItemAttributeService.createInventoryItemAttribute(resource);
+        InventoryItemAttributeRsrc newResource = inventoryItemAttributeService.createInventoryItemAttribute(resource);
         inventoryItemAttributeId = newResource.getInventoryItemAttributeId();
 
         assertThat(newResource.getInventoryItemCode()).isEqualTo("73");
@@ -48,7 +48,7 @@ public class InventoryItemAttributeServiceTest {
     @Test
     @Order(2)
     public void testGetInventoryItemAttributeByInventoryItemCode() {
-        InventoryItemAttributeModel resource = null;
+        InventoryItemAttributeRsrc resource = null;
         try {
             resource = inventoryItemAttributeService.getInventoryItemAttributeByInventoryItemCode("73");
         } catch (ServiceException e) {
@@ -66,7 +66,7 @@ public class InventoryItemAttributeServiceTest {
     @Test
     @Order(3)
     public void testUpdateInventoryItemAttribute() {
-        InventoryItemAttributeModel resource = null;
+        InventoryItemAttributeRsrc resource = null;
         try {
             resource = inventoryItemAttributeService.getInventoryItemAttribute(inventoryItemAttributeId);
         } catch (ServiceException | NotFoundException e) {
@@ -79,7 +79,7 @@ public class InventoryItemAttributeServiceTest {
         resource.setRollupInventoryItemCode("5560");
         resource.setUserEmail("testUser");
 
-        InventoryItemAttributeModel updatedResource = null;
+        InventoryItemAttributeRsrc updatedResource = null;
         try {
             updatedResource = inventoryItemAttributeService.updateInventoryItemAttribute(inventoryItemAttributeId,
                     resource);
