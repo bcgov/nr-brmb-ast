@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CropUnitConversionModel extends BaseResource {
+public class CropUnitConversionRsrc extends BaseResource {
 
     private Long cropUnitDefaultId;
 

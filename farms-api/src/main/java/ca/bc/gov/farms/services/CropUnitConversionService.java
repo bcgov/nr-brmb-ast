@@ -15,7 +15,7 @@ import ca.bc.gov.farms.data.entities.ConversionUnitEntity;
 import ca.bc.gov.farms.data.entities.CropUnitConversionEntity;
 import ca.bc.gov.farms.data.mappers.CropUnitConversionMapper;
 import ca.bc.gov.farms.data.models.CropUnitConversionListRsrc;
-import ca.bc.gov.farms.data.models.CropUnitConversionModel;
+import ca.bc.gov.farms.data.models.CropUnitConversionRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -66,10 +66,10 @@ public class CropUnitConversionService {
         return result;
     }
 
-    public CropUnitConversionModel getCropUnitConversion(Long cropUnitDefaultId)
+    public CropUnitConversionRsrc getCropUnitConversion(Long cropUnitDefaultId)
             throws ServiceException, NotFoundException {
 
-        CropUnitConversionModel result = null;
+        CropUnitConversionRsrc result = null;
 
         try {
             CropUnitConversionEntity entity = cropUnitConversionMapper.fetch(cropUnitDefaultId);
@@ -89,15 +89,15 @@ public class CropUnitConversionService {
     }
 
     @Transactional
-    public CropUnitConversionModel createCropUnitConversion(CropUnitConversionModel resource)
+    public CropUnitConversionRsrc createCropUnitConversion(CropUnitConversionRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<CropUnitConversionModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<CropUnitConversionRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        CropUnitConversionModel result = null;
+        CropUnitConversionRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -126,15 +126,15 @@ public class CropUnitConversionService {
     }
 
     @Transactional
-    public CropUnitConversionModel updateCropUnitConversion(Long cropUnitDefaultId, CropUnitConversionModel resource)
+    public CropUnitConversionRsrc updateCropUnitConversion(Long cropUnitDefaultId, CropUnitConversionRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<CropUnitConversionModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<CropUnitConversionRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        CropUnitConversionModel result = null;
+        CropUnitConversionRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
