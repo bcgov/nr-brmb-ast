@@ -38,6 +38,36 @@ scripts:
       \r
 
       pm.environment.set(\"configurationParameterId\",
-      json.configurationParameterId);"
+      json.configurationParameterId);\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterName\");\r
+
+      \    pm.expect(json.parameterName).to.be.equal(\"TEST - test\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterValue\");\r
+
+      \    pm.expect(json.parameterValue).to.be.equal(\"3\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"sensitiveDataInd\");\r
+
+      \    pm.expect(json.sensitiveDataInd).to.be.equal(\"Y\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"configParamTypeCode\");\r
+
+      \    pm.expect(json.configParamTypeCode).to.be.equal(\"INTEGER\");\r
+
+      });"
     language: text/javascript
 order: 4498398650692495
