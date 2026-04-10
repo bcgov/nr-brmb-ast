@@ -13,7 +13,7 @@ import ca.bc.gov.farms.data.assemblers.ExpectedProductionResourceAssembler;
 import ca.bc.gov.farms.data.entities.ExpectedProductionEntity;
 import ca.bc.gov.farms.data.mappers.ExpectedProductionMapper;
 import ca.bc.gov.farms.data.models.ExpectedProductionListRsrc;
-import ca.bc.gov.farms.data.models.ExpectedProductionModel;
+import ca.bc.gov.farms.data.models.ExpectedProductionRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -64,10 +64,10 @@ public class ExpectedProductionService {
         return result;
     }
 
-    public ExpectedProductionModel getExpectedProduction(Long expectedProductionId)
+    public ExpectedProductionRsrc getExpectedProduction(Long expectedProductionId)
             throws ServiceException, NotFoundException {
 
-        ExpectedProductionModel result = null;
+        ExpectedProductionRsrc result = null;
 
         try {
             ExpectedProductionEntity entity = expectedProductionMapper.fetch(expectedProductionId);
@@ -87,15 +87,15 @@ public class ExpectedProductionService {
     }
 
     @Transactional
-    public ExpectedProductionModel createExpectedProduction(ExpectedProductionModel resource)
+    public ExpectedProductionRsrc createExpectedProduction(ExpectedProductionRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<ExpectedProductionModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<ExpectedProductionRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        ExpectedProductionModel result = null;
+        ExpectedProductionRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -120,15 +120,15 @@ public class ExpectedProductionService {
     }
 
     @Transactional
-    public ExpectedProductionModel updateExpectedProduction(Long expectedProductionId, ExpectedProductionModel resource)
+    public ExpectedProductionRsrc updateExpectedProduction(Long expectedProductionId, ExpectedProductionRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<ExpectedProductionModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<ExpectedProductionRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        ExpectedProductionModel result = null;
+        ExpectedProductionRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

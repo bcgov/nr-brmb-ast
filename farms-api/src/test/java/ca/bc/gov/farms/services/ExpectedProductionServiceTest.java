@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.models.ExpectedProductionListRsrc;
-import ca.bc.gov.farms.data.models.ExpectedProductionModel;
+import ca.bc.gov.farms.data.models.ExpectedProductionRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,13 +34,13 @@ public class ExpectedProductionServiceTest {
     @Test
     @Order(1)
     public void testCreateExpectedProduction() {
-        ExpectedProductionModel resource = new ExpectedProductionModel();
+        ExpectedProductionRsrc resource = new ExpectedProductionRsrc();
         resource.setExpectedProductionPerProdUnit(new BigDecimal("0.907"));
         resource.setInventoryItemCode("73");
         resource.setCropUnitCode("1");
         resource.setUserEmail("testUser");
 
-        ExpectedProductionModel newResource = expectedProductionService.createExpectedProduction(resource);
+        ExpectedProductionRsrc newResource = expectedProductionService.createExpectedProduction(resource);
         expectedProductionId = newResource.getExpectedProductionId();
 
         assertThat(newResource.getExpectedProductionPerProdUnit()).isEqualTo(new BigDecimal("0.907"));
@@ -58,7 +58,7 @@ public class ExpectedProductionServiceTest {
         assertThat(resources.getExpectedProductionList()).isNotEmpty();
         assertThat(resources.getExpectedProductionList().size()).isEqualTo(1);
 
-        ExpectedProductionModel resource = resources.getExpectedProductionList().iterator().next();
+        ExpectedProductionRsrc resource = resources.getExpectedProductionList().iterator().next();
         assertThat(resource.getExpectedProductionPerProdUnit()).isEqualTo(new BigDecimal("0.907"));
         assertThat(resource.getInventoryItemCode()).isEqualTo("73");
         assertThat(resource.getInventoryItemDesc()).isEqualTo("Strawberries");
@@ -69,7 +69,7 @@ public class ExpectedProductionServiceTest {
     @Test
     @Order(3)
     public void testUpdateExpectedProduction() {
-        ExpectedProductionModel resource = null;
+        ExpectedProductionRsrc resource = null;
         try {
             resource = expectedProductionService.getExpectedProduction(expectedProductionId);
         } catch (ServiceException | NotFoundException e) {
@@ -81,7 +81,7 @@ public class ExpectedProductionServiceTest {
         resource.setExpectedProductionPerProdUnit(new BigDecimal("5113.000"));
         resource.setUserEmail("testUser");
 
-        ExpectedProductionModel updatedResource = null;
+        ExpectedProductionRsrc updatedResource = null;
         try {
             updatedResource = expectedProductionService.updateExpectedProduction(expectedProductionId, resource);
         } catch (ConstraintViolationException | ServiceException | NotFoundException e) {

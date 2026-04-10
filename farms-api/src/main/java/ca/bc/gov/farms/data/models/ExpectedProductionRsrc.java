@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpectedProductionModel extends BaseResource {
+public class ExpectedProductionRsrc extends BaseResource {
 
     private Long expectedProductionId;
 

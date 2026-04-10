@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.ExpectedProductionEntity;
 import ca.bc.gov.farms.data.models.ExpectedProductionListRsrc;
-import ca.bc.gov.farms.data.models.ExpectedProductionModel;
+import ca.bc.gov.farms.data.models.ExpectedProductionRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class ExpectedProductionResourceAssembler extends BaseResourceAssembler {
 
-    public ExpectedProductionModel getExpectedProduction(@NonNull ExpectedProductionEntity entity) {
+    public ExpectedProductionRsrc getExpectedProduction(@NonNull ExpectedProductionEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        ExpectedProductionModel resource = new ExpectedProductionModel();
+        ExpectedProductionRsrc resource = new ExpectedProductionRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -41,8 +41,8 @@ public class ExpectedProductionResourceAssembler extends BaseResourceAssembler {
         ExpectedProductionListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<ExpectedProductionModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            ExpectedProductionModel resource = new ExpectedProductionModel();
+        List<ExpectedProductionRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            ExpectedProductionRsrc resource = new ExpectedProductionRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getExpectedProductionId(), resource, baseUri);
             return resource;
@@ -59,7 +59,7 @@ public class ExpectedProductionResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateExpectedProduction(@NonNull ExpectedProductionModel resource,
+    public void updateExpectedProduction(@NonNull ExpectedProductionRsrc resource,
             @NonNull ExpectedProductionEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }
