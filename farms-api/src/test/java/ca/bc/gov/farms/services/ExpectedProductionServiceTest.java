@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.ExpectedProductionListModel;
+import ca.bc.gov.farms.data.models.ExpectedProductionListRsrc;
 import ca.bc.gov.farms.data.models.ExpectedProductionModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -53,7 +53,7 @@ public class ExpectedProductionServiceTest {
     @Test
     @Order(2)
     public void testGetAllExpectedProductions() {
-        ExpectedProductionListModel resources = expectedProductionService.getAllExpectedProductions();
+        ExpectedProductionListRsrc resources = expectedProductionService.getAllExpectedProductions();
         assertThat(resources).isNotNull();
         assertThat(resources.getExpectedProductionList()).isNotEmpty();
         assertThat(resources.getExpectedProductionList().size()).isEqualTo(1);

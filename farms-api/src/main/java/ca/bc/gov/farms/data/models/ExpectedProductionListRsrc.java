@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpectedProductionListModel extends BaseResource {
+public class ExpectedProductionListRsrc extends BaseResource {
 
     private List<ExpectedProductionModel> expectedProductionList;
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.ExpectedProductionListModel;
+import ca.bc.gov.farms.data.models.ExpectedProductionListRsrc;
 import ca.bc.gov.farms.data.models.ExpectedProductionModel;
 import ca.bc.gov.farms.services.ExpectedProductionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,15 +46,15 @@ public class ExpectedProductionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ExpectedProductionListModel.class))),
+                    content = @Content(schema = @Schema(implementation = ExpectedProductionListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ExpectedProductionListModel> getAllExpectedProductions(
+    public ResponseEntity<ExpectedProductionListRsrc> getAllExpectedProductions(
             @RequestParam(required = false) String inventoryItemCode) {
         log.debug(" >> getAllExpectedProductions");
 
-        ExpectedProductionListModel resources = null;
+        ExpectedProductionListRsrc resources = null;
         try {
             if (StringUtils.isBlank(inventoryItemCode)) {
                 resources = expectedProductionService.getAllExpectedProductions();

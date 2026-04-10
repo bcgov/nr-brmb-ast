@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.ExpectedProductionEntity;
-import ca.bc.gov.farms.data.models.ExpectedProductionListModel;
+import ca.bc.gov.farms.data.models.ExpectedProductionListRsrc;
 import ca.bc.gov.farms.data.models.ExpectedProductionModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,11 +34,11 @@ public class ExpectedProductionResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    public ExpectedProductionListModel getExpectedProductionList(List<ExpectedProductionEntity> entities) {
+    public ExpectedProductionListRsrc getExpectedProductionList(List<ExpectedProductionEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        ExpectedProductionListModel result = null;
+        ExpectedProductionListRsrc result = null;
 
         @SuppressWarnings("null")
         List<ExpectedProductionModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -48,7 +48,7 @@ public class ExpectedProductionResourceAssembler extends BaseResourceAssembler {
             return resource;
         }).collect(Collectors.toList());
 
-        result = new ExpectedProductionListModel();
+        result = new ExpectedProductionListRsrc();
         result.setExpectedProductionList(resources);
 
         String eTag = getEtag(result);

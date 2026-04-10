@@ -68,7 +68,7 @@ public class ExpectedProductionControllerTest {
 
         mockMvc.perform(get("/expectedProductions"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("ExpectedProductionListModel"))
+                .andExpect(jsonPath("$.@type").value("ExpectedProductionListRsrc"))
                 .andExpect(jsonPath("$.expectedProductionList[0].@type").value("ExpectedProductionModel"))
                 .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionId").value(341))
                 .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionPerProdUnit").value(0.907))
@@ -87,7 +87,7 @@ public class ExpectedProductionControllerTest {
         mockMvc.perform(get("/expectedProductions")
                 .param("inventoryItemCode", "73"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("ExpectedProductionListModel"))
+                .andExpect(jsonPath("$.@type").value("ExpectedProductionListRsrc"))
                 .andExpect(jsonPath("$.expectedProductionList[0].@type").value("ExpectedProductionModel"))
                 .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionId").value(341))
                 .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionPerProdUnit").value(0.907))
