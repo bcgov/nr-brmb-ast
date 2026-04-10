@@ -13,7 +13,7 @@ import ca.bc.gov.farms.data.assemblers.InventoryTypeXrefResourceAssembler;
 import ca.bc.gov.farms.data.entities.InventoryTypeXrefEntity;
 import ca.bc.gov.farms.data.mappers.InventoryTypeXrefMapper;
 import ca.bc.gov.farms.data.models.InventoryTypeXrefListRsrc;
-import ca.bc.gov.farms.data.models.InventoryTypeXrefModel;
+import ca.bc.gov.farms.data.models.InventoryTypeXrefRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -49,10 +49,10 @@ public class InventoryTypeXrefService {
         return result;
     }
 
-    public InventoryTypeXrefModel getInventoryTypeXref(Long agristabilityCommodityXrefId)
+    public InventoryTypeXrefRsrc getInventoryTypeXref(Long agristabilityCommodityXrefId)
             throws ServiceException, NotFoundException {
 
-        InventoryTypeXrefModel result = null;
+        InventoryTypeXrefRsrc result = null;
 
         try {
             InventoryTypeXrefEntity entity = inventoryTypeXrefMapper.fetch(agristabilityCommodityXrefId);
@@ -72,15 +72,15 @@ public class InventoryTypeXrefService {
     }
 
     @Transactional
-    public InventoryTypeXrefModel createInventoryTypeXref(InventoryTypeXrefModel resource)
+    public InventoryTypeXrefRsrc createInventoryTypeXref(InventoryTypeXrefRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<InventoryTypeXrefModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<InventoryTypeXrefRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        InventoryTypeXrefModel result = null;
+        InventoryTypeXrefRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -105,15 +105,15 @@ public class InventoryTypeXrefService {
     }
 
     @Transactional
-    public InventoryTypeXrefModel updateInventoryTypeXref(Long agristabilityCommodityXrefId,
-            InventoryTypeXrefModel resource) throws ServiceException, ConstraintViolationException, NotFoundException {
+    public InventoryTypeXrefRsrc updateInventoryTypeXref(Long agristabilityCommodityXrefId,
+            InventoryTypeXrefRsrc resource) throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<InventoryTypeXrefModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<InventoryTypeXrefRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        InventoryTypeXrefModel result = null;
+        InventoryTypeXrefRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

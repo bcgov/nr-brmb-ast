@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ca.bc.gov.farms.data.models.InventoryTypeXrefModel;
+import ca.bc.gov.farms.data.models.InventoryTypeXrefRsrc;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -40,7 +40,7 @@ public class InventoryTypeXrefControllerTest {
     @Order(1)
     public void testCreateInventoryTypeXref() throws Exception {
 
-        InventoryTypeXrefModel resource = new InventoryTypeXrefModel();
+        InventoryTypeXrefRsrc resource = new InventoryTypeXrefRsrc();
         resource.setMarketCommodityInd("Y");
         resource.setInventoryItemCode("73");
         resource.setInventoryGroupCode("3");
@@ -51,7 +51,7 @@ public class InventoryTypeXrefControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.@type").value("InventoryTypeXrefModel"))
+                .andExpect(jsonPath("$.@type").value("InventoryTypeXrefRsrc"))
                 .andExpect(jsonPath("$.agristabilityCommodityXrefId").value(233520))
                 .andExpect(jsonPath("$.marketCommodityInd").value("Y"))
                 .andExpect(jsonPath("$.inventoryItemCode").value("73"))
@@ -72,7 +72,7 @@ public class InventoryTypeXrefControllerTest {
                 .param("inventoryClassCode", "4"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("InventoryTypeXrefListRsrc"))
-                .andExpect(jsonPath("$.inventoryTypeXrefList[0].@type").value("InventoryTypeXrefModel"))
+                .andExpect(jsonPath("$.inventoryTypeXrefList[0].@type").value("InventoryTypeXrefRsrc"))
                 .andExpect(jsonPath("$.inventoryTypeXrefList[0].agristabilityCommodityXrefId").value(233520))
                 .andExpect(jsonPath("$.inventoryTypeXrefList[0].marketCommodityInd").value("Y"))
                 .andExpect(jsonPath("$.inventoryTypeXrefList[0].inventoryItemCode").value("73"))
@@ -92,7 +92,7 @@ public class InventoryTypeXrefControllerTest {
 
         mockMvc.perform(get("/inventoryTypeXrefs/233520"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("InventoryTypeXrefModel"))
+                .andExpect(jsonPath("$.@type").value("InventoryTypeXrefRsrc"))
                 .andExpect(jsonPath("$.agristabilityCommodityXrefId").value(233520))
                 .andExpect(jsonPath("$.marketCommodityInd").value("Y"))
                 .andExpect(jsonPath("$.inventoryItemCode").value("73"))
@@ -109,7 +109,7 @@ public class InventoryTypeXrefControllerTest {
     @Order(4)
     public void testUpdateInventoryTypeXref() throws Exception {
 
-        InventoryTypeXrefModel resource = new InventoryTypeXrefModel();
+        InventoryTypeXrefRsrc resource = new InventoryTypeXrefRsrc();
         resource.setAgristabilityCommodityXrefId(233520L);
         resource.setMarketCommodityInd("N");
         resource.setInventoryItemCode("5560");
@@ -121,7 +121,7 @@ public class InventoryTypeXrefControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("InventoryTypeXrefModel"))
+                .andExpect(jsonPath("$.@type").value("InventoryTypeXrefRsrc"))
                 .andExpect(jsonPath("$.agristabilityCommodityXrefId").value(233520))
                 .andExpect(jsonPath("$.marketCommodityInd").value("N"))
                 .andExpect(jsonPath("$.inventoryItemCode").value("5560"))

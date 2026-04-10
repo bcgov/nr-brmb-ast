@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InventoryTypeXrefListRsrc extends BaseResource {
 
-    private List<InventoryTypeXrefModel> inventoryTypeXrefList;
+    private List<InventoryTypeXrefRsrc> inventoryTypeXrefList;
 }

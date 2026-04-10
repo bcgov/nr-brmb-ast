@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.InventoryTypeXrefEntity;
 import ca.bc.gov.farms.data.models.InventoryTypeXrefListRsrc;
-import ca.bc.gov.farms.data.models.InventoryTypeXrefModel;
+import ca.bc.gov.farms.data.models.InventoryTypeXrefRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class InventoryTypeXrefResourceAssembler extends BaseResourceAssembler {
 
-    public InventoryTypeXrefModel getInventoryTypeXref(@NonNull InventoryTypeXrefEntity entity) {
+    public InventoryTypeXrefRsrc getInventoryTypeXref(@NonNull InventoryTypeXrefEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        InventoryTypeXrefModel resource = new InventoryTypeXrefModel();
+        InventoryTypeXrefRsrc resource = new InventoryTypeXrefRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -41,8 +41,8 @@ public class InventoryTypeXrefResourceAssembler extends BaseResourceAssembler {
         InventoryTypeXrefListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<InventoryTypeXrefModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            InventoryTypeXrefModel resource = new InventoryTypeXrefModel();
+        List<InventoryTypeXrefRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            InventoryTypeXrefRsrc resource = new InventoryTypeXrefRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getAgristabilityCommodityXrefId(), resource, baseUri);
             return resource;
@@ -59,7 +59,7 @@ public class InventoryTypeXrefResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateInventoryTypeXref(@NonNull InventoryTypeXrefModel resource,
+    public void updateInventoryTypeXref(@NonNull InventoryTypeXrefRsrc resource,
             @NonNull InventoryTypeXrefEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }

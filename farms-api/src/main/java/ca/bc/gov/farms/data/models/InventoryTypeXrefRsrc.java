@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class InventoryTypeXrefModel extends BaseResource {
+public class InventoryTypeXrefRsrc extends BaseResource {
 
     private Long agristabilityCommodityXrefId;
 
