@@ -22,12 +22,11 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = BenchmarkPerUnitModel\", function()
-      {\r
+      pm.test(\"Response contains @type = BenchmarkPerUnitRsrc\", function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"BenchmarkPerUnitModel\");\r
+      \    pm.expect(json['@type']).to.be.equal(\"BenchmarkPerUnitRsrc\");\r
 
       });"
     language: text/javascript

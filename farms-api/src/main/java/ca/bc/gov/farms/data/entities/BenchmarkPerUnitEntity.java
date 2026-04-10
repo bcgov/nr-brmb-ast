@@ -2,8 +2,8 @@ package ca.bc.gov.farms.data.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class BenchmarkPerUnitEntity implements Serializable {
     private Long benchmarkPerUnitId;
     private Integer programYear;
     private String unitComment;
-    private Date expiryDate;
+    private LocalDate expiryDate;
     private String municipalityCode;
     private String municipalityDesc;
     private String inventoryItemCode;
@@ -47,7 +47,7 @@ public class BenchmarkPerUnitEntity implements Serializable {
 
     private Integer revisionCount;
     private String createUser;
-    private Date createDate;
+    private LocalDateTime createDate;
     private String updateUser;
-    private Date updateDate;
+    private LocalDateTime updateDate;
 }

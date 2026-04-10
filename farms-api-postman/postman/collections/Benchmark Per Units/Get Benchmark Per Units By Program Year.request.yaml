@@ -22,13 +22,12 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = BenchmarkPerUnitListModel\",
-      function() {\r
+      pm.test(\"Response contains @type = BenchmarkPerUnitListRsrc\", function()
+      {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"BenchmarkPerUnitListModel\");\
-      \r
+      \    pm.expect(json['@type']).to.be.equal(\"BenchmarkPerUnitListRsrc\");\r
 
       });\r
 
@@ -44,14 +43,14 @@ scripts:
 
       \r
 
-      pm.test(\"benchmarkPerUnitList[0] contains @type =
-      BenchmarkPerUnitModel\", function() {\r
+      pm.test(\"benchmarkPerUnitList[0] contains @type = BenchmarkPerUnitRsrc\",
+      function() {\r
 
       \    pm.expect(json.benchmarkPerUnitList[0]).to.have.property(\"@type\");\
       \r
 
       \    pm.expect(json.benchmarkPerUnitList[0]['@type']).to.be.equal(\"Bench\
-      markPerUnitModel\");\r
+      markPerUnitRsrc\");\r
 
       });"
     language: text/javascript

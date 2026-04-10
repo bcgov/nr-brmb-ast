@@ -1,0 +1,124 @@
+$kind: http-request
+name: Update Benchmark Per Unit
+url: "{{baseUrl}}/benchmarkPerUnits/:benchmarkPerUnitId"
+method: PUT
+pathVariables:
+  benchmarkPerUnitId: "{{benchmarkPerUnitId}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"BenchmarkPerUnitRsrc\",\r
+
+    \    \"benchmarkPerUnitId\": {{benchmarkPerUnitId}},\r
+
+    \    \"programYear\": 2024,\r
+
+    \    \"unitComment\": \"Testing Again...\",\r
+
+    \t\"expiryDate\": \"2027-01-01\",\r
+
+    \t\"municipalityCode\": \"1\",\r
+
+    \    \"inventoryItemCode\": null,\r
+
+    \    \"structureGroupCode\": null,\r
+
+    \    \"inventoryCode\": \"5054\",\r
+
+    \    \"inventoryDesc\": \"Pears\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.test(\"Response contains @type = BenchmarkPerUnitRsrc\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"BenchmarkPerUnitRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is updated as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"programYear\");\r
+
+      \    pm.expect(json.programYear).to.be.equal(2024);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"unitComment\");\r
+
+      \    pm.expect(json.unitComment).to.be.equal(\"Testing Again...\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"expiryDate\");\r
+
+      \    pm.expect(json.expiryDate).to.be.equal(\"2027-01-01\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"municipalityCode\");\r
+
+      \    pm.expect(json.municipalityCode).to.be.equal(\"1\");\r
+
+      \    pm.expect(json).to.have.property(\"municipalityDesc\");\r
+
+      \    pm.expect(json.municipalityDesc).to.be.equal(\"East Kootenay\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"5054\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDesc\");\r
+
+      \    pm.expect(json.inventoryItemDesc).to.be.equal(\"Pears\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"structureGroupCode\");\r
+
+      \    pm.expect(json.structureGroupCode).to.be.null;\r
+
+      \    pm.expect(json).to.have.property(\"structureGroupDesc\");\r
+
+      \    pm.expect(json.structureGroupDesc).to.be.null;\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryCode\");\r
+
+      \    pm.expect(json.inventoryCode).to.be.equal(\"5054\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryDesc\");\r
+
+      \    pm.expect(json.inventoryDesc).to.be.equal(\"Pears\");\r
+
+      });"
+    language: text/javascript
+order: 3749301760225564

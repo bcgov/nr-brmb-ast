@@ -1,8 +1,8 @@
 package ca.bc.gov.farms.data.models;
 
 import java.math.BigDecimal;
-import java.util.Date;
-
+import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import ca.bc.gov.brmb.common.rest.resource.BaseResource;
@@ -31,7 +31,9 @@ public class BenchmarkPerUnitRsrc extends BaseResource {
 
     @Size(min = 0, max = 2000, message = "BenchmarkPerUnit unitComment must be between 0 and 2000 characters")
     private String unitComment;
-    private Date expiryDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate expiryDate;
 
     @NotBlank(message = "BenchmarkPerUnit municipalityCode must not be blank")
     @Size(min = 0, max = 10, message = "BenchmarkPerUnit municipalityCode must be between 0 and 10 characters")

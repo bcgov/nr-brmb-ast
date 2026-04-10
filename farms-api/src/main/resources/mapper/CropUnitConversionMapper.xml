@@ -20,9 +20,9 @@
 
         <result property="revisionCount" column="revision_count" javaType="java.lang.Integer" jdbcType="NUMERIC" />
         <result property="createUser" column="who_created" javaType="java.lang.String" jdbcType="VARCHAR" />
-        <result property="createDate" column="when_created" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="createDate" column="when_created" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" />
         <result property="updateUser" column="who_updated" javaType="java.lang.String" jdbcType="VARCHAR" />
-        <result property="updateDate" column="when_updated" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result property="updateDate" column="when_updated" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" />
 
         <collection property="conversionUnits" ofType="ca.bc.gov.farms.data.entities.ConversionUnitEntity" resultMap="ConversionUnitMap" />
     </resultMap>

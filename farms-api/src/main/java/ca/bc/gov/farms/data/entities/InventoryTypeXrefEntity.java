@@ -1,8 +1,7 @@
 package ca.bc.gov.farms.data.entities;
 
 import java.io.Serializable;
-import java.util.Date;
-
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +27,7 @@ public class InventoryTypeXrefEntity implements Serializable {
 
     private Integer revisionCount;
     private String createUser;
-    private Date createDate;
+    private LocalDateTime createDate;
     private String updateUser;
-    private Date updateDate;
+    private LocalDateTime updateDate;
 }
