@@ -1,0 +1,84 @@
+$kind: http-request
+name: Update Configuration Parameter
+url: "{{baseUrl}}/configurationParameters/:configurationParameterId"
+method: PUT
+pathVariables:
+  configurationParameterId: "{{configurationParameterId}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"ConfigurationParameterRsrc\",\r
+
+    \    \"configurationParameterId\": {{configurationParameterId}},\r
+
+    \    \"parameterName\": \"TEST - test\",\r
+
+    \    \"parameterValue\": \"33\",\r
+
+    \    \"sensitiveDataInd\": \"Y\",\r
+
+    \    \"configParamTypeCode\": \"INTEGER\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.test(\"Response contains @type = ConfigurationParameterRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"ConfigurationParameterRsrc\");\
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is updated as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterName\")\r
+
+      \    pm.expect(json.parameterName).to.be.equal(\"TEST - test\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterValue\");\r
+
+      \    pm.expect(json.parameterValue).to.be.equal(\"33\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"sensitiveDataInd\");\r
+
+      \    pm.expect(json.sensitiveDataInd).to.be.equal(\"Y\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"configParamTypeCode\");\r
+
+      \    pm.expect(json.configParamTypeCode).to.be.equal(\"INTEGER\");\r
+
+      });"
+    language: text/javascript
+order: 4498979025767404
