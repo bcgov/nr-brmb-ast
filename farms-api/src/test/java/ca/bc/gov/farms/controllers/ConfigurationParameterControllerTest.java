@@ -67,7 +67,7 @@ public class ConfigurationParameterControllerTest {
 
         mockMvc.perform(get("/configurationParameters"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("ConfigurationParameterListModel"))
+                .andExpect(jsonPath("$.@type").value("ConfigurationParameterListRsrc"))
                 .andExpect(jsonPath("$.configurationParameterList[0].@type").value("ConfigurationParameterModel"))
                 .andExpect(jsonPath("$.configurationParameterList[0].configurationParameterId").value(481))
                 .andExpect(jsonPath("$.configurationParameterList[0].parameterName").value("CDOGS - Api Version"))
@@ -85,7 +85,7 @@ public class ConfigurationParameterControllerTest {
         mockMvc.perform(get("/configurationParameters")
                 .param("nameStartsWith", "CDOGS"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("ConfigurationParameterListModel"))
+                .andExpect(jsonPath("$.@type").value("ConfigurationParameterListRsrc"))
                 .andExpect(jsonPath("$.configurationParameterList[0].@type").value("ConfigurationParameterModel"))
                 .andExpect(jsonPath("$.configurationParameterList[0].configurationParameterId").value(481))
                 .andExpect(jsonPath("$.configurationParameterList[0].parameterName").value("CDOGS - Api Version"))

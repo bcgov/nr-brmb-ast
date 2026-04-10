@@ -12,7 +12,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.ConfigurationParameterResourceAssembler;
 import ca.bc.gov.farms.data.entities.ConfigurationParameterEntity;
 import ca.bc.gov.farms.data.mappers.ConfigurationParameterMapper;
-import ca.bc.gov.farms.data.models.ConfigurationParameterListModel;
+import ca.bc.gov.farms.data.models.ConfigurationParameterListRsrc;
 import ca.bc.gov.farms.data.models.ConfigurationParameterModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -32,9 +32,9 @@ public class ConfigurationParameterService {
     @Autowired
     private Validator validator;
 
-    public ConfigurationParameterListModel getAllConfigurationParameters() throws ServiceException {
+    public ConfigurationParameterListRsrc getAllConfigurationParameters() throws ServiceException {
 
-        ConfigurationParameterListModel result = null;
+        ConfigurationParameterListRsrc result = null;
 
         try {
             List<ConfigurationParameterEntity> entities = configurationParameterMapper.fetchAll();
@@ -47,10 +47,10 @@ public class ConfigurationParameterService {
         return result;
     }
 
-    public ConfigurationParameterListModel getConfigurationParametersByParameterNamePrefix(String parameterNamePrefix)
+    public ConfigurationParameterListRsrc getConfigurationParametersByParameterNamePrefix(String parameterNamePrefix)
             throws ServiceException {
 
-        ConfigurationParameterListModel result = null;
+        ConfigurationParameterListRsrc result = null;
 
         try {
             List<ConfigurationParameterEntity> entities = configurationParameterMapper

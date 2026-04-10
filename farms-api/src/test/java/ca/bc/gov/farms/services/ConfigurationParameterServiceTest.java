@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.ConfigurationParameterListModel;
+import ca.bc.gov.farms.data.models.ConfigurationParameterListRsrc;
 import ca.bc.gov.farms.data.models.ConfigurationParameterModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -51,7 +51,7 @@ public class ConfigurationParameterServiceTest {
     @Test
     @Order(2)
     public void testGetAllConfigurationParameters() {
-        ConfigurationParameterListModel resources = configurationParameterService.getAllConfigurationParameters();
+        ConfigurationParameterListRsrc resources = configurationParameterService.getAllConfigurationParameters();
         assertThat(resources).isNotNull();
         assertThat(resources.getConfigurationParameterList()).isNotEmpty();
         assertThat(resources.getConfigurationParameterList().size()).isEqualTo(1);

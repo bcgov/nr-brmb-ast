@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.ConfigurationParameterEntity;
-import ca.bc.gov.farms.data.models.ConfigurationParameterListModel;
+import ca.bc.gov.farms.data.models.ConfigurationParameterListRsrc;
 import ca.bc.gov.farms.data.models.ConfigurationParameterModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,11 +34,11 @@ public class ConfigurationParameterResourceAssembler extends BaseResourceAssembl
         return resource;
     }
 
-    public ConfigurationParameterListModel getConfigurationParameterList(List<ConfigurationParameterEntity> entities) {
+    public ConfigurationParameterListRsrc getConfigurationParameterList(List<ConfigurationParameterEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        ConfigurationParameterListModel result = null;
+        ConfigurationParameterListRsrc result = null;
 
         @SuppressWarnings("null")
         List<ConfigurationParameterModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -48,7 +48,7 @@ public class ConfigurationParameterResourceAssembler extends BaseResourceAssembl
             return resource;
         }).collect(Collectors.toList());
 
-        result = new ConfigurationParameterListModel();
+        result = new ConfigurationParameterListRsrc();
         result.setConfigurationParameterList(resources);
 
         String eTag = getEtag(result);

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.ConfigurationParameterListModel;
+import ca.bc.gov.farms.data.models.ConfigurationParameterListRsrc;
 import ca.bc.gov.farms.data.models.ConfigurationParameterModel;
 import ca.bc.gov.farms.services.ConfigurationParameterService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,15 +46,15 @@ public class ConfigurationParameterController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ConfigurationParameterListModel.class))),
+                    content = @Content(schema = @Schema(implementation = ConfigurationParameterListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ConfigurationParameterListModel> getAllConfigurationParameters(
+    public ResponseEntity<ConfigurationParameterListRsrc> getAllConfigurationParameters(
             @RequestParam(required = false) String nameStartsWith) {
         log.debug(" >> getAllConfigurationParameters: {}", nameStartsWith);
 
-        ConfigurationParameterListModel resource = null;
+        ConfigurationParameterListRsrc resource = null;
         try {
             if (StringUtils.isBlank(nameStartsWith)) {
                 resource = configurationParameterService.getAllConfigurationParameters();
