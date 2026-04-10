@@ -9,7 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.ProductiveUnitCodeEntity;
-import ca.bc.gov.farms.data.models.ProductiveUnitCodeListModel;
+import ca.bc.gov.farms.data.models.ProductiveUnitCodeListRsrc;
 import ca.bc.gov.farms.data.models.ProductiveUnitCodeModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,11 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ProductiveUnitCodeResourceAssembler extends BaseResourceAssembler {
 
-    public ProductiveUnitCodeListModel getProductiveUnitCodeList(List<ProductiveUnitCodeEntity> entities) {
+    public ProductiveUnitCodeListRsrc getProductiveUnitCodeList(List<ProductiveUnitCodeEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        ProductiveUnitCodeListModel result = null;
+        ProductiveUnitCodeListRsrc result = null;
 
         @SuppressWarnings("null")
         List<ProductiveUnitCodeModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -31,7 +31,7 @@ public class ProductiveUnitCodeResourceAssembler extends BaseResourceAssembler {
             return resource;
         }).collect(Collectors.toList());
 
-        result = new ProductiveUnitCodeListModel();
+        result = new ProductiveUnitCodeListRsrc();
         result.setProductiveUnitCodeList(resources);
 
         String eTag = getEtag(result);
