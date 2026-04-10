@@ -13,7 +13,7 @@ import ca.bc.gov.farms.data.assemblers.InventoryItemDetailResourceAssembler;
 import ca.bc.gov.farms.data.entities.InventoryItemDetailEntity;
 import ca.bc.gov.farms.data.mappers.InventoryItemDetailMapper;
 import ca.bc.gov.farms.data.models.InventoryItemDetailListRsrc;
-import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -49,10 +49,10 @@ public class InventoryItemDetailService {
         return result;
     }
 
-    public InventoryItemDetailModel getInventoryItemDetail(Long inventoryItemDetailId)
+    public InventoryItemDetailRsrc getInventoryItemDetail(Long inventoryItemDetailId)
             throws ServiceException, NotFoundException {
 
-        InventoryItemDetailModel result = null;
+        InventoryItemDetailRsrc result = null;
 
         try {
             InventoryItemDetailEntity entity = inventoryItemDetailMapper.fetch(inventoryItemDetailId);
@@ -72,15 +72,15 @@ public class InventoryItemDetailService {
     }
 
     @Transactional
-    public InventoryItemDetailModel createInventoryItemDetail(InventoryItemDetailModel resource)
+    public InventoryItemDetailRsrc createInventoryItemDetail(InventoryItemDetailRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<InventoryItemDetailModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<InventoryItemDetailRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        InventoryItemDetailModel result = null;
+        InventoryItemDetailRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -105,16 +105,16 @@ public class InventoryItemDetailService {
     }
 
     @Transactional
-    public InventoryItemDetailModel updateInventoryItemDetail(Long inventoryItemDetailId,
-            InventoryItemDetailModel resource)
+    public InventoryItemDetailRsrc updateInventoryItemDetail(Long inventoryItemDetailId,
+            InventoryItemDetailRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<InventoryItemDetailModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<InventoryItemDetailRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        InventoryItemDetailModel result = null;
+        InventoryItemDetailRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
