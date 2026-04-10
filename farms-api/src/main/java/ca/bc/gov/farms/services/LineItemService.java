@@ -14,7 +14,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.LineItemResourceAssembler;
 import ca.bc.gov.farms.data.entities.LineItemEntity;
 import ca.bc.gov.farms.data.mappers.LineItemMapper;
-import ca.bc.gov.farms.data.models.LineItemListModel;
+import ca.bc.gov.farms.data.models.LineItemListRsrc;
 import ca.bc.gov.farms.data.models.LineItemModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -34,9 +34,9 @@ public class LineItemService {
     @Autowired
     private Validator validator;
 
-    public LineItemListModel getLineItemsByProgramYear(Integer programYear) throws ServiceException {
+    public LineItemListRsrc getLineItemsByProgramYear(Integer programYear) throws ServiceException {
 
-        LineItemListModel result = null;
+        LineItemListRsrc result = null;
 
         try {
             List<LineItemEntity> entities = lineItemMapper.fetchByProgramYear(programYear);
@@ -169,9 +169,9 @@ public class LineItemService {
     }
 
     @Transactional
-    public LineItemListModel copyLineItems(Integer currentYear) throws ServiceException {
+    public LineItemListRsrc copyLineItems(Integer currentYear) throws ServiceException {
 
-        LineItemListModel result = null;
+        LineItemListRsrc result = null;
         Integer previousYear = currentYear - 1;
 
         try {

@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.LineItemEntity;
-import ca.bc.gov.farms.data.models.LineItemListModel;
+import ca.bc.gov.farms.data.models.LineItemListRsrc;
 import ca.bc.gov.farms.data.models.LineItemModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,11 +34,11 @@ public class LineItemResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    public LineItemListModel getLineItemList(List<LineItemEntity> entities) {
+    public LineItemListRsrc getLineItemList(List<LineItemEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        LineItemListModel result = null;
+        LineItemListRsrc result = null;
 
         @SuppressWarnings("null")
         List<LineItemModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -48,7 +48,7 @@ public class LineItemResourceAssembler extends BaseResourceAssembler {
             return resource;
         }).collect(Collectors.toList());
 
-        result = new LineItemListModel();
+        result = new LineItemListRsrc();
         result.setLineItemList(resources);
 
         String eTag = getEtag(result);

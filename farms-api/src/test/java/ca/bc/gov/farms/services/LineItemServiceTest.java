@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.LineItemListModel;
+import ca.bc.gov.farms.data.models.LineItemListRsrc;
 import ca.bc.gov.farms.data.models.LineItemModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -71,7 +71,7 @@ public class LineItemServiceTest {
     @Test
     @Order(2)
     public void testGetLineItemsByProgramYear() {
-        LineItemListModel resources = lineItemService.getLineItemsByProgramYear(2025);
+        LineItemListRsrc resources = lineItemService.getLineItemsByProgramYear(2025);
         assertThat(resources).isNotNull();
         assertThat(resources.getLineItemList()).isNotEmpty();
         assertThat(resources.getLineItemList().size()).isEqualTo(1);

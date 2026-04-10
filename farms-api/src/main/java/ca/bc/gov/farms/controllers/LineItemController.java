@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.LineItemListModel;
+import ca.bc.gov.farms.data.models.LineItemListRsrc;
 import ca.bc.gov.farms.data.models.LineItemModel;
 import ca.bc.gov.farms.services.LineItemService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,16 +45,16 @@ public class LineItemController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = LineItemListModel.class))),
+                    content = @Content(schema = @Schema(implementation = LineItemListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<LineItemListModel> getLineItemsByProgramYear(
+    public ResponseEntity<LineItemListRsrc> getLineItemsByProgramYear(
             @RequestParam Integer programYear) {
         log.debug(" >> getLineItemsByProgramYear: {}", programYear);
 
         try {
-            LineItemListModel resource = lineItemService.getLineItemsByProgramYear(programYear);
+            LineItemListRsrc resource = lineItemService.getLineItemsByProgramYear(programYear);
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Line Items", e);
@@ -181,18 +181,18 @@ public class LineItemController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = LineItemListModel.class))),
+                    content = @Content(schema = @Schema(implementation = LineItemListRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<LineItemListModel> copyLineItems(
+    public ResponseEntity<LineItemListRsrc> copyLineItems(
             @PathVariable Integer currentYear) {
         log.debug(" >> copyLineItems");
 
         try {
-            LineItemListModel newResources = lineItemService.copyLineItems(currentYear);
+            LineItemListRsrc newResources = lineItemService.copyLineItems(currentYear);
             return ok(newResources);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while copying Line Items", e);
