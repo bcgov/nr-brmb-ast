@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductiveUnitCodeListRsrc extends BaseResource {
 
-    private List<ProductiveUnitCodeModel> productiveUnitCodeList;
+    private List<ProductiveUnitCodeRsrc> productiveUnitCodeList;
 }

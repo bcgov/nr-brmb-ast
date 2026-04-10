@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.ProductiveUnitCodeEntity;
 import ca.bc.gov.farms.data.models.ProductiveUnitCodeListRsrc;
-import ca.bc.gov.farms.data.models.ProductiveUnitCodeModel;
+import ca.bc.gov.farms.data.models.ProductiveUnitCodeRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,8 +24,8 @@ public class ProductiveUnitCodeResourceAssembler extends BaseResourceAssembler {
         ProductiveUnitCodeListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<ProductiveUnitCodeModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            ProductiveUnitCodeModel resource = new ProductiveUnitCodeModel();
+        List<ProductiveUnitCodeRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            ProductiveUnitCodeRsrc resource = new ProductiveUnitCodeRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getCode(), resource, baseUri);
             return resource;

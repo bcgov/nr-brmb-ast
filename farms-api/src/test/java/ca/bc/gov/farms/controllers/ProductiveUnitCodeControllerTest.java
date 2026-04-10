@@ -30,7 +30,7 @@ public class ProductiveUnitCodeControllerTest {
         mockMvc.perform(get("/productiveUnitCodes"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("ProductiveUnitCodeListRsrc"))
-                .andExpect(jsonPath("$.productiveUnitCodeList[0].@type").value("ProductiveUnitCodeModel"))
+                .andExpect(jsonPath("$.productiveUnitCodeList[0].@type").value("ProductiveUnitCodeRsrc"))
                 .andExpect(jsonPath("$.productiveUnitCodeList[0].code").value("100"))
                 .andExpect(jsonPath("$.productiveUnitCodeList[0].description").value("Alpaca"));
     }
