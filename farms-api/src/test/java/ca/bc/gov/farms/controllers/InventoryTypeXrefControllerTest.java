@@ -71,7 +71,7 @@ public class InventoryTypeXrefControllerTest {
         mockMvc.perform(get("/inventoryTypeXrefs")
                 .param("inventoryClassCode", "4"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("InventoryTypeXrefListModel"))
+                .andExpect(jsonPath("$.@type").value("InventoryTypeXrefListRsrc"))
                 .andExpect(jsonPath("$.inventoryTypeXrefList[0].@type").value("InventoryTypeXrefModel"))
                 .andExpect(jsonPath("$.inventoryTypeXrefList[0].agristabilityCommodityXrefId").value(233520))
                 .andExpect(jsonPath("$.inventoryTypeXrefList[0].marketCommodityInd").value("Y"))

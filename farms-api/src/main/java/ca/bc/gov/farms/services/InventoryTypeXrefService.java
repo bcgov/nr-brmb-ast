@@ -12,7 +12,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.InventoryTypeXrefResourceAssembler;
 import ca.bc.gov.farms.data.entities.InventoryTypeXrefEntity;
 import ca.bc.gov.farms.data.mappers.InventoryTypeXrefMapper;
-import ca.bc.gov.farms.data.models.InventoryTypeXrefListModel;
+import ca.bc.gov.farms.data.models.InventoryTypeXrefListRsrc;
 import ca.bc.gov.farms.data.models.InventoryTypeXrefModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -32,10 +32,10 @@ public class InventoryTypeXrefService {
     @Autowired
     private Validator validator;
 
-    public InventoryTypeXrefListModel getInventoryTypeXrefsByInventoryClassCode(String inventoryClassCode)
+    public InventoryTypeXrefListRsrc getInventoryTypeXrefsByInventoryClassCode(String inventoryClassCode)
             throws ServiceException {
 
-        InventoryTypeXrefListModel result = null;
+        InventoryTypeXrefListRsrc result = null;
 
         try {
             List<InventoryTypeXrefEntity> entities = inventoryTypeXrefMapper

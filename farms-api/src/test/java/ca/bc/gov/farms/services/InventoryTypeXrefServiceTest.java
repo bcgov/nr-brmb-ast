@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.InventoryTypeXrefListModel;
+import ca.bc.gov.farms.data.models.InventoryTypeXrefListRsrc;
 import ca.bc.gov.farms.data.models.InventoryTypeXrefModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -54,7 +54,7 @@ public class InventoryTypeXrefServiceTest {
     @Test
     @Order(2)
     public void testGetInventoryTypeXrefsByInventoryClassCode() {
-        InventoryTypeXrefListModel resources = inventoryTypeXrefService.getInventoryTypeXrefsByInventoryClassCode("4");
+        InventoryTypeXrefListRsrc resources = inventoryTypeXrefService.getInventoryTypeXrefsByInventoryClassCode("4");
         assertThat(resources).isNotNull();
         assertThat(resources.getInventoryTypeXrefList()).isNotEmpty();
         assertThat(resources.getInventoryTypeXrefList().size()).isEqualTo(1);

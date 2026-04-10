@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.InventoryTypeXrefEntity;
-import ca.bc.gov.farms.data.models.InventoryTypeXrefListModel;
+import ca.bc.gov.farms.data.models.InventoryTypeXrefListRsrc;
 import ca.bc.gov.farms.data.models.InventoryTypeXrefModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,11 +34,11 @@ public class InventoryTypeXrefResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    public InventoryTypeXrefListModel getInventoryTypeXrefList(List<InventoryTypeXrefEntity> entities) {
+    public InventoryTypeXrefListRsrc getInventoryTypeXrefList(List<InventoryTypeXrefEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        InventoryTypeXrefListModel result = null;
+        InventoryTypeXrefListRsrc result = null;
 
         @SuppressWarnings("null")
         List<InventoryTypeXrefModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -48,7 +48,7 @@ public class InventoryTypeXrefResourceAssembler extends BaseResourceAssembler {
             return resource;
         }).collect(Collectors.toList());
 
-        result = new InventoryTypeXrefListModel();
+        result = new InventoryTypeXrefListRsrc();
         result.setInventoryTypeXrefList(resources);
 
         String eTag = getEtag(result);

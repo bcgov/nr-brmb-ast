@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.InventoryTypeXrefListModel;
+import ca.bc.gov.farms.data.models.InventoryTypeXrefListRsrc;
 import ca.bc.gov.farms.data.models.InventoryTypeXrefModel;
 import ca.bc.gov.farms.services.InventoryTypeXrefService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,16 +45,16 @@ public class InventoryTypeXrefController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = InventoryTypeXrefListModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryTypeXrefListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryTypeXrefListModel> getInventoryTypeXrefsByInventoryClassCode(
+    public ResponseEntity<InventoryTypeXrefListRsrc> getInventoryTypeXrefsByInventoryClassCode(
             @RequestParam String inventoryClassCode) {
         log.debug(" >> getInventoryTypeXrefsByInventoryClassCode: {}", inventoryClassCode);
 
         try {
-            InventoryTypeXrefListModel resource = inventoryTypeXrefService.getInventoryTypeXrefsByInventoryClassCode(inventoryClassCode);
+            InventoryTypeXrefListRsrc resource = inventoryTypeXrefService.getInventoryTypeXrefsByInventoryClassCode(inventoryClassCode);
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Inventory Type Xrefs", e);
