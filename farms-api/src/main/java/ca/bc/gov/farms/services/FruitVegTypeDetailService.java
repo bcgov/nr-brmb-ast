@@ -12,7 +12,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.FruitVegTypeDetailResourceAssembler;
 import ca.bc.gov.farms.data.entities.FruitVegTypeDetailEntity;
 import ca.bc.gov.farms.data.mappers.FruitVegTypeDetailMapper;
-import ca.bc.gov.farms.data.models.FruitVegTypeDetailListModel;
+import ca.bc.gov.farms.data.models.FruitVegTypeDetailListRsrc;
 import ca.bc.gov.farms.data.models.FruitVegTypeDetailModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -32,9 +32,9 @@ public class FruitVegTypeDetailService {
     @Autowired
     private Validator validator;
 
-    public FruitVegTypeDetailListModel getAllFruitVegTypeDetails() throws ServiceException {
+    public FruitVegTypeDetailListRsrc getAllFruitVegTypeDetails() throws ServiceException {
 
-        FruitVegTypeDetailListModel result = null;
+        FruitVegTypeDetailListRsrc result = null;
 
         try {
             List<FruitVegTypeDetailEntity> entities = fruitVegTypeDetailMapper.fetchAll();

@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.FruitVegTypeDetailListModel;
+import ca.bc.gov.farms.data.models.FruitVegTypeDetailListRsrc;
 import ca.bc.gov.farms.data.models.FruitVegTypeDetailModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -51,7 +51,7 @@ public class FruitVegTypeDetailServiceTest {
     @Test
     @Order(2)
     public void testGetAllFruitVegTypeDetails() {
-        FruitVegTypeDetailListModel resources = fruitVegTypeDetailService.getAllFruitVegTypeDetails();
+        FruitVegTypeDetailListRsrc resources = fruitVegTypeDetailService.getAllFruitVegTypeDetails();
         assertThat(resources).isNotNull();
         assertThat(resources.getFruitVegTypeDetailList()).isNotEmpty();
         assertThat(resources.getFruitVegTypeDetailList().size()).isEqualTo(2);

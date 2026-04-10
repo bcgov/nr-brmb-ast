@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FruitVegTypeDetailListModel extends BaseResource {
+public class FruitVegTypeDetailListRsrc extends BaseResource {
 
     private List<FruitVegTypeDetailModel> fruitVegTypeDetailList;
 }

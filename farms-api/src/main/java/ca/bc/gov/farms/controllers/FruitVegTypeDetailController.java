@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.FruitVegTypeDetailListModel;
+import ca.bc.gov.farms.data.models.FruitVegTypeDetailListRsrc;
 import ca.bc.gov.farms.data.models.FruitVegTypeDetailModel;
 import ca.bc.gov.farms.services.FruitVegTypeDetailService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,15 +44,15 @@ public class FruitVegTypeDetailController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = FruitVegTypeDetailListModel.class))),
+                    content = @Content(schema = @Schema(implementation = FruitVegTypeDetailListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FruitVegTypeDetailListModel> getAllFruitVegTypeDetails() {
+    public ResponseEntity<FruitVegTypeDetailListRsrc> getAllFruitVegTypeDetails() {
         log.debug(" >> getAllFruitVegTypeDetails");
 
         try {
-            FruitVegTypeDetailListModel resources = fruitVegTypeDetailService.getAllFruitVegTypeDetails();
+            FruitVegTypeDetailListRsrc resources = fruitVegTypeDetailService.getAllFruitVegTypeDetails();
             return ok(resources);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Fruit Veg Type Details", e);

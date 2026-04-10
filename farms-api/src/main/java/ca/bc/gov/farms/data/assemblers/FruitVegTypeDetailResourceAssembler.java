@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.FruitVegTypeDetailEntity;
-import ca.bc.gov.farms.data.models.FruitVegTypeDetailListModel;
+import ca.bc.gov.farms.data.models.FruitVegTypeDetailListRsrc;
 import ca.bc.gov.farms.data.models.FruitVegTypeDetailModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,11 +34,11 @@ public class FruitVegTypeDetailResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    public FruitVegTypeDetailListModel getFruitVegTypeDetailList(List<FruitVegTypeDetailEntity> entities) {
+    public FruitVegTypeDetailListRsrc getFruitVegTypeDetailList(List<FruitVegTypeDetailEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        FruitVegTypeDetailListModel result = null;
+        FruitVegTypeDetailListRsrc result = null;
 
         @SuppressWarnings("null")
         List<FruitVegTypeDetailModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -48,7 +48,7 @@ public class FruitVegTypeDetailResourceAssembler extends BaseResourceAssembler {
             return resource;
         }).collect(Collectors.toList());
 
-        result = new FruitVegTypeDetailListModel();
+        result = new FruitVegTypeDetailListRsrc();
         result.setFruitVegTypeDetailList(resources);
 
         String eTag = getEtag(result);

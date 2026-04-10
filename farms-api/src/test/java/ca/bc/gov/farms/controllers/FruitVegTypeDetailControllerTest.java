@@ -70,7 +70,7 @@ public class FruitVegTypeDetailControllerTest {
         mockMvc.perform(get("/fruitVegTypeDetails")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("FruitVegTypeDetailListModel"))
+                .andExpect(jsonPath("$.@type").value("FruitVegTypeDetailListRsrc"))
                 .andExpect(jsonPath("$.fruitVegTypeDetailList[0].@type").value("FruitVegTypeDetailModel"))
                 .andExpect(jsonPath("$.fruitVegTypeDetailList[0].fruitVegTypeCode").value("SALAK"))
                 .andExpect(jsonPath("$.fruitVegTypeDetailList[0].fruitVegTypeDesc").value("Tropical Fruit"))
