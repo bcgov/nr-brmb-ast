@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FruitVegTypeDetailModel extends BaseResource {
+public class FruitVegTypeDetailRsrc extends BaseResource {
 
     @NotBlank(message = "FruitVegTypeDetail fruitVegTypeCode must not be blank")
     @Size(min = 0, max = 10, message = "FruitVegTypeDetail fruitVegTypeCode must be between 0 and 10 characters")

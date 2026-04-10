@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.FruitVegTypeDetailEntity;
 import ca.bc.gov.farms.data.models.FruitVegTypeDetailListRsrc;
-import ca.bc.gov.farms.data.models.FruitVegTypeDetailModel;
+import ca.bc.gov.farms.data.models.FruitVegTypeDetailRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class FruitVegTypeDetailResourceAssembler extends BaseResourceAssembler {
 
-    public FruitVegTypeDetailModel getFruitVegTypeDetail(@NonNull FruitVegTypeDetailEntity entity) {
+    public FruitVegTypeDetailRsrc getFruitVegTypeDetail(@NonNull FruitVegTypeDetailEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        FruitVegTypeDetailModel resource = new FruitVegTypeDetailModel();
+        FruitVegTypeDetailRsrc resource = new FruitVegTypeDetailRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -41,8 +41,8 @@ public class FruitVegTypeDetailResourceAssembler extends BaseResourceAssembler {
         FruitVegTypeDetailListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<FruitVegTypeDetailModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            FruitVegTypeDetailModel resource = new FruitVegTypeDetailModel();
+        List<FruitVegTypeDetailRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            FruitVegTypeDetailRsrc resource = new FruitVegTypeDetailRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getFruitVegTypeCode(), resource, baseUri);
             return resource;
@@ -59,7 +59,7 @@ public class FruitVegTypeDetailResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateFruitVegTypeDetail(@NonNull FruitVegTypeDetailModel resource,
+    public void updateFruitVegTypeDetail(@NonNull FruitVegTypeDetailRsrc resource,
             @NonNull FruitVegTypeDetailEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }

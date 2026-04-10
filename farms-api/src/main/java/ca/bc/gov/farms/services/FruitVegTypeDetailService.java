@@ -13,7 +13,7 @@ import ca.bc.gov.farms.data.assemblers.FruitVegTypeDetailResourceAssembler;
 import ca.bc.gov.farms.data.entities.FruitVegTypeDetailEntity;
 import ca.bc.gov.farms.data.mappers.FruitVegTypeDetailMapper;
 import ca.bc.gov.farms.data.models.FruitVegTypeDetailListRsrc;
-import ca.bc.gov.farms.data.models.FruitVegTypeDetailModel;
+import ca.bc.gov.farms.data.models.FruitVegTypeDetailRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -47,10 +47,10 @@ public class FruitVegTypeDetailService {
         return result;
     }
 
-    public FruitVegTypeDetailModel getFruitVegTypeDetail(String fruitVegTypeCode)
+    public FruitVegTypeDetailRsrc getFruitVegTypeDetail(String fruitVegTypeCode)
             throws ServiceException, NotFoundException {
 
-        FruitVegTypeDetailModel result = null;
+        FruitVegTypeDetailRsrc result = null;
 
         try {
             FruitVegTypeDetailEntity entity = fruitVegTypeDetailMapper.fetch(fruitVegTypeCode);
@@ -70,15 +70,15 @@ public class FruitVegTypeDetailService {
     }
 
     @Transactional
-    public FruitVegTypeDetailModel createFruitVegTypeDetail(FruitVegTypeDetailModel resource)
+    public FruitVegTypeDetailRsrc createFruitVegTypeDetail(FruitVegTypeDetailRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<FruitVegTypeDetailModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<FruitVegTypeDetailRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        FruitVegTypeDetailModel result = null;
+        FruitVegTypeDetailRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -104,15 +104,15 @@ public class FruitVegTypeDetailService {
     }
 
     @Transactional
-    public FruitVegTypeDetailModel updateFruitVegTypeDetail(String fruitVegTypeCode, FruitVegTypeDetailModel resource)
+    public FruitVegTypeDetailRsrc updateFruitVegTypeDetail(String fruitVegTypeCode, FruitVegTypeDetailRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<FruitVegTypeDetailModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<FruitVegTypeDetailRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        FruitVegTypeDetailModel result = null;
+        FruitVegTypeDetailRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

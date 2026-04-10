@@ -15,7 +15,7 @@ import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
 import ca.bc.gov.farms.data.models.FruitVegTypeDetailListRsrc;
-import ca.bc.gov.farms.data.models.FruitVegTypeDetailModel;
+import ca.bc.gov.farms.data.models.FruitVegTypeDetailRsrc;
 import ca.bc.gov.farms.services.FruitVegTypeDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -67,17 +67,17 @@ public class FruitVegTypeDetailController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = FruitVegTypeDetailModel.class))),
+                    content = @Content(schema = @Schema(implementation = FruitVegTypeDetailRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FruitVegTypeDetailModel> getFruitVegTypeDetail(
+    public ResponseEntity<FruitVegTypeDetailRsrc> getFruitVegTypeDetail(
             @PathVariable String fruitVegTypeCode) {
         log.debug(" >> getFruitVegTypeDetail: {}", fruitVegTypeCode);
 
         try {
-            FruitVegTypeDetailModel resource = fruitVegTypeDetailService.getFruitVegTypeDetail(fruitVegTypeCode);
+            FruitVegTypeDetailRsrc resource = fruitVegTypeDetailService.getFruitVegTypeDetail(fruitVegTypeCode);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Fruit Veg Type Detail not found: {}", fruitVegTypeCode, e);
@@ -95,18 +95,18 @@ public class FruitVegTypeDetailController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = FruitVegTypeDetailModel.class))),
+                    content = @Content(schema = @Schema(implementation = FruitVegTypeDetailRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FruitVegTypeDetailModel> createFruitVegTypeDetail(
-            @Valid @RequestBody FruitVegTypeDetailModel resource) {
+    public ResponseEntity<FruitVegTypeDetailRsrc> createFruitVegTypeDetail(
+            @Valid @RequestBody FruitVegTypeDetailRsrc resource) {
         log.debug(" >> createFruitVegTypeDetail");
 
         try {
-            FruitVegTypeDetailModel newResource = fruitVegTypeDetailService.createFruitVegTypeDetail(resource);
+            FruitVegTypeDetailRsrc newResource = fruitVegTypeDetailService.createFruitVegTypeDetail(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while creating Fruit Veg Type Detail", e);
@@ -121,20 +121,20 @@ public class FruitVegTypeDetailController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = FruitVegTypeDetailModel.class))),
+                    content = @Content(schema = @Schema(implementation = FruitVegTypeDetailRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FruitVegTypeDetailModel> updateFruitVegTypeDetail(
+    public ResponseEntity<FruitVegTypeDetailRsrc> updateFruitVegTypeDetail(
             @PathVariable String fruitVegTypeCode,
-            @Valid @RequestBody FruitVegTypeDetailModel resource) {
+            @Valid @RequestBody FruitVegTypeDetailRsrc resource) {
         log.debug(" >> updateFruitVegTypeDetail");
 
         try {
-            FruitVegTypeDetailModel updatedResource = fruitVegTypeDetailService.updateFruitVegTypeDetail(fruitVegTypeCode, resource);
+            FruitVegTypeDetailRsrc updatedResource = fruitVegTypeDetailService.updateFruitVegTypeDetail(fruitVegTypeCode, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Fruit Veg Type Detail not found for update: {}", fruitVegTypeCode, e);

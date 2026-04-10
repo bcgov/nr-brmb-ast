@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ca.bc.gov.farms.data.models.FruitVegTypeDetailModel;
+import ca.bc.gov.farms.data.models.FruitVegTypeDetailRsrc;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -43,7 +43,7 @@ public class FruitVegTypeDetailControllerTest {
     @Order(1)
     public void testCreateFruitVegTypeDetail() throws Exception {
 
-        FruitVegTypeDetailModel resource = new FruitVegTypeDetailModel();
+        FruitVegTypeDetailRsrc resource = new FruitVegTypeDetailRsrc();
         resource.setFruitVegTypeCode("SALAK");
         resource.setFruitVegTypeDesc("Tropical Fruit");
         resource.setRevenueVarianceLimit(new BigDecimal("20.000"));
@@ -53,7 +53,7 @@ public class FruitVegTypeDetailControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.@type").value("FruitVegTypeDetailModel"))
+                .andExpect(jsonPath("$.@type").value("FruitVegTypeDetailRsrc"))
                 .andExpect(jsonPath("$.fruitVegTypeCode").value("SALAK"))
                 .andExpect(jsonPath("$.fruitVegTypeDesc").value("Tropical Fruit"))
                 .andExpect(jsonPath("$.establishedDate").value(LocalDate.now().toString()))
@@ -71,7 +71,7 @@ public class FruitVegTypeDetailControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("FruitVegTypeDetailListRsrc"))
-                .andExpect(jsonPath("$.fruitVegTypeDetailList[0].@type").value("FruitVegTypeDetailModel"))
+                .andExpect(jsonPath("$.fruitVegTypeDetailList[0].@type").value("FruitVegTypeDetailRsrc"))
                 .andExpect(jsonPath("$.fruitVegTypeDetailList[0].fruitVegTypeCode").value("SALAK"))
                 .andExpect(jsonPath("$.fruitVegTypeDetailList[0].fruitVegTypeDesc").value("Tropical Fruit"))
                 .andExpect(jsonPath("$.fruitVegTypeDetailList[0].establishedDate").value(LocalDate.now().toString()))
@@ -88,7 +88,7 @@ public class FruitVegTypeDetailControllerTest {
         mockMvc.perform(get("/fruitVegTypeDetails/SALAK")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("FruitVegTypeDetailModel"))
+                .andExpect(jsonPath("$.@type").value("FruitVegTypeDetailRsrc"))
                 .andExpect(jsonPath("$.fruitVegTypeCode").value("SALAK"))
                 .andExpect(jsonPath("$.fruitVegTypeDesc").value("Tropical Fruit"))
                 .andExpect(jsonPath("$.establishedDate").value(LocalDate.now().toString()))
@@ -102,7 +102,7 @@ public class FruitVegTypeDetailControllerTest {
     @Order(4)
     public void testUpdateFruitVegTypeDetail() throws Exception {
 
-        FruitVegTypeDetailModel resource = new FruitVegTypeDetailModel();
+        FruitVegTypeDetailRsrc resource = new FruitVegTypeDetailRsrc();
         resource.setFruitVegTypeCode("SALAK");
         resource.setFruitVegTypeDesc("King of Fruits");
         resource.setRevenueVarianceLimit(new BigDecimal("30.000"));
@@ -112,7 +112,7 @@ public class FruitVegTypeDetailControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("FruitVegTypeDetailModel"))
+                .andExpect(jsonPath("$.@type").value("FruitVegTypeDetailRsrc"))
                 .andExpect(jsonPath("$.fruitVegTypeCode").value("SALAK"))
                 .andExpect(jsonPath("$.fruitVegTypeDesc").value("King of Fruits"))
                 .andExpect(jsonPath("$.establishedDate").value(LocalDate.now().toString()))
