@@ -20,13 +20,13 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = ConfigurationParameterListModel\",
+      pm.test(\"Response contains @type = ConfigurationParameterListRsrc\",
       function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"ConfigurationParameterListMod\
-      el\");\r
+      \    pm.expect(json['@type']).to.be.equal(\"ConfigurationParameterListRsrc\
+      \");\r
 
       });\r
 
@@ -44,13 +44,13 @@ scripts:
       \r
 
       pm.test(\"configurationParameterList[0] contains @type =
-      ConfigurationParameterModel\", function() {\r
+      ConfigurationParameterRsrc\", function() {\r
 
       \    pm.expect(json.configurationParameterList[0]).to.have.property(\"@ty\
       pe\");\r
 
       \    pm.expect(json.configurationParameterList[0]['@type']).to.be.equal(\
-      \"ConfigurationParameterModel\");\r
+      \"ConfigurationParameterRsrc\");\r
 
       });"
     language: text/javascript

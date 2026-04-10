@@ -1,0 +1,43 @@
+$kind: http-request
+name: Create Configuration Parameter
+url: "{{baseUrl}}/configurationParameters"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"ConfigurationParameterRsrc\",\r
+
+    \    \"parameterName\": \"TEST - test\",\r
+
+    \    \"parameterValue\": \"3\",\r
+
+    \    \"sensitiveDataInd\": \"Y\",\r
+
+    \    \"configParamTypeCode\": \"INTEGER\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"configurationParameterId\",
+      json.configurationParameterId);"
+    language: text/javascript
+order: 4498398650692495
