@@ -12,7 +12,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.MarketRatePremiumResourceAssembler;
 import ca.bc.gov.farms.data.entities.MarketRatePremiumEntity;
 import ca.bc.gov.farms.data.mappers.MarketRatePremiumMapper;
-import ca.bc.gov.farms.data.models.MarketRatePremiumListModel;
+import ca.bc.gov.farms.data.models.MarketRatePremiumListRsrc;
 import ca.bc.gov.farms.data.models.MarketRatePremiumModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -32,9 +32,9 @@ public class MarketRatePremiumService {
     @Autowired
     private Validator validator;
 
-    public MarketRatePremiumListModel getAllMarketRatePremiums() throws ServiceException {
+    public MarketRatePremiumListRsrc getAllMarketRatePremiums() throws ServiceException {
 
-        MarketRatePremiumListModel result = null;
+        MarketRatePremiumListRsrc result = null;
 
         try {
             List<MarketRatePremiumEntity> entities = marketRatePremiumMapper.fetchAll();

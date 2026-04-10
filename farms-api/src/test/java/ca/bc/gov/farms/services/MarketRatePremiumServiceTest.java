@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.MarketRatePremiumListModel;
+import ca.bc.gov.farms.data.models.MarketRatePremiumListRsrc;
 import ca.bc.gov.farms.data.models.MarketRatePremiumModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -55,7 +55,7 @@ public class MarketRatePremiumServiceTest {
     @Test
     @Order(2)
     public void testGetAllMarketRatePremiums() {
-        MarketRatePremiumListModel resources = marketRatePremiumService.getAllMarketRatePremiums();
+        MarketRatePremiumListRsrc resources = marketRatePremiumService.getAllMarketRatePremiums();
         assertThat(resources).isNotNull();
         assertThat(resources.getMarketRatePremiumList()).isNotEmpty();
         assertThat(resources.getMarketRatePremiumList().size()).isEqualTo(1);

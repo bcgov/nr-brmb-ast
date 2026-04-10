@@ -72,7 +72,7 @@ public class MarketRatePremiumControllerTest {
         mockMvc.perform(get("/marketRatePremiums")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("MarketRatePremiumListModel"))
+                .andExpect(jsonPath("$.@type").value("MarketRatePremiumListRsrc"))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].@type").value("MarketRatePremiumModel"))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].marketRatePremiumId").value(21))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].minTotalPremiumAmount").value(0.00))

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarketRatePremiumListModel extends BaseResource {
+public class MarketRatePremiumListRsrc extends BaseResource {
 
     private List<MarketRatePremiumModel> marketRatePremiumList;
 }

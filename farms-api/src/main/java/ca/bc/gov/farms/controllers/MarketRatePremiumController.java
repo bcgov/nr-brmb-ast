@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.MarketRatePremiumListModel;
+import ca.bc.gov.farms.data.models.MarketRatePremiumListRsrc;
 import ca.bc.gov.farms.data.models.MarketRatePremiumModel;
 import ca.bc.gov.farms.services.MarketRatePremiumService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,15 +44,15 @@ public class MarketRatePremiumController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = MarketRatePremiumListModel.class))),
+                    content = @Content(schema = @Schema(implementation = MarketRatePremiumListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<MarketRatePremiumListModel> getAllMarketRatePremiums() {
+    public ResponseEntity<MarketRatePremiumListRsrc> getAllMarketRatePremiums() {
         log.debug(" >> getAllMarketRatePremiums");
 
         try {
-            MarketRatePremiumListModel resources = marketRatePremiumService.getAllMarketRatePremiums();
+            MarketRatePremiumListRsrc resources = marketRatePremiumService.getAllMarketRatePremiums();
             return ok(resources);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Market Rate Premiums", e);

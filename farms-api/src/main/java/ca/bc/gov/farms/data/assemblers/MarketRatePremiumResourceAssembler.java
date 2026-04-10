@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.MarketRatePremiumEntity;
-import ca.bc.gov.farms.data.models.MarketRatePremiumListModel;
+import ca.bc.gov.farms.data.models.MarketRatePremiumListRsrc;
 import ca.bc.gov.farms.data.models.MarketRatePremiumModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,11 +34,11 @@ public class MarketRatePremiumResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    public MarketRatePremiumListModel getMarketRatePremiumList(List<MarketRatePremiumEntity> entities) {
+    public MarketRatePremiumListRsrc getMarketRatePremiumList(List<MarketRatePremiumEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        MarketRatePremiumListModel result = null;
+        MarketRatePremiumListRsrc result = null;
 
         @SuppressWarnings("null")
         List<MarketRatePremiumModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -48,7 +48,7 @@ public class MarketRatePremiumResourceAssembler extends BaseResourceAssembler {
             return resource;
         }).collect(Collectors.toList());
 
-        result = new MarketRatePremiumListModel();
+        result = new MarketRatePremiumListRsrc();
         result.setMarketRatePremiumList(resources);
 
         String eTag = getEtag(result);
