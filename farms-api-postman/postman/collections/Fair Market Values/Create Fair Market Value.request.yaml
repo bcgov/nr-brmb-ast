@@ -105,6 +105,210 @@ scripts:
 
       \    pm.expect(json['@type']).to.be.equal(\"FairMarketValueRsrc\");\r
 
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"programYear\");\r
+
+      \    pm.expect(json.programYear).to.be.equal(2025);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"5560\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDesc\");\r
+
+      \    pm.expect(json.inventoryItemDesc).to.be.equal(\"Alfalfa Dehy\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"municipalityCode\");\r
+
+      \    pm.expect(json.municipalityCode).to.be.equal(\"51\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"municipalityDesc\");\r
+
+      \    pm.expect(json.municipalityDesc).to.be.equal(\"Bulkley-Nechako\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"cropUnitCode\");\r
+
+      \    pm.expect(json.cropUnitCode).to.be.equal(\"7\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"cropUnitDesc\");\r
+
+      \    pm.expect(json.cropUnitDesc).to.be.equal(\"Small Bales\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"defaultCropUnitCode\");\r
+
+      \    pm.expect(json.defaultCropUnitCode).to.be.equal(\"2\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"defaultCropUnitDesc\");\r
+
+      \    pm.expect(json.defaultCropUnitDesc).to.be.equal(\"Tonnes\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period01Price\");\r
+
+      \    pm.expect(json.period01Price).to.be.equal(8.66);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period02Price\");\r
+
+      \    pm.expect(json.period02Price).to.be.equal(8.66);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period03Price\");\r
+
+      \    pm.expect(json.period03Price).to.be.equal(8.66);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period04Price\");\r
+
+      \    pm.expect(json.period04Price).to.be.equal(8.01);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period05Price\");\r
+
+      \    pm.expect(json.period05Price).to.be.equal(8.01);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period06Price\");\r
+
+      \    pm.expect(json.period06Price).to.be.equal(8.01);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period07Price\");\r
+
+      \    pm.expect(json.period07Price).to.be.equal(5.88);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period08Price\");\r
+
+      \    pm.expect(json.period08Price).to.be.equal(5.88);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period09Price\");\r
+
+      \    pm.expect(json.period09Price).to.be.equal(5.88);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period10Price\");\r
+
+      \    pm.expect(json.period10Price).to.be.equal(5.45);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period11Price\");\r
+
+      \    pm.expect(json.period11Price).to.be.equal(5.45);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period12Price\");\r
+
+      \    pm.expect(json.period12Price).to.be.equal(5.45);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period01Variance\");\r
+
+      \    pm.expect(json.period01Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period02Variance\");\r
+
+      \    pm.expect(json.period02Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period03Variance\");\r
+
+      \    pm.expect(json.period03Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period04Variance\");\r
+
+      \    pm.expect(json.period04Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period05Variance\");\r
+
+      \    pm.expect(json.period05Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period06Variance\");\r
+
+      \    pm.expect(json.period06Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period07Variance\");\r
+
+      \    pm.expect(json.period07Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period08Variance\");\r
+
+      \    pm.expect(json.period08Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period09Variance\");\r
+
+      \    pm.expect(json.period09Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period10Variance\");\r
+
+      \    pm.expect(json.period10Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period11Variance\");\r
+
+      \    pm.expect(json.period11Variance).to.be.equal(46.00);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"period12Variance\");\r
+
+      \    pm.expect(json.period12Variance).to.be.equal(46.00);\r
+
       });"
     language: text/javascript
 order: 4385842732551656
