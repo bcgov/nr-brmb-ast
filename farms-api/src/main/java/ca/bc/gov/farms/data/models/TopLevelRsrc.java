@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TopLevelModel extends BaseResource {
+public class TopLevelRsrc extends BaseResource {
 
     private String releaseVersion;
 }
