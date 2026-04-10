@@ -42,6 +42,18 @@ scripts:
 
       \r
 
+      pm.test(\"Response contains @type = ConfigurationParameterRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"ConfigurationParameterRsrc\");\
+      \r
+
+      });\r
+
+      \r
+
       pm.test(\"Record is inserted as is\", function() {\r
 
       \r
