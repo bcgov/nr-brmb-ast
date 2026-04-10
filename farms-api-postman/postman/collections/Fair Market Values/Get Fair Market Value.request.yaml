@@ -22,11 +22,11 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = FairMarketValueModel\", function() {\r
+      pm.test(\"Response contains @type = FairMarketValueRsrc\", function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"FairMarketValueModel\");\r
+      \    pm.expect(json['@type']).to.be.equal(\"FairMarketValueRsrc\");\r
 
       });"
     language: text/javascript

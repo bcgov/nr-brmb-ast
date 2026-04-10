@@ -22,12 +22,12 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = FairMarketValueListModel\", function()
+      pm.test(\"Response contains @type = FairMarketValueListRsrc\", function()
       {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"FairMarketValueListModel\");\r
+      \    pm.expect(json['@type']).to.be.equal(\"FairMarketValueListRsrc\");\r
 
       });\r
 
@@ -43,13 +43,13 @@ scripts:
 
       \r
 
-      pm.test(\"fairMarketValueList[0] contains @type = FairMarketValueModel\",
+      pm.test(\"fairMarketValueList[0] contains @type = FairMarketValueRsrc\",
       function() {\r
 
       \    pm.expect(json.fairMarketValueList[0]).to.have.property(\"@type\");\r
 
       \    pm.expect(json.fairMarketValueList[0]['@type']).to.be.equal(\"FairMa\
-      rketValueModel\");\r
+      rketValueRsrc\");\r
 
       });"
     language: text/javascript
