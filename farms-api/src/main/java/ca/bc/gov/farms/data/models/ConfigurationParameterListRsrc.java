@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConfigurationParameterListRsrc extends BaseResource {
 
-    private List<ConfigurationParameterModel> configurationParameterList;
+    private List<ConfigurationParameterRsrc> configurationParameterList;
 }

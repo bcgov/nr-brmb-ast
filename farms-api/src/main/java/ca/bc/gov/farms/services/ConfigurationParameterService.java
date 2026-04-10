@@ -13,7 +13,7 @@ import ca.bc.gov.farms.data.assemblers.ConfigurationParameterResourceAssembler;
 import ca.bc.gov.farms.data.entities.ConfigurationParameterEntity;
 import ca.bc.gov.farms.data.mappers.ConfigurationParameterMapper;
 import ca.bc.gov.farms.data.models.ConfigurationParameterListRsrc;
-import ca.bc.gov.farms.data.models.ConfigurationParameterModel;
+import ca.bc.gov.farms.data.models.ConfigurationParameterRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -64,10 +64,10 @@ public class ConfigurationParameterService {
         return result;
     }
 
-    public ConfigurationParameterModel getConfigurationParameter(Long configurationParameterId)
+    public ConfigurationParameterRsrc getConfigurationParameter(Long configurationParameterId)
             throws ServiceException, NotFoundException {
 
-        ConfigurationParameterModel result = null;
+        ConfigurationParameterRsrc result = null;
 
         try {
             ConfigurationParameterEntity entity = configurationParameterMapper.fetch(configurationParameterId);
@@ -87,15 +87,15 @@ public class ConfigurationParameterService {
     }
 
     @Transactional
-    public ConfigurationParameterModel createConfigurationParameter(ConfigurationParameterModel resource)
+    public ConfigurationParameterRsrc createConfigurationParameter(ConfigurationParameterRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<ConfigurationParameterModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<ConfigurationParameterRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        ConfigurationParameterModel result = null;
+        ConfigurationParameterRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -120,16 +120,16 @@ public class ConfigurationParameterService {
     }
 
     @Transactional
-    public ConfigurationParameterModel updateConfigurationParameter(Long configurationParameterId,
-            ConfigurationParameterModel resource)
+    public ConfigurationParameterRsrc updateConfigurationParameter(Long configurationParameterId,
+            ConfigurationParameterRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<ConfigurationParameterModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<ConfigurationParameterRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        ConfigurationParameterModel result = null;
+        ConfigurationParameterRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

@@ -17,7 +17,7 @@ import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
 import ca.bc.gov.farms.data.models.ConfigurationParameterListRsrc;
-import ca.bc.gov.farms.data.models.ConfigurationParameterModel;
+import ca.bc.gov.farms.data.models.ConfigurationParameterRsrc;
 import ca.bc.gov.farms.services.ConfigurationParameterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -75,17 +75,17 @@ public class ConfigurationParameterController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ConfigurationParameterModel.class))),
+                    content = @Content(schema = @Schema(implementation = ConfigurationParameterRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ConfigurationParameterModel> getConfigurationParameter(
+    public ResponseEntity<ConfigurationParameterRsrc> getConfigurationParameter(
             @PathVariable Long configurationParameterId) {
         log.debug(" >> getConfigurationParameter: {}", configurationParameterId);
 
         try {
-            ConfigurationParameterModel resource = configurationParameterService.getConfigurationParameter(configurationParameterId);
+            ConfigurationParameterRsrc resource = configurationParameterService.getConfigurationParameter(configurationParameterId);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Configuration Parameter not found: {}", configurationParameterId, e);
@@ -103,18 +103,18 @@ public class ConfigurationParameterController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = ConfigurationParameterModel.class))),
+                    content = @Content(schema = @Schema(implementation = ConfigurationParameterRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ConfigurationParameterModel> createConfigurationParameter(
-            @Valid @RequestBody ConfigurationParameterModel resource) {
+    public ResponseEntity<ConfigurationParameterRsrc> createConfigurationParameter(
+            @Valid @RequestBody ConfigurationParameterRsrc resource) {
         log.debug(" >> createConfigurationParameter");
 
         try {
-            ConfigurationParameterModel newResource = configurationParameterService.createConfigurationParameter(resource);
+            ConfigurationParameterRsrc newResource = configurationParameterService.createConfigurationParameter(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while creating Configuration Parameter", e);
@@ -129,20 +129,20 @@ public class ConfigurationParameterController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ConfigurationParameterModel.class))),
+                    content = @Content(schema = @Schema(implementation = ConfigurationParameterRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ConfigurationParameterModel> updateConfigurationParameter(
+    public ResponseEntity<ConfigurationParameterRsrc> updateConfigurationParameter(
             @PathVariable Long configurationParameterId,
-            @Valid @RequestBody ConfigurationParameterModel resource) {
+            @Valid @RequestBody ConfigurationParameterRsrc resource) {
         log.debug(" >> updateConfigurationParameter");
 
         try {
-            ConfigurationParameterModel updatedResource = configurationParameterService.updateConfigurationParameter(configurationParameterId, resource);
+            ConfigurationParameterRsrc updatedResource = configurationParameterService.updateConfigurationParameter(configurationParameterId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Configuration Parameter not found for update: {}", configurationParameterId, e);
