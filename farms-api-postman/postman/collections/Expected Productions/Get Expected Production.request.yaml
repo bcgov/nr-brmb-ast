@@ -22,12 +22,12 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = ExpectedProductionModel\", function()
+      pm.test(\"Response contains @type = ExpectedProductionRsrc\", function()
       {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"ExpectedProductionModel\");\r
+      \    pm.expect(json['@type']).to.be.equal(\"ExpectedProductionRsrc\");\r
 
       });"
     language: text/javascript
