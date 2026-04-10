@@ -46,6 +46,32 @@ scripts:
 
       \    pm.expect(json['@type']).to.be.equal(\"ExpectedProductionRsrc\");\r
 
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"expectedProductionPerProdUnit\");\
+      \r
+
+      \    pm.expect(json.expectedProductionPerProdUnit).to.be.equal(21239.000);\
+      \r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"10\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"cropUnitCode\");\r
+
+      \    pm.expect(json.cropUnitCode).to.be.equal(\"1\");\r
+
       });"
     language: text/javascript
 order: 4496335975284856
