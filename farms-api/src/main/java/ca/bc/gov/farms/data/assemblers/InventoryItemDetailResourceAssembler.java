@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.InventoryItemDetailEntity;
-import ca.bc.gov.farms.data.models.InventoryItemDetailListModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailListRsrc;
 import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,11 +34,11 @@ public class InventoryItemDetailResourceAssembler extends BaseResourceAssembler 
         return resource;
     }
 
-    public InventoryItemDetailListModel getInventoryItemDetailList(List<InventoryItemDetailEntity> entities) {
+    public InventoryItemDetailListRsrc getInventoryItemDetailList(List<InventoryItemDetailEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        InventoryItemDetailListModel result = null;
+        InventoryItemDetailListRsrc result = null;
 
         @SuppressWarnings("null")
         List<InventoryItemDetailModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -48,7 +48,7 @@ public class InventoryItemDetailResourceAssembler extends BaseResourceAssembler 
             return resource;
         }).collect(Collectors.toList());
 
-        result = new InventoryItemDetailListModel();
+        result = new InventoryItemDetailListRsrc();
         result.setInventoryItemDetailList(resources);
 
         String eTag = getEtag(result);

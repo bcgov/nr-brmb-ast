@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class InventoryItemDetailListModel extends BaseResource {
+public class InventoryItemDetailListRsrc extends BaseResource {
 
     private List<InventoryItemDetailModel> inventoryItemDetailList;
 }

@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.InventoryItemDetailListModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailListRsrc;
 import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -70,7 +70,7 @@ public class InventoryItemDetailServiceTest {
     @Test
     @Order(2)
     public void testGetInventoryItemDetailsByInventoryItemCode() {
-        InventoryItemDetailListModel resources = inventoryItemDetailService
+        InventoryItemDetailListRsrc resources = inventoryItemDetailService
                 .getInventoryItemDetailsByInventoryItemCode("7208");
         assertThat(resources).isNotNull();
         assertThat(resources.getInventoryItemDetailList()).isNotEmpty();

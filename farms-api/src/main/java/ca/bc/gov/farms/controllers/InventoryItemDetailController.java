@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.InventoryItemDetailListModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailListRsrc;
 import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
 import ca.bc.gov.farms.services.InventoryItemDetailService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,16 +45,16 @@ public class InventoryItemDetailController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = InventoryItemDetailListModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryItemDetailListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemDetailListModel> getInventoryItemDetailsByInventoryItemCode(
+    public ResponseEntity<InventoryItemDetailListRsrc> getInventoryItemDetailsByInventoryItemCode(
             @RequestParam String inventoryItemCode) {
         log.debug(" >> getInventoryItemDetailsByInventoryItemCode: {}", inventoryItemCode);
 
         try {
-            InventoryItemDetailListModel resource = inventoryItemDetailService.getInventoryItemDetailsByInventoryItemCode(inventoryItemCode);
+            InventoryItemDetailListRsrc resource = inventoryItemDetailService.getInventoryItemDetailsByInventoryItemCode(inventoryItemCode);
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Inventory Item Details", e);

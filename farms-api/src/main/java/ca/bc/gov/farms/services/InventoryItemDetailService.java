@@ -12,7 +12,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.InventoryItemDetailResourceAssembler;
 import ca.bc.gov.farms.data.entities.InventoryItemDetailEntity;
 import ca.bc.gov.farms.data.mappers.InventoryItemDetailMapper;
-import ca.bc.gov.farms.data.models.InventoryItemDetailListModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailListRsrc;
 import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -32,10 +32,10 @@ public class InventoryItemDetailService {
     @Autowired
     private Validator validator;
 
-    public InventoryItemDetailListModel getInventoryItemDetailsByInventoryItemCode(String inventoryItemCode)
+    public InventoryItemDetailListRsrc getInventoryItemDetailsByInventoryItemCode(String inventoryItemCode)
             throws ServiceException {
 
-        InventoryItemDetailListModel result = null;
+        InventoryItemDetailListRsrc result = null;
 
         try {
             List<InventoryItemDetailEntity> entities = inventoryItemDetailMapper

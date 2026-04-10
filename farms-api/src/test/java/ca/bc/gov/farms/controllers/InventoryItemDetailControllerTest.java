@@ -87,7 +87,7 @@ public class InventoryItemDetailControllerTest {
         mockMvc.perform(get("/inventoryItemDetails")
                 .param("inventoryItemCode", "73"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("InventoryItemDetailListModel"))
+                .andExpect(jsonPath("$.@type").value("InventoryItemDetailListRsrc"))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].@type").value("InventoryItemDetailModel"))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].inventoryItemDetailId").value(55361))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].programYear").value(2025))
