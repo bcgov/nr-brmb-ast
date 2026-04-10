@@ -46,6 +46,30 @@ scripts:
 
       \    pm.expect(json['@type']).to.be.equal(\"FruitVegTypeDetailRsrc\");\r
 
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"fruitVegTypeCode\");\r
+
+      \    pm.expect(json.fruitVegTypeCode).to.be.equal(\"SALAK\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"fruitVegTypeDesc\");\r
+
+      \    pm.expect(json.fruitVegTypeDesc).to.be.equal(\"Salak\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"revenueVarianceLimit\");\r
+
+      \    pm.expect(json.revenueVarianceLimit).to.be.equal(20.000);\r
+
       });"
     language: text/javascript
 order: 4471489967890467
