@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.YearConfigurationParameterListModel;
+import ca.bc.gov.farms.data.models.YearConfigurationParameterListRsrc;
 import ca.bc.gov.farms.data.models.YearConfigurationParameterModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -52,7 +52,7 @@ public class YearConfigurationParameterServiceTest {
     @Test
     @Order(2)
     public void testGetAllYearConfigurationParameters() {
-        YearConfigurationParameterListModel resources = yearConfigurationParameterService
+        YearConfigurationParameterListRsrc resources = yearConfigurationParameterService
                 .getAllYearConfigurationParameters();
         assertThat(resources).isNotNull();
         assertThat(resources.getYearConfigurationParameterList()).isNotEmpty();

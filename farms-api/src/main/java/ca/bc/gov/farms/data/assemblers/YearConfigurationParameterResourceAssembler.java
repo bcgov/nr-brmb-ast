@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.YearConfigurationParameterEntity;
-import ca.bc.gov.farms.data.models.YearConfigurationParameterListModel;
+import ca.bc.gov.farms.data.models.YearConfigurationParameterListRsrc;
 import ca.bc.gov.farms.data.models.YearConfigurationParameterModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,12 +35,12 @@ public class YearConfigurationParameterResourceAssembler extends BaseResourceAss
         return resource;
     }
 
-    public YearConfigurationParameterListModel getYearConfigurationParameterList(
+    public YearConfigurationParameterListRsrc getYearConfigurationParameterList(
             List<YearConfigurationParameterEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        YearConfigurationParameterListModel result = null;
+        YearConfigurationParameterListRsrc result = null;
 
         @SuppressWarnings("null")
         List<YearConfigurationParameterModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -50,7 +50,7 @@ public class YearConfigurationParameterResourceAssembler extends BaseResourceAss
             return resource;
         }).collect(Collectors.toList());
 
-        result = new YearConfigurationParameterListModel();
+        result = new YearConfigurationParameterListRsrc();
         result.setYearConfigurationParameterList(resources);
 
         String eTag = getEtag(result);

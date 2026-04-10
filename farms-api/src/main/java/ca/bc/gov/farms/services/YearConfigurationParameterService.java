@@ -12,7 +12,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.YearConfigurationParameterResourceAssembler;
 import ca.bc.gov.farms.data.entities.YearConfigurationParameterEntity;
 import ca.bc.gov.farms.data.mappers.YearConfigurationParameterMapper;
-import ca.bc.gov.farms.data.models.YearConfigurationParameterListModel;
+import ca.bc.gov.farms.data.models.YearConfigurationParameterListRsrc;
 import ca.bc.gov.farms.data.models.YearConfigurationParameterModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -32,9 +32,9 @@ public class YearConfigurationParameterService {
     @Autowired
     private Validator validator;
 
-    public YearConfigurationParameterListModel getAllYearConfigurationParameters() throws ServiceException {
+    public YearConfigurationParameterListRsrc getAllYearConfigurationParameters() throws ServiceException {
 
-        YearConfigurationParameterListModel result = null;
+        YearConfigurationParameterListRsrc result = null;
 
         try {
             List<YearConfigurationParameterEntity> entities = yearConfigurationParameterMapper.fetchAll();

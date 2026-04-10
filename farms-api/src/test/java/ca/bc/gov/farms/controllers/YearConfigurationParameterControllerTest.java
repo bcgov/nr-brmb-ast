@@ -68,7 +68,7 @@ public class YearConfigurationParameterControllerTest {
         mockMvc.perform(get("/yearConfigurationParameters")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("YearConfigurationParameterListModel"))
+                .andExpect(jsonPath("$.@type").value("YearConfigurationParameterListRsrc"))
                 .andExpect(
                         jsonPath("$.yearConfigurationParameterList[0].@type").value("YearConfigurationParameterModel"))
                 .andExpect(jsonPath("$.yearConfigurationParameterList[0].yearConfigurationParameterId").value(241))
