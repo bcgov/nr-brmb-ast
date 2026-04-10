@@ -11,19 +11,19 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.YearConfigurationParameterEntity;
 import ca.bc.gov.farms.data.models.YearConfigurationParameterListRsrc;
-import ca.bc.gov.farms.data.models.YearConfigurationParameterModel;
+import ca.bc.gov.farms.data.models.YearConfigurationParameterRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class YearConfigurationParameterResourceAssembler extends BaseResourceAssembler {
 
-    public YearConfigurationParameterModel getYearConfigurationParameter(
+    public YearConfigurationParameterRsrc getYearConfigurationParameter(
             @NonNull YearConfigurationParameterEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        YearConfigurationParameterModel resource = new YearConfigurationParameterModel();
+        YearConfigurationParameterRsrc resource = new YearConfigurationParameterRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -43,8 +43,8 @@ public class YearConfigurationParameterResourceAssembler extends BaseResourceAss
         YearConfigurationParameterListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<YearConfigurationParameterModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            YearConfigurationParameterModel resource = new YearConfigurationParameterModel();
+        List<YearConfigurationParameterRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            YearConfigurationParameterRsrc resource = new YearConfigurationParameterRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getYearConfigurationParameterId(), resource, baseUri);
             return resource;
@@ -61,7 +61,7 @@ public class YearConfigurationParameterResourceAssembler extends BaseResourceAss
         return result;
     }
 
-    public void updateYearConfigurationParameter(@NonNull YearConfigurationParameterModel resource,
+    public void updateYearConfigurationParameter(@NonNull YearConfigurationParameterRsrc resource,
             @NonNull YearConfigurationParameterEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }

@@ -15,7 +15,7 @@ import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
 import ca.bc.gov.farms.data.models.YearConfigurationParameterListRsrc;
-import ca.bc.gov.farms.data.models.YearConfigurationParameterModel;
+import ca.bc.gov.farms.data.models.YearConfigurationParameterRsrc;
 import ca.bc.gov.farms.services.YearConfigurationParameterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -63,17 +63,17 @@ public class YearConfigurationParameterController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = YearConfigurationParameterModel.class))),
+                    content = @Content(schema = @Schema(implementation = YearConfigurationParameterRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<YearConfigurationParameterModel> getYearConfigurationParameter(
+    public ResponseEntity<YearConfigurationParameterRsrc> getYearConfigurationParameter(
             @PathVariable Long yearConfigurationParameterId) {
         log.debug(" >> getYearConfigurationParameter: {}", yearConfigurationParameterId);
 
         try {
-            YearConfigurationParameterModel resource = yearConfigurationParameterService.getYearConfigurationParameter(yearConfigurationParameterId);
+            YearConfigurationParameterRsrc resource = yearConfigurationParameterService.getYearConfigurationParameter(yearConfigurationParameterId);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Year Configuration Parameter not found: {}", yearConfigurationParameterId, e);
@@ -91,18 +91,18 @@ public class YearConfigurationParameterController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = YearConfigurationParameterModel.class))),
+                    content = @Content(schema = @Schema(implementation = YearConfigurationParameterRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<YearConfigurationParameterModel> createYearConfigurationParameter(
-            @Valid @RequestBody YearConfigurationParameterModel resource) {
+    public ResponseEntity<YearConfigurationParameterRsrc> createYearConfigurationParameter(
+            @Valid @RequestBody YearConfigurationParameterRsrc resource) {
         log.debug(" >> createYearConfigurationParameter");
 
         try {
-            YearConfigurationParameterModel newResource = yearConfigurationParameterService.createYearConfigurationParameter(resource);
+            YearConfigurationParameterRsrc newResource = yearConfigurationParameterService.createYearConfigurationParameter(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while creating Year Configuration Parameter", e);
@@ -117,20 +117,20 @@ public class YearConfigurationParameterController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = YearConfigurationParameterModel.class))),
+                    content = @Content(schema = @Schema(implementation = YearConfigurationParameterRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<YearConfigurationParameterModel> updateYearConfigurationParameter(
+    public ResponseEntity<YearConfigurationParameterRsrc> updateYearConfigurationParameter(
             @PathVariable Long yearConfigurationParameterId,
-            @Valid @RequestBody YearConfigurationParameterModel resource) {
+            @Valid @RequestBody YearConfigurationParameterRsrc resource) {
         log.debug(" >> updateYearConfigurationParameter");
 
         try {
-            YearConfigurationParameterModel updatedResource = yearConfigurationParameterService.updateYearConfigurationParameter(yearConfigurationParameterId, resource);
+            YearConfigurationParameterRsrc updatedResource = yearConfigurationParameterService.updateYearConfigurationParameter(yearConfigurationParameterId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Year Configuration Parameter not found for update: {}", yearConfigurationParameterId, e);

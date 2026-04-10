@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class YearConfigurationParameterModel extends BaseResource {
+public class YearConfigurationParameterRsrc extends BaseResource {
 
     private Long yearConfigurationParameterId;
 
