@@ -80,7 +80,7 @@ public class CropUnitConversionControllerTest {
 
         mockMvc.perform(get("/cropUnitConversions"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("CropUnitConversionListModel"))
+                .andExpect(jsonPath("$.@type").value("CropUnitConversionListRsrc"))
                 .andExpect(jsonPath("$.cropUnitConversionList[1].@type")
                         .value("CropUnitConversionModel"))
                 .andExpect(jsonPath("$.cropUnitConversionList[1].cropUnitDefaultId").value(1701))
@@ -111,7 +111,7 @@ public class CropUnitConversionControllerTest {
         mockMvc.perform(get("/cropUnitConversions")
                 .param("inventoryItemCode", "5560"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("CropUnitConversionListModel"))
+                .andExpect(jsonPath("$.@type").value("CropUnitConversionListRsrc"))
                 .andExpect(jsonPath("$.cropUnitConversionList[0].@type")
                         .value("CropUnitConversionModel"))
                 .andExpect(jsonPath("$.cropUnitConversionList[0].cropUnitDefaultId").value(1701))

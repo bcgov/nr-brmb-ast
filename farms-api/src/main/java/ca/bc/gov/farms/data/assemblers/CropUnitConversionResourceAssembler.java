@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import ca.bc.gov.farms.data.entities.ConversionUnitEntity;
 import ca.bc.gov.farms.data.entities.CropUnitConversionEntity;
 import ca.bc.gov.farms.data.models.ConversionUnitRsrc;
-import ca.bc.gov.farms.data.models.CropUnitConversionListModel;
+import ca.bc.gov.farms.data.models.CropUnitConversionListRsrc;
 import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,11 +49,11 @@ public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    public CropUnitConversionListModel getCropUnitConversionList(List<CropUnitConversionEntity> entities) {
+    public CropUnitConversionListRsrc getCropUnitConversionList(List<CropUnitConversionEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        CropUnitConversionListModel result = null;
+        CropUnitConversionListRsrc result = null;
 
         @SuppressWarnings("null")
         List<CropUnitConversionModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -64,7 +64,7 @@ public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
             return resource;
         }).collect(Collectors.toList());
 
-        result = new CropUnitConversionListModel();
+        result = new CropUnitConversionListRsrc();
         result.setCropUnitConversionList(resources);
 
         String eTag = getEtag(result);

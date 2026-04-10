@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.CropUnitConversionListModel;
+import ca.bc.gov.farms.data.models.CropUnitConversionListRsrc;
 import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 import ca.bc.gov.farms.services.CropUnitConversionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,15 +46,15 @@ public class CropUnitConversionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = CropUnitConversionListModel.class))),
+                    content = @Content(schema = @Schema(implementation = CropUnitConversionListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CropUnitConversionListModel> getAllCropUnitConversions(
+    public ResponseEntity<CropUnitConversionListRsrc> getAllCropUnitConversions(
             @RequestParam(required = false) String inventoryItemCode) {
         log.debug(" >> getAllCropUnitConversions");
 
-        CropUnitConversionListModel resources = null;
+        CropUnitConversionListRsrc resources = null;
         try {
             if (StringUtils.isBlank(inventoryItemCode)) {
                 resources = cropUnitConversionService.getAllCropUnitConversions();

@@ -14,7 +14,7 @@ import ca.bc.gov.farms.data.assemblers.CropUnitConversionResourceAssembler;
 import ca.bc.gov.farms.data.entities.ConversionUnitEntity;
 import ca.bc.gov.farms.data.entities.CropUnitConversionEntity;
 import ca.bc.gov.farms.data.mappers.CropUnitConversionMapper;
-import ca.bc.gov.farms.data.models.CropUnitConversionListModel;
+import ca.bc.gov.farms.data.models.CropUnitConversionListRsrc;
 import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -34,9 +34,9 @@ public class CropUnitConversionService {
     @Autowired
     private Validator validator;
 
-    public CropUnitConversionListModel getAllCropUnitConversions() throws ServiceException {
+    public CropUnitConversionListRsrc getAllCropUnitConversions() throws ServiceException {
 
-        CropUnitConversionListModel result = null;
+        CropUnitConversionListRsrc result = null;
 
         try {
             List<CropUnitConversionEntity> entities = cropUnitConversionMapper.fetchAll();
@@ -49,10 +49,10 @@ public class CropUnitConversionService {
         return result;
     }
 
-    public CropUnitConversionListModel getCropUnitConversionsByInventoryItemCode(String inventoryItemCode)
+    public CropUnitConversionListRsrc getCropUnitConversionsByInventoryItemCode(String inventoryItemCode)
             throws ServiceException {
 
-        CropUnitConversionListModel result = null;
+        CropUnitConversionListRsrc result = null;
 
         try {
             List<CropUnitConversionEntity> entities = cropUnitConversionMapper

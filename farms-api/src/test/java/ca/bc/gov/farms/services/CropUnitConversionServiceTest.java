@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.models.ConversionUnitRsrc;
-import ca.bc.gov.farms.data.models.CropUnitConversionListModel;
+import ca.bc.gov.farms.data.models.CropUnitConversionListRsrc;
 import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -60,7 +60,7 @@ public class CropUnitConversionServiceTest {
     @Test
     @Order(2)
     public void testGetCropUnitConversionsByInventoryItemCode() {
-        CropUnitConversionListModel resources = cropUnitConversionService
+        CropUnitConversionListRsrc resources = cropUnitConversionService
                 .getCropUnitConversionsByInventoryItemCode("73");
         assertThat(resources).isNotNull();
         assertThat(resources.getCropUnitConversionList()).isNotEmpty();
