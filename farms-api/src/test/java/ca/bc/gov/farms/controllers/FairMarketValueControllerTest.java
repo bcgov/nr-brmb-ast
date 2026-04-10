@@ -126,7 +126,7 @@ public class FairMarketValueControllerTest {
         mockMvc.perform(get("/fairMarketValues")
                 .param("programYear", "2025"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("FairMarketValueListModel"))
+                .andExpect(jsonPath("$.@type").value("FairMarketValueListRsrc"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].@type").value("FairMarketValueModel"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].fairMarketValueId").value("2025_5562_41_1"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].programYear").value(2025))

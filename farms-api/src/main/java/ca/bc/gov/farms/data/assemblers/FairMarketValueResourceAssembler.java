@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.FairMarketValueEntity;
-import ca.bc.gov.farms.data.models.FairMarketValueListModel;
+import ca.bc.gov.farms.data.models.FairMarketValueListRsrc;
 import ca.bc.gov.farms.data.models.FairMarketValueModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,11 +35,11 @@ public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
     }
 
     @SuppressWarnings("null")
-    public FairMarketValueListModel getFairMarketValueList(List<FairMarketValueEntity> entities) {
+    public FairMarketValueListRsrc getFairMarketValueList(List<FairMarketValueEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        FairMarketValueListModel result = null;
+        FairMarketValueListRsrc result = null;
 
         List<FairMarketValueModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
             FairMarketValueModel resource = new FairMarketValueModel();
@@ -48,7 +48,7 @@ public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
             return resource;
         }).collect(Collectors.toList());
 
-        result = new FairMarketValueListModel();
+        result = new FairMarketValueListRsrc();
         result.setFairMarketValueList(resources);
 
         String eTag = getEtag(result);

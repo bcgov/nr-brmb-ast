@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.FairMarketValueListModel;
+import ca.bc.gov.farms.data.models.FairMarketValueListRsrc;
 import ca.bc.gov.farms.data.models.FairMarketValueModel;
 import jakarta.validation.ConstraintViolationException;
 
@@ -114,7 +114,7 @@ public class FairMarketValueServiceTest {
     @Test
     @Order(2)
     public void testGetFairMarketValuesByProgramYear() {
-        FairMarketValueListModel resources = fairMarketValueService.getFairMarketValuesByProgramYear(2024);
+        FairMarketValueListRsrc resources = fairMarketValueService.getFairMarketValuesByProgramYear(2024);
         assertThat(resources).isNotNull();
         assertThat(resources.getFairMarketValueList()).isNotEmpty();
         assertThat(resources.getFairMarketValueList().size()).isEqualTo(1);

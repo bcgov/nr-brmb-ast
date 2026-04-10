@@ -15,7 +15,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.FairMarketValueResourceAssembler;
 import ca.bc.gov.farms.data.entities.FairMarketValueEntity;
 import ca.bc.gov.farms.data.mappers.FairMarketValueMapper;
-import ca.bc.gov.farms.data.models.FairMarketValueListModel;
+import ca.bc.gov.farms.data.models.FairMarketValueListRsrc;
 import ca.bc.gov.farms.data.models.FairMarketValueModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -35,9 +35,9 @@ public class FairMarketValueService {
     @Autowired
     private Validator validator;
 
-    public FairMarketValueListModel getFairMarketValuesByProgramYear(Integer programYear) throws ServiceException {
+    public FairMarketValueListRsrc getFairMarketValuesByProgramYear(Integer programYear) throws ServiceException {
 
-        FairMarketValueListModel result = null;
+        FairMarketValueListRsrc result = null;
 
         try {
             List<FairMarketValueEntity> entities = fairMarketValueMapper.fetchByProgramYear(programYear);

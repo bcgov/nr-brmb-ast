@@ -16,7 +16,7 @@ import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.FairMarketValueListModel;
+import ca.bc.gov.farms.data.models.FairMarketValueListRsrc;
 import ca.bc.gov.farms.data.models.FairMarketValueModel;
 import ca.bc.gov.farms.services.FairMarketValueService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,16 +46,16 @@ public class FairMarketValueController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = FairMarketValueListModel.class))),
+                    content = @Content(schema = @Schema(implementation = FairMarketValueListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FairMarketValueListModel> getFairMarketValuesByProgramYear(
+    public ResponseEntity<FairMarketValueListRsrc> getFairMarketValuesByProgramYear(
             @RequestParam Integer programYear) {
         log.debug(" >> getFairMarketValuesByProgramYear: {}", programYear);
 
         try {
-            FairMarketValueListModel resource = fairMarketValueService.getFairMarketValuesByProgramYear(programYear);
+            FairMarketValueListRsrc resource = fairMarketValueService.getFairMarketValuesByProgramYear(programYear);
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Fair Market Values", e);
