@@ -143,7 +143,7 @@ public class BenchmarkPerUnitService {
 
             int count = benchmarkPerUnitMapper.updateBenchmarkPerUnit(entity, userId);
             if (count == 0) {
-                throw new NotFoundException("Record not updated: " + entity.getBenchmarkPerUnitId());
+                throw new NotFoundException("Record not updated: " + count);
             }
 
             BigDecimal[] margins = { entity.getYearMinus1Margin(), entity.getYearMinus2Margin(),
