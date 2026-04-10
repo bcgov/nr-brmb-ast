@@ -16,7 +16,7 @@ import ca.bc.gov.farms.data.assemblers.FairMarketValueResourceAssembler;
 import ca.bc.gov.farms.data.entities.FairMarketValueEntity;
 import ca.bc.gov.farms.data.mappers.FairMarketValueMapper;
 import ca.bc.gov.farms.data.models.FairMarketValueListRsrc;
-import ca.bc.gov.farms.data.models.FairMarketValueModel;
+import ca.bc.gov.farms.data.models.FairMarketValueRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -50,10 +50,10 @@ public class FairMarketValueService {
         return result;
     }
 
-    public FairMarketValueModel getFairMarketValue(String fairMarketValueId)
+    public FairMarketValueRsrc getFairMarketValue(String fairMarketValueId)
             throws ServiceException, NotFoundException {
 
-        FairMarketValueModel result = null;
+        FairMarketValueRsrc result = null;
 
         try {
             String[] parts = fairMarketValueId.split("_");
@@ -78,15 +78,15 @@ public class FairMarketValueService {
     }
 
     @Transactional
-    public FairMarketValueModel createFairMarketValue(FairMarketValueModel resource)
+    public FairMarketValueRsrc createFairMarketValue(FairMarketValueRsrc resource)
             throws ServiceException, ConstraintViolationException, ConflictException {
 
-        Set<ConstraintViolation<FairMarketValueModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<FairMarketValueRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        FairMarketValueModel result = null;
+        FairMarketValueRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -136,15 +136,15 @@ public class FairMarketValueService {
     }
 
     @Transactional
-    public FairMarketValueModel updateFairMarketValue(String fairMarketValueId, FairMarketValueModel resource)
+    public FairMarketValueRsrc updateFairMarketValue(String fairMarketValueId, FairMarketValueRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<FairMarketValueModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<FairMarketValueRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        FairMarketValueModel result = null;
+        FairMarketValueRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

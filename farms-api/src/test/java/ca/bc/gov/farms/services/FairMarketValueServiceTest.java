@@ -16,7 +16,7 @@ import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.models.FairMarketValueListRsrc;
-import ca.bc.gov.farms.data.models.FairMarketValueModel;
+import ca.bc.gov.farms.data.models.FairMarketValueRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +35,7 @@ public class FairMarketValueServiceTest {
     @Test
     @Order(1)
     public void testCreateFairMarketValue() {
-        FairMarketValueModel resource = new FairMarketValueModel();
+        FairMarketValueRsrc resource = new FairMarketValueRsrc();
         resource.setProgramYear(2024);
         resource.setInventoryItemCode("5562");
         resource.setMunicipalityCode("43");
@@ -67,7 +67,7 @@ public class FairMarketValueServiceTest {
         resource.setUrlId(1L);
         resource.setUserEmail("testUser");
 
-        FairMarketValueModel newResource;
+        FairMarketValueRsrc newResource;
         try {
             newResource = fairMarketValueService.createFairMarketValue(resource);
         } catch (ConstraintViolationException | ServiceException | ConflictException e) {
@@ -119,7 +119,7 @@ public class FairMarketValueServiceTest {
         assertThat(resources.getFairMarketValueList()).isNotEmpty();
         assertThat(resources.getFairMarketValueList().size()).isEqualTo(1);
 
-        FairMarketValueModel resource = resources.getFairMarketValueList().iterator().next();
+        FairMarketValueRsrc resource = resources.getFairMarketValueList().iterator().next();
         assertThat(resource.getProgramYear()).isEqualTo(2024);
         assertThat(resource.getInventoryItemCode()).isEqualTo("5562");
         assertThat(resource.getInventoryItemDesc()).isEqualTo("Greenfeed");
@@ -158,7 +158,7 @@ public class FairMarketValueServiceTest {
     @Test
     @Order(3)
     public void testUpdateFairMarketValue() {
-        FairMarketValueModel resource = null;
+        FairMarketValueRsrc resource = null;
         try {
             resource = fairMarketValueService.getFairMarketValue(fairMarketValueId);
         } catch (ServiceException | NotFoundException e) {
@@ -198,7 +198,7 @@ public class FairMarketValueServiceTest {
         resource.setUrlId(2L);
         resource.setUserEmail("testUser");
 
-        FairMarketValueModel updatedResource = null;
+        FairMarketValueRsrc updatedResource = null;
         try {
             updatedResource = fairMarketValueService.updateFairMarketValue(fairMarketValueId, resource);
         } catch (ConstraintViolationException | ServiceException | NotFoundException e) {

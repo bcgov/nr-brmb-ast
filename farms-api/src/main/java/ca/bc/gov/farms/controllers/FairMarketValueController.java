@@ -17,7 +17,7 @@ import ca.bc.gov.brmb.common.service.api.ConflictException;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
 import ca.bc.gov.farms.data.models.FairMarketValueListRsrc;
-import ca.bc.gov.farms.data.models.FairMarketValueModel;
+import ca.bc.gov.farms.data.models.FairMarketValueRsrc;
 import ca.bc.gov.farms.services.FairMarketValueService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -70,17 +70,17 @@ public class FairMarketValueController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = FairMarketValueModel.class))),
+                    content = @Content(schema = @Schema(implementation = FairMarketValueRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FairMarketValueModel> getFairMarketValue(
+    public ResponseEntity<FairMarketValueRsrc> getFairMarketValue(
             @PathVariable String fairMarketValueId) {
         log.debug(" >> getFairMarketValue: {}", fairMarketValueId);
 
         try {
-            FairMarketValueModel resource = fairMarketValueService.getFairMarketValue(fairMarketValueId);
+            FairMarketValueRsrc resource = fairMarketValueService.getFairMarketValue(fairMarketValueId);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Fair Market Value not found: {}", fairMarketValueId, e);
@@ -98,7 +98,7 @@ public class FairMarketValueController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = FairMarketValueModel.class))),
+                    content = @Content(schema = @Schema(implementation = FairMarketValueRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "409", description = "Conflict",
@@ -106,12 +106,12 @@ public class FairMarketValueController extends CommonController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FairMarketValueModel> createFairMarketValue(
-            @Valid @RequestBody FairMarketValueModel resource) {
+    public ResponseEntity<FairMarketValueRsrc> createFairMarketValue(
+            @Valid @RequestBody FairMarketValueRsrc resource) {
         log.debug(" >> createFairMarketValue");
 
         try {
-            FairMarketValueModel newResource = fairMarketValueService.createFairMarketValue(resource);
+            FairMarketValueRsrc newResource = fairMarketValueService.createFairMarketValue(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (ConflictException e) {
             log.warn(" ### Error while creating Fair Market Value", e);
@@ -129,20 +129,20 @@ public class FairMarketValueController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = FairMarketValueModel.class))),
+                    content = @Content(schema = @Schema(implementation = FairMarketValueRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<FairMarketValueModel> updateFairMarketValue(
+    public ResponseEntity<FairMarketValueRsrc> updateFairMarketValue(
             @PathVariable String fairMarketValueId,
-            @Valid @RequestBody FairMarketValueModel resource) {
+            @Valid @RequestBody FairMarketValueRsrc resource) {
         log.debug(" >> updateFairMarketValue");
 
         try {
-            FairMarketValueModel updatedResource = fairMarketValueService.updateFairMarketValue(fairMarketValueId, resource);
+            FairMarketValueRsrc updatedResource = fairMarketValueService.updateFairMarketValue(fairMarketValueId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Fair Market Value not found for update: {}", fairMarketValueId, e);

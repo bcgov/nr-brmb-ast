@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.FairMarketValueEntity;
 import ca.bc.gov.farms.data.models.FairMarketValueListRsrc;
-import ca.bc.gov.farms.data.models.FairMarketValueModel;
+import ca.bc.gov.farms.data.models.FairMarketValueRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
 
-    public FairMarketValueModel getFairMarketValue(@NonNull FairMarketValueEntity entity) {
+    public FairMarketValueRsrc getFairMarketValue(@NonNull FairMarketValueEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        FairMarketValueModel resource = new FairMarketValueModel();
+        FairMarketValueRsrc resource = new FairMarketValueRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -41,8 +41,8 @@ public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
 
         FairMarketValueListRsrc result = null;
 
-        List<FairMarketValueModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            FairMarketValueModel resource = new FairMarketValueModel();
+        List<FairMarketValueRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            FairMarketValueRsrc resource = new FairMarketValueRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getFairMarketValueId(), resource, baseUri);
             return resource;
@@ -59,7 +59,7 @@ public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateFairMarketValue(@NonNull FairMarketValueModel resource, @NonNull FairMarketValueEntity entity) {
+    public void updateFairMarketValue(@NonNull FairMarketValueRsrc resource, @NonNull FairMarketValueEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }
 }

@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ca.bc.gov.farms.data.models.FairMarketValueModel;
+import ca.bc.gov.farms.data.models.FairMarketValueRsrc;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -41,7 +41,7 @@ public class FairMarketValueControllerTest {
     @Order(1)
     public void testCreateFairMarketValue() throws Exception {
 
-        FairMarketValueModel resource = new FairMarketValueModel();
+        FairMarketValueRsrc resource = new FairMarketValueRsrc();
         resource.setProgramYear(2025);
         resource.setInventoryItemCode("5562");
         resource.setMunicipalityCode("41");
@@ -78,7 +78,7 @@ public class FairMarketValueControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.@type").value("FairMarketValueModel"))
+                .andExpect(jsonPath("$.@type").value("FairMarketValueRsrc"))
                 .andExpect(jsonPath("$.fairMarketValueId").value("2025_5562_41_1"))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.inventoryItemCode").value("5562"))
@@ -127,7 +127,7 @@ public class FairMarketValueControllerTest {
                 .param("programYear", "2025"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("FairMarketValueListRsrc"))
-                .andExpect(jsonPath("$.fairMarketValueList[0].@type").value("FairMarketValueModel"))
+                .andExpect(jsonPath("$.fairMarketValueList[0].@type").value("FairMarketValueRsrc"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].fairMarketValueId").value("2025_5562_41_1"))
                 .andExpect(jsonPath("$.fairMarketValueList[0].programYear").value(2025))
                 .andExpect(jsonPath("$.fairMarketValueList[0].inventoryItemCode").value("5562"))
@@ -174,7 +174,7 @@ public class FairMarketValueControllerTest {
 
         mockMvc.perform(get("/fairMarketValues/2025_5562_41_1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("FairMarketValueModel"))
+                .andExpect(jsonPath("$.@type").value("FairMarketValueRsrc"))
                 .andExpect(jsonPath("$.fairMarketValueId").value("2025_5562_41_1"))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.inventoryItemCode").value("5562"))
@@ -219,7 +219,7 @@ public class FairMarketValueControllerTest {
     @Order(4)
     public void testUpdateFairMarketValue() throws Exception {
 
-        FairMarketValueModel resource = new FairMarketValueModel();
+        FairMarketValueRsrc resource = new FairMarketValueRsrc();
         resource.setFairMarketValueId("2025_5562_41_1");
         resource.setProgramYear(2025);
         resource.setInventoryItemCode("5562");
@@ -257,7 +257,7 @@ public class FairMarketValueControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("FairMarketValueModel"))
+                .andExpect(jsonPath("$.@type").value("FairMarketValueRsrc"))
                 .andExpect(jsonPath("$.fairMarketValueId").value("2025_5562_41_1"))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.inventoryItemCode").value("5562"))

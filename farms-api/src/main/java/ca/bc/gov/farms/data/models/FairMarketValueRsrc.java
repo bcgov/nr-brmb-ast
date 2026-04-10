@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FairMarketValueModel extends BaseResource {
+public class FairMarketValueRsrc extends BaseResource {
 
     private String fairMarketValueId;
 
