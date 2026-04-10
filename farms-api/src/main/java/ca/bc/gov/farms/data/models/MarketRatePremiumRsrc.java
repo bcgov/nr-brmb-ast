@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarketRatePremiumModel extends BaseResource {
+public class MarketRatePremiumRsrc extends BaseResource {
 
     private Long marketRatePremiumId;
 

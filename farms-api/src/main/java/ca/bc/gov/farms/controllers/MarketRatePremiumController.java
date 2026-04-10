@@ -15,7 +15,7 @@ import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
 import ca.bc.gov.farms.data.models.MarketRatePremiumListRsrc;
-import ca.bc.gov.farms.data.models.MarketRatePremiumModel;
+import ca.bc.gov.farms.data.models.MarketRatePremiumRsrc;
 import ca.bc.gov.farms.services.MarketRatePremiumService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -67,17 +67,17 @@ public class MarketRatePremiumController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = MarketRatePremiumModel.class))),
+                    content = @Content(schema = @Schema(implementation = MarketRatePremiumRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<MarketRatePremiumModel> getMarketRatePremium(
+    public ResponseEntity<MarketRatePremiumRsrc> getMarketRatePremium(
             @PathVariable Long marketRatePremiumId) {
         log.debug(" >> getMarketRatePremium: {}", marketRatePremiumId);
 
         try {
-            MarketRatePremiumModel resource = marketRatePremiumService.getMarketRatePremium(marketRatePremiumId);
+            MarketRatePremiumRsrc resource = marketRatePremiumService.getMarketRatePremium(marketRatePremiumId);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Market Rate Premium not found: {}", marketRatePremiumId, e);
@@ -95,18 +95,18 @@ public class MarketRatePremiumController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = MarketRatePremiumModel.class))),
+                    content = @Content(schema = @Schema(implementation = MarketRatePremiumRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<MarketRatePremiumModel> createMarketRatePremium(
-            @Valid @RequestBody MarketRatePremiumModel resource) {
+    public ResponseEntity<MarketRatePremiumRsrc> createMarketRatePremium(
+            @Valid @RequestBody MarketRatePremiumRsrc resource) {
         log.debug(" >> createMarketRatePremium");
 
         try {
-            MarketRatePremiumModel newResource = marketRatePremiumService.createMarketRatePremium(resource);
+            MarketRatePremiumRsrc newResource = marketRatePremiumService.createMarketRatePremium(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while creating Market Rate Premium", e);
@@ -121,20 +121,20 @@ public class MarketRatePremiumController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = MarketRatePremiumModel.class))),
+                    content = @Content(schema = @Schema(implementation = MarketRatePremiumRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<MarketRatePremiumModel> updateMarketRatePremium(
+    public ResponseEntity<MarketRatePremiumRsrc> updateMarketRatePremium(
             @PathVariable Long marketRatePremiumId,
-            @Valid @RequestBody MarketRatePremiumModel resource) {
+            @Valid @RequestBody MarketRatePremiumRsrc resource) {
         log.debug(" >> updateMarketRatePremium");
 
         try {
-            MarketRatePremiumModel updatedResource = marketRatePremiumService.updateMarketRatePremium(marketRatePremiumId, resource);
+            MarketRatePremiumRsrc updatedResource = marketRatePremiumService.updateMarketRatePremium(marketRatePremiumId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Market Rate Premium not found for update: {}", marketRatePremiumId, e);

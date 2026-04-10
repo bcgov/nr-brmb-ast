@@ -13,7 +13,7 @@ import ca.bc.gov.farms.data.assemblers.MarketRatePremiumResourceAssembler;
 import ca.bc.gov.farms.data.entities.MarketRatePremiumEntity;
 import ca.bc.gov.farms.data.mappers.MarketRatePremiumMapper;
 import ca.bc.gov.farms.data.models.MarketRatePremiumListRsrc;
-import ca.bc.gov.farms.data.models.MarketRatePremiumModel;
+import ca.bc.gov.farms.data.models.MarketRatePremiumRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -47,10 +47,10 @@ public class MarketRatePremiumService {
         return result;
     }
 
-    public MarketRatePremiumModel getMarketRatePremium(Long marketRatePremiumId)
+    public MarketRatePremiumRsrc getMarketRatePremium(Long marketRatePremiumId)
             throws ServiceException, NotFoundException {
 
-        MarketRatePremiumModel result = null;
+        MarketRatePremiumRsrc result = null;
 
         try {
             MarketRatePremiumEntity entity = marketRatePremiumMapper.fetch(marketRatePremiumId);
@@ -70,15 +70,15 @@ public class MarketRatePremiumService {
     }
 
     @Transactional
-    public MarketRatePremiumModel createMarketRatePremium(MarketRatePremiumModel resource)
+    public MarketRatePremiumRsrc createMarketRatePremium(MarketRatePremiumRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<MarketRatePremiumModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<MarketRatePremiumRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        MarketRatePremiumModel result = null;
+        MarketRatePremiumRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -103,15 +103,15 @@ public class MarketRatePremiumService {
     }
 
     @Transactional
-    public MarketRatePremiumModel updateMarketRatePremium(Long marketRatePremiumId, MarketRatePremiumModel resource)
+    public MarketRatePremiumRsrc updateMarketRatePremium(Long marketRatePremiumId, MarketRatePremiumRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<MarketRatePremiumModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<MarketRatePremiumRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        MarketRatePremiumModel result = null;
+        MarketRatePremiumRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

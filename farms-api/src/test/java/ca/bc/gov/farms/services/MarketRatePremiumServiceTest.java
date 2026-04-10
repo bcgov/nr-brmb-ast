@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.models.MarketRatePremiumListRsrc;
-import ca.bc.gov.farms.data.models.MarketRatePremiumModel;
+import ca.bc.gov.farms.data.models.MarketRatePremiumRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,7 @@ public class MarketRatePremiumServiceTest {
     @Test
     @Order(1)
     public void testCreateMarketRatePremium() {
-        MarketRatePremiumModel resource = new MarketRatePremiumModel();
+        MarketRatePremiumRsrc resource = new MarketRatePremiumRsrc();
         resource.setMinTotalPremiumAmount(new BigDecimal("0.00"));
         resource.setMaxTotalPremiumAmount(new BigDecimal("1.00"));
         resource.setRiskChargeFlatAmount(new BigDecimal("2.00"));
@@ -42,7 +42,7 @@ public class MarketRatePremiumServiceTest {
         resource.setAdjustChargeFlatAmount(new BigDecimal("4.00"));
         resource.setUserEmail("testUser");
 
-        MarketRatePremiumModel newResource = marketRatePremiumService.createMarketRatePremium(resource);
+        MarketRatePremiumRsrc newResource = marketRatePremiumService.createMarketRatePremium(resource);
         marketRatePremiumId = newResource.getMarketRatePremiumId();
 
         assertThat(newResource.getMinTotalPremiumAmount()).isEqualTo(new BigDecimal("0.00"));
@@ -60,7 +60,7 @@ public class MarketRatePremiumServiceTest {
         assertThat(resources.getMarketRatePremiumList()).isNotEmpty();
         assertThat(resources.getMarketRatePremiumList().size()).isEqualTo(1);
 
-        MarketRatePremiumModel resource = resources.getMarketRatePremiumList().iterator().next();
+        MarketRatePremiumRsrc resource = resources.getMarketRatePremiumList().iterator().next();
         assertThat(resource.getMinTotalPremiumAmount()).isEqualTo(new BigDecimal("0.00"));
         assertThat(resource.getMaxTotalPremiumAmount()).isEqualTo(new BigDecimal("1.00"));
         assertThat(resource.getRiskChargeFlatAmount()).isEqualTo(new BigDecimal("2.00"));
@@ -71,7 +71,7 @@ public class MarketRatePremiumServiceTest {
     @Test
     @Order(3)
     public void testUpdateMarketRatePremium() {
-        MarketRatePremiumModel resource = null;
+        MarketRatePremiumRsrc resource = null;
         try {
             resource = marketRatePremiumService.getMarketRatePremium(marketRatePremiumId);
         } catch (ServiceException | NotFoundException e) {
@@ -87,7 +87,7 @@ public class MarketRatePremiumServiceTest {
         resource.setAdjustChargeFlatAmount(new BigDecimal("5.00"));
         resource.setUserEmail("testUser");
 
-        MarketRatePremiumModel updatedResource = null;
+        MarketRatePremiumRsrc updatedResource = null;
         try {
             updatedResource = marketRatePremiumService.updateMarketRatePremium(marketRatePremiumId, resource);
         } catch (ConstraintViolationException | ServiceException | NotFoundException e) {
