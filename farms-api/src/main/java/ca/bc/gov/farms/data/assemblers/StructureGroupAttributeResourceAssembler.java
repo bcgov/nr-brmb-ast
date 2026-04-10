@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.StructureGroupAttributeEntity;
-import ca.bc.gov.farms.data.models.StructureGroupAttributeListModel;
+import ca.bc.gov.farms.data.models.StructureGroupAttributeListRsrc;
 import ca.bc.gov.farms.data.models.StructureGroupAttributeModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,12 +34,12 @@ public class StructureGroupAttributeResourceAssembler extends BaseResourceAssemb
         return resource;
     }
 
-    public StructureGroupAttributeListModel getStructureGroupAttributeList(
+    public StructureGroupAttributeListRsrc getStructureGroupAttributeList(
             List<StructureGroupAttributeEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        StructureGroupAttributeListModel result = null;
+        StructureGroupAttributeListRsrc result = null;
 
         @SuppressWarnings("null")
         List<StructureGroupAttributeModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
@@ -49,7 +49,7 @@ public class StructureGroupAttributeResourceAssembler extends BaseResourceAssemb
             return resource;
         }).collect(Collectors.toList());
 
-        result = new StructureGroupAttributeListModel();
+        result = new StructureGroupAttributeListRsrc();
         result.setStructureGroupAttributeList(resources);
 
         String eTag = getEtag(result);
