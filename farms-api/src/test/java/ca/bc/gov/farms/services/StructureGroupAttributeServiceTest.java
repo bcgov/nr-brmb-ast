@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.StructureGroupAttributeModel;
+import ca.bc.gov.farms.data.models.StructureGroupAttributeRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,12 +31,12 @@ public class StructureGroupAttributeServiceTest {
     @Test
     @Order(1)
     public void testCreateStructureGroupAttribute() {
-        StructureGroupAttributeModel resource = new StructureGroupAttributeModel();
+        StructureGroupAttributeRsrc resource = new StructureGroupAttributeRsrc();
         resource.setStructureGroupCode("100");
         resource.setRollupStructureGroupCode("120");
         resource.setUserEmail("testUser");
 
-        StructureGroupAttributeModel newResource = structureGroupAttributeService
+        StructureGroupAttributeRsrc newResource = structureGroupAttributeService
                 .createStructureGroupAttribute(resource);
         structureGroupAttributeId = newResource.getStructureGroupAttributeId();
 
@@ -49,7 +49,7 @@ public class StructureGroupAttributeServiceTest {
     @Test
     @Order(2)
     public void testGetStructureGroupAttributesByStructureGroupCode() {
-        StructureGroupAttributeModel resource = structureGroupAttributeService
+        StructureGroupAttributeRsrc resource = structureGroupAttributeService
                 .getStructureGroupAttributesByStructureGroupCode("100");
 
         assertThat(resource).isNotNull();
@@ -62,7 +62,7 @@ public class StructureGroupAttributeServiceTest {
     @Test
     @Order(3)
     public void testUpdateStructureGroupAttribute() {
-        StructureGroupAttributeModel resource = null;
+        StructureGroupAttributeRsrc resource = null;
         try {
             resource = structureGroupAttributeService.getStructureGroupAttribute(structureGroupAttributeId);
         } catch (ServiceException | NotFoundException e) {
@@ -75,7 +75,7 @@ public class StructureGroupAttributeServiceTest {
         resource.setRollupStructureGroupCode("300");
         resource.setUserEmail("testUser");
 
-        StructureGroupAttributeModel updatedResource = null;
+        StructureGroupAttributeRsrc updatedResource = null;
         try {
             updatedResource = structureGroupAttributeService.updateStructureGroupAttribute(structureGroupAttributeId,
                     resource);

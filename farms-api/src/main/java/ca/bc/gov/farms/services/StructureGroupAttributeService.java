@@ -11,7 +11,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.StructureGroupAttributeResourceAssembler;
 import ca.bc.gov.farms.data.entities.StructureGroupAttributeEntity;
 import ca.bc.gov.farms.data.mappers.StructureGroupAttributeMapper;
-import ca.bc.gov.farms.data.models.StructureGroupAttributeModel;
+import ca.bc.gov.farms.data.models.StructureGroupAttributeRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -30,10 +30,10 @@ public class StructureGroupAttributeService {
     @Autowired
     private Validator validator;
 
-    public StructureGroupAttributeModel getStructureGroupAttributesByStructureGroupCode(String structureGroupCode)
+    public StructureGroupAttributeRsrc getStructureGroupAttributesByStructureGroupCode(String structureGroupCode)
             throws ServiceException {
 
-        StructureGroupAttributeModel result = null;
+        StructureGroupAttributeRsrc result = null;
 
         try {
             StructureGroupAttributeEntity entity = structureGroupAttributeMapper
@@ -47,10 +47,10 @@ public class StructureGroupAttributeService {
         return result;
     }
 
-    public StructureGroupAttributeModel getStructureGroupAttribute(Long structureGroupAttributeId)
+    public StructureGroupAttributeRsrc getStructureGroupAttribute(Long structureGroupAttributeId)
             throws ServiceException, NotFoundException {
 
-        StructureGroupAttributeModel result = null;
+        StructureGroupAttributeRsrc result = null;
 
         try {
             StructureGroupAttributeEntity entity = structureGroupAttributeMapper.fetch(structureGroupAttributeId);
@@ -70,15 +70,15 @@ public class StructureGroupAttributeService {
     }
 
     @Transactional
-    public StructureGroupAttributeModel createStructureGroupAttribute(StructureGroupAttributeModel resource)
+    public StructureGroupAttributeRsrc createStructureGroupAttribute(StructureGroupAttributeRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<StructureGroupAttributeModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<StructureGroupAttributeRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        StructureGroupAttributeModel result = null;
+        StructureGroupAttributeRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -103,16 +103,16 @@ public class StructureGroupAttributeService {
     }
 
     @Transactional
-    public StructureGroupAttributeModel updateStructureGroupAttribute(Long structureGroupAttributeId,
-            StructureGroupAttributeModel resource)
+    public StructureGroupAttributeRsrc updateStructureGroupAttribute(Long structureGroupAttributeId,
+            StructureGroupAttributeRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<StructureGroupAttributeModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<StructureGroupAttributeRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        StructureGroupAttributeModel result = null;
+        StructureGroupAttributeRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

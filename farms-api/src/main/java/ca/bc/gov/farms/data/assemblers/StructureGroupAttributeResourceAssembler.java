@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.StructureGroupAttributeEntity;
 import ca.bc.gov.farms.data.models.StructureGroupAttributeListRsrc;
-import ca.bc.gov.farms.data.models.StructureGroupAttributeModel;
+import ca.bc.gov.farms.data.models.StructureGroupAttributeRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class StructureGroupAttributeResourceAssembler extends BaseResourceAssembler {
 
-    public StructureGroupAttributeModel getStructureGroupAttribute(@NonNull StructureGroupAttributeEntity entity) {
+    public StructureGroupAttributeRsrc getStructureGroupAttribute(@NonNull StructureGroupAttributeEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        StructureGroupAttributeModel resource = new StructureGroupAttributeModel();
+        StructureGroupAttributeRsrc resource = new StructureGroupAttributeRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -42,8 +42,8 @@ public class StructureGroupAttributeResourceAssembler extends BaseResourceAssemb
         StructureGroupAttributeListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<StructureGroupAttributeModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            StructureGroupAttributeModel resource = new StructureGroupAttributeModel();
+        List<StructureGroupAttributeRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            StructureGroupAttributeRsrc resource = new StructureGroupAttributeRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getStructureGroupAttributeId(), resource, baseUri);
             return resource;
@@ -60,7 +60,7 @@ public class StructureGroupAttributeResourceAssembler extends BaseResourceAssemb
         return result;
     }
 
-    public void updateStructureGroupAttribute(@NonNull StructureGroupAttributeModel resource,
+    public void updateStructureGroupAttribute(@NonNull StructureGroupAttributeRsrc resource,
             @NonNull StructureGroupAttributeEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }

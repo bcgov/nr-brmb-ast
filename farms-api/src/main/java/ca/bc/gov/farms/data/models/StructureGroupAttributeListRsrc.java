@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StructureGroupAttributeListRsrc extends BaseResource {
 
-    private List<StructureGroupAttributeModel> structureGroupAttributeList;
+    private List<StructureGroupAttributeRsrc> structureGroupAttributeList;
 }
