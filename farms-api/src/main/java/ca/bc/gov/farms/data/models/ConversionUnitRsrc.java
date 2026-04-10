@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConversionUnitModel implements Serializable {
+public class ConversionUnitRsrc implements Serializable {
 
     private Long cropUnitConversionFactorId;
     private BigDecimal conversionFactor;

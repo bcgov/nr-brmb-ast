@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ca.bc.gov.farms.data.models.ConversionUnitModel;
+import ca.bc.gov.farms.data.models.ConversionUnitRsrc;
 import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 
 @SpringBootTest
@@ -48,8 +48,8 @@ public class CropUnitConversionControllerTest {
         CropUnitConversionModel resource = new CropUnitConversionModel();
         resource.setInventoryItemCode("5560");
         resource.setCropUnitCode("2");
-        List<ConversionUnitModel> conversionUnits = new ArrayList<>();
-        ConversionUnitModel conversionUnit = new ConversionUnitModel();
+        List<ConversionUnitRsrc> conversionUnits = new ArrayList<>();
+        ConversionUnitRsrc conversionUnit = new ConversionUnitRsrc();
         conversionUnit.setConversionFactor(new BigDecimal("2204.622600"));
         conversionUnit.setTargetCropUnitCode("1");
         conversionUnits.add(conversionUnit);
@@ -163,8 +163,8 @@ public class CropUnitConversionControllerTest {
         resource.setCropUnitDefaultId(1701L);
         resource.setInventoryItemCode("5560");
         resource.setCropUnitCode("1");
-        List<ConversionUnitModel> conversionUnits = new ArrayList<>();
-        ConversionUnitModel conversionUnit = new ConversionUnitModel();
+        List<ConversionUnitRsrc> conversionUnits = new ArrayList<>();
+        ConversionUnitRsrc conversionUnit = new ConversionUnitRsrc();
         conversionUnit.setCropUnitConversionFactorId(2001L);
         conversionUnit.setConversionFactor(new BigDecimal("3204.622600"));
         conversionUnit.setTargetCropUnitCode("2");

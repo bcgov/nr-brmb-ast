@@ -35,8 +35,8 @@ public class CropUnitConversionModel extends BaseResource {
     private String cropUnitCode;
     private String cropUnitDesc;
 
-    @JsonDeserialize(contentAs = ConversionUnitModel.class)
+    @JsonDeserialize(contentAs = ConversionUnitRsrc.class)
     @Builder.Default
-    private List<ConversionUnitModel> conversionUnits = new ArrayList<>();
+    private List<ConversionUnitRsrc> conversionUnits = new ArrayList<>();
     private String userEmail;
 }

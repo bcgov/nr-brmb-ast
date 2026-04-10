@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.ConversionUnitEntity;
 import ca.bc.gov.farms.data.entities.CropUnitConversionEntity;
-import ca.bc.gov.farms.data.models.ConversionUnitModel;
+import ca.bc.gov.farms.data.models.ConversionUnitRsrc;
 import ca.bc.gov.farms.data.models.CropUnitConversionListModel;
 import ca.bc.gov.farms.data.models.CropUnitConversionModel;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +23,8 @@ public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
     private void populate(CropUnitConversionEntity entity, CropUnitConversionModel resource) {
 
         @SuppressWarnings("null")
-        List<ConversionUnitModel> conversionUnitResources = entity.getConversionUnits().stream().map(e -> {
-            ConversionUnitModel r = new ConversionUnitModel();
+        List<ConversionUnitRsrc> conversionUnitResources = entity.getConversionUnits().stream().map(e -> {
+            ConversionUnitRsrc r = new ConversionUnitRsrc();
             BeanUtils.copyProperties(e, r);
             return r;
         }).collect(Collectors.toList());
