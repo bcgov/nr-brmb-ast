@@ -1,0 +1,73 @@
+$kind: http-request
+name: Update Fruit Veg Type Detail
+url: "{{baseUrl}}/fruitVegTypeDetails/:fruitVegTypeCode"
+method: PUT
+pathVariables:
+  fruitVegTypeCode: "{{fruitVegTypeCode}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"FruitVegTypeDetailRsrc\",\r
+
+    \    \"fruitVegTypeCode\": \"SALAK\",\r
+
+    \    \"fruitVegTypeDesc\": \"Salak\",\r
+
+    \    \"revenueVarianceLimit\": 30.000,\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.test(\"Response contains @type = FruitVegTypeDetailRsrc\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"FruitVegTypeDetailRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is updated as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"fruitVegTypeCode\");\r
+
+      \    pm.expect(json.fruitVegTypeCode).to.be.equal(\"SALAK\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"fruitVegTypeDesc\");\r
+
+      \    pm.expect(json.fruitVegTypeDesc).to.be.equal(\"Salak\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"revenueVarianceLimit\");\r
+
+      \    pm.expect(json.revenueVarianceLimit).to.be.equal(30.000);\r
+
+      });"
+    language: text/javascript
+order: 4474363551346590
