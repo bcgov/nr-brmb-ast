@@ -1,12 +1,12 @@
 package ca.bc.gov.farms.data.repositories;
 
-import java.util.HashMap;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import ca.bc.gov.farms.data.entities.ImportBPUEntity;
@@ -14,112 +14,110 @@ import ca.bc.gov.farms.data.entities.ImportBPUEntity;
 @Repository
 public class ImportBPURepository {
 
-    private final SimpleJdbcCall insertStagingRowCall;
-    private final SimpleJdbcCall clearStagingCall;
-    private final SimpleJdbcCall deleteStagingErrorsCall;
-    private final SimpleJdbcCall validateStagingCall;
-    private final SimpleJdbcCall getStagingErrorsCall;
-    private final SimpleJdbcCall performImportCall;
-
-    public ImportBPURepository(@NonNull JdbcTemplate jdbcTemplate) {
-        this.insertStagingRowCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_bpu_pkg")
-                .withProcedureName("insert_staging_row");
-
-        this.clearStagingCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_bpu_pkg")
-                .withProcedureName("clear_staging");
-
-        this.deleteStagingErrorsCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_bpu_pkg")
-                .withProcedureName("delete_staging_errors");
-
-        this.validateStagingCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_bpu_pkg")
-                .withProcedureName("validate_staging");
-
-        this.getStagingErrorsCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_bpu_pkg")
-                .withFunctionName("get_staging_errors")
-                .returningResultSet("return",
-                        (rs, rowNum) -> rs.getString("log_message"));
-
-        this.performImportCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_bpu_pkg")
-                .withProcedureName("staging_to_operational");
-    }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public void insertStagingRow(ImportBPUEntity dto, String userId, int rowNum) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_line_number", rowNum);
-                put("in_program_year", dto.getProgramYear() == null ? null : dto.getProgramYear().shortValue());
-                put("in_municipality_code", dto.getMunicipalityCode());
-                put("in_inventory_item_code", dto.getInventoryItemCode());
-                put("in_unit_comment", dto.getUnitComment());
-                put("in_year_minus_6_margin", dto.getYearMinus6Margin());
-                put("in_year_minus_5_margin", dto.getYearMinus5Margin());
-                put("in_year_minus_4_margin", dto.getYearMinus4Margin());
-                put("in_year_minus_3_margin", dto.getYearMinus3Margin());
-                put("in_year_minus_2_margin", dto.getYearMinus2Margin());
-                put("in_year_minus_1_margin", dto.getYearMinus1Margin());
-                put("in_year_minus_6_expense", dto.getYearMinus6Expense());
-                put("in_year_minus_5_expense", dto.getYearMinus5Expense());
-                put("in_year_minus_4_expense", dto.getYearMinus4Expense());
-                put("in_year_minus_3_expense", dto.getYearMinus3Expense());
-                put("in_year_minus_2_expense", dto.getYearMinus2Expense());
-                put("in_year_minus_1_expense", dto.getYearMinus1Expense());
-                put("in_file_location", dto.getFileLocation());
-                put("in_user", userId);
-            }
-        };
+        jdbcTemplate.execute(
+                "call farms_bpu_pkg.insert_staging_row(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (CallableStatement cs) -> {
 
-        insertStagingRowCall.execute(params);
+                    cs.setLong(1, rowNum);
+                    cs.setObject(2, dto.getProgramYear() == null ? null : dto.getProgramYear().shortValue(),
+                            Types.SMALLINT);
+                    cs.setString(3, dto.getMunicipalityCode());
+                    cs.setString(4, dto.getInventoryItemCode());
+                    cs.setString(5, dto.getUnitComment());
+                    cs.setBigDecimal(6, dto.getYearMinus6Margin());
+                    cs.setBigDecimal(7, dto.getYearMinus5Margin());
+                    cs.setBigDecimal(8, dto.getYearMinus4Margin());
+                    cs.setBigDecimal(9, dto.getYearMinus3Margin());
+                    cs.setBigDecimal(10, dto.getYearMinus2Margin());
+                    cs.setBigDecimal(11, dto.getYearMinus1Margin());
+                    cs.setBigDecimal(12, dto.getYearMinus6Expense());
+                    cs.setBigDecimal(13, dto.getYearMinus5Expense());
+                    cs.setBigDecimal(14, dto.getYearMinus4Expense());
+                    cs.setBigDecimal(15, dto.getYearMinus3Expense());
+                    cs.setBigDecimal(16, dto.getYearMinus2Expense());
+                    cs.setBigDecimal(17, dto.getYearMinus1Expense());
+                    cs.setString(18, dto.getFileLocation());
+                    cs.setString(19, userId);
+
+                    cs.execute();
+
+                    return null;
+                });
     }
 
     public void clearStaging() {
 
-        clearStagingCall.execute();
+        jdbcTemplate.execute("call farms_bpu_pkg.clear_staging()", (CallableStatement cs) -> {
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void deleteStagingErrors(Long importVersionId) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_import_version_id", importVersionId);
-            }
-        };
+        jdbcTemplate.execute("call farms_bpu_pkg.delete_staging_errors(?)", (CallableStatement cs) -> {
 
-        deleteStagingErrorsCall.execute(params);
+            cs.setLong(1, importVersionId);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void validateStaging(Long importVersionId) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_import_version_id", importVersionId);
-            }
-        };
+        jdbcTemplate.execute("call farms_bpu_pkg.validate_staging(?)", (CallableStatement cs) -> {
 
-        validateStagingCall.execute(params);
+            cs.setLong(1, importVersionId);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getStagingErrors(Long importVersionId) {
 
-        return getStagingErrorsCall.executeFunction(List.class, importVersionId);
+        List<String> importLogDtoList = new ArrayList<>();
+
+        jdbcTemplate.execute("{ ? = call farms_bpu_pkg.get_staging_errors(?) }", (CallableStatement cs) -> {
+
+            cs.registerOutParameter(1, Types.OTHER);
+            cs.setLong(2, importVersionId);
+
+            cs.execute();
+
+            ResultSet resultSet = cs.getObject(1, ResultSet.class);
+            while (resultSet.next()) {
+                String logMessage = resultSet.getString("log_message");
+                importLogDtoList.add(logMessage);
+            }
+            resultSet.close();
+
+            return null;
+        });
+
+        return importLogDtoList;
     }
 
     public void performImport(Long importVersionId, String userId) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_import_version_id", importVersionId);
-                put("in_user", userId);
-            }
-        };
+        jdbcTemplate.execute("call farms_bpu_pkg.staging_to_operational(?, ?)", (CallableStatement cs) -> {
 
-        performImportCall.execute(params);
+            cs.setLong(1, importVersionId);
+            cs.setString(2, userId);
+
+            cs.execute();
+
+            return null;
+        });
     }
 }

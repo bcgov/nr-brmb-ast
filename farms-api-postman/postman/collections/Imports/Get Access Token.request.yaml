@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{loginUrl}}/{{tenantId}}/oauth2/v2.0/token"
+method: GET
+body:
+  type: urlencoded
+  content:
+    grant_type: client_credentials
+    client_id: "{{clientId}}"
+    client_secret: "{{clientSecret}}"
+    scope: api://{{clientId}}/.default
+scripts:
+  - type: afterResponse
+    code: "const json = pm.response.json();\r
+
+      \r
+
+      pm.environment.set(\"access_token\", json.access_token);"
+    language: text/javascript
+order: 3335583032752604

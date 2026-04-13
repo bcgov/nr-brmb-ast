@@ -1,0 +1,15 @@
+$kind: http-request
+name: Import CRA
+url: "{{baseUrl}}/import/cra/:fileName"
+method: POST
+pathVariables:
+  fileName: cra_import_98765775_2024.zip
+body:
+  type: file
+  content:
+    src: /U:/hwang/FARM/CRA Import/successful_import/cra_import_98765775_2024.zip
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4460330535185991

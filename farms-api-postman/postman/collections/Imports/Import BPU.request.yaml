@@ -1,0 +1,15 @@
+$kind: http-request
+name: Import BPU
+url: "{{baseUrl}}/import/bpu/:fileName"
+method: POST
+pathVariables:
+  fileName: bpu.csv
+body:
+  type: file
+  content:
+    src: /U:/hwang/FARM/BPU Import/bpu.csv
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4440381094659393

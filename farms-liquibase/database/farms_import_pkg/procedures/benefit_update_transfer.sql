@@ -21,7 +21,7 @@ declare
                null allocated_reference_margin,
                (case
                    when exists (
-                       select *
+                       select fo.farming_operation_id
                        from farms.farm_farming_operations fo
                        join farms.farm_farming_operatin_prtnrs fop on fop.farming_operation_id = fo.farming_operation_id
                        where fo.program_year_version_id = pyv.program_year_version_id
