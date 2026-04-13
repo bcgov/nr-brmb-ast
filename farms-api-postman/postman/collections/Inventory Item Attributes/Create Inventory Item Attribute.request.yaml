@@ -46,6 +46,37 @@ scripts:
       \    pm.expect(json['@type']).to.be.equal(\"InventoryItemAttributeRsrc\");\
       \r
 
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"5003\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDesc\");\r
+
+      \    pm.expect(json.inventoryItemDesc).to.be.equal(\"Other Berries\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"rollupInventoryItemCode\");\r
+
+      \    pm.expect(json.rollupInventoryItemCode).to.be.equal(\"7207\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"rollupInventoryItemDesc\");\r
+
+      \    pm.expect(json.rollupInventoryItemDesc).to.be.equal(\"Tulips; Fresh
+      cut\");\r
+
       });"
     language: text/javascript
 order: 4375166360627751
