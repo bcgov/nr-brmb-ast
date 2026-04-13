@@ -22,13 +22,13 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = YearConfigurationParameterModel\",
+      pm.test(\"Response contains @type = YearConfigurationParameterRsrc\",
       function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"YearConfigurationParameterMod\
-      el\");\r
+      \    pm.expect(json['@type']).to.be.equal(\"YearConfigurationParameterRsrc\
+      \");\r
 
       });"
     language: text/javascript
