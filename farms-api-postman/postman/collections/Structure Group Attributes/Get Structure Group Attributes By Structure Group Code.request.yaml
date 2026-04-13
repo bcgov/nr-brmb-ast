@@ -22,13 +22,13 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = StructureGroupAttributeModel\",
+      pm.test(\"Response contains @type = StructureGroupAttributeRsrc\",
       function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"StructureGroupAttributeModel\
-      \");\r
+      \    pm.expect(json['@type']).to.be.equal(\"StructureGroupAttributeRsrc\"\
+      );\r
 
       });"
     language: text/javascript
