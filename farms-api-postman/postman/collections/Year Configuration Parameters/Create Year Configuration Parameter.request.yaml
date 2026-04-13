@@ -50,6 +50,36 @@ scripts:
       \    pm.expect(json['@type']).to.be.equal(\"YearConfigurationParameterRsrc\
       \");\r
 
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"programYear\");\r
+
+      \    pm.expect(json.programYear).to.be.equal(2025);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterName\");\r
+
+      \    pm.expect(json.parameterName).to.be.equal(\"Test\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterValue\");\r
+
+      \    pm.expect(json.parameterValue).to.be.equal(\"Test Test\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"configParamTypeCode\");\r
+
+      \    pm.expect(json.configParamTypeCode).to.be.equal(\"STRING\");\r
+
       });"
     language: text/javascript
 order: 4492714373852381
