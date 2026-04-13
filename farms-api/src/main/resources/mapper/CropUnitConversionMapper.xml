@@ -108,7 +108,7 @@
     </insert>
 
     <insert id="insertCropUnitConversionFactor">
-        <selectKey keyProperty="cropUnitConversionFactorId" resultType="java.lang.Long" order="BEFORE">
+        <selectKey keyProperty="dto.cropUnitConversionFactorId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_cucf_seq')
         </selectKey>
         insert into farms.farm_crop_unit_conversn_fctrs (
@@ -122,7 +122,7 @@
             who_updated,
             when_updated
         ) values (
-            #{cropUnitConversionFactorId},
+            #{dto.cropUnitConversionFactorId},
             #{dto.conversionFactor, javaType=java.math.BigDecimal, jdbcType=NUMERIC, mode=IN},
             (
                 select iic.inventory_item_code
