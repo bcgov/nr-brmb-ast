@@ -1,0 +1,73 @@
+$kind: http-request
+name: Create Line Item
+url: "{{baseUrl}}/lineItems"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"LineItemRsrc\",\r
+
+    \    \"programYear\": 2026,\r
+
+    \    \"lineItem\": 23,\r
+
+    \    \"description\": \"Chick peas / garbanzo beans - Grains;oilseeds;and
+    special crops\",\r
+
+    \    \"province\": \"BC\",\r
+
+    \    \"eligibilityInd\": \"Y\",\r
+
+    \    \"eligibilityForRefYearsInd\": \"N\",\r
+
+    \    \"yardageInd\": \"N\",\r
+
+    \    \"programPaymentInd\": \"N\",\r
+
+    \    \"contractWorkInd\": \"N\",\r
+
+    \    \"supplyManagedCommodityInd\": \"N\",\r
+
+    \    \"excludeFromRevenueCalcInd\": \"N\",\r
+
+    \    \"industryAverageExpenseInd\": \"N\",\r
+
+    \    \"commodityTypeCode\": \"GRAIN\",\r
+
+    \    \"fruitVegTypeCode\": null,\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"lineItemId\", json.lineItemId);\r
+
+      \r
+
+      pm.test(\"Response contains @type = LineItemRsrc\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"LineItemRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 4448344212207638

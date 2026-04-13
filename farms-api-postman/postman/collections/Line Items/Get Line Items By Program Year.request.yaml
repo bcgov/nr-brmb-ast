@@ -22,11 +22,11 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = LineItemListModel\", function() {\r
+      pm.test(\"Response contains @type = LineItemListRsrc\", function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"LineItemListModel\");\r
+      \    pm.expect(json['@type']).to.be.equal(\"LineItemListRsrc\");\r
 
       });\r
 
@@ -42,11 +42,11 @@ scripts:
 
       \r
 
-      pm.test(\"lineItemList[0] contains @type = LineItemModel\", function() {\r
+      pm.test(\"lineItemList[0] contains @type = LineItemRsrc\", function() {\r
 
       \    pm.expect(json.lineItemList[0]).to.have.property(\"@type\");\r
 
-      \    pm.expect(json.lineItemList[0]['@type']).to.be.equal(\"LineItemModel\
+      \    pm.expect(json.lineItemList[0]['@type']).to.be.equal(\"LineItemRsrc\
       \");\r
 
       });"
