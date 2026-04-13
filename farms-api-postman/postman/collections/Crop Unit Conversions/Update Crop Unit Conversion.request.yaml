@@ -12,14 +12,13 @@ body:
 
     \    \"cropUnitDefaultId\": {{cropUnitDefaultId}},\r
 
-    \    \"inventoryItemCode\": \"4811\",\r
+    \    \"inventoryItemCode\": \"7610\",\r
 
-    \    \"inventoryItemDesc\": \"Apples; Ambrosia; 1st year of fruit
-    production; medium density\",\r
+    \    \"inventoryItemDesc\": \"Honey Bees; Package\",\r
 
-    \    \"cropUnitCode\": \"2\",\r
+    \    \"cropUnitCode\": \"5\",\r
 
-    \    \"cropUnitDesc\": \"Tonnes\",\r
+    \    \"cropUnitDesc\": \"Kilogram\",\r
 
     \    \"conversionUnits\": [\r
 
@@ -72,6 +71,85 @@ scripts:
       \    pm.expect(json).to.have.property(\"@type\");\r
 
       \    pm.expect(json['@type']).to.be.equal(\"CropUnitConversionRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is updated as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"7610\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDesc\");\r
+
+      \    pm.expect(json.inventoryItemDesc).to.be.equal(\"Honey Bees;
+      Package\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"cropUnitCode\");\r
+
+      \    pm.expect(json.cropUnitCode).to.be.equal(\"5\");\r
+
+      \    pm.expect(json).to.have.property(\"cropUnitDesc\");\r
+
+      \    pm.expect(json.cropUnitDesc).to.be.equal(\"Kilogram\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"conversionUnits\");\r
+
+      \r
+
+      \    pm.expect(json.conversionUnits[0]).to.have.property(\"conversionFact\
+      or\");\r
+
+      \    pm.expect(json.conversionUnits[0].conversionFactor).to.be.equal(12.0\
+      60000);\r
+
+      \r
+
+      \    pm.expect(json.conversionUnits[0]).to.have.property(\"targetCropUnit\
+      Code\");\r
+
+      \    pm.expect(json.conversionUnits[0].targetCropUnitCode).to.be.equal(\"3\
+      \");\r
+
+      \r
+
+      \    pm.expect(json.conversionUnits[0]).to.have.property(\"targetCropUnit\
+      Desc\");\r
+
+      \    pm.expect(json.conversionUnits[0].targetCropUnitDesc).to.be.equal(\"\
+      Dozen\");\r
+
+      \r
+
+      \    pm.expect(json.conversionUnits[1]).to.have.property(\"conversionFact\
+      or\");\r
+
+      \    pm.expect(json.conversionUnits[1].conversionFactor).to.be.equal(2204\
+      .100000);\r
+
+      \r
+
+      \    pm.expect(json.conversionUnits[1]).to.have.property(\"targetCropUnit\
+      Code\");\r
+
+      \    pm.expect(json.conversionUnits[1].targetCropUnitCode).to.be.equal(\"\
+      68\");\r
+
+      \r
+
+      \    pm.expect(json.conversionUnits[1]).to.have.property(\"targetCropUnit\
+      Desc\");\r
+
+      \    pm.expect(json.conversionUnits[1].targetCropUnitDesc).to.be.equal(\"\
+      Section\");\r
 
       });"
     language: text/javascript
