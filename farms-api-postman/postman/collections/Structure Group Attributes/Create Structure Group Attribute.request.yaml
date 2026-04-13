@@ -46,6 +46,32 @@ scripts:
       \    pm.expect(json['@type']).to.be.equal(\"StructureGroupAttributeRsrc\"\
       );\r
 
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"structureGroupCode\");\r
+
+      \    pm.expect(json.structureGroupCode).to.be.equal(\"1\");\r
+
+      \    pm.expect(json).to.have.property(\"structureGroupDesc\");\r
+
+      \    pm.expect(json.structureGroupDesc).to.be.equal(\"Crop Basket\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"rollupStructureGroupCode\");\r
+
+      \    pm.expect(json.rollupStructureGroupCode).to.be.null;\r
+
+      \    pm.expect(json).to.have.property(\"rollupStructureGroupDesc\");\r
+
+      \    pm.expect(json.rollupStructureGroupDesc).to.be.null;\r
+
       });"
     language: text/javascript
 order: 4463855098404040
