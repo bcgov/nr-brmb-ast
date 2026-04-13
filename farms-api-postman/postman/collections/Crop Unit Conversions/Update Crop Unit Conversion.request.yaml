@@ -1,0 +1,78 @@
+$kind: http-request
+name: Update Crop Unit Conversion
+url: "{{baseUrl}}/cropUnitConversions/:cropUnitDefaultId"
+method: PUT
+pathVariables:
+  cropUnitDefaultId: "{{cropUnitDefaultId}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"CropUnitConversionRsrc\",\r
+
+    \    \"cropUnitDefaultId\": {{cropUnitDefaultId}},\r
+
+    \    \"inventoryItemCode\": \"4811\",\r
+
+    \    \"inventoryItemDesc\": \"Apples; Ambrosia; 1st year of fruit
+    production; medium density\",\r
+
+    \    \"cropUnitCode\": \"2\",\r
+
+    \    \"cropUnitDesc\": \"Tonnes\",\r
+
+    \    \"conversionUnits\": [\r
+
+    \        {\r
+
+    \            \"conversionFactor\": 12.06,\r
+
+    \            \"targetCropUnitCode\": \"3\",\r
+
+    \            \"targetCropUnitDesc\": \"Dozen\"\r
+
+    \        },\r
+
+    \        {\r
+
+    \            \"conversionFactor\": 2204.100000,\r
+
+    \            \"targetCropUnitCode\": \"68\",\r
+
+    \            \"targetCropUnitDesc\": \"Section\"\r
+
+    \        }\r
+
+    \    ],\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.test(\"Response contains @type = CropUnitConversionRsrc\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"CropUnitConversionRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 4484339296823153
