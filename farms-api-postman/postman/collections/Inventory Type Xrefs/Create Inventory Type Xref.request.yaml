@@ -55,6 +55,48 @@ scripts:
 
       \    pm.expect(json['@type']).to.be.equal(\"InventoryTypeXrefRsrc\");\r
 
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"marketCommodityInd\");\r
+
+      \    pm.expect(json.marketCommodityInd).to.be.equal(\"Y\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"73\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDesc\");\r
+
+      \    pm.expect(json.inventoryItemDesc).to.be.equal(\"Strawberries\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryGroupCode\");\r
+
+      \    pm.expect(json.inventoryGroupCode).to.be.equal(\"3\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryGroupDesc\");\r
+
+      \    pm.expect(json.inventoryGroupDesc).to.be.equal(\"Berries\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryClassCode\");\r
+
+      \    pm.expect(json.inventoryClassCode).to.be.equal(\"-1\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryClassDesc\");\r
+
+      \    pm.expect(json.inventoryClassDesc).to.be.equal(\"Unknown\");\r
+
       });"
     language: text/javascript
 order: 4432410186678144
