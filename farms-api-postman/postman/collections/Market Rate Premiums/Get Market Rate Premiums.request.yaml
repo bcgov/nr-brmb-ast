@@ -20,12 +20,12 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = MarketRatePremiumListModel\",
+      pm.test(\"Response contains @type = MarketRatePremiumListRsrc\",
       function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"MarketRatePremiumListModel\");\
+      \    pm.expect(json['@type']).to.be.equal(\"MarketRatePremiumListRsrc\");\
       \r
 
       });\r
@@ -43,13 +43,13 @@ scripts:
       \r
 
       pm.test(\"marketRatePremiumList[0] contains @type =
-      MarketRatePremiumModel\", function() {\r
+      MarketRatePremiumRsrc\", function() {\r
 
       \    pm.expect(json.marketRatePremiumList[0]).to.have.property(\"@type\");\
       \r
 
       \    pm.expect(json.marketRatePremiumList[0]['@type']).to.be.equal(\"Mark\
-      etRatePremiumModel\");\r
+      etRatePremiumRsrc\");\r
 
       });"
     language: text/javascript
