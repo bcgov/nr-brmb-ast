@@ -1,0 +1,84 @@
+$kind: http-request
+name: Update Year Configuration Parameter
+url: "{{baseUrl}}/yearConfigurationParameters/:yearConfigurationParameterId"
+method: PUT
+pathVariables:
+  yearConfigurationParameterId: "{{yearConfigurationParameterId}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"YearConfigurationParameterRsrc\",\r
+
+    \    \"yearConfigurationParameterId\": {{yearConfigurationParameterId}},\r
+
+    \    \"programYear\": 2025,\r
+
+    \    \"parameterName\": \"Test #1\",\r
+
+    \    \"parameterValue\": \"Test #1 Test #1\",\r
+
+    \    \"configParamTypeCode\": \"STRING\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.test(\"Response contains @type = YearConfigurationParameterRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"YearConfigurationParameterRsrc\
+      \");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is updated as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"programYear\");\r
+
+      \    pm.expect(json.programYear).to.be.equal(2025);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterName\");\r
+
+      \    pm.expect(json.parameterName).to.be.equal(\"Test #1\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterValue\");\r
+
+      \    pm.expect(json.parameterValue).to.be.equal(\"Test #1 Test #1\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"configParamTypeCode\");\r
+
+      \    pm.expect(json.configParamTypeCode).to.be.equal(\"STRING\");\r
+
+      });"
+    language: text/javascript
+order: 4494788780659866
