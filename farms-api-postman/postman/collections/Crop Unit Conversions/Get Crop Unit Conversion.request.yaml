@@ -22,12 +22,12 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = CropUnitConversionModel\", function()
+      pm.test(\"Response contains @type = CropUnitConversionRsrc\", function()
       {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"CropUnitConversionModel\");\r
+      \    pm.expect(json['@type']).to.be.equal(\"CropUnitConversionRsrc\");\r
 
       });"
     language: text/javascript

@@ -20,13 +20,13 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = CropUnitConversionListModel\",
+      pm.test(\"Response contains @type = CropUnitConversionListRsrc\",
       function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"CropUnitConversionListModel\"\
-      );\r
+      \    pm.expect(json['@type']).to.be.equal(\"CropUnitConversionListRsrc\");\
+      \r
 
       });\r
 
@@ -43,13 +43,13 @@ scripts:
       \r
 
       pm.test(\"cropUnitConversionList[0] contains @type =
-      CropUnitConversionModel\", function() {\r
+      CropUnitConversionRsrc\", function() {\r
 
       \    pm.expect(json.cropUnitConversionList[0]).to.have.property(\"@type\"\
       );\r
 
       \    pm.expect(json.cropUnitConversionList[0]['@type']).to.be.equal(\"Cro\
-      pUnitConversionModel\");\r
+      pUnitConversionRsrc\");\r
 
       });"
     language: text/javascript
