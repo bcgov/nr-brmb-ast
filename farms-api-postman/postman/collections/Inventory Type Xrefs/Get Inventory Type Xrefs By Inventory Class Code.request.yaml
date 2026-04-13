@@ -22,12 +22,12 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = InventoryTypeXrefListModel\",
+      pm.test(\"Response contains @type = InventoryTypeXrefListRsrc\",
       function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"InventoryTypeXrefListModel\");\
+      \    pm.expect(json['@type']).to.be.equal(\"InventoryTypeXrefListRsrc\");\
       \r
 
       });\r
@@ -45,13 +45,13 @@ scripts:
       \r
 
       pm.test(\"inventoryTypeXrefList[0] contains @type =
-      InventoryTypeXrefModel\", function() {\r
+      InventoryTypeXrefRsrc\", function() {\r
 
       \    pm.expect(json.inventoryTypeXrefList[0]).to.have.property(\"@type\");\
       \r
 
       \    pm.expect(json.inventoryTypeXrefList[0]['@type']).to.be.equal(\"Inve\
-      ntoryTypeXrefModel\");\r
+      ntoryTypeXrefRsrc\");\r
 
       });"
     language: text/javascript

@@ -1,0 +1,60 @@
+$kind: http-request
+name: Create Inventory Type Xref
+url: "{{baseUrl}}/inventoryTypeXrefs"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"InventoryTypeXrefRsrc\",\r
+
+    \    \"marketCommodityInd\": \"Y\",\r
+
+    \    \"inventoryItemCode\": \"73\",\r
+
+    \    \"inventoryItemDesc\": \"Strawberries\",\r
+
+    \    \"inventoryGroupCode\": \"3\",\r
+
+    \    \"inventoryGroupDesc\": \"Berries\",\r
+
+    \    \"inventoryClassCode\": \"-1\",\r
+
+    \    \"inventoryClassDesc\": \"Unknown\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"agristabilityCommodityXrefId\",
+      json.agristabilityCommodityXrefId);\r
+
+      \r
+
+      pm.test(\"Response contains @type = InventoryTypeXrefRsrc\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"InventoryTypeXrefRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 4432410186678144
