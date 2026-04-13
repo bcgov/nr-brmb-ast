@@ -22,13 +22,13 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = InventoryItemDetailListModel\",
+      pm.test(\"Response contains @type = InventoryItemDetailListRsrc\",
       function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"InventoryItemDetailListModel\
-      \");\r
+      \    pm.expect(json['@type']).to.be.equal(\"InventoryItemDetailListRsrc\"\
+      );\r
 
       });\r
 
@@ -46,13 +46,13 @@ scripts:
       \r
 
       pm.test(\"inventoryItemDetailList[0] contains @type =
-      InventoryItemDetailModel\", function() {\r
+      InventoryItemDetailRsrc\", function() {\r
 
       \    pm.expect(json.inventoryItemDetailList[0]).to.have.property(\"@type\
       \");\r
 
       \    pm.expect(json.inventoryItemDetailList[0]['@type']).to.be.equal(\"In\
-      ventoryItemDetailModel\");\r
+      ventoryItemDetailRsrc\");\r
 
       });"
     language: text/javascript
