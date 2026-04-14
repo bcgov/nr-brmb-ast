@@ -1,14 +1,29 @@
 $kind: http-request
 name: Delete Code
-url: "{{baseUrl}}/codeTables/:codeTableName/codes/:codeName"
+url: "{{baseUrl}}/codeTables/:codeTableName/codes/:code"
 method: DELETE
 pathVariables:
-  - key: codeTableName
-    value: farm_municipality_codes
-    $type: ""
-  - key: code
-    value: "{{code}}"
-    $type: ""
+  codeTableName: farm_municipality_codes
+  code: "{{code}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"http://common.brmb.nrs.gov.bc.ca/v1/code\",\r
+
+    \    \"code\": \"1000\",\r
+
+    \    \"description\": \"Test Municipality\",\r
+
+    \    \"displayOrder\": null,\r
+
+    \    \"effectiveDate\": \"2026-04-14\",\r
+
+    \    \"expiryDate\": \"9999-12-31\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
 auth:
   type: bearer
   credentials:
