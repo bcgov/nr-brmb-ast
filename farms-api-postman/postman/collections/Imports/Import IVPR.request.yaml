@@ -1,0 +1,15 @@
+$kind: http-request
+name: Import IVPR
+url: "{{baseUrl}}/import/ivpr/:fileName"
+method: POST
+pathVariables:
+  fileName: ivpr.csv
+body:
+  type: file
+  content:
+    src: /U:/hwang/FARM/IVPR Import/ivpr.csv
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4477250714503839
