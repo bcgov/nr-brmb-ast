@@ -1,0 +1,56 @@
+$kind: http-request
+name: Get All CodeTables
+url: "{{baseUrl}}/codeTables?effectiveAsOfDate=&codeTableName="
+method: GET
+queryParams:
+  effectiveAsOfDate: ""
+  codeTableName: ""
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = CodeTableListRsrc\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"CodeTableListRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"codeTableList is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"codeTableList\");\r
+
+      \    pm.expect(json.codeTableList.length).to.be.greaterThan(0);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"codeTableList[0] contains @type = CodeTableRsrc\", function()
+      {\r
+
+      \    pm.expect(json.codeTableList[0]).to.have.property(\"@type\");\r
+
+      \    pm.expect(json.codeTableList[0]['@type']).to.be.equal(\"CodeTableRsrc\
+      \");\r
+
+      });"
+    language: text/javascript
+order: 4030799624799252
