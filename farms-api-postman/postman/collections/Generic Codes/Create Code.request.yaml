@@ -55,6 +55,42 @@ scripts:
       \    pm.expect(json['@type']).to.be.equal(\"http://common.brmb.nrs.gov.bc\
       .ca/v1/code\");\r
 
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"code\");\r
+
+      \    pm.expect(json.code).to.be.equal(\"1000\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"description\");\r
+
+      \    pm.expect(json.description).to.be.equal(\"Test Municipality\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"displayOrder\");\r
+
+      \    pm.expect(json.displayOrder).to.be.null;\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"effectiveDate\");\r
+
+      \    pm.expect(json.effectiveDate).to.be.equal(\"2026-04-14\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"expiryDate\");\r
+
+      \    pm.expect(json.expiryDate).to.be.equal(\"9999-12-31\");\r
+
       });"
     language: text/javascript
 order: 4391769441119153
