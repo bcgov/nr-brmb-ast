@@ -44,11 +44,13 @@ scripts:
 
       \r
 
-      pm.test(\"codes[0] contains @type = CodeRsrc\", function() {\r
+      pm.test(\"codes[0] contains @type =
+      http://common.brmb.nrs.gov.bc.ca/v1/code\", function() {\r
 
       \    pm.expect(json.codes[0]).to.have.property(\"@type\");\r
 
-      \    pm.expect(json.codes[0]['@type']).to.be.equal(\"CodeRsrc\");\r
+      \    pm.expect(json.codes[0]['@type']).to.be.equal(\"http://common.brmb.n\
+      rs.gov.bc.ca/v1/code\");\r
 
       });"
     language: text/javascript

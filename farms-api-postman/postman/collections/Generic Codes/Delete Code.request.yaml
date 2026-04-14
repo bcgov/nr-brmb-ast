@@ -1,0 +1,24 @@
+$kind: http-request
+name: Delete Code
+url: "{{baseUrl}}/codeTables/:codeTableName/codes/:codeName"
+method: DELETE
+pathVariables:
+  - key: codeTableName
+    value: farm_municipality_codes
+    $type: ""
+  - key: code
+    value: "{{code}}"
+    $type: ""
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 204\", function () {\r
+
+      \    pm.response.to.have.status(204);\r
+
+      });"
+    language: text/javascript
+order: 4446817340553478

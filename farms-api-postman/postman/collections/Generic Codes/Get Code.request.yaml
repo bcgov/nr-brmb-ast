@@ -27,11 +27,13 @@ scripts:
 
       \r
 
-      pm.test(\"Response contains @type = CodeRsrc\", function() {\r
+      pm.test(\"Response contains @type =
+      http://common.brmb.nrs.gov.bc.ca/v1/code\", function() {\r
 
       \    pm.expect(json).to.have.property(\"@type\");\r
 
-      \    pm.expect(json['@type']).to.be.equal(\"CodeRsrc\");\r
+      \    pm.expect(json['@type']).to.be.equal(\"http://common.brmb.nrs.gov.bc\
+      .ca/v1/code\");\r
 
       });"
     language: text/javascript
