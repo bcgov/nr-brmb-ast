@@ -29,7 +29,7 @@ public class TopLevelControllerTest {
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("TopLevelModel"))
+                .andExpect(jsonPath("$.@type").value("TopLevelRsrc"))
                 .andExpect(jsonPath("$.releaseVersion").value("1.0.0-SNAPSHOT"));
     }
 }

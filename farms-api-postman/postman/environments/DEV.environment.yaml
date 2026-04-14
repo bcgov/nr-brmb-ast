@@ -1,0 +1,11 @@
+name: DEV
+values:
+  - key: baseUrl
+    value: 'https://farms-api-route-dev-e980f4-dev.apps.silver.devops.gov.bc.ca/farms-api/v1'
+    enabled: true
+  - key: loginUrl
+    value: 'https://login.microsoftonline.com'
+    enabled: true
+  - key: vaultPrefix
+    value: farms-api-dev
+    enabled: true

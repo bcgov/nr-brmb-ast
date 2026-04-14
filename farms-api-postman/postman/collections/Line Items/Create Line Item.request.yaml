@@ -1,0 +1,164 @@
+$kind: http-request
+name: Create Line Item
+url: "{{baseUrl}}/lineItems"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"LineItemRsrc\",\r
+
+    \    \"programYear\": 2026,\r
+
+    \    \"lineItem\": 23,\r
+
+    \    \"description\": \"Chick peas / garbanzo beans - Grains;oilseeds;and
+    special crops\",\r
+
+    \    \"province\": \"BC\",\r
+
+    \    \"eligibilityInd\": \"Y\",\r
+
+    \    \"eligibilityForRefYearsInd\": \"N\",\r
+
+    \    \"yardageInd\": \"N\",\r
+
+    \    \"programPaymentInd\": \"N\",\r
+
+    \    \"contractWorkInd\": \"N\",\r
+
+    \    \"supplyManagedCommodityInd\": \"N\",\r
+
+    \    \"excludeFromRevenueCalcInd\": \"N\",\r
+
+    \    \"industryAverageExpenseInd\": \"N\",\r
+
+    \    \"commodityTypeCode\": \"GRAIN\",\r
+
+    \    \"fruitVegTypeCode\": null,\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"lineItemId\", json.lineItemId);\r
+
+      \r
+
+      pm.test(\"Response contains @type = LineItemRsrc\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"LineItemRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"programYear\");\r
+
+      \    pm.expect(json.programYear).to.be.equal(2026);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"lineItem\");\r
+
+      \    pm.expect(json.lineItem).to.be.equal(23);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"description\");\r
+
+      \    pm.expect(json.description).to.be.equal(\"Chick peas / garbanzo beans
+      - Grains;oilseeds;and special crops\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"province\");\r
+
+      \    pm.expect(json.province).to.be.equal(\"BC\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"eligibilityInd\");\r
+
+      \    pm.expect(json.eligibilityInd).to.be.equal(\"Y\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"eligibilityForRefYearsInd\");\r
+
+      \    pm.expect(json.eligibilityForRefYearsInd).to.be.equal(\"N\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"yardageInd\");\r
+
+      \    pm.expect(json.yardageInd).to.be.equal(\"N\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"programPaymentInd\");\r
+
+      \    pm.expect(json.programPaymentInd).to.be.equal(\"N\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"contractWorkInd\");\r
+
+      \    pm.expect(json.contractWorkInd).to.be.equal(\"N\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"supplyManagedCommodityInd\");\r
+
+      \    pm.expect(json.supplyManagedCommodityInd).to.be.equal(\"N\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"excludeFromRevenueCalcInd\");\r
+
+      \    pm.expect(json.excludeFromRevenueCalcInd).to.be.equal(\"N\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"industryAverageExpenseInd\");\r
+
+      \    pm.expect(json.industryAverageExpenseInd).to.be.equal(\"N\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"commodityTypeCode\");\r
+
+      \    pm.expect(json.commodityTypeCode).to.be.equal(\"GRAIN\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"fruitVegTypeCode\");\r
+
+      \    pm.expect(json.fruitVegTypeCode).to.be.null;\r
+
+      });"
+    language: text/javascript
+order: 4448344212207638

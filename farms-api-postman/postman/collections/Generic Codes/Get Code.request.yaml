@@ -1,0 +1,40 @@
+$kind: http-request
+name: Get Code
+url: "{{baseUrl}}/codeTables/:codeTableName/codes/:codeName"
+method: GET
+pathVariables:
+  - key: codeTableName
+    value: farm_municipality_codes
+    $type: ""
+  - key: codeName
+    value: "0"
+    $type: ""
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type =
+      http://common.brmb.nrs.gov.bc.ca/v1/code\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"http://common.brmb.nrs.gov.bc\
+      .ca/v1/code\");\r
+
+      });"
+    language: text/javascript
+order: 4385189905765548

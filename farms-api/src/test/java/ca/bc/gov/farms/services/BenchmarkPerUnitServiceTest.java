@@ -11,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitListModel;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitModel;
+import ca.bc.gov.farms.data.models.BenchmarkPerUnitListRsrc;
+import ca.bc.gov.farms.data.models.BenchmarkPerUnitRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +32,7 @@ public class BenchmarkPerUnitServiceTest {
     @Test
     @Order(1)
     public void testCreateBenchmarkPerUnit() {
-        BenchmarkPerUnitModel resource = new BenchmarkPerUnitModel();
+        BenchmarkPerUnitRsrc resource = new BenchmarkPerUnitRsrc();
         resource.setProgramYear(2024);
         resource.setUnitComment("Alfalfa Dehy");
         resource.setExpiryDate(null);
@@ -53,7 +53,7 @@ public class BenchmarkPerUnitServiceTest {
         resource.setUrlId(1L);
         resource.setUserEmail("testUser");
 
-        BenchmarkPerUnitModel newResource = benchmarkPerUnitService.createBenchmarkPerUnit(resource);
+        BenchmarkPerUnitRsrc newResource = benchmarkPerUnitService.createBenchmarkPerUnit(resource);
         benchmarkPerUnitId = newResource.getBenchmarkPerUnitId();
 
         assertThat(newResource.getProgramYear()).isEqualTo(2024);
@@ -86,12 +86,12 @@ public class BenchmarkPerUnitServiceTest {
     @Test
     @Order(2)
     public void testGetBenchmarkPerUnitsByProgramYear() {
-        BenchmarkPerUnitListModel resources = benchmarkPerUnitService.getBenchmarkPerUnitsByProgramYear(2024);
+        BenchmarkPerUnitListRsrc resources = benchmarkPerUnitService.getBenchmarkPerUnitsByProgramYear(2024);
         assertThat(resources).isNotNull();
         assertThat(resources.getBenchmarkPerUnitList()).isNotEmpty();
         assertThat(resources.getBenchmarkPerUnitList().size()).isEqualTo(1);
 
-        BenchmarkPerUnitModel resource = resources.getBenchmarkPerUnitList().iterator().next();
+        BenchmarkPerUnitRsrc resource = resources.getBenchmarkPerUnitList().iterator().next();
         assertThat(resource.getProgramYear()).isEqualTo(2024);
         assertThat(resource.getUnitComment()).isEqualTo("Alfalfa Dehy");
         assertThat(resource.getExpiryDate()).isNull();
@@ -122,7 +122,7 @@ public class BenchmarkPerUnitServiceTest {
     @Test
     @Order(3)
     public void testUpdateBenchmarkPerUnit() {
-        BenchmarkPerUnitModel resource;
+        BenchmarkPerUnitRsrc resource;
         try {
             resource = benchmarkPerUnitService.getBenchmarkPerUnit(benchmarkPerUnitId);
         } catch (ServiceException | NotFoundException e) {
@@ -151,7 +151,7 @@ public class BenchmarkPerUnitServiceTest {
         resource.setUrlId(2L);
         resource.setUserEmail("testUser");
 
-        BenchmarkPerUnitModel updatedResource;
+        BenchmarkPerUnitRsrc updatedResource;
         try {
             updatedResource = benchmarkPerUnitService.updateBenchmarkPerUnit(benchmarkPerUnitId,
                     resource);

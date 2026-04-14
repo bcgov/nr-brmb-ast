@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import ca.bc.gov.brmb.common.rest.resource.RelLink;
 import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
 import ca.bc.gov.farms.data.entities.CodeEntity;
-import ca.bc.gov.farms.data.models.CodeModel;
-import ca.bc.gov.farms.data.models.CodeTableListModel;
-import ca.bc.gov.farms.data.models.CodeTableModel;
+import ca.bc.gov.farms.data.models.CodeRsrc;
+import ca.bc.gov.farms.data.models.CodeTableListRsrc;
+import ca.bc.gov.farms.data.models.CodeTableRsrc;
 import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,21 +23,21 @@ import lombok.extern.slf4j.Slf4j;
 public class CodeTableListResourceAssembler extends BaseResourceAssembler {
 
     @SuppressWarnings("null")
-    public CodeTableListModel getCodeTableList(Map<String, List<CodeEntity>> entitiesMap) {
+    public CodeTableListRsrc getCodeTableList(Map<String, List<CodeEntity>> entitiesMap) {
 
         URI baseUri = getBaseURI();
 
-        CodeTableListModel resource = new CodeTableListModel();
+        CodeTableListRsrc resource = new CodeTableListRsrc();
         resource.setCodeTableList(entitiesMap.entrySet().stream()
                 .map(entry -> {
                     String tableName = entry.getKey();
                     List<CodeEntity> entities = entry.getValue();
 
-                    CodeTableModel codeTableResource = new CodeTableModel();
+                    CodeTableRsrc codeTableResource = new CodeTableRsrc();
                     codeTableResource.setCodeTableName(tableName);
                     codeTableResource.setCodeTableDescriptiveName(tableName);
                     codeTableResource.setCodes(entities.stream().filter(Objects::nonNull).map(e -> {
-                        CodeModel r = new CodeModel();
+                        CodeRsrc r = new CodeRsrc();
                         BeanUtils.copyProperties(e, r);
                         return r;
                     }).collect(Collectors.toList()));

@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.ConfigurationParameterListModel;
-import ca.bc.gov.farms.data.models.ConfigurationParameterModel;
+import ca.bc.gov.farms.data.models.ConfigurationParameterListRsrc;
+import ca.bc.gov.farms.data.models.ConfigurationParameterRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,14 +32,14 @@ public class ConfigurationParameterServiceTest {
     @Test
     @Order(1)
     public void testCreateConfigurationParameter() {
-        ConfigurationParameterModel resource = new ConfigurationParameterModel();
+        ConfigurationParameterRsrc resource = new ConfigurationParameterRsrc();
         resource.setParameterName("CDOGS - Api Version");
         resource.setParameterValue("2");
         resource.setSensitiveDataInd("N");
         resource.setConfigParamTypeCode("STRING");
         resource.setUserEmail("testUser");
 
-        ConfigurationParameterModel newResource = configurationParameterService.createConfigurationParameter(resource);
+        ConfigurationParameterRsrc newResource = configurationParameterService.createConfigurationParameter(resource);
         configurationParameterId = newResource.getConfigurationParameterId();
 
         assertThat(newResource.getParameterName()).isEqualTo("CDOGS - Api Version");
@@ -51,12 +51,12 @@ public class ConfigurationParameterServiceTest {
     @Test
     @Order(2)
     public void testGetAllConfigurationParameters() {
-        ConfigurationParameterListModel resources = configurationParameterService.getAllConfigurationParameters();
+        ConfigurationParameterListRsrc resources = configurationParameterService.getAllConfigurationParameters();
         assertThat(resources).isNotNull();
         assertThat(resources.getConfigurationParameterList()).isNotEmpty();
         assertThat(resources.getConfigurationParameterList().size()).isEqualTo(1);
 
-        ConfigurationParameterModel resource = resources.getConfigurationParameterList().iterator().next();
+        ConfigurationParameterRsrc resource = resources.getConfigurationParameterList().iterator().next();
         assertThat(resource.getParameterName()).isEqualTo("CDOGS - Api Version");
         assertThat(resource.getParameterValue()).isEqualTo("2");
         assertThat(resource.getSensitiveDataInd()).isEqualTo("N");
@@ -66,7 +66,7 @@ public class ConfigurationParameterServiceTest {
     @Test
     @Order(3)
     public void testUpdateConfigurationParameter() {
-        ConfigurationParameterModel resource = null;
+        ConfigurationParameterRsrc resource = null;
         try {
             resource = configurationParameterService.getConfigurationParameter(configurationParameterId);
         } catch (ServiceException | NotFoundException e) {
@@ -78,7 +78,7 @@ public class ConfigurationParameterServiceTest {
         resource.setParameterValue("3");
         resource.setUserEmail("testUser");
 
-        ConfigurationParameterModel updatedResource = null;
+        ConfigurationParameterRsrc updatedResource = null;
         try {
             updatedResource = configurationParameterService.updateConfigurationParameter(configurationParameterId,
                     resource);

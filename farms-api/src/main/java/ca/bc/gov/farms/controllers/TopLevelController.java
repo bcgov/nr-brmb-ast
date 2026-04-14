@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.farms.common.controllers.CommonController;
 import ca.bc.gov.farms.data.assemblers.TopLevelResourceAssembler;
-import ca.bc.gov.farms.data.models.TopLevelModel;
+import ca.bc.gov.farms.data.models.TopLevelRsrc;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,15 +36,15 @@ public class TopLevelController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = TopLevelModel.class))),
+                    content = @Content(schema = @Schema(implementation = TopLevelRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<TopLevelModel> getTopLevel() {
+    public ResponseEntity<TopLevelRsrc> getTopLevel() {
         log.debug(" >> getTopLevel");
 
         try {
-            TopLevelModel resource = topLevelResourceAssembler.getTopLevel();
+            TopLevelRsrc resource = topLevelResourceAssembler.getTopLevel();
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Top Level", e);

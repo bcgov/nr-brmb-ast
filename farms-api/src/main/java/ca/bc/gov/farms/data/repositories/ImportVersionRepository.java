@@ -1,185 +1,149 @@
 package ca.bc.gov.farms.data.repositories;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import java.sql.CallableStatement;
+import java.sql.Types;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class ImportVersionRepository {
 
-    private final SimpleJdbcCall createVersionCall;
-    private final SimpleJdbcCall updateControlFileInfoStgCall;
-    private final SimpleJdbcCall uploadedVersionCall;
-    private final SimpleJdbcCall startImportCall;
-    private final SimpleJdbcCall startUploadCall;
-    private final SimpleJdbcCall performImportCall;
-    private final SimpleJdbcCall uploadFailureCall;
-    private final SimpleJdbcCall importFailureCall;
-    private final SimpleJdbcCall importCompleteCall;
-    private final SimpleJdbcCall clearSuccessfulTransfersCall;
-
-    public ImportVersionRepository(@NonNull JdbcTemplate jdbcTemplate) {
-        this.createVersionCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withFunctionName("create_version");
-
-        this.updateControlFileInfoStgCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withProcedureName("update_control_file_info_stg");
-
-        this.uploadedVersionCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withProcedureName("uploaded_version");
-
-        this.startImportCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withProcedureName("start_import");
-
-        this.startUploadCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withProcedureName("start_upload");
-
-        this.performImportCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withProcedureName("perform_import");
-
-        this.uploadFailureCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withProcedureName("upload_failure");
-
-        this.importFailureCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withProcedureName("import_failure");
-
-        this.importCompleteCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withProcedureName("import_complete");
-
-        this.clearSuccessfulTransfersCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("farms_version_pkg")
-                .withProcedureName("clear_successful_transfers");
-    }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public Integer createVersion(String description, String importFileName, String user) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_description", description);
-                put("in_import_file_name", importFileName);
-                put("in_user", user);
-            }
-        };
+        return jdbcTemplate.execute("{ ? = call farms_version_pkg.create_version(?, ?, ?) }",
+                (CallableStatement cs) -> {
 
-        return createVersionCall.executeFunction(Integer.class, params);
+                    cs.registerOutParameter(1, Types.INTEGER);
+                    cs.setString(2, description);
+                    cs.setString(3, importFileName);
+                    cs.setString(4, user);
+
+                    cs.execute();
+
+                    return cs.getInt(1);
+                });
     }
 
     public void updateControlFileInfoStg(Long versionId, String user) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_version_id", versionId);
-                put("in_user", user);
-            }
-        };
+        jdbcTemplate.execute("call farms_version_pkg.update_control_file_info_stg(?, ?)", (CallableStatement cs) -> {
 
-        updateControlFileInfoStgCall.execute(params);
+            cs.setLong(1, versionId);
+            cs.setString(2, user);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void uploadedVersion(Long versionId, String xml, Boolean hasErrorsInd, String user) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_version_id", versionId);
-                put("in_xml", xml);
-                put("in_has_errors_ind", (hasErrorsInd != null && hasErrorsInd) ? "Y" : "N");
-                put("in_user", user);
-            }
-        };
+        jdbcTemplate.execute("call farms_version_pkg.uploaded_version(?, ?, ?, ?)", (CallableStatement cs) -> {
 
-        uploadedVersionCall.execute(params);
+            cs.setLong(1, versionId);
+            cs.setString(2, xml);
+            cs.setString(3, hasErrorsInd != null && hasErrorsInd ? "Y" : "N");
+            cs.setString(4, user);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void startImport(Long versionId, String user) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_version_id", versionId);
-                put("in_user", user);
-            }
-        };
+        jdbcTemplate.execute("call farms_version_pkg.start_import(?, ?)", (CallableStatement cs) -> {
 
-        startImportCall.execute(params);
+            cs.setLong(1, versionId);
+            cs.setString(2, user);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void startUpload(Long versionId, String user) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_version_id", versionId);
-                put("in_user", user);
-            }
-        };
+        jdbcTemplate.execute("call farms_version_pkg.start_upload(?, ?)", (CallableStatement cs) -> {
 
-        startUploadCall.execute(params);
+            cs.setLong(1, versionId);
+            cs.setString(2, user);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void performImport(Long versionId, String user) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_version_id", versionId);
-                put("in_user", user);
-            }
-        };
+        jdbcTemplate.execute("call farms_version_pkg.perform_import(?, ?)", (CallableStatement cs) -> {
 
-        performImportCall.execute(params);
+            cs.setLong(1, versionId);
+            cs.setString(2, user);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void uploadFailure(Long versionId, String message, String user) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_version_id", versionId);
-                put("in_message", message);
-                put("in_user", user);
-            }
-        };
+        jdbcTemplate.execute("call farms_version_pkg.upload_failure(?, ?, ?)", (CallableStatement cs) -> {
 
-        uploadFailureCall.execute(params);
+            cs.setLong(1, versionId);
+            cs.setString(2, message);
+            cs.setString(3, user);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void importFailure(Long versionId, String message, String user) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_version_id", versionId);
-                put("in_message", message);
-                put("in_user", user);
-            }
-        };
+        jdbcTemplate.execute("call farms_version_pkg.import_failure(?, ?, ?)", (CallableStatement cs) -> {
 
-        importFailureCall.execute(params);
+            cs.setLong(1, versionId);
+            cs.setString(2, message);
+            cs.setString(3, user);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void importComplete(Long versionId, String message, String user) {
 
-        Map<String, Object> params = new HashMap<>() {
-            {
-                put("in_version_id", versionId);
-                put("in_message", message);
-                put("in_user", user);
-            }
-        };
+        jdbcTemplate.execute("call farms_version_pkg.import_complete(?, ?, ?)", (CallableStatement cs) -> {
 
-        importCompleteCall.execute(params);
+            cs.setLong(1, versionId);
+            cs.setString(2, message);
+            cs.setString(3, user);
+
+            cs.execute();
+
+            return null;
+        });
     }
 
     public void clearSuccessfulTransfers() {
 
-        clearSuccessfulTransfersCall.execute();
+        jdbcTemplate.execute("call farms_version_pkg.clear_successful_transfers()", (CallableStatement cs) -> {
+
+            cs.execute();
+
+            return null;
+        });
     }
 }

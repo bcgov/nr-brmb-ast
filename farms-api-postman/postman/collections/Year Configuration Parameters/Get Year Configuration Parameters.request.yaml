@@ -1,0 +1,58 @@
+$kind: http-request
+name: Get Year Configuration Parameters
+url: "{{baseUrl}}/yearConfigurationParameters"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = YearConfigurationParameterListRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"YearConfigurationParameterLis\
+      tRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"yearConfigurationParameterList is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"yearConfigurationParameterList\");\
+      \r
+
+      \    pm.expect(json.yearConfigurationParameterList.length).to.be.greaterT\
+      han(0);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"yearConfigurationParameterList[0] contains @type =
+      YearConfigurationParameterRsrc\", function() {\r
+
+      \    pm.expect(json.yearConfigurationParameterList[0]).to.have.property(\
+      \"@type\");\r
+
+      \    pm.expect(json.yearConfigurationParameterList[0]['@type']).to.be.equ\
+      al(\"YearConfigurationParameterRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 4491671575056737

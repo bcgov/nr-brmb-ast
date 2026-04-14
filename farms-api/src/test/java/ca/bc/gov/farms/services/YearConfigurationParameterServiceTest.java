@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.YearConfigurationParameterListModel;
-import ca.bc.gov.farms.data.models.YearConfigurationParameterModel;
+import ca.bc.gov.farms.data.models.YearConfigurationParameterListRsrc;
+import ca.bc.gov.farms.data.models.YearConfigurationParameterRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,14 +32,14 @@ public class YearConfigurationParameterServiceTest {
     @Test
     @Order(1)
     public void testCreateYearConfigurationParameter() {
-        YearConfigurationParameterModel resource = new YearConfigurationParameterModel();
+        YearConfigurationParameterRsrc resource = new YearConfigurationParameterRsrc();
         resource.setProgramYear(2023);
         resource.setParameterName("Payment Limitation - Percentage of Total Margin Decline");
         resource.setParameterValue("70");
         resource.setConfigParamTypeCode("DECIMAL");
         resource.setUserEmail("testUser");
 
-        YearConfigurationParameterModel newResource = yearConfigurationParameterService
+        YearConfigurationParameterRsrc newResource = yearConfigurationParameterService
                 .createYearConfigurationParameter(resource);
         yearConfigurationParameterId = newResource.getYearConfigurationParameterId();
 
@@ -52,13 +52,13 @@ public class YearConfigurationParameterServiceTest {
     @Test
     @Order(2)
     public void testGetAllYearConfigurationParameters() {
-        YearConfigurationParameterListModel resources = yearConfigurationParameterService
+        YearConfigurationParameterListRsrc resources = yearConfigurationParameterService
                 .getAllYearConfigurationParameters();
         assertThat(resources).isNotNull();
         assertThat(resources.getYearConfigurationParameterList()).isNotEmpty();
         assertThat(resources.getYearConfigurationParameterList().size()).isEqualTo(1);
 
-        YearConfigurationParameterModel resource = resources.getYearConfigurationParameterList().iterator().next();
+        YearConfigurationParameterRsrc resource = resources.getYearConfigurationParameterList().iterator().next();
         assertThat(resource.getProgramYear()).isEqualTo(2023);
         assertThat(resource.getParameterName()).isEqualTo("Payment Limitation - Percentage of Total Margin Decline");
         assertThat(resource.getParameterValue()).isEqualTo("70");
@@ -68,7 +68,7 @@ public class YearConfigurationParameterServiceTest {
     @Test
     @Order(3)
     public void testUpdateYearConfigurationParameter() {
-        YearConfigurationParameterModel resource = null;
+        YearConfigurationParameterRsrc resource = null;
         try {
             resource = yearConfigurationParameterService.getYearConfigurationParameter(yearConfigurationParameterId);
         } catch (ServiceException | NotFoundException e) {
@@ -80,7 +80,7 @@ public class YearConfigurationParameterServiceTest {
         resource.setParameterValue("700");
         resource.setUserEmail("testUser");
 
-        YearConfigurationParameterModel updatedResource = null;
+        YearConfigurationParameterRsrc updatedResource = null;
         try {
             updatedResource = yearConfigurationParameterService
                     .updateYearConfigurationParameter(yearConfigurationParameterId, resource);

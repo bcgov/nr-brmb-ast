@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.CropUnitConversionListModel;
-import ca.bc.gov.farms.data.models.CropUnitConversionModel;
+import ca.bc.gov.farms.data.models.CropUnitConversionListRsrc;
+import ca.bc.gov.farms.data.models.CropUnitConversionRsrc;
 import ca.bc.gov.farms.services.CropUnitConversionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -46,15 +46,15 @@ public class CropUnitConversionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = CropUnitConversionListModel.class))),
+                    content = @Content(schema = @Schema(implementation = CropUnitConversionListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CropUnitConversionListModel> getAllCropUnitConversions(
+    public ResponseEntity<CropUnitConversionListRsrc> getAllCropUnitConversions(
             @RequestParam(required = false) String inventoryItemCode) {
         log.debug(" >> getAllCropUnitConversions");
 
-        CropUnitConversionListModel resources = null;
+        CropUnitConversionListRsrc resources = null;
         try {
             if (StringUtils.isBlank(inventoryItemCode)) {
                 resources = cropUnitConversionService.getAllCropUnitConversions();
@@ -75,17 +75,17 @@ public class CropUnitConversionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = CropUnitConversionModel.class))),
+                    content = @Content(schema = @Schema(implementation = CropUnitConversionRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CropUnitConversionModel> getCropUnitConversion(
+    public ResponseEntity<CropUnitConversionRsrc> getCropUnitConversion(
             @PathVariable Long cropUnitDefaultId) {
         log.debug(" >> getCropUnitConversion: {}", cropUnitDefaultId);
 
         try {
-            CropUnitConversionModel resource = cropUnitConversionService.getCropUnitConversion(cropUnitDefaultId);
+            CropUnitConversionRsrc resource = cropUnitConversionService.getCropUnitConversion(cropUnitDefaultId);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Crop Unit Conversion not found: {}", cropUnitDefaultId, e);
@@ -103,18 +103,18 @@ public class CropUnitConversionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = CropUnitConversionModel.class))),
+                    content = @Content(schema = @Schema(implementation = CropUnitConversionRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CropUnitConversionModel> createCropUnitConversion(
-            @Valid @RequestBody CropUnitConversionModel resource) {
+    public ResponseEntity<CropUnitConversionRsrc> createCropUnitConversion(
+            @Valid @RequestBody CropUnitConversionRsrc resource) {
         log.debug(" >> createCropUnitConversion");
 
         try {
-            CropUnitConversionModel newResource = cropUnitConversionService.createCropUnitConversion(resource);
+            CropUnitConversionRsrc newResource = cropUnitConversionService.createCropUnitConversion(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while creating Crop Unit Conversion", e);
@@ -129,20 +129,20 @@ public class CropUnitConversionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = CropUnitConversionModel.class))),
+                    content = @Content(schema = @Schema(implementation = CropUnitConversionRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CropUnitConversionModel> updateCropUnitConversion(
+    public ResponseEntity<CropUnitConversionRsrc> updateCropUnitConversion(
             @PathVariable Long cropUnitDefaultId,
-            @Valid @RequestBody CropUnitConversionModel resource) {
+            @Valid @RequestBody CropUnitConversionRsrc resource) {
         log.debug(" >> updateCropUnitConversion");
 
         try {
-            CropUnitConversionModel updatedResource = cropUnitConversionService.updateCropUnitConversion(cropUnitDefaultId, resource);
+            CropUnitConversionRsrc updatedResource = cropUnitConversionService.updateCropUnitConversion(cropUnitDefaultId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Crop Unit Conversion not found for update: {}", cropUnitDefaultId, e);

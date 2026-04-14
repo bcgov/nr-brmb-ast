@@ -121,7 +121,7 @@
             #{dto.benchmarkPerUnitId},
             #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
+            #{dto.expiryDate, javaType=java.time.LocalDate, jdbcType=DATE, mode=IN},
             (
                 select mc.municipality_code
                 from farms.farm_municipality_codes mc
@@ -185,7 +185,7 @@
         update farms.farm_benchmark_per_units
         set program_year = #{dto.programYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN},
             unit_comment = #{dto.unitComment, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
-            expiry_date = #{dto.expiryDate, javaType=java.util.Date, jdbcType=DATE, mode=IN},
+            expiry_date = #{dto.expiryDate, javaType=java.time.LocalDate, jdbcType=DATE, mode=IN},
             municipality_code = (
                 select mc.municipality_code
                 from farms.farm_municipality_codes mc
@@ -216,7 +216,7 @@
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             when_updated = now()
-        where benchmark_per_unit_id = #{dto.benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
+        where benchmark_per_unit_id = #{dto.benchmarkPerUnitId}
     </update>
 
     <update id="updateBenchmarkYear">
@@ -226,8 +226,8 @@
             revision_count = revision_count + 1,
             who_updated = #{userId, javaType=java.lang.String, jdbcType=VARCHAR, mode=IN},
             when_updated = now()
-        where benchmark_per_unit_id = #{benchmarkPerUnitId, javaType=java.lang.Long, jdbcType=BIGINT, mode=IN}
-        and benchmark_year = #{benchmarkYear, javaType=java.lang.Integer, jdbcType=NUMERIC, mode=IN}
+        where benchmark_per_unit_id = #{benchmarkPerUnitId}
+        and benchmark_year = #{benchmarkYear}
     </update>
 
     <delete id="deleteBenchmarkYear">

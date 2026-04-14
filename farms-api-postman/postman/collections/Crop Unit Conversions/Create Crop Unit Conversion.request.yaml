@@ -1,0 +1,116 @@
+$kind: http-request
+name: Create Crop Unit Conversion
+url: "{{baseUrl}}/cropUnitConversions"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"CropUnitConversionRsrc\",\r
+
+    \    \"inventoryItemCode\": \"7610\",\r
+
+    \    \"cropUnitCode\": \"5\",\r
+
+    \    \"conversionUnits\": [\r
+
+    \        {\r
+
+    \            \"conversionFactor\": 2204.622600,\r
+
+    \            \"targetCropUnitCode\": \"5\"\r
+
+    \        }\r
+
+    \    ],\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"cropUnitDefaultId\", json.cropUnitDefaultId);\r
+
+      \r
+
+      pm.test(\"Response contains @type = CropUnitConversionRsrc\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"CropUnitConversionRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"7610\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDesc\");\r
+
+      \    pm.expect(json.inventoryItemDesc).to.be.equal(\"Honey Bees;
+      Package\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"cropUnitCode\");\r
+
+      \    pm.expect(json.cropUnitCode).to.be.equal(\"5\");\r
+
+      \    pm.expect(json).to.have.property(\"cropUnitDesc\");\r
+
+      \    pm.expect(json.cropUnitDesc).to.be.equal(\"Kilogram\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"conversionUnits\");\r
+
+      \r
+
+      \    pm.expect(json.conversionUnits[0]).to.have.property(\"conversionFact\
+      or\");\r
+
+      \    pm.expect(json.conversionUnits[0].conversionFactor).to.be.equal(2204\
+      .622600);\r
+
+      \r
+
+      \    pm.expect(json.conversionUnits[0]).to.have.property(\"targetCropUnit\
+      Code\");\r
+
+      \    pm.expect(json.conversionUnits[0].targetCropUnitCode).to.be.equal(\"5\
+      \");\r
+
+      \r
+
+      \    pm.expect(json.conversionUnits[0]).to.have.property(\"targetCropUnit\
+      Desc\");\r
+
+      \    pm.expect(json.conversionUnits[0].targetCropUnitDesc).to.be.equal(\"\
+      Kilogram\");\r
+
+      });"
+    language: text/javascript
+order: 4483654833139918

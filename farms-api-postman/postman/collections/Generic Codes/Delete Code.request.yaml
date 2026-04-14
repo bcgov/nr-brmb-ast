@@ -1,0 +1,39 @@
+$kind: http-request
+name: Delete Code
+url: "{{baseUrl}}/codeTables/:codeTableName/codes/:code"
+method: DELETE
+pathVariables:
+  codeTableName: farm_municipality_codes
+  code: "{{code}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"http://common.brmb.nrs.gov.bc.ca/v1/code\",\r
+
+    \    \"code\": \"1000\",\r
+
+    \    \"description\": \"Test Municipality\",\r
+
+    \    \"displayOrder\": null,\r
+
+    \    \"effectiveDate\": \"2026-04-14\",\r
+
+    \    \"expiryDate\": \"9999-12-31\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 204\", function () {\r
+
+      \    pm.response.to.have.status(204);\r
+
+      });"
+    language: text/javascript
+order: 4446817340553478

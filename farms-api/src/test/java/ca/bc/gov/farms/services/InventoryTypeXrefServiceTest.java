@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.InventoryTypeXrefListModel;
-import ca.bc.gov.farms.data.models.InventoryTypeXrefModel;
+import ca.bc.gov.farms.data.models.InventoryTypeXrefListRsrc;
+import ca.bc.gov.farms.data.models.InventoryTypeXrefRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,14 +32,14 @@ public class InventoryTypeXrefServiceTest {
     @Test
     @Order(1)
     public void testCreateInventoryTypeXref() {
-        InventoryTypeXrefModel resource = new InventoryTypeXrefModel();
+        InventoryTypeXrefRsrc resource = new InventoryTypeXrefRsrc();
         resource.setMarketCommodityInd("Y");
         resource.setInventoryItemCode("73");
         resource.setInventoryGroupCode("3");
         resource.setInventoryClassCode("4");
         resource.setUserEmail("testUser");
 
-        InventoryTypeXrefModel newResource = inventoryTypeXrefService.createInventoryTypeXref(resource);
+        InventoryTypeXrefRsrc newResource = inventoryTypeXrefService.createInventoryTypeXref(resource);
         agristabilityCommodityXrefId = newResource.getAgristabilityCommodityXrefId();
 
         assertThat(newResource.getMarketCommodityInd()).isEqualTo("Y");
@@ -54,12 +54,12 @@ public class InventoryTypeXrefServiceTest {
     @Test
     @Order(2)
     public void testGetInventoryTypeXrefsByInventoryClassCode() {
-        InventoryTypeXrefListModel resources = inventoryTypeXrefService.getInventoryTypeXrefsByInventoryClassCode("4");
+        InventoryTypeXrefListRsrc resources = inventoryTypeXrefService.getInventoryTypeXrefsByInventoryClassCode("4");
         assertThat(resources).isNotNull();
         assertThat(resources.getInventoryTypeXrefList()).isNotEmpty();
         assertThat(resources.getInventoryTypeXrefList().size()).isEqualTo(1);
 
-        InventoryTypeXrefModel resource = resources.getInventoryTypeXrefList().iterator().next();
+        InventoryTypeXrefRsrc resource = resources.getInventoryTypeXrefList().iterator().next();
         assertThat(resource.getMarketCommodityInd()).isEqualTo("Y");
         assertThat(resource.getInventoryItemCode()).isEqualTo("73");
         assertThat(resource.getInventoryItemDesc()).isEqualTo("Strawberries");
@@ -72,7 +72,7 @@ public class InventoryTypeXrefServiceTest {
     @Test
     @Order(3)
     public void testUpdateInventoryTypeXref() {
-        InventoryTypeXrefModel resource = null;
+        InventoryTypeXrefRsrc resource = null;
         try {
             resource = inventoryTypeXrefService.getInventoryTypeXref(agristabilityCommodityXrefId);
         } catch (ServiceException | NotFoundException e) {
@@ -87,7 +87,7 @@ public class InventoryTypeXrefServiceTest {
         resource.setInventoryClassCode("5");
         resource.setUserEmail("testUser");
 
-        InventoryTypeXrefModel updatedResource = null;
+        InventoryTypeXrefRsrc updatedResource = null;
         try {
             updatedResource = inventoryTypeXrefService.updateInventoryTypeXref(agristabilityCommodityXrefId, resource);
         } catch (ConstraintViolationException | ServiceException | NotFoundException e) {

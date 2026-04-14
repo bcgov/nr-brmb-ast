@@ -1,0 +1,33 @@
+$kind: http-request
+name: Get Line Item
+url: "{{baseUrl}}/lineItems/:lineItemId"
+method: GET
+pathVariables:
+  lineItemId: "39674"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = LineItemRsrc\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"LineItemRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 4098427163829880

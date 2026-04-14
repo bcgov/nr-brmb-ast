@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.ExpectedProductionListModel;
-import ca.bc.gov.farms.data.models.ExpectedProductionModel;
+import ca.bc.gov.farms.data.models.ExpectedProductionListRsrc;
+import ca.bc.gov.farms.data.models.ExpectedProductionRsrc;
 import ca.bc.gov.farms.services.ExpectedProductionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -46,15 +46,15 @@ public class ExpectedProductionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ExpectedProductionListModel.class))),
+                    content = @Content(schema = @Schema(implementation = ExpectedProductionListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ExpectedProductionListModel> getAllExpectedProductions(
+    public ResponseEntity<ExpectedProductionListRsrc> getAllExpectedProductions(
             @RequestParam(required = false) String inventoryItemCode) {
         log.debug(" >> getAllExpectedProductions");
 
-        ExpectedProductionListModel resources = null;
+        ExpectedProductionListRsrc resources = null;
         try {
             if (StringUtils.isBlank(inventoryItemCode)) {
                 resources = expectedProductionService.getAllExpectedProductions();
@@ -75,17 +75,17 @@ public class ExpectedProductionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ExpectedProductionModel.class))),
+                    content = @Content(schema = @Schema(implementation = ExpectedProductionRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ExpectedProductionModel> getExpectedProduction(
+    public ResponseEntity<ExpectedProductionRsrc> getExpectedProduction(
             @PathVariable Long expectedProductionId) {
         log.debug(" >> getExpectedProduction: {}", expectedProductionId);
 
         try {
-            ExpectedProductionModel resource = expectedProductionService.getExpectedProduction(expectedProductionId);
+            ExpectedProductionRsrc resource = expectedProductionService.getExpectedProduction(expectedProductionId);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Expected Production not found: {}", expectedProductionId, e);
@@ -103,18 +103,18 @@ public class ExpectedProductionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = ExpectedProductionModel.class))),
+                    content = @Content(schema = @Schema(implementation = ExpectedProductionRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ExpectedProductionModel> createExpectedProduction(
-            @Valid @RequestBody ExpectedProductionModel resource) {
+    public ResponseEntity<ExpectedProductionRsrc> createExpectedProduction(
+            @Valid @RequestBody ExpectedProductionRsrc resource) {
         log.debug(" >> createExpectedProduction");
 
         try {
-            ExpectedProductionModel newResource = expectedProductionService.createExpectedProduction(resource);
+            ExpectedProductionRsrc newResource = expectedProductionService.createExpectedProduction(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while creating Expected Production", e);
@@ -129,20 +129,20 @@ public class ExpectedProductionController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ExpectedProductionModel.class))),
+                    content = @Content(schema = @Schema(implementation = ExpectedProductionRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ExpectedProductionModel> updateExpectedProduction(
+    public ResponseEntity<ExpectedProductionRsrc> updateExpectedProduction(
             @PathVariable Long expectedProductionId,
-            @Valid @RequestBody ExpectedProductionModel resource) {
+            @Valid @RequestBody ExpectedProductionRsrc resource) {
         log.debug(" >> updateExpectedProduction");
 
         try {
-            ExpectedProductionModel updatedResource = expectedProductionService.updateExpectedProduction(expectedProductionId, resource);
+            ExpectedProductionRsrc updatedResource = expectedProductionService.updateExpectedProduction(expectedProductionId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Expected Production not found for update: {}", expectedProductionId, e);

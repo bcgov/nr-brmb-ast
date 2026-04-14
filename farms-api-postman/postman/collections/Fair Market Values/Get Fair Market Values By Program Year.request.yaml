@@ -1,0 +1,56 @@
+$kind: http-request
+name: Get Fair Market Values By Program Year
+url: "{{baseUrl}}/fairMarketValues?programYear=2025"
+method: GET
+queryParams:
+  programYear: "2025"
+auth:
+  credentials:
+    token: "{{access_token}}"
+  type: bearer
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = FairMarketValueListRsrc\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"FairMarketValueListRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"fairMarketValueList is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"fairMarketValueList\");\r
+
+      \    pm.expect(json.fairMarketValueList.length).to.be.greaterThan(0);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"fairMarketValueList[0] contains @type = FairMarketValueRsrc\",
+      function() {\r
+
+      \    pm.expect(json.fairMarketValueList[0]).to.have.property(\"@type\");\r
+
+      \    pm.expect(json.fairMarketValueList[0]['@type']).to.be.equal(\"FairMa\
+      rketValueRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 3541552752265393

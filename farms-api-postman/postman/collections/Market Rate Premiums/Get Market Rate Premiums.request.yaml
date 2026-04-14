@@ -1,0 +1,56 @@
+$kind: http-request
+name: Get Market Rate Premiums
+url: "{{baseUrl}}/marketRatePremiums"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = MarketRatePremiumListRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"MarketRatePremiumListRsrc\");\
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"marketRatePremiumList is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"marketRatePremiumList\");\r
+
+      \    pm.expect(json.marketRatePremiumList.length).to.be.greaterThan(0);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"marketRatePremiumList[0] contains @type =
+      MarketRatePremiumRsrc\", function() {\r
+
+      \    pm.expect(json.marketRatePremiumList[0]).to.have.property(\"@type\");\
+      \r
+
+      \    pm.expect(json.marketRatePremiumList[0]['@type']).to.be.equal(\"Mark\
+      etRatePremiumRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 4398201543381968

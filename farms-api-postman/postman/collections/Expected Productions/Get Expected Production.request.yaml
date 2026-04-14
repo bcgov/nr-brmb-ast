@@ -1,0 +1,34 @@
+$kind: http-request
+name: Get Expected Production
+url: "{{baseUrl}}/expectedProductions/:expectedProductionId"
+method: GET
+pathVariables:
+  expectedProductionId: "33"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = ExpectedProductionRsrc\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"ExpectedProductionRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 3936732236759523

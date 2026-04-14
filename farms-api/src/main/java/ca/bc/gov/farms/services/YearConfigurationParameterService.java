@@ -12,8 +12,8 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.YearConfigurationParameterResourceAssembler;
 import ca.bc.gov.farms.data.entities.YearConfigurationParameterEntity;
 import ca.bc.gov.farms.data.mappers.YearConfigurationParameterMapper;
-import ca.bc.gov.farms.data.models.YearConfigurationParameterListModel;
-import ca.bc.gov.farms.data.models.YearConfigurationParameterModel;
+import ca.bc.gov.farms.data.models.YearConfigurationParameterListRsrc;
+import ca.bc.gov.farms.data.models.YearConfigurationParameterRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -32,9 +32,9 @@ public class YearConfigurationParameterService {
     @Autowired
     private Validator validator;
 
-    public YearConfigurationParameterListModel getAllYearConfigurationParameters() throws ServiceException {
+    public YearConfigurationParameterListRsrc getAllYearConfigurationParameters() throws ServiceException {
 
-        YearConfigurationParameterListModel result = null;
+        YearConfigurationParameterListRsrc result = null;
 
         try {
             List<YearConfigurationParameterEntity> entities = yearConfigurationParameterMapper.fetchAll();
@@ -47,10 +47,10 @@ public class YearConfigurationParameterService {
         return result;
     }
 
-    public YearConfigurationParameterModel getYearConfigurationParameter(Long yearConfigurationParameterId)
+    public YearConfigurationParameterRsrc getYearConfigurationParameter(Long yearConfigurationParameterId)
             throws ServiceException, NotFoundException {
 
-        YearConfigurationParameterModel result = null;
+        YearConfigurationParameterRsrc result = null;
 
         try {
             YearConfigurationParameterEntity entity = yearConfigurationParameterMapper
@@ -72,15 +72,15 @@ public class YearConfigurationParameterService {
     }
 
     @Transactional
-    public YearConfigurationParameterModel createYearConfigurationParameter(YearConfigurationParameterModel resource)
+    public YearConfigurationParameterRsrc createYearConfigurationParameter(YearConfigurationParameterRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<YearConfigurationParameterModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<YearConfigurationParameterRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        YearConfigurationParameterModel result = null;
+        YearConfigurationParameterRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -105,16 +105,16 @@ public class YearConfigurationParameterService {
     }
 
     @Transactional
-    public YearConfigurationParameterModel updateYearConfigurationParameter(Long yearConfigurationParameterId,
-            YearConfigurationParameterModel resource)
+    public YearConfigurationParameterRsrc updateYearConfigurationParameter(Long yearConfigurationParameterId,
+            YearConfigurationParameterRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<YearConfigurationParameterModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<YearConfigurationParameterRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        YearConfigurationParameterModel result = null;
+        YearConfigurationParameterRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

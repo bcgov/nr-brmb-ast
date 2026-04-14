@@ -1,0 +1,57 @@
+$kind: http-request
+name: Get CodeTable
+url: "{{baseUrl}}/codeTables/:codeTableName"
+method: GET
+pathVariables:
+  - key: codeTableName
+    value: farm_municipality_codes
+    $type: ""
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = CodeTableRsrc\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"CodeTableRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"codes is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"codes\");\r
+
+      \    pm.expect(json.codes.length).to.be.greaterThan(0);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"codes[0] contains @type =
+      http://common.brmb.nrs.gov.bc.ca/v1/code\", function() {\r
+
+      \    pm.expect(json.codes[0]).to.have.property(\"@type\");\r
+
+      \    pm.expect(json.codes[0]['@type']).to.be.equal(\"http://common.brmb.n\
+      rs.gov.bc.ca/v1/code\");\r
+
+      });"
+    language: text/javascript
+order: 4367250080815256

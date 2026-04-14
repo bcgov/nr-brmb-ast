@@ -1,0 +1,85 @@
+$kind: http-request
+name: Create Year Configuration Parameter
+url: "{{baseUrl}}/yearConfigurationParameters"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"YearConfigurationParameterRsrc\",\r
+
+    \    \"programYear\": 2025,\r
+
+    \    \"parameterName\": \"Test\",\r
+
+    \    \"parameterValue\": \"Test Test\",\r
+
+    \    \"configParamTypeCode\": \"STRING\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"yearConfigurationParameterId\",
+      json.yearConfigurationParameterId);\r
+
+      \r
+
+      pm.test(\"Response contains @type = YearConfigurationParameterRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"YearConfigurationParameterRsrc\
+      \");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"programYear\");\r
+
+      \    pm.expect(json.programYear).to.be.equal(2025);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterName\");\r
+
+      \    pm.expect(json.parameterName).to.be.equal(\"Test\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterValue\");\r
+
+      \    pm.expect(json.parameterValue).to.be.equal(\"Test Test\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"configParamTypeCode\");\r
+
+      \    pm.expect(json.configParamTypeCode).to.be.equal(\"STRING\");\r
+
+      });"
+    language: text/javascript
+order: 4492714373852381

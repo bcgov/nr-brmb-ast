@@ -14,8 +14,8 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.LineItemResourceAssembler;
 import ca.bc.gov.farms.data.entities.LineItemEntity;
 import ca.bc.gov.farms.data.mappers.LineItemMapper;
-import ca.bc.gov.farms.data.models.LineItemListModel;
-import ca.bc.gov.farms.data.models.LineItemModel;
+import ca.bc.gov.farms.data.models.LineItemListRsrc;
+import ca.bc.gov.farms.data.models.LineItemRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -34,9 +34,9 @@ public class LineItemService {
     @Autowired
     private Validator validator;
 
-    public LineItemListModel getLineItemsByProgramYear(Integer programYear) throws ServiceException {
+    public LineItemListRsrc getLineItemsByProgramYear(Integer programYear) throws ServiceException {
 
-        LineItemListModel result = null;
+        LineItemListRsrc result = null;
 
         try {
             List<LineItemEntity> entities = lineItemMapper.fetchByProgramYear(programYear);
@@ -49,9 +49,9 @@ public class LineItemService {
         return result;
     }
 
-    public LineItemModel getLineItem(Long lineItemId) throws ServiceException, NotFoundException {
+    public LineItemRsrc getLineItem(Long lineItemId) throws ServiceException, NotFoundException {
 
-        LineItemModel result = null;
+        LineItemRsrc result = null;
 
         try {
             LineItemEntity entity = lineItemMapper.fetch(lineItemId);
@@ -71,14 +71,14 @@ public class LineItemService {
     }
 
     @Transactional
-    public LineItemModel createLineItem(LineItemModel resource) throws ServiceException, ConstraintViolationException {
+    public LineItemRsrc createLineItem(LineItemRsrc resource) throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<LineItemModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<LineItemRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        LineItemModel result = null;
+        LineItemRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -103,15 +103,15 @@ public class LineItemService {
     }
 
     @Transactional
-    public LineItemModel updateLineItem(Long lineItemId, LineItemModel resource)
+    public LineItemRsrc updateLineItem(Long lineItemId, LineItemRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<LineItemModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<LineItemRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        LineItemModel result = null;
+        LineItemRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -169,9 +169,9 @@ public class LineItemService {
     }
 
     @Transactional
-    public LineItemListModel copyLineItems(Integer currentYear) throws ServiceException {
+    public LineItemListRsrc copyLineItems(Integer currentYear) throws ServiceException {
 
-        LineItemListModel result = null;
+        LineItemListRsrc result = null;
         Integer previousYear = currentYear - 1;
 
         try {

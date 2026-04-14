@@ -1,0 +1,56 @@
+$kind: http-request
+name: Get Productive Unit Codes
+url: "{{baseUrl}}/productiveUnitCodes"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = ProductiveUnitCodeListModel\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"ProductiveUnitCodeListModel\"\
+      );\r
+
+      });\r
+
+      \r
+
+      pm.test(\"productiveUnitCodeList is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"productiveUnitCodeList\");\r
+
+      \    pm.expect(json.productiveUnitCodeList.length).to.be.greaterThan(0);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"productiveUnitCodeList[0] contains @type =
+      ProductiveUnitCodeModel\", function() {\r
+
+      \    pm.expect(json.productiveUnitCodeList[0]).to.have.property(\"@type\"\
+      );\r
+
+      \    pm.expect(json.productiveUnitCodeList[0]['@type']).to.be.equal(\"Pro\
+      ductiveUnitCodeModel\");\r
+
+      });"
+    language: text/javascript
+order: 4479285163251786

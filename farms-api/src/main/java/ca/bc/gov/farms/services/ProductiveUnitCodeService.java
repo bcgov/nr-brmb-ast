@@ -9,7 +9,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.ProductiveUnitCodeResourceAssembler;
 import ca.bc.gov.farms.data.entities.ProductiveUnitCodeEntity;
 import ca.bc.gov.farms.data.mappers.ProductiveUnitCodeMapper;
-import ca.bc.gov.farms.data.models.ProductiveUnitCodeListModel;
+import ca.bc.gov.farms.data.models.ProductiveUnitCodeListRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,9 +22,9 @@ public class ProductiveUnitCodeService {
     @Autowired
     private ProductiveUnitCodeResourceAssembler productiveUnitCodeResourceAssembler;
 
-    public ProductiveUnitCodeListModel getAllProductiveUnitCodes() throws ServiceException {
+    public ProductiveUnitCodeListRsrc getAllProductiveUnitCodes() throws ServiceException {
 
-        ProductiveUnitCodeListModel result = null;
+        ProductiveUnitCodeListRsrc result = null;
 
         try {
             List<ProductiveUnitCodeEntity> entities = productiveUnitCodeMapper.fetchAll();

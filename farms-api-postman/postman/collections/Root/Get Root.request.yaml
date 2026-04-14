@@ -1,0 +1,32 @@
+$kind: http-request
+name: Get Root
+url: "{{baseUrl}}"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains releaseVersion = 1.0.0-SNAPSHOT\", function ()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"releaseVersion\");\r
+
+      \    pm.expect(json.releaseVersion).to.be.equal(\"1.0.0-SNAPSHOT\");\r
+
+      });"
+    language: text/javascript
+order: 1180

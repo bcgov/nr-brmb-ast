@@ -1,0 +1,19 @@
+$kind: http-request
+name: Delete Fruit Veg Type Detail
+url: "{{baseUrl}}/fruitVegTypeDetails/:fruitVegTypeCode"
+method: DELETE
+pathVariables:
+  fruitVegTypeCode: "{{fruitVegTypeCode}}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 204\", function () {\r
+
+      \    pm.response.to.have.status(204);\r
+
+      });"
+    language: text/javascript
+order: 4492035006000111

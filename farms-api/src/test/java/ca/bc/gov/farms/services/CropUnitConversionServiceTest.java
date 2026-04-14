@@ -14,9 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.ConversionUnitModel;
-import ca.bc.gov.farms.data.models.CropUnitConversionListModel;
-import ca.bc.gov.farms.data.models.CropUnitConversionModel;
+import ca.bc.gov.farms.data.models.ConversionUnitRsrc;
+import ca.bc.gov.farms.data.models.CropUnitConversionListRsrc;
+import ca.bc.gov.farms.data.models.CropUnitConversionRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,16 +35,16 @@ public class CropUnitConversionServiceTest {
     @Test
     @Order(1)
     public void testCreateCropUnitConversion() {
-        CropUnitConversionModel resource = new CropUnitConversionModel();
+        CropUnitConversionRsrc resource = new CropUnitConversionRsrc();
         resource.setInventoryItemCode("73");
         resource.setCropUnitCode("1");
-        ConversionUnitModel conversionUnit = new ConversionUnitModel();
+        ConversionUnitRsrc conversionUnit = new ConversionUnitRsrc();
         conversionUnit.setConversionFactor(new BigDecimal("1.2345"));
         conversionUnit.setTargetCropUnitCode("2");
         resource.getConversionUnits().add(conversionUnit);
         resource.setUserEmail("testUser");
 
-        CropUnitConversionModel newResource = cropUnitConversionService.createCropUnitConversion(resource);
+        CropUnitConversionRsrc newResource = cropUnitConversionService.createCropUnitConversion(resource);
         cropUnitDefaultId = newResource.getCropUnitDefaultId();
 
         assertThat(newResource.getInventoryItemCode()).isEqualTo("73");
@@ -60,13 +60,13 @@ public class CropUnitConversionServiceTest {
     @Test
     @Order(2)
     public void testGetCropUnitConversionsByInventoryItemCode() {
-        CropUnitConversionListModel resources = cropUnitConversionService
+        CropUnitConversionListRsrc resources = cropUnitConversionService
                 .getCropUnitConversionsByInventoryItemCode("73");
         assertThat(resources).isNotNull();
         assertThat(resources.getCropUnitConversionList()).isNotEmpty();
         assertThat(resources.getCropUnitConversionList().size()).isEqualTo(1);
 
-        CropUnitConversionModel resource = resources.getCropUnitConversionList().iterator().next();
+        CropUnitConversionRsrc resource = resources.getCropUnitConversionList().iterator().next();
         assertThat(resource.getInventoryItemCode()).isEqualTo("73");
         assertThat(resource.getInventoryItemDesc()).isEqualTo("Strawberries");
         assertThat(resource.getCropUnitCode()).isEqualTo("1");
@@ -80,7 +80,7 @@ public class CropUnitConversionServiceTest {
     @Test
     @Order(3)
     public void testUpdateCropUnitConversion() {
-        CropUnitConversionModel resource;
+        CropUnitConversionRsrc resource;
         try {
             resource = cropUnitConversionService.getCropUnitConversion(cropUnitDefaultId);
         } catch (ServiceException | NotFoundException e) {
@@ -95,7 +95,7 @@ public class CropUnitConversionServiceTest {
         resource.getConversionUnits().get(0).setTargetCropUnitCode("1");
         resource.setUserEmail("testUser");
 
-        CropUnitConversionModel updatedResource;
+        CropUnitConversionRsrc updatedResource;
         try {
             updatedResource = cropUnitConversionService.updateCropUnitConversion(cropUnitDefaultId, resource);
         } catch (ConstraintViolationException | ServiceException | NotFoundException e) {

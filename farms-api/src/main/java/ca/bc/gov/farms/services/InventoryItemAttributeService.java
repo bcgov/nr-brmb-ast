@@ -11,7 +11,7 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.InventoryItemAttributeResourceAssembler;
 import ca.bc.gov.farms.data.entities.InventoryItemAttributeEntity;
 import ca.bc.gov.farms.data.mappers.InventoryItemAttributeMapper;
-import ca.bc.gov.farms.data.models.InventoryItemAttributeModel;
+import ca.bc.gov.farms.data.models.InventoryItemAttributeRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -30,10 +30,10 @@ public class InventoryItemAttributeService {
     @Autowired
     private Validator validator;
 
-    public InventoryItemAttributeModel getInventoryItemAttributeByInventoryItemCode(String inventoryItemCode)
+    public InventoryItemAttributeRsrc getInventoryItemAttributeByInventoryItemCode(String inventoryItemCode)
             throws ServiceException {
 
-        InventoryItemAttributeModel result = null;
+        InventoryItemAttributeRsrc result = null;
 
         try {
             InventoryItemAttributeEntity entity = inventoryItemAttributeMapper
@@ -47,10 +47,10 @@ public class InventoryItemAttributeService {
         return result;
     }
 
-    public InventoryItemAttributeModel getInventoryItemAttribute(Long inventoryItemAttributeId)
+    public InventoryItemAttributeRsrc getInventoryItemAttribute(Long inventoryItemAttributeId)
             throws ServiceException, NotFoundException {
 
-        InventoryItemAttributeModel result = null;
+        InventoryItemAttributeRsrc result = null;
 
         try {
             InventoryItemAttributeEntity entity = inventoryItemAttributeMapper.fetch(inventoryItemAttributeId);
@@ -70,15 +70,15 @@ public class InventoryItemAttributeService {
     }
 
     @Transactional
-    public InventoryItemAttributeModel createInventoryItemAttribute(InventoryItemAttributeModel resource)
+    public InventoryItemAttributeRsrc createInventoryItemAttribute(InventoryItemAttributeRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<InventoryItemAttributeModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<InventoryItemAttributeRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        InventoryItemAttributeModel result = null;
+        InventoryItemAttributeRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -103,16 +103,16 @@ public class InventoryItemAttributeService {
     }
 
     @Transactional
-    public InventoryItemAttributeModel updateInventoryItemAttribute(Long inventoryItemAttributeId,
-            InventoryItemAttributeModel resource)
+    public InventoryItemAttributeRsrc updateInventoryItemAttribute(Long inventoryItemAttributeId,
+            InventoryItemAttributeRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<InventoryItemAttributeModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<InventoryItemAttributeRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        InventoryItemAttributeModel result = null;
+        InventoryItemAttributeRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

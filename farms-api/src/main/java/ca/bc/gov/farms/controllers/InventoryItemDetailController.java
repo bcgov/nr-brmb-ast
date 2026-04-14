@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.InventoryItemDetailListModel;
-import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailListRsrc;
+import ca.bc.gov.farms.data.models.InventoryItemDetailRsrc;
 import ca.bc.gov.farms.services.InventoryItemDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,16 +45,16 @@ public class InventoryItemDetailController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = InventoryItemDetailListModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryItemDetailListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemDetailListModel> getInventoryItemDetailsByInventoryItemCode(
+    public ResponseEntity<InventoryItemDetailListRsrc> getInventoryItemDetailsByInventoryItemCode(
             @RequestParam String inventoryItemCode) {
         log.debug(" >> getInventoryItemDetailsByInventoryItemCode: {}", inventoryItemCode);
 
         try {
-            InventoryItemDetailListModel resource = inventoryItemDetailService.getInventoryItemDetailsByInventoryItemCode(inventoryItemCode);
+            InventoryItemDetailListRsrc resource = inventoryItemDetailService.getInventoryItemDetailsByInventoryItemCode(inventoryItemCode);
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Inventory Item Details", e);
@@ -69,17 +69,17 @@ public class InventoryItemDetailController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = InventoryItemDetailModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryItemDetailRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemDetailModel> getInventoryItemDetail(
+    public ResponseEntity<InventoryItemDetailRsrc> getInventoryItemDetail(
             @PathVariable Long inventoryItemDetailId) {
         log.debug(" >> getInventoryItemDetail: {}", inventoryItemDetailId);
 
         try {
-            InventoryItemDetailModel resource = inventoryItemDetailService.getInventoryItemDetail(inventoryItemDetailId);
+            InventoryItemDetailRsrc resource = inventoryItemDetailService.getInventoryItemDetail(inventoryItemDetailId);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Inventory Item Detail not found: {}", inventoryItemDetailId, e);
@@ -97,18 +97,18 @@ public class InventoryItemDetailController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = InventoryItemDetailModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryItemDetailRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemDetailModel> createInventoryItemDetail(
-            @Valid @RequestBody InventoryItemDetailModel resource) {
+    public ResponseEntity<InventoryItemDetailRsrc> createInventoryItemDetail(
+            @Valid @RequestBody InventoryItemDetailRsrc resource) {
         log.debug(" >> createInventoryItemDetail");
 
         try {
-            InventoryItemDetailModel newResource = inventoryItemDetailService.createInventoryItemDetail(resource);
+            InventoryItemDetailRsrc newResource = inventoryItemDetailService.createInventoryItemDetail(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while creating Inventory Item Detail", e);
@@ -123,20 +123,20 @@ public class InventoryItemDetailController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = InventoryItemDetailModel.class))),
+                    content = @Content(schema = @Schema(implementation = InventoryItemDetailRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<InventoryItemDetailModel> updateInventoryItemDetail(
+    public ResponseEntity<InventoryItemDetailRsrc> updateInventoryItemDetail(
             @PathVariable Long inventoryItemDetailId,
-            @Valid @RequestBody InventoryItemDetailModel resource) {
+            @Valid @RequestBody InventoryItemDetailRsrc resource) {
         log.debug(" >> updateInventoryItemDetail");
 
         try {
-            InventoryItemDetailModel updatedResource = inventoryItemDetailService.updateInventoryItemDetail(inventoryItemDetailId, resource);
+            InventoryItemDetailRsrc updatedResource = inventoryItemDetailService.updateInventoryItemDetail(inventoryItemDetailId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Inventory Item Detail not found for update: {}", inventoryItemDetailId, e);

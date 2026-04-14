@@ -1,0 +1,77 @@
+$kind: http-request
+name: Create Structure Group Attribute
+url: "{{baseUrl}}/structureGroupAttributes"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"StructureGroupAttributeRsrc\",\r
+
+    \    \"structureGroupCode\": \"1\",\r
+
+    \    \"rollupStructureGroupCode\": null,\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"structureGroupAttributeId\",
+      json.structureGroupAttributeId);\r
+
+      \r
+
+      pm.test(\"Response contains @type = StructureGroupAttributeRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"StructureGroupAttributeRsrc\"\
+      );\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"structureGroupCode\");\r
+
+      \    pm.expect(json.structureGroupCode).to.be.equal(\"1\");\r
+
+      \    pm.expect(json).to.have.property(\"structureGroupDesc\");\r
+
+      \    pm.expect(json.structureGroupDesc).to.be.equal(\"Crop Basket\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"rollupStructureGroupCode\");\r
+
+      \    pm.expect(json.rollupStructureGroupCode).to.be.null;\r
+
+      \    pm.expect(json).to.have.property(\"rollupStructureGroupDesc\");\r
+
+      \    pm.expect(json.rollupStructureGroupDesc).to.be.null;\r
+
+      });"
+    language: text/javascript
+order: 4463855098404040

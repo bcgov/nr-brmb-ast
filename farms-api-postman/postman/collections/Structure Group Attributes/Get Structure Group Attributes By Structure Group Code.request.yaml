@@ -1,0 +1,35 @@
+$kind: http-request
+name: Get Structure Group Attributes By Structure Group Code
+url: "{{baseUrl}}/structureGroupAttributes?structureGroupCode=100"
+method: GET
+queryParams:
+  structureGroupCode: "100"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = StructureGroupAttributeRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"StructureGroupAttributeRsrc\"\
+      );\r
+
+      });"
+    language: text/javascript
+order: 4459212205414406

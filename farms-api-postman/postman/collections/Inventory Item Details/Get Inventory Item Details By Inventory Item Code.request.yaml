@@ -1,0 +1,59 @@
+$kind: http-request
+name: Get Inventory Item Details By Inventory Item Code
+url: "{{baseUrl}}/inventoryItemDetails?inventoryItemCode=4824"
+method: GET
+queryParams:
+  inventoryItemCode: "4824"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = InventoryItemDetailListRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"InventoryItemDetailListRsrc\"\
+      );\r
+
+      });\r
+
+      \r
+
+      pm.test(\"inventoryItemDetailList is not empty\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDetailList\");\r
+
+      \    pm.expect(json.inventoryItemDetailList.length).to.be.greaterThan(0);\
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"inventoryItemDetailList[0] contains @type =
+      InventoryItemDetailRsrc\", function() {\r
+
+      \    pm.expect(json.inventoryItemDetailList[0]).to.have.property(\"@type\
+      \");\r
+
+      \    pm.expect(json.inventoryItemDetailList[0]['@type']).to.be.equal(\"In\
+      ventoryItemDetailRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 3793538230881609

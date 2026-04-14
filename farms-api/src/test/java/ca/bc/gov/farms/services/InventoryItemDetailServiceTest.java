@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
-import ca.bc.gov.farms.data.models.InventoryItemDetailListModel;
-import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailListRsrc;
+import ca.bc.gov.farms.data.models.InventoryItemDetailRsrc;
 import jakarta.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,7 @@ public class InventoryItemDetailServiceTest {
     @Test
     @Order(1)
     public void testCreateInventoryItemDetail() {
-        InventoryItemDetailModel resource = new InventoryItemDetailModel();
+        InventoryItemDetailRsrc resource = new InventoryItemDetailRsrc();
         resource.setProgramYear(2024);
         resource.setEligibilityInd("N");
         resource.setLineItem(null);
@@ -47,7 +47,7 @@ public class InventoryItemDetailServiceTest {
         resource.setUrlId(1L);
         resource.setUserEmail("testUser");
 
-        InventoryItemDetailModel newResource = inventoryItemDetailService.createInventoryItemDetail(resource);
+        InventoryItemDetailRsrc newResource = inventoryItemDetailService.createInventoryItemDetail(resource);
         inventoryItemDetailId = newResource.getInventoryItemDetailId();
 
         assertThat(newResource.getProgramYear()).isEqualTo(2024);
@@ -70,13 +70,13 @@ public class InventoryItemDetailServiceTest {
     @Test
     @Order(2)
     public void testGetInventoryItemDetailsByInventoryItemCode() {
-        InventoryItemDetailListModel resources = inventoryItemDetailService
+        InventoryItemDetailListRsrc resources = inventoryItemDetailService
                 .getInventoryItemDetailsByInventoryItemCode("7208");
         assertThat(resources).isNotNull();
         assertThat(resources.getInventoryItemDetailList()).isNotEmpty();
         assertThat(resources.getInventoryItemDetailList().size()).isEqualTo(1);
 
-        InventoryItemDetailModel resource = resources.getInventoryItemDetailList().iterator().next();
+        InventoryItemDetailRsrc resource = resources.getInventoryItemDetailList().iterator().next();
         assertThat(resource.getProgramYear()).isEqualTo(2024);
         assertThat(resource.getEligibilityInd()).isEqualTo("N");
         assertThat(resource.getLineItem()).isNull();
@@ -97,7 +97,7 @@ public class InventoryItemDetailServiceTest {
     @Test
     @Order(3)
     public void testUpdateInventoryItemDetail() {
-        InventoryItemDetailModel resource = null;
+        InventoryItemDetailRsrc resource = null;
         try {
             resource = inventoryItemDetailService.getInventoryItemDetail(inventoryItemDetailId);
         } catch (ServiceException | NotFoundException e) {
@@ -118,7 +118,7 @@ public class InventoryItemDetailServiceTest {
         resource.setUrlId(2L);
         resource.setUserEmail("testUser");
 
-        InventoryItemDetailModel updatedResource = null;
+        InventoryItemDetailRsrc updatedResource = null;
         try {
             updatedResource = inventoryItemDetailService.updateInventoryItemDetail(inventoryItemDetailId, resource);
         } catch (ConstraintViolationException | ServiceException | NotFoundException e) {

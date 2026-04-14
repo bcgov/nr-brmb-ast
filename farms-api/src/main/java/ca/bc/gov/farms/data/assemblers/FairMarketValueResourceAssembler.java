@@ -10,19 +10,19 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.FairMarketValueEntity;
-import ca.bc.gov.farms.data.models.FairMarketValueListModel;
-import ca.bc.gov.farms.data.models.FairMarketValueModel;
+import ca.bc.gov.farms.data.models.FairMarketValueListRsrc;
+import ca.bc.gov.farms.data.models.FairMarketValueRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
 
-    public FairMarketValueModel getFairMarketValue(@NonNull FairMarketValueEntity entity) {
+    public FairMarketValueRsrc getFairMarketValue(@NonNull FairMarketValueEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        FairMarketValueModel resource = new FairMarketValueModel();
+        FairMarketValueRsrc resource = new FairMarketValueRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -35,20 +35,20 @@ public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
     }
 
     @SuppressWarnings("null")
-    public FairMarketValueListModel getFairMarketValueList(List<FairMarketValueEntity> entities) {
+    public FairMarketValueListRsrc getFairMarketValueList(List<FairMarketValueEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        FairMarketValueListModel result = null;
+        FairMarketValueListRsrc result = null;
 
-        List<FairMarketValueModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            FairMarketValueModel resource = new FairMarketValueModel();
+        List<FairMarketValueRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            FairMarketValueRsrc resource = new FairMarketValueRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getFairMarketValueId(), resource, baseUri);
             return resource;
         }).collect(Collectors.toList());
 
-        result = new FairMarketValueListModel();
+        result = new FairMarketValueListRsrc();
         result.setFairMarketValueList(resources);
 
         String eTag = getEtag(result);
@@ -59,7 +59,7 @@ public class FairMarketValueResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateFairMarketValue(@NonNull FairMarketValueModel resource, @NonNull FairMarketValueEntity entity) {
+    public void updateFairMarketValue(@NonNull FairMarketValueRsrc resource, @NonNull FairMarketValueEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }
 }

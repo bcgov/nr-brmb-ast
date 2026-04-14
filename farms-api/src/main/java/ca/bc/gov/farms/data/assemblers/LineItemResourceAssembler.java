@@ -10,19 +10,19 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.LineItemEntity;
-import ca.bc.gov.farms.data.models.LineItemListModel;
-import ca.bc.gov.farms.data.models.LineItemModel;
+import ca.bc.gov.farms.data.models.LineItemListRsrc;
+import ca.bc.gov.farms.data.models.LineItemRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class LineItemResourceAssembler extends BaseResourceAssembler {
 
-    public LineItemModel getLineItem(@NonNull LineItemEntity entity) {
+    public LineItemRsrc getLineItem(@NonNull LineItemEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        LineItemModel resource = new LineItemModel();
+        LineItemRsrc resource = new LineItemRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -34,21 +34,21 @@ public class LineItemResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    public LineItemListModel getLineItemList(List<LineItemEntity> entities) {
+    public LineItemListRsrc getLineItemList(List<LineItemEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        LineItemListModel result = null;
+        LineItemListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<LineItemModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            LineItemModel resource = new LineItemModel();
+        List<LineItemRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            LineItemRsrc resource = new LineItemRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getLineItemId(), resource, baseUri);
             return resource;
         }).collect(Collectors.toList());
 
-        result = new LineItemListModel();
+        result = new LineItemListRsrc();
         result.setLineItemList(resources);
 
         String eTag = getEtag(result);
@@ -59,7 +59,7 @@ public class LineItemResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateLineItem(@NonNull LineItemModel resource, @NonNull LineItemEntity entity) {
+    public void updateLineItem(@NonNull LineItemRsrc resource, @NonNull LineItemEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }
 }

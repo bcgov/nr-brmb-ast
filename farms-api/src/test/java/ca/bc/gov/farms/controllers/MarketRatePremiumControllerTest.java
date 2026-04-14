@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ca.bc.gov.farms.data.models.MarketRatePremiumModel;
+import ca.bc.gov.farms.data.models.MarketRatePremiumRsrc;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -42,7 +42,7 @@ public class MarketRatePremiumControllerTest {
     @Order(1)
     public void testCreateMarketRatePremium() throws Exception {
 
-        MarketRatePremiumModel resource = new MarketRatePremiumModel();
+        MarketRatePremiumRsrc resource = new MarketRatePremiumRsrc();
         resource.setMinTotalPremiumAmount(new BigDecimal("0.00"));
         resource.setMaxTotalPremiumAmount(new BigDecimal("1.00"));
         resource.setRiskChargeFlatAmount(new BigDecimal("2.00"));
@@ -54,7 +54,7 @@ public class MarketRatePremiumControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.@type").value("MarketRatePremiumModel"))
+                .andExpect(jsonPath("$.@type").value("MarketRatePremiumRsrc"))
                 .andExpect(jsonPath("$.marketRatePremiumId").value(21))
                 .andExpect(jsonPath("$.minTotalPremiumAmount").value(0.00))
                 .andExpect(jsonPath("$.maxTotalPremiumAmount").value(1.00))
@@ -72,8 +72,8 @@ public class MarketRatePremiumControllerTest {
         mockMvc.perform(get("/marketRatePremiums")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("MarketRatePremiumListModel"))
-                .andExpect(jsonPath("$.marketRatePremiumList[0].@type").value("MarketRatePremiumModel"))
+                .andExpect(jsonPath("$.@type").value("MarketRatePremiumListRsrc"))
+                .andExpect(jsonPath("$.marketRatePremiumList[0].@type").value("MarketRatePremiumRsrc"))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].marketRatePremiumId").value(21))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].minTotalPremiumAmount").value(0.00))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].maxTotalPremiumAmount").value(1.00))
@@ -91,7 +91,7 @@ public class MarketRatePremiumControllerTest {
         mockMvc.perform(get("/marketRatePremiums/21")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("MarketRatePremiumModel"))
+                .andExpect(jsonPath("$.@type").value("MarketRatePremiumRsrc"))
                 .andExpect(jsonPath("$.marketRatePremiumId").value(21))
                 .andExpect(jsonPath("$.minTotalPremiumAmount").value(0.00))
                 .andExpect(jsonPath("$.maxTotalPremiumAmount").value(1.00))
@@ -106,7 +106,7 @@ public class MarketRatePremiumControllerTest {
     @Order(4)
     public void testUpdateMarketRatePremium() throws Exception {
 
-        MarketRatePremiumModel resource = new MarketRatePremiumModel();
+        MarketRatePremiumRsrc resource = new MarketRatePremiumRsrc();
         resource.setMarketRatePremiumId(21L);
         resource.setMinTotalPremiumAmount(new BigDecimal("1.00"));
         resource.setMaxTotalPremiumAmount(new BigDecimal("2.00"));
@@ -119,7 +119,7 @@ public class MarketRatePremiumControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("MarketRatePremiumModel"))
+                .andExpect(jsonPath("$.@type").value("MarketRatePremiumRsrc"))
                 .andExpect(jsonPath("$.marketRatePremiumId").value(21))
                 .andExpect(jsonPath("$.minTotalPremiumAmount").value(1.00))
                 .andExpect(jsonPath("$.maxTotalPremiumAmount").value(2.00))

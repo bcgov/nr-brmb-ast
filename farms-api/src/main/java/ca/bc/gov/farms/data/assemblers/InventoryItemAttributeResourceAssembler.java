@@ -10,19 +10,19 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.InventoryItemAttributeEntity;
-import ca.bc.gov.farms.data.models.InventoryItemAttributeListModel;
-import ca.bc.gov.farms.data.models.InventoryItemAttributeModel;
+import ca.bc.gov.farms.data.models.InventoryItemAttributeListRsrc;
+import ca.bc.gov.farms.data.models.InventoryItemAttributeRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class InventoryItemAttributeResourceAssembler extends BaseResourceAssembler {
 
-    public InventoryItemAttributeModel getInventoryItemAttribute(@NonNull InventoryItemAttributeEntity entity) {
+    public InventoryItemAttributeRsrc getInventoryItemAttribute(@NonNull InventoryItemAttributeEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        InventoryItemAttributeModel resource = new InventoryItemAttributeModel();
+        InventoryItemAttributeRsrc resource = new InventoryItemAttributeRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -34,21 +34,21 @@ public class InventoryItemAttributeResourceAssembler extends BaseResourceAssembl
         return resource;
     }
 
-    public InventoryItemAttributeListModel getInventoryItemAttributeList(List<InventoryItemAttributeEntity> entities) {
+    public InventoryItemAttributeListRsrc getInventoryItemAttributeList(List<InventoryItemAttributeEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        InventoryItemAttributeListModel result = null;
+        InventoryItemAttributeListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<InventoryItemAttributeModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            InventoryItemAttributeModel resource = new InventoryItemAttributeModel();
+        List<InventoryItemAttributeRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            InventoryItemAttributeRsrc resource = new InventoryItemAttributeRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getInventoryItemAttributeId(), resource, baseUri);
             return resource;
         }).collect(Collectors.toList());
 
-        result = new InventoryItemAttributeListModel();
+        result = new InventoryItemAttributeListRsrc();
         result.setInventoryItemAttributeList(resources);
 
         String eTag = getEtag(result);
@@ -59,7 +59,7 @@ public class InventoryItemAttributeResourceAssembler extends BaseResourceAssembl
         return result;
     }
 
-    public void updateInventoryItemAttribute(@NonNull InventoryItemAttributeModel resource,
+    public void updateInventoryItemAttribute(@NonNull InventoryItemAttributeRsrc resource,
             @NonNull InventoryItemAttributeEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }

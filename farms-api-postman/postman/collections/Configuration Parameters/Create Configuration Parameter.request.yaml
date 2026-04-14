@@ -1,0 +1,85 @@
+$kind: http-request
+name: Create Configuration Parameter
+url: "{{baseUrl}}/configurationParameters"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"ConfigurationParameterRsrc\",\r
+
+    \    \"parameterName\": \"TEST - test\",\r
+
+    \    \"parameterValue\": \"3\",\r
+
+    \    \"sensitiveDataInd\": \"Y\",\r
+
+    \    \"configParamTypeCode\": \"INTEGER\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"configurationParameterId\",
+      json.configurationParameterId);\r
+
+      \r
+
+      pm.test(\"Response contains @type = ConfigurationParameterRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"ConfigurationParameterRsrc\");\
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterName\");\r
+
+      \    pm.expect(json.parameterName).to.be.equal(\"TEST - test\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"parameterValue\");\r
+
+      \    pm.expect(json.parameterValue).to.be.equal(\"3\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"sensitiveDataInd\");\r
+
+      \    pm.expect(json.sensitiveDataInd).to.be.equal(\"Y\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"configParamTypeCode\");\r
+
+      \    pm.expect(json.configParamTypeCode).to.be.equal(\"INTEGER\");\r
+
+      });"
+    language: text/javascript
+order: 4498398650692495

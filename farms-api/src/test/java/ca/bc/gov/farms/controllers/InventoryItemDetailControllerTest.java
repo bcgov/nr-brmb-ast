@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ca.bc.gov.farms.data.models.InventoryItemDetailModel;
+import ca.bc.gov.farms.data.models.InventoryItemDetailRsrc;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -42,7 +42,7 @@ public class InventoryItemDetailControllerTest {
     @Order(1)
     public void testCreateInventoryItemDetail() throws Exception {
 
-        InventoryItemDetailModel resource = new InventoryItemDetailModel();
+        InventoryItemDetailRsrc resource = new InventoryItemDetailRsrc();
         resource.setProgramYear(2025);
         resource.setEligibilityInd("Y");
         resource.setLineItem(null);
@@ -59,7 +59,7 @@ public class InventoryItemDetailControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.@type").value("InventoryItemDetailModel"))
+                .andExpect(jsonPath("$.@type").value("InventoryItemDetailRsrc"))
                 .andExpect(jsonPath("$.inventoryItemDetailId").value(55361))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.eligibilityInd").value("Y"))
@@ -87,8 +87,8 @@ public class InventoryItemDetailControllerTest {
         mockMvc.perform(get("/inventoryItemDetails")
                 .param("inventoryItemCode", "73"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("InventoryItemDetailListModel"))
-                .andExpect(jsonPath("$.inventoryItemDetailList[0].@type").value("InventoryItemDetailModel"))
+                .andExpect(jsonPath("$.@type").value("InventoryItemDetailListRsrc"))
+                .andExpect(jsonPath("$.inventoryItemDetailList[0].@type").value("InventoryItemDetailRsrc"))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].inventoryItemDetailId").value(55361))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].programYear").value(2025))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].eligibilityInd").value("Y"))
@@ -115,7 +115,7 @@ public class InventoryItemDetailControllerTest {
 
         mockMvc.perform(get("/inventoryItemDetails/55361"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("InventoryItemDetailModel"))
+                .andExpect(jsonPath("$.@type").value("InventoryItemDetailRsrc"))
                 .andExpect(jsonPath("$.inventoryItemDetailId").value(55361))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.eligibilityInd").value("Y"))
@@ -140,7 +140,7 @@ public class InventoryItemDetailControllerTest {
     @Order(4)
     public void testUpdateInventoryItemDetail() throws Exception {
 
-        InventoryItemDetailModel resource = new InventoryItemDetailModel();
+        InventoryItemDetailRsrc resource = new InventoryItemDetailRsrc();
         resource.setInventoryItemDetailId(55361L);
         resource.setProgramYear(2026);
         resource.setEligibilityInd("N");
@@ -158,7 +158,7 @@ public class InventoryItemDetailControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("InventoryItemDetailModel"))
+                .andExpect(jsonPath("$.@type").value("InventoryItemDetailRsrc"))
                 .andExpect(jsonPath("$.inventoryItemDetailId").value(55361))
                 .andExpect(jsonPath("$.programYear").value(2026))
                 .andExpect(jsonPath("$.eligibilityInd").value("N"))

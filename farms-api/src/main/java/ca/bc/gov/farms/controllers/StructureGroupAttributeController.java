@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.StructureGroupAttributeModel;
+import ca.bc.gov.farms.data.models.StructureGroupAttributeRsrc;
 import ca.bc.gov.farms.services.StructureGroupAttributeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,16 +44,16 @@ public class StructureGroupAttributeController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = StructureGroupAttributeModel.class))),
+                    content = @Content(schema = @Schema(implementation = StructureGroupAttributeRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<StructureGroupAttributeModel> getStructureGroupAttributesByStructureGroupCode(
+    public ResponseEntity<StructureGroupAttributeRsrc> getStructureGroupAttributesByStructureGroupCode(
             @RequestParam String structureGroupCode) {
         log.debug(" >> getStructureGroupAttributesByStructureGroupCode: {}", structureGroupCode);
 
         try {
-            StructureGroupAttributeModel resource = structureGroupAttributeService.getStructureGroupAttributesByStructureGroupCode(structureGroupCode);
+            StructureGroupAttributeRsrc resource = structureGroupAttributeService.getStructureGroupAttributesByStructureGroupCode(structureGroupCode);
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Structure Group Attributes", e);
@@ -68,17 +68,17 @@ public class StructureGroupAttributeController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = StructureGroupAttributeModel.class))),
+                    content = @Content(schema = @Schema(implementation = StructureGroupAttributeRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<StructureGroupAttributeModel> getStructureGroupAttribute(
+    public ResponseEntity<StructureGroupAttributeRsrc> getStructureGroupAttribute(
             @PathVariable Long structureGroupAttributeId) {
         log.debug(" >> getStructureGroupAttribute: {}", structureGroupAttributeId);
 
         try {
-            StructureGroupAttributeModel resource = structureGroupAttributeService.getStructureGroupAttribute(structureGroupAttributeId);
+            StructureGroupAttributeRsrc resource = structureGroupAttributeService.getStructureGroupAttribute(structureGroupAttributeId);
             return ok(resource);
         } catch (NotFoundException e) {
             log.warn(" ### Structure Group Attribute not found: {}", structureGroupAttributeId, e);
@@ -96,18 +96,18 @@ public class StructureGroupAttributeController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created",
-                    content = @Content(schema = @Schema(implementation = StructureGroupAttributeModel.class))),
+                    content = @Content(schema = @Schema(implementation = StructureGroupAttributeRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<StructureGroupAttributeModel> createStructureGroupAttribute(
-            @Valid @RequestBody StructureGroupAttributeModel resource) {
+    public ResponseEntity<StructureGroupAttributeRsrc> createStructureGroupAttribute(
+            @Valid @RequestBody StructureGroupAttributeRsrc resource) {
         log.debug(" >> createStructureGroupAttribute");
 
         try {
-            StructureGroupAttributeModel newResource = structureGroupAttributeService.createStructureGroupAttribute(resource);
+            StructureGroupAttributeRsrc newResource = structureGroupAttributeService.createStructureGroupAttribute(resource);
             return ResponseEntity.status(201).body(newResource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while creating Structure Group Attribute", e);
@@ -122,20 +122,20 @@ public class StructureGroupAttributeController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = StructureGroupAttributeModel.class))),
+                    content = @Content(schema = @Schema(implementation = StructureGroupAttributeRsrc.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<StructureGroupAttributeModel> updateStructureGroupAttribute(
+    public ResponseEntity<StructureGroupAttributeRsrc> updateStructureGroupAttribute(
             @PathVariable Long structureGroupAttributeId,
-            @Valid @RequestBody StructureGroupAttributeModel resource) {
+            @Valid @RequestBody StructureGroupAttributeRsrc resource) {
         log.debug(" >> updateStructureGroupAttribute");
 
         try {
-            StructureGroupAttributeModel updatedResource = structureGroupAttributeService.updateStructureGroupAttribute(structureGroupAttributeId, resource);
+            StructureGroupAttributeRsrc updatedResource = structureGroupAttributeService.updateStructureGroupAttribute(structureGroupAttributeId, resource);
             return ok(updatedResource);
         } catch (NotFoundException e) {
             log.warn(" ### Structure Group Attribute not found for update: {}", structureGroupAttributeId, e);

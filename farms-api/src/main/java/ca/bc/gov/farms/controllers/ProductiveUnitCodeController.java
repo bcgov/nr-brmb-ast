@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.ProductiveUnitCodeListModel;
+import ca.bc.gov.farms.data.models.ProductiveUnitCodeListRsrc;
 import ca.bc.gov.farms.services.ProductiveUnitCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,15 +36,15 @@ public class ProductiveUnitCodeController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ProductiveUnitCodeListModel.class))),
+                    content = @Content(schema = @Schema(implementation = ProductiveUnitCodeListRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<ProductiveUnitCodeListModel> getAllProductiveUnitCodes() {
+    public ResponseEntity<ProductiveUnitCodeListRsrc> getAllProductiveUnitCodes() {
         log.debug(" >> getAllProductiveUnitCodes");
 
         try {
-            ProductiveUnitCodeListModel resources = productiveUnitCodeService.getAllProductiveUnitCodes();
+            ProductiveUnitCodeListRsrc resources = productiveUnitCodeService.getAllProductiveUnitCodes();
             return ok(resources);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Productive Unit Codes", e);

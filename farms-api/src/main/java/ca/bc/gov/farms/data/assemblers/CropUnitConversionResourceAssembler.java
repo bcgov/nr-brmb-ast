@@ -11,20 +11,20 @@ import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.ConversionUnitEntity;
 import ca.bc.gov.farms.data.entities.CropUnitConversionEntity;
-import ca.bc.gov.farms.data.models.ConversionUnitModel;
-import ca.bc.gov.farms.data.models.CropUnitConversionListModel;
-import ca.bc.gov.farms.data.models.CropUnitConversionModel;
+import ca.bc.gov.farms.data.models.ConversionUnitRsrc;
+import ca.bc.gov.farms.data.models.CropUnitConversionListRsrc;
+import ca.bc.gov.farms.data.models.CropUnitConversionRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
 
-    private void populate(CropUnitConversionEntity entity, CropUnitConversionModel resource) {
+    private void populate(CropUnitConversionEntity entity, CropUnitConversionRsrc resource) {
 
         @SuppressWarnings("null")
-        List<ConversionUnitModel> conversionUnitResources = entity.getConversionUnits().stream().map(e -> {
-            ConversionUnitModel r = new ConversionUnitModel();
+        List<ConversionUnitRsrc> conversionUnitResources = entity.getConversionUnits().stream().map(e -> {
+            ConversionUnitRsrc r = new ConversionUnitRsrc();
             BeanUtils.copyProperties(e, r);
             return r;
         }).collect(Collectors.toList());
@@ -32,11 +32,11 @@ public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
         resource.setConversionUnits(conversionUnitResources);
     }
 
-    public CropUnitConversionModel getCropUnitConversion(@NonNull CropUnitConversionEntity entity) {
+    public CropUnitConversionRsrc getCropUnitConversion(@NonNull CropUnitConversionEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        CropUnitConversionModel resource = new CropUnitConversionModel();
+        CropUnitConversionRsrc resource = new CropUnitConversionRsrc();
 
         BeanUtils.copyProperties(entity, resource);
         populate(entity, resource);
@@ -49,22 +49,22 @@ public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
         return resource;
     }
 
-    public CropUnitConversionListModel getCropUnitConversionList(List<CropUnitConversionEntity> entities) {
+    public CropUnitConversionListRsrc getCropUnitConversionList(List<CropUnitConversionEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        CropUnitConversionListModel result = null;
+        CropUnitConversionListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<CropUnitConversionModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            CropUnitConversionModel resource = new CropUnitConversionModel();
+        List<CropUnitConversionRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            CropUnitConversionRsrc resource = new CropUnitConversionRsrc();
             BeanUtils.copyProperties(entity, resource);
             populate(entity, resource);
             setSelfLink(entity.getCropUnitDefaultId(), resource, baseUri);
             return resource;
         }).collect(Collectors.toList());
 
-        result = new CropUnitConversionListModel();
+        result = new CropUnitConversionListRsrc();
         result.setCropUnitConversionList(resources);
 
         String eTag = getEtag(result);
@@ -75,7 +75,7 @@ public class CropUnitConversionResourceAssembler extends BaseResourceAssembler {
         return result;
     }
 
-    public void updateCropUnitConversion(@NonNull CropUnitConversionModel resource,
+    public void updateCropUnitConversion(@NonNull CropUnitConversionRsrc resource,
             @NonNull CropUnitConversionEntity entity) {
         BeanUtils.copyProperties(resource, entity);
 

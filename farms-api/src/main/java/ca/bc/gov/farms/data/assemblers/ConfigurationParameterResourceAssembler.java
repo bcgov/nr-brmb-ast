@@ -10,19 +10,19 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.ConfigurationParameterEntity;
-import ca.bc.gov.farms.data.models.ConfigurationParameterListModel;
-import ca.bc.gov.farms.data.models.ConfigurationParameterModel;
+import ca.bc.gov.farms.data.models.ConfigurationParameterListRsrc;
+import ca.bc.gov.farms.data.models.ConfigurationParameterRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class ConfigurationParameterResourceAssembler extends BaseResourceAssembler {
 
-    public ConfigurationParameterModel getConfigurationParameter(@NonNull ConfigurationParameterEntity entity) {
+    public ConfigurationParameterRsrc getConfigurationParameter(@NonNull ConfigurationParameterEntity entity) {
 
         URI baseUri = getBaseURI();
 
-        ConfigurationParameterModel resource = new ConfigurationParameterModel();
+        ConfigurationParameterRsrc resource = new ConfigurationParameterRsrc();
 
         BeanUtils.copyProperties(entity, resource);
 
@@ -34,21 +34,21 @@ public class ConfigurationParameterResourceAssembler extends BaseResourceAssembl
         return resource;
     }
 
-    public ConfigurationParameterListModel getConfigurationParameterList(List<ConfigurationParameterEntity> entities) {
+    public ConfigurationParameterListRsrc getConfigurationParameterList(List<ConfigurationParameterEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        ConfigurationParameterListModel result = null;
+        ConfigurationParameterListRsrc result = null;
 
         @SuppressWarnings("null")
-        List<ConfigurationParameterModel> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
-            ConfigurationParameterModel resource = new ConfigurationParameterModel();
+        List<ConfigurationParameterRsrc> resources = entities.stream().filter(Objects::nonNull).map(entity -> {
+            ConfigurationParameterRsrc resource = new ConfigurationParameterRsrc();
             BeanUtils.copyProperties(entity, resource);
             setSelfLink(entity.getConfigurationParameterId(), resource, baseUri);
             return resource;
         }).collect(Collectors.toList());
 
-        result = new ConfigurationParameterListModel();
+        result = new ConfigurationParameterListRsrc();
         result.setConfigurationParameterList(resources);
 
         String eTag = getEtag(result);
@@ -59,7 +59,7 @@ public class ConfigurationParameterResourceAssembler extends BaseResourceAssembl
         return result;
     }
 
-    public void updateConfigurationParameter(@NonNull ConfigurationParameterModel resource,
+    public void updateConfigurationParameter(@NonNull ConfigurationParameterRsrc resource,
             @NonNull ConfigurationParameterEntity entity) {
         BeanUtils.copyProperties(resource, entity);
     }

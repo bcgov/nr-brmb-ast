@@ -1,0 +1,15 @@
+$kind: http-request
+name: Import FMV
+url: "{{baseUrl}}/import/fmv/:fileName"
+method: POST
+pathVariables:
+  fileName: fmv.csv
+body:
+  type: file
+  content:
+    src: /U:/hwang/FARM/FMV Import/fmv.csv
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4465412292918557

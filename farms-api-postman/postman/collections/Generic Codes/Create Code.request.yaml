@@ -1,0 +1,96 @@
+$kind: http-request
+name: Create Code
+url: "{{baseUrl}}/codeTables/:codeTableName/codes"
+method: POST
+pathVariables:
+  - key: codeTableName
+    value: farm_municipality_codes
+    $type: ""
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"http://common.brmb.nrs.gov.bc.ca/v1/code\",\r
+
+    \    \"code\": \"1000\",\r
+
+    \    \"description\": \"Test Municipality\",\r
+
+    \    \"displayOrder\": null,\r
+
+    \    \"effectiveDate\": \"2026-04-14\",\r
+
+    \    \"expiryDate\": \"9999-12-31\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"code\", json.code);\r
+
+      \r
+
+      pm.test(\"Response contains @type =
+      http://common.brmb.nrs.gov.bc.ca/v1/code\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"http://common.brmb.nrs.gov.bc\
+      .ca/v1/code\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"code\");\r
+
+      \    pm.expect(json.code).to.be.equal(\"1000\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"description\");\r
+
+      \    pm.expect(json.description).to.be.equal(\"Test Municipality\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"displayOrder\");\r
+
+      \    pm.expect(json.displayOrder).to.be.null;\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"effectiveDate\");\r
+
+      \    pm.expect(json.effectiveDate).to.be.equal(\"2026-04-14\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"expiryDate\");\r
+
+      \    pm.expect(json.expiryDate).to.be.equal(\"9999-12-31\");\r
+
+      });"
+    language: text/javascript
+order: 4391769441119153

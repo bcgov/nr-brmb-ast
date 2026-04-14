@@ -1,0 +1,102 @@
+$kind: http-request
+name: Create Inventory Type Xref
+url: "{{baseUrl}}/inventoryTypeXrefs"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"InventoryTypeXrefRsrc\",\r
+
+    \    \"marketCommodityInd\": \"Y\",\r
+
+    \    \"inventoryItemCode\": \"73\",\r
+
+    \    \"inventoryItemDesc\": \"Strawberries\",\r
+
+    \    \"inventoryGroupCode\": \"3\",\r
+
+    \    \"inventoryGroupDesc\": \"Berries\",\r
+
+    \    \"inventoryClassCode\": \"-1\",\r
+
+    \    \"inventoryClassDesc\": \"Unknown\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.environment.set(\"agristabilityCommodityXrefId\",
+      json.agristabilityCommodityXrefId);\r
+
+      \r
+
+      pm.test(\"Response contains @type = InventoryTypeXrefRsrc\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"InventoryTypeXrefRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is inserted as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"marketCommodityInd\");\r
+
+      \    pm.expect(json.marketCommodityInd).to.be.equal(\"Y\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"73\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDesc\");\r
+
+      \    pm.expect(json.inventoryItemDesc).to.be.equal(\"Strawberries\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryGroupCode\");\r
+
+      \    pm.expect(json.inventoryGroupCode).to.be.equal(\"3\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryGroupDesc\");\r
+
+      \    pm.expect(json.inventoryGroupDesc).to.be.equal(\"Berries\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryClassCode\");\r
+
+      \    pm.expect(json.inventoryClassCode).to.be.equal(\"-1\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryClassDesc\");\r
+
+      \    pm.expect(json.inventoryClassDesc).to.be.equal(\"Unknown\");\r
+
+      });"
+    language: text/javascript
+order: 4432410186678144

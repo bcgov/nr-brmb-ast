@@ -1,0 +1,80 @@
+$kind: http-request
+name: Update Inventory Item Attribute
+url: "{{baseUrl}}/inventoryItemAttributes/:inventoryItemAttributeId"
+method: PUT
+pathVariables:
+  inventoryItemAttributeId: "{{inventoryItemAttributeId}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"InventoryItemAttributeRsrc\",\r
+
+    \    \"inventoryItemAttributeId\": {{inventoryItemAttributeId}},\r
+
+    \    \"inventoryItemCode\": \"5003\",\r
+
+    \    \"rollupInventoryItemCode\": \"7209\",\r
+
+    \    \"userEmail\": \"test.user@example.com\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.test(\"Response contains @type = InventoryItemAttributeRsrc\",
+      function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"InventoryItemAttributeRsrc\");\
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is updated as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"5003\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDesc\");\r
+
+      \    pm.expect(json.inventoryItemDesc).to.be.equal(\"Other Berries\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"rollupInventoryItemCode\");\r
+
+      \    pm.expect(json.rollupInventoryItemCode).to.be.equal(\"7209\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"rollupInventoryItemDesc\");\r
+
+      \    pm.expect(json.rollupInventoryItemDesc).to.be.equal(\"Potatoes\");\r
+
+      });"
+    language: text/javascript
+order: 4396353019607890

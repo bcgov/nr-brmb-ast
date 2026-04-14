@@ -13,8 +13,8 @@ import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.BenchmarkPerUnitResourceAssembler;
 import ca.bc.gov.farms.data.entities.BenchmarkPerUnitEntity;
 import ca.bc.gov.farms.data.mappers.BenchmarkPerUnitMapper;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitListModel;
-import ca.bc.gov.farms.data.models.BenchmarkPerUnitModel;
+import ca.bc.gov.farms.data.models.BenchmarkPerUnitListRsrc;
+import ca.bc.gov.farms.data.models.BenchmarkPerUnitRsrc;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -33,9 +33,9 @@ public class BenchmarkPerUnitService {
     @Autowired
     private Validator validator;
 
-    public BenchmarkPerUnitListModel getBenchmarkPerUnitsByProgramYear(Integer programYear) throws ServiceException {
+    public BenchmarkPerUnitListRsrc getBenchmarkPerUnitsByProgramYear(Integer programYear) throws ServiceException {
 
-        BenchmarkPerUnitListModel result = null;
+        BenchmarkPerUnitListRsrc result = null;
 
         try {
             List<BenchmarkPerUnitEntity> entities = benchmarkPerUnitMapper.fetchByProgramYear(programYear);
@@ -48,10 +48,10 @@ public class BenchmarkPerUnitService {
         return result;
     }
 
-    public BenchmarkPerUnitModel getBenchmarkPerUnit(Long benchmarkPerUnitId)
+    public BenchmarkPerUnitRsrc getBenchmarkPerUnit(Long benchmarkPerUnitId)
             throws ServiceException, NotFoundException {
 
-        BenchmarkPerUnitModel result = null;
+        BenchmarkPerUnitRsrc result = null;
 
         try {
             BenchmarkPerUnitEntity entity = benchmarkPerUnitMapper.fetch(benchmarkPerUnitId);
@@ -71,15 +71,15 @@ public class BenchmarkPerUnitService {
     }
 
     @Transactional
-    public BenchmarkPerUnitModel createBenchmarkPerUnit(BenchmarkPerUnitModel resource)
+    public BenchmarkPerUnitRsrc createBenchmarkPerUnit(BenchmarkPerUnitRsrc resource)
             throws ServiceException, ConstraintViolationException {
 
-        Set<ConstraintViolation<BenchmarkPerUnitModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<BenchmarkPerUnitRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        BenchmarkPerUnitModel result = null;
+        BenchmarkPerUnitRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {
@@ -122,15 +122,15 @@ public class BenchmarkPerUnitService {
     }
 
     @Transactional
-    public BenchmarkPerUnitModel updateBenchmarkPerUnit(Long benchmarkPerUnitId, BenchmarkPerUnitModel resource)
+    public BenchmarkPerUnitRsrc updateBenchmarkPerUnit(Long benchmarkPerUnitId, BenchmarkPerUnitRsrc resource)
             throws ServiceException, ConstraintViolationException, NotFoundException {
 
-        Set<ConstraintViolation<BenchmarkPerUnitModel>> violations = validator.validate(resource);
+        Set<ConstraintViolation<BenchmarkPerUnitRsrc>> violations = validator.validate(resource);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
 
-        BenchmarkPerUnitModel result = null;
+        BenchmarkPerUnitRsrc result = null;
         String userId = resource.getUserEmail();
 
         try {

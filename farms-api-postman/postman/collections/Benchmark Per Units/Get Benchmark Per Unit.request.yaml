@@ -1,0 +1,33 @@
+$kind: http-request
+name: Get Benchmark Per Unit
+url: "{{baseUrl}}/benchmarkPerUnits/:benchmarkPerUnitId"
+method: GET
+pathVariables:
+  benchmarkPerUnitId: "60160"
+auth:
+  credentials:
+    token: "{{access_token}}"
+  type: bearer
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Response contains @type = BenchmarkPerUnitRsrc\", function() {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"BenchmarkPerUnitRsrc\");\r
+
+      });"
+    language: text/javascript
+order: 3000

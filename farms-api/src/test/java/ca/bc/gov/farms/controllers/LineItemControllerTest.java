@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ca.bc.gov.farms.data.models.LineItemModel;
+import ca.bc.gov.farms.data.models.LineItemRsrc;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -40,7 +40,7 @@ public class LineItemControllerTest {
     @Order(1)
     public void testCreateLineItem() throws Exception {
 
-        LineItemModel resource = new LineItemModel();
+        LineItemRsrc resource = new LineItemRsrc();
         resource.setProgramYear(2025);
         resource.setLineItem(9798);
         resource.setDescription("Agricultural Contract work");
@@ -61,7 +61,7 @@ public class LineItemControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.@type").value("LineItemModel"))
+                .andExpect(jsonPath("$.@type").value("LineItemRsrc"))
                 .andExpect(jsonPath("$.lineItemId").value(39909))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.lineItem").value(9798))
@@ -88,8 +88,8 @@ public class LineItemControllerTest {
         mockMvc.perform(get("/lineItems")
                 .param("programYear", "2025"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("LineItemListModel"))
-                .andExpect(jsonPath("$.lineItemList[0].@type").value("LineItemModel"))
+                .andExpect(jsonPath("$.@type").value("LineItemListRsrc"))
+                .andExpect(jsonPath("$.lineItemList[0].@type").value("LineItemRsrc"))
                 .andExpect(jsonPath("$.lineItemList[0].lineItemId").value(39909))
                 .andExpect(jsonPath("$.lineItemList[0].programYear").value(2025))
                 .andExpect(jsonPath("$.lineItemList[0].lineItem").value(9798))
@@ -115,7 +115,7 @@ public class LineItemControllerTest {
 
         mockMvc.perform(get("/lineItems/39909"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("LineItemModel"))
+                .andExpect(jsonPath("$.@type").value("LineItemRsrc"))
                 .andExpect(jsonPath("$.lineItemId").value(39909))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.lineItem").value(9798))
@@ -139,7 +139,7 @@ public class LineItemControllerTest {
     @Order(4)
     public void testUpdateLineItem() throws Exception {
 
-        LineItemModel resource = new LineItemModel();
+        LineItemRsrc resource = new LineItemRsrc();
         resource.setLineItemId(39909L);
         resource.setProgramYear(2025);
         resource.setLineItem(9798);
@@ -161,7 +161,7 @@ public class LineItemControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("LineItemModel"))
+                .andExpect(jsonPath("$.@type").value("LineItemRsrc"))
                 .andExpect(jsonPath("$.lineItemId").value(39910))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.lineItem").value(9798))
@@ -189,8 +189,8 @@ public class LineItemControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.@type").value("LineItemListModel"))
-                .andExpect(jsonPath("$.lineItemList[0].@type").value("LineItemModel"))
+                .andExpect(jsonPath("$.@type").value("LineItemListRsrc"))
+                .andExpect(jsonPath("$.lineItemList[0].@type").value("LineItemRsrc"))
                 .andExpect(jsonPath("$.lineItemList[0].lineItemId").value(39911))
                 .andExpect(jsonPath("$.lineItemList[0].programYear").value(2026))
                 .andExpect(jsonPath("$.lineItemList[0].lineItem").value(9798))

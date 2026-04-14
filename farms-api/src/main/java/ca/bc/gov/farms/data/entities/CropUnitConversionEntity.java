@@ -1,8 +1,8 @@
 package ca.bc.gov.farms.data.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ public class CropUnitConversionEntity implements Serializable {
 
     private Integer revisionCount;
     private String createUser;
-    private Date createDate;
+    private LocalDateTime createDate;
     private String updateUser;
-    private Date updateDate;
+    private LocalDateTime updateDate;
 }

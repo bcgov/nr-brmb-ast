@@ -9,8 +9,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import ca.bc.gov.farms.data.entities.CodeEntity;
-import ca.bc.gov.farms.data.models.CodeModel;
-import ca.bc.gov.farms.data.models.CodeTableModel;
+import ca.bc.gov.farms.data.models.CodeRsrc;
+import ca.bc.gov.farms.data.models.CodeTableRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,15 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 public class CodeTableResourceAssembler extends BaseResourceAssembler {
 
     @SuppressWarnings("null")
-    public CodeTableModel getCodeTable(String tableName, List<CodeEntity> entities) {
+    public CodeTableRsrc getCodeTable(String tableName, List<CodeEntity> entities) {
 
         URI baseUri = getBaseURI();
 
-        CodeTableModel resource = new CodeTableModel();
+        CodeTableRsrc resource = new CodeTableRsrc();
         resource.setCodeTableName(tableName);
         resource.setCodeTableDescriptiveName(tableName);
         resource.setCodes(entities.stream().filter(Objects::nonNull).map(e -> {
-            CodeModel r = new CodeModel();
+            CodeRsrc r = new CodeRsrc();
             BeanUtils.copyProperties(e, r);
             return r;
         }).collect(Collectors.toList()));

@@ -1,0 +1,140 @@
+$kind: http-request
+name: Update Inventory Item Detail
+url: "{{baseUrl}}/inventoryItemDetails/:inventoryItemDetailId"
+method: PUT
+pathVariables:
+  inventoryItemDetailId: "{{inventoryItemDetailId}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"@type\": \"InventoryItemDetailRsrc\",\r
+
+    \    \"inventoryItemDetailId\": {{inventoryItemDetailId}},\r
+
+    \    \"programYear\": 2026,\r
+
+    \    \"eligibilityInd\": \"Y\",\r
+
+    \    \"lineItem\": null,\r
+
+    \    \"insurableValue\": 0.112,\r
+
+    \    \"premiumRate\": 0.1200,\r
+
+    \    \"inventoryItemCode\": \"4824\",\r
+
+    \    \"commodityTypeCode\": \"FORAGE\",\r
+
+    \    \"fruitVegTypeCode\": \"APPLE\",\r
+
+    \    \"multiStageCommdtyCode\": null,\r
+
+    \    \"userEmail\": null\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json()\r
+
+      \r
+
+      pm.test(\"Response contains @type = InventoryItemDetailRsrc\", function()
+      {\r
+
+      \    pm.expect(json).to.have.property(\"@type\");\r
+
+      \    pm.expect(json['@type']).to.be.equal(\"InventoryItemDetailRsrc\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Record is updated as is\", function() {\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"programYear\");\r
+
+      \    pm.expect(json.programYear).to.be.equal(2026);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"eligibilityInd\");\r
+
+      \    pm.expect(json.eligibilityInd).to.be.equal(\"Y\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"lineItem\");\r
+
+      \    pm.expect(json.lineItem).to.be.null;\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"insurableValue\");\r
+
+      \    pm.expect(json.insurableValue).to.be.equal(0.112);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"premiumRate\");\r
+
+      \    pm.expect(json.premiumRate).to.be.equal(0.1200);\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemCode\");\r
+
+      \    pm.expect(json.inventoryItemCode).to.be.equal(\"4824\");\r
+
+      \    pm.expect(json).to.have.property(\"inventoryItemDesc\");\r
+
+      \    pm.expect(json.inventoryItemDesc).to.be.equal(\"Apples; Gala; 2nd to
+      4th year of fruit production; medium density\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"commodityTypeCode\");\r
+
+      \    pm.expect(json.commodityTypeCode).to.be.equal(\"FORAGE\");\r
+
+      \    pm.expect(json).to.have.property(\"commodityTypeDesc\");\r
+
+      \    pm.expect(json.commodityTypeDesc).to.be.equal(\"Forage\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"fruitVegTypeCode\");\r
+
+      \    pm.expect(json.fruitVegTypeCode).to.be.equal(\"APPLE\");\r
+
+      \    pm.expect(json).to.have.property(\"fruitVegTypeDesc\");\r
+
+      \    pm.expect(json.fruitVegTypeDesc).to.be.equal(\"Apples\");\r
+
+      \r
+
+      \    pm.expect(json).to.have.property(\"multiStageCommdtyCode\");\r
+
+      \    pm.expect(json.multiStageCommdtyCode).to.be.null;\r
+
+      \    pm.expect(json).to.have.property(\"multiStageCommdtyDesc\");\r
+
+      \    pm.expect(json.multiStageCommdtyDesc).to.be.null;\r
+
+      });"
+    language: text/javascript
+order: 4409688383872143

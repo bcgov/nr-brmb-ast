@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.CodeModel;
-import ca.bc.gov.farms.data.models.CodeTableModel;
+import ca.bc.gov.farms.data.models.CodeRsrc;
+import ca.bc.gov.farms.data.models.CodeTableRsrc;
 import ca.bc.gov.farms.services.CodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,16 +38,16 @@ public class CodeTableController extends CommonController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = CodeModel.class))),
+                    content = @Content(schema = @Schema(implementation = CodeRsrc.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
     })
-    public ResponseEntity<CodeTableModel> getCodeTable(
+    public ResponseEntity<CodeTableRsrc> getCodeTable(
             @PathVariable String codeTableName) {
         log.debug(" >> getCodeTable: {}", codeTableName);
 
         try {
-            CodeTableModel resource = codeService.getCodeTable(codeTableName);
+            CodeTableRsrc resource = codeService.getCodeTable(codeTableName);
             return ok(resource);
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching Code Table", e);
