@@ -75,7 +75,11 @@ public class CrmTeamMembershipAssociationResource extends CrmResource {
 
     @JsonIgnore
     public String getAccountName() {
-        String prefix = this.azureActiveDirectoryObjectId.replace("-", "");
+        if (azureActiveDirectoryObjectId == null) {
+            return domainName;
+        }
+
+        String prefix = azureActiveDirectoryObjectId.replace("-", "");
         int prefixLength = prefix.length();
         return domainName.startsWith(prefix) ? domainName.substring(prefixLength) : domainName;
     }
