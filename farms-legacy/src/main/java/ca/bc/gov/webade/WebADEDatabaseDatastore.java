@@ -565,8 +565,10 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
 
         ArrayList<Role> rolesNonSecured = new ArrayList<>();
         try {
-            Set<String> teams = getTeamsByAccoutName().get(credentials.getAccountName());
+            String accountName = credentials.getAccountName();
+            Set<String> teams = getTeamsByAccoutName().get(accountName);
             if (teams != null) {
+                log.info("AccountName: {} Teams: {}", accountName, String.join(", ", teams));
                 for (String team : teams) {
                     switch (team) {
                         case "Customer Service Team":
