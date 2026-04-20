@@ -109,6 +109,7 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
                     for (CrmTeamMembershipAssociationResource teamMembershipAssociation : teamMembershipAssociationList
                             .getList()) {
                         String accountName = teamMembershipAssociation.getAccountName();
+                        accountName = accountName.toUpperCase();
 
                         if (!teamsByAccoutName.containsKey(accountName)) {
                             teamsByAccoutName.put(accountName, new HashSet<String>());
