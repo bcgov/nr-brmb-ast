@@ -58,6 +58,7 @@ public final class CrmConstants {
   public static final String QUEUEITEM_ENDPOINT = "queueitems";
   public static final String ROUTE_TO_ENDPOINT = "RouteTo";
   public static final String CORE_CONFIGURATION_ENDPOINT = "vsi_armsconfigurations";
+  public static final String TEAM_ENDPOINT = "teams";
 
   public static final String ACCOUNT_LOOKUP_QUERY_STRING = "?%24filter=vsi_pin%20eq%20%27{pin}%27";
   public static final String QUEUE_LOOKUP_QUERY_STRING = "?%24filter=name%20eq%20%27{name}%27";
@@ -72,6 +73,7 @@ public final class CrmConstants {
   public static final String PROGRAM_YEAR_QUERY_STRING = "?%24filter=vsi_year%20eq%20%27{year}%27";
   public static final String ENROLMENT_QUERY_STRING = "?%24filter=_vsi_programyearid_value%20eq%20%27{programyearid}%27%20and%20_vsi_participantid_value%20eq%20%27{accountid}%27";
   public static final String CORE_CONFIGURATION_QUERY_STRING = "?$select=vsi_triagepaymentthreshold&$orderby=modifiedon%20desc&$top=1";
+  public static final String TEAM_QUERY_STRING = "?$select=teamid,name,teamtype";
   // ------------------------------------------------------------------------------------------------------- //
   
   
