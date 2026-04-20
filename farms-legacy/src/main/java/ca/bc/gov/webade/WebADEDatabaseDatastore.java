@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,6 +69,8 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
     private ArrayList<Role> roles;
 
     private Map<String, Set<String>> teamsByAccoutName;
+    private Instant lastLoaded = Instant.EPOCH;
+    private static final Duration TTL = Duration.ofMinutes(5);
 
     public WebADEDatabaseDatastore() {
         try (InputStream is = WebADEDatabaseDatastore.class
@@ -80,8 +84,12 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
         }
     }
 
+    private boolean isExpired() {
+        return Instant.now().isAfter(lastLoaded.plus(TTL));
+    }
+
     private Map<String, Set<String>> getTeamsByAccoutName() throws ServiceException, IOException {
-        if (teamsByAccoutName != null) {
+        if (teamsByAccoutName != null && !isExpired()) {
             return teamsByAccoutName;
         }
 
@@ -111,6 +119,8 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
                 }
             }
         }
+
+        lastLoaded = Instant.now();
 
         return teamsByAccoutName;
     }
