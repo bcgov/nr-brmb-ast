@@ -10,6 +10,7 @@
  */
 package ca.bc.gov.srm.farm.crm.resource;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -70,6 +71,13 @@ public class CrmTeamMembershipAssociationResource extends CrmResource {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    @JsonIgnore
+    public String getAccountName() {
+        String prefix = this.azureActiveDirectoryObjectId.replace("-", "");
+        int prefixLength = prefix.length();
+        return domainName.startsWith(prefix) ? domainName.substring(prefixLength) : domainName;
     }
 
     @Override
