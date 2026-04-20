@@ -567,8 +567,9 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
         try {
             String accountName = credentials.getAccountName();
             Set<String> teams = getTeamsByAccoutName().get(accountName);
+            log.info("AccountName: {}", accountName);
             if (teams != null) {
-                log.info("AccountName: {} Teams: {}", accountName, String.join(", ", teams));
+                log.info("Teams: [{}]", String.join(", ", teams));
                 for (String team : teams) {
                     switch (team) {
                         case "Customer Service Team":
@@ -594,6 +595,8 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
                             break;
                     }
                 }
+            } else {
+                log.info("Teams: []");
             }
         } catch (ServiceException | IOException ex) {
             throw new WebADEException(ex);
