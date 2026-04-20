@@ -93,6 +93,14 @@ public class CrmConfigurationUtil {
     return result;
   }
 
+  public String getTeamMembershipAssociationUrl(String teamId) {
+    String endpointUrl = getUrl(TEAM_MEMBERSHIP_ASSOCIATION_ENDPOINT);
+    endpointUrl = endpointUrl.replace("{teamId}", teamId);
+
+    String result = endpointUrl + TEAM_MEMBERSHIP_ASSOCIATION_QUERY_STRING;
+    return result;
+  }
+
   public String getAccountLookupUrl(Integer participantPin) {
     String endpointUrl = getUrl(ACCOUNT_ENDPOINT);
     

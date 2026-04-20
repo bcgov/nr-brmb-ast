@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * @author hwang
  */
-public class CrmTeamMembershipResource {
+public class CrmTeamMembershipAssociationResource extends CrmResource {
 
     @JsonProperty("ownerid")
     private String ownerId;
