@@ -49,6 +49,8 @@ import ca.bc.gov.srm.farm.crm.resource.CrmRouteToQueueItemResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmRouteToQueueResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmRouteToTargetResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmTaskResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmTeamMembershipAssociationResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmTeamResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmValidationErrorResource;
 import ca.bc.gov.srm.farm.crm.transform.AccountTransformer;
 import ca.bc.gov.srm.farm.crm.transform.AccountUpdateTransformer;
@@ -387,6 +389,20 @@ public class CrmRestApiDao extends RestApiDao {
     String url = crmConfig.getValidationErrorLookupUrl(submissionGuid, activeOnly);
     
     return getListResource(url, CrmValidationErrorResource.class);
+  }
+
+  public CrmListResource<CrmTeamResource> getTeams() throws ServiceException, IOException {
+
+    String url = crmConfig.getTeamUrl();
+
+    return getListResource(url, CrmTeamResource.class);
+  }
+
+  public CrmListResource<CrmTeamMembershipAssociationResource> getTeamMembershipAssociations(String teamId) throws ServiceException, IOException {
+
+    String url = crmConfig.getTeamMembershipAssociationUrl(teamId);
+
+    return getListResource(url, CrmTeamMembershipAssociationResource.class);
   }
 
   public <T> T uploadFileToNote(T accountEntity) throws ServiceException {

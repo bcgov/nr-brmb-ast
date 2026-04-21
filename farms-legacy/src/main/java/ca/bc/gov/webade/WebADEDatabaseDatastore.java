@@ -4,17 +4,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.bc.gov.srm.farm.crm.CrmRestApiDao;
+import ca.bc.gov.srm.farm.crm.resource.CrmListResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmTeamMembershipAssociationResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmTeamResource;
+import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.util.JsonUtils;
 import ca.bc.gov.webade.config.ApplicationConfig;
 import ca.bc.gov.webade.database.DatabaseUserCredentials;
@@ -59,6 +68,10 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
     private ApplicationConfig appConfig;
     private ArrayList<Role> roles;
 
+    private Map<String, Set<String>> teamsByAccoutName;
+    private Instant lastLoaded = Instant.EPOCH;
+    private static final Duration TTL = Duration.ofMinutes(5);
+
     public WebADEDatabaseDatastore() {
         try (InputStream is = WebADEDatabaseDatastore.class
                 .getResourceAsStream("/webadeConfig/applicationConfiguration.json")) {
@@ -69,6 +82,48 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
         } catch (IOException e) {
             throw new RuntimeException("Failed to load applicationConfiguration.json", e);
         }
+    }
+
+    private boolean isExpired() {
+        return Instant.now().isAfter(lastLoaded.plus(TTL));
+    }
+
+    private Map<String, Set<String>> getTeamsByAccoutName() throws ServiceException, IOException {
+        if (teamsByAccoutName != null && !isExpired()) {
+            return teamsByAccoutName;
+        }
+
+        teamsByAccoutName = new HashMap<>();
+        CrmRestApiDao crmDao = new CrmRestApiDao();
+        CrmListResource<CrmTeamResource> teamList = crmDao.getTeams();
+        if (teamList != null) {
+
+            for (CrmTeamResource team : teamList.getList()) {
+                String teamId = team.getTeamId();
+                String teamName = team.getName();
+
+                CrmListResource<CrmTeamMembershipAssociationResource> teamMembershipAssociationList = crmDao
+                        .getTeamMembershipAssociations(teamId);
+                if (teamMembershipAssociationList != null) {
+
+                    for (CrmTeamMembershipAssociationResource teamMembershipAssociation : teamMembershipAssociationList
+                            .getList()) {
+                        String accountName = teamMembershipAssociation.getAccountName();
+                        accountName = accountName.toUpperCase();
+
+                        if (!teamsByAccoutName.containsKey(accountName)) {
+                            teamsByAccoutName.put(accountName, new HashSet<String>());
+                        }
+                        Set<String> teams = teamsByAccoutName.get(accountName);
+                        teams.add(teamName);
+                    }
+                }
+            }
+        }
+
+        lastLoaded = Instant.now();
+
+        return teamsByAccoutName;
     }
 
     void init(String applicationCode) throws WebADEException {
@@ -509,101 +564,45 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
             roleMap.put(role.getName(), role);
         }
 
-        // build user role map
-        Map<Long, ArrayList<Role>> userRoleMap = new HashMap<Long, ArrayList<Role>>() {
-            {
-                put(6L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("ADMIN"));
-                        add(roleMap.get("TIP_REPORT_ADMIN"));
+        ArrayList<Role> rolesNonSecured = new ArrayList<>();
+        try {
+            String accountName = credentials.getAccountName();
+            Set<String> teams = getTeamsByAccoutName().get(accountName);
+            log.info("AccountName: {}", accountName);
+            if (teams != null) {
+                log.info("Teams: [{}]", String.join(", ", teams));
+                for (String team : teams) {
+                    switch (team) {
+                        case "Customer Service Team":
+                            rolesNonSecured.add(roleMap.get("ADMIN"));
+                            break;
+                        case "Enrolment Admin Team":
+                            rolesNonSecured.add(roleMap.get("ADMIN"));
+                            break;
+                        case "Verification Specialist Team Members":
+                            rolesNonSecured.add(roleMap.get("SENIOR_VERIFIER"));
+                            break;
+                        case "Verifier Team Member":
+                            rolesNonSecured.add(roleMap.get("VERIFIER"));
+                            break;
+                        case "FARM Staff":
+                            rolesNonSecured.add(roleMap.get("STAFF"));
+                            break;
+                        case "FARM Program Analyst":
+                            rolesNonSecured.add(roleMap.get("PROGRAM_ANALYST"));
+                            break;
+                        case "FARM Data Admin":
+                            rolesNonSecured.add(roleMap.get("DATA_ADMIN"));
+                            break;
                     }
-                });
-                put(7L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("INBOX_VIEWER"));
-                        add(roleMap.get("SENIOR_VERIFIER"));
-                    }
-                });
-                put(8L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("VERIFIER"));
-                        add(roleMap.get("CLIENT"));
-                        add(roleMap.get("TIP_REPORT_ADMIN"));
-                        add(roleMap.get("INBOX_VIEWER"));
-                        add(roleMap.get("SENIOR_VERIFIER"));
-                    }
-                });
-                put(9L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("VERIFIER"));
-                        add(roleMap.get("INBOX_VIEWER"));
-                    }
-                });
-                put(10L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("VERIFIER"));
-                        add(roleMap.get("INBOX_VIEWER"));
-                    }
-                });
-                put(11L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("TIP_REPORT_USER"));
-                    }
-                });
-                put(12L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("PROGRAM_ANALYST"));
-                        add(roleMap.get("NEW_PARTICIPANT_ADMIN"));
-                    }
-                });
-                put(13L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("INBOX_VIEWER"));
-                        add(roleMap.get("DATA_ADMIN"));
-                    }
-                });
-                put(14L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("STAFF"));
-                        add(roleMap.get("INBOX_VIEWER"));
-                    }
-                });
-                put(15L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("STAFF"));
-                        add(roleMap.get("INBOX_VIEWER"));
-                    }
-                });
-                put(17L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("TIP_REPORT_ADMIN"));
-                    }
-                });
-                put(30L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("STAFF"));
-                    }
-                });
-                put(503L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("CLIENT"));
-                    }
-                });
-                put(504L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("CLIENT"));
-                    }
-                });
-                put(1000L, new ArrayList<Role>() {
-                    {
-                        add(roleMap.get("ADMIN"));
-                        add(roleMap.get("TIP_REPORT_ADMIN"));
-                    }
-                });
+                }
+            } else {
+                log.info("Teams: []");
             }
-        };
+        } catch (ServiceException | IOException ex) {
+            throw new WebADEException(ex);
+        }
 
-        ArrayList<Role> rolesNonSecured = userRoleMap.get(credentials.getEUserId());
         HashMap<Organization, ArrayList<Role>> userRolesWithOrgs = new HashMap<Organization, ArrayList<Role>>();
         WebADEUserPermissions auths = new DefaultWebADEUserPermissions(
                 credentials, rolesNonSecured, userRolesWithOrgs);
