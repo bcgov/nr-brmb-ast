@@ -138,10 +138,6 @@ ALTER TABLE farms.farm_import_class_codes
 ALTER COLUMN who_created TYPE varchar(256),
 ALTER COLUMN who_updated TYPE varchar(256);
 
-ALTER TABLE farms.farm_import_logs
-ALTER COLUMN who_created TYPE varchar(256),
-ALTER COLUMN who_updated TYPE varchar(256);
-
 ALTER TABLE farms.farm_import_state_codes
 ALTER COLUMN who_created TYPE varchar(256),
 ALTER COLUMN who_updated TYPE varchar(256);
