@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.data.mappers.EnrolmentCalculationMapper">
+
+    <select id="fetchLatestEnwByPinAndProgramYear" resultType="EnrolmentCalculationEntity">
+        select ac.participant_pin,
+               py.year as program_year,
+               coalesce(nullif(p.corp_name, ''), nullif(trim(concat_ws(' ', p.first_name, p.last_name)), '')) as producer_name,
+               sc.agristability_scenario_id,
+               sc.scenario_number,
+               sc.scenario_state_code,
+               sc.scenario_category_code,
+               sc.scenario_class_code,
+               py.assigned_to_userid as assigned_to_user_id,
+               py.assigned_to_user_guid,
+               (sc.combined_farm_number is not null) as in_combined_farm,
+               se.scenario_enrolment_id,
+               se.enrolment_year,
+               se.enrolment_fee,
+               se.contribution_margin,
+               se.benefit_calculated_ind,
+               se.proxy_margins_calculated_ind,
+               se.manual_calculated_ind,
+               se.has_productive_units_ind,
+               se.has_benchmark_per_units_ind,
+               se.benefit_enrolment_fee,
+               se.benefit_contribution_margin,
+               se.proxy_enrolment_fee,
+               se.proxy_contribution_margin,
+               se.manual_enrolment_fee,
+               se.manual_contribution_margin,
+               se.margin_year_minus_2,
+               se.margin_year_minus_3,
+               se.margin_year_minus_4,
+               se.margin_year_minus_5,
+               se.margin_year_minus_6,
+               se.margin_year_minus_2_ind,
+               se.margin_year_minus_3_ind,
+               se.margin_year_minus_4_ind,
+               se.margin_year_minus_5_ind,
+               se.margin_year_minus_6_ind,
+               se.benefit_margin_year_minus_2,
+               se.benefit_margin_year_minus_3,
+               se.benefit_margin_year_minus_4,
+               se.benefit_margin_year_minus_5,
+               se.benefit_margin_year_minus_6,
+               se.benefit_margn_year_minus_2_ind,
+               se.benefit_margn_year_minus_3_ind,
+               se.benefit_margn_year_minus_4_ind,
+               se.benefit_margn_year_minus_5_ind,
+               se.benefit_margn_year_minus_6_ind,
+               se.proxy_margin_year_minus_2,
+               se.proxy_margin_year_minus_3,
+               se.proxy_margin_year_minus_4,
+               se.manual_margin_year_minus_2,
+               se.manual_margin_year_minus_3,
+               se.manual_margin_year_minus_4,
+               se.combined_farm_percent,
+               se.enrolment_calc_type_code,
+               se.revision_count
+        from farms.farm_agristability_clients ac
+        join farms.farm_program_years py
+          on py.agristability_client_id = ac.agristability_client_id
+        join farms.farm_program_year_versions pyv
+          on pyv.program_year_id = py.program_year_id
+        join farms.farm_agristability_scenarios sc
+          on sc.program_year_version_id = pyv.program_year_version_id
+        join farms.farm_scenario_enrolments se
+          on se.agristability_scenario_id = sc.agristability_scenario_id
+        left join farms.farm_persons p
+          on p.person_id = ac.person_id
+        where ac.participant_pin = #{participantPin}
+          and py.year = #{programYear}
+          and sc.scenario_category_code = 'ENW'
+          and sc.scenario_class_code = 'USER'
+        order by case when sc.scenario_state_code in ('IP', 'EN_COMP') then 0 else 1 end,
+                 sc.scenario_number desc
+        limit 1
+    </select>
+</mapper>
