@@ -1,0 +1,10 @@
+name: TEST
+values:
+  - key: baseUrl
+    value: 'https://farms-api-route-dev-e980f4-dev.apps.silver.devops.gov.bc.ca/farms-api/v1'
+  - key: loginUrl
+    value: 'https://login.microsoftonline.com'
+  - key: vaultPrefix
+    value: farms-api-dev
+  - key: access_token
+    value: ''
