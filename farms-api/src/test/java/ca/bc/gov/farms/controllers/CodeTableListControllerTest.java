@@ -58,13 +58,11 @@ public class CodeTableListControllerTest {
                 .andExpect(jsonPath("$.codeTableList[25].codeTableName").value("farm_scenario_category_codes"))
                 .andExpect(jsonPath("$.codeTableList[26].codeTableName").value("farm_scenario_class_codes"))
                 .andExpect(jsonPath("$.codeTableList[27].codeTableName").value("farm_scenario_state_codes"))
-                .andExpect(jsonPath("$.codeTableList[28].codeTableName").value("farm_sector_codes"))
-                .andExpect(jsonPath("$.codeTableList[29].codeTableName").value("farm_sector_detail_codes"))
-                .andExpect(jsonPath("$.codeTableList[30].codeTableName").value("farm_structural_change_codes"))
-                .andExpect(jsonPath("$.codeTableList[31].codeTableName").value("farm_structure_group_codes"))
-                .andExpect(jsonPath("$.codeTableList[32].codeTableName").value("farm_subscription_status_codes"))
-                .andExpect(jsonPath("$.codeTableList[33].codeTableName").value("farm_tip_rating_codes"))
-                .andExpect(jsonPath("$.codeTableList[34].codeTableName").value("farm_triage_queue_codes"));
+                .andExpect(jsonPath("$.codeTableList[28].codeTableName").value("farm_structural_change_codes"))
+                .andExpect(jsonPath("$.codeTableList[29].codeTableName").value("farm_structure_group_codes"))
+                .andExpect(jsonPath("$.codeTableList[30].codeTableName").value("farm_subscription_status_codes"))
+                .andExpect(jsonPath("$.codeTableList[31].codeTableName").value("farm_tip_rating_codes"))
+                .andExpect(jsonPath("$.codeTableList[32].codeTableName").value("farm_triage_queue_codes"));
 
     }
 }

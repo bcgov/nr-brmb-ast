@@ -67,8 +67,6 @@ public class CodeService {
             put("farm_scenario_category_codes", "scenario_category_code");
             put("farm_scenario_class_codes", "scenario_class_code");
             put("farm_scenario_state_codes", "scenario_state_code");
-            put("farm_sector_codes", "sector_code");
-            put("farm_sector_detail_codes", "sector_detail_code");
             put("farm_structural_change_codes", "structural_change_code");
             put("farm_structure_group_codes", "structure_group_code");
             put("farm_subscription_status_codes", "subscription_status_code");

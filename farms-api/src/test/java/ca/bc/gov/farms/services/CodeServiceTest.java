@@ -112,7 +112,7 @@ public class CodeServiceTest {
 
         assertThat(resource.getCodeTableList()).isNotNull();
         assertThat(resource.getCodeTableList()).isNotEmpty();
-        assertThat(resource.getCodeTableList().size()).isEqualTo(35);
+        assertThat(resource.getCodeTableList().size()).isEqualTo(33);
         assertThat(resource.getCodeTableList().get(0).getCodeTableName()).isEqualTo("farm_chef_form_type_codes");
         assertThat(resource.getCodeTableList().get(1).getCodeTableName()).isEqualTo("farm_chef_submssn_status_codes");
         assertThat(resource.getCodeTableList().get(2).getCodeTableName()).isEqualTo("farm_commodity_type_codes");
@@ -141,13 +141,11 @@ public class CodeServiceTest {
         assertThat(resource.getCodeTableList().get(25).getCodeTableName()).isEqualTo("farm_scenario_category_codes");
         assertThat(resource.getCodeTableList().get(26).getCodeTableName()).isEqualTo("farm_scenario_class_codes");
         assertThat(resource.getCodeTableList().get(27).getCodeTableName()).isEqualTo("farm_scenario_state_codes");
-        assertThat(resource.getCodeTableList().get(28).getCodeTableName()).isEqualTo("farm_sector_codes");
-        assertThat(resource.getCodeTableList().get(29).getCodeTableName()).isEqualTo("farm_sector_detail_codes");
-        assertThat(resource.getCodeTableList().get(30).getCodeTableName()).isEqualTo("farm_structural_change_codes");
-        assertThat(resource.getCodeTableList().get(31).getCodeTableName()).isEqualTo("farm_structure_group_codes");
-        assertThat(resource.getCodeTableList().get(32).getCodeTableName()).isEqualTo("farm_subscription_status_codes");
-        assertThat(resource.getCodeTableList().get(33).getCodeTableName()).isEqualTo("farm_tip_rating_codes");
-        assertThat(resource.getCodeTableList().get(34).getCodeTableName()).isEqualTo("farm_triage_queue_codes");
+        assertThat(resource.getCodeTableList().get(28).getCodeTableName()).isEqualTo("farm_structural_change_codes");
+        assertThat(resource.getCodeTableList().get(29).getCodeTableName()).isEqualTo("farm_structure_group_codes");
+        assertThat(resource.getCodeTableList().get(30).getCodeTableName()).isEqualTo("farm_subscription_status_codes");
+        assertThat(resource.getCodeTableList().get(31).getCodeTableName()).isEqualTo("farm_tip_rating_codes");
+        assertThat(resource.getCodeTableList().get(32).getCodeTableName()).isEqualTo("farm_triage_queue_codes");
     }
 
     @Test
