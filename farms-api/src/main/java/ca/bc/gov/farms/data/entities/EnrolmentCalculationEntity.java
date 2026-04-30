@@ -2,6 +2,8 @@ package ca.bc.gov.farms.data.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +29,7 @@ public class EnrolmentCalculationEntity implements Serializable {
     private String assignedToUserId;
     private String assignedToUserGuid;
     private Boolean inCombinedFarm;
+    private BigDecimal benefitCombinedFarmPercent;
 
     private Long scenarioEnrolmentId;
     private Integer enrolmentYear;
@@ -72,4 +75,10 @@ public class EnrolmentCalculationEntity implements Serializable {
     private BigDecimal combinedFarmPercent;
     private String enrolmentCalcTypeCode;
     private Integer revisionCount;
+
+    private BigDecimal productiveValueYearMinus2;
+    private BigDecimal productiveValueYearMinus3;
+    private BigDecimal productiveValueYearMinus4;
+    private List<EnrolmentCalculationProductiveUnitEntity> productiveUnits;
+    private List<String> benefitCalculationErrors;
 }

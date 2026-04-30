@@ -1,17 +1,23 @@
 package ca.bc.gov.farms.data.assemblers;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import ca.bc.gov.brmb.common.rest.resource.RelLink;
+import ca.bc.gov.brmb.common.rest.resource.types.BaseResourceTypes;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationEntity;
+import ca.bc.gov.farms.data.entities.EnrolmentCalculationProductiveUnitEntity;
 import ca.bc.gov.farms.data.models.EnrolmentCalculationRsrc;
 import ca.bc.gov.farms.data.models.EnwEnrolmentRsrc;
+import ca.bc.gov.farms.data.models.EnwProductiveUnitRsrc;
+import ca.bc.gov.farms.data.models.EnwProductiveValueRsrc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,8 +32,6 @@ public class EnrolmentCalculationResourceAssembler extends BaseResourceAssembler
 
     public EnrolmentCalculationRsrc getEnrolmentCalculation(@NonNull EnrolmentCalculationEntity entity) {
 
-        URI baseUri = getBaseURI();
-
         EnrolmentCalculationRsrc resource = EnrolmentCalculationRsrc.builder()
                 .participantPin(entity.getParticipantPin())
                 .programYear(entity.getProgramYear())
@@ -40,15 +44,22 @@ public class EnrolmentCalculationResourceAssembler extends BaseResourceAssembler
                 .assignedToUserId(entity.getAssignedToUserId())
                 .assignedToUserGuid(entity.getAssignedToUserGuid())
                 .editable(IN_PROGRESS.equals(entity.getScenarioStateCode()) && entity.getAssignedToUserId() != null)
-                .benefitCalculationErrors(Collections.emptyList())
+                .benefitCalculationErrors(entity.getBenefitCalculationErrors() == null
+                        ? Collections.emptyList()
+                        : entity.getBenefitCalculationErrors())
                 .enwEnrolment(getEnwEnrolment(entity))
                 .build();
 
         String eTag = getEtag(resource);
         resource.setETag(eTag);
-        setSelfLink(resource, baseUri);
+        setCalculationSelfLink(resource);
 
         return resource;
+    }
+
+    private void setCalculationSelfLink(EnrolmentCalculationRsrc resource) {
+        String selfUri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
+        resource.getLinks().add(new RelLink(BaseResourceTypes.SELF, selfUri, "GET"));
     }
 
     private EnwEnrolmentRsrc getEnwEnrolment(EnrolmentCalculationEntity entity) {
@@ -70,10 +81,13 @@ public class EnrolmentCalculationResourceAssembler extends BaseResourceAssembler
                 .enrolmentFeeMinimum(MIN_ENROLMENT_FEE)
                 .enrolmentFeeCalculationFactor(getEnrolmentFeeCalculationFactor(entity.getEnrolmentYear()))
                 .benefitMarginYears(getBenefitMarginYears(entity.getProgramYear()))
+                .productiveValueYearMinus2(entity.getProductiveValueYearMinus2())
+                .productiveValueYearMinus3(entity.getProductiveValueYearMinus3())
+                .productiveValueYearMinus4(entity.getProductiveValueYearMinus4())
                 .proxyMarginYears(getProxyMarginYears(entity.getProgramYear()))
-                .proxyMargins(Arrays.asList(entity.getProxyMarginYearMinus2(),
-                        entity.getProxyMarginYearMinus3(), entity.getProxyMarginYearMinus4()))
-                .enwProductiveUnits(Collections.emptyList())
+                .proxyMargins(Arrays.asList(entity.getProductiveValueYearMinus4(),
+                        entity.getProductiveValueYearMinus3(), entity.getProductiveValueYearMinus2()))
+                .enwProductiveUnits(getProductiveUnits(entity))
                 .inCombinedFarm(entity.getInCombinedFarm())
                 .benefitEnrolmentFee(entity.getBenefitEnrolmentFee())
                 .benefitContributionMargin(entity.getBenefitContributionMargin())
@@ -110,6 +124,35 @@ public class EnrolmentCalculationResourceAssembler extends BaseResourceAssembler
                 .combinedFarmPercent(entity.getCombinedFarmPercent())
                 .enrolmentCalculationTypeCode(entity.getEnrolmentCalcTypeCode())
                 .revisionCount(entity.getRevisionCount())
+                .build();
+    }
+
+    private List<EnwProductiveUnitRsrc> getProductiveUnits(EnrolmentCalculationEntity entity) {
+        if (entity.getProductiveUnits() == null || !Boolean.TRUE.equals(toBoolean(entity.getHasBenchmarkPerUnitsInd()))) {
+            return Collections.emptyList();
+        }
+
+        return entity.getProductiveUnits().stream()
+                .map(this::getProductiveUnit)
+                .toList();
+    }
+
+    private EnwProductiveUnitRsrc getProductiveUnit(EnrolmentCalculationProductiveUnitEntity entity) {
+        return EnwProductiveUnitRsrc.builder()
+                .code(entity.getCode())
+                .description(entity.getDescription())
+                .productiveCapacity(entity.getProductiveCapacity())
+                .productiveValues(Arrays.asList(
+                        getProductiveValue(entity.getBpuMarginYearMinus4(), entity.getProductiveValueYearMinus4()),
+                        getProductiveValue(entity.getBpuMarginYearMinus3(), entity.getProductiveValueYearMinus3()),
+                        getProductiveValue(entity.getBpuMarginYearMinus2(), entity.getProductiveValueYearMinus2())))
+                .build();
+    }
+
+    private EnwProductiveValueRsrc getProductiveValue(BigDecimal bpuMargin, BigDecimal productiveValue) {
+        return EnwProductiveValueRsrc.builder()
+                .bpuMargin(bpuMargin)
+                .productiveValue(productiveValue)
                 .build();
     }
 
