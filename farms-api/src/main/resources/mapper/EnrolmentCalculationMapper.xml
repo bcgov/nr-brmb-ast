@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.data.mappers.EnrolmentCalculationMapper">
+
+    <sql id="enrolmentCalculationColumns">
+        ac.participant_pin,
+        py.year as program_year,
+        coalesce(nullif(p.corp_name, ''), nullif(trim(concat_ws(' ', p.first_name, p.last_name)), '')) as producer_name,
+        sc.agristability_scenario_id,
+        sc.scenario_number,
+        sc.scenario_state_code,
+        sc.scenario_category_code,
+        sc.scenario_class_code,
+        py.assigned_to_userid as assigned_to_user_id,
+        py.assigned_to_user_guid,
+        (sc.combined_farm_number is not null) as in_combined_farm,
+        acl.applied_benefit_percent as benefit_combined_farm_percent,
+        se.scenario_enrolment_id,
+        se.enrolment_year,
+        se.enrolment_fee,
+        se.contribution_margin,
+        se.benefit_calculated_ind,
+        se.proxy_margins_calculated_ind,
+        se.manual_calculated_ind,
+        se.has_productive_units_ind,
+        se.has_benchmark_per_units_ind,
+        se.benefit_enrolment_fee,
+        se.benefit_contribution_margin,
+        se.proxy_enrolment_fee,
+        se.proxy_contribution_margin,
+        se.manual_enrolment_fee,
+        se.manual_contribution_margin,
+        se.margin_year_minus_2,
+        se.margin_year_minus_3,
+        se.margin_year_minus_4,
+        se.margin_year_minus_5,
+        se.margin_year_minus_6,
+        se.margin_year_minus_2_ind,
+        se.margin_year_minus_3_ind,
+        se.margin_year_minus_4_ind,
+        se.margin_year_minus_5_ind,
+        se.margin_year_minus_6_ind,
+        se.benefit_margin_year_minus_2,
+        se.benefit_margin_year_minus_3,
+        se.benefit_margin_year_minus_4,
+        se.benefit_margin_year_minus_5,
+        se.benefit_margin_year_minus_6,
+        se.benefit_margn_year_minus_2_ind,
+        se.benefit_margn_year_minus_3_ind,
+        se.benefit_margn_year_minus_4_ind,
+        se.benefit_margn_year_minus_5_ind,
+        se.benefit_margn_year_minus_6_ind,
+        se.proxy_margin_year_minus_2,
+        se.proxy_margin_year_minus_3,
+        se.proxy_margin_year_minus_4,
+        se.manual_margin_year_minus_2,
+        se.manual_margin_year_minus_3,
+        se.manual_margin_year_minus_4,
+        se.combined_farm_percent,
+        se.enrolment_calc_type_code,
+        se.revision_count
+    </sql>
+
+    <select id="fetchLatestEnwByPinAndProgramYear" resultType="EnrolmentCalculationEntity">
+        select <include refid="enrolmentCalculationColumns"/>
+        from farms.farm_agristability_clients ac
+        join farms.farm_program_years py
+          on py.agristability_client_id = ac.agristability_client_id
+        join farms.farm_program_year_versions pyv
+          on pyv.program_year_id = py.program_year_id
+        join farms.farm_agristability_scenarios sc
+          on sc.program_year_version_id = pyv.program_year_version_id
+        left join farms.farm_scenario_enrolments se
+          on se.agristability_scenario_id = sc.agristability_scenario_id
+        left join farms.farm_agristability_claims acl
+          on acl.agristability_scenario_id = sc.agristability_scenario_id
+        left join farms.farm_persons p
+          on p.person_id = ac.person_id
+        where ac.participant_pin = #{participantPin}
+          and py.year = #{programYear}
+          and sc.scenario_category_code = 'ENW'
+          and sc.scenario_class_code = 'USER'
+        order by sc.scenario_number desc
+        limit 1
+    </select>
+
+    <select id="fetchBenefitMargins" resultType="EnrolmentCalculationMarginEntity">
+        with scenario_years as (
+            select sc.agristability_scenario_id,
+                   py.year as reference_year
+            from farms.farm_agristability_scenarios sc
+            join farms.farm_program_year_versions pyv
+              on pyv.program_year_version_id = sc.program_year_version_id
+            join farms.farm_program_years py
+              on py.program_year_id = pyv.program_year_id
+            where sc.agristability_scenario_id = #{agristabilityScenarioId}
+
+            union
+
+            select ref_sc.agristability_scenario_id,
+                   ref_py.year as reference_year
+            from farms.farm_reference_scenarios rs
+            join farms.farm_agristability_scenarios ref_sc
+              on ref_sc.agristability_scenario_id = rs.agristability_scenario_id
+            join farms.farm_program_year_versions ref_pyv
+              on ref_pyv.program_year_version_id = ref_sc.program_year_version_id
+            join farms.farm_program_years ref_py
+              on ref_py.program_year_id = ref_pyv.program_year_id
+            where rs.for_agristability_scenario_id = #{agristabilityScenarioId}
+        ),
+        productive_unit_flags as (
+            select sy.agristability_scenario_id,
+                   case when count(puc.productve_unit_capacity_id) filter (
+                        where coalesce(puc.productive_capacity_amount, 0) &lt;&gt; 0
+                   ) &gt; 0 then 'Y' else 'N' end as has_productive_units_ind
+            from scenario_years sy
+            left join farms.farm_productve_unit_capacities puc
+              on puc.agristability_scenario_id = sy.agristability_scenario_id
+            group by sy.agristability_scenario_id
+        )
+        select sy.reference_year,
+               bct.production_marg_accr_adjs as production_margin_accrual_adjustments,
+               bct.production_marg_aft_str_changs as production_margin_after_structural_changes,
+               bct.total_allowable_income,
+               bct.total_unallowable_expenses,
+               puf.has_productive_units_ind
+        from scenario_years sy
+        join farms.farm_benefit_calc_totals bct
+          on bct.agristability_scenario_id = sy.agristability_scenario_id
+        left join productive_unit_flags puf
+          on puf.agristability_scenario_id = sy.agristability_scenario_id
+        order by sy.reference_year
+    </select>
+
+    <select id="fetchProductiveUnits" resultType="EnrolmentCalculationProductiveUnitEntity">
+        with productive_units as (
+            select puc.inventory_item_code,
+                   puc.structure_group_code,
+                   coalesce(puc.inventory_item_code, puc.structure_group_code) as code,
+                   coalesce(iic.description, sgc.description) as description,
+                   sum(puc.productive_capacity_amount) as productive_capacity
+            from farms.farm_productve_unit_capacities puc
+            left join farms.farm_inventory_item_codes iic
+              on iic.inventory_item_code = puc.inventory_item_code
+            left join farms.farm_structure_group_codes sgc
+              on sgc.structure_group_code = puc.structure_group_code
+            where puc.agristability_scenario_id = #{agristabilityScenarioId}
+              and coalesce(puc.productive_capacity_amount, 0) &lt;&gt; 0
+            group by puc.inventory_item_code,
+                     puc.structure_group_code,
+                     coalesce(puc.inventory_item_code, puc.structure_group_code),
+                     coalesce(iic.description, sgc.description)
+        ),
+        bpu_leads as (
+            select sy.reference_year,
+                   coalesce(bct.bpu_lead_ind, 'Y') as bpu_lead_ind
+            from (
+                select sc.agristability_scenario_id,
+                       py.year as reference_year
+                from farms.farm_agristability_scenarios sc
+                join farms.farm_program_year_versions pyv
+                  on pyv.program_year_version_id = sc.program_year_version_id
+                join farms.farm_program_years py
+                  on py.program_year_id = pyv.program_year_id
+                where sc.agristability_scenario_id = #{agristabilityScenarioId}
+
+                union
+
+                select ref_sc.agristability_scenario_id,
+                       ref_py.year as reference_year
+                from farms.farm_reference_scenarios rs
+                join farms.farm_agristability_scenarios ref_sc
+                  on ref_sc.agristability_scenario_id = rs.agristability_scenario_id
+                join farms.farm_program_year_versions ref_pyv
+                  on ref_pyv.program_year_version_id = ref_sc.program_year_version_id
+                join farms.farm_program_years ref_py
+                  on ref_py.program_year_id = ref_pyv.program_year_id
+                where rs.for_agristability_scenario_id = #{agristabilityScenarioId}
+            ) sy
+            left join farms.farm_benefit_calc_totals bct
+              on bct.agristability_scenario_id = sy.agristability_scenario_id
+        ),
+        bpus as (
+            select 1 as source_priority,
+                   bpu.benchmark_per_unit_id,
+                   bpu.inventory_item_code,
+                   bpu.structure_group_code,
+                   bpu.expiry_date
+            from farms.farm_scenario_bpu_xref sbx
+            join farms.farm_benchmark_per_units bpu
+              on bpu.benchmark_per_unit_id = sbx.benchmark_per_unit_id
+            where sbx.agristability_scenario_id = #{agristabilityScenarioId}
+              and sbx.scenario_bpu_purpose_code = 'STANDARD'
+
+            union all
+
+            select 2 as source_priority,
+                   bpu.benchmark_per_unit_id,
+                   bpu.inventory_item_code,
+                   bpu.structure_group_code,
+                   bpu.expiry_date
+            from farms.farm_benchmark_per_units bpu
+            where bpu.program_year = #{programYear}
+        )
+        select pu.code,
+               pu.description,
+               pu.productive_capacity,
+               coalesce((
+                   select by4.average_margin
+                   from bpus xb
+                   join farms.farm_benchmark_years by4
+                     on by4.benchmark_per_unit_id = xb.benchmark_per_unit_id
+                   cross join bpu_leads bl
+                   where bl.reference_year = #{programYear} - 2
+                     and by4.benchmark_year = (#{programYear} - 2) - case when bl.bpu_lead_ind = 'N' then 1 else 0 end
+                     and ((pu.inventory_item_code is not null and xb.inventory_item_code = pu.inventory_item_code)
+                          or (pu.structure_group_code is not null and xb.structure_group_code = pu.structure_group_code))
+                   order by xb.source_priority,
+                            case when xb.expiry_date is null then 0 else 1 end,
+                            xb.expiry_date desc,
+                            xb.benchmark_per_unit_id desc
+                   limit 1
+               ), 0) as bpu_margin_year_minus_4,
+               coalesce((
+                   select by3.average_margin
+                   from bpus xb
+                   join farms.farm_benchmark_years by3
+                     on by3.benchmark_per_unit_id = xb.benchmark_per_unit_id
+                   cross join bpu_leads bl
+                   where bl.reference_year = #{programYear} - 1
+                     and by3.benchmark_year = (#{programYear} - 1) - case when bl.bpu_lead_ind = 'N' then 1 else 0 end
+                     and ((pu.inventory_item_code is not null and xb.inventory_item_code = pu.inventory_item_code)
+                          or (pu.structure_group_code is not null and xb.structure_group_code = pu.structure_group_code))
+                   order by xb.source_priority,
+                            case when xb.expiry_date is null then 0 else 1 end,
+                            xb.expiry_date desc,
+                            xb.benchmark_per_unit_id desc
+                   limit 1
+               ), 0) as bpu_margin_year_minus_3,
+               coalesce((
+                   select by2.average_margin
+                   from bpus xb
+                   join farms.farm_benchmark_years by2
+                     on by2.benchmark_per_unit_id = xb.benchmark_per_unit_id
+                   cross join bpu_leads bl
+                   where bl.reference_year = #{programYear} - 1
+                     and by2.benchmark_year = (#{programYear} - 1) - case when bl.bpu_lead_ind = 'N' then 1 else 0 end
+                     and ((pu.inventory_item_code is not null and xb.inventory_item_code = pu.inventory_item_code)
+                          or (pu.structure_group_code is not null and xb.structure_group_code = pu.structure_group_code))
+                   order by xb.source_priority,
+                            case when xb.expiry_date is null then 0 else 1 end,
+                            xb.expiry_date desc,
+                            xb.benchmark_per_unit_id desc
+                   limit 1
+               ), 0) as bpu_margin_year_minus_2
+        from productive_units pu
+        order by pu.description, pu.code
+    </select>
+
+    <insert id="insertScenarioEnrolment">
+        <selectKey keyProperty="dto.scenarioEnrolmentId" resultType="java.lang.Long" order="BEFORE">
+            select nextval('farms.farm_se_seq')
+        </selectKey>
+        insert into farms.farm_scenario_enrolments (
+            scenario_enrolment_id,
+            enrolment_year,
+            enrolment_fee,
+            contribution_margin,
+            benefit_calculated_ind,
+            proxy_margins_calculated_ind,
+            manual_calculated_ind,
+            has_productive_units_ind,
+            has_benchmark_per_units_ind,
+            benefit_enrolment_fee,
+            benefit_contribution_margin,
+            proxy_enrolment_fee,
+            proxy_contribution_margin,
+            manual_enrolment_fee,
+            manual_contribution_margin,
+            margin_year_minus_2,
+            margin_year_minus_3,
+            margin_year_minus_4,
+            margin_year_minus_5,
+            margin_year_minus_6,
+            margin_year_minus_2_ind,
+            margin_year_minus_3_ind,
+            margin_year_minus_4_ind,
+            margin_year_minus_5_ind,
+            margin_year_minus_6_ind,
+            benefit_margin_year_minus_2,
+            benefit_margin_year_minus_3,
+            benefit_margin_year_minus_4,
+            benefit_margin_year_minus_5,
+            benefit_margin_year_minus_6,
+            benefit_margn_year_minus_2_ind,
+            benefit_margn_year_minus_3_ind,
+            benefit_margn_year_minus_4_ind,
+            benefit_margn_year_minus_5_ind,
+            benefit_margn_year_minus_6_ind,
+            proxy_margin_year_minus_2,
+            proxy_margin_year_minus_3,
+            proxy_margin_year_minus_4,
+            manual_margin_year_minus_2,
+            manual_margin_year_minus_3,
+            manual_margin_year_minus_4,
+            combined_farm_percent,
+            enrolment_calc_type_code,
+            agristability_scenario_id,
+            revision_count,
+            who_created,
+            who_updated
+        ) values (
+            #{dto.scenarioEnrolmentId},
+            #{dto.enrolmentYear},
+            #{dto.enrolmentFee},
+            #{dto.contributionMargin},
+            #{dto.benefitCalculatedInd},
+            #{dto.proxyMarginsCalculatedInd},
+            #{dto.manualCalculatedInd},
+            #{dto.hasProductiveUnitsInd},
+            #{dto.hasBenchmarkPerUnitsInd},
+            #{dto.benefitEnrolmentFee},
+            #{dto.benefitContributionMargin},
+            #{dto.proxyEnrolmentFee},
+            #{dto.proxyContributionMargin},
+            #{dto.manualEnrolmentFee},
+            #{dto.manualContributionMargin},
+            #{dto.marginYearMinus2},
+            #{dto.marginYearMinus3},
+            #{dto.marginYearMinus4},
+            #{dto.marginYearMinus5},
+            #{dto.marginYearMinus6},
+            #{dto.marginYearMinus2Ind},
+            #{dto.marginYearMinus3Ind},
+            #{dto.marginYearMinus4Ind},
+            #{dto.marginYearMinus5Ind},
+            #{dto.marginYearMinus6Ind},
+            #{dto.benefitMarginYearMinus2},
+            #{dto.benefitMarginYearMinus3},
+            #{dto.benefitMarginYearMinus4},
+            #{dto.benefitMarginYearMinus5},
+            #{dto.benefitMarginYearMinus6},
+            #{dto.benefitMargnYearMinus2Ind},
+            #{dto.benefitMargnYearMinus3Ind},
+            #{dto.benefitMargnYearMinus4Ind},
+            #{dto.benefitMargnYearMinus5Ind},
+            #{dto.benefitMargnYearMinus6Ind},
+            #{dto.proxyMarginYearMinus2},
+            #{dto.proxyMarginYearMinus3},
+            #{dto.proxyMarginYearMinus4},
+            #{dto.manualMarginYearMinus2},
+            #{dto.manualMarginYearMinus3},
+            #{dto.manualMarginYearMinus4},
+            #{dto.combinedFarmPercent},
+            #{dto.enrolmentCalcTypeCode},
+            #{dto.agristabilityScenarioId},
+            1,
+            #{userId},
+            #{userId}
+        )
+    </insert>
+
+    <update id="updateScenarioEnrolment">
+        update farms.farm_scenario_enrolments
+        set enrolment_year = #{dto.enrolmentYear},
+            enrolment_fee = #{dto.enrolmentFee},
+            contribution_margin = #{dto.contributionMargin},
+            benefit_calculated_ind = #{dto.benefitCalculatedInd},
+            proxy_margins_calculated_ind = #{dto.proxyMarginsCalculatedInd},
+            manual_calculated_ind = #{dto.manualCalculatedInd},
+            has_productive_units_ind = #{dto.hasProductiveUnitsInd},
+            has_benchmark_per_units_ind = #{dto.hasBenchmarkPerUnitsInd},
+            benefit_enrolment_fee = #{dto.benefitEnrolmentFee},
+            benefit_contribution_margin = #{dto.benefitContributionMargin},
+            proxy_enrolment_fee = #{dto.proxyEnrolmentFee},
+            proxy_contribution_margin = #{dto.proxyContributionMargin},
+            manual_enrolment_fee = #{dto.manualEnrolmentFee},
+            manual_contribution_margin = #{dto.manualContributionMargin},
+            margin_year_minus_2 = #{dto.marginYearMinus2},
+            margin_year_minus_3 = #{dto.marginYearMinus3},
+            margin_year_minus_4 = #{dto.marginYearMinus4},
+            margin_year_minus_5 = #{dto.marginYearMinus5},
+            margin_year_minus_6 = #{dto.marginYearMinus6},
+            margin_year_minus_2_ind = #{dto.marginYearMinus2Ind},
+            margin_year_minus_3_ind = #{dto.marginYearMinus3Ind},
+            margin_year_minus_4_ind = #{dto.marginYearMinus4Ind},
+            margin_year_minus_5_ind = #{dto.marginYearMinus5Ind},
+            margin_year_minus_6_ind = #{dto.marginYearMinus6Ind},
+            benefit_margin_year_minus_2 = #{dto.benefitMarginYearMinus2},
+            benefit_margin_year_minus_3 = #{dto.benefitMarginYearMinus3},
+            benefit_margin_year_minus_4 = #{dto.benefitMarginYearMinus4},
+            benefit_margin_year_minus_5 = #{dto.benefitMarginYearMinus5},
+            benefit_margin_year_minus_6 = #{dto.benefitMarginYearMinus6},
+            benefit_margn_year_minus_2_ind = #{dto.benefitMargnYearMinus2Ind},
+            benefit_margn_year_minus_3_ind = #{dto.benefitMargnYearMinus3Ind},
+            benefit_margn_year_minus_4_ind = #{dto.benefitMargnYearMinus4Ind},
+            benefit_margn_year_minus_5_ind = #{dto.benefitMargnYearMinus5Ind},
+            benefit_margn_year_minus_6_ind = #{dto.benefitMargnYearMinus6Ind},
+            proxy_margin_year_minus_2 = #{dto.proxyMarginYearMinus2},
+            proxy_margin_year_minus_3 = #{dto.proxyMarginYearMinus3},
+            proxy_margin_year_minus_4 = #{dto.proxyMarginYearMinus4},
+            manual_margin_year_minus_2 = #{dto.manualMarginYearMinus2},
+            manual_margin_year_minus_3 = #{dto.manualMarginYearMinus3},
+            manual_margin_year_minus_4 = #{dto.manualMarginYearMinus4},
+            combined_farm_percent = #{dto.combinedFarmPercent},
+            enrolment_calc_type_code = #{dto.enrolmentCalcTypeCode},
+            revision_count = #{dto.revisionCount} + 1,
+            who_updated = #{userId},
+            when_updated = statement_timestamp()
+        where scenario_enrolment_id = #{dto.scenarioEnrolmentId}
+          and revision_count = #{dto.revisionCount}
+    </update>
+</mapper>
