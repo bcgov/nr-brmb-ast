@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
-import ca.bc.gov.farms.data.models.CalculationRsrc;
 import ca.bc.gov.farms.data.models.EnrolmentCalculationRsrc;
 import ca.bc.gov.farms.services.EnrolmentCalculationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,27 +30,6 @@ public class CalculationController extends CommonController {
 
     @Autowired
     private EnrolmentCalculationService enrolmentCalculationService;
-
-    @GetMapping
-    @Operation(
-            operationId = "Get calculation test response.",
-            summary = "Get calculation test response."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = CalculationRsrc.class))),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error",
-                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
-    })
-    public ResponseEntity<CalculationRsrc> getCalculation() {
-        log.debug(" >> getCalculation");
-
-        CalculationRsrc resource = CalculationRsrc.builder()
-                .message("Hello world")
-                .build();
-
-        return ok(resource);
-    }
 
     @GetMapping("/enrolment-notice-workflow")
     @Operation(

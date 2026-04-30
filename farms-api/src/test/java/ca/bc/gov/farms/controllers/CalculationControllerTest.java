@@ -40,13 +40,6 @@ class CalculationControllerTest {
     }
 
     @Test
-    void getCalculationReturnsTestResponse() throws Exception {
-        mockMvc.perform(get("/calculations"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Hello world"));
-    }
-
-    @Test
     void getEnrolmentNoticeWorkflowCalculationReturnsResource() throws Exception {
         EnrolmentCalculationRsrc resource = EnrolmentCalculationRsrc.builder()
                 .participantPin(26139667)
