@@ -214,7 +214,7 @@ public class EnrolmentCalculationService {
         List<EnrolmentCalculationMarginEntity> margins = enrolmentCalculationMapper
                 .fetchBenefitMargins(entity.getAgristabilityScenarioId());
         if (margins == null || margins.isEmpty()) {
-            benefitCalculationErrors.add(EnrolmentCalculationMessages.BENEFIT_NO_MARGIN_DATA);
+            benefitCalculationErrors.add(EnrolmentCalculationMessages.REASON_INSUFFICIENT_REFERENCE_MARGIN_DATA);
             return;
         }
 
@@ -252,7 +252,7 @@ public class EnrolmentCalculationService {
                 BigDecimal percent = entity.getCombinedFarmPercent();
                 if (percent == null) {
                     benefitCalculationErrors.add(
-                            EnrolmentCalculationMessages.BENEFIT_MISSING_COMBINED_FARM_PERCENT);
+                            EnrolmentCalculationMessages.ERROR_ENW_COMBINED_FARM_PERCENT);
                     return;
                 }
                 currentMargin = roundCurrency(currentMargin.multiply(percent));
@@ -275,24 +275,24 @@ public class EnrolmentCalculationService {
         if (averageMargins.stream().anyMatch(margin -> margin.value().abs().compareTo(OVERSIZE_MARGIN_LIMIT) > 0)) {
             clearBenefitMargins(entity);
             benefitCalculationErrors.add(
-                    EnrolmentCalculationMessages.BENEFIT_MARGIN_OUTSIDE_SUPPORTED_RANGE);
+                    EnrolmentCalculationMessages.REASON_OVERSIZE_MARGIN);
             return;
         }
 
         boolean hasThreeMostRecentYears = marginFound[2] && marginFound[3] && marginFound[4];
         if (hasThreeMostRecentYears && zeroMarginInThreeMostRecentYears) {
             clearBenefitMargins(entity);
-            benefitCalculationErrors.add(EnrolmentCalculationMessages.BENEFIT_ZERO_MARGIN_DATA);
+            benefitCalculationErrors.add(EnrolmentCalculationMessages.REASON_ZERO_MARGINS);
             return;
         }
         if (!hasThreeMostRecentYears || averageMargins.size() < 3) {
             clearBenefitMargins(entity);
-            benefitCalculationErrors.add(EnrolmentCalculationMessages.BENEFIT_INSUFFICIENT_MARGIN_DATA);
+            benefitCalculationErrors.add(EnrolmentCalculationMessages.REASON_INSUFFICIENT_REFERENCE_MARGIN_DATA);
             return;
         }
         if (averageMargins.size() > 5) {
             clearBenefitMargins(entity);
-            benefitCalculationErrors.add(EnrolmentCalculationMessages.BENEFIT_TOO_MANY_REFERENCE_MARGINS);
+            benefitCalculationErrors.add(EnrolmentCalculationMessages.REASON_FOUND_TOO_MANY_MARGINS);
             return;
         }
 

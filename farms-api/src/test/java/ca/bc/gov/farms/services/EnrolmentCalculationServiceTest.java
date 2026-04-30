@@ -126,7 +126,7 @@ class EnrolmentCalculationServiceTest {
         assertThat(savedEntity.getMarginYearMinus3Ind()).isEqualTo("Y");
         assertThat(savedEntity.getMarginYearMinus4Ind()).isEqualTo("Y");
         assertThat(savedEntity.getBenefitCalculationErrors())
-                .containsExactly(EnrolmentCalculationMessages.BENEFIT_NO_MARGIN_DATA);
+                .containsExactly(EnrolmentCalculationMessages.REASON_INSUFFICIENT_REFERENCE_MARGIN_DATA);
     }
 
     @Test

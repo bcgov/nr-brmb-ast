@@ -2,18 +2,16 @@ package ca.bc.gov.farms.services;
 
 public final class EnrolmentCalculationMessages {
 
-    public static final String BENEFIT_NO_MARGIN_DATA =
-            "Benefit calculation has no margin data.";
-    public static final String BENEFIT_MISSING_COMBINED_FARM_PERCENT =
-            "Benefit calculation is missing combined farm percent.";
-    public static final String BENEFIT_MARGIN_OUTSIDE_SUPPORTED_RANGE =
-            "Benefit calculation has a margin outside the supported range.";
-    public static final String BENEFIT_ZERO_MARGIN_DATA =
-            "Benefit calculation has zero margin data in one of the three most recent years.";
-    public static final String BENEFIT_INSUFFICIENT_MARGIN_DATA =
-            "Benefit calculation has insufficient margin data.";
-    public static final String BENEFIT_TOO_MANY_REFERENCE_MARGINS =
-            "Benefit calculation has too many reference margins.";
+    public static final String REASON_INSUFFICIENT_REFERENCE_MARGIN_DATA =
+            "Insufficient reference margin data for this participant.";
+    public static final String REASON_ZERO_MARGINS =
+            "Must have non-zero margins for the three most recent years.";
+    public static final String REASON_FOUND_TOO_MANY_MARGINS =
+            "Found too many margins.";
+    public static final String REASON_OVERSIZE_MARGIN =
+            "A margin in excess of 100 million dollars was detected.";
+    public static final String ERROR_ENW_COMBINED_FARM_PERCENT =
+            "Benefit calculation failed so Combined Farm % has not been calculated.";
 
     private EnrolmentCalculationMessages() {
     }
