@@ -65,7 +65,7 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
-                            "path": "../../../../../database/farms_import_pkg/procedures/queue_fifo_calculation.sql"
+                            "path": "../../../../../database/farms_import_pkg/procedures/queue_benefit_triage_calculation.sql"
                         }
                     },
                     {

@@ -44,6 +44,12 @@
         },
         {
             "includeAll": {
+                "path": "farms_report_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
                 "path": "farms_enrolment_read_pkg",
                 "relativeToChangeLogFile": "true"
             }
@@ -117,12 +123,6 @@
         {
             "includeAll": {
                 "path": "farms_reasonability_write_pkg",
-                "relativeToChangeLogFile": "true"
-            }
-        },
-        {
-            "includeAll": {
-                "path": "farms_report_pkg",
                 "relativeToChangeLogFile": "true"
             }
         },
