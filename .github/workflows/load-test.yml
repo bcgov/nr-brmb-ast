@@ -44,11 +44,11 @@ jobs:
             -Jclient_secret=${{ secrets.CLIENT_SECRET }} \
             -Jhost=${{ vars.API_HOST }} \
             -Jthreads=1 \
-            -l results.jtl
+            -l results.csv
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-results
-          path: results.jtl
+          path: results.csv
           if-no-files-found: error
