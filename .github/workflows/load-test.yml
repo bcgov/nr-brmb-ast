@@ -31,12 +31,12 @@ jobs:
 
       - name: Install JMeter
         run: |
-          wget -O apache-jmeter.tgz https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz
-          tar -xzf apache-jmeter.tgz
+          wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz
+          tar -xzf apache-jmeter-5.6.3.tgz
 
       - name: Run JMeter
         run: |
-          apache-jmeter/bin/jmeter \
+          apache-jmeter-5.6.3/bin/jmeter \
             -n \
             -t load-tests/${{ inputs.MICROSERVICE_NAME }}-load-test.jmx \
             -Jtenant_id=${{ secrets.TENANT_ID }} \
