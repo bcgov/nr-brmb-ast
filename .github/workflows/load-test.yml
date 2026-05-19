@@ -32,7 +32,7 @@ jobs:
       - name: JMeter Test
         uses: QAInsights/PerfAction@v5.6.2
         with:
-          test-plan-path: ./load-tests/farms-api-load-test.jmx
+          test-plan-path: ./load-tests/${{ inputs.MICROSERVICE_NAME }}-load-test.jmx
           args: "-Jtenant_id=${{ secrets.TENANT_ID }} -Jclient_id=${{ secrets.CLIENT_ID }} -Jclient_secret=${{ secrets.CLIENT_SECRET }} -Jhost=${{ vars.API_HOST }} -Jthreads=1"
 
       - name: Upload Results
