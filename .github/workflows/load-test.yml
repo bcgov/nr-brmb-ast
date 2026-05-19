@@ -1,5 +1,5 @@
 name: load test
-run-name: Load test ${{ inputs.MICROSERVICE_NAME }}
+run-name: Load test ${{ inputs.MICROSERVICE_NAME }} in ${{ inputs.ENVIRONMENT_NAME }}
 
 on:
   workflow_dispatch:
