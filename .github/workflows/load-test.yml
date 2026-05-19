@@ -33,7 +33,7 @@ jobs:
         uses: QAInsights/PerfAction@v5.6.2
         with:
           test-plan-path: ./load-tests/${{ inputs.MICROSERVICE_NAME }}-load-test.jmx
-          args: "-Jtenant_id=${{ secrets.TENANT_ID }} -Jclient_id=${{ secrets.CLIENT_ID }} -Jclient_secret=${{ secrets.CLIENT_SECRET }} -Jhost=${{ vars.API_HOST }} -Jthreads=1"
+          args: "-Jtenant_id=${{ secrets.TENANT_ID }} -Jclient_id=${{ secrets.CLIENT_ID }} -Jclient_secret=${{ secrets.CLIENT_SECRET }} -Jhost=${{ vars.API_HOST }} -Jthreads=1 -l result.jtl"
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
