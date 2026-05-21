@@ -23,7 +23,6 @@ declare
     v_participnt_data_src_code farms.farm_agristability_scenarios.participnt_data_src_code%type;
 
     py_id_rec record;
-    py_id_ref_cursor refcursor;
 
 begin
 
@@ -64,25 +63,21 @@ begin
 
     call farms_calculator_pkg.copy_adjustments(in_scenario_id, new_scenario_id);
 
-    py_id_ref_cursor := farms_read_pkg.read_py_id(pin, program_year, copy_from_sc_num, 'DEF');
-
     -- Loop through the Scenario IDs
-    loop
-
-        fetch py_id_ref_cursor into py_id_rec;
-        exit when not found;/* apply on py_id_ref_cursor */
-
-        if (py_id_rec.program_year != program_year) then
-            new_ref_scenario_id := farms_calculator_pkg.create_ref_scenario(new_scenario_id,
-                                                                            py_id_rec.agristability_scenario_id,
-                                                                            in_scenario_category_code,
-                                                                            in_version,
-                                                                            in_user);
-        end if;
-
-    end loop;
-
-    close py_id_ref_cursor;
+    FOR py_id_rec IN
+        SELECT *
+        FROM farms_read_pkg.read_py_id(pin, program_year, copy_from_sc_num, 'DEF')
+    LOOP
+        IF py_id_rec.program_year != program_year THEN
+            new_ref_scenario_id := farms_calculator_pkg.create_ref_scenario(
+                new_scenario_id,
+                py_id_rec.agristability_scenario_id,
+                in_scenario_category_code,
+                in_version,
+                in_user
+            );
+        END IF;
+    END LOOP;
 
     select s.scenario_number
     into new_scenario_num
