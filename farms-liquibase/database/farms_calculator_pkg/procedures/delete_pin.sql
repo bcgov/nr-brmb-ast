@@ -14,7 +14,7 @@ declare
     v_op_id bigint;
     v_sc_id bigint;
     v_count bigint;
-   
+
     rsn_curs cursor for
         select rtr.reasonability_test_result_id
         from farms.farm_scenarios_vw sv
@@ -38,12 +38,12 @@ declare
         where sc.program_year_version_id = p_pyv_id;
 
 begin
-    
+
     select count(*)
     into v_count
     from farms.farm_agristability_clients ac
     where ac.participant_pin = in_participant_pin;
-  
+
     if v_count = 0 then
         return;
     end if;
@@ -72,31 +72,31 @@ begin
         where t.reasonability_test_result_id = rsn_rec.reasonability_test_result_id;
         delete from farms.farm_rsn_forage_consumers t
         where t.reasonability_test_result_id = rsn_rec.reasonability_test_result_id;
-    
+
         delete from farms.farm_rsn_rev_hog_inventories t
         where t.rsn_rev_hog_result_id = (
             select t2.rsn_rev_hog_result_id
             from farms.farm_rsn_rev_hog_results t2
             where t2.reasonability_test_result_id = rsn_rec.reasonability_test_result_id
         );
-    
+
         delete from farms.farm_rsn_rev_hog_results t
         where t.reasonability_test_result_id = rsn_rec.reasonability_test_result_id;
-      
+
         delete from farms.farm_rsn_rev_nursery_incomes t
         where t.rsn_rev_nursery_result_id = (
             select t2.rsn_rev_nursery_result_id
             from farms.farm_rsn_rev_nursery_results t2
             where t2.reasonability_test_result_id = rsn_rec.reasonability_test_result_id
         );
-    
+
         delete from farms.farm_rsn_rev_nursery_invntries t
         where t.rsn_rev_nursery_result_id = (
             select t2.rsn_rev_nursery_result_id
             from farms.farm_rsn_rev_nursery_results t2
             where t2.reasonability_test_result_id = rsn_rec.reasonability_test_result_id
         );
-    
+
         delete from farms.farm_rsn_rev_nursery_results t
         where t.reasonability_test_result_id = rsn_rec.reasonability_test_result_id;
         delete from farms.farm_rsn_rev_poultry_brl_rslts t
@@ -150,21 +150,21 @@ begin
     into   v_client_id, v_owner_id, v_contact_id
     from farms.farm_agristability_clients ac
     where ac.participant_pin = in_participant_pin;
-    
+
     delete from farms.farm_program_enrolments t
     where t.agristability_client_id = v_client_id;
     delete from farms.farm_client_subscriptions t
     where t.agristability_client_id = v_client_id;
-    
+
     -- program year versions
     for pyv_rec in pyv_curs
     loop
         v_pyv_id := pyv_rec.program_year_version_id;
         v_import_id := pyv_rec.import_version_id;
-      
+
         delete from farms.farm_whole_farm_participants wfp
         where wfp.program_year_version_id = v_pyv_id;
-      
+
         -- farming operations
         for op_rec in op_curs(v_pyv_id)
         loop
@@ -186,12 +186,12 @@ begin
             where t.farming_operation_id = v_op_id;
             delete from farms.farm_negative_margins t
             where t.farming_operation_id = v_op_id;
-        
+
         end loop;
-      
+
         delete from farms.farm_farming_operations fo
         where fo.program_year_version_id = v_pyv_id;
-      
+
         -- scenarios
         for sc_rec in sc_curs(v_pyv_id)
         loop
@@ -213,25 +213,25 @@ begin
             where t.agristability_scenario_id = v_sc_id;
             delete from farms.farm_scenario_config_params t
             where t.agristability_scenario_id = v_sc_id;
-            
+
             delete from farms.farm_reference_scenarios t
             where t.agristability_scenario_id = v_sc_id
             or t.for_agristability_scenario_id = v_sc_id;
-            
+
         end loop;
-      
+
         delete from farms.farm_agristability_scenarios t
         where t.program_year_version_id = v_pyv_id;
 
     end loop;
-    
+
     delete from farms.farm_program_year_versions pyv
     where pyv.program_year_id in (
         select py.program_year_id
         from farms.farm_program_years py
         where py.agristability_client_id = v_client_id
     );
-    
+
     delete from farms.farm_program_years py
     where py.agristability_client_id = v_client_id;
 
