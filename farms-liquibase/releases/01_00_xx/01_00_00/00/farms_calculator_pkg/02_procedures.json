@@ -114,6 +114,13 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "../../../../../database/farms_calculator_pkg/procedures/delete_pin.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "../../../../../database/farms_calculator_pkg/procedures/log_combined_farm_update.sql"
                         }
                     },
