@@ -1916,7 +1916,7 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_CONFIGURATION_PARAMETER_PROC, READ_CONFIGURATION_PARAMETER_PARAM, true);
       
-      proc.setInt(param++, id);
+      proc.setLong(param++, id == null ? null : id.longValue());
       proc.setString(param++, name);
       
       proc.execute();
@@ -2029,7 +2029,7 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_YEAR_CONFIGURATION_PARAM_PROC, READ_YEAR_CONFIGURATION_PARAM_PARAM, true);
       
-      proc.setInt(param++, id);
+      proc.setLong(param++, id == null ? null : id.longValue());
       
       proc.execute();
       rs = proc.getResultSet();
@@ -2141,7 +2141,7 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_FARM_TYPE_3_IN_USE_PROC, CHECK_FARM_TYPE_3_IN_USE_PARAM, true);
       
-      proc.setInt(param++, farmType.getFarmTypeId());
+      proc.setLong(param++, farmType.getFarmTypeId() == null ? null : farmType.getFarmTypeId().longValue());
       
       proc.execute();
       rs = proc.getResultSet();
@@ -2188,7 +2188,7 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_3_INCOME_RANGE_PROC, READ_FARM_TYPE_3_INCOME_RANGE_PARAM, true);
       
-      proc.setInt(param++, farmType3Id);
+      proc.setLong(param++, farmType3Id == null ? null : farmType3Id.longValue());
       
       proc.execute();
       rs = proc.getResultSet();
@@ -2254,8 +2254,8 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_2_INCOME_RANGE_PROC, READ_FARM_TYPE_2_INCOME_RANGE_PARAM, true);
       
-      proc.setInt(param++, farmType2Id);
-      proc.setInt(param++, farmType3Id);
+      proc.setLong(param++, farmType2Id == null ? null : farmType2Id.longValue());
+      proc.setLong(param++, farmType3Id == null ? null : farmType3Id.longValue());
       
       proc.execute();
       rs = proc.getResultSet();
@@ -2399,9 +2399,9 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TYPE_1_INCOME_RANGE_PROC, READ_FARM_TYPE_1_INCOME_RANGE_PARAM, true);
       
-      proc.setInt(param++, farmType1Id);
-      proc.setInt(param++, farmType2Id);
-      proc.setInt(param++, farmType3Id);
+      proc.setLong(param++, farmType1Id == null ? null : farmType1Id.longValue());
+      proc.setLong(param++, farmType2Id == null ? null : farmType2Id.longValue());
+      proc.setLong(param++, farmType3Id == null ? null : farmType3Id.longValue());
       
       proc.execute();
       rs = proc.getResultSet();
@@ -2541,7 +2541,7 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_FARM_TYPE_2_IN_USE_PROC, CHECK_FARM_TYPE_2_IN_USE_PARAM, true);
       
-      proc.setInt(param++, farmSubtype.getId());
+      proc.setLong(param++, farmSubtype.getId() == null ? null : farmSubtype.getId().longValue());
       
       proc.execute();
       rs = proc.getResultSet();
@@ -2651,7 +2651,7 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_FARM_TYPE_1_IN_USE_PROC, CHECK_FARM_TYPE_1_IN_USE_PARAM, true);
       
-      proc.setInt(param++, farmSubtype.getId());
+      proc.setLong(param++, farmSubtype.getId() == null ? null : farmSubtype.getId().longValue());
       
       proc.execute();
       rs = proc.getResultSet();
@@ -2763,7 +2763,7 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + READ_FARM_TIP_LINE_ITEM_PROC, READ_FARM_TIP_LINE_ITEM_PARAM, true);
       
-      proc.setInt(1, id);
+      proc.setLong(1, id == null ? null : id.longValue());
       proc.execute();
       rs = proc.getResultSet();
 
@@ -2874,7 +2874,7 @@ public class CodesReadDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + CHECK_TIP_LINE_ITEM_EXISTS_PROC, CHECK_TIP_LINE_ITEM_EXISTS_PARAM, true);
       
-      proc.setInt(param++, lineItem);
+      proc.setShort(param++, lineItem == null ? null : lineItem.shortValue());
       
       proc.execute();
       rs = proc.getResultSet();
