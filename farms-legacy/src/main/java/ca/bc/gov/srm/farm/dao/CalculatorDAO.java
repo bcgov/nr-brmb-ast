@@ -2428,8 +2428,8 @@ public class CalculatorDAO extends OracleDAO {
       int param = 1;
       proc.setLong(param++, enwEnrolment.getScenario().getScenarioId() == null ? null : enwEnrolment.getScenario().getScenarioId().longValue());
       proc.setShort(param++, enwEnrolment.getEnrolmentYear() == null ? null : enwEnrolment.getEnrolmentYear().shortValue());
-      proc.setDouble(param++, enwEnrolment.getEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getContributionMargin());
+      proc.setBigDecimal(param++, enwEnrolment.getEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getContributionMargin()));
       
       proc.setIndicator(param++, enwEnrolment.getBenefitCalculated());
       proc.setIndicator(param++, enwEnrolment.getProxyMarginsCalculated());
@@ -2437,44 +2437,44 @@ public class CalculatorDAO extends OracleDAO {
       proc.setIndicator(param++, enwEnrolment.getHasProductiveUnits());
       proc.setIndicator(param++, enwEnrolment.getHasBpus());
       
-      proc.setDouble(param++, enwEnrolment.getBenefitEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getBenefitContributionMargin());
-      proc.setDouble(param++, enwEnrolment.getProxyEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getProxyContributionMargin());
-      proc.setDouble(param++, enwEnrolment.getManualEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getManualContributionMargin());
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitContributionMargin()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyContributionMargin()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualContributionMargin()));
       
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus4());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus5());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus6());
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus4()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus5() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus5()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus6() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus6()));
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus2Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus3Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus4Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus5Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus6Used());
       
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus4());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus5());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus6());
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus4()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus5() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus5()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus6() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus6()));
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus2Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus3Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus4Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus5Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus6Used());
       
-      proc.setDouble(param++, enwEnrolment.getProxyMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getProxyMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getProxyMarginYearMinus4());
+      proc.setBigDecimal(param++, enwEnrolment.getProxyMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyMarginYearMinus4()));
       
-      proc.setDouble(param++, enwEnrolment.getManualMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getManualMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getManualMarginYearMinus4());
+      proc.setBigDecimal(param++, enwEnrolment.getManualMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualMarginYearMinus4()));
       
-      proc.setDouble(param++, enwEnrolment.getCombinedFarmPercent());
+      proc.setBigDecimal(param++, enwEnrolment.getCombinedFarmPercent() == null ? null : BigDecimal.valueOf(enwEnrolment.getCombinedFarmPercent()));
       proc.setString(param++, enwEnrolment.getEnrolmentCalculationTypeCode());
       proc.setString(param++, user);
       
