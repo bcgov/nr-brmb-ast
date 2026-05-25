@@ -265,7 +265,7 @@ public class UserDAO extends OracleDAO {
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
         
         int param = 1;
-        proc.setInt(param++, userId);
+        proc.setLong(param++, userId == null ? null : userId.longValue());
         proc.execute();
         
         try(ResultSet rs = proc.getResultSet() ) {
