@@ -78,7 +78,7 @@ public class ImportDAO extends OracleDAO {
 
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
-      proc.setInt(paramCount, importVersionId);
+      proc.setLong(paramCount, importVersionId == null ? null : importVersionId.longValue());
       proc.execute();
       resultSet = proc.getResultSet();
 
@@ -140,7 +140,7 @@ public class ImportDAO extends OracleDAO {
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true); ) {
 
-        proc.setInt(paramCount, importVersionId);
+        proc.setLong(paramCount, importVersionId == null ? null : importVersionId.longValue());
         proc.execute();
         
         try (ResultSet rs = proc.getResultSet(); ) {
@@ -382,7 +382,7 @@ public class ImportDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
-      proc.setInt(paramCount, importVersionId);
+      proc.setLong(paramCount, importVersionId == null ? null : importVersionId.longValue());
       proc.execute();
 
       connection.commit();
@@ -425,7 +425,7 @@ public class ImportDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
-      proc.setInt(paramCount, importVersionId);
+      proc.setLong(paramCount, importVersionId == null ? null : importVersionId.longValue());
       proc.execute();
 
       connection.commit();
@@ -462,7 +462,7 @@ public class ImportDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
-      proc.setInt(paramCount, importVersionId);
+      proc.setLong(paramCount, importVersionId == null ? null : importVersionId.longValue());
       proc.execute();
 
       connection.commit();
@@ -503,7 +503,7 @@ public class ImportDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, true);) {
-        proc.setInt(paramCount, importVersionId);
+        proc.setLong(paramCount, importVersionId == null ? null : importVersionId.longValue());
         proc.execute();
         
         try (ResultSet resultSet = proc.getResultSet();) {
