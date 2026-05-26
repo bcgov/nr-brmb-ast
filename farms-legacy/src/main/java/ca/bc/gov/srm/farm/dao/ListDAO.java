@@ -411,7 +411,7 @@ public class ListDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, qualifiedProcName, paramCount, true);
 
       int param = 1;
-      proc.setInt(param++, year.intValue());
+      proc.setLong(param++, year == null ? null : year.longValue());
       proc.setDate(param++, verifiedDate);
       proc.execute();
       rs = proc.getResultSet();

@@ -467,8 +467,8 @@ public final class WriteDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
 
       int index = 1;
-      proc.setInt(index++, programYearScenarioId);
-      proc.setInt(index++, rs.getScenarioId());
+      proc.setLong(index++, programYearScenarioId == null ? null : programYearScenarioId.longValue());
+      proc.setLong(index++, rs.getScenarioId() == null ? null : rs.getScenarioId().longValue());
       proc.setIndicator(index++, rs.getUsedInCalc());
       proc.setIndicator(index++, rs.getIsDeemedFarmingYear());
       proc.setString(index++, userId);
@@ -517,7 +517,7 @@ public final class WriteDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       
       int index = 1;
-      proc.setInt(index++, programYearId);
+      proc.setLong(index++, programYearId == null ? null : programYearId.longValue());
       proc.setString(index++, comments);
       proc.setString(index++, userId);
       proc.execute();
@@ -563,7 +563,7 @@ public final class WriteDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       
       int index = 1;
-      proc.setInt(index++, programYearId);
+      proc.setLong(index++, programYearId == null ? null : programYearId.longValue());
       proc.setString(index++, comments);
       proc.setString(index++, userId);
       proc.execute();
@@ -609,7 +609,7 @@ public final class WriteDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, false);
       
       int index = 1;
-      proc.setInt(index++, programYearId);
+      proc.setLong(index++, programYearId == null ? null : programYearId.longValue());
       proc.setString(index++, comments);
       proc.setString(index++, userId);
       proc.execute();

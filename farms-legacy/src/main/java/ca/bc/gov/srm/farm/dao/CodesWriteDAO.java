@@ -1456,7 +1456,7 @@ public class CodesWriteDAO extends OracleDAO {
           + IN_USE_BPU_PROC, numParams, Types.NUMERIC);
 
       int param = 1;
-      proc.setInt(param++, bpuId);
+      proc.setLong(param++, bpuId == null ? null : bpuId.longValue());
       proc.execute();
 
       int inUseInt = proc.getIntObj(1);
@@ -1511,7 +1511,7 @@ public class CodesWriteDAO extends OracleDAO {
       		false);
       
       int param = 1;
-      proc.setInt(param++, bpuId);
+      proc.setLong(param++, bpuId == null ? null : bpuId.longValue());
       proc.execute();
 
       connection.commit();
@@ -1760,12 +1760,12 @@ public class CodesWriteDAO extends OracleDAO {
 
           int param = 1;
           proc.setString(param++, detail.getInventoryItemCode());
-          proc.setInt(param++, detail.getProgramYear());
+          proc.setShort(param++, detail.getProgramYear() == null ? null : detail.getProgramYear().shortValue());
           proc.setIndicator(param++, detail.getIsEligible());
           proc.setString(param++, detail.getFruitVegCodeName());      
-          proc.setInt(param++, detail.getLineItem());
-          proc.setDouble(param++, detail.getInsurableValue());
-          proc.setDouble(param++, detail.getPremiumRate());
+          proc.setShort(param++, detail.getLineItem() == null ? null : Short.valueOf(detail.getLineItem()));
+          proc.setBigDecimal(param++, detail.getInsurableValue() == null ? null : BigDecimal.valueOf(detail.getInsurableValue()));
+          proc.setBigDecimal(param++, detail.getPremiumRate() == null ? null : BigDecimal.valueOf(detail.getPremiumRate()));
           proc.setString(param++, detail.getCommodityTypeCodeName());
           proc.setString(param++, user);
           proc.addBatch();
@@ -1812,13 +1812,13 @@ public class CodesWriteDAO extends OracleDAO {
         for(InventoryItemDetail detail : detailsList) {
 
           int param = 1;
-          proc.setInt(param++, detail.getInventoryItemDetailId());
+          proc.setLong(param++, detail.getInventoryItemDetailId() == null ? null : detail.getInventoryItemDetailId().longValue());
           proc.setIndicator(param++, detail.getIsEligible());
           proc.setInt(param++, detail.getRevisionCount());
           proc.setString(param++, detail.getFruitVegCodeName());
-          proc.setInt(param++, detail.getLineItem());
-          proc.setDouble(param++, detail.getInsurableValue());
-          proc.setDouble(param++, detail.getPremiumRate());
+          proc.setShort(param++, detail.getLineItem() == null ? null : Short.valueOf(detail.getLineItem()));
+          proc.setBigDecimal(param++, detail.getInsurableValue() == null ? null : BigDecimal.valueOf(detail.getInsurableValue()));
+          proc.setBigDecimal(param++, detail.getPremiumRate() == null ? null : BigDecimal.valueOf(detail.getPremiumRate()));
           proc.setString(param++, detail.getCommodityTypeCodeName());
           proc.setString(param++, user);
           proc.addBatch();
@@ -1976,7 +1976,7 @@ public class CodesWriteDAO extends OracleDAO {
           + UPDATE_INVENTORY_XREF_PROC, UPDATE_INVENTORY_XREF_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, xref.getCommodityXrefId());
+      proc.setLong(param++, xref.getCommodityXrefId() == null ? null : xref.getCommodityXrefId().longValue());
       proc.setString(param++, xref.getInventoryGroupCode());
       proc.setString(param++, getIndicatorYN(xref.getIsMarketCommodity()));
       proc.setInt(param++, xref.getRevisionCount());
@@ -2027,7 +2027,7 @@ public class CodesWriteDAO extends OracleDAO {
           + DELETE_INVENTORY_XREF_PROC, DELETE_INVENTORY_XREF_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, commodityXrefId);
+      proc.setLong(param++, commodityXrefId == null ? null : commodityXrefId.longValue());
       proc.setInt(param++, revisionCount);
       proc.execute();
 
@@ -2726,7 +2726,7 @@ public class CodesWriteDAO extends OracleDAO {
       int param = 1;
       proc.setString(param++, fruitVegCode.getName());
       proc.setString(param++, fruitVegCode.getDescription());
-      proc.setDouble(param++, fruitVegCode.getVarianceLimit().toString());
+      proc.setBigDecimal(param++, fruitVegCode.getVarianceLimit() == null ? null : BigDecimal.valueOf(fruitVegCode.getVarianceLimit()));
       proc.setString(param++, user);
       proc.execute();
 
@@ -2859,8 +2859,8 @@ public class CodesWriteDAO extends OracleDAO {
           + UPDATE_EXPECTED_PRODUCTION_VALUE_PROC, UPDATE_EXPECTED_PRODUCTION_VALUE_PARAM, false);
     
       int param = 1;
-      proc.setInt(param++, expectedProduction.getId());
-      proc.setDouble(param++, expectedProduction.getExpectedProductionPerAcre());
+      proc.setLong(param++, expectedProduction.getId() == null ? null : expectedProduction.getId().longValue());
+      proc.setBigDecimal(param++, expectedProduction.getExpectedProductionPerAcre() == null ? null : BigDecimal.valueOf(expectedProduction.getExpectedProductionPerAcre()));
       proc.setString(param++, user);
       proc.execute();
 
@@ -2948,7 +2948,7 @@ public class CodesWriteDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + DELETE_EXPECTED_PRODUCTION_PROC, DELETE_EXPECTED_PRODUCTION_PARAM, false);
     
-      proc.setInt(param++, expectedProduction.getId());
+      proc.setLong(param++, expectedProduction.getId() == null ? null : expectedProduction.getId().longValue());
       proc.execute();
 
       connection.commit();
@@ -3031,7 +3031,7 @@ public class CodesWriteDAO extends OracleDAO {
           + UPDATE_YEAR_CONFIGURATION_PARAM_PROC, UPDATE_YEAR_CONFIGURATION_PARAM_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, configParam.getId());
+      proc.setLong(param++, configParam.getId() == null ? null : configParam.getId().longValue());
       proc.setString(param++, configParam.getValue());
       proc.setString(param++, user);
       proc.execute();
@@ -3079,12 +3079,12 @@ public class CodesWriteDAO extends OracleDAO {
       int param = 1;
       for (TipFarmTypeIncomeRange range : ranges) {
         param = 1;
-        proc.setInt(param++, farmType3Id);
-        proc.setInt(param++, farmType2Id);
-        proc.setInt(param++, farmType1Id);
-        proc.setDouble(param++, range.getRangeHigh());
-        proc.setDouble(param++, range.getRangeLow());
-        proc.setDouble(param++, range.getMinimumGroupCount());
+        proc.setLong(param++, farmType3Id == null ? null : farmType3Id.longValue());
+        proc.setLong(param++, farmType2Id == null ? null : farmType2Id.longValue());
+        proc.setLong(param++, farmType1Id == null ? null : farmType1Id.longValue());
+        proc.setBigDecimal(param++, range.getRangeHigh() == null ? null : BigDecimal.valueOf(range.getRangeHigh()));
+        proc.setBigDecimal(param++, range.getRangeLow() == null ? null : BigDecimal.valueOf(range.getRangeLow()));
+        proc.setBigDecimal(param++, range.getMinimumGroupCount() == null ? null : BigDecimal.valueOf(range.getMinimumGroupCount()));
         proc.setString(param++, user);
         proc.addBatch();
       }
@@ -3223,7 +3223,7 @@ public class CodesWriteDAO extends OracleDAO {
           + UPDATE_FARM_TYPE_3_PROC, UPDATE_FARM_TYPE_3_PARAM, false);
     
       int param = 1;
-      proc.setInt(param++, farmType.getFarmTypeId());
+      proc.setLong(param++, farmType.getFarmTypeId() == null ? null : farmType.getFarmTypeId().longValue());
       proc.setString(param++, farmType.getFarmTypeName().trim());
       proc.setString(param++, user);
       proc.execute();
@@ -3362,9 +3362,9 @@ public class CodesWriteDAO extends OracleDAO {
     
       int param = 1;
       proc.setString(param++, farmSubtype.getName().trim());
-      proc.setInt(param++, farmSubtype.getId());
+      proc.setLong(param++, farmSubtype.getId() == null ? null : farmSubtype.getId().longValue());
       proc.setString(param++, user);
-      proc.setInt(param++, farmSubtype.getParentId());
+      proc.setLong(param++, farmSubtype.getParentId() == null ? null : farmSubtype.getParentId().longValue());
       proc.execute();
 
       connection.commit();
@@ -3400,7 +3400,7 @@ public class CodesWriteDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + DELETE_FARM_TYPE_2_PROC, DELETE_FARM_TYPE_2_PARAM, false);
     
-      proc.setInt(1, farmSubtype.getId());
+      proc.setLong(1, farmSubtype.getId() == null ? null : farmSubtype.getId().longValue());
       
       proc.execute();
 
@@ -3504,9 +3504,9 @@ public class CodesWriteDAO extends OracleDAO {
     
       int param = 1;
       proc.setString(param++, farmSubtype.getName().trim());
-      proc.setInt(param++, farmType2Id);
+      proc.setLong(param++, farmType2Id == null ? null : farmType2Id.longValue());
       proc.setString(param++, user);
-      proc.setInt(param++, farmSubtype.getId());
+      proc.setLong(param++, farmSubtype.getId() == null ? null : farmSubtype.getId().longValue());
       proc.execute();
 
       connection.commit();
@@ -3542,7 +3542,7 @@ public class CodesWriteDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + DELETE_FARM_TYPE_1_PROC, DELETE_FARM_TYPE_1_PARAM, false);
     
-      proc.setInt(1, farmSubtype.getId());
+      proc.setLong(1, farmSubtype.getId() == null ? null : farmSubtype.getId().longValue());
       proc.execute();
 
       connection.commit();
@@ -3584,8 +3584,8 @@ public class CodesWriteDAO extends OracleDAO {
     
       int param = 1;
       
-      proc.setInt(param++, lineItem.getId());
-      proc.setInt(param++, lineItem.getLineItem());
+      proc.setLong(param++, lineItem.getId() == null ? null : lineItem.getId().longValue());
+      proc.setShort(param++, lineItem.getLineItem() == null ? null : lineItem.getLineItem().shortValue());
       proc.setIndicator(param++, lineItem.getIsUsedInOpCost());
       proc.setIndicator(param++, lineItem.getIsUsedInDirectExpense());
       proc.setIndicator(param++, lineItem.getIsUsedInMachineryExpense());
@@ -3593,7 +3593,7 @@ public class CodesWriteDAO extends OracleDAO {
       proc.setIndicator(param++, lineItem.getIsUsedInOverheadExpense());
       proc.setIndicator(param++, lineItem.getIsProgramPaymentForTips());
       proc.setIndicator(param++, lineItem.getIsOther());
-      proc.setInt(param++, farmSubtype == null ? null : farmSubtype.getId());
+      proc.setLong(param++, farmSubtype == null ? null : farmSubtype.getId().longValue());
       proc.setString(param++, user);
       proc.execute();
 
@@ -3643,7 +3643,7 @@ public class CodesWriteDAO extends OracleDAO {
     
       int param = 1;
       
-      proc.setInt(param++, lineItem.getLineItem());
+      proc.setShort(param++, lineItem.getLineItem() == null ? null : lineItem.getLineItem().shortValue());
       proc.setIndicator(param++, lineItem.getIsUsedInOpCost());
       proc.setIndicator(param++, lineItem.getIsUsedInDirectExpense());
       proc.setIndicator(param++, lineItem.getIsUsedInMachineryExpense());
@@ -3651,7 +3651,7 @@ public class CodesWriteDAO extends OracleDAO {
       proc.setIndicator(param++, lineItem.getIsUsedInOverheadExpense());
       proc.setIndicator(param++, lineItem.getIsProgramPaymentForTips());
       proc.setIndicator(param++, lineItem.getIsOther());
-      proc.setInt(param++, farmSubtype == null ? null : farmSubtype.getId());
+      proc.setLong(param++, farmSubtype == null ? null : farmSubtype.getId().longValue());
       proc.setString(param++, user);
       proc.execute();
 
@@ -3696,7 +3696,7 @@ public class CodesWriteDAO extends OracleDAO {
     
       int param = 1;
       
-      proc.setInt(param++, id);
+      proc.setLong(param++, id == null ? null : id.longValue());
       proc.execute();
 
       connection.commit();

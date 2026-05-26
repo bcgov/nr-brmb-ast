@@ -160,55 +160,55 @@ public final class ExportDAO {
 
       if(name.equals(ExportService.FILE_01)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F01_PROC, exportType), F01_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_01)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F01_PROC, exportType), F01_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_02)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F02_PROC, exportType), F02_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_03)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F03_PROC, exportType), F03_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_04)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F04_PROC, exportType), F04_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_05)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F05_PROC, exportType), F05_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_07)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F07_PROC, exportType), F07_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_08)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F08_PROC, exportType), F08_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_09)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F09_PROC, exportType), F09_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_20)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F20_PROC, exportType), F20_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_21)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F21_PROC, exportType), F21_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_25)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F25_PROC, exportType), F25_PARAM, true);
       } else if(name.equals(ExportService.FILE_26)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F26_PROC, exportType), F26_PARAM, true);
       } else if(name.equals(ExportService.FILE_30)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F30_PROC, exportType), F30_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_31)) {
         columnHeadings = getFile31ColumnHeadings();
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F31_PROC, exportType), F31_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_40)) {
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F40_PROC, exportType), F40_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       } else if(name.equals(ExportService.FILE_60)) {
         columnHeadings = getFile60ColumnHeadings();
         proc = new DAOStoredProcedure(conn, PACKAGE_NAME + "." + getProcName(F60_PROC, exportType), F60_PARAM, true);
-        proc.setInt(c++, pProgramYear);
+        proc.setShort(c++, pProgramYear == null ? null : pProgramYear.shortValue());
       }
 
       proc.execute();

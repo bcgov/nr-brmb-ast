@@ -105,7 +105,7 @@ public class ImportXmlDAO extends OracleDAO {
           paramCount,
           true);
 
-      proc.setInt(paramCount, importVersionId);
+      proc.setLong(paramCount, importVersionId == null ? null : importVersionId.longValue());
       proc.execute();
       resultSet = proc.getResultSet();
 
@@ -174,7 +174,7 @@ public class ImportXmlDAO extends OracleDAO {
 
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
 
-      proc.setInt(paramCount, importVersionId);
+      proc.setLong(paramCount, importVersionId == null ? null : importVersionId.longValue());
       proc.execute();
       resultSet = proc.getResultSet();
 
@@ -224,7 +224,7 @@ public class ImportXmlDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setLong(index++, importVersionId == null ? null : importVersionId.longValue());
       proc.execute();
       resultSet = proc.getResultSet();
 
@@ -288,7 +288,7 @@ public class ImportXmlDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
       
       int index = 1;
-      proc.setInt(index++, importVersionId);
+      proc.setLong(index++, importVersionId == null ? null : importVersionId.longValue());
       proc.execute();
       resultSet = proc.getResultSet();
 

@@ -211,7 +211,7 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_CLIENT_PROC, UPDATE_CLIENT_PARAM, false);
 
       int param = 1;
-      proc.setInt(param++, client.getClientId());
+      proc.setLong(param++, client.getClientId() == null ? null : client.getClientId().longValue());
       proc.setString(param++, client.getParticipantClassCode());
       proc.setInt(param++, client.getParticipantPin());
       proc.setString(param++, client.getSin());
@@ -265,8 +265,8 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_PROGRAM_YEAR_VERSION_PROC, UPDATE_PROGRAM_YEAR_VERSION_PARAM, false);
 
       int param = 1;
-      proc.setInt(param++, farmingYear.getProgramYearVersionId());
-      proc.setInt(param++, farmingYear.getFarmYears());
+      proc.setLong(param++, farmingYear.getProgramYearVersionId() == null ? null : farmingYear.getProgramYearVersionId().longValue());
+      proc.setShort(param++, farmingYear.getFarmYears() == null ? null : farmingYear.getFarmYears().shortValue());
       proc.setInt(param++, farmingYear.getCommonShareTotal());
       proc.setString(param++, String.valueOf(farmingYear.getAgristabFedStsCode()));
       proc.setString(param++, farmingYear.getMunicipalityCode());
@@ -340,7 +340,7 @@ public class CalculatorDAO extends OracleDAO {
           + GET_NEW_OP_SCHEDULE_PROC, GET_NEW_OP_SCHEDULE_PARAM, Types.VARCHAR);
       
       int param = 1;
-      proc.setInt(param++, clientId);
+      proc.setLong(param++, clientId == null ? null : clientId.longValue());
       proc.execute();
       
       schedule = proc.getString(1);
@@ -465,27 +465,27 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_OPERATION_PROC, UPDATE_OPERATION_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, fo.getFarmingOperationId());
-      proc.setInt(param++, fo.getOperationNumber());
+      proc.setLong(param++, fo.getFarmingOperationId() == null ? null : fo.getFarmingOperationId().longValue());
+      proc.setShort(param++, fo.getOperationNumber() == null ? null : fo.getOperationNumber().shortValue());
       proc.setString(param++, fo.getAccountingCode());
       proc.setDate(param++, fo.getFiscalYearStart());
       proc.setDate(param++, fo.getFiscalYearEnd());
       proc.setInt(param++, fo.getPartnershipPin());
       proc.setString(param++, fo.getPartnershipName());
-      proc.setDouble(param++, fo.getPartnershipPercent());
+      proc.setBigDecimal(param++, fo.getPartnershipPercent() == null ? null : BigDecimal.valueOf(fo.getPartnershipPercent()));
       proc.setString(param++, getIndicatorYN(fo.getIsCropDisaster()));
       proc.setString(param++, getIndicatorYN(fo.getIsCropShare()));
       proc.setString(param++, getIndicatorYN(fo.getIsFeederMember()));
       proc.setString(param++, getIndicatorYN(fo.getIsLandlord()));
       proc.setString(param++, getIndicatorYN(fo.getIsLivestockDisaster()));
-      proc.setDouble(param++, fo.getBusinessUseHomeExpense());
-      proc.setDouble(param++, fo.getFarmingExpenses());
-      proc.setDouble(param++, fo.getGrossIncome());
-      proc.setDouble(param++, fo.getInventoryAdjustments());
-      proc.setDouble(param++, fo.getNetFarmIncome());
-      proc.setDouble(param++, fo.getNetIncomeAfterAdj());
-      proc.setDouble(param++, fo.getNetIncomeBeforeAdj());
-      proc.setDouble(param++, fo.getOtherDeductions());
+      proc.setBigDecimal(param++, fo.getBusinessUseHomeExpense() == null ? null : BigDecimal.valueOf(fo.getBusinessUseHomeExpense()));
+      proc.setBigDecimal(param++, fo.getFarmingExpenses() == null ? null : BigDecimal.valueOf(fo.getFarmingExpenses()));
+      proc.setBigDecimal(param++, fo.getGrossIncome() == null ? null : BigDecimal.valueOf(fo.getGrossIncome()));
+      proc.setBigDecimal(param++, fo.getInventoryAdjustments() == null ? null : BigDecimal.valueOf(fo.getInventoryAdjustments()));
+      proc.setBigDecimal(param++, fo.getNetFarmIncome() == null ? null : BigDecimal.valueOf(fo.getNetFarmIncome()));
+      proc.setBigDecimal(param++, fo.getNetIncomeAfterAdj() == null ? null : BigDecimal.valueOf(fo.getNetIncomeAfterAdj()));
+      proc.setBigDecimal(param++, fo.getNetIncomeBeforeAdj() == null ? null : BigDecimal.valueOf(fo.getNetIncomeBeforeAdj()));
+      proc.setBigDecimal(param++, fo.getOtherDeductions() == null ? null : BigDecimal.valueOf(fo.getOtherDeductions()));
       proc.setInt(param++, fo.getRevisionCount());
       proc.setString(param++, user);
       proc.execute();
@@ -541,9 +541,9 @@ public class CalculatorDAO extends OracleDAO {
           + DELETE_OPERATION_PROC, DELETE_OPERATION_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, farmingOperationId);
-      proc.setInt(param++, programYearVersionId);
-      proc.setInt(param++, scenarioId);
+      proc.setLong(param++, farmingOperationId == null ? null : farmingOperationId.longValue());
+      proc.setLong(param++, programYearVersionId == null ? null : programYearVersionId.longValue());
+      proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
       proc.setInt(param++, operationRevisionCount);
       proc.setString(param++, user);
       proc.execute();
@@ -605,7 +605,7 @@ public class CalculatorDAO extends OracleDAO {
         Array oracleArray = createStringOracleArray(transaction, codeList);
   
         int param = 1;
-        proc.setInt(param++, fo.getFarmingOperationId());
+        proc.setLong(param++, fo.getFarmingOperationId() == null ? null : fo.getFarmingOperationId().longValue());
         proc.setArray(param++, oracleArray);
         proc.setString(param++, user);
         proc.execute();
@@ -660,13 +660,13 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_SCENARIO_PROC, UPDATE_SCENARIO_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, scenario.getScenarioId());
+      proc.setLong(param++, scenario.getScenarioId() == null ? null : scenario.getScenarioId().longValue());
       proc.setString(param++, scenario.getDescription());
       proc.setString(param++, newStateCode);
       proc.setString(param++, stateChangeReason);
       proc.setString(param++, scenario.getScenarioCategoryCode());
       proc.setString(param++, getIndicatorYN(scenario.getIsDefaultInd()));
-      proc.setInt(param++, scenario.getVerifierUserId());
+      proc.setLong(param++, scenario.getVerifierUserId() == null ? null : scenario.getVerifierUserId().longValue());
       proc.setString(param++, user);
       proc.execute();
 
@@ -717,7 +717,7 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_PARTICIPANT_DATA_SRC_PROC, UPDATE_PARTICIPANT_DATA_SRC_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, scenario.getScenarioId());
+      proc.setLong(param++, scenario.getScenarioId() == null ? null : scenario.getScenarioId().longValue());
       proc.setString(param++, participantDataSrcCode);
       proc.setString(param++, user);
       proc.execute();
@@ -847,8 +847,8 @@ public class CalculatorDAO extends OracleDAO {
 
         int param = 1;
         proc.setInt(param++, participantPin);
-        proc.setInt(param++, year);
-        proc.setInt(param++, excludedProgramYearVersionNumber);
+        proc.setShort(param++, (short)year);
+        proc.setLong(param++, excludedProgramYearVersionNumber == null ? null : excludedProgramYearVersionNumber.longValue());
         proc.execute();
 
         try (ResultSet rs = proc.getResultSet();) {
@@ -922,8 +922,8 @@ public class CalculatorDAO extends OracleDAO {
 
         int param = 1;
         proc.setInt(param++, participantPin);
-        proc.setInt(param++, year);
-        proc.setInt(param++, excludedProgramYearVersionNumber);
+        proc.setShort(param++, (short)year);
+        proc.setLong(param++, excludedProgramYearVersionNumber == null ? null : excludedProgramYearVersionNumber.longValue());
         proc.execute();
 
         try (ResultSet rs = proc.getResultSet();) {
@@ -997,7 +997,7 @@ public class CalculatorDAO extends OracleDAO {
           + ASSIGN_TO_USER_PROC, ASSIGN_TO_USER_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, scenarioId);
+      proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
       proc.setInt(param++, scenarioRevisionCount);
       proc.setString(param++, userGuid);
       proc.setString(param++, user);
@@ -1065,7 +1065,7 @@ public class CalculatorDAO extends OracleDAO {
             + SAVE_SCENARIO_AS_NEW_PROC, paramCount, Types.BIGINT); ) {
         
         int param = 1;
-        proc.setInt(param++, scenarioId);
+        proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
         proc.setString(param++, scenarioTypeCode);
         proc.setString(param++, scenarioCategoryCode);
         proc.setString(param++, applicationVersion);
@@ -1314,7 +1314,7 @@ public class CalculatorDAO extends OracleDAO {
       
         int c = 1;
         
-        proc.setInt(c++, fo.getFarmingOperationId());
+        proc.setLong(c++, fo.getFarmingOperationId() == null ? null : fo.getFarmingOperationId().longValue());
         proc.setString(c++, fo.getSchedule());
         proc.setInt(c++, fo.getRevisionCount());
         proc.setString(c++, user);
@@ -1371,7 +1371,7 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_SCENARIO_REVISION_COUNT_PROC, UPDATE_SCENARIO_REVISION_COUNT_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, scenarioId);
+      proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
       proc.setInt(param++, revisionCount);
       proc.setString(param++, user);
       proc.execute();
@@ -1445,7 +1445,7 @@ public class CalculatorDAO extends OracleDAO {
           + ADD_SCENARIO_LOG_PROC, ADD_SCENARIO_LOG_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, scenarioId);
+      proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
       proc.setString(param++, logMessage);
       proc.setString(param++, user);
       proc.execute();
@@ -1493,7 +1493,7 @@ public class CalculatorDAO extends OracleDAO {
       proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
           + DELETE_BPU_XREFS_PROC, paramCount, false);
       
-      proc.setInt(paramCount, scenarioId);
+      proc.setLong(paramCount, scenarioId == null ? null : scenarioId.longValue());
       proc.execute();
 
       connection.commit();
@@ -1547,8 +1547,8 @@ public class CalculatorDAO extends OracleDAO {
       for(Integer bpuId : bpuIds) {
       	
       	int param = 1;
-      	proc.setInt(param++, scenarioId);
-      	proc.setInt(param++, bpuId);
+      	proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
+      	proc.setLong(param++, bpuId == null ? null : bpuId.longValue());
         proc.setString(param++, scenarioBpuPurposeCode);
       	proc.setString(param++, user);
       	
@@ -1966,9 +1966,9 @@ public class CalculatorDAO extends OracleDAO {
       
       int param = 1;
       proc.setInt(param++, participantPin);
-      proc.setInt(param++, programYear);
-      proc.setInt(param++, combinedFarmNumber);
-      proc.setInt(param++, scenarioNumber);
+      proc.setShort(param++, programYear == null ? null : programYear.shortValue());
+      proc.setLong(param++, combinedFarmNumber == null ? null : combinedFarmNumber.longValue());
+      proc.setLong(param++, scenarioNumber == null ? null : scenarioNumber.longValue());
       proc.setString(param++, user);
       proc.execute();
 
@@ -2021,9 +2021,9 @@ public class CalculatorDAO extends OracleDAO {
           + COMBINED_FARM_ADD_PROC, COMBINED_FARM_ADD_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, currentScenarioId);
+      proc.setLong(param++, currentScenarioId == null ? null : currentScenarioId.longValue());
       proc.setInt(param++, pinToAdd);
-      proc.setInt(param++, programYear);
+      proc.setShort(param++, programYear == null ? null : programYear.shortValue());
       proc.setString(param++, user);
       proc.execute();
 
@@ -2074,8 +2074,8 @@ public class CalculatorDAO extends OracleDAO {
           + COMBINED_FARM_REMOVE_PROC, COMBINED_FARM_REMOVE_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, scenarioIdToRemove);
-      proc.setInt(param++, combinedFarmNumber);
+      proc.setLong(param++, scenarioIdToRemove == null ? null : scenarioIdToRemove.longValue());
+      proc.setLong(param++, combinedFarmNumber == null ? null : combinedFarmNumber.longValue());
       proc.setString(param++, user);
       proc.execute();
 
@@ -2123,7 +2123,7 @@ public class CalculatorDAO extends OracleDAO {
         
         int param = 1;
         proc.setArray(param++, oracleArray);
-        proc.setInt(param++, programYear);
+        proc.setShort(param++, programYear == null ? null : programYear.shortValue());
         proc.setIndicator(param++, flagReasonabilityTestsStale);
         proc.setString(param++, user);
         proc.execute();
@@ -2176,7 +2176,7 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_CASH_MARGINS_IND_PROC, UPDATE_CASH_MARGINS_IND_PARAM, false);
 
       int index = 1;
-      proc.setInt(index++, scenarioId);
+      proc.setLong(index++, scenarioId == null ? null : scenarioId.longValue());
       proc.setIndicator(index++, cashMarginsInd);
       proc.setDate(index++, cashMarginsOptInDate);
       proc.setString(index++, userId);
@@ -2231,7 +2231,7 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_NON_PARTICIPANT_IND_PROC, UPDATE_NON_PARTICIPANT_IND_PARAM, false);
 
       int index = 1;
-      proc.setInt(index++, scenarioId);
+      proc.setLong(index++, scenarioId == null ? null : scenarioId.longValue());
       proc.setInt(index++, scenarioRevisionCount);
       proc.setIndicator(index++, nonParticipantInd);
       proc.setString(index++, userId);
@@ -2287,7 +2287,7 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_LATE_PARTICIPANT_IND_PROC, UPDATE_LATE_PARTICIPANT_IND_PARAM, false);
       
       int index = 1;
-      proc.setInt(index++, scenarioId);
+      proc.setLong(index++, scenarioId == null ? null : scenarioId.longValue());
       proc.setInt(index++, scenarioRevisionCount);
       proc.setIndicator(index++, lateParticipant);
       proc.setString(index++, userId);
@@ -2333,8 +2333,8 @@ public class CalculatorDAO extends OracleDAO {
               + UPDATE_FARM_TYPE_PROC, paramCount, false); ) {
 
           int param = 1;
-          proc.setInt(param++, scenario.getScenarioId());
-          proc.setInt(param++, scenario.getFarmingYear().getProgramYearId());
+          proc.setLong(param++, scenario.getScenarioId() == null ? null : scenario.getScenarioId().longValue());
+          proc.setLong(param++, scenario.getFarmingYear().getProgramYearId() == null ? null : scenario.getFarmingYear().getProgramYearId().longValue());
           proc.setString(param++, farmType);
           proc.setString(param++, user);
           proc.execute();
@@ -2380,8 +2380,8 @@ public class CalculatorDAO extends OracleDAO {
             + UPDATE_PY_LOCAL_RECEIVED_DATES_PROC, paramCount, false); ) {
         
         int param = 1;
-        proc.setInt(param++, scenario.getScenarioId());
-        proc.setInt(param++, scenario.getFarmingYear().getProgramYearId());
+        proc.setLong(param++, scenario.getScenarioId() == null ? null : scenario.getScenarioId().longValue());
+        proc.setLong(param++, scenario.getFarmingYear().getProgramYearId() == null ? null : scenario.getFarmingYear().getProgramYearId().longValue());
         proc.setDate(param++, localStatementAReceivedDate);
         proc.setDate(param++, localSupplementalReceivedDate);
         proc.setString(param++, user);
@@ -2426,10 +2426,10 @@ public class CalculatorDAO extends OracleDAO {
           + CREATE_ENW_ENROLMENT_PROC, CREATE_ENW_ENROLMENT_PARAM, false);
       
       int param = 1;
-      proc.setInt(param++, enwEnrolment.getScenario().getScenarioId());
-      proc.setInt(param++, enwEnrolment.getEnrolmentYear());
-      proc.setDouble(param++, enwEnrolment.getEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getContributionMargin());
+      proc.setLong(param++, enwEnrolment.getScenario().getScenarioId() == null ? null : enwEnrolment.getScenario().getScenarioId().longValue());
+      proc.setShort(param++, enwEnrolment.getEnrolmentYear() == null ? null : enwEnrolment.getEnrolmentYear().shortValue());
+      proc.setBigDecimal(param++, enwEnrolment.getEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getContributionMargin()));
       
       proc.setIndicator(param++, enwEnrolment.getBenefitCalculated());
       proc.setIndicator(param++, enwEnrolment.getProxyMarginsCalculated());
@@ -2437,44 +2437,44 @@ public class CalculatorDAO extends OracleDAO {
       proc.setIndicator(param++, enwEnrolment.getHasProductiveUnits());
       proc.setIndicator(param++, enwEnrolment.getHasBpus());
       
-      proc.setDouble(param++, enwEnrolment.getBenefitEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getBenefitContributionMargin());
-      proc.setDouble(param++, enwEnrolment.getProxyEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getProxyContributionMargin());
-      proc.setDouble(param++, enwEnrolment.getManualEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getManualContributionMargin());
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitContributionMargin()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyContributionMargin()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualContributionMargin()));
       
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus4());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus5());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus6());
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus4()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus5() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus5()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus6() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus6()));
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus2Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus3Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus4Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus5Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus6Used());
       
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus4());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus5());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus6());
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus4()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus5() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus5()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus6() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus6()));
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus2Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus3Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus4Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus5Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus6Used());
       
-      proc.setDouble(param++, enwEnrolment.getProxyMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getProxyMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getProxyMarginYearMinus4());
+      proc.setBigDecimal(param++, enwEnrolment.getProxyMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyMarginYearMinus4()));
       
-      proc.setDouble(param++, enwEnrolment.getManualMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getManualMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getManualMarginYearMinus4());
+      proc.setBigDecimal(param++, enwEnrolment.getManualMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualMarginYearMinus4()));
       
-      proc.setDouble(param++, enwEnrolment.getCombinedFarmPercent());
+      proc.setBigDecimal(param++, enwEnrolment.getCombinedFarmPercent() == null ? null : BigDecimal.valueOf(enwEnrolment.getCombinedFarmPercent()));
       proc.setString(param++, enwEnrolment.getEnrolmentCalculationTypeCode());
       proc.setString(param++, user);
       
@@ -2518,10 +2518,10 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_ENW_ENROLMENT_PROC, UPDATE_ENW_ENROLMENT_PARAM, false);
 
       int param = 1;
-      proc.setInt(param++, enwEnrolment.getScenario().getScenarioId());
-      proc.setInt(param++, enwEnrolment.getEnrolmentYear());
-      proc.setDouble(param++, enwEnrolment.getEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getContributionMargin());
+      proc.setLong(param++, enwEnrolment.getScenario().getScenarioId() == null ? null : enwEnrolment.getScenario().getScenarioId().longValue());
+      proc.setShort(param++, enwEnrolment.getEnrolmentYear() == null ? null : enwEnrolment.getEnrolmentYear().shortValue());
+      proc.setBigDecimal(param++, enwEnrolment.getEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getContributionMargin()));
       
       proc.setIndicator(param++, enwEnrolment.getBenefitCalculated());
       proc.setIndicator(param++, enwEnrolment.getProxyMarginsCalculated());
@@ -2529,44 +2529,44 @@ public class CalculatorDAO extends OracleDAO {
       proc.setIndicator(param++, enwEnrolment.getHasProductiveUnits());
       proc.setIndicator(param++, enwEnrolment.getHasBpus());
       
-      proc.setDouble(param++, enwEnrolment.getBenefitEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getBenefitContributionMargin());
-      proc.setDouble(param++, enwEnrolment.getProxyEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getProxyContributionMargin());
-      proc.setDouble(param++, enwEnrolment.getManualEnrolmentFee());
-      proc.setDouble(param++, enwEnrolment.getManualContributionMargin());
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitContributionMargin()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyContributionMargin()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualEnrolmentFee() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualEnrolmentFee()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualContributionMargin() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualContributionMargin()));
       
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus4());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus5());
-      proc.setDouble(param++, enwEnrolment.getMarginYearMinus6());
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus4()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus5() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus5()));
+      proc.setBigDecimal(param++, enwEnrolment.getMarginYearMinus6() == null ? null : BigDecimal.valueOf(enwEnrolment.getMarginYearMinus6()));
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus2Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus3Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus4Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus5Used());
       proc.setIndicator(param++, enwEnrolment.getMarginYearMinus6Used());
       
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus4());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus5());
-      proc.setDouble(param++, enwEnrolment.getBenefitMarginYearMinus6());
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus4()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus5() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus5()));
+      proc.setBigDecimal(param++, enwEnrolment.getBenefitMarginYearMinus6() == null ? null : BigDecimal.valueOf(enwEnrolment.getBenefitMarginYearMinus6()));
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus2Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus3Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus4Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus5Used());
       proc.setIndicator(param++, enwEnrolment.getBenefitMarginYearMinus6Used());
       
-      proc.setDouble(param++, enwEnrolment.getProxyMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getProxyMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getProxyMarginYearMinus4());
+      proc.setBigDecimal(param++, enwEnrolment.getProxyMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getProxyMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getProxyMarginYearMinus4()));
       
-      proc.setDouble(param++, enwEnrolment.getManualMarginYearMinus2());
-      proc.setDouble(param++, enwEnrolment.getManualMarginYearMinus3());
-      proc.setDouble(param++, enwEnrolment.getManualMarginYearMinus4());
+      proc.setBigDecimal(param++, enwEnrolment.getManualMarginYearMinus2() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualMarginYearMinus2()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualMarginYearMinus3() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualMarginYearMinus3()));
+      proc.setBigDecimal(param++, enwEnrolment.getManualMarginYearMinus4() == null ? null : BigDecimal.valueOf(enwEnrolment.getManualMarginYearMinus4()));
       
-      proc.setDouble(param++, enwEnrolment.getCombinedFarmPercent());
+      proc.setBigDecimal(param++, enwEnrolment.getCombinedFarmPercent() == null ? null : BigDecimal.valueOf(enwEnrolment.getCombinedFarmPercent()));
       proc.setString(param++, enwEnrolment.getEnrolmentCalculationTypeCode());
       proc.setInt(param++, enwEnrolment.getRevisionCount());
       proc.setString(param++, user);
@@ -2668,7 +2668,7 @@ public class CalculatorDAO extends OracleDAO {
           + UPDATE_PERSON_PROC, UPDATE_PERSON_PARAM, false);) {
         
         int param = 1;
-        proc.setInt(param++, person.getPersonId());
+        proc.setLong(param++, person.getPersonId() == null ? null : person.getPersonId().longValue());
         proc.setString(param++, person.getAddressLine1());
         proc.setString(param++, person.getAddressLine2());
         proc.setString(param++, person.getCity());
@@ -2731,8 +2731,8 @@ public class CalculatorDAO extends OracleDAO {
         proc.setString(param++, client.getBusinessNumber());
         proc.setString(param++, client.getTrustNumber());
         proc.setString(param++, client.getParticipantClassCode());
-        proc.setInt(param++, client.getOwner().getPersonId());
-        proc.setInt(param++, client.getContact().getPersonId());
+        proc.setLong(param++, client.getOwner().getPersonId() == null ? null : client.getOwner().getPersonId().longValue());
+        proc.setLong(param++, client.getContact().getPersonId() == null ? null : client.getContact().getPersonId().longValue());
         proc.setString(param++, user);
         proc.execute();
         
@@ -2828,7 +2828,7 @@ public class CalculatorDAO extends OracleDAO {
           + CREATE_PYV_PROC, CREATE_PYV_PARAM, Types.BIGINT);) {
         
         int param = 1;
-        proc.setInt(param++, programYearId);
+        proc.setLong(param++, programYearId == null ? null : programYearId.longValue());
         proc.setString(param++, municipalityCode);
         proc.setString(param++, user);
         proc.execute();
@@ -2878,7 +2878,7 @@ public class CalculatorDAO extends OracleDAO {
           + CREATE_SCENARIO_PROC, paramCount, Types.BIGINT); ) {
         
         int param = 1;
-        proc.setInt(param++, programYearVersionId);
+        proc.setLong(param++, programYearVersionId == null ? null : programYearVersionId.longValue());
         proc.setString(param++, scenarioClassCode);
         proc.setString(param++, scenarioCategoryCode);
         proc.setString(param++, user);
@@ -2933,7 +2933,7 @@ public class CalculatorDAO extends OracleDAO {
           proc.setString(param++, p.getFirstName());
           proc.setString(param++, p.getLastName());
           proc.setString(param++, p.getCorpName());
-          proc.setInt(param++, p.getFarmingOperation().getFarmingOperationId());
+          proc.setLong(param++, p.getFarmingOperation().getFarmingOperationId() == null ? null : p.getFarmingOperation().getFarmingOperationId().longValue());
           proc.setString(param++, user);
           
           proc.addBatch();
@@ -2980,14 +2980,14 @@ public class CalculatorDAO extends OracleDAO {
         for (FarmingOperationPartner p : partners) {
           
           int param = 1;
-          proc.setInt(param++, p.getFarmingOperationPartnerId());
+          proc.setLong(param++, p.getFarmingOperationPartnerId() == null ? null : p.getFarmingOperationPartnerId().longValue());
           proc.setBigDecimal(param++, p.getPartnerPercent());
           proc.setInt(param++, p.getParticipantPin());
           proc.setString(param++, p.getPartnerSin());
           proc.setString(param++, p.getFirstName());
           proc.setString(param++, p.getLastName());
           proc.setString(param++, p.getCorpName());
-          proc.setInt(param++, p.getFarmingOperation().getFarmingOperationId());
+          proc.setLong(param++, p.getFarmingOperation().getFarmingOperationId() == null ? null : p.getFarmingOperation().getFarmingOperationId().longValue());
           proc.setInt(param++, p.getRevisionCount());
           proc.setString(param++, user);
           
@@ -3034,7 +3034,7 @@ public class CalculatorDAO extends OracleDAO {
         for (FarmingOperationPartner partner : partners) {
           
           int param = 1;
-          proc.setInt(param++, partner.getFarmingOperationPartnerId());
+          proc.setLong(param++, partner.getFarmingOperationPartnerId() == null ? null : partner.getFarmingOperationPartnerId().longValue());
           proc.setInt(param++, partner.getRevisionCount());
           
           proc.addBatch();
@@ -3173,7 +3173,7 @@ public class CalculatorDAO extends OracleDAO {
       
         int c = 1;
         
-        proc.setInt(c++, scenarioId);
+        proc.setLong(c++, scenarioId == null ? null : scenarioId.longValue());
         proc.setString(c++, parameterName);
         proc.setString(c++, parameterValue);
         proc.setString(c++, user);
@@ -3266,7 +3266,7 @@ public class CalculatorDAO extends OracleDAO {
             + DELETE_USER_SCENARIO_PROC, paramCount, false); ) {
         
         int param = 1;
-        proc.setInt(param++, scenarioId);
+        proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
         proc.execute();
       }
 

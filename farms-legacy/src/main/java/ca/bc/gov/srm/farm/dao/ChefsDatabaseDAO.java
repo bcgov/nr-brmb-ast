@@ -10,6 +10,7 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
+import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -157,7 +158,7 @@ public class ChefsDatabaseDAO extends OracleDAO {
         for (ChefsSubmission submission : submissions) {
           
           int param = 1;
-          proc.setInt(param++, submission.getSubmissionId());
+          proc.setLong(param++, submission.getSubmissionId() == null ? null : submission.getSubmissionId().longValue());
           proc.setString(param++, submission.getValidationTaskGuid());
           proc.setString(param++, submission.getMainTaskGuid());
           proc.setString(param++, submission.getBceidFormInd());
@@ -497,8 +498,8 @@ public class ChefsDatabaseDAO extends OracleDAO {
           int param = 1;
           FarmingOperation operation = puc.getFarmingOperation();
 
-          proc.setDouble(param++, puc.getAdjAmount());
-          proc.setInt(param++, operation.getFarmingOperationId());
+          proc.setBigDecimal(param++, puc.getAdjAmount() == null ? null : BigDecimal.valueOf(puc.getAdjAmount()));
+          proc.setLong(param++, operation.getFarmingOperationId() == null ? null : operation.getFarmingOperationId().longValue());
           proc.setString(param++, puc.getStructureGroupCode());
           proc.setString(param++, puc.getInventoryItemCode());
           proc.setString(param++, ParticipantDataSrcCodes.LOCAL);
@@ -551,10 +552,10 @@ public class ChefsDatabaseDAO extends OracleDAO {
           int param = 1;
           FarmingOperation operation = ie.getFarmingOperation();
 
-          proc.setDouble(param++, ie.getAdjAmount());
+          proc.setBigDecimal(param++, ie.getAdjAmount() == null ? null : BigDecimal.valueOf(ie.getAdjAmount()));
           proc.setString(param++, getIndicatorYN(ie.getIsExpense()));
-          proc.setInt(param++, operation.getFarmingOperationId());
-          proc.setInt(param++, ie.getLineItem().getLineItem());
+          proc.setLong(param++, operation.getFarmingOperationId() == null ? null : operation.getFarmingOperationId().longValue());
+          proc.setShort(param++, ie.getLineItem().getLineItem() == null ? null : ie.getLineItem().getLineItem().shortValue());
           proc.setString(param++, user);
 
           proc.addBatch();
@@ -611,20 +612,20 @@ public class ChefsDatabaseDAO extends OracleDAO {
           }
           int param = 1;
 
-          proc.setInt(param++, operation.getFarmingOperationId());
-          proc.setDouble(param++, item.getAdjPriceStart());
-          proc.setDouble(param++, item.getAdjPriceEnd());
-          proc.setDouble(param++, item.getAdjEndYearProducerPrice());
-          proc.setDouble(param++, item.getAdjQuantityStart());
-          proc.setDouble(param++, item.getAdjQuantityEnd());
-          proc.setDouble(param++, item.getAdjStartOfYearAmount());
-          proc.setDouble(param++, item.getAdjEndOfYearAmount());
+          proc.setLong(param++, operation.getFarmingOperationId() == null ? null : operation.getFarmingOperationId().longValue());
+          proc.setBigDecimal(param++, item.getAdjPriceStart() == null ? null : BigDecimal.valueOf(item.getAdjPriceStart()));
+          proc.setBigDecimal(param++, item.getAdjPriceEnd() == null ? null : BigDecimal.valueOf(item.getAdjPriceEnd()));
+          proc.setBigDecimal(param++, item.getAdjEndYearProducerPrice() == null ? null : BigDecimal.valueOf(item.getAdjEndYearProducerPrice()));
+          proc.setBigDecimal(param++, item.getAdjQuantityStart() == null ? null : BigDecimal.valueOf(item.getAdjQuantityStart()));
+          proc.setBigDecimal(param++, item.getAdjQuantityEnd() == null ? null : BigDecimal.valueOf(item.getAdjQuantityEnd()));
+          proc.setBigDecimal(param++, item.getAdjStartOfYearAmount() == null ? null : BigDecimal.valueOf(item.getAdjStartOfYearAmount()));
+          proc.setBigDecimal(param++, item.getAdjEndOfYearAmount() == null ? null : BigDecimal.valueOf(item.getAdjEndOfYearAmount()));
 
           if (cropItem != null) {
-            proc.setDouble(param++, cropItem.getAdjQuantityProduced());
+            proc.setBigDecimal(param++, cropItem.getAdjQuantityProduced() == null ? null : BigDecimal.valueOf(cropItem.getAdjQuantityProduced()));
             proc.setString(param++, cropItem.getCropUnitCode());
-            proc.setDouble(param++, cropItem.getOnFarmAcres());
-            proc.setDouble(param++, cropItem.getUnseedableAcres());
+            proc.setBigDecimal(param++, cropItem.getOnFarmAcres() == null ? null : BigDecimal.valueOf(cropItem.getOnFarmAcres()));
+            proc.setBigDecimal(param++, cropItem.getUnseedableAcres() == null ? null : BigDecimal.valueOf(cropItem.getUnseedableAcres()));
           } else if (inventoryClassCode.equals(InventoryClassCodes.LIVESTOCK)) {
             proc.setNull(param++, Types.NUMERIC);
             proc.setString(param++, CropUnitCodes.getLivestockUnitCode(item.getInventoryItemCode()));
@@ -638,7 +639,7 @@ public class ChefsDatabaseDAO extends OracleDAO {
           } else {
             throw new UnsupportedOperationException("Unknown inventory class code: " + inventoryClassCode);
           }
-          proc.setInt(param++, item.getCommodityXrefId());
+          proc.setLong(param++, item.getCommodityXrefId() == null ? null : item.getCommodityXrefId().longValue());
           proc.setString(param++, item.getInventoryItemCode());
           proc.setString(param++, inventoryClassCode);
           proc.setString(param++, user);
@@ -681,7 +682,7 @@ public class ChefsDatabaseDAO extends OracleDAO {
         int param = 1;
         proc.setString(param++, entity.getCrmEntityGuid());
         proc.setString(param++, entity.getCrmEntityTypeCode());
-        proc.setInt(param++, entity.getChefSubmissionId());
+        proc.setLong(param++, entity.getChefSubmissionId() == null ? null : entity.getChefSubmissionId().longValue());
         proc.setString(param++, user);
         proc.execute();
       }
@@ -790,7 +791,7 @@ public class ChefsDatabaseDAO extends OracleDAO {
         int param = 1;
         proc.setString(param++, formTypeCode);
         proc.setInt(param++, participantPin);
-        proc.setInt(param++, programYear);
+        proc.setShort(param++, programYear == null ? null : programYear.shortValue());
         proc.setString(param++, submissionGuid);
         proc.execute();
 

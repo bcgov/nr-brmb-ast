@@ -46,6 +46,7 @@ GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_operation TO "app_farms_r
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_partner TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_user_scenario TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_user_scenarios TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.delete_pin TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.log_combined_farm_update TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.log_import_comments TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_calculator_pkg.save_bpu_xref TO "app_farms_rest_proxy";

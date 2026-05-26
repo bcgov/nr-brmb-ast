@@ -296,7 +296,7 @@ public class CalculatorViewDAO extends OracleDAO {
           + PYV_HAS_VERIFIED_SC_PROC, PYV_HAS_VERIFIED_SC_PARAM, Types.BIGINT);
 
       int param = 1;
-      proc.setInt(param++, programYearVersionId);
+      proc.setLong(param++, programYearVersionId == null ? null : programYearVersionId.longValue());
       proc.execute();
       
       int resultInt = (int)proc.getLong(1);
@@ -352,7 +352,7 @@ public class CalculatorViewDAO extends OracleDAO {
           + GET_DEDUCTION_LINE_ITEMS_PROC, GET_DEDUCTION_LINE_ITEMS_PARAM, true);
 
       int param = 1;
-      proc.setInt(param++, programYear);
+      proc.setLong(param++, programYear == null ? null : programYear.longValue());
       proc.setString(param++, deductionType);
       proc.execute();
 
