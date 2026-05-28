@@ -10,6 +10,7 @@ returns table(
     failed_to_generate_ind          farms.farm_program_enrolments.failed_to_generate_ind%type,
     failed_reason                   farms.farm_program_enrolments.failed_reason%type,
     enrolment_fee                   farms.farm_program_enrolments.enrolment_fee%type,
+    previous_year_enrolment_fee     farms.farm_program_enrolments.enrolment_fee%type,
     generated_date                  farms.farm_program_enrolments.generated_date%type,
     generated_from_cra_ind          farms.farm_program_enrolments.generated_from_cra_ind%type,
     generated_from_enw_ind          farms.farm_program_enrolments.generated_from_enw_ind%type,
