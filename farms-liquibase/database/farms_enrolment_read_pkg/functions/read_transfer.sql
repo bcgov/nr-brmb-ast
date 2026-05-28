@@ -41,6 +41,7 @@ as $$
            pe.failed_to_generate_ind,
            pe.failed_reason,
            pe.enrolment_fee,
+           pype.enrolment_fee previous_year_enrolment_fee,
            pe.generated_date,
            pe.generated_from_cra_ind,
            pe.generated_from_enw_ind,
@@ -72,6 +73,8 @@ as $$
         where e.failed_to_generate_ind = 'N'
         and e.enrolment_year = in_enrolment_year
     ) pe on pe.agristability_client_id = ac.agristability_client_id
+    left join farms.farm_program_enrolments pype on pype.agristability_client_id = ac.agristability_client_id
+                                                 and pype.enrolment_year = in_enrolment_year - 1
     left outer join farms.farm_program_years py on py.agristability_client_id = ac.agristability_client_id
                                                 and py.year = in_enrolment_year
     left outer join farms.farm_sector_detail_xref x on x.sector_detail_code = pe.sector_detail_code
