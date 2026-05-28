@@ -76,7 +76,8 @@ public class Enrolment implements Serializable {
   private Integer enrolmentYear;
   
   private Double enrolmentFee;
-  
+  private Double previousYearEnrolmentFee;
+
   private Date generatedDate;
   
   private Date whenUpdated;
@@ -134,6 +135,20 @@ public class Enrolment implements Serializable {
    */
   public void setEnrolmentFee(Double enrolmentFee) {
     this.enrolmentFee = enrolmentFee;
+  }
+  
+  /**
+   * @return the previousYearEnrolmentFee
+   */
+  public Double getPreviousYearEnrolmentFee() {
+    return previousYearEnrolmentFee;
+  }
+
+  /**
+   * @param previousYearEnrolmentFee the previousYearEnrolmentFee to set
+   */
+  public void setPreviousYearEnrolmentFee(Double previousYearEnrolmentFee) {
+    this.previousYearEnrolmentFee = previousYearEnrolmentFee;
   }
 
   /**
