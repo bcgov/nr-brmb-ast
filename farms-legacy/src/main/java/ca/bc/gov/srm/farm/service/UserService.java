@@ -36,7 +36,7 @@ public interface UserService {
 
   List<FarmUser> getAllUsers(Boolean isDeleted) throws ServiceException;
 
-  UserListView[] getVerifiersFromWebADE() throws ServiceException;
+  UserListView[] getVerifiersFromCRM() throws ServiceException;
 
   void syncVerifiers(String user) throws ServiceException;
 
