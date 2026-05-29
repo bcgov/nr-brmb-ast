@@ -222,6 +222,11 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         for (CrmTeamResource team : teamList.getList()) {
           String teamId = team.getTeamId();
+          String teamName = team.getName();
+
+          if (!"Verification Specialist Team Members".equals(teamName) && !"Verifier Team Member".equals(teamName)) {
+            continue;
+          }
 
           CrmListResource<CrmTeamMembershipAssociationResource> teamMembershipAssociationList = crmDao.getTeamMembershipAssociations(teamId);
           if (teamMembershipAssociationList != null) {
