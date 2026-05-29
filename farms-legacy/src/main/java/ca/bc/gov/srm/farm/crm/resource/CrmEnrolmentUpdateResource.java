@@ -16,6 +16,7 @@ package ca.bc.gov.srm.farm.crm.resource;
 public class CrmEnrolmentUpdateResource extends CrmResource {
   
   private Double vsi_fee;
+  private Double vsi_previousyearcalculatedenfee;
   private String vsi_pin;
   private String vsi_generateddate;
   private Boolean vsi_haspartners;
@@ -51,6 +52,14 @@ public class CrmEnrolmentUpdateResource extends CrmResource {
 
   public void setVsi_fee(Double vsi_fee) {
     this.vsi_fee = vsi_fee;
+  }
+
+  public Double getVsi_previousyearcalculatedenfee() {
+    return vsi_previousyearcalculatedenfee;
+  }
+
+  public void setVsi_previousyearcalculatedenfee(Double vsi_previousyearcalculatedenfee) {
+    this.vsi_previousyearcalculatedenfee = vsi_previousyearcalculatedenfee;
   }
 
   public String getVsi_pin() {

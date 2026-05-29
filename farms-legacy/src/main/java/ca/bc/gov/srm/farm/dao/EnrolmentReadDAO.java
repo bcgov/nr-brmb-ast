@@ -334,6 +334,7 @@ public class EnrolmentReadDAO extends OracleDAO {
             e.setEnrolmentId(getInteger(rs, "program_enrolment_id"));
             e.setEnrolmentYear(getInteger(rs, "enrolment_year"));
             e.setEnrolmentFee(getDouble(rs, "enrolment_fee"));
+            e.setPreviousYearEnrolmentFee(getDouble(rs, "previous_year_enrolment_fee"));
             e.setFailedToGenerate(getIndicator(rs, "failed_to_generate_ind"));
             e.setFailedReason(getString(rs, "failed_reason"));
             e.setGeneratedDate(getDate(rs, "generated_date"));

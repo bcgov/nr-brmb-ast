@@ -2798,6 +2798,12 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         enrolment.setEnrolmentFee(0d);
       }
       
+      ReadDAO readDao = new ReadDAO(connection);
+      Enrolment previousYearEnrolment = readDao.readEnrolment(participantPin, programYear-1);
+      if (previousYearEnrolment != null) {
+        enrolment.setPreviousYearEnrolmentFee(previousYearEnrolment.getEnrolmentFee());
+      }
+
       Integer importVersionId = importVersion.getImportVersionId();
       
       CrmTransferService crmTransferService = ServiceFactory.getCrmTransferService();
