@@ -74,6 +74,11 @@ public class CrmTeamMembershipAssociationResource extends CrmResource {
     }
 
     @JsonIgnore
+    public String getGuid() {
+        return systemUserId == null ? null : systemUserId.replace("-", "");
+    }
+
+    @JsonIgnore
     public String getAccountName() {
         if (azureActiveDirectoryObjectId == null) {
             return domainName;

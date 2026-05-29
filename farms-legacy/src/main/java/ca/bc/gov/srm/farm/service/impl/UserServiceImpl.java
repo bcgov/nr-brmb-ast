@@ -227,7 +227,7 @@ public class UserServiceImpl extends BaseService implements UserService {
           if (teamMembershipAssociationList != null) {
 
             for (CrmTeamMembershipAssociationResource teamMembershipAssociation : teamMembershipAssociationList.getList()) {
-              String systemUserId = teamMembershipAssociation.getSystemUserId();
+              String systemUserId = teamMembershipAssociation.getGuid().toUpperCase();
               String accountName = teamMembershipAssociation.getAccountName().toUpperCase();
 
               User user = new UserBasicView();
