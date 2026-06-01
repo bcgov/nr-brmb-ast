@@ -21,8 +21,8 @@ public class CrmTeamMembershipAssociationResource extends CrmResource {
     @JsonProperty("ownerid")
     private String ownerId;
 
-    @JsonProperty("domainname")
-    private String domainName;
+    @JsonProperty("internalemailaddress")
+    private String internalEmailAddress;
 
     @JsonProperty("azureactivedirectoryobjectid")
     private String azureActiveDirectoryObjectId;
@@ -41,12 +41,12 @@ public class CrmTeamMembershipAssociationResource extends CrmResource {
         this.ownerId = ownerId;
     }
 
-    public String getDomainName() {
-        return domainName;
+    public String getInternalEmailAddress() {
+        return internalEmailAddress;
     }
 
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
+    public void setInternalEmailAddress(String internalEmailAddress) {
+        this.internalEmailAddress = internalEmailAddress;
     }
 
     public String getAzureActiveDirectoryObjectId() {
@@ -81,17 +81,17 @@ public class CrmTeamMembershipAssociationResource extends CrmResource {
     @JsonIgnore
     public String getAccountName() {
         if (azureActiveDirectoryObjectId == null) {
-            return domainName;
+            return internalEmailAddress;
         }
 
         String prefix = azureActiveDirectoryObjectId.replace("-", "");
         int prefixLength = prefix.length();
-        return domainName.startsWith(prefix) ? domainName.substring(prefixLength) : domainName;
+        return internalEmailAddress.startsWith(prefix) ? internalEmailAddress.substring(prefixLength) : internalEmailAddress;
     }
 
     @Override
     public String toString() {
-        return "CrmTeamMembershipResource [ownerId=" + ownerId + ", domainName=" + domainName
+        return "CrmTeamMembershipResource [ownerId=" + ownerId + ", internalEmailAddress=" + internalEmailAddress
                 + ", azureActiveDirectoryObjectId=" + azureActiveDirectoryObjectId + ", systemUserId=" + systemUserId
                 + ", fullName=" + fullName + "]";
     }
