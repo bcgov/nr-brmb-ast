@@ -12,20 +12,27 @@ package ca.bc.gov.srm.farm.service.impl;
 
 import static ca.bc.gov.srm.farm.log.LoggingUtils.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.bc.gov.srm.farm.User;
+import ca.bc.gov.srm.farm.UserBasicView;
+import ca.bc.gov.srm.farm.crm.CrmRestApiDao;
+import ca.bc.gov.srm.farm.crm.resource.CrmListResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmTeamMembershipAssociationResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmTeamResource;
 import ca.bc.gov.srm.farm.dao.UserDAO;
 import ca.bc.gov.srm.farm.domain.FarmUser;
 import ca.bc.gov.srm.farm.exception.ServiceException;
-import ca.bc.gov.srm.farm.exception.UtilityException;
 import ca.bc.gov.srm.farm.list.UserListView;
-import ca.bc.gov.srm.farm.security.SecurityUtility;
 import ca.bc.gov.srm.farm.service.BaseService;
 import ca.bc.gov.srm.farm.service.UserService;
 import ca.bc.gov.srm.farm.transaction.Transaction;
@@ -202,25 +209,65 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     logMethodEnd(logger);    
   }
-  
+
   @Override
-  public UserListView[] getVerifiersFromWebADE() throws ServiceException {
-    SecurityUtility securityUtil = SecurityUtility.getInstance();
-    UserListView[] verifiers;
-    
+  public UserListView[] getVerifiersFromCRM() throws ServiceException {
+
+    Map<String, UserListView> userListViewByAccountName = new HashMap<>();
+    CrmRestApiDao crmDao = new CrmRestApiDao();
+
     try {
-      verifiers = securityUtil.getVerifiers();
-    } catch (UtilityException e) {
-      throw new ServiceException(e);
+      CrmListResource<CrmTeamResource> teamList = crmDao.getTeams();
+      if (teamList != null) {
+
+        for (CrmTeamResource team : teamList.getList()) {
+          String teamId = team.getTeamId();
+          String teamName = team.getName();
+
+          if (teamName == null) {
+            continue;
+          }
+
+          switch (teamName) {
+            case "Customer Service Team":
+            case "Enrolment Admin Team":
+            case "Verification Specialist Team Members":
+            case "Verifier Team Member":
+              break;
+
+            default:
+              continue;
+          }
+
+          CrmListResource<CrmTeamMembershipAssociationResource> teamMembershipAssociationList = crmDao.getTeamMembershipAssociations(teamId);
+          if (teamMembershipAssociationList != null) {
+
+            for (CrmTeamMembershipAssociationResource teamMembershipAssociation : teamMembershipAssociationList.getList()) {
+              String systemUserId = teamMembershipAssociation.getGuid().toUpperCase();
+              String accountName = teamMembershipAssociation.getAccountName();
+
+              User user = new UserBasicView();
+              user.setGuid(systemUserId);
+              user.setEmailAddress(accountName);
+              UserListView userListView = new UserListView(user);
+
+              userListViewByAccountName.put(accountName, userListView);
+            }
+          }
+        }
+      }
+
+      return userListViewByAccountName.values().toArray(new UserListView[0]);
+    } catch (IOException ex) {
+      throw new ServiceException(ex);
     }
-    return verifiers;
   }
   
   @Override
   public synchronized void syncVerifiers(String user) throws ServiceException {
     // This method is synchronized to avoid multiple users running this at a time
     
-    UserListView[] verifiers =  getVerifiersFromWebADE();
+    UserListView[] verifiers =  getVerifiersFromCRM();
     List<FarmUser> users = getAllUsers(); 
     List<String> verifierGuids = new ArrayList<>();
     List<FarmUser> newVerifiers = new ArrayList<>();

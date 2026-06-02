@@ -97,7 +97,7 @@ public class UserListView extends BaseListView implements User {
    */
   @Override
   public String getLabel() {
-    return user.getAccountName();
+    return user.getEmailAddress();
   }
 
   /**
