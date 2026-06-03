@@ -1,13 +1,15 @@
 package ca.bc.gov.farms.data.mappers;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationMarginEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationProductiveUnitEntity;
-
-import java.util.List;
+import ca.bc.gov.farms.data.entities.EnrolmentPartnerEntity;
+import ca.bc.gov.farms.data.entities.EnrolmentPartnerSummaryEntity;
 
 @Mapper
 public interface EnrolmentCalculationMapper {
@@ -21,6 +23,14 @@ public interface EnrolmentCalculationMapper {
 
     List<EnrolmentCalculationProductiveUnitEntity> fetchProductiveUnits(
             @Param("agristabilityScenarioId") Long agristabilityScenarioId,
+            @Param("programYear") Integer programYear);
+
+    List<EnrolmentPartnerEntity> fetchPartnersByPinAndProgramYear(
+            @Param("participantPin") Integer participantPin,
+            @Param("programYear") Integer programYear);
+
+    EnrolmentPartnerSummaryEntity fetchPartnerSummaryByPinAndProgramYear(
+            @Param("participantPin") Integer participantPin,
             @Param("programYear") Integer programYear);
 
     int insertScenarioEnrolment(

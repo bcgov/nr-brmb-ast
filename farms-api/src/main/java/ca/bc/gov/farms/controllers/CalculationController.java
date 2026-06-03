@@ -11,6 +11,7 @@ import ca.bc.gov.brmb.common.rest.resource.MessageListRsrc;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.common.controllers.CommonController;
 import ca.bc.gov.farms.data.models.EnrolmentCalculationRsrc;
+import ca.bc.gov.farms.data.models.EnrolmentPartnerListRsrc;
 import ca.bc.gov.farms.services.EnrolmentCalculationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -64,6 +65,38 @@ public class CalculationController extends CommonController {
             return notFound();
         } catch (RuntimeException e) {
             log.error(" ### RuntimeException while fetching ENW enrolment calculation", e);
+            return internalServerError();
+        }
+    }
+
+    @GetMapping("/enrolment-partners")
+    @Operation(
+            operationId = "Get enrolment partners by participant PIN and program year.",
+            summary = "Get enrolment partners by participant PIN and program year."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = EnrolmentPartnerListRsrc.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = MessageListRsrc.class)))
+    })
+    public ResponseEntity<EnrolmentPartnerListRsrc> getEnrolmentPartners(
+            @RequestParam("participantPin") Integer participantPin,
+            @RequestParam("programYear") Integer programYear) {
+        log.debug(" >> getEnrolmentPartners: participantPin={}, programYear={}",
+                participantPin, programYear);
+
+        try {
+            EnrolmentPartnerListRsrc resource = enrolmentCalculationService
+                    .getEnrolmentPartners(participantPin, programYear);
+            return ok(resource);
+        } catch (IllegalArgumentException e) {
+            log.warn(" ### Invalid enrolment partners request", e);
+            return badRequest();
+        } catch (RuntimeException e) {
+            log.error(" ### RuntimeException while fetching enrolment partners", e);
             return internalServerError();
         }
     }
