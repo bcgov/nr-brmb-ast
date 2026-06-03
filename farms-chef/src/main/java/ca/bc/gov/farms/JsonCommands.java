@@ -24,7 +24,7 @@ public class JsonCommands {
         objectMapper.addMixIn(Map.class, IdMixin.class);
     }
 
-    @Command(name = "print")
+    @Command(name = "pretty-print")
     public String print(@Option String jsonFilePath) {
         try {
             String rawJson = Files.readString(Path.of(jsonFilePath));
