@@ -258,6 +258,63 @@
         order by pu.description, pu.code
     </select>
 
+    <select id="fetchPartnersByPinAndProgramYear" resultType="EnrolmentPartnerEntity">
+        select sv.agristability_scenario_id,
+               sv.scenario_number,
+               fo.alignment_key as operation_schedule,
+               fo.partnership_name,
+               fo.partnership_pin as operation_partnership_pin,
+               fo.partnership_percent as operation_partnership_percent,
+               ptnr.farming_operatin_prtnr_id as farming_operation_partner_id,
+               ptnr.partner_percent,
+               ptnr.partnership_pin as partner_participant_pin,
+               pe.enrolment_fee as partner_enrolment_fee,
+               ptnr.first_name,
+               ptnr.last_name,
+               ptnr.corp_name as corporation_name
+        from farms.farm_scenarios_vw sv
+        join farms.farm_farming_operations fo
+          on fo.program_year_version_id = sv.program_year_version_id
+        join farms.farm_farming_operatin_prtnrs ptnr
+          on ptnr.farming_operation_id = fo.farming_operation_id
+        left join farms.farm_agristability_clients pac
+          on pac.participant_pin = ptnr.partnership_pin
+        left join farms.farm_program_enrolments pe
+          on pe.agristability_client_id = pac.agristability_client_id
+         and pe.enrolment_year = #{programYear} + 2
+        where sv.participant_pin = #{participantPin}
+          and sv.year = #{programYear}
+          and sv.scenario_class_code in ('CRA', 'GEN', 'LOCAL', 'CHEF')
+        order by sv.scenario_number,
+                 fo.operation_number,
+                 ptnr.farming_operatin_prtnr_id
+    </select>
+
+    <select id="fetchPartnerSummaryByPinAndProgramYear" resultType="EnrolmentPartnerSummaryEntity">
+        select sc.agristability_scenario_id,
+               sc.scenario_number,
+               (sc.combined_farm_number is not null) as in_combined_farm,
+               sc.combined_farm_number,
+               coalesce(se.combined_farm_percent, acl.applied_benefit_percent) as combined_farm_percent
+        from farms.farm_agristability_clients ac
+        join farms.farm_program_years py
+          on py.agristability_client_id = ac.agristability_client_id
+        join farms.farm_program_year_versions pyv
+          on pyv.program_year_id = py.program_year_id
+        join farms.farm_agristability_scenarios sc
+          on sc.program_year_version_id = pyv.program_year_version_id
+        left join farms.farm_scenario_enrolments se
+          on se.agristability_scenario_id = sc.agristability_scenario_id
+        left join farms.farm_agristability_claims acl
+          on acl.agristability_scenario_id = sc.agristability_scenario_id
+        where ac.participant_pin = #{participantPin}
+          and py.year = #{programYear}
+          and sc.scenario_category_code = 'ENW'
+          and sc.scenario_class_code = 'USER'
+        order by sc.scenario_number desc
+        limit 1
+    </select>
+
     <insert id="insertScenarioEnrolment">
         <selectKey keyProperty="dto.scenarioEnrolmentId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_se_seq')

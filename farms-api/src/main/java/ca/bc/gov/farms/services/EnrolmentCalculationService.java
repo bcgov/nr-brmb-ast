@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -16,11 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.EnrolmentCalculationResourceAssembler;
+import ca.bc.gov.farms.data.assemblers.EnrolmentPartnerResourceAssembler;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationMarginEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationProductiveUnitEntity;
+import ca.bc.gov.farms.data.entities.EnrolmentPartnerEntity;
+import ca.bc.gov.farms.data.entities.EnrolmentPartnerSummaryEntity;
 import ca.bc.gov.farms.data.mappers.EnrolmentCalculationMapper;
 import ca.bc.gov.farms.data.models.EnrolmentCalculationRsrc;
+import ca.bc.gov.farms.data.models.EnrolmentPartnerListRsrc;
 
 @Component
 public class EnrolmentCalculationService {
@@ -43,6 +48,9 @@ public class EnrolmentCalculationService {
 
     @Autowired
     private EnrolmentCalculationResourceAssembler enrolmentCalculationResourceAssembler;
+
+    @Autowired
+    private EnrolmentPartnerResourceAssembler enrolmentPartnerResourceAssembler;
 
     @Transactional
     public EnrolmentCalculationRsrc getEnrolmentCalculation(Integer participantPin, Integer programYear)
@@ -82,6 +90,28 @@ public class EnrolmentCalculationService {
         }
 
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public EnrolmentPartnerListRsrc getEnrolmentPartners(Integer participantPin, Integer programYear)
+            throws ServiceException {
+
+        if (participantPin == null || programYear == null) {
+            throw new IllegalArgumentException("participantPin and programYear are required");
+        }
+
+        try {
+            EnrolmentPartnerSummaryEntity summary = enrolmentCalculationMapper
+                    .fetchPartnerSummaryByPinAndProgramYear(participantPin, programYear);
+            List<EnrolmentPartnerEntity> entities = enrolmentCalculationMapper
+                    .fetchPartnersByPinAndProgramYear(participantPin, programYear);
+
+            return enrolmentPartnerResourceAssembler
+                    .getEnrolmentPartnerList(participantPin, programYear, summary,
+                            entities == null ? Collections.emptyList() : entities);
+        } catch (Throwable t) {
+            throw new ServiceException("Mapper threw an exception", t);
+        }
     }
 
     private void initNonEditableFields(EnrolmentCalculationEntity entity) {

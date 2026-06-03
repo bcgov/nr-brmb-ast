@@ -22,11 +22,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.EnrolmentCalculationResourceAssembler;
+import ca.bc.gov.farms.data.assemblers.EnrolmentPartnerResourceAssembler;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationMarginEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationProductiveUnitEntity;
+import ca.bc.gov.farms.data.entities.EnrolmentPartnerEntity;
+import ca.bc.gov.farms.data.entities.EnrolmentPartnerSummaryEntity;
 import ca.bc.gov.farms.data.mappers.EnrolmentCalculationMapper;
 import ca.bc.gov.farms.data.models.EnrolmentCalculationRsrc;
+import ca.bc.gov.farms.data.models.EnrolmentPartnerListRsrc;
 
 @ExtendWith(MockitoExtension.class)
 class EnrolmentCalculationServiceTest {
@@ -36,6 +40,9 @@ class EnrolmentCalculationServiceTest {
 
     @Mock
     private EnrolmentCalculationResourceAssembler enrolmentCalculationResourceAssembler;
+
+    @Mock
+    private EnrolmentPartnerResourceAssembler enrolmentPartnerResourceAssembler;
 
     @InjectMocks
     private EnrolmentCalculationService enrolmentCalculationService;
@@ -279,6 +286,124 @@ class EnrolmentCalculationServiceTest {
                 .isInstanceOf(ServiceException.class)
                 .hasMessageContaining("Mapper threw an exception")
                 .hasRootCauseMessage("Unable to recalculate ENW enrolment values for scenario 1074678 using calculation type MANUAL");
+    }
+
+    @Test
+    void getEnrolmentPartnersReturnsAssemblerResource() throws Exception {
+        List<EnrolmentPartnerEntity> entities = List.of(EnrolmentPartnerEntity.builder()
+                .agristabilityScenarioId(969183L)
+                .scenarioNumber(1)
+                .operationSchedule("A")
+                .partnershipName("Christopher Stockdale")
+                .operationPartnershipPin(4380606)
+                .operationPartnershipPercent(new BigDecimal("0.6000"))
+                .farmingOperationPartnerId(458515L)
+                .partnerPercent(new BigDecimal("0.4000"))
+                .partnerParticipantPin(25306184)
+                .partnerEnrolmentFee(new BigDecimal("265.83"))
+                .firstName("Lynn")
+                .lastName("Stockdale")
+                .build());
+        EnrolmentPartnerSummaryEntity summary = EnrolmentPartnerSummaryEntity.builder()
+                .agristabilityScenarioId(1048121L)
+                .scenarioNumber(5)
+                .inCombinedFarm(true)
+                .combinedFarmNumber(123)
+                .combinedFarmPercent(new BigDecimal("0.6000"))
+                .build();
+        EnrolmentPartnerListRsrc expectedResource = EnrolmentPartnerListRsrc.builder()
+                .participantPin(23198443)
+                .programYear(2021)
+                .build();
+
+        when(enrolmentCalculationMapper.fetchPartnerSummaryByPinAndProgramYear(23198443, 2021))
+                .thenReturn(summary);
+        when(enrolmentCalculationMapper.fetchPartnersByPinAndProgramYear(23198443, 2021))
+                .thenReturn(entities);
+        when(enrolmentPartnerResourceAssembler.getEnrolmentPartnerList(23198443, 2021, summary, entities))
+                .thenReturn(expectedResource);
+
+        EnrolmentPartnerListRsrc result = enrolmentCalculationService
+                .getEnrolmentPartners(23198443, 2021);
+
+        assertThat(result).isSameAs(expectedResource);
+    }
+
+    @Test
+    void getEnrolmentPartnersUsesEmptyListWhenMapperReturnsNull() throws Exception {
+        EnrolmentPartnerListRsrc expectedResource = EnrolmentPartnerListRsrc.builder()
+                .participantPin(23198443)
+                .programYear(2021)
+                .build();
+
+        when(enrolmentCalculationMapper.fetchPartnersByPinAndProgramYear(23198443, 2021))
+                .thenReturn(null);
+        when(enrolmentPartnerResourceAssembler.getEnrolmentPartnerList(
+                eq(23198443), eq(2021), eq(null), eq(Collections.emptyList())))
+                .thenReturn(expectedResource);
+
+        EnrolmentPartnerListRsrc result = enrolmentCalculationService
+                .getEnrolmentPartners(23198443, 2021);
+
+        assertThat(result).isSameAs(expectedResource);
+    }
+
+    @Test
+    void getEnrolmentPartnersKeepsCombinedSummaryWhenPartnerListIsEmpty() throws Exception {
+        EnrolmentPartnerSummaryEntity summary = EnrolmentPartnerSummaryEntity.builder()
+                .agristabilityScenarioId(1032849L)
+                .scenarioNumber(7)
+                .inCombinedFarm(true)
+                .combinedFarmNumber(12385)
+                .combinedFarmPercent(new BigDecimal("0.215"))
+                .build();
+        EnrolmentPartnerListRsrc expectedResource = EnrolmentPartnerListRsrc.builder()
+                .participantPin(25180167)
+                .programYear(2021)
+                .agristabilityScenarioId(1032849L)
+                .scenarioNumber(7)
+                .inCombinedFarm(true)
+                .combinedFarmNumber(12385)
+                .combinedFarmPercent(new BigDecimal("0.215"))
+                .enrolmentPartnerList(Collections.emptyList())
+                .build();
+
+        when(enrolmentCalculationMapper.fetchPartnerSummaryByPinAndProgramYear(25180167, 2021))
+                .thenReturn(summary);
+        when(enrolmentCalculationMapper.fetchPartnersByPinAndProgramYear(25180167, 2021))
+                .thenReturn(Collections.emptyList());
+        when(enrolmentPartnerResourceAssembler.getEnrolmentPartnerList(
+                25180167, 2021, summary, Collections.emptyList()))
+                .thenReturn(expectedResource);
+
+        EnrolmentPartnerListRsrc result = enrolmentCalculationService
+                .getEnrolmentPartners(25180167, 2021);
+
+        assertThat(result).isSameAs(expectedResource);
+        verify(enrolmentPartnerResourceAssembler)
+                .getEnrolmentPartnerList(25180167, 2021, summary, Collections.emptyList());
+    }
+
+    @Test
+    void getEnrolmentPartnersThrowsIllegalArgumentExceptionWhenRequiredInputMissing() {
+        assertThatThrownBy(() -> enrolmentCalculationService.getEnrolmentPartners(null, 2021))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("participantPin and programYear are required");
+
+        assertThatThrownBy(() -> enrolmentCalculationService.getEnrolmentPartners(23198443, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("participantPin and programYear are required");
+    }
+
+    @Test
+    void getEnrolmentPartnersThrowsServiceExceptionWhenMapperFails() {
+        when(enrolmentCalculationMapper.fetchPartnerSummaryByPinAndProgramYear(23198443, 2021))
+                .thenThrow(new RuntimeException("boom"));
+
+        assertThatThrownBy(() -> enrolmentCalculationService.getEnrolmentPartners(23198443, 2021))
+                .isInstanceOf(ServiceException.class)
+                .hasMessageContaining("Mapper threw an exception")
+                .hasRootCauseMessage("boom");
     }
 
     private EnrolmentCalculationEntity.EnrolmentCalculationEntityBuilder baseEntity() {
