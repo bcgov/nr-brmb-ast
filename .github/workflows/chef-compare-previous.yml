@@ -1,5 +1,5 @@
 name: chef compare previous
-run-name: Compare ${{ inputs.FORM_NAME }} in ${{ inputs.ENVIRONMENT_NAME}} to previous version
+run-name: Compare draft to previous for ${{ inputs.FORM_NAME }} in ${{ inputs.ENVIRONMENT_NAME}}
 
 on:
   workflow_dispatch:
@@ -46,7 +46,7 @@ jobs:
           FORM_VERSION_ID=$(curl \
             -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
             -H "Content-Type: application/json" \
-            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/ | jq -r '.versions[1].id')
+            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/ | jq -r '.versions[0].id')
 
           curl \
             -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
@@ -62,42 +62,40 @@ jobs:
           name: previous-form-pretty
           path: output/previous-form-pretty.json
 
-  export-current:
+  export-draft:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.ENVIRONMENT_NAME }}
     steps:
-      - name: Fetch current form
+      - name: Fetch draft form
         run: |
 
           mkdir output
 
-          FORM_VERSION_ID=$(curl \
+          FORM_VERSION_DRAFT_ID=$(curl \
             -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
             -H "Content-Type: application/json" \
-            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/ | jq -r '.versions[0].id')
+            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/drafts | jq -r '.[0].id')
 
           curl \
             -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
             -H "Content-Type: application/json" \
-            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/versions/$FORM_VERSION_ID \
-            -o output/current-form.json
+            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/drafts/$FORM_VERSION_DRAFT_ID \
+            -o output/draft-form.json
 
-          jq 'walk(if type == "object" then del(.id) else . end)' output/current-form.json > output/current-form-pretty.json
+          jq 'walk(if type == "object" then del(.id) else . end)' output/draft-form.json > output/draft-form-pretty.json
 
-      - name: Upload current form
+      - name: Upload draft form
         uses: actions/upload-artifact@v4
         with:
-          name: current-form-pretty
-          path: output/current-form-pretty.json
+          name: draft-form-pretty
+          path: output/draft-form-pretty.json
 
   compare:
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ inputs.ENVIRONMENT_NAME }}
     needs:
       - export-previous
-      - export-current
+      - export-draft
     steps:
       - name: Download previous form
         uses: actions/download-artifact@v4
@@ -105,15 +103,15 @@ jobs:
           name: previous-form-pretty
           path: input
 
-      - name: Download current form
+      - name: Download draft form
         uses: actions/download-artifact@v4
         with:
-          name: current-form-pretty
+          name: draft-form-pretty
           path: input
 
-      - name: Compare previous to current
+      - name: Compare previous to draft
         run: |
-          diff input/previous-form-pretty.json input/current-form-pretty.json > diff-report.txt || true
+          diff input/previous-form-pretty.json input/draft-form-pretty.json > diff-report.txt || true
 
       - name: Upload diff report
         uses: actions/upload-artifact@v4
