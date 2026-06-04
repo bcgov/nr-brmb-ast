@@ -1,0 +1,7 @@
+name: Temp Register 1
+on: workflow_dispatch
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Registering file"
