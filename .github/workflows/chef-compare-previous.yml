@@ -1,0 +1,122 @@
+name: chef compare previous
+run-name: Compare ${{ inputs.FORM_NAME }} in ${{ inputs.ENVIRONMENT_NAME}} to previous version
+
+on:
+  workflow_dispatch:
+    inputs:
+      FORM_NAME:
+        required: true
+        type: choice
+        options:
+          - ADJUSTMENT_REQUEST_BCEID
+          - ADJUSTMENT_REQUEST_IDIR
+          - ADVANCED_PAYMENT_INTERIM_BCEID
+          - ADVANCED_PAYMENT_INTERIM_IDIR
+          - AGRISTABILITY_SUPPLEMENTAL_INFORMATION_BCEID
+          - AGRISTABILITY_SUPPLEMENTAL_INFORMATION_IDIR
+          - COVERAGE_NOTICE_BASIC_BCEID
+          - COVERAGE_NOTICE_IDIR
+          - NEW_PARTICIPANT_FORM_BCEID
+          - NEW_PARTICIPANT_FORM_IDIR
+          - NOTICE_OF_LOSS_FORM_BCEID
+          - NOTICE_OF_LOSS_FORM_IDIR
+          - SIMPLIFIED_REFERENCE_MARGIN_REQUEST_BCEID
+          - SIMPLIFIED_REFERENCE_MARGIN_REQUEST_IDIR
+          - STATEMENT_A_BCEID
+          - STATEMENT_A_IDIR
+      ENVIRONMENT_NAME:
+        required: true
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
+
+jobs:
+  export-previous:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT_NAME }}
+    steps:
+      - name: Fetch previous form
+        run: |
+
+          mkdir output
+
+          FORM_VERSION_ID=$(curl \
+            -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
+            -H "Content-Type: application/json" \
+            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/ | jq -r '.versions[1].id')
+
+          curl \
+            -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
+            -H "Content-Type: application/json" \
+            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/versions/$FORM_VERSION_ID \
+            -o output/previous-form.json
+
+          jq 'walk(if type == "object" then del(.id) else . end)' output/previous-form.json > output/previous-form-pretty.json
+
+      - name: Upload previous form
+        uses: actions/upload-artifact@v4
+        with:
+          name: previous-form-pretty
+          path: output/previous-form-pretty.json
+
+  export-current:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT_NAME }}
+    steps:
+      - name: Fetch current form
+        run: |
+
+          mkdir output
+
+          FORM_VERSION_ID=$(curl \
+            -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
+            -H "Content-Type: application/json" \
+            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/ | jq -r '.versions[0].id')
+
+          curl \
+            -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
+            -H "Content-Type: application/json" \
+            ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/versions/$FORM_VERSION_ID \
+            -o output/current-form.json
+
+          jq 'walk(if type == "object" then del(.id) else . end)' output/current-form.json > output/current-form-pretty.json
+
+      - name: Upload current form
+        uses: actions/upload-artifact@v4
+        with:
+          name: current-form-pretty
+          path: output/current-form-pretty.json
+
+  compare:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT_NAME }}
+    needs:
+      - export-previous
+      - export-current
+    steps:
+      - name: Download previous form
+        uses: actions/download-artifact@v4
+        with:
+          name: previous-form-pretty
+          path: input
+
+      - name: Download current form
+        uses: actions/download-artifact@v4
+        with:
+          name: current-form-pretty
+          path: input
+
+      - name: Compare previous to current
+        run: |
+          diff input/previous-form-pretty.json input/current-form-pretty.json > diff-report.txt || true
+
+      - name: Upload diff report
+        uses: actions/upload-artifact@v4
+        with:
+          name: diff-report
+          path: diff-report.txt
