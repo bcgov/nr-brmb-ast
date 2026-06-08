@@ -43,12 +43,16 @@ import ca.bc.gov.srm.farm.calculator.BenefitValidator;
 import ca.bc.gov.srm.farm.calculator.CalculatorFactory;
 import ca.bc.gov.srm.farm.dao.EnrolmentReadDAO;
 import ca.bc.gov.srm.farm.dao.EnrolmentWriteDAO;
+import ca.bc.gov.srm.farm.dao.ReadDAO;
 import ca.bc.gov.srm.farm.dao.StagingDAO;
 import ca.bc.gov.srm.farm.dao.VersionDAO;
 import ca.bc.gov.srm.farm.domain.ImportVersion;
 import ca.bc.gov.srm.farm.domain.Scenario;
+import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
 import ca.bc.gov.srm.farm.domain.codes.ImportClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.ImportStateCodes;
+import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
+import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
 import ca.bc.gov.srm.farm.domain.enrolment.Enrolment;
 import ca.bc.gov.srm.farm.domain.staging.EnrolmentStaging;
 import ca.bc.gov.srm.farm.enrolment.EnrolmentCalculatorFactory;
@@ -603,11 +607,13 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
     
     VersionDAO vdao = null;
     StagingDAO sdao = null;
+    ReadDAO readDao = null;
     EnrolmentReadDAO erdao = new EnrolmentReadDAO();
 
     try {
       vdao = new VersionDAO(connection);
       sdao = new StagingDAO(connection);
+      readDao = new ReadDAO(connection);
       connection.setAutoCommit(false);
 
       vdao.startImport(importVersionId, user);
@@ -629,6 +635,12 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
       CrmTransferService transferService = ServiceFactory.getCrmTransferService();
       
       for(Enrolment e : transferList) {
+        List<ScenarioMetaData> scenarioMetaDataList = readDao.readProgramYearMetadata(e.getPin(), e.getEnrolmentYear()-2);
+        e.setPrevYearPartNotVerified(!scenarioMetaDataList.stream().anyMatch(scenarioMetaData -> {
+          return ScenarioStateCodes.VERIFIED.equals(scenarioMetaData.getScenarioStateCode())
+          && ScenarioCategoryCodes.FINAL.equals(scenarioMetaData.getScenarioCategoryCode())
+          && "USER".equals(scenarioMetaData.getScenarioTypeCode());
+        }));
         transferService.postEnrolment(e, importVersionId, user);
       }
 
