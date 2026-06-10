@@ -45,6 +45,7 @@ public class CrmEnrolmentUpdateResource extends CrmResource {
   private String vsi_partnershipnames;
   private String vsi_partnershippercents;
   private String vsi_partnershippins;
+  private Boolean vsi_prevyearpartnotverified;
   
   public Double getVsi_fee() {
     return vsi_fee;
@@ -276,6 +277,14 @@ public class CrmEnrolmentUpdateResource extends CrmResource {
 
   public void setVsi_partnershippins(String vsi_partnershippins) {
     this.vsi_partnershippins = vsi_partnershippins;
+  }
+
+  public Boolean getVsi_prevyearpartnotverified() {
+    return vsi_prevyearpartnotverified;
+  }
+
+  public void setVsi_prevyearpartnotverified(Boolean vsi_prevyearpartnotverified) {
+    this.vsi_prevyearpartnotverified = vsi_prevyearpartnotverified;
   }
 
   public String getVsi_combinedfarmpercents() {

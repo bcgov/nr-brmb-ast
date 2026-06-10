@@ -77,6 +77,7 @@ public class Enrolment implements Serializable {
   
   private Double enrolmentFee;
   private Double previousYearEnrolmentFee;
+  private Boolean prevYearPartNotVerified;
 
   private Date generatedDate;
   
@@ -149,6 +150,20 @@ public class Enrolment implements Serializable {
    */
   public void setPreviousYearEnrolmentFee(Double previousYearEnrolmentFee) {
     this.previousYearEnrolmentFee = previousYearEnrolmentFee;
+  }
+  
+  /**
+   * @return the prevYearPartNotVerified
+   */
+  public Boolean getPrevYearPartNotVerified() {
+    return prevYearPartNotVerified;
+  }
+
+  /**
+   * @param prevYearPartNotVerified the prevYearPartNotVerified to set
+   */
+  public void setPrevYearPartNotVerified(Boolean prevYearPartNotVerified) {
+    this.prevYearPartNotVerified = prevYearPartNotVerified;
   }
 
   /**
