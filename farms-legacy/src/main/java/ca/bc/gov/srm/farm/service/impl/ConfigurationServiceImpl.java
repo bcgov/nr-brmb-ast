@@ -51,14 +51,10 @@ final class ConfigurationServiceImpl extends BaseService implements Configuratio
   public void loadConfigurationParameters()
           throws ServiceException {
     
-    Transaction transaction = null;
-    TransactionProvider transactionProvider = null;
+    TransactionProvider transactionProvider = TransactionProvider.getInstance();
     ConfigurationDAO dao = new ConfigurationDAO();
     
-    try {
-      transactionProvider = TransactionProvider.getInstance();
-      transaction = transactionProvider.getTransaction(BusinessAction.system());
-      
+    try (Transaction transaction = transactionProvider.getTransaction(BusinessAction.system())) {
       configurationParameters = dao.getConfigurationParameters(transaction);
       
     } catch (Exception e) {
@@ -68,8 +64,6 @@ final class ConfigurationServiceImpl extends BaseService implements Configuratio
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
   }
@@ -89,14 +83,10 @@ final class ConfigurationServiceImpl extends BaseService implements Configuratio
   public void loadYearConfigurationParameters()
       throws ServiceException {
     
-    Transaction transaction = null;
-    TransactionProvider transactionProvider = null;
+    TransactionProvider transactionProvider = TransactionProvider.getInstance();
     ConfigurationDAO dao = new ConfigurationDAO();
     
-    try {
-      transactionProvider = TransactionProvider.getInstance();
-      transaction = transactionProvider.getTransaction(BusinessAction.system());
-      
+    try (Transaction transaction = transactionProvider.getTransaction(BusinessAction.system())) {
       yearConfigurationParameters = dao.getYearConfigurationParameters(transaction);
       
     } catch (Exception e) {
@@ -106,8 +96,6 @@ final class ConfigurationServiceImpl extends BaseService implements Configuratio
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
   }

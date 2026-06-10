@@ -85,11 +85,9 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
     logMethodStart(logger);
 
     CalculatorDAO calculatorDAO = new CalculatorDAO();
-    Transaction transaction = null;
     Integer adjustmentScenarioNumber;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       adjustmentScenarioNumber = calculatorDAO.saveScenarioAsNew(transaction, scenarioIdToCopy, ScenarioTypeCodes.USER, 
@@ -99,9 +97,6 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw new ServiceException(e);
     }
 
@@ -117,13 +112,11 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     CalculatorDAO calculatorDAO = new CalculatorDAO();
     ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
-    Transaction transaction = null;
     Integer programYearVersionId;
     Integer chefsScenarioId;
     Integer userScenarioNumber;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       Integer programYearId = getProgramYearId(transaction, clientId, programYear);
@@ -173,9 +166,6 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw new ServiceException(e);
     }
 
@@ -190,11 +180,9 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
     logMethodStart(logger);
     CalculatorDAO calculatorDAO = new CalculatorDAO();
     ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
-    Transaction transaction = null;
     Integer chefsScenarioId = null;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       FarmingOperation farmingOperation;
@@ -239,9 +227,6 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw new ServiceException(e);
     }
 
@@ -256,12 +241,10 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
     logMethodStart(logger);
 
     CalculatorDAO calculatorDAO = new CalculatorDAO();
-    Transaction transaction = null;
     Integer programYearVersionId;
     Integer chefsScenarioId;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       Integer programYearId = getProgramYearId(transaction, clientId, programYear);
@@ -290,9 +273,6 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw new ServiceException(e);
     }
 
@@ -308,12 +288,10 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     CalculatorDAO calculatorDAO = new CalculatorDAO();
     ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
-    Transaction transaction = null;
     Integer programYearVersionId;
     Integer chefsScenarioId;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       Integer programYearId = getProgramYearId(transaction, clientId, programYear);
@@ -337,9 +315,6 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw new ServiceException(e);
     }
 
@@ -1329,13 +1304,11 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
     logMethodStart(logger);
 
     CalculatorDAO calculatorDAO = new CalculatorDAO();
-    Transaction transaction = null;
     Integer programYearVersionId;
     Integer chefsScenarioId;
     Integer userScenarioNumber;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       Integer programYearId = getProgramYearId(transaction, clientId, programYear);
@@ -1363,9 +1336,6 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw new ServiceException(e);
     }
 
@@ -1600,12 +1570,10 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
     logMethodStart(logger);
 
     CalculatorDAO calculatorDAO = new CalculatorDAO();
-    Transaction transaction = null;
     Integer programYearVersionId;
     Integer chefsScenarioId;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       Integer programYearId = getProgramYearId(transaction, clientId, programYear);
@@ -1637,9 +1605,6 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw new ServiceException(e);
     }
 

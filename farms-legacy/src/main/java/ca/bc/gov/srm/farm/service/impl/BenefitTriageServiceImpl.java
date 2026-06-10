@@ -148,11 +148,10 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
   public List<BenefitTriageStatus> getBenefitTriageStatusByYear(int year) throws ServiceException {
     logMethodStart(logger);
 
-    Transaction transaction = openTransaction();
     BenefitTriageDAO benefitTriageDao = new BenefitTriageDAO();
 
     List<BenefitTriageStatus> triageStatusList = null;
-    try {
+    try (Transaction transaction = openTransaction()) {
 
       triageStatusList = benefitTriageDao.readTriageStatusByYear(transaction, year);
 

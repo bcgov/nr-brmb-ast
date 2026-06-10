@@ -52,14 +52,10 @@ final class TestConfigurationServiceImpl extends BaseService implements Configur
   public void loadConfigurationParameters()
           throws ServiceException {
     
-    Transaction transaction = null;
-    TransactionProvider transactionProvider = null;
+    TransactionProvider transactionProvider = TransactionProvider.getInstance();
     ConfigurationDAO dao = new ConfigurationDAO();
     
-    try {
-      transactionProvider = TransactionProvider.getInstance();
-      transaction = transactionProvider.getTransaction(BusinessAction.system());
-      
+    try (Transaction transaction = transactionProvider.getTransaction(BusinessAction.system())) {
       configurationParameters = dao.getConfigurationParameters(transaction);
       
     } catch (Exception e) {
@@ -69,8 +65,6 @@ final class TestConfigurationServiceImpl extends BaseService implements Configur
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
   }
@@ -90,14 +84,10 @@ final class TestConfigurationServiceImpl extends BaseService implements Configur
   public void loadYearConfigurationParameters()
       throws ServiceException {
     
-    Transaction transaction = null;
-    TransactionProvider transactionProvider = null;
+    TransactionProvider transactionProvider = TransactionProvider.getInstance();
     ConfigurationDAO dao = new ConfigurationDAO();
     
-    try {
-      transactionProvider = TransactionProvider.getInstance();
-      transaction = transactionProvider.getTransaction(BusinessAction.system());
-      
+    try (Transaction transaction = transactionProvider.getTransaction(BusinessAction.system())) {
       yearConfigurationParameters = dao.getYearConfigurationParameters(transaction);
       
     } catch (Exception e) {
@@ -107,8 +97,6 @@ final class TestConfigurationServiceImpl extends BaseService implements Configur
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     setParam(2009, "BC Enhanced Benefit - Enabled", "N");

@@ -55,13 +55,9 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
 
     logMethodStart(logger);
 
-    Transaction transaction = null;
-
-    transaction = openTransaction();
-    Connection conn = (Connection) transaction.getDatastore();
-
     List<ChefsSubmission> chefsSubmissions = new ArrayList<>();
-    try {
+    try (Transaction transaction = openTransaction()) {
+      Connection conn = (Connection) transaction.getDatastore();
       chefsSubmissions = chefsDatabaseDao.readSubmissionsByFormType(conn, formType);
     } catch (DataAccessException e) {
       throw new ServiceException(e);
@@ -93,13 +89,9 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
 
     logMethodStart(logger);
 
-    Transaction transaction = null;
-
-    transaction = openTransaction();
-    Connection conn = (Connection) transaction.getDatastore();
-
     ChefsSubmission result = null;
-    try {
+    try (Transaction transaction = openTransaction()) {
+      Connection conn = (Connection) transaction.getDatastore();
       result = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
     } catch (DataAccessException e) {
       throw new ServiceException(e);
@@ -182,15 +174,11 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
   public void updateSubmission(ChefsSubmission submission) throws ServiceException {
 
     logMethodStart(logger);
-
-    Transaction transaction = null;
-
-    transaction = openTransaction();
-    Connection conn = (Connection) transaction.getDatastore();
     
     String user = CurrentUser.getUser().getUserId();
 
-    try {
+    try (Transaction transaction = openTransaction()) {
+      Connection conn = (Connection) transaction.getDatastore();
       chefsDatabaseDao.updateSubmission(conn, submission, user);
     } catch (DataAccessException e) {
       logger.error("Error in updateSubmission: ", e);
@@ -214,13 +202,9 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
 
     logMethodStart(logger);
 
-    Transaction transaction = null;
-
-    transaction = openTransaction();
-    Connection conn = (Connection) transaction.getDatastore();
-
     Map<String, ChefsSubmssnCrmEntity> allRecordsMap = null;
-    try {
+    try (Transaction transaction = openTransaction()) {
+      Connection conn = (Connection) transaction.getDatastore();
       allRecordsMap = chefsDatabaseDao.readCrmEntityGuidsBySubmissionGuid(conn, submissionGuid);
     } catch (DataAccessException e) {
       throw new ServiceException(e);

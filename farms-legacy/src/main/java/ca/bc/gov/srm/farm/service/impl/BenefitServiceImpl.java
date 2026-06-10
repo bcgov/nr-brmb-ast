@@ -301,10 +301,7 @@ final class BenefitServiceImpl extends BaseService implements BenefitService {
    * @throws Exception on Exception
    */
   private void save(final Scenario scenario, final String userId) throws ServiceException {
-    Transaction transaction = null;
-    
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       WriteDAO dao = new WriteDAO();
       CalculatorDAO calculatorDAO = new CalculatorDAO();
 
@@ -369,24 +366,16 @@ final class BenefitServiceImpl extends BaseService implements BenefitService {
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
       
-      if (transaction != null) {
-        transaction.rollback();
-      }
       if(e instanceof ServiceException) {
         throw e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 

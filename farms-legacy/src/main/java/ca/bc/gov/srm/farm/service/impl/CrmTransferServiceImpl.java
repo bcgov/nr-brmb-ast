@@ -486,11 +486,11 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
   @Override
   public void clearSuccessfulTransfers() throws ServiceException {
     
-    Transaction transaction = openTransaction();
-    Connection connection = (Connection) transaction.getDatastore();
     VersionDAO vdao = null;
 
-    try {
+    try (Transaction transaction = openTransaction()) {
+      Connection connection = (Connection) transaction.getDatastore();
+
       vdao = new VersionDAO(connection);
       connection.setAutoCommit(false);
 

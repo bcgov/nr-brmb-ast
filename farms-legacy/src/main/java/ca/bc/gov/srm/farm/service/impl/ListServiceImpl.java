@@ -65,30 +65,21 @@ final class ListServiceImpl extends BaseService implements ListService {
 
 
   public void setLineItems(Integer year, Date verifiedDate) throws ServiceException {
-    Transaction transaction = null;
-    TransactionProvider transactionProvider = null;
+    TransactionProvider transactionProvider = TransactionProvider.getInstance();
     
     List<LineItemListView> lineItems;
 
-    try {
-      transactionProvider = TransactionProvider.getInstance();
-      transaction = transactionProvider.getTransaction(BusinessAction.system());
+    try (Transaction transaction = transactionProvider.getTransaction(BusinessAction.system())) {
       ListDAO listDao = new ListDAO();
       lineItems = listDao.getLineItems(transaction,
           year,
           verifiedDate);
     } catch (DataAccessException e) {
       log.error("Data Access Exception during setLineItems(): " + e.getMessage(), e);
-      transactionProvider.rollback(transaction);
       throw new ServiceException(e);
     } catch (ProviderException e) {
       log.error("Provider Exception during setLineItems(): " + e.getMessage(), e);
-      transactionProvider.rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      if(transactionProvider != null) {
-        transactionProvider.close(transaction);
-      }
     }
     
     LineItemListView[] listViewArray = lineItems.toArray(new LineItemListView[lineItems.size()]);
@@ -119,14 +110,10 @@ final class ListServiceImpl extends BaseService implements ListService {
    * @throws  ServiceException  on exception
    */
   private void createListsFromDatabase() throws ServiceException {
-    Transaction transaction = null;
-    TransactionProvider transactionProvider = null;
+    TransactionProvider transactionProvider = TransactionProvider.getInstance();
     ListView[] list = null;
 
-    try {
-      transactionProvider = TransactionProvider.getInstance();
-      transaction = transactionProvider.getTransaction(BusinessAction.system());
-
+    try (Transaction transaction = transactionProvider.getTransaction(BusinessAction.system())) {
       ListDAO listDao = new ListDAO();
 
       //
@@ -234,16 +221,10 @@ final class ListServiceImpl extends BaseService implements ListService {
     } catch (DataAccessException e) {
       log.error("Data Access Exception during loadLists(): " + e.getMessage(),
         e);
-      transactionProvider.rollback(transaction);
       throw new ServiceException(e);
     } catch (ProviderException e) {
       log.error("Provider Exception during loadLists(): " + e.getMessage(), e);
-      transactionProvider.rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      if(transactionProvider != null) {
-        transactionProvider.close(transaction);
-      }
     }
   }
 
@@ -425,14 +406,10 @@ final class ListServiceImpl extends BaseService implements ListService {
   @Override
   public void refreshCodeTableList(final String tableName) throws ServiceException {
 
-    Transaction transaction = null;
-    TransactionProvider transactionProvider = null;
+    TransactionProvider transactionProvider = TransactionProvider.getInstance();
     ListView[] list = null;
 
-    try {
-      transactionProvider = TransactionProvider.getInstance();
-      transaction = transactionProvider.getTransaction(BusinessAction.system());
-
+    try (Transaction transaction = transactionProvider.getTransaction(BusinessAction.system())) {
       ListDAO listDao = new ListDAO();
 
       if(CodeTables.FARM_TYPE.equals(tableName)) {
@@ -498,16 +475,10 @@ final class ListServiceImpl extends BaseService implements ListService {
     } catch (DataAccessException e) {
       log.error("Data Access Exception during refreshCodeTableList(): " + e.getMessage(),
         e);
-      transactionProvider.rollback(transaction);
       throw new ServiceException(e);
     } catch (ProviderException e) {
       log.error("Provider Exception during refreshCodeTableList(): " + e.getMessage(), e);
-      transactionProvider.rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      if(transactionProvider != null) {
-        transactionProvider.close(transaction);
-      }
     }
   }
 

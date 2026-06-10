@@ -311,8 +311,6 @@ final class ReportServiceImpl extends BaseService implements ReportService {
    * @throws Exception if it could not be saved
    */
   private void generateCob(final Integer scenarioId, Integer programYear, boolean isInsert, String userId) throws Exception {
-    Transaction transaction = null;
-
     String reportKey;
     
     if(programYear.intValue() >= CalculatorConfig.GROWING_FORWARD_2023) {
@@ -337,9 +335,7 @@ final class ReportServiceImpl extends BaseService implements ReportService {
       reportKey = KEY_BENEFIT_NOTICE_2012;
     }
 
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       //
@@ -422,13 +418,7 @@ final class ReportServiceImpl extends BaseService implements ReportService {
       
       transaction.commit();
     } catch (Exception e) {
-      if (transaction != null) {
-        transaction.rollback();
-      }
-
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -443,12 +433,9 @@ final class ReportServiceImpl extends BaseService implements ReportService {
   @Override
   public void writeCobToResponse(final Integer scenarioId, final HttpServletResponse response, String fileName) 
   throws Exception {
-    Transaction transaction = null;
     Blob blob = null;
     
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       CobDAO dao = new CobDAO();
       @SuppressWarnings("resource")
       Connection dbConnection = (Connection) transaction.getDatastore();
@@ -466,8 +453,6 @@ final class ReportServiceImpl extends BaseService implements ReportService {
         BlobReaderWriter blobReaderWriter = new BlobReaderWriter();
         blobReaderWriter.readBlob(blob, outputStream);
       }
-    } finally {
-      closeTransaction(transaction);
     }
     
   }
@@ -482,11 +467,8 @@ final class ReportServiceImpl extends BaseService implements ReportService {
   @Override
   public void deleteBenefitDocument(final Integer scenarioId) throws Exception {
     logger.debug("<deleteBenefitDocument");
-    Transaction transaction = null;
 
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       CobDAO dao = new CobDAO();
@@ -495,13 +477,7 @@ final class ReportServiceImpl extends BaseService implements ReportService {
       
       transaction.commit();
     } catch (Exception e) {
-      if (transaction != null) {
-        transaction.rollback();
-      }
-
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     logger.debug(">deleteBenefitDocument");
   }
@@ -551,15 +527,15 @@ final class ReportServiceImpl extends BaseService implements ReportService {
       String outputFile) throws ProviderException, IOException, DataAccessException {
     LoggingUtils.logMethodStart(logger);
     
-    Transaction transaction = null;
-    transaction = openTransaction();
     ReportDAO dao = new ReportDAO();
     
     File tempDir = IOUtils.getTempDir();
     File csvFile = File.createTempFile(reportTempFilePrefix, CSV_FILE_SUFFIX, tempDir);
     
-    dao.surveillanceStrategy(transaction, reportType, year, headerLines, columnHeadings, columnFormats, csvFile);    
-    
+    try (Transaction transaction = openTransaction()) {
+      dao.surveillanceStrategy(transaction, reportType, year, headerLines, columnHeadings, columnFormats, csvFile);    
+    }
+
     File finalCsv = new File(tempDir, outputFile);
     if(finalCsv.exists()) {
       finalCsv.delete();
