@@ -17,9 +17,9 @@ import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 
 public class SupplementalBaseDataResource extends ChefsSubmissionDataResource {
 
-  private List<ReceivablesGrid> receivablesGrid;
-  private List<PayableGrid> expensesGrid;
-  private List<InputGrid> inputGrid;
+  private List<ReceivablesGrid> receivablesGrid = new ArrayList<>();
+  private List<PayableGrid> expensesGrid = new ArrayList<>();
+  private List<InputGrid> inputGrid = new ArrayList<>();
 
   private List<String> cropsFarmed;
   private List<String> livestockFarmed;

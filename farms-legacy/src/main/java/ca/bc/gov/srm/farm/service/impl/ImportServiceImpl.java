@@ -78,16 +78,12 @@ final class ImportServiceImpl extends BaseService implements ImportService {
   @Override
   public List<ImportSearchResult> searchImports(List<String> importTypes, Date createdAfterDate) throws ServiceException {
     List<ImportSearchResult> results = null;
-    Transaction transaction = null;
     SearchDAO dao = new SearchDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       results = dao.searchImports(transaction, importTypes, createdAfterDate);
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     for (ImportSearchResult importSearchResult : results) {
@@ -141,12 +137,10 @@ final class ImportServiceImpl extends BaseService implements ImportService {
       final String description, final String fileName, final InputStream inputStream, final String userId)
       throws ServiceException {
 
-    Transaction transaction = null;
     Connection connection = null;
     ImportVersion importVersion = null;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       connection = (Connection) transaction.getDatastore();
       connection.setAutoCommit(false);
 
@@ -165,8 +159,6 @@ final class ImportServiceImpl extends BaseService implements ImportService {
       }
 
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return importVersion;
@@ -225,23 +217,16 @@ final class ImportServiceImpl extends BaseService implements ImportService {
    */
   @Override
   public void cancelImport(final Integer importVersionId) throws ServiceException {
-    Transaction transaction = null;
     ImportDAO dao = new ImportDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.cancelImport(transaction, importVersionId);
 
       transaction.commit();
     } catch (Exception e) {
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -252,21 +237,12 @@ final class ImportServiceImpl extends BaseService implements ImportService {
    */
   @Override
   public void confirmImport(final Integer importVersionId) throws ServiceException {
-    Transaction transaction = null;
     ImportDAO dao = new ImportDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       dao.confirmImport(transaction, importVersionId);
     } catch (Exception e) {
-
-      if (transaction != null) {
-        transaction.rollback();
-      }
-
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -303,21 +279,12 @@ final class ImportServiceImpl extends BaseService implements ImportService {
    */
   @Override
   public void retryStaging(final Integer importVersionId) throws ServiceException {
-    Transaction transaction = null;
     ImportDAO dao = new ImportDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       dao.retryStaging(transaction, importVersionId);
     } catch (Exception e) {
-
-      if (transaction != null) {
-        transaction.rollback();
-      }
-
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -331,12 +298,9 @@ final class ImportServiceImpl extends BaseService implements ImportService {
   @Override
   public StagingResults getStagingResults(final Integer importVersionId) throws ServiceException {
     StagingResults details = new StagingResults();
-    Transaction transaction = null;
     ImportDAO dao = new ImportDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       ImportVersion importVersion = dao.getImportVersion(transaction, importVersionId);
       
       updateStateDescriptionForTips(importVersion);
@@ -370,8 +334,6 @@ final class ImportServiceImpl extends BaseService implements ImportService {
       }
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return details;
@@ -400,13 +362,10 @@ final class ImportServiceImpl extends BaseService implements ImportService {
     logger.debug("> getImportDetails");
 
     ImportResults details = new ImportResults();
-    Transaction transaction = null;
     ImportDAO dao = new ImportDAO();
     Integer id = importVersionId; // checkstyle line length workaround
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       logger.debug("> getImportVersion");
       ImportVersion importVersion = dao.getImportVersion(transaction, id);
       details.setImportVersion(importVersion);
@@ -463,8 +422,6 @@ final class ImportServiceImpl extends BaseService implements ImportService {
       }
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     logger.debug("< getImportDetails");
@@ -509,16 +466,12 @@ final class ImportServiceImpl extends BaseService implements ImportService {
   @Override
   public ImportVersion getImportVersion(final Integer importVersionId) throws ServiceException {
     ImportVersion importVersion = null;
-    Transaction transaction = null;
     ImportDAO dao = new ImportDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       importVersion = dao.getImportVersion(transaction, importVersionId);
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     updateStateDescriptionForTips(importVersion);

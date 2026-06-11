@@ -201,11 +201,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
     String templateGuid = cdogsConfig.getCoverageNoticeReportTemplateGuid();
     InputStream inputStream = generatedInputStreamFromTemplate(templateGuid, cdogsTemplateDataResource);
     
-    Transaction transaction = null;
-    
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       CobDAO dao = new CobDAO();
@@ -225,12 +221,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
         
       transaction.commit();
     } catch (Exception e) {
-      if (transaction != null) {
-        transaction.rollback();
-      }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 

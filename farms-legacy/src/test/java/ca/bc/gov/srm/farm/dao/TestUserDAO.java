@@ -63,6 +63,8 @@ private static final String USER_ID = "JUNIT";
     } catch (Exception e) {
       e.printStackTrace();
       fail(e.getMessage());
+    } finally {
+      transaction.close();
     }
   }
 }

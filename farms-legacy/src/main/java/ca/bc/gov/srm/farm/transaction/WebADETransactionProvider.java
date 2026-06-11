@@ -24,35 +24,14 @@ import java.sql.SQLException;
 /**
  * WebADETransactionProvider.
  *
- * @author   $Author: awilkinson $
- * @version  $Revision: 2899 $
+ * @author   $Author: hwang $
+ * @version  $Revision: 6327 $
  */
 final class WebADETransactionProvider extends TransactionProvider {
 
   /** Creates a new WebADETransactionProvider object. */
   WebADETransactionProvider() {
     initialize(null);
-  }
-
-  /**
-   * close.
-   *
-   * @param  transaction  The parameter value.
-   */
-  @Override
-  public void close(final Transaction transaction) {
-
-    if (getLog().isDebugEnabled()) {
-      getLog().debug("> close(" + (transaction != null) + ")");
-    }
-
-    if (transaction != null) {
-      transaction.close();
-    }
-
-    if (getLog().isDebugEnabled()) {
-      getLog().debug("< close()");
-    }
   }
 
   /**
@@ -169,27 +148,6 @@ final class WebADETransactionProvider extends TransactionProvider {
 
     return result;
 
-  }
-
-  /**
-   * rollback.
-   *
-   * @param  transaction  The parameter value.
-   */
-  @Override
-  public void rollback(final Transaction transaction) {
-
-    if (getLog().isDebugEnabled()) {
-      getLog().debug("> rollback(" + (transaction != null) + ")");
-    }
-
-    if (transaction != null) {
-      transaction.rollback();
-    }
-
-    if (getLog().isDebugEnabled()) {
-      getLog().debug("< rollback()");
-    }
   }
 
   /**

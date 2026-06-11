@@ -23,13 +23,6 @@ public abstract class TransactionProvider extends Provider {
   }
 
   /**
-   * close.
-   *
-   * @param  transaction  The parameter value.
-   */
-  public abstract void close(Transaction transaction);
-
-  /**
    * getTransaction.
    *
    * @param   businessAction  Input parameter.
@@ -53,13 +46,6 @@ public abstract class TransactionProvider extends Provider {
    */
   public abstract Transaction getTransaction(BusinessAction businessAction,
     User user) throws ProviderException;
-
-  /**
-   * rollback.
-   *
-   * @param  transaction  The parameter value.
-   */
-  public abstract void rollback(Transaction transaction);
 
   /**
    * getInstance.

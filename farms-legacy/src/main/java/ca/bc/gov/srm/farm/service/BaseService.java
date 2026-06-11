@@ -78,24 +78,6 @@ public class BaseService {
     return transaction;
   }
 
-
-  /**
-   * @param  transaction  to close
-   */
-  protected void closeTransaction(Transaction transaction) {
-    TransactionProvider provider = TransactionProvider.getInstance();
-    provider.close(transaction);
-  }
-  
-  
-  /**
-   * @param  transaction  to rollback
-   */
-  protected void rollback(Transaction transaction) {
-    TransactionProvider provider = TransactionProvider.getInstance();
-    provider.rollback(transaction);
-  }
-
   /**
    * handleException.
    *
@@ -109,10 +91,8 @@ public class BaseService {
   protected void handleException(final ServiceResult result,
     final Transaction transaction, final ServiceException e,
     final Long projectId) throws ServiceException {
-    TransactionProvider transactionProvider = TransactionProvider.getInstance();
-
     // first, rollback the transaction...
-    transactionProvider.rollback(transaction);
+    transaction.rollback();
 
     // set the result to failure...
     result.setStatusType(StatusType.failure());

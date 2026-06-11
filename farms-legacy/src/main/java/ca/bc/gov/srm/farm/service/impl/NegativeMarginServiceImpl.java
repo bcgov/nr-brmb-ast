@@ -38,12 +38,10 @@ public class NegativeMarginServiceImpl extends BaseService implements NegativeMa
       final Integer scenarioId)
       throws ServiceException {
 
-    Transaction transaction = null;
     List<NegativeMargin> negativeMargins = null;
     NegativeMarginDAO dao = new NegativeMarginDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       negativeMargins = dao.getNegativeMargins(transaction, farmingOperationId, scenarioId);
@@ -51,18 +49,14 @@ public class NegativeMarginServiceImpl extends BaseService implements NegativeMa
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       if (e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return negativeMargins;
@@ -81,12 +75,10 @@ public class NegativeMarginServiceImpl extends BaseService implements NegativeMa
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     NegativeMarginDAO dao = new NegativeMarginDAO();
     CalculatorDAO calcDAO = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateNegativeMargins(transaction, negativeMargins, user);
@@ -98,15 +90,11 @@ public class NegativeMarginServiceImpl extends BaseService implements NegativeMa
 
       transaction.commit();
     } catch (ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -117,11 +105,9 @@ public class NegativeMarginServiceImpl extends BaseService implements NegativeMa
       final String user)
       throws ServiceException {
 
-    Transaction transaction = null;
     NegativeMarginDAO dao = new NegativeMarginDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.calculateNegativeMargins(transaction, farmingOperationId, scenarioId, user);
@@ -129,18 +115,14 @@ public class NegativeMarginServiceImpl extends BaseService implements NegativeMa
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       if (e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
   }

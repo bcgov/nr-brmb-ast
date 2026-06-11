@@ -46,18 +46,13 @@ final class ClientAccountServiceImpl extends BaseService
     throws ServiceException {
     String guid = CurrentUser.getUser().getGuid();
     SubscriptionDAO dao = new SubscriptionDAO();
-    Transaction transaction = null;
     Client[] clients = null;
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       List cl = dao.getClientsForUser(transaction, guid);
       clients = (Client[]) cl.toArray(new Client[cl.size()]);
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return clients;
@@ -76,11 +71,8 @@ final class ClientAccountServiceImpl extends BaseService
   public void getReferenceYearBenefits(Scenario programYearScenario) 
   throws ServiceException {
 	  ClaimHistoryDAO dao = new ClaimHistoryDAO();
-	  Transaction transaction = null;
 
-	  try {
-	    transaction = openTransaction();
-	
+	  try (Transaction transaction = openTransaction()) {
 	    Iterator iter = programYearScenario.getReferenceScenarios().iterator();
 			while(iter.hasNext()) {
 				ReferenceScenario rs = (ReferenceScenario) iter.next();
@@ -90,8 +82,6 @@ final class ClientAccountServiceImpl extends BaseService
 			}
 	  } catch (Exception e) {
 	    throw new ServiceException(e);
-	  } finally {
-	    closeTransaction(transaction);
 	  }
 	}
   

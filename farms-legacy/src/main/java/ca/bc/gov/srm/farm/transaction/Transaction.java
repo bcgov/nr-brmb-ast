@@ -11,10 +11,10 @@ import ca.bc.gov.srm.farm.exception.TransactionException;
 /**
  * Transaction.
  *
- * @author   $Author: jjobson $
- * @version  $Revision: 385 $
+ * @author   $Author: hwang $
+ * @version  $Revision: 6327 $
  */
-public interface Transaction {
+public interface Transaction extends AutoCloseable {
 
   /**
    * begin.
@@ -24,6 +24,7 @@ public interface Transaction {
   void begin() throws TransactionException;
 
   /** close. */
+  @Override
   void close();
 
   /**

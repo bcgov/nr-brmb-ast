@@ -26,18 +26,6 @@ public final class TestTransactionProvider extends TransactionProvider {
     }
 
     /**
-     * close.
-     *
-     * @param  transaction  The parameter value.
-     */
-    @Override
-    public void close(final Transaction transaction) {
-        if (transaction != null) {
-            transaction.close();
-        }
-    }
-
-    /**
      * getTransaction.
      *
      * @param   businessAction  Input parameter.
@@ -91,18 +79,6 @@ public final class TestTransactionProvider extends TransactionProvider {
             throw new ProviderException(e);
         }
 
-    }
-
-    /**
-     * rollback.
-     *
-     * @param  transaction  The parameter value.
-     */
-    @Override
-    public void rollback(final Transaction transaction) {
-        if (transaction != null) {
-            transaction.rollback();
-        }
     }
     
     /**

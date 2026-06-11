@@ -75,13 +75,11 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
   throws ServiceException {
     logMethodStart(logger);
     
-    Transaction transaction = null;
     AdjustmentDAO adjDAO = new AdjustmentDAO();
     CalculatorDAO calcDAO = new CalculatorDAO();
     ReasonabilityWriteDAO reasonabilityDAO = new ReasonabilityWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       adjDAO.adjustProductiveUnitCapacities(
@@ -100,19 +98,15 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     logMethodEnd(logger);
@@ -133,13 +127,11 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
   throws ServiceException {
     logMethodStart(logger);
     
-    Transaction transaction = null;
     AdjustmentDAO adjDAO = new AdjustmentDAO();
     CalculatorDAO calcDAO = new CalculatorDAO();
     ReasonabilityWriteDAO reasonabilityDAO = new ReasonabilityWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       adjDAO.adjustIncomeExpenses(
@@ -158,23 +150,18 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (LineItemNotFoundException e) {
       logger.warn("Line Item not found:", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     logMethodEnd(logger);
@@ -195,13 +182,11 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
   throws ServiceException {
     logMethodStart(logger);
     
-    Transaction transaction = null;
     AdjustmentDAO adjDAO = new AdjustmentDAO();
     CalculatorDAO calcDAO = new CalculatorDAO();
     ReasonabilityWriteDAO reasonabilityDAO = new ReasonabilityWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       adjDAO.adjustInventories(
@@ -220,19 +205,15 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     logMethodEnd(logger);
@@ -286,13 +267,11 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
       final String user) throws ServiceException {
     logMethodStart(logger);
     
-    Transaction transaction = null;
     AdjustmentDAO adjDAO = new AdjustmentDAO();
     CalculatorDAO calcDAO = new CalculatorDAO();
     ReasonabilityWriteDAO reasonabilityDAO = new ReasonabilityWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       adjDAO.copyInventories(transaction, targetOperation, sourceItems, user);
@@ -308,19 +287,15 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     logMethodEnd(logger);
@@ -336,13 +311,11 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
       final String user) throws ServiceException {
     logMethodStart(logger);
     
-    Transaction transaction = null;
     AdjustmentDAO adjDAO = new AdjustmentDAO();
     CalculatorDAO calcDAO = new CalculatorDAO();
     ReasonabilityWriteDAO reasonabilityDAO = new ReasonabilityWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       adjDAO.copyProductiveUnitCapacities(transaction, targetOperation, sourcePucs, participantDataSrcCode, user);
@@ -358,19 +331,15 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     logMethodEnd(logger);
@@ -686,11 +655,9 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
       adjustmentMap.put(AdjustmentService.ACTION_UPDATE, adjUpdateList);
 
       
-      Transaction transaction = null;
       AdjustmentDAO adjDAO = new AdjustmentDAO();
       
-      try {
-        transaction = openTransaction();
+      try (Transaction transaction = openTransaction()) {
         transaction.begin();
 
         adjDAO.adjustInventories(
@@ -701,19 +668,15 @@ public class AdjustmentServiceImpl extends BaseService implements AdjustmentServ
         transaction.commit();
       } catch (InvalidRevisionCountException e) {
         logger.warn("Optimistic locking exception: ", e);
-        rollback(transaction);
         throw e;
       } catch (Exception e) {
         e.printStackTrace();
         logger.error("Unexpected error: ", e);
         logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-        rollback(transaction);
         if(e instanceof ServiceException) {
           throw (ServiceException) e;
         }
         throw new ServiceException(e);
-      } finally {
-        closeTransaction(transaction);
       }
     }
     

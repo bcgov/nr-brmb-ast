@@ -17,13 +17,16 @@ import java.sql.SQLException;
 /**
  * WebADETransaction.
  *
- * @author   $Author: awilkinson $
- * @version  $Revision: 5660 $
+ * @author   $Author: hwang $
+ * @version  $Revision: 6327 $
  */
 final class WebADETransaction implements Transaction {
 
   /** datastore. */
   private Connection datastore;
+
+  /** committed */
+  private boolean committed = false;
 
   /** log. */
   private Logger log = LoggerFactory.getLogger(this.getClass());
@@ -50,6 +53,9 @@ final class WebADETransaction implements Transaction {
   public void close() {
 
     try {
+      if (!datastore.getAutoCommit() && !committed) {
+        rollback();
+      }
 
       if (!datastore.isClosed()) {
         datastore.close();
@@ -70,6 +76,7 @@ final class WebADETransaction implements Transaction {
 
     try {
       datastore.commit();
+      committed = true;
     } catch (SQLException e) {
       log.error("Error on commit(): " + e.getMessage());
       throw new TransactionException(e);

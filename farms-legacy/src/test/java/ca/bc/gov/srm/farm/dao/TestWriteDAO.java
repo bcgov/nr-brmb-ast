@@ -73,7 +73,9 @@ public class TestWriteDAO {
     } catch (Exception ex) {
     	ex.printStackTrace();
     	fail(ex.getMessage());
-    }
+    } finally {
+		transaction.close();
+	}
   }
   
   

@@ -86,12 +86,9 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
   @Override
   public void writeTipReportToResponse(Integer tipReportDocId, HttpServletResponse response)
       throws Exception {
-    Transaction transaction = null;
     Blob blob = null;
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       TipReportDAO dao = new TipReportDAO();
       @SuppressWarnings("resource")
       Connection dbConnection = (Connection) transaction.getDatastore();
@@ -107,8 +104,6 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
 
       BlobReaderWriter blobReaderWriter = new BlobReaderWriter();
       blobReaderWriter.readBlob(blob, outputStream);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -209,20 +204,15 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
   @Override
   public Integer getTipReportDocumentId(Integer farmingOperationId)
       throws Exception {
-    Transaction transaction = null;
     Integer tipReportDocumentId = null;
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       TipReportDAO dao = new TipReportDAO();
       @SuppressWarnings("resource")
       Connection dbConnection = (Connection) transaction.getDatastore();
 
       tipReportDocumentId = dao.getTipReportDocumentId(dbConnection, farmingOperationId);
       
-    } finally {
-      closeTransaction(transaction);
     }
     
     return tipReportDocumentId;
@@ -231,11 +221,7 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
   @Override
   public void generateReports(String farmingOperationIdsString, Integer importVersionId, String userId) throws ServiceException {
     
-    Transaction transaction = null;
-    
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       @SuppressWarnings("resource")
       Connection connection = (Connection) transaction.getDatastore();
       generateReports(farmingOperationIdsString, importVersionId, userId, connection);
@@ -243,8 +229,6 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
     } catch(Exception e) {
       logger.error("Exception generating TIP Reports: ", e);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
   }
@@ -259,10 +243,8 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
   @Override
   public void generateBenchmarkData(Integer year, String user) throws ServiceException {
     TipReportDAO dao = new TipReportDAO();
-    Transaction transaction = null;
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.generateBenchmarks(transaction, year, user);
@@ -272,9 +254,6 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
       throw se;
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      if(transaction != null) {
-        transaction.rollback();
-      }
       e.printStackTrace();
       throw new ServiceException(e);
     }
@@ -285,10 +264,8 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
     
     TipReportDAO dao = new TipReportDAO();
     Boolean isGenerated = false;
-    Transaction transaction = null;
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       isGenerated = dao.checkBenchmarkDataGenerated(transaction, year);
@@ -306,20 +283,16 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
  
   @Override
   public List<TipFarmingOperation> getTipFarmingOperations(Integer year)  throws ServiceException {
-    Transaction transaction = null;
     TipReportDAO dao = new TipReportDAO();
     
     List<TipFarmingOperation> tipFarmOps = new ArrayList<>();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       tipFarmOps = dao.getTipFarmingOperations(transaction, year);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return tipFarmOps;
@@ -478,12 +451,10 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
   public Path downloadReports(String farmingOperationIdsString) throws Exception {
     LoggingUtils.logMethodStart(logger);
     
-    Transaction transaction = null;
     Path zipPath = null;
     String[] operationIds = farmingOperationIdsString.split(",");
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       Connection connection = (Connection) transaction.getDatastore();
       
       String tempZipFileName = TEMP_ZIP_FILE_NAME_PREFIX + UUID.randomUUID() + ZIP_SUFFIX;
@@ -533,8 +504,6 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
       
     } catch(Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     LoggingUtils.logMethodEnd(logger);
@@ -599,20 +568,16 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
   
   @Override
   public boolean benchmarksMatchConfig(Integer year)  throws ServiceException {
-    Transaction transaction = null;
     TipReportDAO dao = new TipReportDAO();
     
     boolean result;
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       result = dao.benchmarksMatchConfig(transaction, year);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -624,19 +589,15 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
       Collection<Integer> participantPins,
       Boolean isTipParticipant,
       String userId) throws ServiceException {
-    Transaction transaction = null;
     TipReportDAO dao = new TipReportDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       Integer[] pinArray = participantPins.toArray(new Integer[participantPins.size()]);
       dao.updateTipParticipantFlag(transaction, pinArray, isTipParticipant, userId);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -644,19 +605,15 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
   public Map<Integer, Map<Integer, Map<String, List<TipBenchmarkGroup>>>> getBenchmarkGroups() throws ServiceException {
     Map<Integer, Map<Integer, Map<String, List<TipBenchmarkGroup>>>> benchmarkGroupsByYear = null;
     
-    Transaction transaction = null;
     TipReportDAO dao = new TipReportDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       benchmarkGroupsByYear = dao.readBenchmarkGroups(transaction);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return benchmarkGroupsByYear;
@@ -671,11 +628,9 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
       Double incomeRangeLowParam) throws ServiceException {
     String result = null;
     
-    Transaction transaction = null;
     TipReportDAO dao = new TipReportDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       result = dao.readBenchmarkSummaryReport(transaction,
           programYearParam,
           farmType3NameParam,
@@ -687,8 +642,6 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -705,12 +658,9 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
       Double incomeRangeHigh) throws ServiceException {
     LoggingUtils.logMethodStart(logger);
     
-    Transaction transaction = null;
     TipBenchmarkExtractDAO dao = new TipBenchmarkExtractDAO();
     
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       @SuppressWarnings("resource")
       Connection connection = (Connection) transaction.getDatastore();
       
@@ -750,8 +700,6 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
       
     } catch(Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     LoggingUtils.logMethodEnd(logger);
@@ -770,12 +718,9 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
   public Path generateGroupingConfigReport() throws ServiceException {
     LoggingUtils.logMethodStart(logger);
     
-    Transaction transaction = null;
     TipReportDAO dao = new TipReportDAO();
     
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       Connection connection = (Connection) transaction.getDatastore();
       
       Path reportFilePath = dao.readGroupingConfigReport(connection);
@@ -785,8 +730,6 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
       
     } catch(Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
   }

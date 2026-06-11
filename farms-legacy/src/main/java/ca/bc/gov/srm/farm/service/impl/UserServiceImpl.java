@@ -51,24 +51,18 @@ public class UserServiceImpl extends BaseService implements UserService {
     logMethodStart(logger);
 
     UserDAO userDao = new UserDAO();
-    Transaction transaction = null;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       userDao.createUsers(transaction, farmUsers, user);
 
       transaction.commit();
     } catch (ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     logMethodEnd(logger);
@@ -84,24 +78,18 @@ public class UserServiceImpl extends BaseService implements UserService {
     logMethodStart(logger);
 
     UserDAO userDao = new UserDAO();
-    Transaction transaction = null;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       userDao.updateUsers(transaction, farmUsers, user);
 
       transaction.commit();
     } catch (ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     logMethodEnd(logger);
@@ -112,12 +100,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     logMethodStart(logger);
 
     UserDAO userDao = new UserDAO();
-    Transaction transaction = null;
     FarmUser user = null;
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       user = userDao.getUserByUserGuid(transaction, userGuid);
     } catch (ServiceException se) {
       throw se;
@@ -135,12 +120,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     logMethodStart(logger);
 
     UserDAO userDao = new UserDAO();
-    Transaction transaction = null;
     FarmUser user = null;
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       user = userDao.getUserByUserId(transaction, userId);
     } catch (ServiceException se) {
       throw se;
@@ -163,12 +145,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     logMethodStart(logger);
 
     UserDAO userDao = new UserDAO();
-    Transaction transaction = null;
     List<FarmUser> users = new ArrayList<>();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       users = userDao.getAllUsers(transaction, isDeleted);
 
     } catch (ServiceException se) {
@@ -187,24 +166,18 @@ public class UserServiceImpl extends BaseService implements UserService {
     logMethodStart(logger);
 
     UserDAO userDao = new UserDAO();
-    Transaction transaction = null;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       userDao.deleteUsers(transaction, userGuid);
 
       transaction.commit();
     } catch (ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     logMethodEnd(logger);    

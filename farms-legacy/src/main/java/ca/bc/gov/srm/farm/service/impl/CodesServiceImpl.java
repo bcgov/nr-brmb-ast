@@ -124,20 +124,15 @@ public class CodesServiceImpl extends BaseService implements CodesService {
 
     List<Code> codes = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readGenericCodes(transaction, codeTable, code);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return codes;
@@ -163,26 +158,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createGenericCode(transaction, codeTable, code, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -206,26 +195,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.updateGenericCode(transaction, codeTable, code, user);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -248,27 +231,21 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     boolean result = false;
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       result = dao.isGenericCodeInUse(transaction, codeTable, code);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -294,26 +271,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.deleteGenericCode(transaction, codeTable, code, revisionCount);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -372,20 +343,15 @@ public class CodesServiceImpl extends BaseService implements CodesService {
     
     List<LineItemCode> lineItems = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       lineItems = dao.readLineItems(transaction, year, lineItem);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return lineItems;
@@ -409,26 +375,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createLineItem(transaction, lineItem, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -450,26 +410,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.updateLineItem(transaction, lineItem, user);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -487,20 +441,15 @@ public class CodesServiceImpl extends BaseService implements CodesService {
     
     boolean result = false;
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       result = dao.isLineItemInUse(transaction, year, lineItem);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -529,26 +478,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.deleteLineItem(transaction, lineItemId, year, lineItem, revisionCount);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -570,26 +513,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.copyYearLineItems(transaction, toYear, user);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -663,12 +600,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
     
     List<FMV> fmvs = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       fmvs =
         dao.readFMVs(transaction,
             year,
@@ -680,8 +614,6 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return fmvs;
@@ -705,26 +637,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createFMV(transaction, fmv, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -746,26 +672,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.updateFMV(transaction, fmv, user);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -787,12 +707,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
     
     boolean result = false;
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       result =
         dao.isFMVInUse(transaction,
             year,
@@ -804,8 +721,6 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -836,11 +751,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.deleteFMV(transaction,
@@ -851,15 +764,11 @@ public class CodesServiceImpl extends BaseService implements CodesService {
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -889,12 +798,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
 
     File outFile = null;
     
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       String fileName = EXPORT_FMV_CSV_FILE;
       String fileNameSuffix = CSV_SUFFIX;
       String headerLine = "PROGRAM_YEAR,PERIOD,MUNICIPALITY_CODE,INVENTORY_ITEM_CODE"
@@ -920,8 +826,6 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return outFile;
@@ -945,12 +849,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
     
     File outFile = null;
     
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       String fileName = EXPORT_MISSING_FMV_CSV_FILE;
       String fileNameSuffix = CSV_SUFFIX;
       String headerLine = "PROGRAM_YEAR,MUNICIPALITY_CODE,INVENTORY_ITEM_CODE,CROP_UNIT_CODE";
@@ -969,8 +870,6 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return outFile;
@@ -1012,12 +911,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
 
     List<MunicipalityCode> codes = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readMunicipalityCodes(transaction, code);
       
       Map<String, List<String>> muniOfficeCodes = dao.readMunicipalityOfficeCodes(transaction, code);
@@ -1034,8 +930,6 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return codes;
@@ -1059,26 +953,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createMunicipalityCode(transaction, code, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1100,26 +988,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.updateMunicipalityCode(transaction, code, user);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1140,27 +1022,21 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     boolean result = false;
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       result = dao.isMunicipalityCodeInUse(transaction, code);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -1184,26 +1060,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.deleteMunicipalityCode(transaction, code, revisionCount);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -1218,20 +1088,15 @@ public class CodesServiceImpl extends BaseService implements CodesService {
   public List<BPU> getBPUs(final Integer year) throws ServiceException {
     List<BPU> bpus = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       bpus = dao.readBPUs(transaction, year);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return bpus;
@@ -1250,11 +1115,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createBPU(transaction, bpu, user);
@@ -1262,15 +1125,11 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1283,11 +1142,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
   @Override
   public void updateBPUYears(final List<BPUYear> yearsToUpdate, final String user) 
   throws ServiceException {
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       for(BPUYear year : yearsToUpdate) {
@@ -1296,15 +1153,11 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1317,18 +1170,14 @@ public class CodesServiceImpl extends BaseService implements CodesService {
   @Override
   public boolean isBPUInUse(final Integer bpuId) throws ServiceException {
     boolean result = false;
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       result = dao.isBPUInUse(transaction, bpuId);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -1341,26 +1190,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
    */
   @Override
   public void deleteBPU(final Integer bpuId) throws ServiceException {
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.deleteBPU(transaction, bpuId);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1388,12 +1231,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
     
     File outFile = null;
     
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       String fileName = EXPORT_BPU_CSV_FILE;
       String fileNameSuffix = CSV_SUFFIX;
       String headerLine = "YEAR,MUNICIPALITY,INVENTORY_CODE,UNIT_DESCRIPTION"
@@ -1421,8 +1261,6 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return outFile;
@@ -1446,12 +1284,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
     
     File outFile = null;
     
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       String fileName = EXPORT_MISSING_BPU_CSV_FILE;
       String fileNameSuffix = CSV_SUFFIX;
       String headerLine = "YEAR,INVENTORY_CODE,UNIT_DESCRIPTION,MUNICIPALITY,REFERENCE_YEAR,AFFECTED_PIN_COUNT";
@@ -1470,8 +1305,6 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return outFile;
@@ -1514,20 +1347,15 @@ public class CodesServiceImpl extends BaseService implements CodesService {
 
     List<InventoryItemCode> codes = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readInventoryItemCodes(transaction, code);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return codes;
@@ -1553,11 +1381,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createInventoryItemCode(transaction, code, user);
@@ -1566,15 +1392,11 @@ public class CodesServiceImpl extends BaseService implements CodesService {
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1600,11 +1422,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.updateInventoryItemCode(transaction, code, user);
@@ -1618,15 +1438,11 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1647,27 +1463,21 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     boolean result = false;
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       result = dao.isInventoryItemCodeInUse(transaction, code);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -1692,26 +1502,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.deleteInventoryItemCode(transaction, code, revisionCount);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -1805,12 +1609,9 @@ public class CodesServiceImpl extends BaseService implements CodesService {
     
     List<InventoryXref> xrefs = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       xrefs = dao.readInventoryXrefs(transaction,
           inventoryClassCode,
           inventoryItemCode,
@@ -1820,8 +1621,6 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return xrefs;
@@ -1845,26 +1644,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createInventoryXref(transaction, xref, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -1886,26 +1679,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.updateInventoryXref(transaction, xref, user);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1921,20 +1708,15 @@ public class CodesServiceImpl extends BaseService implements CodesService {
     
     boolean result = false;
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       result = dao.isInventoryXrefInUse(transaction, commodityXrefId);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -1958,26 +1740,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.deleteInventoryXref(transaction, commodityXrefId, revisionCount);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2017,20 +1793,15 @@ public class CodesServiceImpl extends BaseService implements CodesService {
 
     List<MarketRatePremium> mrps = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       mrps = dao.readMarketRatePremiums(transaction, id);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return mrps;
@@ -2053,26 +1824,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createMarketRatePremium(transaction, mrp, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2093,26 +1858,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateMarketRatePremium(transaction, mrp, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2133,26 +1892,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.deleteMarketRatePremium(transaction, id, revisionCount);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2192,20 +1945,15 @@ public class CodesServiceImpl extends BaseService implements CodesService {
 
     List<StructureGroupCode> codes = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readStructureGroupCodes(transaction, code);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return codes;
@@ -2228,26 +1976,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createStructureGroupCode(transaction, code, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2269,26 +2011,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateStructureGroupCode(transaction, code, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2309,27 +2045,21 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     boolean result = false;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       result = dao.isStructureGroupCodeInUse(transaction, code);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return result;
@@ -2353,26 +2083,20 @@ public class CodesServiceImpl extends BaseService implements CodesService {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.deleteStructureGroupCode(transaction, code, revisionCount);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2386,20 +2110,15 @@ public List<Integer> getProgramYears() throws ServiceException {
     
     List<Integer> programYears = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       programYears = dao.readProgramYears(transaction);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return programYears;
@@ -2435,20 +2154,15 @@ public List<Integer> getProgramYears() throws ServiceException {
 
    List<CropUnitConversion> cropUnitConversions = null;
 
-   Transaction transaction = null;
    CodesReadDAO dao = new CodesReadDAO();
 
-   try {
-     transaction = openTransaction();
-
+   try (Transaction transaction = openTransaction()) {
      cropUnitConversions = dao.readCropUnitConversions(transaction, inventoryItemCode);
 
    } catch(ServiceException se) {
      throw se;
    } catch (Exception e) {
      throw new ServiceException(e);
-   } finally {
-     closeTransaction(transaction);
    }
    
    return cropUnitConversions;
@@ -2469,11 +2183,9 @@ public List<Integer> getProgramYears() throws ServiceException {
    
    Integer programYear = ProgramYearUtils.getCurrentProgramYear();
 
-   Transaction transaction = null;
    CodesWriteDAO dao = new CodesWriteDAO();
 
-   try {
-     transaction = openTransaction();
+   try (Transaction transaction = openTransaction()) {
      transaction.begin();
 
      dao.createCropUnitDefault(transaction, cropUnitConversion, user);
@@ -2482,15 +2194,11 @@ public List<Integer> getProgramYears() throws ServiceException {
 
      transaction.commit();
    } catch(ServiceException se) {
-     rollback(transaction);
      throw se;
    } catch (Exception e) {
      e.printStackTrace();
      logger.error("Unexpected error: ", e);
-     rollback(transaction);
      throw new ServiceException(e);
-   } finally {
-     closeTransaction(transaction);
    }
  }
  
@@ -2509,11 +2217,9 @@ public List<Integer> getProgramYears() throws ServiceException {
    
    Integer programYear = ProgramYearUtils.getCurrentProgramYear();
 
-   Transaction transaction = null;
    CodesWriteDAO dao = new CodesWriteDAO();
    
-   try {
-     transaction = openTransaction();
+   try (Transaction transaction = openTransaction()) {
      transaction.begin();
      
      dao.updateCropUnitDefault(transaction, cropUnitConversion, user);
@@ -2523,15 +2229,11 @@ public List<Integer> getProgramYears() throws ServiceException {
      
      transaction.commit();
    } catch(ServiceException se) {
-     rollback(transaction);
      throw se;
    } catch (Exception e) {
      e.printStackTrace();
      logger.error("Unexpected error: ", e);
-     rollback(transaction);
      throw new ServiceException(e);
-   } finally {
-     closeTransaction(transaction);
    }
  }
 
@@ -2547,11 +2249,9 @@ public List<Integer> getProgramYears() throws ServiceException {
      throw new ServiceException("A required object is null");
    }
 
-   Transaction transaction = null;
    CodesWriteDAO dao = new CodesWriteDAO();
 
-   try {
-     transaction = openTransaction();
+   try (Transaction transaction = openTransaction()) {
      transaction.begin();
 
      dao.deleteCropUnitConversionItems(transaction, inventoryItemCode, null);
@@ -2559,15 +2259,11 @@ public List<Integer> getProgramYears() throws ServiceException {
 
      transaction.commit();
    } catch(ServiceException se) {
-     rollback(transaction);
      throw se;
    } catch (Exception e) {
      e.printStackTrace();
      logger.error("Unexpected error: ", e);
-     rollback(transaction);
      throw new ServiceException(e);
-   } finally {
-     closeTransaction(transaction);
    }
  }
  
@@ -2576,19 +2272,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<FruitVegTypeCode> getFruitVegCodes() throws ServiceException {
      List<FruitVegTypeCode> codes = null;
   
-     Transaction transaction = null;
      CodesReadDAO dao = new CodesReadDAO();
   
-     try {
-       transaction = openTransaction();
+     try (Transaction transaction = openTransaction()) {
        codes = dao.readFruitVegCodes(transaction);
        
      } catch(ServiceException se) {
        throw se;
      } catch (Exception e) {
        throw new ServiceException(e);
-     } finally {
-       closeTransaction(transaction);
      }
      
      return codes;
@@ -2616,27 +2308,21 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateFruitVegCode(transaction, fruitVegCode, user);
       transaction.commit();
        
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
-    }     
+    }
   }
    
   @Override
@@ -2646,44 +2332,34 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
      
       dao.createFruitVegCode(transaction, fruitVegCode, user);
       transaction.commit();
        
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
    
   @Override
   public boolean checkFruitVegCodeInUse(final FruitVegTypeCode fruitVegCode) throws ServiceException {
     boolean inUse = false;
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       inUse = dao.checkFruitVegCodeInUse(fruitVegCode, transaction);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     return inUse;
@@ -2696,25 +2372,19 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       dao.deleteFruitVegCode(transaction, fruitVegCode);
       transaction.commit();
        
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2735,19 +2405,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<CommodityTypeCode> getCommodityTypeCodes() throws ServiceException {
     List<CommodityTypeCode> codes = null;
   
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
   
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readCommodityTypeCodes(transaction);
        
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     return codes;
@@ -2774,19 +2440,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   private List<ExpectedProduction> getExpectedProductionItems(Integer id) throws ServiceException {
     List<ExpectedProduction> codes = null;
      
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
      
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readExpectedProductionItems(transaction, id);
        
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     return codes;
@@ -2811,27 +2473,21 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateExpectedProductionItem(transaction, expectedProduction, user);
       transaction.commit();
        
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
-    }     
+    }
   }
    
    @Override
@@ -2841,26 +2497,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
      
       dao.createExectedProductionItem(transaction, expectedProduction, user);
       transaction.commit();
        
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
    
@@ -2868,18 +2518,14 @@ public List<Integer> getProgramYears() throws ServiceException {
   @Override
   public boolean checkExpectedProductionItemExists(final ExpectedProduction expectedProduction) throws ServiceException {
     boolean inUse = false;
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       inUse = dao.checkExpectedProductionItemExists(expectedProduction, transaction);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     return inUse;
@@ -2888,18 +2534,14 @@ public List<Integer> getProgramYears() throws ServiceException {
    @Override
   public boolean checkLineItemExistsForProgramYear(final Integer programYear, final Integer lineItem) throws ServiceException {
     boolean exists = false;
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       exists = dao.checkLineItemExistsForProgramYear(programYear, lineItem, transaction);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     return exists;
@@ -2912,26 +2554,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       dao.deleteExpectedProductionItem(transaction, expectedProduction);
       transaction.commit();
        
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
-    }     
+    }
   }
 
   
@@ -2939,19 +2575,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<ConfigurationParameter> getConfigurationParameters() throws ServiceException {
     List<ConfigurationParameter> parameters = null;
      
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
   
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       parameters = dao.readConfigurationParameters(transaction);
        
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     return parameters;
@@ -2962,19 +2594,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public ConfigurationParameter getConfigurationParameter(String name) throws ServiceException {
     ConfigurationParameter parameter = null;
     
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       parameter = dao.readConfigurationParameter(transaction, null, name);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return parameter;     
@@ -2985,19 +2613,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public ConfigurationParameter getConfigurationParameter(Integer id) throws ServiceException {
     ConfigurationParameter parameter = null;
      
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
   
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       parameter = dao.readConfigurationParameter(transaction, id, null);
        
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     return parameter;     
@@ -3011,26 +2635,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateConfigurationParameter(transaction, configParam, user);
       transaction.commit();
        
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     ServiceFactory.getConfigurationService().loadConfigurationParameters();
@@ -3042,19 +2660,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<YearConfigurationParameter> getYearConfigurationParameters(Integer programYear) throws ServiceException {
     List<YearConfigurationParameter> parameters = null;
     
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       parameters = dao.readYearConfigurationParams(transaction, programYear);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return parameters;
@@ -3065,19 +2679,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public YearConfigurationParameter getYearConfigurationParameter(Integer id) throws ServiceException {
     YearConfigurationParameter parameter = null;
     
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       parameter = dao.readYearConfigurationParam(transaction, id);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return parameter;     
@@ -3091,26 +2701,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.updateYearConfigurationParam(transaction, configParam, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     ServiceFactory.getConfigurationService().loadYearConfigurationParameters();
@@ -3128,27 +2732,21 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     Integer id = null;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
     
       id = dao.createFarmType3(transaction, farmType, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return id;
@@ -3160,26 +2758,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       final String user,
       final Integer id) throws ServiceException {
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
     
       dao.createIncomeRange(transaction, ranges, id, null, null, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3189,26 +2781,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       final String user,
       final Integer id) throws ServiceException {
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
     
       dao.createIncomeRange(transaction, ranges, null, id, null, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3218,52 +2804,40 @@ public List<Integer> getProgramYears() throws ServiceException {
       final String user,
       final Integer id) throws ServiceException {
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
     
       dao.createIncomeRange(transaction, ranges, null, null, id, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
   @Override
   public void deleteFarmTypeDefaultIncomeRange() throws ServiceException {
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
     
       dao.deleteDefaultFarmTypeIncomeRange(transaction);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3272,26 +2846,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       final List<TipFarmTypeIncomeRange> ranges, 
       final String user) throws ServiceException {
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
     
       dao.createIncomeRange(transaction, ranges, null, null, null, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
  
@@ -3299,19 +2867,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<FarmType3> getFarmType3s() throws ServiceException {
     List<FarmType3> codes = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readFarmType3Codes(transaction);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return codes;
@@ -3324,26 +2888,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateFarmType3(transaction, farmType, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3354,25 +2912,19 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       dao.deleteFarmType3(transaction, farmType);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }  
   
@@ -3401,18 +2953,14 @@ public List<Integer> getProgramYears() throws ServiceException {
   @Override
   public boolean isFarmType3InUse(final FarmType3 farmType) throws ServiceException {
     boolean inUse = false;
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       inUse = dao.checkFarmType3InUse(farmType, transaction);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return inUse;
@@ -3422,19 +2970,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<TipFarmTypeIncomeRange> getFarmType3IncomeRange(Integer farmType3Id) throws ServiceException {
     List<TipFarmTypeIncomeRange> ranges = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       ranges = dao.readFarmType3IncomeRange(transaction, farmType3Id);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return ranges;
@@ -3444,19 +2988,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<TipFarmTypeIncomeRange> getFarmType2IncomeRange(Integer farmType2Id, Integer farmType3Id) throws ServiceException {
     List<TipFarmTypeIncomeRange> ranges = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       ranges = dao.readFarmType2IncomeRange(transaction, farmType2Id, farmType3Id);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return ranges;
@@ -3467,19 +3007,15 @@ public List<Integer> getProgramYears() throws ServiceException {
       throws ServiceException {
     List<TipFarmTypeIncomeRange> ranges = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       ranges = dao.readFarmType1IncomeRange(transaction, farmType1Id, farmType2Id, farmType3Id);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return ranges;
@@ -3489,19 +3025,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<TipFarmTypeIncomeRange> getFarmTypeDefaultIncomeRange() throws ServiceException {
     List<TipFarmTypeIncomeRange> ranges = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       ranges = dao.readFarmTypeDefaultIncomeRange(transaction);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return ranges;
@@ -3511,19 +3043,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<FarmSubtype> getFarmType2Codes() throws ServiceException {
     List<FarmSubtype> codes = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readFarmType2Codes(transaction);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return codes;    
@@ -3536,27 +3064,21 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     Integer id = null;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
     
       id = dao.createFarmType2(transaction, farmSubtype, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     return id;
   }
@@ -3593,44 +3115,34 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateFarmType2(transaction, farmSubtype, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
-    }    
+    }
   }
   
   @Override
   public boolean isFarmSubtypeAInUse(final FarmSubtype farmSubtype) throws ServiceException {
     boolean inUse = false;
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       inUse = dao.checkFarmType2InUse(farmSubtype, transaction);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return inUse;    
@@ -3643,45 +3155,35 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       dao.deleteFarmType2(transaction, farmSubtype);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
-    }    
+    }
   }
   
   @Override
   public List<FarmSubtype> getFarmSubtypesB() throws ServiceException {
     List<FarmSubtype> codes = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readFarmType1ItemCodes(transaction);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return codes;
@@ -3694,26 +3196,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     Integer id = null;
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
     
       id = dao.createFarmType1(transaction, farmSubtype, user);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     return id;
   }
@@ -3750,25 +3246,19 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       dao.updateFarmType1(transaction, farmSubtype, user, farmSubtype.getParentId());
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3779,43 +3269,33 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       dao.deleteFarmType1(transaction, farmSubtype);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
-    }    
+    }
   }
   
   @Override
   public boolean isFarmType1InUse(final FarmSubtype farmSubtype) throws ServiceException {
     boolean inUse = false;
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       inUse = dao.checkFarmType1InUse(farmSubtype, transaction);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return inUse;    
@@ -3825,19 +3305,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<TipLineItem> getTipLineItems() throws ServiceException {
     List<TipLineItem> lineItems = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       lineItems = dao.readTipLineItems(transaction);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return lineItems;
@@ -3847,19 +3323,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public TipLineItem getTipLineItem(Integer id) throws ServiceException {
     TipLineItem lineItem = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       lineItem = dao.readTipLineItem(transaction, id);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return lineItem;
@@ -3872,25 +3344,19 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       dao.updateTipLineItem(transaction, farmSubtype, user, lineItem);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3901,43 +3367,33 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       dao.deleteTipLineItem(transaction, id);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
   @Override
   public boolean checkTipLineItemExists(final Integer lineItem) throws ServiceException {
     boolean inUse = false;
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       inUse = dao.checkTipLineItemExists(lineItem, transaction);
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return inUse;    
@@ -3950,25 +3406,19 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       dao.createTipLineItem(transaction, farmSubtype, user, lineItem);
       transaction.commit();
       
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3976,19 +3426,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<TipBenchmarkInfo> getTipBenchmarkInfos() throws ServiceException {
     List<TipBenchmarkInfo> benchmarkInfos = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       benchmarkInfos = dao.readTipBenchmarkInfos(transaction);
       
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return benchmarkInfos;
@@ -3998,19 +3444,15 @@ public List<Integer> getProgramYears() throws ServiceException {
   public List<DocumentTemplate> getDocumentTemplates() throws ServiceException {
     List<DocumentTemplate> documentTemplates;
      
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
   
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       documentTemplates = dao.readDocumentTemplates(transaction, null);
        
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     return documentTemplates;
@@ -4020,11 +3462,9 @@ public List<Integer> getProgramYears() throws ServiceException {
   public DocumentTemplate getDocumentTemplate(String templateName) throws ServiceException {
     DocumentTemplate documentTemplate = null;
      
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
   
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       List<DocumentTemplate> documentTemplates = dao.readDocumentTemplates(transaction, templateName);
       if(documentTemplates.size() > 0) {
         documentTemplate = documentTemplates.get(0);
@@ -4034,8 +3474,6 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
     return documentTemplate;     
@@ -4048,26 +3486,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateDocumentTemplate(transaction, documentTemplate, user);
       transaction.commit();
        
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
   }   
@@ -4095,20 +3527,15 @@ public List<Integer> getProgramYears() throws ServiceException {
 
     List<SectorCode> codes = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readSectorCodes(transaction, code);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return codes;
@@ -4124,26 +3551,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.updateSectorCode(transaction, code, user);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -4173,20 +3594,15 @@ public List<Integer> getProgramYears() throws ServiceException {
 
     List<SectorDetailCode> codes = null;
 
-    Transaction transaction = null;
     CodesReadDAO dao = new CodesReadDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       codes = dao.readSectorDetailCodes(transaction, code);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return codes;
@@ -4202,26 +3618,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createSectorDetailCode(transaction, code, user);
 
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -4235,26 +3645,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.updateSectorDetailCode(transaction, code, user);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -4268,27 +3672,21 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     boolean result = false;
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       result = dao.isSectorDetailCodeInUse(transaction, code);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -4305,26 +3703,20 @@ public List<Integer> getProgramYears() throws ServiceException {
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CodesWriteDAO dao = new CodesWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.deleteSectorDetailCode(transaction, code, revisionCount);
       
       transaction.commit();
     } catch(ServiceException se) {
-      rollback(transaction);
       throw se;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 }

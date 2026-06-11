@@ -49,11 +49,9 @@ final class SearchServiceImpl extends BaseService implements SearchService {
     final String userId)
     throws ServiceException {
     List<AccountSearchResult> results = null;
-    Transaction transaction = null;
     SearchDAO dao = new SearchDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       results = dao.searchAccounts(
           transaction,
           pin,
@@ -63,8 +61,6 @@ final class SearchServiceImpl extends BaseService implements SearchService {
           userId);
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return results;

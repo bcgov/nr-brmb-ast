@@ -125,13 +125,11 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     Scenario scenario = client.getScenario();
     
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
     CrmRestApiDao crmDao = new CrmRestApiDao();
     CrmAccountResource accountResource = crmDao.getAccountByPin(client.getParticipantPin());
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       calcDAO.updateClient(transaction, client, user);
@@ -160,19 +158,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       }
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -196,12 +190,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     Scenario scenario = farmingYear.getReferenceScenario().getParentScenario();
 
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
     ReasonabilityWriteDAO reasonabilityDAO = new ReasonabilityWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       calcDAO.updateFarmingYear(transaction, farmingYear, user);
@@ -223,19 +215,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -255,11 +243,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorViewDAO dao = new CalculatorViewDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       boolean result = dao.programYearVersionHasVerifiedScenario(transaction, programYearVersionId);
@@ -267,19 +253,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       return result;
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error("programYearVersionId: " + programYearVersionId);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -299,11 +281,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       String schedule = dao.getNewOperationSchedule(transaction, clientId);
@@ -311,19 +291,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       return schedule;
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error("clientId: " + clientId);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -345,11 +321,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
 
     Scenario scenario = fo.getFarmingYear().getReferenceScenario().getParentScenario();
 
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createFarmingOperation(transaction, fo, user);
@@ -368,20 +342,16 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
       logger.error("FarmingOperation: ", fo);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -403,12 +373,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     Scenario scenario = fo.getFarmingYear().getReferenceScenario().getParentScenario();
     
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
     ReasonabilityWriteDAO reasonabilityDAO = new ReasonabilityWriteDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       calcDAO.updateFarmingOperation(transaction, fo, user);
@@ -431,20 +399,16 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
       logger.error("FarmingOperation: ", fo);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -466,13 +430,11 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     Integer programYearVersionId = fo.getFarmingYear().getProgramYearVersionId();
     Scenario scenario = fo.getFarmingYear().getReferenceScenario().getParentScenario();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.deleteFarmingOperation(transaction,
@@ -495,20 +457,16 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
       logger.error("FarmingOperation: ", fo);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -537,13 +495,12 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     List<ActionMessage> errors = new ArrayList<>();
 
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     CalculatorViewDAO viewDao = new CalculatorViewDAO();
     CrmRestApiDao crmDao = new CrmRestApiDao();
     CrmConfigurationUtil crmConfig = CrmConfigurationUtil.getInstance();
 
-    try {
+    try (Transaction transaction = openTransaction()) {
       Integer programYear = scenario.getYear();
       String oldStateCode = scenario.getScenarioStateCode();
       String oldCategoryCode = scenario.getScenarioCategoryCode();
@@ -590,7 +547,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       }
       
       
-      transaction = openTransaction();
       transaction.begin();
       
       Integer revisionCount = viewDao.getScenarioRevisionCount(transaction, scenario.getScenarioId());
@@ -710,7 +666,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
@@ -719,13 +674,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       logger.error("scenarioStateCode: " + newStateCode);
       logger.error("stateChangeReason: " + stateChangeReason);
       logger.error("scenarioCategoryCode: " + newCategoryCode);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return errors;
@@ -1090,11 +1042,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       List<Scenario> scenarios = getScenariosForAssignTo(transaction, scenario);
@@ -1118,20 +1068,16 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
       logger.error("userGuid: " + userGuid);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -1184,15 +1130,13 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     Integer scenarioNumber = null;
 
     String appVerKey = ConfigurationKeys.APPLICATION_VERSION;
     String applicationVersion = ConfigurationUtility.getInstance().getValue(appVerKey);
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       scenarioNumber = dao.saveScenarioAsNew(
@@ -1216,20 +1160,16 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error("scenarioId: " + scenarioId);
       logger.error("user: " + user);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return scenarioNumber;
@@ -1251,14 +1191,12 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
 
     String appVerKey = ConfigurationKeys.APPLICATION_VERSION;
     String applicationVersion = ConfigurationUtility.getInstance().getValue(appVerKey);
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.createReferenceScenario(
@@ -1278,20 +1216,16 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(forScenario));
       logger.error("fromScenarioId: " + fromScenarioId);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -1314,12 +1248,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     List<CalculatorInboxItem> inboxItems = null;
 
-    Transaction transaction = null;
     CalculatorViewDAO dao = new CalculatorViewDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       inboxItems = dao.readInboxItems(transaction, searchType, year, userGuid, scenarioStateCodes);
 
     } catch (Exception e) {
@@ -1329,8 +1260,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return inboxItems;
@@ -1370,11 +1299,8 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
   throws ServiceException {
     
     Scenario scenario = null;
-    Transaction transaction = null;
 
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       @SuppressWarnings("resource")
       Connection connection = (Connection) transaction.getDatastore();
       
@@ -1382,8 +1308,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       
       scenario = service.getClientInfoWithHistory(pin, programYear, scenarioNumber,
           ClientService.DEF_FIRST_MODE);
-    } finally {
-      closeTransaction(transaction);
     }
     
     if(loadCombinedFarm) {
@@ -1409,11 +1333,8 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
   throws ServiceException {
     
     Scenario scenario = null;
-    Transaction transaction = null;
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       @SuppressWarnings("resource")
       Connection connection = (Connection) transaction.getDatastore();
       
@@ -1421,8 +1342,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       
       scenario = service.getClientInfoWithoutHistory(pin, programYear, scenarioNumber,
           ClientService.DEF_FIRST_MODE);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return scenario;
@@ -1439,12 +1358,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       String scenarioCategoryCode, final String user) 
   throws ServiceException {
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     Integer programYearVersionId = null;
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       programYearVersionId = dao.createYear(transaction, pin, programYearToCreate, numOperations, scenarioClassCode, scenarioCategoryCode, user);
@@ -1472,7 +1389,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
 
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
@@ -1480,13 +1396,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
       logger.error("programYearToCreate: " + programYearToCreate);
       logger.error("numOperations: " + numOperations);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return programYearVersionId;
@@ -1514,7 +1427,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final String user) 
   throws ServiceException {
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     Integer newScenarioNumber = null;
     
@@ -1528,8 +1440,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     logMessage.append(" to ");
     logMessage.append(newPyvNumber);
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       newScenarioNumber = dao.updateScenarioPyVersion(transaction,
@@ -1552,7 +1463,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
@@ -1562,13 +1472,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       logger.error("newPyvNumber: " + newPyvNumber);
       logger.error("pyvKeepOldData: " + pyvKeepOldData);
       logger.error("opNumsKeepOldData: " + opNumsKeepOldData);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return newScenarioNumber;
@@ -1594,12 +1501,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
     ReasonabilityWriteDAO reasonabilityDAO = new ReasonabilityWriteDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       calcDAO.updateOperationAlignment(transaction, farmingOperations, user);
@@ -1621,19 +1526,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1645,13 +1546,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
   		final Integer programYearId,
   		final String user)
   throws ServiceException {
-  	Transaction transaction = null;
-    WriteDAO writeDAO = new WriteDAO();
+  	WriteDAO writeDAO = new WriteDAO();
     CalculatorDAO calcDAO = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       writeDAO.writeFinalVerificationNotes(
@@ -1669,19 +1567,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1693,13 +1587,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final Integer programYearId,
       final String user)
   throws ServiceException {
-    Transaction transaction = null;
     WriteDAO writeDAO = new WriteDAO();
     CalculatorDAO calcDAO = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       writeDAO.writeInterimVerificationNotes(
@@ -1717,19 +1608,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -1741,13 +1628,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final Integer programYearId,
       final String user)
   throws ServiceException {
-    Transaction transaction = null;
     WriteDAO writeDAO = new WriteDAO();
     CalculatorDAO calcDAO = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       writeDAO.writeAdjustmentVerificationNotes(
@@ -1765,19 +1649,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1792,19 +1672,14 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     Integer revisionCount = null;
 
-    Transaction transaction = null;
     CalculatorViewDAO dao = new CalculatorViewDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       revisionCount = dao.getScenarioRevisionCount(transaction, scenarioId);
 
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return revisionCount;
@@ -1822,11 +1697,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final String user)
   throws ServiceException {
 
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       List<Scenario> scenarios;
@@ -1851,19 +1724,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1881,11 +1750,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final String user)
   throws ServiceException {
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       dao.addScenarioLog(transaction,
@@ -1896,20 +1763,16 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error("logMessage: " + logMessage);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -1972,12 +1835,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     List<DeductionLineItem> deductionLineItems = null;
 
-    Transaction transaction = null;
     CalculatorViewDAO dao = new CalculatorViewDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       deductionLineItems = dao.getDeductionLineItems(transaction, programYear, deductionType);
 
     } catch (Exception e) {
@@ -1987,8 +1847,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return deductionLineItems;
@@ -2009,12 +1867,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     Map<Integer, List<Integer>> scNumMap = null;
     
-    Transaction transaction = null;
     CalculatorViewDAO dao = new CalculatorViewDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       scNumMap = dao.getCombinedFarmInProgressScenarioNumbers(
           transaction,
           participantPin,
@@ -2027,8 +1882,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return scNumMap;
@@ -2047,12 +1900,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     boolean exists;
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       exists = dao.pinExists(transaction, pin);
       
     } catch (Exception e) {
@@ -2062,8 +1912,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return exists;
@@ -2084,12 +1932,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     boolean result;
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       result = dao.pinCheckedOutByUser(transaction, pin, userGuid);
       
     } catch (Exception e) {
@@ -2099,8 +1944,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -2126,12 +1969,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     boolean exists;
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       exists = dao.matchingScenarioExists(transaction, pin, programYear, municipalityCode, scenarioCategoryCode);
       
     } catch (Exception e) {
@@ -2141,8 +1981,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return exists;
@@ -2165,12 +2003,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     boolean result;
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       result = dao.combinedFarmHasAccountingCodeError(transaction, pinToAdd, programYear, scenarioId);
       
     } catch (Exception e) {
@@ -2180,8 +2015,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -2204,12 +2037,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     boolean result;
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       result = dao.combinedFarmReferenceYearSetMismatchError(transaction, pinToAdd, programYear, scenarioId);
       
     } catch (Exception e) {
@@ -2219,8 +2049,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -2241,12 +2069,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     Integer combinedFarmNumber;
     
-    Transaction transaction = null;
     CalculatorViewDAO dao = new CalculatorViewDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       combinedFarmNumber = dao.getInProgressCombinedFarmNumber(transaction, pin, programYear);
       
     } catch (Exception e) {
@@ -2256,8 +2081,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return combinedFarmNumber;
@@ -2278,12 +2101,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     Integer combinedFarmNumber;
     
-    Transaction transaction = null;
     CalculatorViewDAO dao = new CalculatorViewDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       combinedFarmNumber = dao.getVerifiedCombinedFarmNumber(transaction, pin, programYear);
       
     } catch (Exception e) {
@@ -2293,8 +2113,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return combinedFarmNumber;
@@ -2315,12 +2133,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     boolean result;
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       result = dao.combinedFarmMatchesVerified(transaction, scenarioId, verifiedCombinedFarmNumber);
       
     } catch (Exception e) {
@@ -2330,8 +2145,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return result;
@@ -2361,12 +2174,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     Integer programYear = scenario.getYear();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       updateCombinedFarmScenarioNumbers(
@@ -2388,19 +2199,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -2430,12 +2237,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     Integer programYear = scenario.getYear();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       updateCombinedFarmScenarioNumbers(
@@ -2462,19 +2267,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -2504,12 +2305,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     Integer programYear = scenario.getYear();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       updateCombinedFarmScenarioNumbers(
@@ -2534,19 +2333,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2597,12 +2392,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final Boolean nonParticipantInd,
       final String user)
   throws ServiceException {
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       calcDAO.writeNonParticipantInd(
@@ -2621,19 +2413,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2651,12 +2439,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final String farmType,
       final String user)
   throws ServiceException {
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       calcDAO.updateFarmType(
@@ -2669,19 +2454,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -2699,12 +2480,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final Date cashMarginsOptInDate,
       final String user)
   throws ServiceException {
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       calcDAO.writeCashMarginsInd(
@@ -2718,19 +2496,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -2748,13 +2522,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final Boolean lateParticipantInd,
       final String user)
           throws ServiceException {
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
     ImportDAO dao = new ImportDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       calcDAO.writeLateParticipantInd(
@@ -2821,19 +2592,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -2850,12 +2617,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final String chefsFormType,
       final String benefitTriageResultType)
           throws ServiceException {
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       calcDAO.updateProgramYearLocalReceivedDates(
@@ -2887,19 +2651,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
   }
@@ -2912,12 +2672,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final String user,
       final String email)
           throws ServiceException {
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
-      
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       calcDAO.updateProgramYearLocalReceivedDates(
@@ -2976,19 +2733,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
   }
@@ -2999,15 +2752,12 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final ReasonabilityTestResults results,
       final String user)
           throws ServiceException {
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
     ReasonabilityWriteDAO reasonabilityDAO = new ReasonabilityWriteDAO();
     
-    try {
+    try (Transaction transaction = openTransaction()) {
       List<Scenario> scenarios = loadFreshScenarios(scenario);
 
-      transaction = openTransaction();
-      
       transaction.begin();
 
       for(Scenario curScenario : scenarios) {
@@ -3048,19 +2798,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3070,11 +2816,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final Scenario scenario,
       final String user)
           throws ServiceException {
-    Transaction transaction = null;
-    
-    try {
-
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       
       transaction.begin();
 
@@ -3083,19 +2825,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3119,13 +2857,11 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
@@ -3144,10 +2880,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
-    
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       List<Scenario> scenarios = scenario.getParentScenarios();
@@ -3171,19 +2904,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3236,12 +2965,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
 
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       @SuppressWarnings("resource")
@@ -3326,19 +3053,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error("Participant: ", participant);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -3425,11 +3148,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       throw new ServiceException("A required object is null");
     }
     
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       calcDAO.deletePartners(transaction, removedPartners);
@@ -3449,30 +3170,24 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
   @Override
   public List<FarmingOperationPartner> getAllPartners() throws ServiceException {
      
-    Transaction transaction = null;
     CalculatorDAO calcDAO = new CalculatorDAO();
   
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       List<FarmingOperationPartner> partners;
       partners = calcDAO.readAllPartners(transaction);
       return partners;
@@ -3480,8 +3195,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     } catch (Exception e) {
       logger.error("Unexpected error: ", e);
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
      
   }
@@ -3493,7 +3206,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       String user) 
   throws ServiceException {
     
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
     Integer newProgramYearVersionNumber = null;
 
@@ -3502,8 +3214,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     Integer programYearVersionId = scenario.getFarmingYear().getProgramYearVersionId();
     Integer scenarioId = scenario.getScenarioId();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       newProgramYearVersionNumber = dao.copyProgramYearVersion(transaction, scenarioId, user);
@@ -3514,7 +3225,6 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
@@ -3523,13 +3233,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       logger.error("year: " + year);
       logger.error("programYearVersionNumber: " + programYearVersionNumber);
       logger.error("programYearVersionId: " + programYearVersionId);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return newProgramYearVersionNumber;
@@ -3545,11 +3252,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
   public void updateScenarioParticipantDataSrcCode(final Scenario scenario, final String participantDataSrcCode, final String user)
       throws ServiceException {
 
-    Transaction transaction = null;
     CalculatorDAO dao = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       dao.updateScenarioParticipantDataSrcCode(transaction, scenario, participantDataSrcCode, user);
@@ -3561,19 +3266,15 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      rollback(transaction);
       if (e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
   
@@ -3584,12 +3285,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final Integer excludedProgramYearVersionNumber)
       throws ServiceException {
 
-    Transaction transaction = null;
     List<FarmingOperationImportOption> scenarioScheduleList = null;
     CalculatorDAO dao = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       scenarioScheduleList = dao.readOperationsForProductiveUnitsImport(transaction,
@@ -3598,18 +3297,14 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       if (e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return scenarioScheduleList;
@@ -3622,12 +3317,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final Integer excludedProgramYearVersionNumber)
       throws ServiceException {
 
-    Transaction transaction = null;
     List<FarmingOperationImportOption> scenarioScheduleList = null;
     CalculatorDAO dao = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       scenarioScheduleList = dao.readOperationsForProductiveUnitsImport(transaction,
@@ -3636,18 +3329,14 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       if (e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return scenarioScheduleList;
@@ -3660,12 +3349,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       final Integer excludedProgramYearVersionNumber)
       throws ServiceException {
 
-    Transaction transaction = null;
     List<FarmingOperationImportOption> scenarioScheduleList = null;
     CalculatorDAO dao = new CalculatorDAO();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
 
       scenarioScheduleList = dao.readOperationsForProductiveUnitsImport(transaction,
@@ -3674,18 +3361,14 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
-      rollback(transaction);
       if (e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return scenarioScheduleList;
@@ -3707,11 +3390,9 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     logger.debug(String.format("Unexpected error linking scenarioId: %d to chefsSubmissionId: %d", scenarioId, chefsSubmissionId));
     
-    Transaction transaction = null;
     ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
     
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
       chefsDatabaseDao.updateScenarioSubmissionId(transaction, scenarioId, chefsSubmissionId, user);
@@ -3719,18 +3400,14 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       transaction.commit();
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
-      rollback(transaction);
       throw e;
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(String.format("Unexpected error linking scenarioId: %d to chefsSubmissionId: %d", scenarioId, chefsSubmissionId), e);
-      rollback(transaction);
       if(e instanceof ServiceException) {
         throw (ServiceException) e;
       }
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 

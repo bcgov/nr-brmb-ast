@@ -74,19 +74,14 @@ final class SubscriptionServiceImpl extends BaseService
   throws ServiceException {
   	
   	List userList = null;
-    Transaction transaction = null;
     SubscriptionDAO dao = new SubscriptionDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       userList = dao.getAuthorizedUsers(transaction, pin);
 
       getNameAndPhone(userList);
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return userList;
@@ -104,18 +99,13 @@ final class SubscriptionServiceImpl extends BaseService
   public List getSubscriptions(final Integer pin)
   throws ServiceException {
   	List subList = null;
-    Transaction transaction = null;
     SubscriptionDAO dao = new SubscriptionDAO();
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       subList = dao.getSubscriptions(transaction, pin);
 
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return subList;
@@ -135,13 +125,11 @@ final class SubscriptionServiceImpl extends BaseService
   	final Integer clientSubscriptionId,
     final Integer revisionCount) 
   throws ServiceException {
-    Transaction transaction = null;
     SubscriptionDAO dao = new SubscriptionDAO();
     String newStatusCode = SubscriptionStatusCodes.REVOKED;
     String userid = CurrentUser.getUser().getUserId();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       dao.updateSubscriptionStatus(
         transaction,
         clientSubscriptionId,
@@ -150,8 +138,6 @@ final class SubscriptionServiceImpl extends BaseService
         userid);
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -170,13 +156,11 @@ final class SubscriptionServiceImpl extends BaseService
     final Integer revisionCount
   ) throws ServiceException {
   	
-    Transaction transaction = null;
     SubscriptionDAO dao = new SubscriptionDAO();
     String newStatusCode = SubscriptionStatusCodes.INVALIDATED;
     String userid = CurrentUser.getUser().getUserId();
 
-    try {
-      transaction = openTransaction();
+    try (Transaction transaction = openTransaction()) {
       dao.updateSubscriptionStatus(
         transaction,
         clientSubscriptionId,
@@ -185,8 +169,6 @@ final class SubscriptionServiceImpl extends BaseService
         userid);
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
   }
 
@@ -206,10 +188,9 @@ final class SubscriptionServiceImpl extends BaseService
   ) throws ServiceException {
     GenerateSubscriptionResponse genResponse =
       new GenerateSubscriptionResponse();
-    Transaction transaction = null;
     SubscriptionDAO dao = new SubscriptionDAO();
 
-    try {
+    try (Transaction transaction = openTransaction()) {
 
       //
       // use the web service to create a new subscription number.
@@ -246,14 +227,11 @@ final class SubscriptionServiceImpl extends BaseService
       cs.setActivationExpiryDate(sub.getActivationExpiryDate().getTime());
       cs.setSubscriptionNumber(sub.getSubscriptionCode());
 
-      transaction = openTransaction();
       dao.insertSubscription(transaction, agristabilityClientId, cs);
 
       genResponse.setClientSubscriptionId(cs.getClientSubscriptionId());
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return genResponse;
@@ -273,13 +251,12 @@ final class SubscriptionServiceImpl extends BaseService
   @Override
   public int activateSubscriptions(final List errorMessages)
     throws ServiceException {
-    Transaction transaction = null;
     SubscriptionDAO dao = new SubscriptionDAO();
     int numActivated = 0;
     String guid = CurrentUser.getUser().getGuid();
     String userid = CurrentUser.getUser().getUserId();
 
-    try {
+    try (Transaction transaction = openTransaction()) {
       //
       // use the web service to get the activated subscriptions
       //
@@ -298,8 +275,6 @@ final class SubscriptionServiceImpl extends BaseService
       BCeIDSubscription[] subscriptions = response.getSubscriptionList();
 
       if (subscriptions != null) {
-        transaction = openTransaction();
-        
         transaction.begin();
 
         // find or create a farm_agristability_represntves row
@@ -323,12 +298,7 @@ final class SubscriptionServiceImpl extends BaseService
       }
 
     } catch (Exception e) {
-    	if(transaction != null) {
-    		transaction.rollback();
-    	}
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return numActivated;

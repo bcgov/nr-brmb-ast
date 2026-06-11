@@ -103,19 +103,15 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
     
     List<Enrolment> enrolments = null;
 
-    Transaction transaction = null;
-    transaction = openTransaction();
     EnrolmentReadDAO dao = new EnrolmentReadDAO();
 
-    try {
+    try (Transaction transaction = openTransaction()) {
       enrolments = dao.getEnrolments(transaction, enrolmentYear, regionCode);
 
     } catch(ServiceException se) {
       throw se;
     } catch (Exception e) {
       throw new ServiceException(e);
-    } finally {
-      closeTransaction(transaction);
     }
     
     return enrolments;
@@ -687,8 +683,6 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
       final String user)
   throws ServiceException {
     
-    Transaction transaction = null;
-    transaction = openTransaction();
     EnrolmentReadDAO dao = new EnrolmentReadDAO();
     
     File pTempDir = tempDir;
@@ -698,7 +692,7 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
 
     File csvFile = null;
 
-    try {
+    try (Transaction transaction = openTransaction()) {
       csvFile = File.createTempFile(ENROLMENT_CSV_FILE, CSV_SUFFIX, pTempDir);
       
       Format[] columnFormats = getCsvColumnFormats();
@@ -756,11 +750,8 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
   throws ServiceException {
 
     Scenario scenario = null;
-    Transaction transaction = null;
 
-    try {
-      transaction = openTransaction();
-
+    try (Transaction transaction = openTransaction()) {
       @SuppressWarnings("resource")
       Connection connection = (Connection) transaction.getDatastore();
 
@@ -768,8 +759,6 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
 
       scenario = service.getClientInfoWithHistory(pin, programYear, null,
           ClientService.ENROLMENT_MODE);
-    } finally {
-      closeTransaction(transaction);
     }
 
     return scenario;
