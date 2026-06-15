@@ -81,10 +81,10 @@ begin
             having sum(ri.quantity_produced) != 0
         ), claims_calc as (
             select a.*,
-                   (case
-                       when(a.guaranteed_prod_value - a.reported) >= 0 then (a.guaranteed_prod_value - a.reported) * a.negative_margin_purchase_requirement * a.required_insurable_value
-                       else 0
-                   end) as est_claims_received
+                 (case
+                     when (a.guaranteed_prod_value - a.reported) <= 0 or a.guaranteed_prod_value * a.negative_margin_purchase_requirement > a.reported then 0
+                     else (a.guaranteed_prod_value - a.reported) * a.negative_margin_purchase_requirement * a.required_insurable_value
+                 end) as est_claims_received
             from a
         ), premium_calc as (
             select cc.*,
