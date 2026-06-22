@@ -17,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.EnrolmentCalculationResourceAssembler;
+import ca.bc.gov.farms.data.assemblers.EnrolmentCombinedFarmClientResourceAssembler;
 import ca.bc.gov.farms.data.assemblers.EnrolmentPartnerResourceAssembler;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationMarginEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationProductiveUnitEntity;
+import ca.bc.gov.farms.data.entities.EnrolmentCombinedFarmClientEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentPartnerEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentPartnerSummaryEntity;
 import ca.bc.gov.farms.data.mappers.EnrolmentCalculationMapper;
@@ -51,6 +53,9 @@ public class EnrolmentCalculationService {
 
     @Autowired
     private EnrolmentPartnerResourceAssembler enrolmentPartnerResourceAssembler;
+
+    @Autowired
+    private EnrolmentCombinedFarmClientResourceAssembler enrolmentCombinedFarmClientResourceAssembler;
 
     @Transactional
     public EnrolmentCalculationRsrc getEnrolmentCalculation(Integer participantPin, Integer programYear)
@@ -103,12 +108,18 @@ public class EnrolmentCalculationService {
         try {
             EnrolmentPartnerSummaryEntity summary = enrolmentCalculationMapper
                     .fetchPartnerSummaryByPinAndProgramYear(participantPin, programYear);
+            List<EnrolmentCombinedFarmClientEntity> combinedFarmClients =
+                    summary == null || summary.getCombinedFarmNumber() == null
+                            ? Collections.emptyList()
+                            : enrolmentCalculationMapper.fetchCombinedFarmClients(summary.getCombinedFarmNumber());
             List<EnrolmentPartnerEntity> entities = enrolmentCalculationMapper
                     .fetchPartnersByPinAndProgramYear(participantPin, programYear);
 
-            return enrolmentPartnerResourceAssembler
+            EnrolmentPartnerListRsrc result = enrolmentPartnerResourceAssembler
                     .getEnrolmentPartnerList(participantPin, programYear, summary,
                             entities == null ? Collections.emptyList() : entities);
+            return enrolmentCombinedFarmClientResourceAssembler.addCombinedFarmClients(
+                    result, combinedFarmClients == null ? Collections.emptyList() : combinedFarmClients);
         } catch (Throwable t) {
             throw new ServiceException("Mapper threw an exception", t);
         }

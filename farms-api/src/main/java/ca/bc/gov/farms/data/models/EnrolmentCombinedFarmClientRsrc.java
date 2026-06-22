@@ -1,8 +1,5 @@
 package ca.bc.gov.farms.data.models;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import ca.bc.gov.brmb.common.rest.resource.BaseResource;
@@ -18,15 +15,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnrolmentPartnerListRsrc extends BaseResource {
+public class EnrolmentCombinedFarmClientRsrc extends BaseResource {
 
-    private Integer participantPin;
-    private Integer programYear;
     private Long agristabilityScenarioId;
     private Integer scenarioNumber;
-    private Boolean inCombinedFarm;
-    private Integer combinedFarmNumber;
-    private BigDecimal combinedFarmPercent;
-    private List<EnrolmentCombinedFarmClientRsrc> combinedFarmClientList;
-    private List<EnrolmentPartnerRsrc> enrolmentPartnerList;
+    private Integer participantPin;
+    private String firstName;
+    private String lastName;
+    private String corporationName;
 }

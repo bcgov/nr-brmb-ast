@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationMarginEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationProductiveUnitEntity;
+import ca.bc.gov.farms.data.entities.EnrolmentCombinedFarmClientEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentPartnerEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentPartnerSummaryEntity;
 
@@ -32,6 +33,9 @@ public interface EnrolmentCalculationMapper {
     EnrolmentPartnerSummaryEntity fetchPartnerSummaryByPinAndProgramYear(
             @Param("participantPin") Integer participantPin,
             @Param("programYear") Integer programYear);
+
+    List<EnrolmentCombinedFarmClientEntity> fetchCombinedFarmClients(
+            @Param("combinedFarmNumber") Integer combinedFarmNumber);
 
     int insertScenarioEnrolment(
             @Param("dto") EnrolmentCalculationEntity entity,

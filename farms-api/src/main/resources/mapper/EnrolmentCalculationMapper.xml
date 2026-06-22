@@ -315,6 +315,26 @@
         limit 1
     </select>
 
+    <select id="fetchCombinedFarmClients" resultType="EnrolmentCombinedFarmClientEntity">
+        select sc.agristability_scenario_id,
+               sc.scenario_number,
+               ac.participant_pin,
+               p.first_name,
+               p.last_name,
+               p.corp_name as corporation_name
+        from farms.farm_agristability_scenarios sc
+        join farms.farm_program_year_versions pyv
+          on pyv.program_year_version_id = sc.program_year_version_id
+        join farms.farm_program_years py
+          on py.program_year_id = pyv.program_year_id
+        join farms.farm_agristability_clients ac
+          on ac.agristability_client_id = py.agristability_client_id
+        join farms.farm_persons p
+          on p.person_id = ac.person_id
+        where sc.combined_farm_number = #{combinedFarmNumber}
+        order by ac.participant_pin, sc.scenario_number
+    </select>
+
     <insert id="insertScenarioEnrolment">
         <selectKey keyProperty="dto.scenarioEnrolmentId" resultType="java.lang.Long" order="BEFORE">
             select nextval('farms.farm_se_seq')
