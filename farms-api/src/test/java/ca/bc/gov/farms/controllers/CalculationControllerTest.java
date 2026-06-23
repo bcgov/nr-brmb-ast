@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.farms.data.models.EnrolmentCalculationRsrc;
+import ca.bc.gov.farms.data.models.EnrolmentCombinedFarmClientRsrc;
 import ca.bc.gov.farms.data.models.EnrolmentPartnerListRsrc;
 import ca.bc.gov.farms.data.models.EnrolmentPartnerRsrc;
 import ca.bc.gov.farms.data.models.EnwEnrolmentRsrc;
@@ -117,6 +118,13 @@ class CalculationControllerTest {
                 .inCombinedFarm(true)
                 .combinedFarmNumber(123)
                 .combinedFarmPercent(new BigDecimal("0.6000"))
+                .combinedFarmClientList(Collections.singletonList(
+                        EnrolmentCombinedFarmClientRsrc.builder()
+                                .agristabilityScenarioId(1048122L)
+                                .scenarioNumber(2)
+                                .participantPin(25306184)
+                                .corporationName("Combined Farm")
+                                .build()))
                 .enrolmentPartnerList(Collections.singletonList(EnrolmentPartnerRsrc.builder()
                         .agristabilityScenarioId(969183L)
                         .scenarioNumber(1)
@@ -146,6 +154,10 @@ class CalculationControllerTest {
                 .andExpect(jsonPath("$.inCombinedFarm").value(true))
                 .andExpect(jsonPath("$.combinedFarmNumber").value(123))
                 .andExpect(jsonPath("$.combinedFarmPercent").value(0.6000))
+                .andExpect(jsonPath("$.combinedFarmClientList[0].agristabilityScenarioId").value(1048122))
+                .andExpect(jsonPath("$.combinedFarmClientList[0].scenarioNumber").value(2))
+                .andExpect(jsonPath("$.combinedFarmClientList[0].participantPin").value(25306184))
+                .andExpect(jsonPath("$.combinedFarmClientList[0].corporationName").value("Combined Farm"))
                 .andExpect(jsonPath("$.enrolmentPartnerList[0].agristabilityScenarioId").value(969183))
                 .andExpect(jsonPath("$.enrolmentPartnerList[0].operationSchedule").value("A"))
                 .andExpect(jsonPath("$.enrolmentPartnerList[0].partnerParticipantPin").value(25306184))
@@ -165,6 +177,7 @@ class CalculationControllerTest {
                 .inCombinedFarm(true)
                 .combinedFarmNumber(12385)
                 .combinedFarmPercent(new BigDecimal("0.215"))
+                .combinedFarmClientList(Collections.emptyList())
                 .enrolmentPartnerList(Collections.emptyList())
                 .build();
 
@@ -181,6 +194,8 @@ class CalculationControllerTest {
                 .andExpect(jsonPath("$.inCombinedFarm").value(true))
                 .andExpect(jsonPath("$.combinedFarmNumber").value(12385))
                 .andExpect(jsonPath("$.combinedFarmPercent").value(0.215))
+                .andExpect(jsonPath("$.combinedFarmClientList").isArray())
+                .andExpect(jsonPath("$.combinedFarmClientList").isEmpty())
                 .andExpect(jsonPath("$.enrolmentPartnerList").isArray())
                 .andExpect(jsonPath("$.enrolmentPartnerList").isEmpty());
     }

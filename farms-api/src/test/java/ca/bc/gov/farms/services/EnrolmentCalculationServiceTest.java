@@ -22,10 +22,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ca.bc.gov.brmb.common.service.api.NotFoundException;
 import ca.bc.gov.brmb.common.service.api.ServiceException;
 import ca.bc.gov.farms.data.assemblers.EnrolmentCalculationResourceAssembler;
+import ca.bc.gov.farms.data.assemblers.EnrolmentCombinedFarmClientResourceAssembler;
 import ca.bc.gov.farms.data.assemblers.EnrolmentPartnerResourceAssembler;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationMarginEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentCalculationProductiveUnitEntity;
+import ca.bc.gov.farms.data.entities.EnrolmentCombinedFarmClientEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentPartnerEntity;
 import ca.bc.gov.farms.data.entities.EnrolmentPartnerSummaryEntity;
 import ca.bc.gov.farms.data.mappers.EnrolmentCalculationMapper;
@@ -43,6 +45,9 @@ class EnrolmentCalculationServiceTest {
 
     @Mock
     private EnrolmentPartnerResourceAssembler enrolmentPartnerResourceAssembler;
+
+    @Mock
+    private EnrolmentCombinedFarmClientResourceAssembler enrolmentCombinedFarmClientResourceAssembler;
 
     @InjectMocks
     private EnrolmentCalculationService enrolmentCalculationService;
@@ -311,6 +316,19 @@ class EnrolmentCalculationServiceTest {
                 .combinedFarmNumber(123)
                 .combinedFarmPercent(new BigDecimal("0.6000"))
                 .build();
+        List<EnrolmentCombinedFarmClientEntity> combinedFarmClients = List.of(
+                EnrolmentCombinedFarmClientEntity.builder()
+                        .agristabilityScenarioId(1048121L)
+                        .scenarioNumber(5)
+                        .participantPin(23198443)
+                        .corporationName("Current Farm")
+                        .build(),
+                EnrolmentCombinedFarmClientEntity.builder()
+                        .agristabilityScenarioId(1048122L)
+                        .scenarioNumber(2)
+                        .participantPin(25306184)
+                        .corporationName("Combined Farm")
+                        .build());
         EnrolmentPartnerListRsrc expectedResource = EnrolmentPartnerListRsrc.builder()
                 .participantPin(23198443)
                 .programYear(2021)
@@ -318,9 +336,15 @@ class EnrolmentCalculationServiceTest {
 
         when(enrolmentCalculationMapper.fetchPartnerSummaryByPinAndProgramYear(23198443, 2021))
                 .thenReturn(summary);
+        when(enrolmentCalculationMapper.fetchCombinedFarmClients(123))
+                .thenReturn(combinedFarmClients);
         when(enrolmentCalculationMapper.fetchPartnersByPinAndProgramYear(23198443, 2021))
                 .thenReturn(entities);
-        when(enrolmentPartnerResourceAssembler.getEnrolmentPartnerList(23198443, 2021, summary, entities))
+        when(enrolmentPartnerResourceAssembler.getEnrolmentPartnerList(
+                23198443, 2021, summary, entities))
+                .thenReturn(expectedResource);
+        when(enrolmentCombinedFarmClientResourceAssembler.addCombinedFarmClients(
+                expectedResource, combinedFarmClients))
                 .thenReturn(expectedResource);
 
         EnrolmentPartnerListRsrc result = enrolmentCalculationService
@@ -340,6 +364,9 @@ class EnrolmentCalculationServiceTest {
                 .thenReturn(null);
         when(enrolmentPartnerResourceAssembler.getEnrolmentPartnerList(
                 eq(23198443), eq(2021), eq(null), eq(Collections.emptyList())))
+                .thenReturn(expectedResource);
+        when(enrolmentCombinedFarmClientResourceAssembler.addCombinedFarmClients(
+                expectedResource, Collections.emptyList()))
                 .thenReturn(expectedResource);
 
         EnrolmentPartnerListRsrc result = enrolmentCalculationService
@@ -370,10 +397,15 @@ class EnrolmentCalculationServiceTest {
 
         when(enrolmentCalculationMapper.fetchPartnerSummaryByPinAndProgramYear(25180167, 2021))
                 .thenReturn(summary);
+        when(enrolmentCalculationMapper.fetchCombinedFarmClients(12385))
+                .thenReturn(Collections.emptyList());
         when(enrolmentCalculationMapper.fetchPartnersByPinAndProgramYear(25180167, 2021))
                 .thenReturn(Collections.emptyList());
         when(enrolmentPartnerResourceAssembler.getEnrolmentPartnerList(
                 25180167, 2021, summary, Collections.emptyList()))
+                .thenReturn(expectedResource);
+        when(enrolmentCombinedFarmClientResourceAssembler.addCombinedFarmClients(
+                expectedResource, Collections.emptyList()))
                 .thenReturn(expectedResource);
 
         EnrolmentPartnerListRsrc result = enrolmentCalculationService
