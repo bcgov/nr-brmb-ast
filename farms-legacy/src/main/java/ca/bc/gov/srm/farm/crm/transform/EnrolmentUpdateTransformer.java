@@ -31,6 +31,8 @@ public class EnrolmentUpdateTransformer {
 
   public static final char DELIMITER = '\n';
   public static final String PERCENT_FORMAT_STRING = "#0.####";
+  private static final String NULL_DISPLAY_NAME = "null";
+  private static final String NULL_LAST_FIRST_DISPLAY_NAME = "null, null";
 
 
   public CrmEnrolmentUpdateResource transformToCrmResource(Enrolment e, Integer importVersionId, String user) {
@@ -48,7 +50,7 @@ public class EnrolmentUpdateTransformer {
       combinedFarmPins.add(owner.getParticipantPin());
     }
     
-    List<EnrolmentPartner> partners = e.getEnrolmentPartners();
+    List<EnrolmentPartner> partners = getDisplayablePartners(e.getEnrolmentPartners());
     List<String> partnershipNames = new ArrayList<>();
     List<BigDecimal> partnershipPercents = new ArrayList<>();
     List<Integer> partnershipPins = new ArrayList<>();
@@ -72,7 +74,7 @@ public class EnrolmentUpdateTransformer {
     resource.setVsi_fullyprovinciallyfunded(e.getIsLateParticipant());
     resource.setVsi_generateddate(CrmTransferFormatUtil.formatDate(e.getGeneratedDate()));
     resource.setVsi_generatedfromenwscenario(e.getIsGeneratedFromEnw());
-    resource.setVsi_haspartners(e.isPartnership());
+    resource.setVsi_haspartners(! partners.isEmpty());
     resource.setVsi_incombinedfarm(e.getIsInCombinedFarm());
     resource.setVsi_marginyearminus2(e.getMarginYearMinus2());
     resource.setVsi_marginyearminus3(e.getMarginYearMinus3());
@@ -93,6 +95,38 @@ public class EnrolmentUpdateTransformer {
     return resource;
   }
 
+  private List<EnrolmentPartner> getDisplayablePartners(List<EnrolmentPartner> partners) {
+    List<EnrolmentPartner> result = new ArrayList<>();
+    for(EnrolmentPartner partner : partners) {
+      if(isDisplayablePartner(partner)) {
+        result.add(partner);
+      }
+    }
+    return result;
+  }
+
+
+  private boolean isDisplayablePartner(EnrolmentPartner partner) {
+    return hasPartnerPin(partner) || hasDisplayablePartnerName(partner);
+  }
+
+
+  private boolean hasPartnerPin(EnrolmentPartner partner) {
+    Integer partnerPin = partner.getPartnershipPin();
+    return partnerPin != null && partnerPin.intValue() != 0;
+  }
+
+
+  private boolean hasDisplayablePartnerName(EnrolmentPartner partner) {
+    String partnerName = partner.getPartnershipName();
+    if(StringUtils.isBlank(partnerName)) {
+      return false;
+    }
+
+    String trimmedName = partnerName.trim();
+    return !NULL_DISPLAY_NAME.equalsIgnoreCase(trimmedName)
+        && !NULL_LAST_FIRST_DISPLAY_NAME.equalsIgnoreCase(trimmedName);
+  }
 
   private String getFeeModifiedByUser(String user) {
     ConfigurationUtility configUtil = ConfigurationUtility.getInstance();
