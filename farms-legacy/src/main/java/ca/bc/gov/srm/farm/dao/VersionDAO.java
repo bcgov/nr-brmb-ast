@@ -422,7 +422,7 @@ public class VersionDAO {
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
             PACKAGE_NAME + "." + IMPORT_FAILURE_PROC,
-            IMPORT_FAILURE_PARAM, true);) {
+            IMPORT_FAILURE_PARAM, false);) {
 
         int c = 1;
         proc.setLong(c++, pImportVersionId == null ? null : pImportVersionId.longValue());
@@ -467,7 +467,7 @@ public class VersionDAO {
 
       try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
             PACKAGE_NAME + "." + IMPORT_COMPLETE_PROC,
-            IMPORT_COMPLETE_PARAM, true);) {
+            IMPORT_COMPLETE_PARAM, false);) {
         
         int c = 1;
         proc.setLong(c++, pImportVersionId == null ? null : pImportVersionId.longValue());
