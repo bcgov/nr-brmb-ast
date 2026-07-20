@@ -272,7 +272,7 @@ public class EnrolmentReadDAO extends OracleDAO {
         Array oracleArray = createIntegersOracleArray(connection, pinArray);
         
         int param = 1;
-        DAOUtils.setInt(ps, param++, enrolmentYear);
+        DAOUtils.setShort(ps, param++, enrolmentYear);
         ps.setArray(param++, oracleArray);
 
         try(ResultSet rs = ps.executeQuery();) {
@@ -322,7 +322,7 @@ public class EnrolmentReadDAO extends OracleDAO {
         Array oracleArray = createIntegersOracleArray(connection, pinArray);
         
         int param = 1;
-        DAOUtils.setInt(ps, param++, enrolmentYear);
+        DAOUtils.setShort(ps, param++, enrolmentYear);
         ps.setArray(param++, oracleArray);
 
         try(ResultSet rs = ps.executeQuery();) {
