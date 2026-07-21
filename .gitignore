@@ -369,3 +369,11 @@ pyrightconfig.json
 
 # IDE
 .codebuddy
+
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+.smarttomcat
