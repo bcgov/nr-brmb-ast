@@ -373,7 +373,7 @@ public class EnrolmentReadDAO extends OracleDAO {
     }
 
     try {
-      prcName = PACKAGE_NAME + READ_TRANSFER_PARTNERS_PROC;
+      prcName = PACKAGE_NAME + "." + READ_TRANSFER_PARTNERS_PROC;
       startTime = System.currentTimeMillis();
       String sql = "SELECT * FROM " + prcName + "(?)";
 
