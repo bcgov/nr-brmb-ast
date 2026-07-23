@@ -48,6 +48,7 @@ public class RestApiDao {
   
   protected static final String HEADER_RATELIMIT = "ratelimit";
   
+  protected static final int CONNECT_TIMEOUT_MILLIS = 30_000;
   protected RestAuthenticationHandler authenticationHandler;
   
   public RestApiDao(RestAuthenticationHandler authenticationHandler) {
@@ -96,6 +97,7 @@ public class RestApiDao {
       
       URL url = new URL(endpointUrl);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      conn.setConnectTimeout(CONNECT_TIMEOUT_MILLIS);
       conn.setDoOutput(true);
       conn.addRequestProperty("Content-Type", "application/json; charset=utf-8");
       conn.setRequestProperty("Content-Length", String.valueOf(content.length()));
@@ -205,6 +207,7 @@ public class RestApiDao {
 		try {
 			URL url = new URL(endpointUrl);
 			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(CONNECT_TIMEOUT_MILLIS);
 			conn.setDoOutput(true);
 			conn.addRequestProperty("Accept", "application/json; charset=utf-8");
 			conn.setRequestMethod(method);
