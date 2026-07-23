@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,8 @@ import ca.bc.gov.srm.farm.exception.ServiceException;
 public final class CrmTokenFetcher {
 
   private Logger logger = LoggerFactory.getLogger(CrmTokenFetcher.class);
+
+  private static final long TOKEN_FETCH_TIMEOUT_SECONDS = 30;
 
   private static CrmTokenFetcher instance = new CrmTokenFetcher();
 
@@ -96,16 +100,17 @@ public final class CrmTokenFetcher {
   }
 
 
-  private IAuthenticationResult getAccessTokenByClientCredentialGrant() throws InterruptedException, ExecutionException {
-    
+  private IAuthenticationResult getAccessTokenByClientCredentialGrant()
+      throws InterruptedException, ExecutionException, TimeoutException {
+
     logger.debug("Fetching new CRM-dynamics token...");
-    
+
     // With client credentials flows the scope is ALWAYS of the shape "resource/.default", as the
     // application permissions need to be set statically (in the portal), and then granted by a tenant administrator
     ClientCredentialParameters clientCredentialParam = ClientCredentialParameters.builder(Collections.singleton(scope)).build();
-    
+
     CompletableFuture<IAuthenticationResult> future = app.acquireToken(clientCredentialParam);
-    return future.get();
+    return future.get(TOKEN_FETCH_TIMEOUT_SECONDS, TimeUnit.SECONDS);
   }
 
 
