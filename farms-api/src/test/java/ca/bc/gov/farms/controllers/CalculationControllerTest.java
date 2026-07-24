@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.controllers;
 
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -149,6 +150,7 @@ class CalculationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.participantPin").value(23198443))
                 .andExpect(jsonPath("$.programYear").value(2021))
+                .andExpect(jsonPath("$.message").value(nullValue()))
                 .andExpect(jsonPath("$.agristabilityScenarioId").value(1048121))
                 .andExpect(jsonPath("$.scenarioNumber").value(5))
                 .andExpect(jsonPath("$.inCombinedFarm").value(true))
