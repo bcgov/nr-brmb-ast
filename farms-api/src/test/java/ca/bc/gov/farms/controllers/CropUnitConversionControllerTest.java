@@ -40,6 +40,9 @@ public class CropUnitConversionControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long cropUnitDefaultId;
+    private Long cropUnitConversionFactorId;
+
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -56,21 +59,26 @@ public class CropUnitConversionControllerTest {
         resource.setConversionUnits(conversionUnits);
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(post("/cropUnitConversions")
+        String responseContent = mockMvc.perform(post("/cropUnitConversions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("CropUnitConversionRsrc"))
-                .andExpect(jsonPath("$.cropUnitDefaultId").value(1701))
+                .andExpect(jsonPath("$.cropUnitDefaultId").isNumber())
                 .andExpect(jsonPath("$.inventoryItemCode").value("5560"))
                 .andExpect(jsonPath("$.inventoryItemDesc").value("Alfalfa Dehy"))
                 .andExpect(jsonPath("$.cropUnitCode").value("2"))
                 .andExpect(jsonPath("$.cropUnitDesc").value("Tonnes"))
                 .andExpect(jsonPath("$.userEmail").value(nullValue()))
-                .andExpect(jsonPath("$.conversionUnits[0].cropUnitConversionFactorId").value(2001))
+                .andExpect(jsonPath("$.conversionUnits[0].cropUnitConversionFactorId").isNumber())
                 .andExpect(jsonPath("$.conversionUnits[0].conversionFactor").value(2204.622600))
                 .andExpect(jsonPath("$.conversionUnits[0].targetCropUnitCode").value("1"))
-                .andExpect(jsonPath("$.conversionUnits[0].targetCropUnitDesc").value("Pounds"));
+                .andExpect(jsonPath("$.conversionUnits[0].targetCropUnitDesc").value("Pounds"))
+                .andReturn().getResponse().getContentAsString();
+
+        cropUnitDefaultId = objectMapper.readTree(responseContent).get("cropUnitDefaultId").asLong();
+        cropUnitConversionFactorId = objectMapper.readTree(responseContent)
+                .get("conversionUnits").get(0).get("cropUnitConversionFactorId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -83,7 +91,7 @@ public class CropUnitConversionControllerTest {
                 .andExpect(jsonPath("$.@type").value("CropUnitConversionListRsrc"))
                 .andExpect(jsonPath("$.cropUnitConversionList[1].@type")
                         .value("CropUnitConversionRsrc"))
-                .andExpect(jsonPath("$.cropUnitConversionList[1].cropUnitDefaultId").value(1701))
+                .andExpect(jsonPath("$.cropUnitConversionList[1].cropUnitDefaultId").value(cropUnitDefaultId))
                 .andExpect(jsonPath("$.cropUnitConversionList[1].inventoryItemCode").value("5560"))
                 .andExpect(jsonPath("$.cropUnitConversionList[1].inventoryItemDesc")
                         .value("Alfalfa Dehy"))
@@ -92,7 +100,7 @@ public class CropUnitConversionControllerTest {
                 .andExpect(jsonPath("$.cropUnitConversionList[1].userEmail").value(nullValue()))
                 .andExpect(jsonPath(
                         "$.cropUnitConversionList[1].conversionUnits[0].cropUnitConversionFactorId")
-                        .value(2001))
+                        .value(cropUnitConversionFactorId))
                 .andExpect(
                         jsonPath("$.cropUnitConversionList[1].conversionUnits[0].conversionFactor")
                                 .value(2204.622600))
@@ -114,7 +122,7 @@ public class CropUnitConversionControllerTest {
                 .andExpect(jsonPath("$.@type").value("CropUnitConversionListRsrc"))
                 .andExpect(jsonPath("$.cropUnitConversionList[0].@type")
                         .value("CropUnitConversionRsrc"))
-                .andExpect(jsonPath("$.cropUnitConversionList[0].cropUnitDefaultId").value(1701))
+                .andExpect(jsonPath("$.cropUnitConversionList[0].cropUnitDefaultId").value(cropUnitDefaultId))
                 .andExpect(jsonPath("$.cropUnitConversionList[0].inventoryItemCode").value("5560"))
                 .andExpect(jsonPath("$.cropUnitConversionList[0].inventoryItemDesc")
                         .value("Alfalfa Dehy"))
@@ -123,7 +131,7 @@ public class CropUnitConversionControllerTest {
                 .andExpect(jsonPath("$.cropUnitConversionList[0].userEmail").value(nullValue()))
                 .andExpect(jsonPath(
                         "$.cropUnitConversionList[0].conversionUnits[0].cropUnitConversionFactorId")
-                        .value(2001))
+                        .value(cropUnitConversionFactorId))
                 .andExpect(
                         jsonPath("$.cropUnitConversionList[0].conversionUnits[0].conversionFactor")
                                 .value(2204.622600))
@@ -139,16 +147,17 @@ public class CropUnitConversionControllerTest {
     @Order(4)
     public void testGetCropUnitConversion() throws Exception {
 
-        mockMvc.perform(get("/cropUnitConversions/1701"))
+        mockMvc.perform(get("/cropUnitConversions/{id}", cropUnitDefaultId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("CropUnitConversionRsrc"))
-                .andExpect(jsonPath("$.cropUnitDefaultId").value(1701))
+                .andExpect(jsonPath("$.cropUnitDefaultId").value(cropUnitDefaultId))
                 .andExpect(jsonPath("$.inventoryItemCode").value("5560"))
                 .andExpect(jsonPath("$.inventoryItemDesc").value("Alfalfa Dehy"))
                 .andExpect(jsonPath("$.cropUnitCode").value("2"))
                 .andExpect(jsonPath("$.cropUnitDesc").value("Tonnes"))
                 .andExpect(jsonPath("$.userEmail").value(nullValue()))
-                .andExpect(jsonPath("$.conversionUnits[0].cropUnitConversionFactorId").value(2001))
+                .andExpect(jsonPath("$.conversionUnits[0].cropUnitConversionFactorId")
+                        .value(cropUnitConversionFactorId))
                 .andExpect(jsonPath("$.conversionUnits[0].conversionFactor").value(2204.622600))
                 .andExpect(jsonPath("$.conversionUnits[0].targetCropUnitCode").value("1"))
                 .andExpect(jsonPath("$.conversionUnits[0].targetCropUnitDesc").value("Pounds"));
@@ -160,30 +169,31 @@ public class CropUnitConversionControllerTest {
     public void testUpdateCropUnitConversion() throws Exception {
 
         CropUnitConversionRsrc resource = new CropUnitConversionRsrc();
-        resource.setCropUnitDefaultId(1701L);
+        resource.setCropUnitDefaultId(cropUnitDefaultId);
         resource.setInventoryItemCode("5560");
         resource.setCropUnitCode("1");
         List<ConversionUnitRsrc> conversionUnits = new ArrayList<>();
         ConversionUnitRsrc conversionUnit = new ConversionUnitRsrc();
-        conversionUnit.setCropUnitConversionFactorId(2001L);
+        conversionUnit.setCropUnitConversionFactorId(cropUnitConversionFactorId);
         conversionUnit.setConversionFactor(new BigDecimal("3204.622600"));
         conversionUnit.setTargetCropUnitCode("2");
         conversionUnits.add(conversionUnit);
         resource.setConversionUnits(conversionUnits);
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/cropUnitConversions/1701")
+        mockMvc.perform(put("/cropUnitConversions/{id}", cropUnitDefaultId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("CropUnitConversionRsrc"))
-                .andExpect(jsonPath("$.cropUnitDefaultId").value(1701))
+                .andExpect(jsonPath("$.cropUnitDefaultId").value(cropUnitDefaultId))
                 .andExpect(jsonPath("$.inventoryItemCode").value("5560"))
                 .andExpect(jsonPath("$.inventoryItemDesc").value("Alfalfa Dehy"))
                 .andExpect(jsonPath("$.cropUnitCode").value("1"))
                 .andExpect(jsonPath("$.cropUnitDesc").value("Pounds"))
                 .andExpect(jsonPath("$.userEmail").value(nullValue()))
-                .andExpect(jsonPath("$.conversionUnits[0].cropUnitConversionFactorId").value(2001))
+                .andExpect(jsonPath("$.conversionUnits[0].cropUnitConversionFactorId")
+                        .value(cropUnitConversionFactorId))
                 .andExpect(jsonPath("$.conversionUnits[0].conversionFactor").value(3204.622600))
                 .andExpect(jsonPath("$.conversionUnits[0].targetCropUnitCode").value("2"))
                 .andExpect(jsonPath("$.conversionUnits[0].targetCropUnitDesc").value("Tonnes"));
@@ -193,7 +203,7 @@ public class CropUnitConversionControllerTest {
     @Order(6)
     public void testDeleteCropUnitConversion() throws Exception {
 
-        mockMvc.perform(delete("/cropUnitConversions/1701"))
+        mockMvc.perform(delete("/cropUnitConversions/{id}", cropUnitDefaultId))
                 .andExpect(status().isNoContent());
     }
 }

@@ -37,6 +37,8 @@ public class ExpectedProductionControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long expectedProductionId;
+
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -47,18 +49,21 @@ public class ExpectedProductionControllerTest {
         resource.setCropUnitCode("1");
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(post("/expectedProductions")
+        String responseContent = mockMvc.perform(post("/expectedProductions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("ExpectedProductionRsrc"))
-                .andExpect(jsonPath("$.expectedProductionId").value(341))
+                .andExpect(jsonPath("$.expectedProductionId").isNumber())
                 .andExpect(jsonPath("$.expectedProductionPerProdUnit").value(0.907))
                 .andExpect(jsonPath("$.inventoryItemCode").value("73"))
                 .andExpect(jsonPath("$.inventoryItemDesc").value("Strawberries"))
                 .andExpect(jsonPath("$.cropUnitCode").value("1"))
                 .andExpect(jsonPath("$.cropUnitDesc").value("Pounds"))
-                .andExpect(jsonPath("$.userEmail").value(nullValue()));
+                .andExpect(jsonPath("$.userEmail").value(nullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        expectedProductionId = objectMapper.readTree(responseContent).get("expectedProductionId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -70,7 +75,7 @@ public class ExpectedProductionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("ExpectedProductionListRsrc"))
                 .andExpect(jsonPath("$.expectedProductionList[0].@type").value("ExpectedProductionRsrc"))
-                .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionId").value(341))
+                .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionId").value(expectedProductionId))
                 .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionPerProdUnit").value(0.907))
                 .andExpect(jsonPath("$.expectedProductionList[0].inventoryItemCode").value("73"))
                 .andExpect(jsonPath("$.expectedProductionList[0].inventoryItemDesc").value("Strawberries"))
@@ -89,7 +94,7 @@ public class ExpectedProductionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("ExpectedProductionListRsrc"))
                 .andExpect(jsonPath("$.expectedProductionList[0].@type").value("ExpectedProductionRsrc"))
-                .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionId").value(341))
+                .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionId").value(expectedProductionId))
                 .andExpect(jsonPath("$.expectedProductionList[0].expectedProductionPerProdUnit").value(0.907))
                 .andExpect(jsonPath("$.expectedProductionList[0].inventoryItemCode").value("73"))
                 .andExpect(jsonPath("$.expectedProductionList[0].inventoryItemDesc").value("Strawberries"))
@@ -103,10 +108,10 @@ public class ExpectedProductionControllerTest {
     @Order(4)
     public void testGetExpectedProduction() throws Exception {
 
-        mockMvc.perform(get("/expectedProductions/341"))
+        mockMvc.perform(get("/expectedProductions/{id}", expectedProductionId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("ExpectedProductionRsrc"))
-                .andExpect(jsonPath("$.expectedProductionId").value(341))
+                .andExpect(jsonPath("$.expectedProductionId").value(expectedProductionId))
                 .andExpect(jsonPath("$.expectedProductionPerProdUnit").value(0.907))
                 .andExpect(jsonPath("$.inventoryItemCode").value("73"))
                 .andExpect(jsonPath("$.inventoryItemDesc").value("Strawberries"))
@@ -121,17 +126,17 @@ public class ExpectedProductionControllerTest {
     public void testUpdateExpectedProduction() throws Exception {
 
         ExpectedProductionRsrc resource = new ExpectedProductionRsrc();
-        resource.setExpectedProductionId(341L);
+        resource.setExpectedProductionId(expectedProductionId);
         resource.setExpectedProductionPerProdUnit(new BigDecimal("5113.000"));
         resource.setInventoryItemCode("73");
         resource.setCropUnitCode("1");
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/expectedProductions/341")
+        mockMvc.perform(put("/expectedProductions/{id}", expectedProductionId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(jsonPath("$.@type").value("ExpectedProductionRsrc"))
-                .andExpect(jsonPath("$.expectedProductionId").value(341))
+                .andExpect(jsonPath("$.expectedProductionId").value(expectedProductionId))
                 .andExpect(jsonPath("$.expectedProductionPerProdUnit").value(5113.000))
                 .andExpect(jsonPath("$.inventoryItemCode").value("73"))
                 .andExpect(jsonPath("$.inventoryItemDesc").value("Strawberries"))
@@ -144,7 +149,7 @@ public class ExpectedProductionControllerTest {
     @Order(6)
     public void testDeleteExpectedProduction() throws Exception {
 
-        mockMvc.perform(delete("/expectedProductions/341"))
+        mockMvc.perform(delete("/expectedProductions/{id}", expectedProductionId))
                 .andExpect(status().isNoContent());
     }
 }

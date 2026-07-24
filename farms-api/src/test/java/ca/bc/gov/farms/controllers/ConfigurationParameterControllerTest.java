@@ -35,6 +35,8 @@ public class ConfigurationParameterControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long configurationParameterId;
+
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -47,17 +49,20 @@ public class ConfigurationParameterControllerTest {
         resource.setConfigParamTypeCode("STRING");
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(post("/configurationParameters")
+        String responseContent = mockMvc.perform(post("/configurationParameters")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("ConfigurationParameterRsrc"))
-                .andExpect(jsonPath("$.configurationParameterId").value(481))
+                .andExpect(jsonPath("$.configurationParameterId").isNumber())
                 .andExpect(jsonPath("$.parameterName").value("CDOGS - Api Version"))
                 .andExpect(jsonPath("$.parameterValue").value("2"))
                 .andExpect(jsonPath("$.sensitiveDataInd").value("N"))
                 .andExpect(jsonPath("$.configParamTypeCode").value("STRING"))
-                .andExpect(jsonPath("$.userEmail").value(nullValue()));
+                .andExpect(jsonPath("$.userEmail").value(nullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        configurationParameterId = objectMapper.readTree(responseContent).get("configurationParameterId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -69,7 +74,8 @@ public class ConfigurationParameterControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("ConfigurationParameterListRsrc"))
                 .andExpect(jsonPath("$.configurationParameterList[0].@type").value("ConfigurationParameterRsrc"))
-                .andExpect(jsonPath("$.configurationParameterList[0].configurationParameterId").value(481))
+                .andExpect(jsonPath("$.configurationParameterList[0].configurationParameterId")
+                        .value(configurationParameterId))
                 .andExpect(jsonPath("$.configurationParameterList[0].parameterName").value("CDOGS - Api Version"))
                 .andExpect(jsonPath("$.configurationParameterList[0].parameterValue").value("2"))
                 .andExpect(jsonPath("$.configurationParameterList[0].sensitiveDataInd").value("N"))
@@ -87,7 +93,8 @@ public class ConfigurationParameterControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("ConfigurationParameterListRsrc"))
                 .andExpect(jsonPath("$.configurationParameterList[0].@type").value("ConfigurationParameterRsrc"))
-                .andExpect(jsonPath("$.configurationParameterList[0].configurationParameterId").value(481))
+                .andExpect(jsonPath("$.configurationParameterList[0].configurationParameterId")
+                        .value(configurationParameterId))
                 .andExpect(jsonPath("$.configurationParameterList[0].parameterName").value("CDOGS - Api Version"))
                 .andExpect(jsonPath("$.configurationParameterList[0].parameterValue").value("2"))
                 .andExpect(jsonPath("$.configurationParameterList[0].sensitiveDataInd").value("N"))
@@ -100,10 +107,10 @@ public class ConfigurationParameterControllerTest {
     @Order(4)
     public void testGetConfigurationParameter() throws Exception {
 
-        mockMvc.perform(get("/configurationParameters/481"))
+        mockMvc.perform(get("/configurationParameters/{id}", configurationParameterId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("ConfigurationParameterRsrc"))
-                .andExpect(jsonPath("$.configurationParameterId").value(481))
+                .andExpect(jsonPath("$.configurationParameterId").value(configurationParameterId))
                 .andExpect(jsonPath("$.parameterName").value("CDOGS - Api Version"))
                 .andExpect(jsonPath("$.parameterValue").value("2"))
                 .andExpect(jsonPath("$.sensitiveDataInd").value("N"))
@@ -117,19 +124,19 @@ public class ConfigurationParameterControllerTest {
     public void testUpdateConfigurationParameter() throws Exception {
 
         ConfigurationParameterRsrc resource = new ConfigurationParameterRsrc();
-        resource.setConfigurationParameterId(481L);
+        resource.setConfigurationParameterId(configurationParameterId);
         resource.setParameterName("CDOGS - Api Version");
         resource.setParameterValue("3");
         resource.setSensitiveDataInd("N");
         resource.setConfigParamTypeCode("STRING");
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/configurationParameters/481")
+        mockMvc.perform(put("/configurationParameters/{id}", configurationParameterId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("ConfigurationParameterRsrc"))
-                .andExpect(jsonPath("$.configurationParameterId").value(481))
+                .andExpect(jsonPath("$.configurationParameterId").value(configurationParameterId))
                 .andExpect(jsonPath("$.parameterName").value("CDOGS - Api Version"))
                 .andExpect(jsonPath("$.parameterValue").value("3"))
                 .andExpect(jsonPath("$.sensitiveDataInd").value("N"))
@@ -141,7 +148,7 @@ public class ConfigurationParameterControllerTest {
     @Order(6)
     public void testDeleteConfigurationParameter() throws Exception {
 
-        mockMvc.perform(delete("/configurationParameters/481"))
+        mockMvc.perform(delete("/configurationParameters/{id}", configurationParameterId))
                 .andExpect(status().isNoContent());
     }
 }

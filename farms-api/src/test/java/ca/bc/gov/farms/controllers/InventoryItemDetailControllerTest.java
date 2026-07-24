@@ -37,6 +37,8 @@ public class InventoryItemDetailControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long inventoryItemDetailId;
+
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -55,12 +57,12 @@ public class InventoryItemDetailControllerTest {
         resource.setUrlId(1L);
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(post("/inventoryItemDetails")
+        String responseContent = mockMvc.perform(post("/inventoryItemDetails")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("InventoryItemDetailRsrc"))
-                .andExpect(jsonPath("$.inventoryItemDetailId").value(55361))
+                .andExpect(jsonPath("$.inventoryItemDetailId").isNumber())
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.eligibilityInd").value("Y"))
                 .andExpect(jsonPath("$.lineItem").value(nullValue()))
@@ -76,7 +78,10 @@ public class InventoryItemDetailControllerTest {
                 .andExpect(jsonPath("$.multiStageCommdtyDesc").value(nullValue()))
                 .andExpect(jsonPath("$.urlId").value(1))
                 .andExpect(jsonPath("$.url").value("https://google.com"))
-                .andExpect(jsonPath("$.userEmail").value(nullValue()));
+                .andExpect(jsonPath("$.userEmail").value(nullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        inventoryItemDetailId = objectMapper.readTree(responseContent).get("inventoryItemDetailId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -89,7 +94,7 @@ public class InventoryItemDetailControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("InventoryItemDetailListRsrc"))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].@type").value("InventoryItemDetailRsrc"))
-                .andExpect(jsonPath("$.inventoryItemDetailList[0].inventoryItemDetailId").value(55361))
+                .andExpect(jsonPath("$.inventoryItemDetailList[0].inventoryItemDetailId").value(inventoryItemDetailId))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].programYear").value(2025))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].eligibilityInd").value("Y"))
                 .andExpect(jsonPath("$.inventoryItemDetailList[0].lineItem").value(nullValue()))
@@ -113,10 +118,10 @@ public class InventoryItemDetailControllerTest {
     @Order(3)
     public void testGetInventoryItemDetail() throws Exception {
 
-        mockMvc.perform(get("/inventoryItemDetails/55361"))
+        mockMvc.perform(get("/inventoryItemDetails/{id}", inventoryItemDetailId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("InventoryItemDetailRsrc"))
-                .andExpect(jsonPath("$.inventoryItemDetailId").value(55361))
+                .andExpect(jsonPath("$.inventoryItemDetailId").value(inventoryItemDetailId))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.eligibilityInd").value("Y"))
                 .andExpect(jsonPath("$.lineItem").value(nullValue()))
@@ -141,7 +146,7 @@ public class InventoryItemDetailControllerTest {
     public void testUpdateInventoryItemDetail() throws Exception {
 
         InventoryItemDetailRsrc resource = new InventoryItemDetailRsrc();
-        resource.setInventoryItemDetailId(55361L);
+        resource.setInventoryItemDetailId(inventoryItemDetailId);
         resource.setProgramYear(2026);
         resource.setEligibilityInd("N");
         resource.setLineItem(null);
@@ -154,12 +159,12 @@ public class InventoryItemDetailControllerTest {
         resource.setUrlId(2L);
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/inventoryItemDetails/55361")
+        mockMvc.perform(put("/inventoryItemDetails/{id}", inventoryItemDetailId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("InventoryItemDetailRsrc"))
-                .andExpect(jsonPath("$.inventoryItemDetailId").value(55361))
+                .andExpect(jsonPath("$.inventoryItemDetailId").value(inventoryItemDetailId))
                 .andExpect(jsonPath("$.programYear").value(2026))
                 .andExpect(jsonPath("$.eligibilityInd").value("N"))
                 .andExpect(jsonPath("$.lineItem").value(nullValue()))
@@ -182,7 +187,7 @@ public class InventoryItemDetailControllerTest {
     @Order(5)
     public void testDeleteInventoryItemDetail() throws Exception {
 
-        mockMvc.perform(delete("/inventoryItemDetails/55361"))
+        mockMvc.perform(delete("/inventoryItemDetails/{id}", inventoryItemDetailId))
                 .andExpect(status().isNoContent());
     }
 }

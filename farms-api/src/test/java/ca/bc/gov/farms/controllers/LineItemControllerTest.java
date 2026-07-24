@@ -35,6 +35,9 @@ public class LineItemControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long originalLineItemId;
+    private Long updatedLineItemId;
+
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -57,12 +60,12 @@ public class LineItemControllerTest {
         resource.setFruitVegTypeCode(null);
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(post("/lineItems")
+        String responseContent = mockMvc.perform(post("/lineItems")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("LineItemRsrc"))
-                .andExpect(jsonPath("$.lineItemId").value(39909))
+                .andExpect(jsonPath("$.lineItemId").isNumber())
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.lineItem").value(9798))
                 .andExpect(jsonPath("$.description").value("Agricultural Contract work"))
@@ -77,7 +80,10 @@ public class LineItemControllerTest {
                 .andExpect(jsonPath("$.industryAverageExpenseInd").value("N"))
                 .andExpect(jsonPath("$.commodityTypeCode", nullValue()))
                 .andExpect(jsonPath("$.fruitVegTypeCode", nullValue()))
-                .andExpect(jsonPath("$.userEmail", nullValue()));
+                .andExpect(jsonPath("$.userEmail", nullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        originalLineItemId = objectMapper.readTree(responseContent).get("lineItemId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -90,7 +96,7 @@ public class LineItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("LineItemListRsrc"))
                 .andExpect(jsonPath("$.lineItemList[0].@type").value("LineItemRsrc"))
-                .andExpect(jsonPath("$.lineItemList[0].lineItemId").value(39909))
+                .andExpect(jsonPath("$.lineItemList[0].lineItemId").value(originalLineItemId))
                 .andExpect(jsonPath("$.lineItemList[0].programYear").value(2025))
                 .andExpect(jsonPath("$.lineItemList[0].lineItem").value(9798))
                 .andExpect(jsonPath("$.lineItemList[0].description").value("Agricultural Contract work"))
@@ -113,10 +119,10 @@ public class LineItemControllerTest {
     @Order(3)
     public void testGetLineItem() throws Exception {
 
-        mockMvc.perform(get("/lineItems/39909"))
+        mockMvc.perform(get("/lineItems/{id}", originalLineItemId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("LineItemRsrc"))
-                .andExpect(jsonPath("$.lineItemId").value(39909))
+                .andExpect(jsonPath("$.lineItemId").value(originalLineItemId))
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.lineItem").value(9798))
                 .andExpect(jsonPath("$.description").value("Agricultural Contract work"))
@@ -140,7 +146,7 @@ public class LineItemControllerTest {
     public void testUpdateLineItem() throws Exception {
 
         LineItemRsrc resource = new LineItemRsrc();
-        resource.setLineItemId(39909L);
+        resource.setLineItemId(originalLineItemId);
         resource.setProgramYear(2025);
         resource.setLineItem(9798);
         resource.setDescription("Agricultural Contract works");
@@ -157,12 +163,12 @@ public class LineItemControllerTest {
         resource.setFruitVegTypeCode("APPLE");
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/lineItems/39909")
+        String responseContent = mockMvc.perform(put("/lineItems/{id}", originalLineItemId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("LineItemRsrc"))
-                .andExpect(jsonPath("$.lineItemId").value(39910))
+                .andExpect(jsonPath("$.lineItemId").isNumber())
                 .andExpect(jsonPath("$.programYear").value(2025))
                 .andExpect(jsonPath("$.lineItem").value(9798))
                 .andExpect(jsonPath("$.description").value("Agricultural Contract works"))
@@ -177,7 +183,10 @@ public class LineItemControllerTest {
                 .andExpect(jsonPath("$.industryAverageExpenseInd").value("Y"))
                 .andExpect(jsonPath("$.commodityTypeCode").value("GRAIN"))
                 .andExpect(jsonPath("$.fruitVegTypeCode").value("APPLE"))
-                .andExpect(jsonPath("$.userEmail", nullValue()));
+                .andExpect(jsonPath("$.userEmail", nullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        updatedLineItemId = objectMapper.readTree(responseContent).get("lineItemId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -191,7 +200,7 @@ public class LineItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("LineItemListRsrc"))
                 .andExpect(jsonPath("$.lineItemList[0].@type").value("LineItemRsrc"))
-                .andExpect(jsonPath("$.lineItemList[0].lineItemId").value(39911))
+                .andExpect(jsonPath("$.lineItemList[0].lineItemId").isNumber())
                 .andExpect(jsonPath("$.lineItemList[0].programYear").value(2026))
                 .andExpect(jsonPath("$.lineItemList[0].lineItem").value(9798))
                 .andExpect(jsonPath("$.lineItemList[0].description").value("Agricultural Contract works"))
@@ -213,7 +222,7 @@ public class LineItemControllerTest {
     @Order(6)
     public void testDeleteLineItem() throws Exception {
 
-        mockMvc.perform(delete("/lineItems/39910"))
+        mockMvc.perform(delete("/lineItems/{id}", updatedLineItemId))
                 .andExpect(status().isNoContent());
     }
 }
