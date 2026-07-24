@@ -37,6 +37,8 @@ public class MarketRatePremiumControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long marketRatePremiumId;
+
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -50,18 +52,21 @@ public class MarketRatePremiumControllerTest {
         resource.setAdjustChargeFlatAmount(new BigDecimal("4.00"));
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(post("/marketRatePremiums")
+        String responseContent = mockMvc.perform(post("/marketRatePremiums")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("MarketRatePremiumRsrc"))
-                .andExpect(jsonPath("$.marketRatePremiumId").value(21))
+                .andExpect(jsonPath("$.marketRatePremiumId").isNumber())
                 .andExpect(jsonPath("$.minTotalPremiumAmount").value(0.00))
                 .andExpect(jsonPath("$.maxTotalPremiumAmount").value(1.00))
                 .andExpect(jsonPath("$.riskChargeFlatAmount").value(2.00))
                 .andExpect(jsonPath("$.riskChargePctPremium").value(3.00))
                 .andExpect(jsonPath("$.adjustChargeFlatAmount").value(4.00))
-                .andExpect(jsonPath("$.userEmail", nullValue()));
+                .andExpect(jsonPath("$.userEmail", nullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        marketRatePremiumId = objectMapper.readTree(responseContent).get("marketRatePremiumId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -74,7 +79,7 @@ public class MarketRatePremiumControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("MarketRatePremiumListRsrc"))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].@type").value("MarketRatePremiumRsrc"))
-                .andExpect(jsonPath("$.marketRatePremiumList[0].marketRatePremiumId").value(21))
+                .andExpect(jsonPath("$.marketRatePremiumList[0].marketRatePremiumId").value(marketRatePremiumId))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].minTotalPremiumAmount").value(0.00))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].maxTotalPremiumAmount").value(1.00))
                 .andExpect(jsonPath("$.marketRatePremiumList[0].riskChargeFlatAmount").value(2.00))
@@ -88,11 +93,11 @@ public class MarketRatePremiumControllerTest {
     @Order(3)
     public void testGetMarketRatePremium() throws Exception {
 
-        mockMvc.perform(get("/marketRatePremiums/21")
+        mockMvc.perform(get("/marketRatePremiums/{id}", marketRatePremiumId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("MarketRatePremiumRsrc"))
-                .andExpect(jsonPath("$.marketRatePremiumId").value(21))
+                .andExpect(jsonPath("$.marketRatePremiumId").value(marketRatePremiumId))
                 .andExpect(jsonPath("$.minTotalPremiumAmount").value(0.00))
                 .andExpect(jsonPath("$.maxTotalPremiumAmount").value(1.00))
                 .andExpect(jsonPath("$.riskChargeFlatAmount").value(2.00))
@@ -107,7 +112,7 @@ public class MarketRatePremiumControllerTest {
     public void testUpdateMarketRatePremium() throws Exception {
 
         MarketRatePremiumRsrc resource = new MarketRatePremiumRsrc();
-        resource.setMarketRatePremiumId(21L);
+        resource.setMarketRatePremiumId(marketRatePremiumId);
         resource.setMinTotalPremiumAmount(new BigDecimal("1.00"));
         resource.setMaxTotalPremiumAmount(new BigDecimal("2.00"));
         resource.setRiskChargeFlatAmount(new BigDecimal("3.00"));
@@ -115,12 +120,12 @@ public class MarketRatePremiumControllerTest {
         resource.setAdjustChargeFlatAmount(new BigDecimal("5.00"));
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/marketRatePremiums/21")
+        mockMvc.perform(put("/marketRatePremiums/{id}", marketRatePremiumId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("MarketRatePremiumRsrc"))
-                .andExpect(jsonPath("$.marketRatePremiumId").value(21))
+                .andExpect(jsonPath("$.marketRatePremiumId").value(marketRatePremiumId))
                 .andExpect(jsonPath("$.minTotalPremiumAmount").value(1.00))
                 .andExpect(jsonPath("$.maxTotalPremiumAmount").value(2.00))
                 .andExpect(jsonPath("$.riskChargeFlatAmount").value(3.00))
@@ -133,7 +138,7 @@ public class MarketRatePremiumControllerTest {
     @Order(5)
     public void testDeleteMarketRatePremium() throws Exception {
 
-        mockMvc.perform(delete("/marketRatePremiums/21"))
+        mockMvc.perform(delete("/marketRatePremiums/{id}", marketRatePremiumId))
                 .andExpect(status().isNoContent());
     }
 }

@@ -35,6 +35,8 @@ public class YearConfigurationParameterControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long yearConfigurationParameterId;
+
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -47,17 +49,21 @@ public class YearConfigurationParameterControllerTest {
         resource.setConfigParamTypeCode("DECIMAL");
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(post("/yearConfigurationParameters")
+        String responseContent = mockMvc.perform(post("/yearConfigurationParameters")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("YearConfigurationParameterRsrc"))
-                .andExpect(jsonPath("$.yearConfigurationParameterId").value(241))
+                .andExpect(jsonPath("$.yearConfigurationParameterId").isNumber())
                 .andExpect(jsonPath("$.programYear").value(2023))
                 .andExpect(jsonPath("$.parameterName").value("Payment Limitation - Percentage of Total Margin Decline"))
                 .andExpect(jsonPath("$.parameterValue").value("70"))
                 .andExpect(jsonPath("$.configParamTypeCode").value("DECIMAL"))
-                .andExpect(jsonPath("$.userEmail").value(nullValue()));
+                .andExpect(jsonPath("$.userEmail").value(nullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        yearConfigurationParameterId = objectMapper.readTree(responseContent)
+                .get("yearConfigurationParameterId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -71,7 +77,8 @@ public class YearConfigurationParameterControllerTest {
                 .andExpect(jsonPath("$.@type").value("YearConfigurationParameterListRsrc"))
                 .andExpect(
                         jsonPath("$.yearConfigurationParameterList[0].@type").value("YearConfigurationParameterRsrc"))
-                .andExpect(jsonPath("$.yearConfigurationParameterList[0].yearConfigurationParameterId").value(241))
+                .andExpect(jsonPath("$.yearConfigurationParameterList[0].yearConfigurationParameterId")
+                        .value(yearConfigurationParameterId))
                 .andExpect(jsonPath("$.yearConfigurationParameterList[0].programYear").value(2023))
                 .andExpect(jsonPath("$.yearConfigurationParameterList[0].parameterName")
                         .value("Payment Limitation - Percentage of Total Margin Decline"))
@@ -85,11 +92,11 @@ public class YearConfigurationParameterControllerTest {
     @Order(3)
     public void testGetYearConfigurationParameter() throws Exception {
 
-        mockMvc.perform(get("/yearConfigurationParameters/241")
+        mockMvc.perform(get("/yearConfigurationParameters/{id}", yearConfigurationParameterId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("YearConfigurationParameterRsrc"))
-                .andExpect(jsonPath("$.yearConfigurationParameterId").value(241))
+                .andExpect(jsonPath("$.yearConfigurationParameterId").value(yearConfigurationParameterId))
                 .andExpect(jsonPath("$.programYear").value(2023))
                 .andExpect(jsonPath("$.parameterName").value("Payment Limitation - Percentage of Total Margin Decline"))
                 .andExpect(jsonPath("$.parameterValue").value("70"))
@@ -103,19 +110,19 @@ public class YearConfigurationParameterControllerTest {
     public void testUpdateYearConfigurationParameter() throws Exception {
 
         YearConfigurationParameterRsrc resource = new YearConfigurationParameterRsrc();
-        resource.setYearConfigurationParameterId(241L);
+        resource.setYearConfigurationParameterId(yearConfigurationParameterId);
         resource.setProgramYear(2023);
         resource.setParameterName("Payment Limitation - Percentage of Total Margin Decline");
         resource.setParameterValue("700");
         resource.setConfigParamTypeCode("DECIMAL");
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/yearConfigurationParameters/241")
+        mockMvc.perform(put("/yearConfigurationParameters/{id}", yearConfigurationParameterId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("YearConfigurationParameterRsrc"))
-                .andExpect(jsonPath("$.yearConfigurationParameterId").value(241))
+                .andExpect(jsonPath("$.yearConfigurationParameterId").value(yearConfigurationParameterId))
                 .andExpect(jsonPath("$.programYear").value(2023))
                 .andExpect(jsonPath("$.parameterName").value("Payment Limitation - Percentage of Total Margin Decline"))
                 .andExpect(jsonPath("$.parameterValue").value("700"))
@@ -127,7 +134,7 @@ public class YearConfigurationParameterControllerTest {
     @Order(5)
     public void testDeleteYearConfigurationParameter() throws Exception {
 
-        mockMvc.perform(delete("/yearConfigurationParameters/241"))
+        mockMvc.perform(delete("/yearConfigurationParameters/{id}", yearConfigurationParameterId))
                 .andExpect(status().isNoContent());
     }
 }

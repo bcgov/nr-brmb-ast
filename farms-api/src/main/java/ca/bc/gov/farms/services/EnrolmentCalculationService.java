@@ -39,6 +39,7 @@ public class EnrolmentCalculationService {
     private static final String PROXY = "PROXY";
     private static final String MANUAL = "MANUAL";
     private static final String DEFAULT_USER_ID = "FARMS_API";
+    private static final String EN_NOT_FOUND_MESSAGE = "EN does not exist in FARMS.";
     private static final BigDecimal ZERO = BigDecimal.ZERO;
     private static final BigDecimal MIN_ENROLMENT_FEE = new BigDecimal("45");
     private static final BigDecimal ENROLMENT_FEE_FACTOR_2013_FORWARD = new BigDecimal("0.00315");
@@ -118,6 +119,9 @@ public class EnrolmentCalculationService {
             EnrolmentPartnerListRsrc result = enrolmentPartnerResourceAssembler
                     .getEnrolmentPartnerList(participantPin, programYear, summary,
                             entities == null ? Collections.emptyList() : entities);
+            if (summary == null) {
+                result.setMessage(EN_NOT_FOUND_MESSAGE);
+            }
             return enrolmentCombinedFarmClientResourceAssembler.addCombinedFarmClients(
                     result, combinedFarmClients == null ? Collections.emptyList() : combinedFarmClients);
         } catch (Throwable t) {

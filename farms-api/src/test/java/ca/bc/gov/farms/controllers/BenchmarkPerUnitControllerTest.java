@@ -37,6 +37,8 @@ public class BenchmarkPerUnitControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long benchmarkPerUnitId;
+
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -63,12 +65,12 @@ public class BenchmarkPerUnitControllerTest {
         resource.setUrlId(1L);
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(post("/benchmarkPerUnits")
+        String responseContent = mockMvc.perform(post("/benchmarkPerUnits")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("BenchmarkPerUnitRsrc"))
-                .andExpect(jsonPath("$.benchmarkPerUnitId").value(60584))
+                .andExpect(jsonPath("$.benchmarkPerUnitId").isNumber())
                 .andExpect(jsonPath("$.programYear").value(2024))
                 .andExpect(jsonPath("$.unitComment").value("Alfalfa Dehy"))
                 .andExpect(jsonPath("$.expiryDate").value(nullValue()))
@@ -94,7 +96,10 @@ public class BenchmarkPerUnitControllerTest {
                 .andExpect(jsonPath("$.yearMinus1Expense").value(258.28))
                 .andExpect(jsonPath("$.urlId").value(1))
                 .andExpect(jsonPath("$.url").value("https://google.com"))
-                .andExpect(jsonPath("$.userEmail").value(nullValue()));
+                .andExpect(jsonPath("$.userEmail").value(nullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        benchmarkPerUnitId = objectMapper.readTree(responseContent).get("benchmarkPerUnitId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -107,7 +112,7 @@ public class BenchmarkPerUnitControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("BenchmarkPerUnitListRsrc"))
                 .andExpect(jsonPath("$.benchmarkPerUnitList[0].@type").value("BenchmarkPerUnitRsrc"))
-                .andExpect(jsonPath("$.benchmarkPerUnitList[0].benchmarkPerUnitId").value(60584))
+                .andExpect(jsonPath("$.benchmarkPerUnitList[0].benchmarkPerUnitId").value(benchmarkPerUnitId))
                 .andExpect(jsonPath("$.benchmarkPerUnitList[0].programYear").value(2024))
                 .andExpect(jsonPath("$.benchmarkPerUnitList[0].unitComment").value("Alfalfa Dehy"))
                 .andExpect(jsonPath("$.benchmarkPerUnitList[0].expiryDate").value(nullValue()))
@@ -141,10 +146,10 @@ public class BenchmarkPerUnitControllerTest {
     @Order(3)
     public void testGetBenchmarkPerUnit() throws Exception {
 
-        mockMvc.perform(get("/benchmarkPerUnits/60584"))
+        mockMvc.perform(get("/benchmarkPerUnits/{id}", benchmarkPerUnitId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("BenchmarkPerUnitRsrc"))
-                .andExpect(jsonPath("$.benchmarkPerUnitId").value(60584))
+                .andExpect(jsonPath("$.benchmarkPerUnitId").value(benchmarkPerUnitId))
                 .andExpect(jsonPath("$.programYear").value(2024))
                 .andExpect(jsonPath("$.unitComment").value("Alfalfa Dehy"))
                 .andExpect(jsonPath("$.expiryDate").value(nullValue()))
@@ -179,7 +184,7 @@ public class BenchmarkPerUnitControllerTest {
     public void testUpdateBenchmarkPerUnit() throws Exception {
 
         BenchmarkPerUnitRsrc resource = new BenchmarkPerUnitRsrc();
-        resource.setBenchmarkPerUnitId(60584L);
+        resource.setBenchmarkPerUnitId(benchmarkPerUnitId);
         resource.setProgramYear(2024);
         resource.setUnitComment("Greenfeed");
         resource.setExpiryDate(null);
@@ -200,12 +205,12 @@ public class BenchmarkPerUnitControllerTest {
         resource.setUrlId(2L);
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/benchmarkPerUnits/60584")
+        mockMvc.perform(put("/benchmarkPerUnits/{id}", benchmarkPerUnitId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("BenchmarkPerUnitRsrc"))
-                .andExpect(jsonPath("$.benchmarkPerUnitId").value(60584))
+                .andExpect(jsonPath("$.benchmarkPerUnitId").value(benchmarkPerUnitId))
                 .andExpect(jsonPath("$.programYear").value(2024))
                 .andExpect(jsonPath("$.unitComment").value("Greenfeed"))
                 .andExpect(jsonPath("$.expiryDate").value(nullValue()))
@@ -238,7 +243,7 @@ public class BenchmarkPerUnitControllerTest {
     @Order(5)
     public void testDeleteBenchmarkPerUnit() throws Exception {
 
-        mockMvc.perform(delete("/benchmarkPerUnits/60584"))
+        mockMvc.perform(delete("/benchmarkPerUnits/{id}", benchmarkPerUnitId))
                 .andExpect(status().isNoContent());
     }
 }

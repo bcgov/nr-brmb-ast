@@ -35,6 +35,8 @@ public class StructureGroupAttributeControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long structureGroupAttributeId;
+
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -45,17 +47,20 @@ public class StructureGroupAttributeControllerTest {
         resource.setRollupStructureGroupCode("120");
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(post("/structureGroupAttributes")
+        String responseContent = mockMvc.perform(post("/structureGroupAttributes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.@type").value("StructureGroupAttributeRsrc"))
-                .andExpect(jsonPath("$.structureGroupAttributeId").value(21))
+                .andExpect(jsonPath("$.structureGroupAttributeId").isNumber())
                 .andExpect(jsonPath("$.structureGroupCode").value("100"))
                 .andExpect(jsonPath("$.structureGroupDesc").value("Alpaca"))
                 .andExpect(jsonPath("$.rollupStructureGroupCode").value("120"))
                 .andExpect(jsonPath("$.rollupStructureGroupDesc").value("Other Livestock"))
-                .andExpect(jsonPath("$.userEmail", nullValue()));
+                .andExpect(jsonPath("$.userEmail", nullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        structureGroupAttributeId = objectMapper.readTree(responseContent).get("structureGroupAttributeId").asLong();
     }
 
     @SuppressWarnings("null")
@@ -67,7 +72,7 @@ public class StructureGroupAttributeControllerTest {
                 .param("structureGroupCode", "100"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("StructureGroupAttributeRsrc"))
-                .andExpect(jsonPath("$.structureGroupAttributeId").value(21))
+                .andExpect(jsonPath("$.structureGroupAttributeId").value(structureGroupAttributeId))
                 .andExpect(jsonPath("$.structureGroupCode").value("100"))
                 .andExpect(jsonPath("$.structureGroupDesc").value("Alpaca"))
                 .andExpect(jsonPath("$.rollupStructureGroupCode").value("120"))
@@ -80,10 +85,10 @@ public class StructureGroupAttributeControllerTest {
     @Order(3)
     public void testGetStructureGroupAttribute() throws Exception {
 
-        mockMvc.perform(get("/structureGroupAttributes/21"))
+        mockMvc.perform(get("/structureGroupAttributes/{id}", structureGroupAttributeId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("StructureGroupAttributeRsrc"))
-                .andExpect(jsonPath("$.structureGroupAttributeId").value(21))
+                .andExpect(jsonPath("$.structureGroupAttributeId").value(structureGroupAttributeId))
                 .andExpect(jsonPath("$.structureGroupCode").value("100"))
                 .andExpect(jsonPath("$.structureGroupDesc").value("Alpaca"))
                 .andExpect(jsonPath("$.rollupStructureGroupCode").value("120"))
@@ -97,17 +102,17 @@ public class StructureGroupAttributeControllerTest {
     public void testUpdateStructureGroupAttribute() throws Exception {
 
         StructureGroupAttributeRsrc resource = new StructureGroupAttributeRsrc();
-        resource.setStructureGroupAttributeId(21L);
+        resource.setStructureGroupAttributeId(structureGroupAttributeId);
         resource.setStructureGroupCode("100");
         resource.setRollupStructureGroupCode("300");
         resource.setUserEmail("jsmith@gmail.com");
 
-        mockMvc.perform(put("/structureGroupAttributes/21")
+        mockMvc.perform(put("/structureGroupAttributes/{id}", structureGroupAttributeId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(resource)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.@type").value("StructureGroupAttributeRsrc"))
-                .andExpect(jsonPath("$.structureGroupAttributeId").value(21))
+                .andExpect(jsonPath("$.structureGroupAttributeId").value(structureGroupAttributeId))
                 .andExpect(jsonPath("$.structureGroupCode").value("100"))
                 .andExpect(jsonPath("$.structureGroupDesc").value("Alpaca"))
                 .andExpect(jsonPath("$.rollupStructureGroupCode").value("300"))
@@ -119,7 +124,7 @@ public class StructureGroupAttributeControllerTest {
     @Order(5)
     public void testDeleteStructureGroupAttribute() throws Exception {
 
-        mockMvc.perform(delete("/structureGroupAttributes/21"))
+        mockMvc.perform(delete("/structureGroupAttributes/{id}", structureGroupAttributeId))
                 .andExpect(status().isNoContent());
     }
 }

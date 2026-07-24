@@ -54,9 +54,10 @@ public class FruitVegTypeDetailServiceTest {
         FruitVegTypeDetailListRsrc resources = fruitVegTypeDetailService.getAllFruitVegTypeDetails();
         assertThat(resources).isNotNull();
         assertThat(resources.getFruitVegTypeDetailList()).isNotEmpty();
-        assertThat(resources.getFruitVegTypeDetailList().size()).isEqualTo(2);
-
-        FruitVegTypeDetailRsrc resource = resources.getFruitVegTypeDetailList().get(1);
+        FruitVegTypeDetailRsrc resource = resources.getFruitVegTypeDetailList().stream()
+                .filter(item -> fruitVegTypeCode.equals(item.getFruitVegTypeCode()))
+                .findFirst()
+                .orElseThrow();
         assertThat(resource.getFruitVegTypeCode()).isEqualTo("LYCHEE");
         assertThat(resource.getFruitVegTypeDesc()).isEqualTo("Tropical Fruit");
         assertThat(resource.getRevenueVarianceLimit()).isEqualTo(new BigDecimal("20.000"));

@@ -1,5 +1,6 @@
 package ca.bc.gov.farms.controllers;
 
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -149,6 +150,7 @@ class CalculationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.participantPin").value(23198443))
                 .andExpect(jsonPath("$.programYear").value(2021))
+                .andExpect(jsonPath("$.message").value(nullValue()))
                 .andExpect(jsonPath("$.agristabilityScenarioId").value(1048121))
                 .andExpect(jsonPath("$.scenarioNumber").value(5))
                 .andExpect(jsonPath("$.inCombinedFarm").value(true))
@@ -197,6 +199,27 @@ class CalculationControllerTest {
                 .andExpect(jsonPath("$.combinedFarmClientList").isArray())
                 .andExpect(jsonPath("$.combinedFarmClientList").isEmpty())
                 .andExpect(jsonPath("$.enrolmentPartnerList").isArray())
+                .andExpect(jsonPath("$.enrolmentPartnerList").isEmpty());
+    }
+
+    @Test
+    void getEnrolmentPartnersReturnsMessageWhenEnDoesNotExist() throws Exception {
+        EnrolmentPartnerListRsrc resource = EnrolmentPartnerListRsrc.builder()
+                .participantPin(99999999)
+                .programYear(2021)
+                .message("EN does not exist in FARMS.")
+                .enrolmentPartnerList(Collections.emptyList())
+                .build();
+
+        when(enrolmentCalculationService.getEnrolmentPartners(99999999, 2021)).thenReturn(resource);
+
+        mockMvc.perform(get("/calculations/enrolment-partners")
+                .param("participantPin", "99999999")
+                .param("programYear", "2021"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.participantPin").value(99999999))
+                .andExpect(jsonPath("$.programYear").value(2021))
+                .andExpect(jsonPath("$.message").value("EN does not exist in FARMS."))
                 .andExpect(jsonPath("$.enrolmentPartnerList").isEmpty());
     }
 
