@@ -65,7 +65,7 @@ begin
     from farms.farm_agristability_scenarios s
     where s.agristability_scenario_id = in_agristability_scenario_id;
 
-    if combined_farm_number is null then
+    if v_combined_farm_number is null then
         v_scenario_ids := array[in_agristability_scenario_id];
     else
         select array_agg(s.agristability_scenario_id)

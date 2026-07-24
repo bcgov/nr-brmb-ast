@@ -420,6 +420,12 @@ public class VersionDAO {
       originalAutoCommit = conn.getAutoCommit();
       conn.setAutoCommit(false);
 
+      // The caller reached this method because something failed, possibly a SQLException
+      // that left the connection's transaction aborted. Roll back first so the failure
+      // can actually be recorded instead of Postgres rejecting it with "current transaction
+      // is aborted, commands ignored until end of transaction block".
+      conn.rollback();
+
       try (DAOStoredProcedure proc = new DAOStoredProcedure(conn,
             PACKAGE_NAME + "." + IMPORT_FAILURE_PROC,
             IMPORT_FAILURE_PARAM, false);) {

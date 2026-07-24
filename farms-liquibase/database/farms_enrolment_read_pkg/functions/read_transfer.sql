@@ -73,6 +73,11 @@ as $$
         from farms.farm_program_enrolments e
         where e.failed_to_generate_ind = 'N'
         and e.enrolment_year = in_enrolment_year
+        and e.agristability_client_id in (
+            select ac2.agristability_client_id
+            from farms.farm_agristability_clients ac2
+            where ac2.participant_pin = any(in_pins)
+        )
     ) pe on pe.agristability_client_id = ac.agristability_client_id
     left join farms.farm_program_enrolments pype on pype.agristability_client_id = ac.agristability_client_id
                                                  and pype.enrolment_year = in_enrolment_year - 1

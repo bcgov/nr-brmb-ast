@@ -369,3 +369,12 @@ pyrightconfig.json
 
 # IDE
 .codebuddy
+
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+.smarttomcat
+farms-legacy/src/main/resources/log4j2.xml
