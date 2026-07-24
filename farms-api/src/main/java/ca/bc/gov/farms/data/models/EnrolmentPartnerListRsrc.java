@@ -22,6 +22,7 @@ public class EnrolmentPartnerListRsrc extends BaseResource {
 
     private Integer participantPin;
     private Integer programYear;
+    private String message;
     private Long agristabilityScenarioId;
     private Integer scenarioNumber;
     private Boolean inCombinedFarm;
