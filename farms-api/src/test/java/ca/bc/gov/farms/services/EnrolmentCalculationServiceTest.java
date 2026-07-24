@@ -373,6 +373,7 @@ class EnrolmentCalculationServiceTest {
                 .getEnrolmentPartners(23198443, 2021);
 
         assertThat(result).isSameAs(expectedResource);
+        assertThat(result.getMessage()).isEqualTo("EN does not exist in FARMS.");
     }
 
     @Test

@@ -201,6 +201,27 @@ class CalculationControllerTest {
     }
 
     @Test
+    void getEnrolmentPartnersReturnsMessageWhenEnDoesNotExist() throws Exception {
+        EnrolmentPartnerListRsrc resource = EnrolmentPartnerListRsrc.builder()
+                .participantPin(99999999)
+                .programYear(2021)
+                .message("EN does not exist in FARMS.")
+                .enrolmentPartnerList(Collections.emptyList())
+                .build();
+
+        when(enrolmentCalculationService.getEnrolmentPartners(99999999, 2021)).thenReturn(resource);
+
+        mockMvc.perform(get("/calculations/enrolment-partners")
+                .param("participantPin", "99999999")
+                .param("programYear", "2021"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.participantPin").value(99999999))
+                .andExpect(jsonPath("$.programYear").value(2021))
+                .andExpect(jsonPath("$.message").value("EN does not exist in FARMS."))
+                .andExpect(jsonPath("$.enrolmentPartnerList").isEmpty());
+    }
+
+    @Test
     void getEnrolmentPartnersReturnsBadRequestWhenQueryParamMissing() throws Exception {
         mockMvc.perform(get("/calculations/enrolment-partners")
                 .param("participantPin", "23198443"))
