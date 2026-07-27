@@ -215,5 +215,12 @@ begin
             'Saved State Transfer List'
         );
     end if;
+
+exception
+    when others then
+        call farms_import_pkg.append_imp1(
+            in_cra_version_id,
+            '<WARNING>Encountered a warning when transferring State Change Data: ' || farms_import_pkg.scrub(sqlerrm) || '</WARNING>'
+        );
 end;
 $$;
