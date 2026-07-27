@@ -98,7 +98,6 @@ declare
     fmv_set_complete_ind varchar(1);
     import_date farms.farm_import_versions.when_created%type;
     import_description farms.farm_import_versions.description%type;
-    import_file farms.farm_import_versions.import_file%type;
 begin
 
     open received_cursor;
@@ -107,11 +106,9 @@ begin
     if transfer_val is not null then
 
         select iv.when_created,
-               iv.description,
-               iv.import_file
+               iv.description
         into import_date,
-             import_description,
-             import_file
+             import_description
         from farms.farm_import_versions iv
         where iv.import_version_id = in_cra_version_id;
 
@@ -123,7 +120,7 @@ begin
             to_char(import_date, 'YYYY/MM/DD') || ', Description: ' || import_description,
             'farm_received.csv',
             null,
-            import_file,
+            null,
             in_user
         );
 
