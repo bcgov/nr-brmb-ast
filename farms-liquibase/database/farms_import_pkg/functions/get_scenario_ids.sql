@@ -11,7 +11,8 @@ declare
     py_id_ref_cursor refcursor := null;
     scenario_ids numeric[] := '{}';
 begin
-    py_id_ref_cursor := farms_read_pkg.read_py_id(in_participant_pin, in_year, in_scenario_number, 'DEF');
+    open py_id_ref_cursor for
+        select * from farms_read_pkg.read_py_id(in_participant_pin, in_year, in_scenario_number, 'DEF');
 
     -- Loop through the Scenario IDs
     loop

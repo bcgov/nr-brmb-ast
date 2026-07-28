@@ -103,7 +103,7 @@ begin
     open received_cursor;
     fetch received_cursor into transfer_val;
 
-    if transfer_val is not null then
+    if found then
 
         select iv.when_created,
                iv.description
@@ -151,8 +151,10 @@ begin
                 transfer_val.participant_pin,
                 transfer_val.scenario_number
             );
+
             bpu_set_complete_ind := farms_import_pkg.is_bpu_set_complete(transfer_val.agristability_scenario_id, scenario_ids);
             fmv_set_complete_ind := farms_import_pkg.is_fmv_set_complete(scenario_ids);
+
             cur_line := transfer_val.participant_pin || ',' ||
                         transfer_val.program_year || ',' ||
                         transfer_val.state || ',' ||
@@ -164,7 +166,7 @@ begin
                         farm_sector_detail || '",' ||
                         transfer_val.benefit_amount || ',' ||
                         null || ',' || -- scenario number is null unless the scenario is COMP
-                        transfer_val.partnership_indicator || ',' ||
+                        transfer_val.partnership_ind || ',' ||
                         bpu_set_complete_ind || ',' ||
                         fmv_set_complete_ind || ',' ||
                         'N,,"' || -- inCombinedFarm indictor and combinedFarmPins list

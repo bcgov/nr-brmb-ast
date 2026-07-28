@@ -12,8 +12,8 @@ begin
         when exists(
             select null
             from (
-                select trunc(fo.fiscal_year_start, 'MM') as fiscal_year_start,
-                       trunc(fo.fiscal_year_end, 'MM') as fiscal_year_end,
+                select date_trunc('month', fo.fiscal_year_start) as fiscal_year_start,
+                       date_trunc('month', fo.fiscal_year_end) as fiscal_year_end,
                        fo.fiscal_months,
                        pyv.municipality_code,
                        x.inventory_item_code,
@@ -30,8 +30,8 @@ begin
                 join (
                     select fo.*,
                            (
-                               (to_number(to_char(fo.fiscal_year_end, 'YYYY')) - to_number(to_char(fo.fiscal_year_start, 'YYYY'))) * 12 +
-                               (to_number(to_char(fo.fiscal_year_end, 'MM')) - to_number(to_char(fo.fiscal_year_start, 'MM'))) + 1
+                               (to_char(fo.fiscal_year_end, 'YYYY')::numeric - to_char(fo.fiscal_year_start, 'YYYY')::numeric) * 12 +
+                               (to_char(fo.fiscal_year_end, 'MM')::numeric - to_char(fo.fiscal_year_start, 'MM')::numeric) + 1
                            ) fiscal_months
                     from farms.farm_farming_operations fo
                 ) fo on fo.program_year_version_id = pyv.program_year_version_id
@@ -54,16 +54,16 @@ begin
                 and fmv.crop_unit_code = t.crop_unit_code
                 and (fmv.expiry_date is null or fmv.expiry_date > current_date)
                 and fmv.municipality_code = t.municipality_code
-                and to_date(fmv.program_year||'/'||fmv.period, 'YYYY/MM') between fiscal_start and fiscal_end
+                and to_date(fmv.program_year||'/'||fmv.period, 'YYYY/MM') between t.fiscal_year_start and t.fiscal_year_end
             )
-            and f.fiscal_months != (
+            and t.fiscal_months != (
                 select count(1)
                 from farms.farm_fair_market_values fmv
                 where fmv.inventory_item_code = t.inventory_item_code
                 and fmv.crop_unit_code = t.crop_unit_code
                 and (fmv.expiry_date is null or fmv.expiry_date > current_date)
                 and fmv.municipality_code = '0'
-                and to_date(fmv.program_year||'/'||fmv.period, 'YYYY/MM') between fiscal_start and fiscal_end
+                and to_date(fmv.program_year||'/'||fmv.period, 'YYYY/MM') between t.fiscal_year_start and t.fiscal_year_end
             )
         ) then 'N'
         else 'Y'
