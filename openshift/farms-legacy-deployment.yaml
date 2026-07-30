@@ -113,8 +113,5 @@ spec:
           configMap:
             name: farms-legacy-config-aad-#{ENV}#
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
+    type: Recreate
   paused: false
