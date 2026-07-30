@@ -139,7 +139,10 @@ public final class ConfigurationKeys {
       "app.config/reports/jasper.user.password";
   public static final String REPORTS_JASPER_REPORTS_PATH =
       "app.config/reports/jasper.reports.path";
-  
+
+  public static final String ENVIRONMENT_NAME =
+          "app.config/webapp/environment.name";
+
 
   /*************************************************************************************
    ****  Global parameters (not configured by year - FARM_CONFIGURATION_PARAMETERS) ****
