@@ -43,6 +43,7 @@ import ca.bc.gov.srm.farm.calculator.BenefitValidator;
 import ca.bc.gov.srm.farm.calculator.CalculatorFactory;
 import ca.bc.gov.srm.farm.dao.EnrolmentReadDAO;
 import ca.bc.gov.srm.farm.dao.EnrolmentWriteDAO;
+import ca.bc.gov.srm.farm.dao.ImportDAO;
 import ca.bc.gov.srm.farm.dao.ReadDAO;
 import ca.bc.gov.srm.farm.dao.StagingDAO;
 import ca.bc.gov.srm.farm.dao.VersionDAO;
@@ -592,8 +593,67 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
     }
     
   }
-  
-  
+
+
+  private void immediateEnrolmentTransferFromScenarioWorkflow(
+      Connection connection,
+      Enrolment enrolment,
+      String user)
+      throws Exception {
+
+    Integer enrolmentYear = enrolment.getEnrolmentYear();
+    Integer participantPin = enrolment.getPin();
+
+    String description = String.format(
+        "Immediate enrolment transfer for %d PIN: %d",
+        enrolmentYear,
+        participantPin);
+
+    ImportVersion importVersion = new ImportVersion();
+    importVersion.setImportClassCode(ImportClassCodes.XENROL);
+    importVersion.setImportStateCode(ImportStateCodes.IMPORT_COMPLETE);
+    importVersion.setDescription(description);
+    importVersion.setImportedByUser(user);
+    importVersion.setImportFileName("none");
+
+    ImportDAO importDao = new ImportDAO();
+    importDao.insertImportVersion(connection, importVersion);
+
+    List<Integer> pins = new ArrayList<>(1);
+    pins.add(participantPin);
+
+    EnrolmentReadDAO enrolmentReadDao = new EnrolmentReadDAO();
+    List<Enrolment> transferList = enrolmentReadDao.getEnrolmentsForTransfer(
+        connection,
+        enrolmentYear,
+        pins);
+
+    if(transferList.isEmpty()) {
+      throw new ServiceException(
+          "Unable to reload enrolment for immediate transfer. PIN: " + participantPin
+          + ", Year: " + enrolmentYear);
+    }
+
+    Enrolment transferEnrolment = transferList.get(0);
+
+    ReadDAO readDao = new ReadDAO(connection);
+    List<ScenarioMetaData> scenarioMetaDataList =
+        readDao.readProgramYearMetadata(participantPin, enrolmentYear - 2);
+    transferEnrolment.setPrevYearPartNotVerified(
+        !scenarioMetaDataList.stream().anyMatch(scenarioMetaData -> {
+          return ScenarioStateCodes.VERIFIED.equals(scenarioMetaData.getScenarioStateCode())
+              && ScenarioCategoryCodes.FINAL.equals(scenarioMetaData.getScenarioCategoryCode())
+              && "USER".equals(scenarioMetaData.getScenarioTypeCode());
+        }));
+
+    CrmTransferService crmTransferService = ServiceFactory.getCrmTransferService();
+    crmTransferService.postEnrolment(
+        transferEnrolment,
+        importVersion.getImportVersionId(),
+        user);
+  }
+
+
   @Override
   public void transfer(final Connection connection,
       final Integer importVersionId,
@@ -842,7 +902,14 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
         
         Files.deleteIfExists(enrolmentFilePath);
         
-        scheduleEnrolmentTransferFromScenarioWorkflow(connection, enrolments, user);
+        boolean isChefsNppEnrolment = completingEnrolmentNotice
+            && scenario.getChefsSubmissionId() != null;
+
+        if(isChefsNppEnrolment) {
+          immediateEnrolmentTransferFromScenarioWorkflow(connection, enrolment, user);
+        } else {
+          scheduleEnrolmentTransferFromScenarioWorkflow(connection, enrolments, user);
+        }
       }
       
     } catch (Exception ex) {
