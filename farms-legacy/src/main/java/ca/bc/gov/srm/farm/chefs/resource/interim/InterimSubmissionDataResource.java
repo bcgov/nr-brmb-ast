@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,7 +37,9 @@ public class InterimSubmissionDataResource extends ChefsSubmissionDataResource {
   private String telephone;
   private String businessStructure;
   private String email;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
   private Date fiscalYearStart;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
   private Date fiscalYearEnd;
   private LabelValue municipalityCode;
 
