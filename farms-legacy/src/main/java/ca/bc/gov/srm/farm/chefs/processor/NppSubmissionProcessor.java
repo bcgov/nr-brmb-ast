@@ -257,7 +257,9 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
         Integer latestChefNppScenarioNumber = chefNppScenarioMetaData.getScenarioNumber();
         Scenario chefNppScenario = calculatorService.loadScenario(participantPin, programYear, latestChefNppScenarioNumber);
 
-        if (data.getLateParticipant() != null && data.getLateParticipant() == true) {
+        boolean lateParticipant = Boolean.TRUE.equals(data.getLateParticipant());
+
+        if (lateParticipant) {
           calculatorService.saveLateParticipantInd(chefNppScenario, chefNppScenario.getRevisionCount(), data.getLateParticipant(), user);
           
           // getEnrolmentStatusCode waits until the Enrolment has been created in CRM
@@ -276,9 +278,7 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
         boolean success;
         String successMessage = null;
         
-        if(enrolmentStatusCode == null
-            || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_INITIALIZED
-            || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED) {
+        if(shouldCalculateEnrolment(lateParticipant, enrolmentStatusCode)) {
           
           // In case this process previously failed part way through, check if we already created an ENW scenario
           Scenario enwScenario = findOrCreateEnwScenario(participantPin, programYear, programYearMetadata, chefNppScenario,
@@ -386,6 +386,14 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
     }
     
     return enwErrors;
+  }
+
+
+  static boolean shouldCalculateEnrolment(boolean lateParticipant, Integer enrolmentStatusCode) {
+    return !lateParticipant
+        && (enrolmentStatusCode == null
+            || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_INITIALIZED
+            || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED);
   }
 
   private void setBpuLead(Scenario enwScenario) {
