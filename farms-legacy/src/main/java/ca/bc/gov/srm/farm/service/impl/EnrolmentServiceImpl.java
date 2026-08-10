@@ -636,15 +636,9 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
 
     Enrolment transferEnrolment = transferList.get(0);
 
-    ReadDAO readDao = new ReadDAO(connection);
-    List<ScenarioMetaData> scenarioMetaDataList =
-        readDao.readProgramYearMetadata(participantPin, enrolmentYear - 2);
-    transferEnrolment.setPrevYearPartNotVerified(
-        !scenarioMetaDataList.stream().anyMatch(scenarioMetaData -> {
-          return ScenarioStateCodes.VERIFIED.equals(scenarioMetaData.getScenarioStateCode())
-              && ScenarioCategoryCodes.FINAL.equals(scenarioMetaData.getScenarioCategoryCode())
-              && "USER".equals(scenarioMetaData.getScenarioTypeCode());
-        }));
+    // NPP enrolments do not have a previous-year enrolment. Treat the
+    // previous-year partnership verification check as not applicable.
+    transferEnrolment.setPrevYearPartNotVerified(false);
 
     CrmTransferService crmTransferService = ServiceFactory.getCrmTransferService();
     crmTransferService.postEnrolment(
