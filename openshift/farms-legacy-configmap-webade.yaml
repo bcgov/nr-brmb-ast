@@ -837,6 +837,15 @@ data:
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
             "value": "#{FIFO_AGENT_ENABLED}#"
+        },
+        {
+            "subTypeCode": "app-config",
+            "setName": "webapp",
+            "name": "environment.name",
+            "description": null,
+            "dataTypeCode": "STRING",
+            "sensitiveDataInd": false,
+            "value": "#{ENVIRONMENT_NAME}#"
         }
     ],
     "globalPreferences": [],

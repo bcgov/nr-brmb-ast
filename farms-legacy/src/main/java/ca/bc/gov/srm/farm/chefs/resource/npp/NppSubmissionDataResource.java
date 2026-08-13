@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
@@ -33,7 +34,9 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
   private String trustNumber;
   private String bandNumber;
   private String accountingCode;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
   private Date fiscalYearStart;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
   private Date fiscalYearEnd;
   private Integer agriStabilityAgriInvestPin;
   private Boolean noPin;

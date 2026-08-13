@@ -95,6 +95,7 @@ jobs:
           TAG: ${{ inputs.TAG }}
           IMAGE_BY_DIGEST: ${{ steps.getDigest.outputs.IMAGE_BY_DIGEST }}
           SID: ${{ github.run_id }}
+          ENVIRONMENT_NAME: ${{ vars.ENVIRONMENT_NAME }}
           LOG_LEVEL: ${{ vars.LOG_LEVEL }}
           CONNECTION_TIMEOUT: ${{ vars.CONNECTION_TIMEOUT }}
 

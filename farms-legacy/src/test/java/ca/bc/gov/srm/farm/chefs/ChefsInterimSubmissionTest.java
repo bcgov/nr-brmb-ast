@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
 import org.apache.struts.action.ActionMessages;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -139,7 +140,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertTrue(submissionsList.size() > 0);
     
     ConfigurationUtility configUtil = ConfigurationUtility.getInstance();
-    String webADEEnvironment = configUtil.getEnvironment();
+    String webADEEnvironment = configUtil.getValue(ConfigurationKeys.ENVIRONMENT_NAME);
     
     for (SubmissionListItemResource s : submissionsList) {
 

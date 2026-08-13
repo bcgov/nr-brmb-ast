@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import ca.bc.gov.srm.farm.chefs.resource.common.IncomeExpenseGrid;
@@ -46,7 +47,9 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   private String signatureDate;
   private String howDoYouKnowTheParticipant;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
   private Date fiscalYearStart;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
   private Date fiscalYearEnd;
 
   private Integer numberOfYearsFarmed;

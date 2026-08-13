@@ -526,7 +526,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
 
   private String getWebADEEnvironment() {
     if(environment == null) {
-      environment = configUtil.getEnvironment();
+      environment = configUtil.getValue(ConfigurationKeys.ENVIRONMENT_NAME);
       logger.info("getWebADEEnvironment: " + environment);
     }
     return environment;
