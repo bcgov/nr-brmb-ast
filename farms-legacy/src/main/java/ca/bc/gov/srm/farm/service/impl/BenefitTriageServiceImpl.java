@@ -61,7 +61,6 @@ import ca.bc.gov.srm.farm.domain.BasePricePerUnitYear;
 import ca.bc.gov.srm.farm.domain.FarmingOperation;
 import ca.bc.gov.srm.farm.domain.FarmingYear;
 import ca.bc.gov.srm.farm.domain.ImportVersion;
-import ca.bc.gov.srm.farm.domain.IncomeExpense;
 import ca.bc.gov.srm.farm.domain.ProductiveUnitCapacity;
 import ca.bc.gov.srm.farm.domain.ReferenceScenario;
 import ca.bc.gov.srm.farm.domain.Scenario;
@@ -97,29 +96,12 @@ import ca.bc.gov.srm.farm.transaction.Transaction;
 import ca.bc.gov.srm.farm.util.DateUtils;
 import ca.bc.gov.srm.farm.util.PropertyLoader;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
+import ca.bc.gov.srm.farm.util.StringUtils;
 
 public class BenefitTriageServiceImpl extends BaseService implements BenefitTriageService {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
   
-  private static final String MESSAGE_FAIL_STRUCTURE_CHANGE_NOT_ENABLED =
-      "Fail: Structure Change is not enabled because BPUs are missing.";
-  
-  private static final String MESSAGE_FAIL_REFERENCE_MARGIN_FAILED_AT_LOW_END =
-      "Fail: The Reference Margin Test failed at the low end.";
-  
-  private static final String MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED =
-      "Fail: Structural Change Additive Division Test failed.";
-  
-  private static final String MESSAGE_FAIL_LESS_THAN_5_YEARS_OF_DATA =
-      "Fail: Less than 5 reference years of data.";
-  
-  private static final String MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED =
-      "Fail: Fiscal Year End date changed.";
-  
-  private static final String MESSAGE_FAIL_COMBINED_FARM =
-      "Fail: Last year this producer was part of a Combined Farm.";
-
   private CrmTransferService crmTransferService;
   private AdjustmentService adjustmentService;
   private CalculatorService calculatorService;
@@ -357,54 +339,72 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
           
           String structuralChangeCode = triageScenario.getBenefit().getStructuralChangeMethodCode();
           boolean structureChangeEnabled = ! StructuralChangeCodes.NONE.equals(structuralChangeCode);
-          Boolean referenceMarginTestPassed = testResults.getMarginTest().getWithinLimitOfReferenceMargin();
-          boolean varianceOverTheUpperLimitOfReferenceMargin = checkMarginVarianceOverTheUpperLimit(triageScenario);
-          boolean referenceMarginTestPassedOrFailedAtTheHighEnd = referenceMarginTestPassed || varianceOverTheUpperLimitOfReferenceMargin;
           boolean structuralChangeAdditiveDivisionTestPassed = testResults.getStructuralChangeTest().getWithinAdditiveDivisionLimit();
-          boolean hasFiveYearsOfData = checkHasFiveYearsOfReferenceData(triageScenario);
+          boolean hasFiveReferenceYears = checkHasFiveReferenceYears(triageScenario);
+          boolean hasIncomeForAllYears = ScenarioUtils.checkHasIncomeForAllYears(triageScenario);
+          boolean hasExpensesForAllYears = ScenarioUtils.checkHasExpensesForAllYears(triageScenario);
           boolean fiscalEndDatesConsistent = checkFiscalEndDatesConsistent(triageScenario);
           boolean notCombinedFarm = checkNotCombinedFarm(triageScenario);
           
           if(isPaymentFile) {
             
-            boolean accountingMethodConsistent = true; // TODO check accounting method
-            boolean municipalityConsistent = true;     // TODO check municipality
+            boolean accountingMethodConsistent = checkAccountingMethodConsistent(triageScenario);
+            boolean municipalityConsistent = checkMunicipalityConsistent(triageScenario);
+            boolean benefitRiskTestPassed = testResults.getBenefitRisk().getResult();
+            Double benefitRiskTestVariance = testResults.getBenefitRisk().getVariance();
+            boolean benefitLowerThanEstimated = benefitRiskTestVariance != null && benefitRiskTestVariance < 0;
+            boolean benefitRiskTestPassedOrBenefitLowerThanEstimated = benefitRiskTestPassed || benefitLowerThanEstimated;
             boolean paymentWithinThreshold = BigDecimal.valueOf(totalBenefit).compareTo(paymentThreshold) <= 0;
             
             paymentPass = structureChangeEnabled
-                && referenceMarginTestPassedOrFailedAtTheHighEnd
                 && structuralChangeAdditiveDivisionTestPassed
-                && hasFiveYearsOfData
+                && hasFiveReferenceYears
+                && hasIncomeForAllYears
+                && hasExpensesForAllYears
                 && fiscalEndDatesConsistent
                 && notCombinedFarm
                 && accountingMethodConsistent
                 && municipalityConsistent
+                && benefitRiskTestPassedOrBenefitLowerThanEstimated
                 && paymentWithinThreshold;
             
-            addMessages(
+            addPaymentPassMessages(
                 result,
                 structureChangeEnabled,
-                referenceMarginTestPassedOrFailedAtTheHighEnd,
                 structuralChangeAdditiveDivisionTestPassed,
-                hasFiveYearsOfData,
+                hasFiveReferenceYears,
+                hasIncomeForAllYears,
+                hasExpensesForAllYears,
                 fiscalEndDatesConsistent,
-                notCombinedFarm);
+                notCombinedFarm,
+                accountingMethodConsistent,
+                municipalityConsistent,
+                benefitRiskTestPassedOrBenefitLowerThanEstimated,
+                paymentWithinThreshold);
             
           } else {
+
+            Boolean referenceMarginTestPassed = testResults.getMarginTest().getWithinLimitOfReferenceMargin();
+            boolean varianceOverTheUpperLimitOfReferenceMargin = checkMarginVarianceOverTheUpperLimit(triageScenario);
+            boolean referenceMarginTestPassedOrFailedAtTheHighEnd = referenceMarginTestPassed || varianceOverTheUpperLimitOfReferenceMargin;
             
             zeroPass = structureChangeEnabled
                 && referenceMarginTestPassedOrFailedAtTheHighEnd
                 && structuralChangeAdditiveDivisionTestPassed
-                && hasFiveYearsOfData
+                && hasFiveReferenceYears
+                && hasIncomeForAllYears
+                && hasExpensesForAllYears
                 && fiscalEndDatesConsistent
                 && notCombinedFarm;
             
-            addMessages(
+            addZeroPassMessages(
                 result,
                 structureChangeEnabled,
                 referenceMarginTestPassedOrFailedAtTheHighEnd,
                 structuralChangeAdditiveDivisionTestPassed,
-                hasFiveYearsOfData,
+                hasFiveReferenceYears,
+                hasIncomeForAllYears,
+                hasExpensesForAllYears,
                 fiscalEndDatesConsistent,
                 notCombinedFarm);
           }
@@ -418,6 +418,8 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       String triageResultType = null;
       if(zeroPass) {
         triageResultType = TRIAGE_RESULT_TYPE_ZERO_PASS;
+      } else if(paymentPass) {
+        triageResultType = TRIAGE_RESULT_TYPE_PAYMENT_PASS;
       }
  
       logger.debug("Updating scenario state");
@@ -476,40 +478,25 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     return overTheUpperLimitOfReferenceMargin;
   }
 
-  private boolean checkHasFiveYearsOfReferenceData(Scenario scenario) {
+  private boolean checkHasFiveReferenceYears(Scenario scenario) {
     final int numYearsNeeded = 5;
     int referenceScenarioCount = scenario.getReferenceScenarios().size();
     
-    boolean hasFiveYearsOfData = true;
-    
-    if(referenceScenarioCount != numYearsNeeded) {
-      hasFiveYearsOfData = false;
-    } else {
-      
-      for (ReferenceScenario refScenario : scenario.getAllScenarios()) {
-        
-        Map<Integer, IncomeExpense> incomes = ScenarioUtils.getConsolidatedIncomeExpense(scenario, true, null, refScenario.getYear());
-        Map<Integer, IncomeExpense> expenses = ScenarioUtils.getConsolidatedIncomeExpense(scenario, false, null, refScenario.getYear());
-        boolean hasIncomes = incomes.values().stream().anyMatch(i -> i.getTotalAmount() != 0);
-        boolean hasExpenses = expenses.values().stream().anyMatch(i -> i.getTotalAmount() != 0);
-        
-        if(!hasIncomes && !hasExpenses) {
-          hasFiveYearsOfData = false;
-          break;
-        }
-      }
-      
-    }
+    boolean hasFiveYearsOfData = referenceScenarioCount == numYearsNeeded;
     
     return hasFiveYearsOfData;
   }
 
   private boolean checkFiscalEndDatesConsistent(Scenario scenario) {
-    
-    boolean datesConsistent = true;
-    
+
     Integer programYear = scenario.getYear();
     ReferenceScenario lastYearReferenceScenario = scenario.getReferenceScenarioByYear(programYear - 1);
+
+    if(lastYearReferenceScenario == null || lastYearReferenceScenario.getFarmingYear() == null
+        || lastYearReferenceScenario.getFarmingYear().getFarmingOperations() == null) {
+      return false;
+    }
+
     FarmingYear lastYearFarmingYear = lastYearReferenceScenario.getFarmingYear();
     List<FarmingOperation> farmingOperations = scenario.getFarmingYear().getFarmingOperations();
     
@@ -519,9 +506,8 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       
       FarmingOperation lastYearFarmingOperation = lastYearFarmingYear.getFarmingOperationByNumber(operationNumber);
       
-      if(lastYearFarmingOperation == null) {
-        datesConsistent = false;
-        break;
+      if(lastYearFarmingOperation == null || programYearFiscalYearEnd == null) {
+        return false;
       }
       
       Date lastYearFiscalYearEnd = lastYearFarmingOperation.getFiscalYearEnd();
@@ -531,13 +517,12 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       boolean fiscalYearEndChanged = ! programYearFiscalEndMinusOneYear.equals(lastYearFiscalYearEnd);
       
       if(fiscalYearEndChanged) {
-        datesConsistent = false;
-        break;
+        return false;
       }
       
     }
     
-    return datesConsistent;
+    return true;
   }
 
   private boolean checkNotCombinedFarm(Scenario triageScenario) {
@@ -551,11 +536,73 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     return lastYearCombinedFarmScenarios.isEmpty();
   }
 
-  private void addMessages(BenefitTriageItemResult result,
+  private boolean checkAccountingMethodConsistent(Scenario scenario) {
+    
+    boolean accountingMethodsConsistent = true;
+    
+    Integer programYear = scenario.getYear();
+    ReferenceScenario lastYearReferenceScenario = scenario.getReferenceScenarioByYear(programYear - 1);
+
+    if(lastYearReferenceScenario == null || lastYearReferenceScenario.getFarmingYear() == null
+      || lastYearReferenceScenario.getFarmingYear().getFarmingOperations() == null) {
+      return false;
+    }
+
+    FarmingYear lastYearFarmingYear = lastYearReferenceScenario.getFarmingYear();
+    List<FarmingOperation> farmingOperations = scenario.getFarmingYear().getFarmingOperations();
+    
+    for (FarmingOperation farmingOperation : farmingOperations) {
+      Integer operationNumber = farmingOperation.getOperationNumber();
+      String programYearAccountingCode = farmingOperation.getAccountingCode();
+      
+      FarmingOperation lastYearFarmingOperation = lastYearFarmingYear.getFarmingOperationByNumber(operationNumber);
+      
+      if(lastYearFarmingOperation == null) {
+        accountingMethodsConsistent = false;
+        break;
+      }
+      
+      String lastYearAccountingCode = lastYearFarmingOperation.getAccountingCode();
+      
+      boolean changed = ! StringUtils.equal(programYearAccountingCode, lastYearAccountingCode);
+      
+      if(changed) {
+        accountingMethodsConsistent = false;
+        break;
+      }
+      
+    }
+    
+    return accountingMethodsConsistent;
+  }
+  
+  
+  private boolean checkMunicipalityConsistent(Scenario scenario) {
+    
+    Integer programYear = scenario.getYear();
+    ReferenceScenario lastYearReferenceScenario = scenario.getReferenceScenarioByYear(programYear - 1);
+
+    if(lastYearReferenceScenario == null || lastYearReferenceScenario.getFarmingYear() == null) {
+      return false;
+    }
+
+    FarmingYear lastYearFarmingYear = lastYearReferenceScenario.getFarmingYear();
+    
+    String programYearMunicipalityCode = scenario.getFarmingYear().getMunicipalityCode();
+    String lastYearMunicipalityCode = lastYearFarmingYear.getMunicipalityCode();
+    
+    boolean municipalityConsistent = programYearMunicipalityCode.equals(lastYearMunicipalityCode);
+    
+    return municipalityConsistent;
+  }
+
+  private void addZeroPassMessages(BenefitTriageItemResult result,
       boolean structureChangeEnabled,
       boolean referenceMarginTestPassedOrFailedAtTheHighEnd,
       boolean structuralChangeAdditiveDivisionTestPassed,
-      boolean hasFiveYearsOfData,
+      boolean hasFiveReferenceYears,
+      boolean hasIncomeForAllYears,
+      boolean hasExpensesForAllYears,
       boolean fiscalEndDatesConsistent,
       boolean notCombinedFarm) {
     
@@ -570,14 +617,70 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     if( ! structuralChangeAdditiveDivisionTestPassed ) {
       failMessages.add(MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED);
     }
-    if( ! hasFiveYearsOfData ) {
+    if( ! hasFiveReferenceYears ) {
       failMessages.add(MESSAGE_FAIL_LESS_THAN_5_YEARS_OF_DATA);
+    }
+    if( ! hasIncomeForAllYears ) {
+      failMessages.add(MESSAGE_FAIL_MISSING_INCOME);
+    }
+    if( ! hasExpensesForAllYears ) {
+      failMessages.add(MESSAGE_FAIL_MISSING_EXPENSES);
     }
     if( ! fiscalEndDatesConsistent ) {
       failMessages.add(MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED);
     }
     if( ! notCombinedFarm ) {
       failMessages.add(MESSAGE_FAIL_COMBINED_FARM);
+    }
+  }
+
+  private void addPaymentPassMessages(BenefitTriageItemResult result,
+      boolean structureChangeEnabled,
+      boolean structuralChangeAdditiveDivisionTestPassed,
+      boolean hasFiveReferenceYears,
+      boolean hasIncomeForAllYears,
+      boolean hasExpensesForAllYears,
+      boolean fiscalEndDatesConsistent,
+      boolean notCombinedFarm,
+      boolean accountingMethodConsistent,
+      boolean municipalityConsistent,
+      boolean benefitRiskTestPassedOrBenefitLowerThanEstimated,
+      boolean paymentWithinThreshold) {
+
+    List<String> failMessages = result.getFailMessages();
+
+    if( ! structureChangeEnabled ) {
+      failMessages.add(MESSAGE_FAIL_STRUCTURE_CHANGE_NOT_ENABLED);
+    }
+    if( ! structuralChangeAdditiveDivisionTestPassed ) {
+      failMessages.add(MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED);
+    }
+    if( ! hasFiveReferenceYears ) {
+      failMessages.add(MESSAGE_FAIL_LESS_THAN_5_YEARS_OF_DATA);
+    }
+    if( ! hasIncomeForAllYears ) {
+      failMessages.add(MESSAGE_FAIL_MISSING_INCOME);
+    }
+    if( ! hasExpensesForAllYears ) {
+      failMessages.add(MESSAGE_FAIL_MISSING_EXPENSES);
+    }
+    if( ! fiscalEndDatesConsistent ) {
+      failMessages.add(MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED);
+    }
+    if( ! notCombinedFarm ) {
+      failMessages.add(MESSAGE_FAIL_COMBINED_FARM);
+    }
+    if( ! accountingMethodConsistent ) {
+      failMessages.add(MESSAGE_FAIL_ACCOUNTING_METHOD_CHANGED);
+    }
+    if( ! municipalityConsistent ) {
+      failMessages.add(MESSAGE_FAIL_MUNICIPALITY_CHANGED);
+    }
+    if( ! benefitRiskTestPassedOrBenefitLowerThanEstimated ) {
+      failMessages.add(MESSAGE_FAIL_BENEFIT_RISK_FAILED_AT_HIGH_END);
+    }
+    if( ! paymentWithinThreshold ) {
+      failMessages.add(MESSAGE_FAIL_PAYMENT_TOO_LARGE);
     }
   }
 
