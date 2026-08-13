@@ -1039,40 +1039,6 @@ public final class ScenarioUtils {
     return reportedIncomes;
   }
 
-  
-  public static boolean checkHasIncomeForAllYears(Scenario scenario) {
-    return checkHasIncomeOrExpenseForAllYears(scenario, false);
-  }
-  
-  public static boolean checkHasExpensesForAllYears(Scenario scenario) {
-    return checkHasIncomeOrExpenseForAllYears(scenario, true);
-  }
-
-  private static boolean checkHasIncomeOrExpenseForAllYears(Scenario scenario, boolean expense) {
-    
-    boolean result = true;
-      
-    for (ReferenceScenario refScenario : scenario.getAllScenarios()) {
-      
-      Map<Integer, IncomeExpense> incomeExpenses;
-      
-      if(expense) {
-        incomeExpenses = ScenarioUtils.getConsolidatedIncomeExpense(scenario, true, null, refScenario.getYear());
-      } else {
-        incomeExpenses = ScenarioUtils.getConsolidatedIncomeExpense(scenario, false, null, refScenario.getYear());
-      }
-      
-      boolean hasIncomeExpenses = incomeExpenses.values().stream().anyMatch(i -> i.getTotalAmount() != 0);
-      
-      if(!hasIncomeExpenses) {
-        result = false;
-        break;
-      }
-    }
-    
-    return result;
-  }
-
   public static boolean hasInventoryOfFruitVegType(Scenario scenario, String fruitVegTypeCode) {
     boolean hasType = false;
     
