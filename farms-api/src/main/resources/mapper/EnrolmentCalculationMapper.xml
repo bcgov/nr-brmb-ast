@@ -134,23 +134,121 @@
     </select>
 
     <select id="fetchProductiveUnits" resultType="EnrolmentCalculationProductiveUnitEntity">
-        with productive_units as (
+        with scenario_context as (
+            select sc.program_year_version_id,
+                   sc.participnt_data_src_code,
+                   py.year as program_year
+            from farms.farm_agristability_scenarios sc
+            join farms.farm_program_year_versions pyv
+              on pyv.program_year_version_id = sc.program_year_version_id
+            join farms.farm_program_years py
+              on py.program_year_id = pyv.program_year_id
+            where sc.agristability_scenario_id = #{agristabilityScenarioId}
+        ),
+        base_productive_units as (
+            -- Legacy loads operation-level PUCs; these rows do not have a scenario id.
+            select puc.productve_unit_capacity_id,
+                   puc.productive_capacity_amount,
+                   puc.farming_operation_id,
+                   puc.inventory_item_code,
+                   puc.structure_group_code,
+                   puc.participnt_data_src_code
+            from farms.farm_productve_unit_capacities puc
+            join farms.farm_farming_operations fo
+              on fo.farming_operation_id = puc.farming_operation_id
+            join scenario_context ctx
+              on ctx.program_year_version_id = fo.program_year_version_id
+            where puc.agristability_scenario_id is null
+        ),
+        adjusted_productive_units as (
+            select puc.productve_unit_capacity_id,
+                   puc.cra_productve_unit_capacity_id,
+                   puc.productive_capacity_amount,
+                   puc.farming_operation_id,
+                   puc.inventory_item_code,
+                   puc.structure_group_code,
+                   puc.participnt_data_src_code
+            from farms.farm_productve_unit_capacities puc
+            join farms.farm_farming_operations fo
+              on fo.farming_operation_id = puc.farming_operation_id
+            join scenario_context ctx
+              on ctx.program_year_version_id = fo.program_year_version_id
+            where puc.agristability_scenario_id = #{agristabilityScenarioId}
+        ),
+        effective_productive_units as (
+            -- Keep reported and adjusted amounts separate because legacy rounds them separately.
+            select coalesce(base.productve_unit_capacity_id, adj.productve_unit_capacity_id) as productive_unit_id,
+                   coalesce(base.farming_operation_id, adj.farming_operation_id) as farming_operation_id,
+                   coalesce(base.inventory_item_code, adj.inventory_item_code) as inventory_item_code,
+                   coalesce(base.structure_group_code, adj.structure_group_code) as structure_group_code,
+                   coalesce(base.participnt_data_src_code, adj.participnt_data_src_code) as participnt_data_src_code,
+                   base.productive_capacity_amount as reported_capacity_amount,
+                   adj.productive_capacity_amount as adjusted_capacity_amount
+            from base_productive_units base
+            full outer join adjusted_productive_units adj
+              on adj.cra_productve_unit_capacity_id = base.productve_unit_capacity_id
+        ),
+        coded_productive_units as (
+            -- Productive-unit rollup is enabled in legacy for the 2024 program year onward.
+            select puc.productive_unit_id,
+                   puc.farming_operation_id,
+                   ctx.program_year,
+                   case
+                       when ctx.program_year &gt;= 2024
+                           then coalesce(iia.rollup_inventory_item_code, puc.inventory_item_code)
+                       else puc.inventory_item_code
+                   end as inventory_item_code,
+                   case
+                       when ctx.program_year &gt;= 2024
+                           then coalesce(sga.rollup_structure_group_code, puc.structure_group_code)
+                       else puc.structure_group_code
+                   end as structure_group_code,
+                   puc.reported_capacity_amount,
+                   puc.adjusted_capacity_amount
+            from effective_productive_units puc
+            cross join scenario_context ctx
+            left join farms.farm_inventory_item_attributes iia
+              on iia.inventory_item_code = puc.inventory_item_code
+            left join farms.farm_structure_group_attributs sga
+              on sga.structure_group_code = puc.structure_group_code
+            where puc.participnt_data_src_code = ctx.participnt_data_src_code
+        ),
+        operation_productive_units as (
+            -- From 2024 onward legacy rolls up within each operation before applying its partnership percent.
+            select puc.farming_operation_id,
+                   puc.inventory_item_code,
+                   puc.structure_group_code,
+                   case when puc.program_year &gt;= 2024 then null else puc.productive_unit_id end as productive_unit_id,
+                   sum(puc.reported_capacity_amount) as reported_capacity_amount,
+                   sum(puc.adjusted_capacity_amount) as adjusted_capacity_amount
+            from coded_productive_units puc
+            group by puc.farming_operation_id,
+                     puc.inventory_item_code,
+                     puc.structure_group_code,
+                     case when puc.program_year &gt;= 2024 then null else puc.productive_unit_id end
+            having coalesce(sum(puc.reported_capacity_amount), 0)
+                   + coalesce(sum(puc.adjusted_capacity_amount), 0) &lt;&gt; 0
+        ),
+        productive_units as (
             select puc.inventory_item_code,
                    puc.structure_group_code,
                    coalesce(puc.inventory_item_code, puc.structure_group_code) as code,
                    coalesce(iic.description, sgc.description) as description,
-                   sum(puc.productive_capacity_amount) as productive_capacity
-            from farms.farm_productve_unit_capacities puc
+                   sum(round(coalesce(puc.reported_capacity_amount, 0) * fo.partnership_percent, 3)
+                       + round(coalesce(puc.adjusted_capacity_amount, 0) * fo.partnership_percent, 3)) as productive_capacity
+            from operation_productive_units puc
+            join farms.farm_farming_operations fo
+              on fo.farming_operation_id = puc.farming_operation_id
             left join farms.farm_inventory_item_codes iic
               on iic.inventory_item_code = puc.inventory_item_code
             left join farms.farm_structure_group_codes sgc
               on sgc.structure_group_code = puc.structure_group_code
-            where puc.agristability_scenario_id = #{agristabilityScenarioId}
-              and coalesce(puc.productive_capacity_amount, 0) &lt;&gt; 0
             group by puc.inventory_item_code,
                      puc.structure_group_code,
                      coalesce(puc.inventory_item_code, puc.structure_group_code),
                      coalesce(iic.description, sgc.description)
+            having sum(round(coalesce(puc.reported_capacity_amount, 0) * fo.partnership_percent, 3)
+                     + round(coalesce(puc.adjusted_capacity_amount, 0) * fo.partnership_percent, 3)) &lt;&gt; 0
         ),
         bpu_leads as (
             select sy.reference_year,
@@ -255,7 +353,7 @@
                    limit 1
                ), 0) as bpu_margin_year_minus_2
         from productive_units pu
-        order by pu.description, pu.code
+        order by pu.code
     </select>
 
     <select id="fetchPartnersByPinAndProgramYear" resultType="EnrolmentPartnerEntity">
