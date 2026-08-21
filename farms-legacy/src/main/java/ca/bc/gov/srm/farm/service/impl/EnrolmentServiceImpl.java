@@ -836,6 +836,7 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
   throws ServiceException {
     
     Enrolment enrolment;
+    String enrolmentMessageText;
     
     if(completingEnrolmentNotice) {
       EnwEnrolmentCalculator enwEnrolmentCalculator = EnrolmentCalculatorFactory.getEnwEnrolmentCalculator();
@@ -849,6 +850,50 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
           + " 1. Enrolment Notice Complete"
           + " 2. Verified and a Late Participant");
     }
+
+    if(scenario.isLateParticipant()) {
+      enrolmentMessageText = " - Auto-generated for Late Participant. PIN: ";
+    } else {
+      enrolmentMessageText = " - Auto-generated for Enrolment Notice Workflow. PIN: ";
+    }
+
+    saveAndScheduleEnrolment(
+        scenario, enrolment, completingEnrolmentNotice, enrolmentMessageText, user, connection);
+  }
+
+
+  @Override
+  public void processEnrolmentFromVerifiedScenario(
+      Scenario scenario,
+      String user,
+      Transaction transaction)
+  throws ServiceException {
+    @SuppressWarnings("resource")
+    Connection connection = (Connection) transaction.getDatastore();
+
+    int enrolmentYear = scenario.getYear() + 2;
+    LateParticipantEnrolmentCalculator calculator =
+        EnrolmentCalculatorFactory.getLateParticipantEnrolmentCalculator();
+    Enrolment enrolment = calculator.calculateEnrolment(scenario, enrolmentYear);
+
+    saveAndScheduleEnrolment(
+        scenario,
+        enrolment,
+        false,
+        " - Auto-generated from Verified Scenario. PIN: ",
+        user,
+        connection);
+  }
+
+
+  private void saveAndScheduleEnrolment(
+      Scenario scenario,
+      Enrolment enrolment,
+      boolean completingEnrolmentNotice,
+      String enrolmentMessageText,
+      String user,
+      Connection connection)
+  throws ServiceException {
     
     List<Enrolment> enrolments = new ArrayList<>(1);
     enrolments.add(enrolment);
@@ -866,12 +911,6 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
       
       // create a farm_import_versions entry, and save the file to a blob
       try (InputStream importFileInputStream = Files.newInputStream(enrolmentFilePath);) {
-        String enrolmentMessageText;
-        if(scenario.isLateParticipant()) {
-          enrolmentMessageText = " - Auto-generated for Late Participant. PIN: ";
-        } else {
-          enrolmentMessageText = " - Auto-generated for Enrolment Notice Workflow. PIN: ";
-        }
         String description = enrolment.getEnrolmentYear() + enrolmentMessageText + pinString;
         ImportVersion importVersion = importService.createImportVersion(
             connection,
