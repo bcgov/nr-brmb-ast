@@ -872,6 +872,7 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
     Connection connection = (Connection) transaction.getDatastore();
 
     int enrolmentYear = scenario.getYear() + 2;
+    // PY+2 uses the same Reference Margin calculation as the existing Late Participant workflow.
     LateParticipantEnrolmentCalculator calculator =
         EnrolmentCalculatorFactory.getLateParticipantEnrolmentCalculator();
     Enrolment enrolment = calculator.calculateEnrolment(scenario, enrolmentYear);
