@@ -58,8 +58,8 @@ import ca.bc.gov.srm.farm.domain.enrolment.Enrolment;
 import ca.bc.gov.srm.farm.domain.staging.EnrolmentStaging;
 import ca.bc.gov.srm.farm.enrolment.EnrolmentCalculatorFactory;
 import ca.bc.gov.srm.farm.enrolment.EnwEnrolmentCalculator;
-import ca.bc.gov.srm.farm.enrolment.LateParticipantEnrolmentCalculator;
 import ca.bc.gov.srm.farm.enrolment.StandardEnrolmentCalculator;
+import ca.bc.gov.srm.farm.enrolment.VerificationEnrolmentCalculator;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.message.MessageKeys;
 import ca.bc.gov.srm.farm.service.AdjustmentService;
@@ -841,20 +841,17 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
     if(completingEnrolmentNotice) {
       EnwEnrolmentCalculator enwEnrolmentCalculator = EnrolmentCalculatorFactory.getEnwEnrolmentCalculator();
       enrolment = enwEnrolmentCalculator.convertEnwToEnrolment(scenario, scenario.getEnwEnrolment());
+      enrolmentMessageText = " - Auto-generated for Enrolment Notice Workflow. PIN: ";
     } else if(verifyingLatePartipant) {
-      LateParticipantEnrolmentCalculator lateParticipantEnrolmentCalculator = EnrolmentCalculatorFactory.getLateParticipantEnrolmentCalculator();
-      enrolment = lateParticipantEnrolmentCalculator.calculateEnrolment(scenario);
+      VerificationEnrolmentCalculator verificationEnrolmentCalculator =
+          EnrolmentCalculatorFactory.getVerificationEnrolmentCalculator();
+      enrolment = verificationEnrolmentCalculator.calculateEnrolment(scenario);
+      enrolmentMessageText = " - Auto-generated for Late Participant. PIN: ";
     } else {
       throw new IllegalStateException(
           "Expected that the scenario meets one of these criteria: "
           + " 1. Enrolment Notice Complete"
           + " 2. Verified and a Late Participant");
-    }
-
-    if(scenario.isLateParticipant()) {
-      enrolmentMessageText = " - Auto-generated for Late Participant. PIN: ";
-    } else {
-      enrolmentMessageText = " - Auto-generated for Enrolment Notice Workflow. PIN: ";
     }
 
     saveAndScheduleEnrolment(
@@ -872,9 +869,8 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
     Connection connection = (Connection) transaction.getDatastore();
 
     int enrolmentYear = scenario.getYear() + 2;
-    // PY+2 uses the same Reference Margin calculation as the existing Late Participant workflow.
-    LateParticipantEnrolmentCalculator calculator =
-        EnrolmentCalculatorFactory.getLateParticipantEnrolmentCalculator();
+    VerificationEnrolmentCalculator calculator =
+        EnrolmentCalculatorFactory.getVerificationEnrolmentCalculator();
     Enrolment enrolment = calculator.calculateEnrolment(scenario, enrolmentYear);
 
     saveAndScheduleEnrolment(

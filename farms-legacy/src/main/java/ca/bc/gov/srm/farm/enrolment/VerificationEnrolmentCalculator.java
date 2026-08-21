@@ -25,9 +25,9 @@ import ca.bc.gov.srm.farm.util.MathUtils;
 /**
  * @author awilkinson
  */
-public class LateParticipantEnrolmentCalculator {
+public class VerificationEnrolmentCalculator {
 
-  protected LateParticipantEnrolmentCalculator() {
+  protected VerificationEnrolmentCalculator() {
   }
   
   /**

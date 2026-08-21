@@ -521,7 +521,8 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
           && scenario.getPreVerificationChecklist() != null
           && scenario.getPreVerificationChecklist().getTriageQueue() != null
           && TriageQueueCodes.ZERO_PAYMENT_PASS.equals(scenario.getPreVerificationChecklist().getTriageQueue());
-      boolean verifyingLateParticipant = lateParticipant && stateChanged && isVerified && isRealBenefit;
+      boolean verifyingLateParticipant = lateParticipant && stateChanged && isVerified && isRealBenefit
+          && !INTERIM.equals(newCategoryCode);
       boolean verifyingForFutureEnrolment = shouldGeneratePyPlusTwoEnrolment(
           stateChanged, newStateCode, newCategoryCode);
       boolean completingEnrolmentNotice = stateChanged && isEnrolmentNoticeComplete;
@@ -697,7 +698,8 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       String newCategoryCode) {
     return stateChanged
         && VERIFIED.equals(newStateCode)
-        && ScenarioUtils.categoryIsRealBenefit(newCategoryCode);
+        && ScenarioUtils.categoryIsRealBenefit(newCategoryCode)
+        && !INTERIM.equals(newCategoryCode);
   }
 
 
