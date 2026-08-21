@@ -75,6 +75,7 @@ import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
 import ca.bc.gov.srm.farm.domain.codes.TriageQueueCodes;
 import ca.bc.gov.srm.farm.domain.enrolment.Enrolment;
+import ca.bc.gov.srm.farm.domain.enrolment.EnrolmentPartner;
 import ca.bc.gov.srm.farm.domain.enrolment.EnwEnrolment;
 import ca.bc.gov.srm.farm.domain.reasonability.ReasonabilityTestResults;
 import ca.bc.gov.srm.farm.enrolment.EnrolmentCalculatorFactory;
@@ -2565,6 +2566,23 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       enrolment.setGeneratedDate(new Date());
       enrolment.setIsLateParticipant(lateParticipantInd);
       
+      List<EnrolmentPartner> enrolmentPartners = new ArrayList<>();
+      
+      List<FarmingOperation> farmingOperations = scenario.getFarmingYear().getFarmingOperations();
+      for (FarmingOperation farmingOperation : farmingOperations) {
+        List<FarmingOperationPartner> opPartners = farmingOperation.getFarmingOperationPartners();
+        
+        for(FarmingOperationPartner opPartner : opPartners) {
+          EnrolmentPartner enPartner = new EnrolmentPartner();
+          enPartner.setPartnershipName(opPartner.getDisplayName());
+          enPartner.setPartnershipPercent(opPartner.getPartnerPercent());
+          enPartner.setPartnershipPin(opPartner.getParticipantPin());
+          enrolmentPartners.add(enPartner);
+        }
+      }
+      
+      enrolment.setEnrolmentPartners(enrolmentPartners);
+      
       if(lateParticipantInd) {
         enrolment.setEnrolmentFee(CalculatorConfig.LATE_ENROLMENT_FEE);
       } else {
@@ -2583,7 +2601,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
         && ScenarioCategoryCodes.FINAL.equals(scenarioMetaData.getScenarioCategoryCode())
         && "USER".equals(scenarioMetaData.getScenarioTypeCode());
       }));
-
+      
       Integer importVersionId = importVersion.getImportVersionId();
       
       CrmTransferService crmTransferService = ServiceFactory.getCrmTransferService();
@@ -2757,7 +2775,7 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     try (Transaction transaction = openTransaction()) {
       List<Scenario> scenarios = loadFreshScenarios(scenario);
-
+      
       transaction.begin();
 
       for(Scenario curScenario : scenarios) {
@@ -3409,6 +3427,32 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       }
       throw new ServiceException(e);
     }
+  }
+
+
+  @Override
+  @SuppressWarnings("resource")
+  public List<ScenarioMetaData> getScenarioMetadata(Integer participantPin, Integer programYear) throws ServiceException {
+    
+    
+    List<ScenarioMetaData> scenarioMetadata = null;
+    
+    try (Transaction transaction = openTransaction()) {
+      transaction.begin();
+      
+      Connection connection = (Connection) transaction.getDatastore();
+      ReadDAO readDao = new ReadDAO(connection);
+      scenarioMetadata = readDao.readProgramYearMetadata(participantPin, programYear);
+      
+      transaction.commit();
+    } catch (InvalidRevisionCountException e) {
+      logger.warn("Optimistic locking exception: ", e);
+      throw e;
+    } catch (SQLException e) {
+      throw new ServiceException(e);
+    }
+    
+    return scenarioMetadata;
   }
 
 }

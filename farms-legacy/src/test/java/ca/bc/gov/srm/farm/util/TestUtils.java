@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
@@ -196,6 +197,10 @@ public final class TestUtils {
     runQueuedImports(conn, 1);
   }
   
+  /**
+   * Used mostly by unit tests to run the transfers that they create and prevent
+   * a build-up of transfers that hold up other queued transfers or imports.
+   */
   public static void runQueuedImports(Connection conn, int executions) {
     
     for(int i = 0; i < executions; i++) {
@@ -207,11 +212,14 @@ public final class TestUtils {
         service.checkForScheduledImport(conn);
         conn.commit();
         
+        if(i != executions - 1) {
+          TimeUnit.SECONDS.sleep(1);
+        }
+        
       } catch(Exception ex) {
         ex.printStackTrace();
         fail(ex.getMessage());
       }
-      
     }
   }
 

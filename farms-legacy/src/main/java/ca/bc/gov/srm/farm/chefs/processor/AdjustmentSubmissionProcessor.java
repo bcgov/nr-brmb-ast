@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JacksonException;
-
 import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.chefs.resource.adjustment.AdjustmentSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionParentResource;
@@ -48,7 +46,6 @@ import ca.bc.gov.srm.farm.domain.codes.ParticipantClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
 import ca.bc.gov.srm.farm.exception.ServiceException;
-import ca.bc.gov.srm.farm.exception.TooManyRequestsException;
 import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsSubmissionProcessorService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
@@ -73,28 +70,17 @@ public class AdjustmentSubmissionProcessor extends ChefsSubmissionProcessor<Adju
   private String validationQueueId;
 
   @Override
-  protected void processSubmission(String submissionGuid, String submissionResponseStr) {
+  protected void processSubmission(String submissionGuid, String submissionResponseStr) throws ServiceException {
     logMethodStart(logger);
 
     CrmTaskResource task = null;
 
-    try {
-      SubmissionParentResource<AdjustmentSubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr,
-          AdjustmentSubmissionDataResource.class);
+    SubmissionParentResource<AdjustmentSubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr,
+        AdjustmentSubmissionDataResource.class);
 
-      if (!submissionMetaData.getDraft()) {
-        task = processSubmission(submissionMetaData);
-      }
-
-    } catch (ServiceException e) {
-      if(e.getCause() instanceof TooManyRequestsException) {
-        logger.error("TooManyRequestsException: ", e);
-      } else if(e.getCause() instanceof JacksonException) {
-        task = handleParseError(submissionGuid, e);
-      } else {
-        task = handleSystemError(submissionGuid, e);
-      }
-    } 
+    if (!submissionMetaData.getDraft()) {
+      task = processSubmission(submissionMetaData);
+    }
 
     logMethodEnd(logger, task);
   }

@@ -85,18 +85,18 @@ public class RestApiDao {
   
   private <T> T send(T resource, String endpointUrl, String resourceUrlHeader, String method) throws ServiceException {
     logMethodStart(logger);
-    
+
     logger.debug(String.format("%s request to %s", method, endpointUrl));
-    
+
     T result = null;
-    
+
     try {
 
       ObjectMapper jsonObjectMapper = new ObjectMapper();
       String content = jsonObjectMapper.writeValueAsString(resource);
-      
+
       JsonUtils.logObjectAsJsonAtDebug(logger, resource, resource.getClass().getName());
-      
+
       URL url = new URL(endpointUrl);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setConnectTimeout(CONNECT_TIMEOUT_MILLIS);
@@ -106,59 +106,96 @@ public class RestApiDao {
       conn.setRequestProperty("Content-Length", String.valueOf(content.length()));
 
       conn.setRequestMethod(method);
-      
+
       authenticationHandler.handleAuthentication(conn);
-      
+
       try(OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());) {
         wr.write(content);
         wr.flush();
       }
-      
+
       int httpResponseCode = conn.getResponseCode();
       logRateLimit(conn);
-  
-      String responseContent = readResponse(conn);
-      
-      if(httpResponseCode != HttpURLConnection.HTTP_NO_CONTENT) {
+
+      boolean isError = httpResponseCode >= 400;
+      String responseContent;
+      if (isError) {
+        try {
+          responseContent = readErrorResponse(conn);
+        } catch (IOException e) {
+          responseContent = "(unable to read response body: " + e.getMessage() + ")";
+        }
+      } else {
+        responseContent = readResponseIfPresent(conn);
+      }
+
+      if(isError) {
         String formattedJson = getFormattedJson(resource);
         logger.error("Error posting JSON:\n" + formattedJson);
-        
+        logger.error("Error response body:\n" + responseContent);
+
         throw new ServiceException("Error posting update to CRM. Expected 204 - No Content. Actual HTTP code: " +
             httpResponseCode + " - " + conn.getResponseMessage() +
             ". Response Body: " + responseContent);
       }
-      
+
+      if(httpResponseCode != HttpURLConnection.HTTP_NO_CONTENT) {
+        // Success, but not the expected 204 - worth knowing about even though we proceed.
+        logger.warn("Expected 204 - No Content but got " + httpResponseCode +
+            ". Response Body: " + responseContent);
+      }
+
       if(resourceUrlHeader != null) {
         String resourceUrl = conn.getHeaderField(resourceUrlHeader);
-        
+
         JavaType parametricType = jsonObjectMapper.getTypeFactory().constructType(resource.getClass());
         result = getResource(resourceUrl, parametricType);
       }
-      
+
     } catch(IOException e) {
       logger.error("Error posting to CRM: ", e);
       throw new ServiceException(e);
     }
-    
+
     logMethodEnd(logger);
     return result;
   }
 
+  
   protected <T> String getFormattedJson(T resource) throws JsonProcessingException {
     ObjectMapper jsonObjectMapper = new ObjectMapper();
     String formattedJson = jsonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(resource);
     return formattedJson;
   }
 
-  protected String readResponse(HttpURLConnection conn) throws IOException {
-    StringBuilder response;
-    try(BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+  
+  protected String readErrorResponse(HttpURLConnection conn) throws IOException {
+    java.io.InputStream errorStream = conn.getErrorStream();
+    if (errorStream == null) {
+      return "";
+    }
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(errorStream))) {
+      return readAll(in);
+    }
+  }
 
-      String inputLine;
-      response = new StringBuilder();
-      while (( inputLine = in.readLine()) != null) {
-          response.append(inputLine);
-      }
+  
+  protected String readResponseIfPresent(HttpURLConnection conn) throws IOException {
+    // HTTP_NO_CONTENT (204) has no body by spec; other 2xx codes might.
+    if (conn.getContentLength() == 0 || conn.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT) {
+      return "";
+    }
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+      return readAll(in);
+    }
+  }
+
+  
+  private String readAll(BufferedReader in) throws IOException {
+    StringBuilder response = new StringBuilder();
+    String inputLine;
+    while ((inputLine = in.readLine()) != null) {
+      response.append(inputLine);
     }
     return response.toString();
   }
@@ -173,13 +210,31 @@ public class RestApiDao {
     
     try {
 
-    	int httpResponseCode = conn.getResponseCode();  
-    	String response = readResponse(conn);
+      int httpResponseCode = conn.getResponseCode();
+      boolean isError = httpResponseCode >= 400;
 
-      if(httpResponseCode != HttpURLConnection.HTTP_OK) {
-        
+      if(isError) {
+        if(httpResponseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+          logger.warn("Resource not found: " + endpointUrl);
+          return null;
+        }
+
+        String errorResponse;
+        try {
+          errorResponse = readErrorResponse(conn);
+        } catch (IOException e) {
+          errorResponse = "(unable to read response body: " + e.getMessage() + ")";
+        }
         throw new IOException("Error getting resource. Expected 200 - OK. Actual HTTP code: " +
             httpResponseCode + " - " + conn.getResponseMessage() +
+            ". Response Body: " + errorResponse);
+      }
+
+      String response = readResponseIfPresent(conn);
+
+      if(httpResponseCode != HttpURLConnection.HTTP_OK) {
+        // Success, but not the expected 200 - worth knowing about even though we proceed.
+        logger.debug("Expected 200 - OK but got " + httpResponseCode +
             ". Response Body: " + response);
       }
       
@@ -188,15 +243,16 @@ public class RestApiDao {
       ObjectMapper jsonObjectMapper = new ObjectMapper();
       jsonObjectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
       // Fix for LabelValue being empty string
-      jsonObjectMapper.coercionConfigFor(LabelValue.class)
-      .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
+      jsonObjectMapper.coercionConfigFor(LabelValue.class).setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
       
       T resource = jsonObjectMapper.readValue(response, type);
       
       JsonUtils.logObjectAsJsonAtDebug(logger, resource, resource.getClass().getName());
       
       logMethodEnd(logger);
+      
       return resource;
+      
     } catch(IOException e) {
       logger.error("IOException getting resource: ", e);
       logger.error("Response headers: " + conn.getHeaderFields());
@@ -204,6 +260,7 @@ public class RestApiDao {
     }
   }
 
+  
 	protected HttpURLConnection getHttpURLConnection(String endpointUrl, String method) throws ServiceException {
 
 		HttpURLConnection conn;
@@ -224,7 +281,7 @@ public class RestApiDao {
 		return conn;
 	}
 
-  public void delete(String endpointUrl) throws ServiceException {
+	public void delete(String endpointUrl) throws ServiceException {
     logMethodStart(logger);
     
     HttpURLConnection conn = getHttpURLConnection(endpointUrl, HTTP_METHOD_DELETE);
@@ -233,14 +290,30 @@ public class RestApiDao {
     
       int httpResponseCode = conn.getResponseCode();
       logRateLimit(conn);
-      
-      String response = readResponse(conn);
-      
-      if(httpResponseCode != HttpURLConnection.HTTP_OK) {
-        
+
+      boolean isError = httpResponseCode >= 400;
+
+      if(isError) {
+        String errorResponse;
+        try {
+          errorResponse = readErrorResponse(conn);
+        } catch (IOException e) {
+          errorResponse = "(unable to read response body: " + e.getMessage() + ")";
+        }
+
         throw new IOException("Error deleting resource. Expected 200 - OK. Actual HTTP code: " +
             httpResponseCode + " - " + conn.getResponseMessage() +
-            ". Response Body: " + response);
+            ". Response Body: " + errorResponse);
+      }
+
+      String response = readResponseIfPresent(conn);
+
+      if(httpResponseCode != HttpURLConnection.HTTP_OK) {
+        logger.warn("Expected 200 - OK but got " + httpResponseCode);
+      }
+      
+      if(logger.isDebugEnabled()) {
+        logger.debug("Response Body: " + response);
       }
       
     } catch(IOException e) {
@@ -251,7 +324,6 @@ public class RestApiDao {
     
     logMethodEnd(logger);
   }
-
   protected void logRateLimit(HttpURLConnection conn) {
     logger.debug(String.format("Header %s: %s", HEADER_RATELIMIT, conn.getHeaderField(HEADER_RATELIMIT)));
   }

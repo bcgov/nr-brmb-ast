@@ -753,7 +753,7 @@ public class CodesServiceImpl extends BaseService implements CodesService {
 
     CodesWriteDAO dao = new CodesWriteDAO();
 
-    try (Transaction transaction = openTransaction()) {
+    try (Transaction transaction= openTransaction()) {
       transaction.begin();
 
       dao.deleteFMV(transaction,
@@ -2322,7 +2322,7 @@ public List<Integer> getProgramYears() throws ServiceException {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       throw new ServiceException(e);
-    }
+    }    
   }
    
   @Override

@@ -11,6 +11,7 @@ begin
     using (
         with scenarios as (
             select sc.agristability_scenario_id,
+                   sc.scenario_class_code,
                    py.year,
                    pyv.program_year_version_id
             from farms.farm_agristability_scenarios sc
@@ -78,7 +79,9 @@ begin
                      nm.claims_received,
                      iid.premium_rate,
                      ycp.parameter_value
-            having sum(ri.quantity_produced) != 0
+            /* For TRIAGE scenarios we want the NM calculation to fail for zero quantity
+               because it could be a total crop failure. For non-triage a verifier will check this. */
+            having (sum(ri.quantity_produced) != 0 or max(sv.scenario_class_code) = 'TRIAGE')
         ), claims_calc as (
             select a.*,
                  (case

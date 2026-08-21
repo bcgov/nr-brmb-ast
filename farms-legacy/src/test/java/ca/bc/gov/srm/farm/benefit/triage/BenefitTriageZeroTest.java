@@ -10,9 +10,11 @@
  */
 package ca.bc.gov.srm.farm.benefit.triage;
 
+import static ca.bc.gov.srm.farm.service.BenefitTriageService.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -56,7 +58,7 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
     try {
       List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
-      ScenarioMetaData latestCraScenario = ScenarioUtils.findLatestScenarioByType(programYearMetadataList, programYear, ScenarioTypeCodes.CRA);
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
   
       // Delete TRIAGE and Final scenarios if left over from a previous test run
       TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
@@ -67,9 +69,9 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
         BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
         item.setParticipantPin(participantPin);
         item.setProgramYear(programYear);
-        item.setCraProgramYearVersionId(latestCraScenario.getProgramYearVersionId());
-        item.setCraScenarioId(latestCraScenario.getScenarioId());
-        item.setCraScenarioNumber(latestCraScenario.getScenarioNumber());
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
         triageItems.add(item);
       }
       
@@ -85,18 +87,28 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       
       BenefitTriageItemResult itemResult = triageItemResults.get(0);
       assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), failMessages);
+      
       assertEquals(participantPin, itemResult.getParticipantPin());
       assertEquals(programYear, itemResult.getProgramYear());
       assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
       assertNotNull(itemResult.getEstimatedBenefit());
       assertEquals(Boolean.FALSE, itemResult.getIsPaymentFile());
       assertTrue(itemResult.isZeroPass());
-      // TODO Check fail messages
+      assertFalse(itemResult.isPaymentPass());
       
-      List<String> errorMessages = itemResult.getErrorMessages();
-      assertNotNull(errorMessages);
-      logErrorMessages(errorMessages);
-      assertEquals(0, errorMessages.size());
       
       programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
   
@@ -218,7 +230,7 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
     try {
       List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
-      ScenarioMetaData latestCraScenario = ScenarioUtils.findLatestScenarioByType(programYearMetadataList, programYear, ScenarioTypeCodes.CRA);
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
       
       // Delete TRIAGE and Final scenarios if left over from a previous test run
       TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
@@ -229,9 +241,9 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
         BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
         item.setParticipantPin(participantPin);
         item.setProgramYear(programYear);
-        item.setCraProgramYearVersionId(latestCraScenario.getProgramYearVersionId());
-        item.setCraScenarioId(latestCraScenario.getScenarioId());
-        item.setCraScenarioNumber(latestCraScenario.getScenarioNumber());
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
         triageItems.add(item);
       }
       
@@ -247,17 +259,28 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       
       BenefitTriageItemResult itemResult = triageItemResults.get(0);
       assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), failMessages);
+      
       assertEquals(participantPin, itemResult.getParticipantPin());
       assertEquals(programYear, itemResult.getProgramYear());
       assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
       assertNotNull(itemResult.getEstimatedBenefit());
       assertEquals(Boolean.FALSE, itemResult.getIsPaymentFile());
       assertTrue(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
       
-      List<String> errorMessages = itemResult.getErrorMessages();
-      assertNotNull(errorMessages);
-      logErrorMessages(errorMessages);
-      assertEquals(0, errorMessages.size());
       
       programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
@@ -386,7 +409,7 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
     try {
       List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
-      ScenarioMetaData latestCraScenario = ScenarioUtils.findLatestScenarioByType(programYearMetadataList, programYear, ScenarioTypeCodes.CRA);
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
       
       // Delete TRIAGE and Final scenarios if left over from a previous test run
       TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
@@ -397,9 +420,9 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
         BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
         item.setParticipantPin(participantPin);
         item.setProgramYear(programYear);
-        item.setCraProgramYearVersionId(latestCraScenario.getProgramYearVersionId());
-        item.setCraScenarioId(latestCraScenario.getScenarioId());
-        item.setCraScenarioNumber(latestCraScenario.getScenarioNumber());
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
         triageItems.add(item);
       }
       
@@ -415,17 +438,28 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       
       BenefitTriageItemResult itemResult = triageItemResults.get(0);
       assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), failMessages);
+      
       assertEquals(participantPin, itemResult.getParticipantPin());
       assertEquals(programYear, itemResult.getProgramYear());
       assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
       assertNotNull(itemResult.getEstimatedBenefit());
       assertEquals(Boolean.FALSE, itemResult.getIsPaymentFile());
       assertTrue(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
       
-      List<String> errorMessages = itemResult.getErrorMessages();
-      assertNotNull(errorMessages);
-      logErrorMessages(errorMessages);
-      assertEquals(0, errorMessages.size());
       
       programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
@@ -553,7 +587,7 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
     try {
       List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
-      ScenarioMetaData latestCraScenario = ScenarioUtils.findLatestScenarioByType(programYearMetadataList, programYear, ScenarioTypeCodes.CRA);
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
       
       // Delete TRIAGE and Final scenarios if left over from a previous test run
       TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
@@ -564,9 +598,9 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
         BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
         item.setParticipantPin(participantPin);
         item.setProgramYear(programYear);
-        item.setCraProgramYearVersionId(latestCraScenario.getProgramYearVersionId());
-        item.setCraScenarioId(latestCraScenario.getScenarioId());
-        item.setCraScenarioNumber(latestCraScenario.getScenarioNumber());
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
         triageItems.add(item);
       }
       
@@ -582,17 +616,29 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       
       BenefitTriageItemResult itemResult = triageItemResults.get(0);
       assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_LESS_THAN_5_YEARS_OF_DATA
+      }), failMessages);
+      
+      
       assertEquals(participantPin, itemResult.getParticipantPin());
       assertEquals(programYear, itemResult.getProgramYear());
       assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
       assertNotNull(itemResult.getEstimatedBenefit());
       assertEquals(Boolean.FALSE, itemResult.getIsPaymentFile());
       assertFalse(itemResult.isZeroPass());
-      
-      List<String> errorMessages = itemResult.getErrorMessages();
-      assertNotNull(errorMessages);
-      logErrorMessages(errorMessages);
-      assertEquals(0, errorMessages.size());
+      assertFalse(itemResult.isPaymentPass());
       
       programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
@@ -661,7 +707,7 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
     try {
       List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
-      ScenarioMetaData latestCraScenario = ScenarioUtils.findLatestScenarioByType(programYearMetadataList, programYear, ScenarioTypeCodes.CRA);
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
       
       // Delete TRIAGE and Final scenarios if left over from a previous test run
       TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
@@ -672,9 +718,9 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
         BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
         item.setParticipantPin(participantPin);
         item.setProgramYear(programYear);
-        item.setCraProgramYearVersionId(latestCraScenario.getProgramYearVersionId());
-        item.setCraScenarioId(latestCraScenario.getScenarioId());
-        item.setCraScenarioNumber(latestCraScenario.getScenarioNumber());
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
         triageItems.add(item);
       }
       
@@ -690,17 +736,29 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       
       BenefitTriageItemResult itemResult = triageItemResults.get(0);
       assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_REFERENCE_MARGIN_FAILED_AT_LOW_END
+      }), failMessages);
+      
       assertEquals(participantPin, itemResult.getParticipantPin());
       assertEquals(programYear, itemResult.getProgramYear());
       assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
       assertNotNull(itemResult.getEstimatedBenefit());
       assertEquals(Boolean.FALSE, itemResult.getIsPaymentFile());
       assertFalse(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
       
-      List<String> errorMessages = itemResult.getErrorMessages();
-      assertNotNull(errorMessages);
-      logErrorMessages(errorMessages);
-      assertEquals(0, errorMessages.size());
       
       programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
@@ -771,7 +829,7 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
     try {
       List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
-      ScenarioMetaData latestCraScenario = ScenarioUtils.findLatestScenarioByType(programYearMetadataList, programYear, ScenarioTypeCodes.CRA);
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
       
       // Delete TRIAGE and Final scenarios if left over from a previous test run
       TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
@@ -782,9 +840,9 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
         BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
         item.setParticipantPin(participantPin);
         item.setProgramYear(programYear);
-        item.setCraProgramYearVersionId(latestCraScenario.getProgramYearVersionId());
-        item.setCraScenarioId(latestCraScenario.getScenarioId());
-        item.setCraScenarioNumber(latestCraScenario.getScenarioNumber());
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
         triageItems.add(item);
       }
       
@@ -800,17 +858,29 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       
       BenefitTriageItemResult itemResult = triageItemResults.get(0);
       assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED
+      }), failMessages);
+      
       assertEquals(participantPin, itemResult.getParticipantPin());
       assertEquals(programYear, itemResult.getProgramYear());
       assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
       assertNotNull(itemResult.getEstimatedBenefit());
       assertEquals(Boolean.FALSE, itemResult.getIsPaymentFile());
       assertFalse(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
       
-      List<String> errorMessages = itemResult.getErrorMessages();
-      assertNotNull(errorMessages);
-      logErrorMessages(errorMessages);
-      assertEquals(0, errorMessages.size());
       
       programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
@@ -898,7 +968,7 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
     try {
       List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
-      ScenarioMetaData latestCraScenario = ScenarioUtils.findLatestScenarioByType(programYearMetadataList, programYear, ScenarioTypeCodes.CRA);
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
       
       // Delete TRIAGE and Final scenarios if left over from a previous test run
       TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
@@ -909,9 +979,9 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
         BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
         item.setParticipantPin(participantPin);
         item.setProgramYear(programYear);
-        item.setCraProgramYearVersionId(latestCraScenario.getProgramYearVersionId());
-        item.setCraScenarioId(latestCraScenario.getScenarioId());
-        item.setCraScenarioNumber(latestCraScenario.getScenarioNumber());
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
         triageItems.add(item);
       }
       
@@ -927,17 +997,31 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       
       BenefitTriageItemResult itemResult = triageItemResults.get(0);
       assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_REFERENCE_MARGIN_FAILED_AT_LOW_END,
+          MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED,
+          MESSAGE_FAIL_COMBINED_FARM
+      }), failMessages);
+      
       assertEquals(participantPin, itemResult.getParticipantPin());
       assertEquals(programYear, itemResult.getProgramYear());
       assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
       assertNotNull(itemResult.getEstimatedBenefit());
       assertEquals(Boolean.FALSE, itemResult.getIsPaymentFile());
       assertFalse(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
       
-      List<String> errorMessages = itemResult.getErrorMessages();
-      assertNotNull(errorMessages);
-      logErrorMessages(errorMessages);
-      assertEquals(0, errorMessages.size());
       
       programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       

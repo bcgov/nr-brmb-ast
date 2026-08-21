@@ -3,8 +3,9 @@ package ca.bc.gov.srm.farm.chefs.resource.supplemental;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.bc.gov.srm.farm.chefs.resource.common.CustomFeedGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.CattleGrid;
+import ca.bc.gov.srm.farm.chefs.resource.common.CropGrid;
+import ca.bc.gov.srm.farm.chefs.resource.common.CustomFeedGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.GrainGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.InputGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.LivestockGrid;
@@ -12,10 +13,9 @@ import ca.bc.gov.srm.farm.chefs.resource.common.NurseryGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.OtherPucGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.PayableGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.ReceivablesGrid;
-import ca.bc.gov.srm.farm.chefs.resource.common.CropGrid;
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 
-public class SupplementalBaseDataResource extends ChefsSubmissionDataResource {
+public abstract class SupplementalBaseDataResource extends ChefsSubmissionDataResource {
 
   private List<ReceivablesGrid> receivablesGrid = new ArrayList<>();
   private List<PayableGrid> expensesGrid = new ArrayList<>();

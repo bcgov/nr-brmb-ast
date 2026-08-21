@@ -271,7 +271,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -291,7 +291,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
     assertEquals(
-        formUserType + " Notice of Loss form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
+        getFormUserType() + " Notice of Loss form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
             + "- PIN not found in BCFARMS.\n" + "\n"
             + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n"
             + "Participant Type: individual\n" + "SIN Number: 123456789\n" + "Primary Farming Activity: Other: Giants",
@@ -382,7 +382,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -401,7 +401,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2023 NOL 4302394", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Notice of Loss form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
+    assertEquals(getFormUserType() + " Notice of Loss form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
         + "\n" + "Participant Name: Targaryen Kingdom\n"
         + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n" + "Participant Type: corporation\n"
         + "Business Number: 123456789RC0001\n" + "Primary Farming Activity: Other: Giants", task.getDescription());
@@ -490,7 +490,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -509,7 +509,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2023 NOL 3693470", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Notice of Loss form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Notice of Loss form was submitted but has validation errors:\n" + "\n"
         + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n"
         + "Participant Name: Jon Snow\n"
         + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n" + "Participant Type: individual\n"
@@ -601,7 +601,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -620,7 +620,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2023 NOL 5070370", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Notice of Loss form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Notice of Loss form was submitted but has validation errors:\n" + "\n"
         + "- Field \"Business Number\" with value \"123456789RC0001\" does not match BCFARMS: \"999999999RC0001\"."
         + " Note that only the first nine digits are compared.\n" + "\n"
         + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n"
@@ -713,7 +713,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -732,7 +732,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2023 NOL 22503767", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Notice of Loss form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Notice of Loss form was submitted but has validation errors:\n" + "\n"
         + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n" + "\n"
         + "Participant Name: Targaryen Kingdom\n"
         + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n" + "Participant Type: corporation\n"
@@ -838,7 +838,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -922,7 +922,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     String newCategoryCode = ScenarioCategoryCodes.NOL;
     String benefitTriageResultType = null;
     try {
-      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, formUserType,
+      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, getFormUserType(),
           ChefsFormTypeCodes.NOL, benefitTriageResultType, user);
     } catch (ServiceException e) {
       e.printStackTrace();
@@ -1132,7 +1132,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -1152,7 +1152,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
 //  assertEquals(Integer.valueOf(CrmConstants.TASK_STATUS_CODE_NOT_STARTED), task.getStatusCode());
-    assertEquals(formUserType + " Notice of Loss form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Notice of Loss form was submitted but has validation errors:\n" + "\n"
         + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n"
         + "Participant Name: Jon Snow\n"
         + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n" + "Participant Type: individual\n"
@@ -1338,7 +1338,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("TEST");
 
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -1437,7 +1437,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment(null);
 
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -1859,7 +1859,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(duplicateSubmissionGuid);
     // Process the submission data
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -1913,7 +1913,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
 
     try {
 
-      NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+      NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.loadSubmissionsFromChefs();
       processor.loadSubmissionsFromDatabase();
@@ -1973,7 +1973,7 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, formUserType);
+    NolSubmissionProcessor processor = new NolSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 

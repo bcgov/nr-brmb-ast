@@ -12,6 +12,8 @@ package ca.bc.gov.srm.farm.chefs.resource.submission;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
 
 /**
@@ -38,7 +40,6 @@ public class ChefsSubmissionDataResource extends ChefsResource {
   private String formVersionId;
   
   private Integer parsedProgramYear;
-  private Integer parsedParticipantPin;
   
   
   public String getEnvironment() {
@@ -161,12 +162,14 @@ public class ChefsSubmissionDataResource extends ChefsResource {
     this.parsedProgramYear = parsedProgramYear;
   }
 
-  public Integer getParsedParticipantPin() {
-    return parsedParticipantPin;
+  @JsonIgnore
+  public Integer getParticipantPin() {
+    return null;
   }
 
-  public void setParsedParticipantPin(Integer parsedParticipantPin) {
-    this.parsedParticipantPin = parsedParticipantPin;
+  @JsonIgnore
+  public Integer getYear() {
+    return null;
   }
 
 }

@@ -25,6 +25,7 @@ import ca.bc.gov.srm.farm.domain.FarmingOperationPartner;
 import ca.bc.gov.srm.farm.domain.FarmingYear;
 import ca.bc.gov.srm.farm.domain.NewParticipant;
 import ca.bc.gov.srm.farm.domain.Scenario;
+import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
 import ca.bc.gov.srm.farm.domain.reasonability.ReasonabilityTestResults;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.ui.domain.CalculatorInboxItem;
@@ -555,5 +556,7 @@ public interface CalculatorService {
   boolean isAssignedToCurrentUser(Scenario scenario);
 
   void updateScenarioChefsSubmissionId(Integer scenarioId, Integer chefsSubmissionId, String user) throws ServiceException;
+
+  List<ScenarioMetaData> getScenarioMetadata(Integer participantPin, Integer programYear) throws ServiceException;
 
 }

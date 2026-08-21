@@ -164,6 +164,13 @@ public class CrmConfigurationUtil {
         .replace("{accountid}", accountId.toString());
     return result;
   }
+  
+  public String getEnrolmentUpdateUrl(String accountId) {
+    String endpointUrl = getUrl(ENROLMENT_ENDPOINT);
+    
+    String result = endpointUrl + "(" + accountId + ")";
+    return result;
+  }
 
   private String getUrl(String endpointPath) {
     return getAPIUrl() + endpointPath;

@@ -2,7 +2,9 @@ package ca.bc.gov.srm.farm.chefs.resource.preflight;
 
 import java.util.List;
 
-public class PreflightFormResource {
+import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
+
+public class PreflightFormResource extends ChefsResource {
 
   private String id;
   private String name;

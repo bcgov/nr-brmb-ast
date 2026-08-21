@@ -33,7 +33,7 @@ public interface AdjustmentService {
   String ACTION_UPDATE = "UPDATE";
   String ACTION_DELETE = "DELETE";
   
-  String AUTO_ADJUST_USER = "SYSTEM";
+  String AUTO_ADJUST_USER = "ADJUSTMENT_SERVICE";
 
   /**
    * @param scenario Scenario

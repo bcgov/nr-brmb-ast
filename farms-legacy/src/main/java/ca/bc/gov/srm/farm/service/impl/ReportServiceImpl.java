@@ -533,9 +533,9 @@ final class ReportServiceImpl extends BaseService implements ReportService {
     File csvFile = File.createTempFile(reportTempFilePrefix, CSV_FILE_SUFFIX, tempDir);
     
     try (Transaction transaction = openTransaction()) {
-      dao.surveillanceStrategy(transaction, reportType, year, headerLines, columnHeadings, columnFormats, csvFile);    
+      dao.surveillanceStrategy(transaction, reportType, year, headerLines, columnHeadings, columnFormats, csvFile);
     }
-
+    
     File finalCsv = new File(tempDir, outputFile);
     if(finalCsv.exists()) {
       finalCsv.delete();

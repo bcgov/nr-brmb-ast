@@ -12,6 +12,8 @@ package ca.bc.gov.srm.farm.chefs.resource.nol;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 
 /**
@@ -393,5 +395,16 @@ public class NolSubmissionDataResource extends ChefsSubmissionDataResource {
 
   public void setExtentOfDamage2(String extentOfDamage2) {
     this.extentOfDamage2 = extentOfDamage2;
+  }
+
+  @Override
+  public Integer getParticipantPin() {
+    return agriStabilityPin;
+  }
+
+  @Override
+  @JsonIgnore
+  public Integer getYear() {
+    return getProgramYear();
   }
 }

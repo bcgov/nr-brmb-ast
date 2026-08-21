@@ -249,7 +249,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     ag.setPreviousAmount(120.00);
     data.setAdjustmentGrid(Collections.singletonList(ag));
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -267,7 +267,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2022 Adjustment 12316589", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Adjustment form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
+    assertEquals(getFormUserType() + " Adjustment form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
         + "- PIN not found in BCFARMS.\n" + "\n" + "Participant Name: Jon Snow\n",
         task.getDescription());
 
@@ -353,7 +353,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     ag.setPreviousAmount(120.00);
     data.setAdjustmentGrid(Collections.singletonList(ag));
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -371,7 +371,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2022 Adjustment 364783140", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Adjustment form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Adjustment form was submitted but has validation errors:\n" + "\n"
         + "- PIN not found in CRM.\n"
         + "- PIN not found in BCFARMS.\n"
         +"\n"
@@ -453,7 +453,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     yearsToAdjust.put("2022", true);
     data.setYearsToAdjust(yearsToAdjust);
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -471,7 +471,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2022 Adjustment 3693470", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Adjustment form was submitted but has validation errors:\n\n"
+    assertEquals(getFormUserType() + " Adjustment form was submitted but has validation errors:\n\n"
         + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n\n"
         + "Participant Name: Jon Snow\n", task.getDescription());
 
@@ -522,7 +522,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     yearsToAdjust.put("2022", true);
     data.setYearsToAdjust(yearsToAdjust);
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -540,7 +540,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2022 Adjustment 5070370", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Adjustment form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Adjustment form was submitted but has validation errors:\n" + "\n"
         + "- Field \"Business Number\" with value \"123456789RC0001\" does not match BCFARMS: \"999999999RC0001\"."
         + " Note that only the first nine digits are compared.\n\n"
         + "Participant Name: Targaryen Kingdom\n", task.getDescription());
@@ -593,7 +593,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     yearsToAdjust.put("2021", true);
     data.setYearsToAdjust(yearsToAdjust);
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -611,7 +611,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2021 Adjustment 22503767", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Adjustment form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Adjustment form was submitted but has validation errors:\n" + "\n"
         + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n"
         + "- The following years were selected for reprocessing but do not have a Verified Final scenario: 2019\n" + "\n"
         + "Participant Name: Targaryen Kingdom\n", task.getDescription());
@@ -641,7 +641,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -660,7 +660,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " Adjustment 22503767", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Adjustment form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Adjustment form was submitted but has validation errors:\n" + "\n"
         + "- Required field is blank: Program Year\n" + "\n"
         + "Participant Name: Targaryen Kingdom\n", task.getDescription());
   }
@@ -698,7 +698,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     yearsToAdjust.put("2022", true);
     data.setYearsToAdjust(yearsToAdjust);
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -716,7 +716,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2022 Adjustment 98765689", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Adjustment form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Adjustment form was submitted but has validation errors:\n" + "\n"
         + "- The following years were selected for reprocessing but do not have a Verified Final scenario: 2017,2018,2019,2020,2021,2022\n" + "\n"
         + "Participant Name: Targaryen Kingdom\n", task.getDescription());
   }
@@ -780,7 +780,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     yearsToAdjust.put("2024", true);
     data.setYearsToAdjust(yearsToAdjust);
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
     CrmTaskResource task = null;
@@ -851,7 +851,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     String newCategoryCode = ScenarioCategoryCodes.PRODUCER_ADJUSTMENT;
     String benefitTriageResultType = null;
     try {
-      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, formUserType, ChefsFormTypeCodes.ADJ, benefitTriageResultType, user);
+      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, getFormUserType(), ChefsFormTypeCodes.ADJ, benefitTriageResultType, user);
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected Exception");
@@ -941,7 +941,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     yearsToAdjust.put("2024", true);
     data.setYearsToAdjust(yearsToAdjust);
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
     CrmTaskResource task = null;
@@ -1013,7 +1013,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
       String newCategoryCode = ScenarioCategoryCodes.PRODUCER_ADJUSTMENT;
       String benefitTriageResultType = null;
       try {
-        calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, formUserType,
+        calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, getFormUserType(),
             ChefsFormTypeCodes.ADJ, benefitTriageResultType, user);
       } catch (ServiceException e) {
         e.printStackTrace();
@@ -1095,7 +1095,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     yearsToAdjust.put("2024", true);
     data.setYearsToAdjust(yearsToAdjust);
 
-    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, formUserType);
+    AdjustmentSubmissionProcessor processor = new AdjustmentSubmissionProcessor(conn, getFormUserType());
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -1113,7 +1113,7 @@ public class ChefsAdjustmentSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2024 Adjustment " + participantPin, validationTask.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-    assertEquals(formUserType + " Adjustment form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Adjustment form was submitted but has validation errors:\n" + "\n"
         + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"641256987\".\n" + "\n" + "Participant Name: Jon Snow\n", validationTask.getDescription());
 
     ChefsSubmission submissionRec = null;

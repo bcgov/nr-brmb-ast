@@ -1,5 +1,19 @@
 <%@ include file="/WEB-INF/jsp/common/include.jsp" %>
 <%@ include file="/WEB-INF/jsp/common/datatable.jsp" %>
+<script type="text/javascript">
+  //<![CDATA[
+  
+  
+  function viewPin(pin, programYear, scenarioNumber) {
+    window.open('<html:rewrite action="farm800"/>?pin=' + pin
+        + '&year=' + programYear
+        + (scenarioNumber ? '&scenarioNumber=' + scenarioNumber : '')
+        + '&refresh=true',
+        '_blank');
+  }
+
+  //]]>
+</script>
 
 <h1><fmt:message key="Chefs.title"/></h1>
 
@@ -11,6 +25,21 @@
   
   <table>
 		<tr><td>Submission Guid:</td><td><a href="<c:out value="${form.submissionUrl}"/>" target="_blank"><c:out value="${form.submissionGuid}"/></a></td></tr>
+		<tr>
+      <td>PIN:</td>
+      <td>
+        <c:choose>
+          <c:when test="${not empty form.participantPin and not empty form.programYear and form.pinExists}">
+            <a href="#" onclick="viewPin(<c:out value="${form.participantPin}"/>, <c:out value="${form.programYear}"/>, <c:out value="${form.scenarioNumber}"/>)">
+              <c:out value="${form.participantPin}"/>
+            </a>
+          </c:when>
+          <c:otherwise>
+            <c:out value="${form.participantPin}"/>
+          </c:otherwise>
+        </c:choose>
+      </td>
+    </tr>
 		<tr><td>User Form Type:</td><td><c:out value="${form.userFormType}"/></td></tr>
 		<tr><td>Form Type Description:</td><td><c:out value="${form.submission.formTypeDescription}"/></td></tr>
 		<tr><td>Submission Id:</td><td><c:out value="${form.submission.submissionId}"/></td></tr>
@@ -51,7 +80,7 @@
 
 <div style="margin-top:20px; font-weight:bold;">
 <c:if test="${form.resourceJson == null}">
-<div>Submission form not found.</div>
+<div>Form submission not found.</div>
 </c:if>
 <c:if test="${form.submission.bceidFormInd == null}">
 <div>BCeID Form Type is not set.</div>

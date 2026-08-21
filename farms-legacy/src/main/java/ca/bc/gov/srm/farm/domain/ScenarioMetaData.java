@@ -19,6 +19,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
+
 /**
  * This class will replace PinMetadataRead which was
  * a Data Transfer Object (DTO) used to transfer data outside of the system to
@@ -423,6 +425,11 @@ public class ScenarioMetaData implements Serializable {
     List<String> categoryList = Arrays.asList(categories);
     boolean result = categoryList.contains(getScenarioCategoryCode());
     return result;
+  }
+  
+  @JsonIgnore
+  public boolean isBaseData() {
+    return ScenarioTypeCodes.isBaseData(getScenarioTypeCode());
   }
   
   /**

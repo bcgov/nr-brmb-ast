@@ -298,7 +298,7 @@ final class SubscriptionServiceImpl extends BaseService
       }
 
     } catch (Exception e) {
-      throw new ServiceException(e);
+    	throw new ServiceException(e);
     }
 
     return numActivated;

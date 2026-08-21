@@ -10,10 +10,12 @@
  */
 package ca.bc.gov.srm.farm.benefit.triage;
 
+import static ca.bc.gov.srm.farm.service.BenefitTriageService.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -61,31 +63,32 @@ public class BenefitTriagePaymentTest extends AbstractBenefitTriageTest {
     logger.debug("triagePaymentThreshold: " + triagePaymentThreshold);
     
   }
-
-
+  
+  
   @Test
-  public void paymentPassBenefitTestPassed() {
-
-    Integer participantPin = 23370778;
+  public void paymentPass() {
+    
+    Integer participantPin = 3784295;
     Integer programYear = 2022;
-
+    
     try {
       List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
       
-      ScenarioMetaData latestCraScenario = ScenarioUtils.findLatestScenarioByType(programYearMetadataList, programYear, ScenarioTypeCodes.CRA);
-  
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
+      
       // Delete TRIAGE and Final scenarios if left over from a previous test run
       TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
       TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
+      TestUtils.deleteScenarios(participantPin, programYear, ScenarioCategoryCodes.COMPARISON_SCENARIO, ScenarioTypeCodes.USER, conn);
       
       List<BenefitTriageCalculationItem> triageItems = new ArrayList<>();
       {
         BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
         item.setParticipantPin(participantPin);
         item.setProgramYear(programYear);
-        item.setCraProgramYearVersionId(latestCraScenario.getProgramYearVersionId());
-        item.setCraScenarioId(latestCraScenario.getScenarioId());
-        item.setCraScenarioNumber(latestCraScenario.getScenarioNumber());
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
         triageItems.add(item);
       }
       
@@ -101,21 +104,30 @@ public class BenefitTriagePaymentTest extends AbstractBenefitTriageTest {
       
       BenefitTriageItemResult itemResult = triageItemResults.get(0);
       assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), failMessages);
+      
       assertEquals(participantPin, itemResult.getParticipantPin());
       assertEquals(programYear, itemResult.getProgramYear());
       assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
       assertNotNull(itemResult.getEstimatedBenefit());
-      assertEquals(Boolean.FALSE, itemResult.getIsPaymentFile());
-      assertTrue(itemResult.isZeroPass());
-      // TODO Check fail messages
-      
-      List<String> errorMessages = itemResult.getErrorMessages();
-      assertNotNull(errorMessages);
-      logErrorMessages(errorMessages);
-      assertEquals(0, errorMessages.size());
+      assertEquals(Boolean.TRUE, itemResult.getIsPaymentFile());
+      assertFalse(itemResult.isZeroPass());
+      assertTrue(itemResult.isPaymentPass());
       
       programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
-  
+      
       List<ScenarioMetaData> triageScenarios =
           ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.TRIAGE, ScenarioTypeCodes.TRIAGE);
       assertNotNull(triageScenarios);
@@ -131,7 +143,7 @@ public class BenefitTriagePaymentTest extends AbstractBenefitTriageTest {
         e.printStackTrace();
         fail("Unexpected Exception");
       }
-  
+      
       assertNotNull(triageScenario);
       assertNotNull(triageScenario.getClient());
       assertEquals(participantPin, triageScenario.getClient().getParticipantPin());
@@ -143,19 +155,29 @@ public class BenefitTriagePaymentTest extends AbstractBenefitTriageTest {
       assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getExpenseStructuralChangeMethodCode());
       assertNotNull(triageScenario.getBenefit());
       assertNotNull(triageScenario.getBenefit().getTotalBenefit());
-      assertEquals(0.0, triageScenario.getBenefit().getTotalBenefit());
+      assertTrue(triageScenario.getBenefit().getTotalBenefit() > 0);
+      assertTrue(triageScenario.getBenefit().getTotalBenefit() <= 5000);
+      assertEquals(5, triageScenario.getReferenceScenarios().size());
       
       ReasonabilityTestResults triageTestResults = triageScenario.getReasonabilityTestResults();
       assertNotNull(triageTestResults);
       assertNotNull(triageTestResults.getMarginTest());
       Boolean triageReferenceMarginTestPassed = triageTestResults.getMarginTest().getWithinLimitOfReferenceMargin();
-      assertEquals(Boolean.TRUE, triageReferenceMarginTestPassed);
+      assertEquals(Boolean.FALSE, triageReferenceMarginTestPassed);
       
       assertNotNull(triageTestResults.getStructuralChangeTest());
       Boolean triageStructuralChangeTestPassed = triageTestResults.getStructuralChangeTest().getResult();
       assertEquals(Boolean.TRUE, triageStructuralChangeTestPassed);
-  
-  
+      Boolean triageSCAdditiveDivisionTestPassed = triageTestResults.getStructuralChangeTest().getWithinAdditiveDivisionLimit();
+      assertEquals(Boolean.TRUE, triageSCAdditiveDivisionTestPassed);
+      
+      Boolean benefitRiskTestPassed = triageTestResults.getBenefitRisk().getResult();
+      assertEquals(Boolean.FALSE, benefitRiskTestPassed);
+      Double benefitRiskVariance = triageTestResults.getBenefitRisk().getVariance();
+      assertNotNull(benefitRiskVariance);
+      assertEquals(Boolean.TRUE, benefitRiskVariance < 0);
+      
+      
       // ------------ Verified Final ----------------------------------------------------------------
       List<ScenarioMetaData> verifiedFinalScenarios =
           ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.FINAL, ScenarioTypeCodes.USER);
@@ -184,7 +206,7 @@ public class BenefitTriagePaymentTest extends AbstractBenefitTriageTest {
       assertEquals(StructuralChangeCodes.RATIO, verifiedFinalScenario.getBenefit().getExpenseStructuralChangeMethodCode());
       assertNotNull(verifiedFinalScenario.getBenefit());
       assertNotNull(verifiedFinalScenario.getBenefit().getTotalBenefit());
-      assertEquals(0.0, verifiedFinalScenario.getBenefit().getTotalBenefit());
+      assertEquals(4166.0, verifiedFinalScenario.getBenefit().getTotalBenefit());
       
       ReasonabilityTestResults verifiedTestResults = verifiedFinalScenario.getReasonabilityTestResults();
       assertNotNull(verifiedTestResults);
@@ -217,6 +239,653 @@ public class BenefitTriagePaymentTest extends AbstractBenefitTriageTest {
       assertEquals(pyMinus3TriageProductionMargAftStrChangs, pyMinus3VerifiedProductionMargAftStrChangs);
       assertEquals(pyMinus4TriageProductionMargAftStrChangs, pyMinus4VerifiedProductionMargAftStrChangs);
       assertEquals(pyMinus5TriageProductionMargAftStrChangs, pyMinus5VerifiedProductionMargAftStrChangs);
+      
+    } finally {
+      
+      TestUtils.runQueuedImports(conn, 2);
+    }
+  }
+  
+  
+  @Test
+  public void paymentFailMissingIncomeAndExpenses() {
+    
+    Integer participantPin = 699688128;
+    Integer programYear = 2024;
+    
+    try {
+      List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
+      
+      // Delete TRIAGE and Final scenarios if left over from a previous test run
+      TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
+      TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
+      
+      List<BenefitTriageCalculationItem> triageItems = new ArrayList<>();
+      {
+        BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
+        item.setParticipantPin(participantPin);
+        item.setProgramYear(programYear);
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
+        triageItems.add(item);
+      }
+      
+      List<BenefitTriageItemResult> triageItemResults = new ArrayList<>();
+      try {
+        benefitTriageService.calculateTriageBenefits(conn, triageItems, triageItemResults, null, null, user);
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(triageItemResults);
+      assertEquals(1, triageItemResults.size());
+      
+      BenefitTriageItemResult itemResult = triageItemResults.get(0);
+      assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED,
+          MESSAGE_FAIL_MISSING_INCOME,
+          MESSAGE_FAIL_MISSING_EXPENSES,
+          MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED,
+          MESSAGE_FAIL_ACCOUNTING_METHOD_CHANGED
+      }), failMessages);
+      
+      assertEquals(participantPin, itemResult.getParticipantPin());
+      assertEquals(programYear, itemResult.getProgramYear());
+      assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
+      assertNotNull(itemResult.getEstimatedBenefit());
+      assertEquals(Boolean.TRUE, itemResult.getIsPaymentFile());
+      assertFalse(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
+      
+      programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      List<ScenarioMetaData> triageScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.TRIAGE, ScenarioTypeCodes.TRIAGE);
+      assertNotNull(triageScenarios);
+      assertEquals(1, triageScenarios.size());
+      
+      ScenarioMetaData triageScenarioMetaData = triageScenarios.get(0);
+      Integer triageScenarioNumber = triageScenarioMetaData.getScenarioNumber();
+      assertNotNull(triageScenarioNumber);
+      Scenario triageScenario = null;
+      try {
+        triageScenario = calculatorService.loadScenario(participantPin, programYear, triageScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      
+      assertNotNull(triageScenario);
+      assertNotNull(triageScenario.getClient());
+      assertEquals(participantPin, triageScenario.getClient().getParticipantPin());
+      assertEquals(programYear, triageScenario.getYear());
+      assertEquals(ScenarioTypeCodes.TRIAGE, triageScenario.getScenarioTypeCode());
+      assertEquals(ScenarioCategoryCodes.TRIAGE, triageScenario.getScenarioCategoryCode());
+      assertEquals(ScenarioStateCodes.COMPLETED, triageScenario.getScenarioStateCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getStructuralChangeMethodCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getExpenseStructuralChangeMethodCode());
+      assertNotNull(triageScenario.getBenefit());
+      assertNotNull(triageScenario.getBenefit().getTotalBenefit());
+      assertEquals(1.0, triageScenario.getBenefit().getTotalBenefit());
+      assertEquals(5, triageScenario.getReferenceScenarios().size());
+      
+      ReasonabilityTestResults triageTestResults = triageScenario.getReasonabilityTestResults();
+      assertNotNull(triageTestResults);
+      assertNotNull(triageTestResults.getMarginTest());
+      Boolean triageReferenceMarginTestPassed = triageTestResults.getMarginTest().getWithinLimitOfReferenceMargin();
+      assertEquals(Boolean.FALSE, triageReferenceMarginTestPassed);
+      
+      assertNotNull(triageTestResults.getStructuralChangeTest());
+      Boolean triageStructuralChangeTestPassed = triageTestResults.getStructuralChangeTest().getResult();
+      assertEquals(Boolean.FALSE, triageStructuralChangeTestPassed);
+      Boolean triageSCAdditiveDivisionTestPassed = triageTestResults.getStructuralChangeTest().getWithinAdditiveDivisionLimit();
+      assertEquals(Boolean.FALSE, triageSCAdditiveDivisionTestPassed);
+      
+      Boolean benefitRiskTestPassed = triageTestResults.getBenefitRisk().getResult();
+      assertEquals(Boolean.TRUE, benefitRiskTestPassed);
+      Double benefitRiskVariance = triageTestResults.getBenefitRisk().getVariance();
+      assertNull(benefitRiskVariance);
+      
+      
+      // -----------------------------------------------------------------------------------------------
+      
+      // ------------ Verified Final ----------------------------------------------------------------
+      List<ScenarioMetaData> verifiedFinalScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.FINAL, ScenarioTypeCodes.USER);
+      assertNotNull(verifiedFinalScenarios);
+      assertEquals(0, verifiedFinalScenarios.size());
+      
+    } finally {
+      
+      TestUtils.runQueuedImports(conn, 2);
+    }
+  }
+  
+  
+  @Test
+  public void paymentFailCombinedFarm() {
+    
+    Integer participantPin = 98765757;
+    Integer programYear = 2024;
+    
+    try {
+      List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
+      
+      // Delete TRIAGE and Final scenarios if left over from a previous test run
+      TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
+      TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
+      
+      List<BenefitTriageCalculationItem> triageItems = new ArrayList<>();
+      {
+        BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
+        item.setParticipantPin(participantPin);
+        item.setProgramYear(programYear);
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
+        triageItems.add(item);
+      }
+      
+      List<BenefitTriageItemResult> triageItemResults = new ArrayList<>();
+      try {
+        benefitTriageService.calculateTriageBenefits(conn, triageItems, triageItemResults, null, null, user);
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(triageItemResults);
+      assertEquals(1, triageItemResults.size());
+      
+      BenefitTriageItemResult itemResult = triageItemResults.get(0);
+      assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED,
+          MESSAGE_FAIL_COMBINED_FARM,
+          MESSAGE_FAIL_PAYMENT_TOO_LARGE
+      }), failMessages);
+      
+      assertEquals(participantPin, itemResult.getParticipantPin());
+      assertEquals(programYear, itemResult.getProgramYear());
+      assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
+      assertNotNull(itemResult.getEstimatedBenefit());
+      assertEquals(Boolean.TRUE, itemResult.getIsPaymentFile());
+      assertFalse(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
+      
+      programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      List<ScenarioMetaData> triageScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.TRIAGE, ScenarioTypeCodes.TRIAGE);
+      assertNotNull(triageScenarios);
+      assertEquals(1, triageScenarios.size());
+      
+      ScenarioMetaData triageScenarioMetaData = triageScenarios.get(0);
+      Integer triageScenarioNumber = triageScenarioMetaData.getScenarioNumber();
+      assertNotNull(triageScenarioNumber);
+      Scenario triageScenario = null;
+      try {
+        triageScenario = calculatorService.loadScenario(participantPin, programYear, triageScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      
+      assertNotNull(triageScenario);
+      assertNotNull(triageScenario.getClient());
+      assertEquals(participantPin, triageScenario.getClient().getParticipantPin());
+      assertEquals(programYear, triageScenario.getYear());
+      assertEquals(ScenarioTypeCodes.TRIAGE, triageScenario.getScenarioTypeCode());
+      assertEquals(ScenarioCategoryCodes.TRIAGE, triageScenario.getScenarioCategoryCode());
+      assertEquals(ScenarioStateCodes.COMPLETED, triageScenario.getScenarioStateCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getStructuralChangeMethodCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getExpenseStructuralChangeMethodCode());
+      assertNotNull(triageScenario.getBenefit());
+      assertNotNull(triageScenario.getBenefit().getTotalBenefit());
+      assertTrue(triageScenario.getBenefit().getTotalBenefit() > 5000);
+      assertEquals(5, triageScenario.getReferenceScenarios().size());
+      
+      ReasonabilityTestResults triageTestResults = triageScenario.getReasonabilityTestResults();
+      assertNotNull(triageTestResults);
+      assertNotNull(triageTestResults.getMarginTest());
+      Boolean triageReferenceMarginTestPassed = triageTestResults.getMarginTest().getWithinLimitOfReferenceMargin();
+      assertEquals(Boolean.FALSE, triageReferenceMarginTestPassed);
+      
+      assertNotNull(triageTestResults.getStructuralChangeTest());
+      Boolean triageStructuralChangeTestPassed = triageTestResults.getStructuralChangeTest().getResult();
+      assertEquals(Boolean.TRUE, triageStructuralChangeTestPassed);
+      Boolean triageSCAdditiveDivisionTestPassed = triageTestResults.getStructuralChangeTest().getWithinAdditiveDivisionLimit();
+      assertEquals(Boolean.TRUE, triageSCAdditiveDivisionTestPassed);
+      
+      Boolean benefitRiskTestPassed = triageTestResults.getBenefitRisk().getResult();
+      assertEquals(Boolean.TRUE, benefitRiskTestPassed);
+      Double benefitRiskVariance = triageTestResults.getBenefitRisk().getVariance();
+      assertNull(benefitRiskVariance);
+      
+      
+      // -----------------------------------------------------------------------------------------------
+      
+      // ------------ Verified Final ----------------------------------------------------------------
+      List<ScenarioMetaData> verifiedFinalScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.FINAL, ScenarioTypeCodes.USER);
+      assertNotNull(verifiedFinalScenarios);
+      assertEquals(0, verifiedFinalScenarios.size());
+      
+    } finally {
+      
+      TestUtils.runQueuedImports(conn, 2);
+    }
+  }
+  
+  
+  @Test
+  public void paymentFailAccountingMethodChanged() {
+    
+    Integer participantPin = 23303530;
+    Integer programYear = 2022;
+    
+    try {
+      List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
+      
+      // Delete TRIAGE and Final scenarios if left over from a previous test run
+      TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
+      TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
+      
+      List<BenefitTriageCalculationItem> triageItems = new ArrayList<>();
+      {
+        BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
+        item.setParticipantPin(participantPin);
+        item.setProgramYear(programYear);
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
+        triageItems.add(item);
+      }
+      
+      List<BenefitTriageItemResult> triageItemResults = new ArrayList<>();
+      try {
+        benefitTriageService.calculateTriageBenefits(conn, triageItems, triageItemResults, null, null, user);
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(triageItemResults);
+      assertEquals(1, triageItemResults.size());
+      
+      BenefitTriageItemResult itemResult = triageItemResults.get(0);
+      assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED,
+          MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED,
+          MESSAGE_FAIL_ACCOUNTING_METHOD_CHANGED,
+          MESSAGE_FAIL_BENEFIT_RISK_FAILED_AT_HIGH_END,
+          MESSAGE_FAIL_PAYMENT_TOO_LARGE
+      }), failMessages);
+      
+      assertEquals(participantPin, itemResult.getParticipantPin());
+      assertEquals(programYear, itemResult.getProgramYear());
+      assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
+      assertNotNull(itemResult.getEstimatedBenefit());
+      assertEquals(Boolean.TRUE, itemResult.getIsPaymentFile());
+      assertFalse(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
+      
+      programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      List<ScenarioMetaData> triageScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.TRIAGE, ScenarioTypeCodes.TRIAGE);
+      assertNotNull(triageScenarios);
+      assertEquals(1, triageScenarios.size());
+      
+      ScenarioMetaData triageScenarioMetaData = triageScenarios.get(0);
+      Integer triageScenarioNumber = triageScenarioMetaData.getScenarioNumber();
+      assertNotNull(triageScenarioNumber);
+      Scenario triageScenario = null;
+      try {
+        triageScenario = calculatorService.loadScenario(participantPin, programYear, triageScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      
+      assertNotNull(triageScenario);
+      assertNotNull(triageScenario.getClient());
+      assertEquals(participantPin, triageScenario.getClient().getParticipantPin());
+      assertEquals(programYear, triageScenario.getYear());
+      assertEquals(ScenarioTypeCodes.TRIAGE, triageScenario.getScenarioTypeCode());
+      assertEquals(ScenarioCategoryCodes.TRIAGE, triageScenario.getScenarioCategoryCode());
+      assertEquals(ScenarioStateCodes.COMPLETED, triageScenario.getScenarioStateCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getStructuralChangeMethodCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getExpenseStructuralChangeMethodCode());
+      assertNotNull(triageScenario.getBenefit());
+      assertNotNull(triageScenario.getBenefit().getTotalBenefit());
+      assertTrue(triageScenario.getBenefit().getTotalBenefit() > 5000);
+      assertEquals(5, triageScenario.getReferenceScenarios().size());
+      
+      ReasonabilityTestResults triageTestResults = triageScenario.getReasonabilityTestResults();
+      assertNotNull(triageTestResults);
+      assertNotNull(triageTestResults.getMarginTest());
+      Boolean triageReferenceMarginTestPassed = triageTestResults.getMarginTest().getWithinLimitOfReferenceMargin();
+      assertEquals(Boolean.FALSE, triageReferenceMarginTestPassed);
+      
+      assertNotNull(triageTestResults.getStructuralChangeTest());
+      Boolean triageStructuralChangeTestPassed = triageTestResults.getStructuralChangeTest().getResult();
+      assertEquals(Boolean.FALSE, triageStructuralChangeTestPassed);
+      Boolean triageSCAdditiveDivisionTestPassed = triageTestResults.getStructuralChangeTest().getWithinAdditiveDivisionLimit();
+      assertEquals(Boolean.FALSE, triageSCAdditiveDivisionTestPassed);
+      
+      Boolean benefitRiskTestPassed = triageTestResults.getBenefitRisk().getResult();
+      assertEquals(Boolean.FALSE, benefitRiskTestPassed);
+      Double benefitRiskVariance = triageTestResults.getBenefitRisk().getVariance();
+      assertNotNull(benefitRiskVariance);
+      assertEquals(Boolean.TRUE, benefitRiskVariance > 0);
+      
+      
+      // -----------------------------------------------------------------------------------------------
+      
+      // ------------ Verified Final ----------------------------------------------------------------
+      List<ScenarioMetaData> verifiedFinalScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.FINAL, ScenarioTypeCodes.USER);
+      assertNotNull(verifiedFinalScenarios);
+      assertEquals(0, verifiedFinalScenarios.size());
+      
+    } finally {
+      
+      TestUtils.runQueuedImports(conn, 2);
+    }
+  }
+  
+  
+  @Test
+  public void paymentFailMunicipalityChanged() {
+    
+    Integer participantPin = 3227063;
+    Integer programYear = 2022;
+    
+    try {
+      List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
+      
+      // Delete TRIAGE and Final scenarios if left over from a previous test run
+      TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
+      TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
+      TestUtils.deleteScenarios(participantPin, programYear, ScenarioCategoryCodes.COMPARISON_SCENARIO, ScenarioTypeCodes.USER, conn);
+      
+      List<BenefitTriageCalculationItem> triageItems = new ArrayList<>();
+      {
+        BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
+        item.setParticipantPin(participantPin);
+        item.setProgramYear(programYear);
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
+        triageItems.add(item);
+      }
+      
+      List<BenefitTriageItemResult> triageItemResults = new ArrayList<>();
+      try {
+        benefitTriageService.calculateTriageBenefits(conn, triageItems, triageItemResults, null, null, user);
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(triageItemResults);
+      assertEquals(1, triageItemResults.size());
+      
+      BenefitTriageItemResult itemResult = triageItemResults.get(0);
+      assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_MUNICIPALITY_CHANGED
+      }), failMessages);
+      
+      assertEquals(participantPin, itemResult.getParticipantPin());
+      assertEquals(programYear, itemResult.getProgramYear());
+      assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
+      assertNotNull(itemResult.getEstimatedBenefit());
+      assertEquals(Boolean.TRUE, itemResult.getIsPaymentFile());
+      assertFalse(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
+      
+      programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      List<ScenarioMetaData> triageScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.TRIAGE, ScenarioTypeCodes.TRIAGE);
+      assertNotNull(triageScenarios);
+      assertEquals(1, triageScenarios.size());
+      
+      ScenarioMetaData triageScenarioMetaData = triageScenarios.get(0);
+      Integer triageScenarioNumber = triageScenarioMetaData.getScenarioNumber();
+      assertNotNull(triageScenarioNumber);
+      Scenario triageScenario = null;
+      try {
+        triageScenario = calculatorService.loadScenario(participantPin, programYear, triageScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      
+      assertNotNull(triageScenario);
+      assertNotNull(triageScenario.getClient());
+      assertEquals(participantPin, triageScenario.getClient().getParticipantPin());
+      assertEquals(programYear, triageScenario.getYear());
+      assertEquals(ScenarioTypeCodes.TRIAGE, triageScenario.getScenarioTypeCode());
+      assertEquals(ScenarioCategoryCodes.TRIAGE, triageScenario.getScenarioCategoryCode());
+      assertEquals(ScenarioStateCodes.COMPLETED, triageScenario.getScenarioStateCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getStructuralChangeMethodCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getExpenseStructuralChangeMethodCode());
+      assertNotNull(triageScenario.getBenefit());
+      assertNotNull(triageScenario.getBenefit().getTotalBenefit());
+      assertTrue(triageScenario.getBenefit().getTotalBenefit() > 0);
+      assertTrue(triageScenario.getBenefit().getTotalBenefit() <= 5000);
+      assertEquals(5, triageScenario.getReferenceScenarios().size());
+      
+      ReasonabilityTestResults triageTestResults = triageScenario.getReasonabilityTestResults();
+      assertNotNull(triageTestResults);
+      assertNotNull(triageTestResults.getMarginTest());
+      Boolean triageReferenceMarginTestPassed = triageTestResults.getMarginTest().getWithinLimitOfReferenceMargin();
+      assertEquals(Boolean.FALSE, triageReferenceMarginTestPassed);
+      
+      assertNotNull(triageTestResults.getStructuralChangeTest());
+      Boolean triageStructuralChangeTestPassed = triageTestResults.getStructuralChangeTest().getResult();
+      assertEquals(Boolean.TRUE, triageStructuralChangeTestPassed);
+      Boolean triageSCAdditiveDivisionTestPassed = triageTestResults.getStructuralChangeTest().getWithinAdditiveDivisionLimit();
+      assertEquals(Boolean.TRUE, triageSCAdditiveDivisionTestPassed);
+
+      Boolean benefitRiskTestPassed = triageTestResults.getBenefitRisk().getResult();
+      assertEquals(Boolean.FALSE, benefitRiskTestPassed);
+      Double benefitRiskVariance = triageTestResults.getBenefitRisk().getVariance();
+      assertNotNull(benefitRiskVariance);
+      assertEquals(Boolean.TRUE, benefitRiskVariance < 0);
+
+      
+      // -----------------------------------------------------------------------------------------------
+      
+      // ------------ Verified Final ----------------------------------------------------------------
+      List<ScenarioMetaData> verifiedFinalScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.FINAL, ScenarioTypeCodes.USER);
+      assertNotNull(verifiedFinalScenarios);
+      assertEquals(0, verifiedFinalScenarios.size());
+      
+    } finally {
+      
+      TestUtils.runQueuedImports(conn, 2);
+    }
+  }
+  
+  
+  @Test
+  public void paymentFailBenefitRisk() {
+    
+    Integer participantPin = 23475924;
+    Integer programYear = 2022;
+    
+    try {
+      List<ScenarioMetaData> programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      ScenarioMetaData latestBaseDataScenarioMetadata = ScenarioUtils.findLatestBaseDataScenario(programYearMetadataList, programYear);
+      
+      // Delete TRIAGE and Final scenarios if left over from a previous test run
+      TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
+      TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
+      TestUtils.deleteScenarios(participantPin, programYear, ScenarioCategoryCodes.COMPARISON_SCENARIO, ScenarioTypeCodes.USER, conn);
+      
+      List<BenefitTriageCalculationItem> triageItems = new ArrayList<>();
+      {
+        BenefitTriageCalculationItem item = new BenefitTriageCalculationItem();
+        item.setParticipantPin(participantPin);
+        item.setProgramYear(programYear);
+        item.setCraProgramYearVersionId(latestBaseDataScenarioMetadata.getProgramYearVersionId());
+        item.setCraScenarioId(latestBaseDataScenarioMetadata.getScenarioId());
+        item.setCraScenarioNumber(latestBaseDataScenarioMetadata.getScenarioNumber());
+        triageItems.add(item);
+      }
+      
+      List<BenefitTriageItemResult> triageItemResults = new ArrayList<>();
+      try {
+        benefitTriageService.calculateTriageBenefits(conn, triageItems, triageItemResults, null, null, user);
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(triageItemResults);
+      assertEquals(1, triageItemResults.size());
+      
+      BenefitTriageItemResult itemResult = triageItemResults.get(0);
+      assertNotNull(itemResult);
+      List<String> errorMessages = itemResult.getErrorMessages();
+      List<String> failMessages = itemResult.getFailMessages();
+      
+      assertNotNull(errorMessages);
+      assertNotNull(failMessages);
+      logErrorMessages(errorMessages);
+      logFailMessages(failMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), errorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_BENEFIT_RISK_FAILED_AT_HIGH_END
+      }), failMessages);
+      
+      assertEquals(participantPin, itemResult.getParticipantPin());
+      assertEquals(programYear, itemResult.getProgramYear());
+      assertEquals("Completed", itemResult.getScenarioStateCodeDesc());
+      assertNotNull(itemResult.getEstimatedBenefit());
+      assertEquals(Boolean.TRUE, itemResult.getIsPaymentFile());
+      assertFalse(itemResult.isZeroPass());
+      assertFalse(itemResult.isPaymentPass());
+      
+      programYearMetadataList = TestUtils.getProgramYearMetadata(participantPin, programYear, conn);
+      
+      List<ScenarioMetaData> triageScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.TRIAGE, ScenarioTypeCodes.TRIAGE);
+      assertNotNull(triageScenarios);
+      assertEquals(1, triageScenarios.size());
+      
+      ScenarioMetaData triageScenarioMetaData = triageScenarios.get(0);
+      Integer triageScenarioNumber = triageScenarioMetaData.getScenarioNumber();
+      assertNotNull(triageScenarioNumber);
+      Scenario triageScenario = null;
+      try {
+        triageScenario = calculatorService.loadScenario(participantPin, programYear, triageScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      
+      assertNotNull(triageScenario);
+      assertNotNull(triageScenario.getClient());
+      assertEquals(participantPin, triageScenario.getClient().getParticipantPin());
+      assertEquals(programYear, triageScenario.getYear());
+      assertEquals(ScenarioTypeCodes.TRIAGE, triageScenario.getScenarioTypeCode());
+      assertEquals(ScenarioCategoryCodes.TRIAGE, triageScenario.getScenarioCategoryCode());
+      assertEquals(ScenarioStateCodes.COMPLETED, triageScenario.getScenarioStateCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getStructuralChangeMethodCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getExpenseStructuralChangeMethodCode());
+      assertNotNull(triageScenario.getBenefit());
+      assertNotNull(triageScenario.getBenefit().getTotalBenefit());
+      assertTrue(triageScenario.getBenefit().getTotalBenefit() > 0);
+      assertTrue(triageScenario.getBenefit().getTotalBenefit() <= 5000);
+      assertEquals(5, triageScenario.getReferenceScenarios().size());
+      
+      ReasonabilityTestResults triageTestResults = triageScenario.getReasonabilityTestResults();
+      assertNotNull(triageTestResults);
+      assertNotNull(triageTestResults.getMarginTest());
+      Boolean triageReferenceMarginTestPassed = triageTestResults.getMarginTest().getWithinLimitOfReferenceMargin();
+      assertEquals(Boolean.FALSE, triageReferenceMarginTestPassed);
+      
+      assertNotNull(triageTestResults.getStructuralChangeTest());
+      Boolean triageStructuralChangeTestPassed = triageTestResults.getStructuralChangeTest().getResult();
+      assertEquals(Boolean.TRUE, triageStructuralChangeTestPassed);
+      Boolean triageSCAdditiveDivisionTestPassed = triageTestResults.getStructuralChangeTest().getWithinAdditiveDivisionLimit();
+      assertEquals(Boolean.TRUE, triageSCAdditiveDivisionTestPassed);
+
+      Boolean benefitRiskTestPassed = triageTestResults.getBenefitRisk().getResult();
+      assertEquals(Boolean.FALSE, benefitRiskTestPassed);
+      Double benefitRiskVariance = triageTestResults.getBenefitRisk().getVariance();
+      assertNotNull(benefitRiskVariance);
+      assertEquals(Boolean.TRUE, benefitRiskVariance > 0);
+
+      
+      // -----------------------------------------------------------------------------------------------
+      
+      // ------------ Verified Final ----------------------------------------------------------------
+      List<ScenarioMetaData> verifiedFinalScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadataList, programYear, ScenarioCategoryCodes.FINAL, ScenarioTypeCodes.USER);
+      assertNotNull(verifiedFinalScenarios);
+      assertEquals(0, verifiedFinalScenarios.size());
       
     } finally {
       

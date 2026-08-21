@@ -87,7 +87,6 @@ public class CrmEnrolmentTransferTest {
     List<EnrolmentPartner> partners = new ArrayList<>();
     {
       EnrolmentPartner partner = new EnrolmentPartner();
-      partner.setEnrolment(e);
       partner.setPartnershipName("VENTURE BROTHERS");
       partner.setPartnershipPercent(BigDecimal.valueOf(0.6));
       partner.setPartnershipPin(888888888);
@@ -95,7 +94,6 @@ public class CrmEnrolmentTransferTest {
     }
     {
       EnrolmentPartner partner = new EnrolmentPartner();
-      partner.setEnrolment(e);
       partner.setPartnershipName("VENTURE BROTHERS");
       partner.setPartnershipPercent(BigDecimal.valueOf(0.4));
       partner.setPartnershipPin(777777777);
@@ -120,6 +118,7 @@ public class CrmEnrolmentTransferTest {
     e.setIsLateParticipant(false);
     e.setIsInCombinedFarm(true);
     e.setMarginYearMinus2(800.0);
+//    e.setMarginYearMinus2(-1340909986.59); // value out of valid range for data type in the dataverse
     e.setMarginYearMinus3(900.0);
     e.setMarginYearMinus4(1000.0);
     e.setMarginYearMinus5(1100.0);

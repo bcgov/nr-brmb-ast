@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JacksonException;
-
 import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.chefs.forms.ChefsFarmTypeCodes;
 import ca.bc.gov.srm.farm.chefs.resource.common.CropGrid;
@@ -58,7 +56,6 @@ import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
-import ca.bc.gov.srm.farm.exception.TooManyRequestsException;
 import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsSubmissionProcessorService;
 import ca.bc.gov.srm.farm.service.CrmTransferService;
@@ -88,28 +85,17 @@ public class InterimSubmissionProcessor extends ChefsSubmissionProcessor<Interim
   private String validationQueueId;
 
   @Override
-  protected void processSubmission(String submissionGuid, String submissionResponseStr) {
+  protected void processSubmission(String submissionGuid, String submissionResponseStr) throws ServiceException {
     logMethodStart(logger);
 
     CrmTaskResource task = null;
     
-    try {
-      SubmissionParentResource<InterimSubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr,
-          InterimSubmissionDataResource.class);
+    SubmissionParentResource<InterimSubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr,
+        InterimSubmissionDataResource.class);
 
-      if (!submissionMetaData.getDraft()) {
-        task = processSubmission(submissionMetaData);
-      }
-      
-    } catch (ServiceException e) {
-      if(e.getCause() instanceof TooManyRequestsException) {
-        logger.error("TooManyRequestsException: ", e);
-      } else if(e.getCause() instanceof JacksonException) {
-        task = handleParseError(submissionGuid, e);
-      } else {
-        task = handleSystemError(submissionGuid, e);
-      }
-    } 
+    if (!submissionMetaData.getDraft()) {
+      task = processSubmission(submissionMetaData);
+    }
 
     logMethodEnd(logger, task);
   }
@@ -129,7 +115,6 @@ public class InterimSubmissionProcessor extends ChefsSubmissionProcessor<Interim
     
     Integer participantPin = getParticipantPin(data);
     Integer programYear = getProgramYear(data);
-    data.setParsedParticipantPin(participantPin);
     data.setParsedProgramYear(programYear);
 
     ChefsSubmissionProcessData chefsSubmissionProcessData = shouldProcessSubmission(submissionGuid, data, submissionRec);

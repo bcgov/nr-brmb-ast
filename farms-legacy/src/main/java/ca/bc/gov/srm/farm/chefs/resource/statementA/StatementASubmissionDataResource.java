@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import ca.bc.gov.srm.farm.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -47,9 +48,9 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   private String signatureDate;
   private String howDoYouKnowTheParticipant;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d", timezone = "America/Vancouver")
   private Date fiscalYearStart;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d", timezone = "America/Vancouver")
   private Date fiscalYearEnd;
 
   private Integer numberOfYearsFarmed;
@@ -110,9 +111,9 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   private String taxesProgramYear;
 
   @JsonIgnore
-  private String pattern = "yyyy-MM-dd";
+  private static final String pattern = "yyyy-MM-dd";
   @JsonIgnore
-  private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+  private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
   public String getCorporationName() {
     return corporationName;
@@ -714,20 +715,15 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
     this.taxesProgramYear = taxesProgramYear;
   }
 
-  public String getPattern() {
-    return pattern;
+  @Override
+  public Integer getParticipantPin() {
+    return agriStabilityAgriInvestPin;
   }
 
-  public void setPattern(String pattern) {
-    this.pattern = pattern;
-  }
-
-  public SimpleDateFormat getSimpleDateFormat() {
-    return simpleDateFormat;
-  }
-
-  public void setSimpleDateFormat(SimpleDateFormat simpleDateFormat) {
-    this.simpleDateFormat = simpleDateFormat;
+  @Override
+  @JsonIgnore
+  public Integer getYear() {
+    return DateUtils.getYearFromDate(getFiscalYearEndDate());
   }
 
 }

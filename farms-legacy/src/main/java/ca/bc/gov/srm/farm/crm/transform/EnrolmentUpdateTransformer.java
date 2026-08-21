@@ -74,7 +74,7 @@ public class EnrolmentUpdateTransformer {
     resource.setVsi_fullyprovinciallyfunded(e.getIsLateParticipant());
     resource.setVsi_generateddate(CrmTransferFormatUtil.formatDate(e.getGeneratedDate()));
     resource.setVsi_generatedfromenwscenario(e.getIsGeneratedFromEnw());
-    resource.setVsi_haspartners(! partners.isEmpty());
+    resource.setVsi_haspartners(!partners.isEmpty());
     resource.setVsi_incombinedfarm(e.getIsInCombinedFarm());
     resource.setVsi_marginyearminus2(e.getMarginYearMinus2());
     resource.setVsi_marginyearminus3(e.getMarginYearMinus3());
@@ -128,6 +128,7 @@ public class EnrolmentUpdateTransformer {
         && !NULL_LAST_FIRST_DISPLAY_NAME.equalsIgnoreCase(trimmedName);
   }
 
+
   private String getFeeModifiedByUser(String user) {
     ConfigurationUtility configUtil = ConfigurationUtility.getInstance();
     String feeModifiedByUserOverride = configUtil.getValue(ConfigurationKeys.ENROLMENT_FEE_MODIFIED_BY_USER_OVERRIDE);
@@ -140,3 +141,4 @@ public class EnrolmentUpdateTransformer {
   }
 
 }
+

@@ -120,7 +120,7 @@ public class BenefitViewAction extends CalculatorAction {
     form.setScenarioRevisionCount(scenario.getRevisionCount());
     form.setLineNumber(0);
     populateRequiredYears(form, scenario);
-    syncFarmViewCacheWithForm(form);
+    
     
     BenefitCalculator benefitCalc = CalculatorFactory.getBenefitCalculator(scenario);
     Benefit benefit = benefitCalc.getBenefit();
@@ -154,6 +154,10 @@ public class BenefitViewAction extends CalculatorAction {
         initInterimBenefitPercent(form, percent);
       }
       
+    }
+    
+    if(form.getFarmView() == null) {
+      form.setFarmView(FARM_VIEW_WHOLE_FARM_CODE);
     }
     
     boolean isWholeFarm = CalculatorAction.FARM_VIEW_WHOLE_FARM_CODE.equals(form.getFarmView());

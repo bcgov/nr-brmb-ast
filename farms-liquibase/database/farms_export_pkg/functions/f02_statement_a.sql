@@ -15,7 +15,16 @@ begin
                sta.year stab_yy,
                pyv.province_of_residence part_res_prov_code,
                pyv.province_of_main_farmstead part_fmstd_prov_code,
-               ac.participant_class_code part_type,
+               case ac.participant_class_code
+                   when '1' then '1'
+                   when '2' then '2'
+                   when '3' then '2'
+                   when '4' then '3'
+                   when '5' then '4'
+                   when '6' then '5'
+                   when '7' then '6'
+                   else null
+               end as part_type,
                pyv.post_mark_date form_pstmrk_date,
                pyv.received_date form_rcvd_date,
                'N' agristab_only_ind,

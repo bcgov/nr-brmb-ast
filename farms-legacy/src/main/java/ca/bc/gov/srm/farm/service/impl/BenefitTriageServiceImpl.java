@@ -24,13 +24,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +50,13 @@ import ca.bc.gov.srm.farm.crm.resource.CrmAccountResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmCoreConfigurationResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmEnrolmentResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmProgramYearResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmQueueResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmTaskResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmValidationErrorResource;
 import ca.bc.gov.srm.farm.dao.BenefitTriageDAO;
+import ca.bc.gov.srm.farm.dao.CalculatorDAO;
 import ca.bc.gov.srm.farm.dao.ImportDAO;
+import ca.bc.gov.srm.farm.dao.ReadDAO;
 import ca.bc.gov.srm.farm.dao.StagingDAO;
 import ca.bc.gov.srm.farm.dao.VersionDAO;
 import ca.bc.gov.srm.farm.domain.BasePricePerUnit;
@@ -61,7 +64,6 @@ import ca.bc.gov.srm.farm.domain.BasePricePerUnitYear;
 import ca.bc.gov.srm.farm.domain.FarmingOperation;
 import ca.bc.gov.srm.farm.domain.FarmingYear;
 import ca.bc.gov.srm.farm.domain.ImportVersion;
-import ca.bc.gov.srm.farm.domain.IncomeExpense;
 import ca.bc.gov.srm.farm.domain.ProductiveUnitCapacity;
 import ca.bc.gov.srm.farm.domain.ReferenceScenario;
 import ca.bc.gov.srm.farm.domain.Scenario;
@@ -75,6 +77,7 @@ import ca.bc.gov.srm.farm.domain.codes.BPUYear;
 import ca.bc.gov.srm.farm.domain.codes.ImportClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.ImportStateCodes;
 import ca.bc.gov.srm.farm.domain.codes.MunicipalityCodes;
+import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
 import ca.bc.gov.srm.farm.domain.codes.StructuralChangeCodes;
 import ca.bc.gov.srm.farm.domain.reasonability.MarginTestResult;
@@ -95,30 +98,16 @@ import ca.bc.gov.srm.farm.service.ReasonabilityTestService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.transaction.Transaction;
 import ca.bc.gov.srm.farm.util.DateUtils;
+import ca.bc.gov.srm.farm.util.MathUtils;
 import ca.bc.gov.srm.farm.util.PropertyLoader;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
+import ca.bc.gov.srm.farm.util.SleepUtils;
+import ca.bc.gov.srm.farm.util.StringUtils;
+import ca.bc.gov.srm.farm.util.StrutsUtils;
 
 public class BenefitTriageServiceImpl extends BaseService implements BenefitTriageService {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  
-  private static final String MESSAGE_FAIL_STRUCTURE_CHANGE_NOT_ENABLED =
-      "Fail: Structure Change is not enabled because BPUs are missing.";
-  
-  private static final String MESSAGE_FAIL_REFERENCE_MARGIN_FAILED_AT_LOW_END =
-      "Fail: The Reference Margin Test failed at the low end.";
-  
-  private static final String MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED =
-      "Fail: Structural Change Additive Division Test failed.";
-  
-  private static final String MESSAGE_FAIL_LESS_THAN_5_YEARS_OF_DATA =
-      "Fail: Less than 5 reference years of data.";
-  
-  private static final String MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED =
-      "Fail: Fiscal Year End date changed.";
-  
-  private static final String MESSAGE_FAIL_COMBINED_FARM =
-      "Fail: Last year this producer was part of a Combined Farm.";
 
   private CrmTransferService crmTransferService;
   private AdjustmentService adjustmentService;
@@ -127,6 +116,7 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
   private CodesService codesService;
   private ReasonabilityTestService testService;
   private ConfigurationUtility configUtil;
+  private CrmRestApiDao crmDao;
   
   private Properties messageProperties;
   
@@ -142,6 +132,7 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     codesService = ServiceFactory.getCodesService();
     testService = ReasonabilityTestServiceFactory.getInstance();
     messageProperties = PropertyLoader.loadProperties(MessageKeys.MESSAGES_FILE_PATH);
+    crmDao = new CrmRestApiDao();
   }
 
   @Override
@@ -229,7 +220,7 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
 
     } catch (SQLException | ServiceException e) {
       logger.error("Unexpected error: ", e);
-      String formattedException = formatException(e);
+      String formattedException = formatExceptionForFailedImport(e);
       triageResults.setUnexpectedError(formattedException);
       String resultsJson = convertResultsToJson(triageResults);
       try {
@@ -267,7 +258,6 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     
     String verifierUserEmail = configUtil.getValue(ConfigurationKeys.BENEFIT_TRIAGE_VERIFIER_USER_EMAIL);
     
-    CrmRestApiDao crmDao = new CrmRestApiDao();
     CrmCoreConfigurationResource coreConfiguration = crmDao.getCoreConfiguration();
     BigDecimal paymentThreshold = coreConfiguration.getVsi_triagepaymentthreshold();
     
@@ -325,12 +315,9 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     
     try {
       
-      Integer triageScenarioNumber = calculatorService.saveScenarioAsNew(baseScenarioId,
-          ScenarioTypeCodes.TRIAGE,
-          TRIAGE,
-          baseScenarioNumber,
-          userId);
-      Scenario triageScenario = getScenario(participantPin, programYear, triageScenarioNumber, connection);
+      Scenario triageScenario = createTriageScenario(participantPin, programYear, baseScenarioId, baseScenarioNumber, connection, userId);
+      Integer triageScenarioNumber = triageScenario.getScenarioNumber();
+      
       result.setClientName(triageScenario.getClient().getOwner().getFullName());
       result.setScenarioNumber(triageScenario.getScenarioNumber());
       
@@ -341,13 +328,13 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       boolean isPaymentFile = false;
       boolean zeroPass = false;
       boolean paymentPass = false;
-      Double totalBenefit = null;
+      Double triagePaymentAmount = null;
       
       if(errorMessages.isEmpty()) {
         
-        totalBenefit = triageScenario.getBenefit().getTotalBenefit();
-        isPaymentFile = totalBenefit > 0;
-        result.setEstimatedBenefit(totalBenefit);
+        triagePaymentAmount = triageScenario.getBenefit().getTotalBenefit();
+        isPaymentFile = triagePaymentAmount > 0;
+        result.setEstimatedBenefit(triagePaymentAmount);
         result.setIsPaymentFile(isPaymentFile);
         
         ReasonabilityTestResults testResults = triageScenario.getReasonabilityTestResults();
@@ -357,54 +344,72 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
           
           String structuralChangeCode = triageScenario.getBenefit().getStructuralChangeMethodCode();
           boolean structureChangeEnabled = ! StructuralChangeCodes.NONE.equals(structuralChangeCode);
-          Boolean referenceMarginTestPassed = testResults.getMarginTest().getWithinLimitOfReferenceMargin();
-          boolean varianceOverTheUpperLimitOfReferenceMargin = checkMarginVarianceOverTheUpperLimit(triageScenario);
-          boolean referenceMarginTestPassedOrFailedAtTheHighEnd = referenceMarginTestPassed || varianceOverTheUpperLimitOfReferenceMargin;
           boolean structuralChangeAdditiveDivisionTestPassed = testResults.getStructuralChangeTest().getWithinAdditiveDivisionLimit();
-          boolean hasFiveYearsOfData = checkHasFiveYearsOfReferenceData(triageScenario);
+          boolean hasFiveReferenceYears = checkHasFiveReferenceYears(triageScenario);
+          boolean hasIncomeForAllYears = ScenarioUtils.checkHasIncomeForAllYears(triageScenario);
+          boolean hasExpensesForAllYears = ScenarioUtils.checkHasExpensesForAllYears(triageScenario);
           boolean fiscalEndDatesConsistent = checkFiscalEndDatesConsistent(triageScenario);
           boolean notCombinedFarm = checkNotCombinedFarm(triageScenario);
           
           if(isPaymentFile) {
             
-            boolean accountingMethodConsistent = true; // TODO check accounting method
-            boolean municipalityConsistent = true;     // TODO check municipality
-            boolean paymentWithinThreshold = BigDecimal.valueOf(totalBenefit).compareTo(paymentThreshold) <= 0;
+            boolean accountingMethodConsistent = checkAccountingMethodConsistent(triageScenario);
+            boolean municipalityConsistent = checkMunicipalityConsistent(triageScenario);
+            boolean benefitRiskTestPassed = testResults.getBenefitRisk().getResult();
+            Double benefitRiskTestVariance = testResults.getBenefitRisk().getVariance();
+            boolean benefitLowerThanEstimated = benefitRiskTestVariance != null && benefitRiskTestVariance < 0;
+            boolean benefitRiskTestPassedOrBenefitLowerThanEstimated = benefitRiskTestPassed || benefitLowerThanEstimated;
+            boolean paymentWithinThreshold = BigDecimal.valueOf(triagePaymentAmount).compareTo(paymentThreshold) <= 0;
             
             paymentPass = structureChangeEnabled
-                && referenceMarginTestPassedOrFailedAtTheHighEnd
                 && structuralChangeAdditiveDivisionTestPassed
-                && hasFiveYearsOfData
+                && hasFiveReferenceYears
+                && hasIncomeForAllYears
+                && hasExpensesForAllYears
                 && fiscalEndDatesConsistent
                 && notCombinedFarm
                 && accountingMethodConsistent
                 && municipalityConsistent
+                && benefitRiskTestPassedOrBenefitLowerThanEstimated
                 && paymentWithinThreshold;
             
-            addMessages(
+            addPaymentPassMessages(
                 result,
                 structureChangeEnabled,
-                referenceMarginTestPassedOrFailedAtTheHighEnd,
                 structuralChangeAdditiveDivisionTestPassed,
-                hasFiveYearsOfData,
+                hasFiveReferenceYears,
+                hasIncomeForAllYears,
+                hasExpensesForAllYears,
                 fiscalEndDatesConsistent,
-                notCombinedFarm);
+                notCombinedFarm,
+                accountingMethodConsistent,
+                municipalityConsistent,
+                benefitRiskTestPassedOrBenefitLowerThanEstimated,
+                paymentWithinThreshold);
             
           } else {
+            
+            Boolean referenceMarginTestPassed = testResults.getMarginTest().getWithinLimitOfReferenceMargin();
+            boolean varianceOverTheUpperLimitOfReferenceMargin = checkMarginVarianceOverTheUpperLimit(triageScenario);
+            boolean referenceMarginTestPassedOrFailedAtTheHighEnd = referenceMarginTestPassed || varianceOverTheUpperLimitOfReferenceMargin;
             
             zeroPass = structureChangeEnabled
                 && referenceMarginTestPassedOrFailedAtTheHighEnd
                 && structuralChangeAdditiveDivisionTestPassed
-                && hasFiveYearsOfData
+                && hasFiveReferenceYears
+                && hasIncomeForAllYears
+                && hasExpensesForAllYears
                 && fiscalEndDatesConsistent
                 && notCombinedFarm;
             
-            addMessages(
+            addZeroPassMessages(
                 result,
                 structureChangeEnabled,
                 referenceMarginTestPassedOrFailedAtTheHighEnd,
                 structuralChangeAdditiveDivisionTestPassed,
-                hasFiveYearsOfData,
+                hasFiveReferenceYears,
+                hasIncomeForAllYears,
+                hasExpensesForAllYears,
                 fiscalEndDatesConsistent,
                 notCombinedFarm);
           }
@@ -418,6 +423,8 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       String triageResultType = null;
       if(zeroPass) {
         triageResultType = TRIAGE_RESULT_TYPE_ZERO_PASS;
+      } else if(paymentPass) {
+        triageResultType = TRIAGE_RESULT_TYPE_PAYMENT_PASS;
       }
  
       logger.debug("Updating scenario state");
@@ -443,11 +450,19 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
         // Expecting errorMessages to be empty because it was when calculating for the TRIAGE scenario
         calculateBenefit(finalScenario, yearBpuListMap, errorMessages, connection, userId);
         finalScenario = reloadScenario(finalScenario, connection);
+        SleepUtils.waitASecond(); // to ensure XSTATE (benefit updatates) are processed in the correct order 
         
-        // Update state to Verified. Triggers a Verified Final Benefit Update.
-        calculatorService.updateScenario(finalScenario, VERIFIED, null,
-            finalScenario.getScenarioCategoryCode(), verifierUserEmail, null, null, null, triageResultType, userId);
-
+        Double finalPaymentAmount = triageScenario.getBenefit().getTotalBenefit();
+        boolean paymentConsistent = MathUtils.equalToTwoDecimalPlaces(triagePaymentAmount, finalPaymentAmount);
+        
+        if(errorMessages.isEmpty() && paymentConsistent) {
+          // Update state to Verified. Triggers a Verified Final Benefit Update.
+          calculatorService.updateScenario(finalScenario, VERIFIED, null,
+              finalScenario.getScenarioCategoryCode(), verifierUserEmail, null, null, null, triageResultType, userId);
+        } else {
+          createCalculationInconsistencyTask(errorMessages, paymentConsistent, triagePaymentAmount, finalPaymentAmount);
+        }
+        
       } else {
         crmTransferService.scheduleBenefitTransfer(triageScenario, verifierUserEmail, userId);
       }
@@ -458,10 +473,47 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       e.printStackTrace();
       logger.error(String.format("Unexpected error processing %d PIN %d: ", programYear, participantPin), e);
       result.setScenarioStateCodeDesc(FAILED_DESCRIPTION);
+      String errorMessage = formatExceptionForErrorMessage(e);
+      result.getErrorMessages().add(errorMessage);
     }
     
     return result;
   }
+
+
+  /**
+   * If there is an error while processing the TRIAGE scenario and it is left In Progress,
+   * the system will try again the next time triage is run. In that case, use the existing In Progress scenario.
+   * The query should never return PINs that have Completed or Failed triage scenarios, so checking the scenario
+   * state is just a precaution.
+   */
+  private Scenario createTriageScenario(Integer participantPin, Integer programYear, Integer baseScenarioId, Integer baseScenarioNumber,
+      Connection connection, String userId) throws SQLException, ServiceException {
+    
+    ReadDAO readDAO = new ReadDAO(connection);
+    CalculatorDAO calculatorDao = new CalculatorDAO();
+    
+    List<ScenarioMetaData> scenarioMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
+    ScenarioMetaData triageScenarioMetadata = ScenarioUtils.findScenarioByCategory(scenarioMetadata, programYear, TRIAGE, ScenarioTypeCodes.TRIAGE);
+    
+    if(triageScenarioMetadata != null && triageScenarioMetadata.stateIsOneOf(ScenarioStateCodes.IN_PROGRESS)) {
+      Integer triageScenarioNumber = triageScenarioMetadata.getScenarioNumber();
+      logger.debug("Found existing In Progress TRIAGE scenario number: " + triageScenarioNumber + ". Deleting.");
+      Integer triageScenarioId = triageScenarioMetadata.getScenarioId();
+      calculatorDao.deleteUserScenario(connection, triageScenarioId);
+      connection.commit();
+    }
+    
+    Integer triageScenarioNumber = calculatorService.saveScenarioAsNew(baseScenarioId,
+        ScenarioTypeCodes.TRIAGE,
+        TRIAGE,
+        baseScenarioNumber,
+        userId);
+    
+    Scenario triageScenario = getScenario(participantPin, programYear, triageScenarioNumber, connection);
+    return triageScenario;
+  }
+
 
   private boolean checkMarginVarianceOverTheUpperLimit(Scenario triageScenario) {
     
@@ -475,41 +527,28 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     
     return overTheUpperLimitOfReferenceMargin;
   }
-
-  private boolean checkHasFiveYearsOfReferenceData(Scenario scenario) {
+  
+  
+  private boolean checkHasFiveReferenceYears(Scenario scenario) {
     final int numYearsNeeded = 5;
     int referenceScenarioCount = scenario.getReferenceScenarios().size();
     
-    boolean hasFiveYearsOfData = true;
-    
-    if(referenceScenarioCount != numYearsNeeded) {
-      hasFiveYearsOfData = false;
-    } else {
-      
-      for (ReferenceScenario refScenario : scenario.getAllScenarios()) {
-        
-        Map<Integer, IncomeExpense> incomes = ScenarioUtils.getConsolidatedIncomeExpense(scenario, true, null, refScenario.getYear());
-        Map<Integer, IncomeExpense> expenses = ScenarioUtils.getConsolidatedIncomeExpense(scenario, false, null, refScenario.getYear());
-        boolean hasIncomes = incomes.values().stream().anyMatch(i -> i.getTotalAmount() != 0);
-        boolean hasExpenses = expenses.values().stream().anyMatch(i -> i.getTotalAmount() != 0);
-        
-        if(!hasIncomes && !hasExpenses) {
-          hasFiveYearsOfData = false;
-          break;
-        }
-      }
-      
-    }
+    boolean hasFiveYearsOfData = referenceScenarioCount == numYearsNeeded;
     
     return hasFiveYearsOfData;
   }
 
+
   private boolean checkFiscalEndDatesConsistent(Scenario scenario) {
-    
-    boolean datesConsistent = true;
     
     Integer programYear = scenario.getYear();
     ReferenceScenario lastYearReferenceScenario = scenario.getReferenceScenarioByYear(programYear - 1);
+    
+    if(lastYearReferenceScenario == null || lastYearReferenceScenario.getFarmingYear() == null
+      || lastYearReferenceScenario.getFarmingYear().getFarmingOperations() == null) {
+      return false;
+    }
+    
     FarmingYear lastYearFarmingYear = lastYearReferenceScenario.getFarmingYear();
     List<FarmingOperation> farmingOperations = scenario.getFarmingYear().getFarmingOperations();
     
@@ -519,9 +558,8 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       
       FarmingOperation lastYearFarmingOperation = lastYearFarmingYear.getFarmingOperationByNumber(operationNumber);
       
-      if(lastYearFarmingOperation == null) {
-        datesConsistent = false;
-        break;
+      if(lastYearFarmingOperation == null || programYearFiscalYearEnd == null) {
+        return false;
       }
       
       Date lastYearFiscalYearEnd = lastYearFarmingOperation.getFiscalYearEnd();
@@ -531,13 +569,12 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       boolean fiscalYearEndChanged = ! programYearFiscalEndMinusOneYear.equals(lastYearFiscalYearEnd);
       
       if(fiscalYearEndChanged) {
-        datesConsistent = false;
-        break;
+        return false;
       }
       
     }
     
-    return datesConsistent;
+    return true;
   }
 
   private boolean checkNotCombinedFarm(Scenario triageScenario) {
@@ -551,11 +588,75 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     return lastYearCombinedFarmScenarios.isEmpty();
   }
 
-  private void addMessages(BenefitTriageItemResult result,
+
+  private boolean checkAccountingMethodConsistent(Scenario scenario) {
+    
+    boolean accountingMethodsConsistent = true;
+    
+    Integer programYear = scenario.getYear();
+    ReferenceScenario lastYearReferenceScenario = scenario.getReferenceScenarioByYear(programYear - 1);
+
+    if(lastYearReferenceScenario == null || lastYearReferenceScenario.getFarmingYear() == null
+      || lastYearReferenceScenario.getFarmingYear().getFarmingOperations() == null) {
+      return false;
+    }
+
+    FarmingYear lastYearFarmingYear = lastYearReferenceScenario.getFarmingYear();
+    List<FarmingOperation> farmingOperations = scenario.getFarmingYear().getFarmingOperations();
+    
+    for (FarmingOperation farmingOperation : farmingOperations) {
+      Integer operationNumber = farmingOperation.getOperationNumber();
+      String programYearAccountingCode = farmingOperation.getAccountingCode();
+      
+      FarmingOperation lastYearFarmingOperation = lastYearFarmingYear.getFarmingOperationByNumber(operationNumber);
+      
+      if(lastYearFarmingOperation == null) {
+        accountingMethodsConsistent = false;
+        break;
+      }
+      
+      String lastYearAccountingCode = lastYearFarmingOperation.getAccountingCode();
+      
+      boolean changed = ! StringUtils.equal(programYearAccountingCode, lastYearAccountingCode);
+      
+      if(changed) {
+        accountingMethodsConsistent = false;
+        break;
+      }
+      
+    }
+    
+    return accountingMethodsConsistent;
+  }
+  
+  
+  private boolean checkMunicipalityConsistent(Scenario scenario) {
+    
+    Integer programYear = scenario.getYear();
+    ReferenceScenario lastYearReferenceScenario = scenario.getReferenceScenarioByYear(programYear - 1);
+
+    if(lastYearReferenceScenario == null || lastYearReferenceScenario.getFarmingYear() == null) {
+      return false;
+    }
+
+    FarmingYear lastYearFarmingYear = lastYearReferenceScenario.getFarmingYear();
+    
+    String programYearMunicipalityCode = scenario.getFarmingYear().getMunicipalityCode();
+    String lastYearMunicipalityCode = lastYearFarmingYear.getMunicipalityCode();
+    
+    boolean municipalityConsistent = programYearMunicipalityCode.equals(lastYearMunicipalityCode);
+    
+    return municipalityConsistent;
+  }
+
+
+  private void addZeroPassMessages(BenefitTriageItemResult result,
       boolean structureChangeEnabled,
       boolean referenceMarginTestPassedOrFailedAtTheHighEnd,
       boolean structuralChangeAdditiveDivisionTestPassed,
-      boolean hasFiveYearsOfData,
+      boolean hasFiveReferenceYears,
+      boolean hasIncomeForAllYears,
+      boolean hasExpensesForAllYears,
       boolean fiscalEndDatesConsistent,
       boolean notCombinedFarm) {
     
@@ -570,8 +671,14 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     if( ! structuralChangeAdditiveDivisionTestPassed ) {
       failMessages.add(MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED);
     }
-    if( ! hasFiveYearsOfData ) {
+    if( ! hasFiveReferenceYears ) {
       failMessages.add(MESSAGE_FAIL_LESS_THAN_5_YEARS_OF_DATA);
+    }
+    if( ! hasIncomeForAllYears ) {
+      failMessages.add(MESSAGE_FAIL_MISSING_INCOME);
+    }
+    if( ! hasExpensesForAllYears ) {
+      failMessages.add(MESSAGE_FAIL_MISSING_EXPENSES);
     }
     if( ! fiscalEndDatesConsistent ) {
       failMessages.add(MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED);
@@ -580,6 +687,58 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       failMessages.add(MESSAGE_FAIL_COMBINED_FARM);
     }
   }
+  
+  
+  private void addPaymentPassMessages(BenefitTriageItemResult result,
+      boolean structureChangeEnabled,
+      boolean structuralChangeAdditiveDivisionTestPassed,
+      boolean hasFiveReferenceYears,
+      boolean hasIncomeForAllYears,
+      boolean hasExpensesForAllYears,
+      boolean fiscalEndDatesConsistent,
+      boolean notCombinedFarm,
+      boolean accountingMethodConsistent,
+      boolean municipalityConsistent,
+      boolean benefitRiskTestPassedOrBenefitLowerThanEstimated,
+      boolean paymentWithinThreshold) {
+    
+    List<String> failMessages = result.getFailMessages();
+    
+    if( ! structureChangeEnabled ) {
+      failMessages.add(MESSAGE_FAIL_STRUCTURE_CHANGE_NOT_ENABLED);
+    }
+    if( ! structuralChangeAdditiveDivisionTestPassed ) {
+      failMessages.add(MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED);
+    }
+    if( ! hasFiveReferenceYears ) {
+      failMessages.add(MESSAGE_FAIL_LESS_THAN_5_YEARS_OF_DATA);
+    }
+    if( ! hasIncomeForAllYears ) {
+      failMessages.add(MESSAGE_FAIL_MISSING_INCOME);
+    }
+    if( ! hasExpensesForAllYears ) {
+      failMessages.add(MESSAGE_FAIL_MISSING_EXPENSES);
+    }
+    if( ! fiscalEndDatesConsistent ) {
+      failMessages.add(MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED);
+    }
+    if( ! notCombinedFarm ) {
+      failMessages.add(MESSAGE_FAIL_COMBINED_FARM);
+    }
+    if( ! accountingMethodConsistent ) {
+      failMessages.add(MESSAGE_FAIL_ACCOUNTING_METHOD_CHANGED);
+    }
+    if( ! municipalityConsistent ) {
+      failMessages.add(MESSAGE_FAIL_MUNICIPALITY_CHANGED);
+    }
+    if( ! benefitRiskTestPassedOrBenefitLowerThanEstimated ) {
+      failMessages.add(MESSAGE_FAIL_BENEFIT_RISK_FAILED_AT_HIGH_END);
+    }
+    if( ! paymentWithinThreshold ) {
+      failMessages.add(MESSAGE_FAIL_PAYMENT_TOO_LARGE);
+    }
+  }
+
 
   private Scenario reloadScenario(Scenario scenario, Connection connection)
       throws ServiceException {
@@ -597,7 +756,6 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
   private boolean checkEnrolled(Integer participantPin, Integer programYear) throws ServiceException {
     boolean enrolled = false;
 
-    CrmRestApiDao crmDao = new CrmRestApiDao();
     CrmProgramYearResource crmProgramYear = crmDao.getProgramYear(programYear);
     CrmAccountResource crmAccount = crmDao.getAccountByPin(participantPin);
     
@@ -650,14 +808,9 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     
     messages = benefitService.calculateBenefit(scenario, userId, true, true, true);
     
-    if(!messages.isEmpty()) {
-      
-      for(@SuppressWarnings("unchecked") Iterator<ActionMessage> mi = messages.get(); mi.hasNext(); ) {
-        ActionMessage msg = mi.next();
-        errorMessages.add(messageProperties.getProperty(msg.getKey()));
-      }
-      
-    }
+    List<String> calculationErrors = StrutsUtils.convertActionMessagesToStringList(messages, messageProperties);
+    
+    errorMessages.addAll(calculationErrors);
     
     if(errorMessages.isEmpty()) {
       runReasonabilityTests(scenario, userId);
@@ -851,7 +1004,7 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     logMethodEnd(logger);
   }
   
-  private String formatException(Throwable t) {
+  private String formatExceptionForFailedImport(Throwable t) {
     
     StringWriter stringWriter = new StringWriter();
     stringWriter.append("Unexpected Exception: ");
@@ -865,6 +1018,77 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
     String errorMsg = stringWriter.toString();
 
     return errorMsg;
+  }
+
+
+  private String formatExceptionForErrorMessage(Exception e) {
+    Throwable t = (e.getCause() != null) ? e.getCause() : e;
+
+    StackTraceElement[] stack = t.getStackTrace();
+    StringBuilder msg = new StringBuilder();
+    msg.append(t.toString());
+
+    final int maxNumberOfLines = 5;
+    int lines = Math.min(maxNumberOfLines, stack.length);
+    for (int i = 0; i < lines; i++) {
+        msg.append("\tat ")
+           .append(stack[i]);
+    }
+
+    String failMessage = msg.toString();
+    return failMessage;
+  }
+
+  private CrmTaskResource createValidationErrorTask(String subject, String description) throws ServiceException {
+
+    CrmValidationErrorResource task = new CrmValidationErrorResource();
+    task.setSubject(subject);
+    task.setDescription(description);
+
+    String queueId = getValidationErrorQueueId();
+    CrmValidationErrorResource newTask = crmDao.createValidationErrorTask(task, queueId);
+    
+    return newTask;
+  }
+
+  private String getValidationErrorQueueId() throws ServiceException {
+    // TODO Use a parameter (config key) specific to Benefit Triage or consolidate existing parameters into one for validation errors
+    String queueName = configUtil.getValue(ConfigurationKeys.CRM_QUEUES_NPP_CORPORATE);
+    String queueId = queryQueueId(queueName);
+    return queueId;
+  }
+
+  private String queryQueueId(String queueName) throws ServiceException {
+    CrmQueueResource queue = crmDao.getQueueByName(queueName);
+    return queue.getQueueId();
+  }
+
+
+  private void createCalculationInconsistencyTask(List<String> errorMessages, boolean paymentConsistent, Double triagePaymentAmount,
+      Double finalPaymentAmount) throws ServiceException {
+    String taskSubject = "Benefit Triage Calculation Issue";
+    StringBuilder taskDescription = new StringBuilder();
+    
+    if( ! paymentConsistent ) {
+      String formattedTriagePaymentAmount = StringUtils.formatCurrency(triagePaymentAmount);
+      String formattedFinalPaymentAmount = StringUtils.formatCurrency(finalPaymentAmount);
+      
+      taskDescription.append("Final payment amount does not match triage scenario amount.\n");
+      taskDescription.append("Triage Amount: ").append(formattedTriagePaymentAmount).append("\n");
+      taskDescription.append("Final Amount: ").append(formattedFinalPaymentAmount).append("\n");
+    }
+    
+    if( ! errorMessages.isEmpty() ) {
+      taskDescription.append("Benefit Calculation errors encountered calculating Final benefit:\n");
+      for (String message : errorMessages) {
+        taskDescription.append("- ").append(message).append("\n");
+      }
+    }
+    
+    taskDescription.append(" These issues did not occur when calculating the triage scenario benefit amount.");
+    taskDescription.append(" That indicates a bug. Please notify the development team.");
+    
+    createValidationErrorTask(taskSubject, taskDescription.toString());
   }
 
 }

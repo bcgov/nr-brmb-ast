@@ -232,7 +232,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -251,7 +251,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " " + CoverageFormConstants.FORM_LONG_NAME + " " + participantPin, task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
         + "- No Verified Final found for 2022\n"
         + "- PIN not found in CRM.\n"
         + "- PIN not found in BCFARMS.\n" + "\n" + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n"
@@ -333,7 +333,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -352,7 +352,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " " + CoverageFormConstants.FORM_LONG_NAME + " " + participantPin, task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Coverage Notice form was submitted but has validation errors:\n\n"
+    assertEquals(getFormUserType() + " Coverage Notice form was submitted but has validation errors:\n\n"
         + "- No Verified Final found for 2022\n"
         + "- PIN not found in CRM.\n"
         + "\n"
@@ -434,7 +434,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -454,7 +454,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
     assertEquals(
-        formUserType + " Coverage Notice form was submitted but has validation errors:\n\n"
+        getFormUserType() + " Coverage Notice form was submitted but has validation errors:\n\n"
             + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n"
             + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n",
         task.getDescription());
@@ -534,7 +534,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -554,7 +554,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
     assertEquals(
-        formUserType + " Coverage Notice form was submitted but has validation errors:\n\n"
+        getFormUserType() + " Coverage Notice form was submitted but has validation errors:\n\n"
             + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"null\".\n" + "\n"
             + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n",
         task.getDescription());
@@ -635,7 +635,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -654,7 +654,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " " + CoverageFormConstants.FORM_LONG_NAME + " " + participantPin, task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
         + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n\n"
         + "Participant Name: Targaryen Kingdom\n"
         + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
@@ -735,7 +735,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -754,7 +754,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " " + CoverageFormConstants.FORM_LONG_NAME + " " + participantPin, task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
         + "- Field \"Business Number\" with value \"123456789RC0001\" does not match BCFARMS: \"999999999RC0001\"."
         + " Note that only the first nine digits are compared.\n" + "\n" + "Participant Name: Targaryen Kingdom\n"
         + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
@@ -834,7 +834,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -853,7 +853,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " " + CoverageFormConstants.FORM_LONG_NAME + " " + participantPin, task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
         + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n" + "\n"
         + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n"
         + "Email: targaryen@game.of.thrones\n", task.getDescription());
@@ -864,7 +864,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
   public void submissionAlreadyProcessed() {
     String submissionGuid = "d67b7e26-521b-42d9-9ef2-3d3295d0ca89";
 
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     try {
       processor.loadSubmissionsFromChefs();
@@ -1011,7 +1011,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
 
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     // Process the submission data
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -1106,7 +1106,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     String newCategoryCode = ScenarioCategoryCodes.COVERAGE_NOTICE;
     String benefitTriageResultType = null;
     try {
-      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, userEmail, null, formUserType,
+      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, userEmail, null, getFormUserType(),
           ChefsFormTypeCodes.CN, benefitTriageResultType, user);
     } catch (ServiceException e) {
       e.printStackTrace();
@@ -1231,7 +1231,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     data.setEnvironment("DEV");
     data.setCommoditiesFarmed(Arrays.asList("berriesChristmasTrees"));
 
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -1251,7 +1251,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
     assertEquals(
-        formUserType + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
+        getFormUserType() + " Coverage Notice form was submitted but has validation errors:\n" + "\n"
             + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n"
             + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n",
         validationTask.getDescription());
@@ -1654,7 +1654,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
 
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(duplicateSubmissionGuid);
     // Process the submission data
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -1832,7 +1832,7 @@ public class ChefsCoverageSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, formUserType);
+    CoverageSubmissionProcessor processor = new CoverageSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 

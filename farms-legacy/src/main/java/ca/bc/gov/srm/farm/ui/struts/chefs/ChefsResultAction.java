@@ -1,5 +1,7 @@
 package ca.bc.gov.srm.farm.ui.struts.chefs;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,15 +15,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.bc.gov.srm.farm.chefs.ChefsConfigurationUtil;
 import ca.bc.gov.srm.farm.chefs.ChefsConstants;
+import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
 import ca.bc.gov.srm.farm.crm.CrmConfigurationUtil;
+import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmission;
 import ca.bc.gov.srm.farm.exception.ServiceException;
+import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsFormSubmissionService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.ui.struts.ActionConstants;
 import ca.bc.gov.srm.farm.ui.struts.SecureAction;
 import ca.bc.gov.srm.farm.util.JsonUtils;
+import ca.bc.gov.srm.farm.util.ProgramYearUtils;
+import ca.bc.gov.srm.farm.util.ScenarioUtils;
 
 /**
  * ChefsSearchAction. Used by screen 256.
@@ -78,11 +85,14 @@ public class ChefsResultAction extends SecureAction {
     }
     form.setUserFormType(userFormType);
 
-    SubmissionWrapperResource<?> submissionWrapper = null;
+    SubmissionWrapperResource<? extends ChefsSubmissionDataResource> submissionWrapper = null;
     try {
       submissionWrapper = chefsFormSubmissionService.getSubmissionWrapperResource(submissionGuid, form.getFormType(), userFormType);
       if (submissionWrapper != null) {
         form.setUserFormType(userFormType);
+        
+        ChefsSubmissionDataResource submissionResource = submissionWrapper.getSubmissionMetaData().getSubmission().getData();
+        populatePinRelatedFields(submissionResource, form);
       }
     } catch (ServiceException e) {
       logger.debug(e.getMessage());
@@ -93,6 +103,32 @@ public class ChefsResultAction extends SecureAction {
     form.setResourceJson(jsonResource);
 
     return mapping.findForward(ActionConstants.SUCCESS);
+  }
+
+  private void populatePinRelatedFields(ChefsSubmissionDataResource submissionResource, ChefsSubmissionResultForm form) throws ServiceException {
+    Integer participantPin = submissionResource.getParticipantPin();
+    Integer programYear = submissionResource.getYear();
+    Integer scenarioNumber = null;
+    
+    if(programYear == null) {
+      programYear = ProgramYearUtils.getCurrentCalendarYear();
+    }
+    
+    CalculatorService calculatorService = ServiceFactory.getCalculatorService();
+    List<ScenarioMetaData> scenarioMetadata = calculatorService.getScenarioMetadata(participantPin, programYear);
+    boolean pinExists = ! scenarioMetadata.isEmpty();
+    
+    List<ScenarioMetaData> formScenarios = ScenarioUtils.findScenariosByChefSubmissionGuid(scenarioMetadata, form.getSubmissionGuid());
+    if( ! formScenarios.isEmpty() ) {
+      ScenarioMetaData latestScenarioForThisSubmission = formScenarios.get(0);
+      programYear = latestScenarioForThisSubmission.getProgramYear();
+      scenarioNumber = latestScenarioForThisSubmission.getScenarioNumber();
+    }
+    
+    form.setParticipantPin(participantPin);
+    form.setProgramYear(programYear);
+    form.setScenarioNumber(scenarioNumber);
+    form.setPinExists(pinExists);
   }
 
   private String getBceidFormIndFromUserFormType(String userFormType) {

@@ -30,10 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.chefs.database.ChefsSubmissionStatusCodes;
 import ca.bc.gov.srm.farm.chefs.processor.NppSubmissionProcessor;
@@ -43,7 +39,6 @@ import ca.bc.gov.srm.farm.chefs.resource.npp.NppNurseryGrid;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppSubmissionRequestDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.npp.PartnershipInformation;
-import ca.bc.gov.srm.farm.chefs.resource.npp.TreeFruitsFarmed;
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionListItemResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionParentResource;
@@ -70,15 +65,12 @@ import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
-import ca.bc.gov.srm.farm.util.DateUtils;
+import ca.bc.gov.srm.farm.util.ProgramYearUtils;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
-import ca.bc.gov.srm.farm.util.TestUtils;
 
-public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
+public class ChefsNppIdirSubmissionTest extends AbstractChefsNppSubmissionTest {
 
   private static Logger logger = LoggerFactory.getLogger(ChefsNppIdirSubmissionTest.class);
-
-  private final String CHEFS_FORM_TYPE = ChefsFormTypeCodes.NPP;
 
 
   @Test
@@ -89,7 +81,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionsList = chefsApiDao.getResourceList(submissionsUrl, SubmissionListItemResource.class);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionsList);
     assertTrue(submissionsList.size() > 0);
@@ -107,7 +99,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, NppSubmissionDataResource.class);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionWrapper);
 
@@ -133,7 +125,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, NppSubmissionDataResource.class);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionWrapper);
 
@@ -190,7 +182,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, NppSubmissionDataResource.class);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionWrapper);
 
@@ -256,7 +248,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   public void invalidBusinessNumber() {
 
     String submissionGuid = "00000000-0000-0001-0004-000000000000";
-    Integer participantPin = getUnusedParticpantPin();
+    Integer participantPin = getUnusedParticipantPin();
 
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
@@ -288,7 +280,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     data.setWhatIsYourMainFarmingActivity("livestock");
     data.setLayersEggsForConsumption_109(32.2);
     
-    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -299,14 +291,14 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       task = processor.processSubmission(submissionMetaData);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(task);
 
     assertEquals("2023 NPP " + participantPin, task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
         + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n\n" + "Environment: DEV\n" + "\n"
         + "First Name: \n" + "Last Name: \n" + "Corporate Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n"
         + "Email: targaryen@game.of.thrones\n" + "Participant Type: coOperative\n" + "Business Number: 12345678RC0001\n",
@@ -317,7 +309,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
     } catch (DataAccessException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionRec);
 
@@ -345,8 +337,9 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   @Test
   public void corporationHappyPath() {
     
-    Integer participantPin = getUnusedParticpantPin();
-    Integer programYear = 2026;
+    Integer participantPin = getUnusedParticipantPin();
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
+    Integer enwYear = programYear - 2;
     String businessNumber = "999928888";
     String submissionGuid = null;
     
@@ -400,32 +393,18 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       data.setThirdPartyPostalCode("V4N 0C0");
       data.setThirdPartyTelephone("(604) 555-5555");
       data.setThirdPartyFax("(604) 125-9338");
+      
+      data.setCropsFarmed(Arrays.asList("berries"));
+  
+      data.setBerryGrid(Arrays.asList(
+        new NppCommodityGrid("5000 - Blackberries", "5000", 12.0, null, null)
+      ));
   
       data.setOrigin("external");
       data.setExternalMethod("chefsForm");
       data.setEnvironment("DEV");
       data.setAccountingCode("cash");
       data.setWhatIsYourMainFarmingActivity("Treefruit");
-      data.setBlueberry36YearProductionAcres_5062(12.0);
-      data.setCranberry4thYearProductionAcres_4994(60.0);
-      data.setBredCow_104(123.0);
-      data.setHogsFarrowing_145(141.0);
-      data.setHoneybees_126(126.8);
-      data.setLeafCutterBees_129(129.6);
-      data.setBroilersTurkeys_144(12.4);
-      data.setBroilersChickens_143(13.0);
-      data.setLayersEggsForConsumption_109(32.2);
-      data.setLayersEggsForHatching_108(80.0);
-      data.setFeederCattleFedUpTo900Lbs_105(34.0);
-      data.setFeederCattleFedOver900Lbs_106(90.0);
-      data.setNumberOfCustomFedCattle_141(41.0);
-      data.setNumberOfCustomFedHogs_142(42.0);
-      data.setFeederHogsFedOver50Lbs_124(2.0);
-      data.setFeederHogsFedUpTo50Lbs_125(125.0);
-      data.setDairyOfButterfatPerDay_113(113.0);
-      data.setGala5YearProductionAcres_4826(22.0);
-      data.setGala24YearProductionAcres_4824(12.0);
-      data.setGala1stYearProductionAcres_4822(1.0);
       data.setDidYouCompleteAProductionCycle("yes");
       data.setDidYouStartFarmingWithinTheLastSixMonths("yes");
       data.setDoYouHaveMultipleOperations("no");
@@ -436,16 +415,6 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       fbg2.setCrop("5564HayAlfalfa");
       fbg2.setAcres(6.0);
       data.setForageBasketGrid(Arrays.asList(fbg1, fbg2));
-      
-      NppCropGrid cbt = new NppCropGrid();
-      cbt.setCrop("6970BeansAdzuki");
-      cbt.setAcres(697.0);
-      data.setCropBasketTypeGrid(Arrays.asList(cbt));
-      
-      data.setBredCow_104(2.0);
-      data.setChristmasTreesEstablishmentAcres(0.0);
-      data.setChristmasTreesEstablishmentAcres1(1.1);
-      data.setChristmasTreesEstablishmentAcres2(2.0);
   
       data.setFiscalYearStart(Date.from(LocalDate.of(programYear, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
       data.setFiscalYearEnd(Date.from(LocalDate.of(programYear, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
@@ -457,13 +426,6 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       PartnershipInformation p3 = new PartnershipInformation(String.valueOf(participantPin), corporationName, null, null, 30.0);
       data.setPartnershipInformation(Arrays.asList(p1, p2, p3));
       data.setCommoditiesFarmed(Arrays.asList("treefruitGrapes", "grainLivestock", "nurseriesGreenhouses"));
-  
-      TreeFruitsFarmed tff = new TreeFruitsFarmed();
-      tff.setApples(true);
-      tff.setCherries(false);
-      tff.setGrapes(false);
-      tff.setTreefruit(false);
-      data.setTreefruitsFarmed(tff);
   
       SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
   
@@ -487,7 +449,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionMetaData = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
       NppSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
@@ -502,7 +464,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -512,7 +474,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         task = processor.processSubmission(submissionMetaData);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       
       assertNotNull(task);
@@ -530,7 +492,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
       } catch (DataAccessException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(submissionRec);
   
@@ -550,42 +512,40 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       Integer nppDbSubmissionId = nppScenarioMetadata.getChefsFormSubmissionId();
       assertNotNull(nppDbSubmissionId);
       assertNotNull(nppScenarioNumber);
-      
       logger.debug("nppScenarioNumber:" + nppScenarioNumber);
       
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
-  
-      Scenario scenario = null;
+      Scenario chefScenario = null;
       try {
-        scenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
+        chefScenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
-      assertNotNull(scenario);
-      Client client = scenario.getClient();
+      assertNotNull(chefScenario);
+      Client client = chefScenario.getClient();
       assertNotNull(client);
       assertEquals(participantPin, client.getParticipantPin());
       assertEquals(businessNumber + BUSINESS_NUMBER_SUFFIX, client.getBusinessNumber());
-      assertEquals(programYear, scenario.getYear());
-      assertEquals(nppScenarioNumber, scenario.getScenarioNumber());
+      assertEquals(programYear, chefScenario.getYear());
+      assertEquals(nppScenarioNumber, chefScenario.getScenarioNumber());
   
-      FarmingOperation fo = scenario.getFarmingYear().getFarmingOperationByNumber(1);
-      assertEquals(0.30, fo.getPartnershipPercent());
+      FarmingOperation chefScenarioOperation = chefScenario.getFarmingYear().getFarmingOperationByNumber(1);
+      assertEquals(0.30, chefScenarioOperation.getPartnershipPercent());
       
-      List<ProductiveUnitCapacity> pucs = fo.getProductiveUnitCapacities();
-  
-      HashMap<String, Double> productiveUnitsMap = new HashMap<>();
-      for (ProductiveUnitCapacity puc : pucs) {
-        logger.debug("getProductiveUnitCapacities " + puc.getCode() + " reportedAmount " + puc.getReportedAmount());
-        productiveUnitsMap.put(puc.getCode(), puc.getReportedAmount());
+      {
+        List<ProductiveUnitCapacity> pucs = chefScenarioOperation.getProductiveUnitCapacities();
+    
+        Map<String, Double> productiveUnitsMap = buildProductiveUnitsMap(pucs);
+        
+        assertEquals(3, productiveUnitsMap.size());
+        assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5000"));
+        assertEquals(Double.valueOf(6.0), productiveUnitsMap.get("5564"));
+        assertEquals(Double.valueOf(5.0), productiveUnitsMap.get("5572"));
       }
-      // TODO check productive units count and values
-//      assertEquals(0, productiveUnitsMap.size());
-      assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5062"));
   
-      List<FarmingOperationPartner> fops = fo.getFarmingOperationPartners();
+      List<FarmingOperationPartner> fops = chefScenarioOperation.getFarmingOperationPartners();
       assertEquals(3, fops.size());
       {
         FarmingOperationPartner fop = fops.get(0);
@@ -611,19 +571,14 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         assertNull(fop.getLastName());
         assertEquals(0.30, fop.getPartnerPercent().doubleValue());
       }
-  
-      assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5062"));
-      assertEquals(Double.valueOf(12.4), productiveUnitsMap.get("144"));
-      assertEquals(Double.valueOf(60.0), productiveUnitsMap.get("4994"));
-      assertEquals(Double.valueOf(90.0), productiveUnitsMap.get("106"));
-      assertEquals(Double.valueOf(22.0), productiveUnitsMap.get("4826"));
+
       
       CrmAccountResource crmAccount = null;
       try {
         crmAccount = crmDao.getAccountByPin(participantPin);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(crmAccount);
       
@@ -636,15 +591,17 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         crmProgramYear = crmDao.getProgramYear(programYear);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(crmProgramYear);
       
   
+      // ------------ ENW Scenario -------------------------------------------------------------------
+      
       programYearMetadata = getProgramYearMetadata(participantPin, programYear);
       assertNotNull(programYearMetadata);
       
-      ScenarioMetaData enwScenarioMetadata = ScenarioUtils.findLatestEnrolmentNoticeWorkflowScenario(programYearMetadata, programYear);
+      ScenarioMetaData enwScenarioMetadata = ScenarioUtils.findLatestEnrolmentNoticeWorkflowScenario(programYearMetadata, enwYear);
       assertNotNull(enwScenarioMetadata);
       Integer enwScenarioNumber = enwScenarioMetadata.getScenarioNumber();
       Integer enwDbSubmissionId = enwScenarioMetadata.getChefsFormSubmissionId();
@@ -654,29 +611,45 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       
       Scenario enwScenario = null;
       try {
-        enwScenario = calculatorService.loadScenario(participantPin, programYear, enwScenarioNumber);
+        enwScenario = calculatorService.loadScenario(participantPin, enwYear, enwScenarioNumber);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(enwScenario);
       client = enwScenario.getClient();
       assertNotNull(client);
       assertEquals(participantPin, client.getParticipantPin());
+      assertNull(client.getSin());
       assertEquals(businessNumber + BUSINESS_NUMBER_SUFFIX, client.getBusinessNumber());
-      assertEquals(programYear, enwScenario.getYear());
+      assertEquals(enwYear, enwScenario.getYear());
       assertEquals(enwScenarioNumber, enwScenario.getScenarioNumber());
       assertEquals(ScenarioCategoryCodes.ENROLMENT_NOTICE_WORKFLOW, enwScenario.getScenarioCategoryCode());
       assertEquals(ScenarioTypeCodes.USER, enwScenario.getScenarioTypeCode());
       assertEquals(ScenarioStateCodes.ENROLMENT_NOTICE_COMPLETE, enwScenario.getScenarioStateCode());
       assertEquals(enwDbSubmissionId, enwScenario.getChefsSubmissionId());
       
+      {
+        FarmingOperation enwScenarioOperation = enwScenario.getFarmingYear().getFarmingOperationByNumber(1);
+        assertEquals(0.30, enwScenarioOperation.getPartnershipPercent());
+        
+        List<ProductiveUnitCapacity> pucs = enwScenarioOperation.getProductiveUnitCapacities();
+    
+        Map<String, Double> productiveUnitsMap = buildProductiveUnitsMap(pucs);
+        
+        assertEquals(3, productiveUnitsMap.size());
+        assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5000"));
+        assertEquals(Double.valueOf(6.0), productiveUnitsMap.get("5564"));
+        assertEquals(Double.valueOf(5.0), productiveUnitsMap.get("5572"));
+      }
+      
       EnwEnrolment enw = enwScenario.getEnwEnrolment();
+      assertEquals(programYear, enw.getEnrolmentYear());
       assertEquals(EnwEnrolment.CALCULATION_TYPE_PROXY_MARGINS, enw.getEnrolmentCalculationTypeCode());
       assertEquals(Boolean.TRUE, enw.getHasBpus());
       assertEquals(Boolean.TRUE, enw.getHasProductiveUnits());
       assertEquals(Boolean.TRUE, enw.getCanCalculateProxyMargins());
-      assertEquals(Double.valueOf(1097.87), enw.getEnrolmentFee());
+      assertEquals(Double.valueOf(58.42), enw.getEnrolmentFee());
   
   
       String accountId = crmAccount.getAccountid();
@@ -687,27 +660,28 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         crmEnrolment = crmDao.getEnrolment(vsi_programyearid, accountId);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
-      assertNotNull(crmEnrolment);    
-      assertNotNull(crmEnrolment.getEnrolmentStatusCode());
-      // TODO Check for a specific Enrolment Status Code?
-      
+      assertNotNull(crmEnrolment);
+      assertEnrolmentStatusIsOneOf(crmEnrolment.getEnrolmentStatusCode(),
+          CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED, CrmConstants.ENROLMENT_STATUS_CODE_INITIALIZED);
+
     } finally {
-      
+
       deleteSubmissionsFromFarm(submissionGuid);
       deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
       deleteSubmissionsFromChefs(submissionGuid);
       deletePin(participantPin);
     }
-    
+
   }
-  
+
   @Test
   public void individualLateParticipantHappyPath() {
     
-    Integer participantPin = getUnusedParticpantPin();
-    Integer programYear = 2024;
+    Integer participantPin = getUnusedParticipantPin();
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
+    Integer enwYear = programYear - 2;
     String submissionGuid = null;
     
     try {
@@ -795,7 +769,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionMetaData = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
       NppSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
@@ -810,7 +784,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -820,7 +794,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         task = processor.processSubmission(submissionMetaData);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(task);
   
@@ -831,7 +805,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
       } catch (DataAccessException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(submissionRec);
       assertNotNull(task);
@@ -856,24 +830,29 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       ScenarioMetaData nppScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_NPP,
           ScenarioTypeCodes.CHEF);
       Integer nppScenarioNumber = nppScenarioMetadata.getScenarioNumber();
+      Integer nppDbSubmissionId = nppScenarioMetadata.getChefsFormSubmissionId();
+      assertNotNull(nppDbSubmissionId);
+      assertNotNull(nppScenarioNumber);
       logger.debug("nppScenarioNumber:" + nppScenarioNumber);
   
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
-      Scenario scenario = null;
+      Scenario chefScenario = null;
       try {
-        scenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
+        chefScenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
+      
+      assertNotNull(chefScenario);
+      Client client = chefScenario.getClient();
+      assertNotNull(client);
+      assertEquals(participantPin, client.getParticipantPin());
+      assertEquals(programYear, chefScenario.getYear());
+      assertEquals(nppScenarioNumber, chefScenario.getScenarioNumber());
   
-      assertNotNull(scenario);
-      assertTrue(scenario.getFarmingYear().getIsLateParticipant());
-      assertEquals(participantPin, scenario.getClient().getParticipantPin());
-      assertEquals(programYear, scenario.getYear());
-      assertEquals(nppScenarioNumber, scenario.getScenarioNumber());
-  
-      FarmingOperation fo = scenario.getFarmingYear().getFarmingOperationByNumber(1);
+      FarmingOperation fo = chefScenario.getFarmingYear().getFarmingOperationByNumber(1);
+      assertNotNull(fo);
       assertEquals(1.0, fo.getPartnershipPercent());
       
       List<ProductiveUnitCapacity> pucs = fo.getProductiveUnitCapacities();
@@ -892,6 +871,13 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       List<FarmingOperationPartner> fops = fo.getFarmingOperationPartners();
       assertEquals(0, fops.size());
       
+      
+      programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+      assertNotNull(programYearMetadata);
+      
+      ScenarioMetaData enwScenarioMetadata = ScenarioUtils.findLatestEnrolmentNoticeWorkflowScenario(programYearMetadata, enwYear);
+      assertNull(enwScenarioMetadata);
+      
     } finally {
       
       deleteSubmissionsFromFarm(submissionGuid);
@@ -905,9 +891,11 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   @Test
   public void individualNoPinThenAddPinHappyPath() {
 
-    Integer participantPin = getUnusedParticpantPin();
-    Integer programYear = 2026;
+    Integer participantPin = getUnusedParticipantPin();
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
+    Integer enwYear = programYear - 2;
     String submissionGuid = null;
+    String sinNumber = "123456789";
     
     try {
 
@@ -917,7 +905,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   
       NppSubmissionDataResource data = new NppSubmissionDataResource();
   
-      data.setExistingAccount(true);
+      data.setExistingAccount(false);
       data.setLateParticipant(false);
       data.setFirstName("Johnny");
       data.setLastName("Appleseed");
@@ -931,7 +919,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       data.setAgriStabilityAgriInvestPin(null);
       data.setTelephone("(648) 452-4357");
       data.setPostalCode("T5Y 4R4");
-      data.setSinNumber("123456789");
+      data.setSinNumber(sinNumber);
       data.setAddress("1234 Home Road");
       data.setTownCity("Penticton");
       data.setProvince("BC");
@@ -960,12 +948,6 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       data.setEnvironment("DEV");
       data.setAccountingCode("cash");
       data.setWhatIsYourMainFarmingActivity("Treefruit");
-      data.setBlueberry36YearProductionAcres_5062(12.5);
-      data.setCranberry4thYearProductionAcres_4994(60.6);
-      data.setBroilersTurkeys_144(12.5);
-      data.setFeederCattleFedOver900Lbs_106(90.0);
-      data.setGala5YearProductionAcres_4826(22.0);
-      data.setGala24YearProductionAcres_4824(99.5);
       data.setDidYouCompleteAProductionCycle("yes");
       data.setDidYouStartFarmingWithinTheLastSixMonths("yes");
       data.setDoYouHaveMultipleOperations("no");
@@ -977,17 +959,11 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       PartnershipInformation p1 = new PartnershipInformation("345345", null, "partner", "one", 10.0);
       PartnershipInformation p2 = new PartnershipInformation("122222", null, "partner", "two", 20.0);
       data.setPartnershipInformation(Arrays.asList(p1, p2));
-      data.setCommoditiesFarmed(Arrays.asList("treefruitGrapes", "nurseriesGreenhouses"));
-  
-      TreeFruitsFarmed tff = new TreeFruitsFarmed();
-      tff.setApples(true);
-      tff.setCherries(false);
-      tff.setGrapes(false);
-      tff.setTreefruit(false);
-      data.setTreefruitsFarmed(tff);
-  
+      
+      data.setCropsFarmed(Arrays.asList("berries"));
+      
       data.setBerryGrid(Arrays.asList(
-        new NppCommodityGrid("5064 - 5064 - Blueberries; High bush (Years 10+ of Production)", "5064", 2.0, null, null)
+        new NppCommodityGrid("5000 - Blackberries", "5000", 12.0, null, null)
       ));
   
       SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
@@ -1012,7 +988,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionMetaData = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
       NppSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
@@ -1026,7 +1002,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -1036,7 +1012,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         task = processor.processSubmission(submissionMetaData);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(task);
       assertNull(task.getAccountId());
@@ -1049,7 +1025,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         task = completeAndGetTask(crmConfig.getValidationErrorUrl(), task.getActivityId());
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
       assertNotNull(task);
@@ -1059,17 +1035,16 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_COMPLETED), task.getStatusCode());
       assertEquals("NPP client without a PIN", task.getDescription());
   
-      // Put participant PIN back
+      
+      // ------------ Update the form to add Participant PIN -----------------------------------------
       submissionMetaData.getSubmission().getData().setAgriStabilityAgriInvestPin(participantPin);
   
-      deletePin(participantPin);
-      
       try {
         processor.loadSubmissionsFromDatabase();
         task = processor.processSubmission(submissionMetaData);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
       assertNotNull(task);
@@ -1088,7 +1063,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
       } catch (DataAccessException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(submissionRec);
   
@@ -1105,38 +1080,48 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       ScenarioMetaData nppScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_NPP,
           ScenarioTypeCodes.CHEF);
       Integer nppScenarioNumber = nppScenarioMetadata.getScenarioNumber();
+      Integer nppDbSubmissionId = nppScenarioMetadata.getChefsFormSubmissionId();
+      assertNotNull(nppDbSubmissionId);
+      assertNotNull(nppScenarioNumber);
       logger.debug("nppScenarioNumber:" + nppScenarioNumber);
-  
+      
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
-      Scenario scenario = null;
+      Scenario chefScenario = null;
       try {
-        scenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
+        chefScenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
+      
+      assertNotNull(chefScenario);
+      Client client = chefScenario.getClient();
+      assertNotNull(client);
+      assertEquals(participantPin, client.getParticipantPin());
+      assertEquals(programYear, chefScenario.getYear());
+      assertEquals(nppScenarioNumber, chefScenario.getScenarioNumber());
   
-      assertNotNull(scenario);
-      assertEquals(participantPin, scenario.getClient().getParticipantPin());
-      assertEquals(programYear, scenario.getYear());
-      assertEquals(nppScenarioNumber, scenario.getScenarioNumber());
-  
-      FarmingOperation fo = scenario.getFarmingYear().getFarmingOperationByNumber(1);
-      assertEquals(0.70, fo.getPartnershipPercent());
+      FarmingOperation chefScenarioOperation = chefScenario.getFarmingYear().getFarmingOperationByNumber(1);
+      assertEquals(0.70, chefScenarioOperation.getPartnershipPercent());
 
-      for (ProductiveUnitCapacity puc : fo.getCraProductiveUnitCapacities()) {
+      for (ProductiveUnitCapacity puc : chefScenarioOperation.getCraProductiveUnitCapacities()) {
         logger.debug("getCraProductiveUnitCapacities " + puc.getCode() + " reportedAmount " + puc.getReportedAmount());
       }
-      for (ProductiveUnitCapacity puc : fo.getLocalProductiveUnitCapacities()) {
-        logger.debug("getLocalProductiveUnitCapacities " + puc.getCode() + " reportedAmount " + puc.getReportedAmount());
+      
+      {
+        List<ProductiveUnitCapacity> pucs = chefScenarioOperation.getProductiveUnitCapacities();
+        
+        Map<String, Double> productiveUnitsMap = buildProductiveUnitsMap(pucs);
+        
+        assertEquals(1, productiveUnitsMap.size());
+        assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5000"));
+      
+        assertEquals(chefScenarioOperation.getLocalProductiveUnitCapacities().size(), pucs.size());
       }
       
-      List<ProductiveUnitCapacity> pucs = fo.getProductiveUnitCapacities();
-      assertEquals(fo.getLocalProductiveUnitCapacities().size(), pucs.size());
-      
-      assertEquals(fo.getCraProductiveUnitCapacities().size(), 0);
+      assertEquals(0, chefScenarioOperation.getCraProductiveUnitCapacities().size());
   
-      List<FarmingOperationPartner> fops = fo.getFarmingOperationPartners();
+      List<FarmingOperationPartner> fops = chefScenarioOperation.getFarmingOperationPartners();
       assertEquals(2, fops.size());
       {
         FarmingOperationPartner fop = fops.get(0);
@@ -1154,9 +1139,103 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         assertEquals("one", fop.getLastName());
         assertEquals(0.10, fop.getPartnerPercent().doubleValue());
       }
+
       
+      CrmAccountResource crmAccount = null;
+      try {
+        crmAccount = crmDao.getAccountByPin(participantPin);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
+      }
+      assertNotNull(crmAccount);
+      
+      assertEquals(participantPin.toString(), crmAccount.getVsi_pin());
+      assertEquals("Johnny", crmAccount.getVsi_firstname());
+      assertEquals("Appleseed", crmAccount.getVsi_lastname());
+      assertEquals(sinNumber, crmAccount.getVsi_socialinsurancenumber());
+      
+      CrmProgramYearResource crmProgramYear = null;
+      try {
+        crmProgramYear = crmDao.getProgramYear(programYear);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
+      }
+      assertNotNull(crmProgramYear);
+      
+      
+      // ------------ ENW Scenario -------------------------------------------------------------------
+      
+      programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+      assertNotNull(programYearMetadata);
+      
+      ScenarioMetaData enwScenarioMetadata = ScenarioUtils.findLatestEnrolmentNoticeWorkflowScenario(programYearMetadata, enwYear);
+      assertNotNull(enwScenarioMetadata);
+      Integer enwScenarioNumber = enwScenarioMetadata.getScenarioNumber();
+      Integer enwDbSubmissionId = enwScenarioMetadata.getChefsFormSubmissionId();
+      assertNotNull(enwScenarioNumber);
+      assertNotNull(enwDbSubmissionId);
+      assertEquals(nppDbSubmissionId, enwDbSubmissionId);
+      
+      Scenario enwScenario = null;
+      try {
+        enwScenario = calculatorService.loadScenario(participantPin, enwYear, enwScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
+      }
+      assertNotNull(enwScenario);
+      client = enwScenario.getClient();
+      assertNotNull(client);
+      assertEquals(participantPin, client.getParticipantPin());
+      assertEquals(sinNumber, client.getSin());
+      assertNull(client.getBusinessNumber());
+      assertEquals(enwYear, enwScenario.getYear());
+      assertEquals(enwScenarioNumber, enwScenario.getScenarioNumber());
+      assertEquals(ScenarioCategoryCodes.ENROLMENT_NOTICE_WORKFLOW, enwScenario.getScenarioCategoryCode());
+      assertEquals(ScenarioTypeCodes.USER, enwScenario.getScenarioTypeCode());
+      assertEquals(ScenarioStateCodes.ENROLMENT_NOTICE_COMPLETE, enwScenario.getScenarioStateCode());
+      assertEquals(enwDbSubmissionId, enwScenario.getChefsSubmissionId());
+      
+      {
+        FarmingOperation enwScenarioOperation = enwScenario.getFarmingYear().getFarmingOperationByNumber(1);
+        assertEquals(0.70, enwScenarioOperation.getPartnershipPercent());
+        
+        List<ProductiveUnitCapacity> pucs = enwScenarioOperation.getProductiveUnitCapacities();
+    
+        Map<String, Double> productiveUnitsMap = buildProductiveUnitsMap(pucs);
+        
+        assertEquals(1, productiveUnitsMap.size());
+        assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5000"));
+      }
+      
+      
+      EnwEnrolment enw = enwScenario.getEnwEnrolment();
+      assertEquals(programYear, enw.getEnrolmentYear());
+      assertEquals(EnwEnrolment.CALCULATION_TYPE_PROXY_MARGINS, enw.getEnrolmentCalculationTypeCode());
+      assertEquals(Boolean.TRUE, enw.getHasBpus());
+      assertEquals(Boolean.TRUE, enw.getHasProductiveUnits());
+      assertEquals(Boolean.TRUE, enw.getCanCalculateProxyMargins());
+      assertEquals(Double.valueOf(126.74), enw.getEnrolmentFee());
+  
+  
+      String accountId = crmAccount.getAccountid();
+      String vsi_programyearid = crmProgramYear.getVsi_programyearid();
+    
+      CrmEnrolmentResource crmEnrolment = null;
+      try {
+        crmEnrolment = crmDao.getEnrolment(vsi_programyearid, accountId);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
+      }
+      assertNotNull(crmEnrolment);
+      assertEnrolmentStatusIsOneOf(crmEnrolment.getEnrolmentStatusCode(),
+              CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED, CrmConstants.ENROLMENT_STATUS_CODE_INITIALIZED);
+
     } finally {
-      
+
       deleteSubmissionsFromFarm(submissionGuid);
       deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
       deleteSubmissionsFromChefs(submissionGuid);
@@ -1182,9 +1261,9 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         conn.rollback();
       } catch (SQLException e1) {
         e1.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
 
     // Confirm that the submissions now do not exist.
@@ -1194,7 +1273,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionRecordMap = chefsDatabaseDao.readSubmissionsByGuid(conn, submissionGuidList);
       } catch (DataAccessException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(submissionRecordMap);
       assertTrue(submissionRecordMap.isEmpty());
@@ -1240,9 +1319,9 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         conn.rollback();
       } catch (SQLException e1) {
         e1.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
 
     // Read the created submissions
@@ -1252,7 +1331,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionRecordMap = chefsDatabaseDao.readSubmissionsByGuid(conn, submissionGuidList);
     } catch (DataAccessException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionRecordMap);
 
@@ -1316,9 +1395,9 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         conn.rollback();
       } catch (SQLException e1) {
         e1.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
 
     // Read the updated submissions
@@ -1327,7 +1406,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionRecordMap = chefsDatabaseDao.readSubmissionsByGuid(conn, submissionGuidList);
     } catch (DataAccessException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionRecordMap);
 
@@ -1372,9 +1451,9 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         conn.rollback();
       } catch (SQLException e1) {
         e1.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
   }
 
@@ -1386,7 +1465,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       chefsSubmissions = chefsDatabaseDao.readSubmissionsByFormType(conn, ChefsFormTypeCodes.NPP);
     } catch (DataAccessException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(chefsSubmissions);
 
@@ -1403,7 +1482,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   public void submissionAlreadyProcessed() {
     String submissionGuid = "db4e9969-c2cf-44f1-b565-93343aba0e2c";
 
-    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     try {
       processor.loadSubmissionsFromChefs();
@@ -1430,7 +1509,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
 
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
 
   }
@@ -1439,7 +1518,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   public void sinMismatch() {
 
     String submissionGuid = "00000000-0000-0001-0003-000000000002";
-    Integer programYear = 2023;
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
 
     deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
@@ -1478,7 +1557,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       new NppCommodityGrid("5000 - Blackberries", "5000", 1.1, null, null)
     ));
 
-    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -1489,7 +1568,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       validationTask = processor.processSubmission(submissionMetaData);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(validationTask);
 
@@ -1497,7 +1576,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " NPP 314155940", validationTask.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-    assertEquals(formUserType + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
         + "- Field \"SIN Number\" with value \"123456780\" does not match BCFARMS: \"123456789\".\n" + "\n" + "Environment: DEV\n" + "\n"
         + "First Name: Jon\n" + "Last Name: Snow\n" + "Corporate Name: \n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n"
         + "Participant Type: individual\n" + "SIN Number: 123456780\n", validationTask.getDescription());
@@ -1507,7 +1586,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
     } catch (DataAccessException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionRec);
 
@@ -1535,7 +1614,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   public void businessNumberMismatch() {
 
     String submissionGuid = "00000000-0000-0001-0004-000000000001";
-    Integer programYear = 2023;
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
 
     deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
@@ -1567,7 +1646,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     data.setSpecifyOther("salmon");
     data.setLayersEggsForConsumption_109(32.2);
 
-    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -1578,7 +1657,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       task = processor.processSubmission(submissionMetaData);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(task);
 
@@ -1586,7 +1665,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " NPP 5070370", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
         + "- Field \"Business Number\" with value \"123456780RC0001\" does not match BCFARMS: \"999999999RC0001\". Note that only the first nine digits are compared.\n"
         + "\n" + "Environment: DEV\n" + "\n" + "First Name: \n" + "Last Name: \n" + "Corporate Name: Targaryen Kingdom\n"
         + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n" + "Participant Type: limitedPartnership\n"
@@ -1597,7 +1676,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
     } catch (DataAccessException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionRec);
 
@@ -1616,7 +1695,9 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   @Test
   public void fiscalYearEndMissing() {
 
+    Integer participantPin = 3693470;
     String submissionGuid = "00000000-YEAR-0001-0003-000000000002";
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
 
     deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
@@ -1637,7 +1718,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     farmType.setLabel("Individual");
     data.setFarmType(farmType);
     
-    data.setAgriStabilityAgriInvestPin(3693470);
+    data.setAgriStabilityAgriInvestPin(participantPin);
     data.setSinNumber("999999999");
     data.setBusinessTaxNumberBn(null);
     data.setOrigin("external");
@@ -1652,7 +1733,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       new NppCommodityGrid("5000 - Blackberries", "5000", 1.1, null, null)
     ));
 
-    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -1663,17 +1744,16 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       task = processor.processSubmission(submissionMetaData);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(task);
 
     assertNotNull(task.getAccountId());
-    Integer programYear = DateUtils.getYearFromDate(new Date());
-    assertEquals(programYear + " NPP 3693470", task.getSubject());
+    assertEquals(programYear + " NPP " + participantPin, task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
     assertEquals(
-        formUserType + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n\n"
+        getFormUserType() + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n\n"
             + "- Required field is blank: Fiscal Year End\n" + "\n"
             + "Environment: DEV\n" + "\n"
             + "First Name: Jon\n" + "Last Name: Snow\n" + "Corporate Name: \n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n"
@@ -1684,7 +1764,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
     } catch (DataAccessException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionRec);
 
@@ -1703,8 +1783,11 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   @Test
   public void duplicateSubmission() {
 
-    Integer participantPin = getUnusedParticpantPin();
-    Integer programYear = 2023;
+    Integer participantPin = getUnusedParticipantPin();
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
+    Integer enwYear = programYear - 2;
+    String corporationName = "CORP " + participantPin + " TEST";
+    String businessNumber = "999928888";
     String submissionGuid1 = null;
     String submissionGuid2 = null;
     
@@ -1720,7 +1803,6 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   
       data.setExistingAccount(false);
       data.setLateParticipant(false);
-      String corporationName = "CORP " + participantPin + " TEST";
       data.setCorporationName(corporationName);
       data.setFirstNameCorporateContact("CORPFIRST");
       data.setLastNameCorporateContact("CORPLAST");
@@ -1734,7 +1816,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       data.setAgriStabilityAgriInvestPin(participantPin);
       data.setTelephone("(648) 452-4357");
       data.setPostalCode("T5Y 4R4");
-      data.setBusinessTaxNumberBn("9999 28888");
+      data.setBusinessTaxNumberBn(businessNumber);
       data.setAddress("1234 HOME ROAD");
       data.setTownCity("PENTICTON");
       data.setProvince("BC");
@@ -1764,33 +1846,9 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       data.setEnvironment("DEV");
       data.setAccountingCode("cash");
       data.setWhatIsYourMainFarmingActivity("Treefruit");
-      data.setBlueberry36YearProductionAcres_5062(null);
-      data.setCranberry4thYearProductionAcres_4994(null);
-      data.setBredCow_104(null);
-      data.setHogsFarrowing_145(null);
-      data.setHoneybees_126(null);
-      data.setLeafCutterBees_129(null);
-      data.setBroilersTurkeys_144(null);
-      data.setBroilersChickens_143(null);
-      data.setLayersEggsForConsumption_109(null);
-      data.setLayersEggsForHatching_108(null);
-      data.setFeederCattleFedUpTo900Lbs_105(null);
-      data.setFeederCattleFedOver900Lbs_106(null);
-      data.setNumberOfCustomFedCattle_141(null);
-      data.setNumberOfCustomFedHogs_142(null);
-      data.setFeederHogsFedOver50Lbs_124(null);
-      data.setFeederHogsFedUpTo50Lbs_125(null);
-      data.setDairyOfButterfatPerDay_113(null);
-      data.setGala5YearProductionAcres_4826(null);
-      data.setGala24YearProductionAcres_4824(null);
-      data.setGala1stYearProductionAcres_4822(null);
       data.setDidYouCompleteAProductionCycle("yes");
       data.setDidYouStartFarmingWithinTheLastSixMonths("yes");
       data.setDoYouHaveMultipleOperations("no");
-  
-      data.setBerryGrid(Arrays.asList(
-        new NppCommodityGrid("5064 - 5064 - Blueberries; High bush (Years 10+ of Production)", "5064", 2.0, null, null)
-      ));
   
       data.setFiscalYearEnd(Date.from(LocalDate.of(programYear, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
       data.setFiscalYearStart(Date.from(LocalDate.of(programYear, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
@@ -1801,14 +1859,12 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       PartnershipInformation p2 = new PartnershipInformation("122222", null, "partner", "two", 20.0);
       PartnershipInformation p3 = new PartnershipInformation("431444", "Tri-Partner Inc", null, null, null);
       data.setPartnershipInformation(Arrays.asList(p1, p2, p3));
-      data.setCommoditiesFarmed(Arrays.asList("treefruitGrapes", "grainLivestock", "nurseriesGreenhouses"));
+      
+      data.setCropsFarmed(Arrays.asList("berries"));
   
-      TreeFruitsFarmed tff = new TreeFruitsFarmed();
-      tff.setApples(true);
-      tff.setCherries(false);
-      tff.setGrapes(false);
-      tff.setTreefruit(false);
-      data.setTreefruitsFarmed(tff);
+      data.setBerryGrid(Arrays.asList(
+        new NppCommodityGrid("5000 - Blackberries", "5000", 12.0, null, null)
+      ));
   
       SubmissionParentResource<NppSubmissionDataResource> submissionMetaData1 = buildSubmissionMetaData();
   
@@ -1832,7 +1888,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionMetaData1 = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
       NppSubmissionDataResource resultData1 = submissionMetaData1.getSubmission().getData();
@@ -1847,7 +1903,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap1 = buildSubmissionItemResourceMap(submissionGuid1);
   
       // Process the submission data
-      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap1);
   
@@ -1857,7 +1913,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         task1 = processor.processSubmission(submissionMetaData1);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(task1);
       assertNotNull(task1.getAccountId());
@@ -1875,7 +1931,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionRec1 = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid1);
       } catch (DataAccessException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(submissionRec1);
   
@@ -1888,41 +1944,45 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   
       programYearMetadata = getProgramYearMetadata(participantPin, programYear);
       assertNotNull(programYearMetadata);
-  
+      
       ScenarioMetaData nppScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_NPP,
           ScenarioTypeCodes.CHEF);
       Integer nppScenarioNumber = nppScenarioMetadata.getScenarioNumber();
+      Integer nppDbSubmissionId = nppScenarioMetadata.getChefsFormSubmissionId();
+      assertNotNull(nppDbSubmissionId);
+      assertNotNull(nppScenarioNumber);
       logger.debug("nppScenarioNumber:" + nppScenarioNumber);
   
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
-      Scenario scenario = null;
+      Scenario chefScenario = null;
       try {
-        scenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
+        chefScenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
-      assertNotNull(scenario);
-      Client client = scenario.getClient();
+      assertNotNull(chefScenario);
+      Client client = chefScenario.getClient();
       assertNotNull(client);
       assertEquals(participantPin, client.getParticipantPin());
       assertEquals("999928888" + BUSINESS_NUMBER_SUFFIX, client.getBusinessNumber());
-      assertEquals(programYear, scenario.getYear());
-      assertEquals(nppScenarioNumber, scenario.getScenarioNumber());
+      assertEquals(programYear, chefScenario.getYear());
+      assertEquals(nppScenarioNumber, chefScenario.getScenarioNumber());
   
-      FarmingOperation fo = scenario.getFarmingYear().getFarmingOperationByNumber(1);
-      assertEquals(0.70, fo.getPartnershipPercent());
-      List<ProductiveUnitCapacity> pucs = fo.getProductiveUnitCapacities();
+      FarmingOperation chefScenarioOperation = chefScenario.getFarmingYear().getFarmingOperationByNumber(1);
+      assertEquals(0.70, chefScenarioOperation.getPartnershipPercent());
   
-      HashMap<String, Double> productiveUnitsMap = new HashMap<>();
-      for (ProductiveUnitCapacity puc : pucs) {
-        logger.debug("getProductiveUnitCapacities " + puc.getCode() + " reportedAmount " + puc.getReportedAmount());
-        productiveUnitsMap.put(puc.getCode(), puc.getReportedAmount());
+      {
+        List<ProductiveUnitCapacity> pucs = chefScenarioOperation.getProductiveUnitCapacities();
+    
+        Map<String, Double> productiveUnitsMap = buildProductiveUnitsMap(pucs);
+        
+        assertEquals(1, productiveUnitsMap.size());
+        assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5000"));
       }
-      assertEquals(Double.valueOf(2.0), productiveUnitsMap.get("5064"));
   
-      List<FarmingOperationPartner> fops = fo.getFarmingOperationPartners();
+      List<FarmingOperationPartner> fops = chefScenarioOperation.getFarmingOperationPartners();
       assertEquals(3, fops.size());
       {
         FarmingOperationPartner fop = fops.get(0);
@@ -1948,24 +2008,114 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         assertNull(fop.getLastName());
         assertNull(fop.getPartnerPercent());
       }
-  
+
+      
       CrmAccountResource crmAccount = null;
       try {
         crmAccount = crmDao.getAccountByPin(participantPin);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(crmAccount);
       
       assertEquals(participantPin.toString(), crmAccount.getVsi_pin());
+      assertEquals(businessNumber, crmAccount.getVsi_businessnumber());
+      assertEquals(corporationName, crmAccount.getName());
+      
+      CrmProgramYearResource crmProgramYear = null;
+      try {
+        crmProgramYear = crmDao.getProgramYear(programYear);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
+      }
+      assertNotNull(crmProgramYear);
+      
+      
+      // ------------ ENW Scenario -------------------------------------------------------------------
+      
+      programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+      assertNotNull(programYearMetadata);
+      
+      ScenarioMetaData enwScenarioMetadata = ScenarioUtils.findLatestEnrolmentNoticeWorkflowScenario(programYearMetadata, enwYear);
+      assertNotNull(enwScenarioMetadata);
+      Integer enwScenarioNumber = enwScenarioMetadata.getScenarioNumber();
+      Integer enwDbSubmissionId = enwScenarioMetadata.getChefsFormSubmissionId();
+      assertNotNull(enwScenarioNumber);
+      assertNotNull(enwDbSubmissionId);
+      assertEquals(nppDbSubmissionId, enwDbSubmissionId);
+      
+      Scenario enwScenario = null;
+      try {
+        enwScenario = calculatorService.loadScenario(participantPin, enwYear, enwScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
+      }
+      assertNotNull(enwScenario);
+      client = enwScenario.getClient();
+      assertNotNull(client);
+      assertEquals(participantPin, client.getParticipantPin());
+      assertNull(client.getSin());
+      assertEquals(businessNumber + BUSINESS_NUMBER_SUFFIX, client.getBusinessNumber());
+      assertEquals(enwYear, enwScenario.getYear());
+      assertEquals(enwScenarioNumber, enwScenario.getScenarioNumber());
+      assertEquals(ScenarioCategoryCodes.ENROLMENT_NOTICE_WORKFLOW, enwScenario.getScenarioCategoryCode());
+      assertEquals(ScenarioTypeCodes.USER, enwScenario.getScenarioTypeCode());
+      assertEquals(ScenarioStateCodes.ENROLMENT_NOTICE_COMPLETE, enwScenario.getScenarioStateCode());
+      assertEquals(enwDbSubmissionId, enwScenario.getChefsSubmissionId());
+      
+      {
+        FarmingOperation enwScenarioOperation = enwScenario.getFarmingYear().getFarmingOperationByNumber(1);
+        assertEquals(0.70, enwScenarioOperation.getPartnershipPercent());
+        
+        List<ProductiveUnitCapacity> pucs = enwScenarioOperation.getProductiveUnitCapacities();
+    
+        Map<String, Double> productiveUnitsMap = buildProductiveUnitsMap(pucs);
+        
+        assertEquals(1, productiveUnitsMap.size());
+        assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5000"));
+      }
+      
+      
+      EnwEnrolment enw = enwScenario.getEnwEnrolment();
+      assertEquals(programYear, enw.getEnrolmentYear());
+      assertEquals(EnwEnrolment.CALCULATION_TYPE_PROXY_MARGINS, enw.getEnrolmentCalculationTypeCode());
+      assertEquals(Boolean.TRUE, enw.getHasBpus());
+      assertEquals(Boolean.TRUE, enw.getHasProductiveUnits());
+      assertEquals(Boolean.TRUE, enw.getCanCalculateProxyMargins());
+      assertEquals(Double.valueOf(126.74), enw.getEnrolmentFee());
+  
+  
+      String accountId = crmAccount.getAccountid();
+      String vsi_programyearid = crmProgramYear.getVsi_programyearid();
+    
+      CrmEnrolmentResource crmEnrolment = null;
+      try {
+        crmEnrolment = crmDao.getEnrolment(vsi_programyearid, accountId);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
+      }
+      assertNotNull(crmEnrolment);
+      assertEnrolmentStatusIsOneOf(crmEnrolment.getEnrolmentStatusCode(),
+              CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED, CrmConstants.ENROLMENT_STATUS_CODE_INITIALIZED);
+
+      assertEquals(participantPin.toString(), crmAccount.getVsi_pin());
       assertEquals("999928888", crmAccount.getVsi_businessnumber());
       assertEquals(corporationName, crmAccount.getName());
       
-      long scenarioCountAfterSubmission1 = programYearMetadata.stream()
+      long programYearScenarioCountAfterSubmission1 = programYearMetadata.stream()
           .filter(s -> s.getProgramYear().equals(programYear))
           .count();
-      assertEquals(2, scenarioCountAfterSubmission1);
+      assertEquals(1, programYearScenarioCountAfterSubmission1);
+      
+      long enwYearScenarioCountAfterSubmission1 = programYearMetadata.stream()
+          .filter(s -> s.getProgramYear().equals(enwYear))
+          .count();
+      
+      assertEquals(2, enwYearScenarioCountAfterSubmission1);
       
       // Second submission 
       SubmissionParentResource<NppSubmissionDataResource> submissionMetaData2 = buildSubmissionMetaData();
@@ -1980,7 +2130,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionMetaData2 = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
       NppSubmissionDataResource resultData2 = submissionMetaData2.getSubmission().getData();
@@ -2000,7 +2150,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         task2 = processor.processSubmission(submissionMetaData2);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(task2);
       assertNotNull(task2.getAccountId());
@@ -2023,7 +2173,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionRec2 = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid2);
       } catch (DataAccessException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(submissionRec2);
   
@@ -2037,11 +2187,17 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       programYearMetadata = getProgramYearMetadata(participantPin, programYear);
       assertNotNull(programYearMetadata);
       
-      long scenarioCountAfterSubmission2 = programYearMetadata.stream()
+      long programYearScenarioCountAfterSubmission2 = programYearMetadata.stream()
           .filter(s -> s.getProgramYear().equals(programYear))
           .count();
       
-      assertEquals(2, scenarioCountAfterSubmission2);
+      assertEquals(1, programYearScenarioCountAfterSubmission2);
+      
+      long enwYearScenarioCountAfterSubmission2 = programYearMetadata.stream()
+          .filter(s -> s.getProgramYear().equals(enwYear))
+          .count();
+      
+      assertEquals(2, enwYearScenarioCountAfterSubmission2);
       
     } finally {
       
@@ -2062,26 +2218,24 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       chefsService.processSubmissions(conn);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
   }
 
   /**
-   * This method is not really a unit test.
+   * This method is not really a unit test, which is
+   * why it is @Disabled.
    * It is a convenient way to run the process for a
    * single submission after manually filling a CHEFS form.
    * It does not check the results.
-   * 
-   * So, the Test annotation should be commented out except
-   * when you want to run it, since it's not actually a test.
    */
   @Disabled
   @Test
   public void processSpecificSubmission() {
   
-    Integer participantPin = 54354324;
+    Integer participantPin = 98244628;
     Integer programYear = 2026;
-    String submissionGuid = "448267d6-5339-4313-9121-356e23c99d1c";
+    String submissionGuid = "733a7333-9f8e-4a39-b0ba-71265518d044";
     assertNotNull(submissionGuid);
   
     // Set to true if this submission has been processed before
@@ -2108,7 +2262,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, NppSubmissionDataResource.class);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionWrapper);
   
@@ -2122,21 +2276,21 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     assertNotNull(data);
   
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+    List<SubmissionListItemResource> submissionItems = Collections.singletonList(itemResourceMap.get(submissionGuid));
   
     // Process the submission data
-    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
+    processor.setSubmissionItems(submissionItems);
   
-    CrmTaskResource task = null;
     try {
       processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
+      processor.processSubmissions();
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
-    assertNotNull(task);
   
   }
 
@@ -2144,7 +2298,10 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   public void fillAllProductiveUnits() {
 
     Integer participantPin = 112969711;
-    Integer programYear = 2026;
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
+    Integer enwYear = programYear - 2;
+    String corporationName = "CORP 112969711 TEST";
+    String businessNumber = "999928888";
     String submissionGuid = null;
     
     deletePin(participantPin);
@@ -2159,14 +2316,14 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       farmType.setValue(FIELD_VALUE_FARM_TYPE_CORPORATION);
       farmType.setLabel("Corporation");
       data.setFarmType(farmType);
-      data.setCorporationName("CORP 112969711 TEST");
+      data.setCorporationName(corporationName);
       data.setFirstNameCorporateContact("CORPFIRST");
       data.setLastNameCorporateContact("CORPLAST");
       data.setFirstName(null);
       data.setLastName(null);
       data.setAgriStabilityAgriInvestPin(participantPin);
       data.setNoPin(false);
-      data.setBusinessTaxNumberBn("123456789");
+      data.setBusinessTaxNumberBn(businessNumber);
       data.setTrustBusinessNumber(null);
       data.setTrustNumber(null);
       data.setSinNumber(null);
@@ -2829,7 +2986,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionMetaData = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
       NppSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
@@ -2843,7 +3000,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -2854,7 +3011,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         task = processor.processSubmission(submissionMetaData);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(task);
       assertNotNull(task.getAccountId());
@@ -2862,7 +3019,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
       assertEquals(
-          formUserType + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n"
+          getFormUserType() + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n"
           + "\n"
           + "- Enrolment Fee calculation failed.\n"
           + "- Missing BPUs for program year Productive Units.\n"
@@ -2875,7 +3032,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
           + "Telephone: (648) 452-4357\n"
           + "Email: johnny@farmer.ca\n"
           + "Participant Type: corporation\n"
-          + "Business Number: 123456789RC0001\n"
+          + "Business Number: 999928888RC0001\n"
           + "",
           task.getDescription());
   
@@ -2886,7 +3043,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
       } catch (DataAccessException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(submissionRec);
   
@@ -2899,591 +3056,103 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   
       programYearMetadata = getProgramYearMetadata(participantPin, programYear);
       assertNotNull(programYearMetadata);
-  
+      
       ScenarioMetaData nppScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_NPP,
           ScenarioTypeCodes.CHEF);
       Integer nppScenarioNumber = nppScenarioMetadata.getScenarioNumber();
+      Integer nppDbSubmissionId = nppScenarioMetadata.getChefsFormSubmissionId();
+      assertNotNull(nppScenarioNumber);
+      assertNotNull(nppDbSubmissionId);
       logger.debug("nppScenarioNumber:" + nppScenarioNumber);
   
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
-      Scenario scenario = null;
+      Scenario chefScenario = null;
       try {
-        scenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
+        chefScenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
-      assertNotNull(scenario);
-      assertEquals(participantPin, scenario.getClient().getParticipantPin());
-      assertEquals(programYear, scenario.getYear());
-      assertEquals(nppScenarioNumber, scenario.getScenarioNumber());
+      assertNotNull(chefScenario);
+      assertEquals(participantPin, chefScenario.getClient().getParticipantPin());
+      assertEquals(programYear, chefScenario.getYear());
+      assertEquals(nppScenarioNumber, chefScenario.getScenarioNumber());
   
-      FarmingOperation fo = scenario.getFarmingYear().getFarmingOperationByNumber(1);
-  
-      for (ProductiveUnitCapacity puc : fo.getLocalProductiveUnitCapacities()) {
-        switch (puc.getCode()) {
-          case "5000": assertEquals(puc.getReportedAmount(), 1.0); break;
-          case "5002": assertEquals(puc.getReportedAmount(), 2.0); break;
-          case "5006": assertEquals(puc.getReportedAmount(), 3.0); break;
-          case "5007": assertEquals(puc.getReportedAmount(), 4.0); break;
-          case "5009": assertEquals(puc.getReportedAmount(), 5.0); break;
-          case "5010": assertEquals(puc.getReportedAmount(), 6.0); break;
-          case "5012": assertEquals(puc.getReportedAmount(), 7.0); break;
-          case "5016": assertEquals(puc.getReportedAmount(), 8.0); break;
-          case "5018": assertEquals(puc.getReportedAmount(), 9.0); break;
-          case "5020": assertEquals(puc.getReportedAmount(), 10.0); break;
-          case "5021": assertEquals(puc.getReportedAmount(), 11.0); break;
-          case "5022": assertEquals(puc.getReportedAmount(), 12.0); break;
-          case "5024": assertEquals(puc.getReportedAmount(), 13.0); break;
-  
-          case "5014": assertEquals(puc.getReportedAmount(), 14.0); break;
-          case "5030": assertEquals(puc.getReportedAmount(), 15.0); break;
-          case "5032": assertEquals(puc.getReportedAmount(), 16.0); break;
-          case "5033": assertEquals(puc.getReportedAmount(), 17.0); break;
-          case "5040": assertEquals(puc.getReportedAmount(), 18.0); break;
-          case "5042": assertEquals(puc.getReportedAmount(), 19.0); break;
-          case "5044": assertEquals(puc.getReportedAmount(), 20.0); break;
-          case "5046": assertEquals(puc.getReportedAmount(), 21.0); break;
-          case "5048": assertEquals(puc.getReportedAmount(), 22.0); break;
-          case "5050": assertEquals(puc.getReportedAmount(), 23.0); break;
-          case "5052": assertEquals(puc.getReportedAmount(), 24.0); break;
-          case "5054": assertEquals(puc.getReportedAmount(), 25.0); break;
-          case "5056": assertEquals(puc.getReportedAmount(), 26.0); break;
-          case "7054": assertEquals(puc.getReportedAmount(), 27.0); break;
-          case "5058": assertEquals(puc.getReportedAmount(), 28.0); break;
-  
-          case "6": assertEquals(puc.getReportedAmount(), 29.0); break;
-          case "5034": assertEquals(puc.getReportedAmount(), 30.0); break;
-          case "6850": assertEquals(puc.getReportedAmount(), 31.0); break;
-          case "6851": assertEquals(puc.getReportedAmount(), 32.0); break;
-          case "6852": assertEquals(puc.getReportedAmount(), 33.0); break;
-          case "6854": assertEquals(puc.getReportedAmount(), 34.0); break;
-          case "6855": assertEquals(puc.getReportedAmount(), 35.0); break;
-          case "6856": assertEquals(puc.getReportedAmount(), 36.0); break;
-          case "6858": assertEquals(puc.getReportedAmount(), 37.0); break;
-          case "6860": assertEquals(puc.getReportedAmount(), 38.0); break;
-          case "6862": assertEquals(puc.getReportedAmount(), 39.0); break;
-          case "6864": assertEquals(puc.getReportedAmount(), 40.0); break;
-          case "6866": assertEquals(puc.getReportedAmount(), 41.0); break;
-          case "6867": assertEquals(puc.getReportedAmount(), 42.0); break;
-          case "6868": assertEquals(puc.getReportedAmount(), 43.0); break;
-          case "6869": assertEquals(puc.getReportedAmount(), 44.0); break;
-          case "6870": assertEquals(puc.getReportedAmount(), 45.0); break;
-          case "6872": assertEquals(puc.getReportedAmount(), 46.0); break;
-          case "6874": assertEquals(puc.getReportedAmount(), 47.0); break;
-          case "6876": assertEquals(puc.getReportedAmount(), 48.0); break;
-          case "6877": assertEquals(puc.getReportedAmount(), 49.0); break;
-          case "6878": assertEquals(puc.getReportedAmount(), 50.0); break;
-          case "6879": assertEquals(puc.getReportedAmount(), 51.0); break;
-          case "6880": assertEquals(puc.getReportedAmount(), 52.0); break;
-          case "6881": assertEquals(puc.getReportedAmount(), 53.0); break;
-          case "6882": assertEquals(puc.getReportedAmount(), 54.0); break;
-          case "6883": assertEquals(puc.getReportedAmount(), 55.0); break;
-          case "6884": assertEquals(puc.getReportedAmount(), 56.0); break;
-          case "6886": assertEquals(puc.getReportedAmount(), 57.0); break;
-          case "6888": assertEquals(puc.getReportedAmount(), 58.0); break;
-          case "6890": assertEquals(puc.getReportedAmount(), 59.0); break;
-          case "6892": assertEquals(puc.getReportedAmount(), 60.0); break;
-          case "6893": assertEquals(puc.getReportedAmount(), 61.0); break;
-          case "6894": assertEquals(puc.getReportedAmount(), 62.0); break;
-          case "6896": assertEquals(puc.getReportedAmount(), 63.0); break;
-          case "6898": assertEquals(puc.getReportedAmount(), 64.0); break;
-          case "6900": assertEquals(puc.getReportedAmount(), 65.0); break;
-          case "6902": assertEquals(puc.getReportedAmount(), 66.0); break;
-          case "6903": assertEquals(puc.getReportedAmount(), 67.0); break;
-          case "6904": assertEquals(puc.getReportedAmount(), 68.0); break;
-          case "6920": assertEquals(puc.getReportedAmount(), 69.0); break;
-          case "6922": assertEquals(puc.getReportedAmount(), 70.0); break;
-          case "6932": assertEquals(puc.getReportedAmount(), 71.0); break;
-          case "6934": assertEquals(puc.getReportedAmount(), 72.0); break;
-          case "6946": assertEquals(puc.getReportedAmount(), 73.0); break;
-          case "6972": assertEquals(puc.getReportedAmount(), 75.0); break;
-          case "6974": assertEquals(puc.getReportedAmount(), 76.0); break;
-          case "6975": assertEquals(puc.getReportedAmount(), 77.0); break;
-          case "6976": assertEquals(puc.getReportedAmount(), 78.0); break;
-          case "6978": assertEquals(puc.getReportedAmount(), 79.0); break;
-          case "6980": assertEquals(puc.getReportedAmount(), 80.0); break;
-          case "6982": assertEquals(puc.getReportedAmount(), 81.0); break;
-          case "6983": assertEquals(puc.getReportedAmount(), 82.0); break;
-          case "6984": assertEquals(puc.getReportedAmount(), 83.0); break;
-          case "6986": assertEquals(puc.getReportedAmount(), 84.0); break;
-          case "6988": assertEquals(puc.getReportedAmount(), 85.0); break;
-          case "6998": assertEquals(puc.getReportedAmount(), 86.0); break;
-          case "7000": assertEquals(puc.getReportedAmount(), 87.0); break;
-          case "7002": assertEquals(puc.getReportedAmount(), 88.0); break;
-          case "7004": assertEquals(puc.getReportedAmount(), 89.0); break;
-          case "7006": assertEquals(puc.getReportedAmount(), 90.0); break;
-          case "7008": assertEquals(puc.getReportedAmount(), 91.0); break;
-          case "7010": assertEquals(puc.getReportedAmount(), 92.0); break;
-          case "7012": assertEquals(puc.getReportedAmount(), 93.0); break;
-          case "7014": assertEquals(puc.getReportedAmount(), 94.0); break;
-          case "7015": assertEquals(puc.getReportedAmount(), 95.0); break;
-          case "7016": assertEquals(puc.getReportedAmount(), 96.0); break;
-          case "7018": assertEquals(puc.getReportedAmount(), 97.0); break;
-          case "7020": assertEquals(puc.getReportedAmount(), 98.0); break;
-          case "7022": assertEquals(puc.getReportedAmount(), 99.0); break;
-          case "7024": assertEquals(puc.getReportedAmount(), 100.0); break;
-          case "7026": assertEquals(puc.getReportedAmount(), 101.0); break;
-          case "7030": assertEquals(puc.getReportedAmount(), 102.0); break;
-          case "7032": assertEquals(puc.getReportedAmount(), 103.0); break;
-          case "7034": assertEquals(puc.getReportedAmount(), 104.0); break;
-          case "7035": assertEquals(puc.getReportedAmount(), 105.0); break;
-          case "7036": assertEquals(puc.getReportedAmount(), 106.0); break;
-          case "7037": assertEquals(puc.getReportedAmount(), 107.0); break;
-          case "7038": assertEquals(puc.getReportedAmount(), 108.0); break;
-          case "7039": assertEquals(puc.getReportedAmount(), 109.0); break;
-          case "7040": assertEquals(puc.getReportedAmount(), 110.0); break;
-          case "7042": assertEquals(puc.getReportedAmount(), 111.0); break;
-          case "7044": assertEquals(puc.getReportedAmount(), 112.0); break;
-          case "7046": assertEquals(puc.getReportedAmount(), 113.0); break;
-          case "7047": assertEquals(puc.getReportedAmount(), 114.0); break;
-          case "7048": assertEquals(puc.getReportedAmount(), 115.0); break;
-          case "7049": assertEquals(puc.getReportedAmount(), 116.0); break;
-          case "7052": assertEquals(puc.getReportedAmount(), 117.0); break;
-          case "7056": assertEquals(puc.getReportedAmount(), 118.0); break;
-          case "7057": assertEquals(puc.getReportedAmount(), 119.0); break;
-          case "7058": assertEquals(puc.getReportedAmount(), 120.0); break;
-          case "7060": assertEquals(puc.getReportedAmount(), 121.0); break;
-          case "7062": assertEquals(puc.getReportedAmount(), 122.0); break;
-          case "7064": assertEquals(puc.getReportedAmount(), 123.0); break;
-          case "7068": assertEquals(puc.getReportedAmount(), 125.0); break;
-          case "7069": assertEquals(puc.getReportedAmount(), 126.0); break;
-          case "7070": assertEquals(puc.getReportedAmount(), 127.0); break;
-          case "7072": assertEquals(puc.getReportedAmount(), 128.0); break;
-          case "7074": assertEquals(puc.getReportedAmount(), 129.0); break;
-          case "7078": assertEquals(puc.getReportedAmount(), 130.0); break;
-          case "7080": assertEquals(puc.getReportedAmount(), 131.0); break;
-          case "7082": assertEquals(puc.getReportedAmount(), 132.0); break;
-          case "7083": assertEquals(puc.getReportedAmount(), 133.0); break;
-          case "7084": assertEquals(puc.getReportedAmount(), 134.0); break;
-          case "7086": assertEquals(puc.getReportedAmount(), 135.0); break;
-          case "7087": assertEquals(puc.getReportedAmount(), 136.0); break;
-          case "7088": assertEquals(puc.getReportedAmount(), 137.0); break;
-          case "7094": assertEquals(puc.getReportedAmount(), 138.0); break;
-          case "7095": assertEquals(puc.getReportedAmount(), 139.0); break;
-          case "7098": assertEquals(puc.getReportedAmount(), 140.0); break;
-          case "7099": assertEquals(puc.getReportedAmount(), 141.0); break;
-          case "7100": assertEquals(puc.getReportedAmount(), 142.0); break;
-          case "7200": assertEquals(puc.getReportedAmount(), 143.0); break;
-  
-          case "4784": assertEquals(puc.getReportedAmount(), 144.0); break;
-          case "5100": assertEquals(puc.getReportedAmount(), 145.0); break;
-          case "5370": assertEquals(puc.getReportedAmount(), 147.0); break;
-          case "5372": assertEquals(puc.getReportedAmount(), 148.0); break;
-          case "5374": assertEquals(puc.getReportedAmount(), 149.0); break;
-          case "5369": assertEquals(puc.getReportedAmount(), 150.0); break;
-          case "5375": assertEquals(puc.getReportedAmount(), 151.0); break;
-          case "5376": assertEquals(puc.getReportedAmount(), 152.0); break;
-          case "5378": assertEquals(puc.getReportedAmount(), 153.0); break;
-          case "5380": assertEquals(puc.getReportedAmount(), 154.0); break;
-          case "5382": assertEquals(puc.getReportedAmount(), 155.0); break;
-          case "5384": assertEquals(puc.getReportedAmount(), 156.0); break;
-          case "5386": assertEquals(puc.getReportedAmount(), 157.0); break;
-          case "5388": assertEquals(puc.getReportedAmount(), 158.0); break;
-          case "5390": assertEquals(puc.getReportedAmount(), 159.0); break;
-          case "5392": assertEquals(puc.getReportedAmount(), 160.0); break;
-          case "5394": assertEquals(puc.getReportedAmount(), 161.0); break;
-          case "5468": assertEquals(puc.getReportedAmount(), 162.0); break;
-          case "5446": assertEquals(puc.getReportedAmount(), 163.0); break;
-          case "5396": assertEquals(puc.getReportedAmount(), 164.0); break;
-          case "5398": assertEquals(puc.getReportedAmount(), 165.0); break;
-          case "5400": assertEquals(puc.getReportedAmount(), 166.0); break;
-          case "5402": assertEquals(puc.getReportedAmount(), 167.0); break;
-          case "5404": assertEquals(puc.getReportedAmount(), 168.0); break;
-          case "5406": assertEquals(puc.getReportedAmount(), 169.0); break;
-          case "5408": assertEquals(puc.getReportedAmount(), 170.0); break;
-          case "5410": assertEquals(puc.getReportedAmount(), 171.0); break;
-          case "5412": assertEquals(puc.getReportedAmount(), 172.0); break;
-          case "5414": assertEquals(puc.getReportedAmount(), 173.0); break;
-          case "5416": assertEquals(puc.getReportedAmount(), 174.0); break;
-          case "5418": assertEquals(puc.getReportedAmount(), 175.0); break;
-          case "5420": assertEquals(puc.getReportedAmount(), 176.0); break;
-          case "5422": assertEquals(puc.getReportedAmount(), 177.0); break;
-          case "5424": assertEquals(puc.getReportedAmount(), 178.0); break;
-          case "5426": assertEquals(puc.getReportedAmount(), 179.0); break;
-          case "5428": assertEquals(puc.getReportedAmount(), 180.0); break;
-          case "5430": assertEquals(puc.getReportedAmount(), 181.0); break;
-          case "5432": assertEquals(puc.getReportedAmount(), 182.0); break;
-          case "5434": assertEquals(puc.getReportedAmount(), 183.0); break;
-          case "5436": assertEquals(puc.getReportedAmount(), 184.0); break;
-          case "5438": assertEquals(puc.getReportedAmount(), 185.0); break;
-          case "5440": assertEquals(puc.getReportedAmount(), 186.0); break;
-          case "5442": assertEquals(puc.getReportedAmount(), 187.0); break;
-          case "5444": assertEquals(puc.getReportedAmount(), 188.0); break;
-          case "5448": assertEquals(puc.getReportedAmount(), 189.0); break;
-          case "5450": assertEquals(puc.getReportedAmount(), 190.0); break;
-          case "5452": assertEquals(puc.getReportedAmount(), 191.0); break;
-          case "5454": assertEquals(puc.getReportedAmount(), 192.0); break;
-          case "5456": assertEquals(puc.getReportedAmount(), 193.0); break;
-          case "5458": assertEquals(puc.getReportedAmount(), 194.0); break;
-          case "5460": assertEquals(puc.getReportedAmount(), 195.0); break;
-          case "5462": assertEquals(puc.getReportedAmount(), 196.0); break;
-          case "5464": assertEquals(puc.getReportedAmount(), 197.0); break;
-          case "5466": assertEquals(puc.getReportedAmount(), 198.0); break;
-          case "5240": assertEquals(puc.getReportedAmount(), 199.0); break;
-          case "5242": assertEquals(puc.getReportedAmount(), 200.0); break;
-          case "5244": assertEquals(puc.getReportedAmount(), 201.0); break;
-          case "5246": assertEquals(puc.getReportedAmount(), 202.0); break;
-          case "5248": assertEquals(puc.getReportedAmount(), 203.0); break;
-          case "5540": assertEquals(puc.getReportedAmount(), 204.0); break;
-          case "5542": assertEquals(puc.getReportedAmount(), 205.0); break;
-          case "5544": assertEquals(puc.getReportedAmount(), 206.0); break;
-          case "5250": assertEquals(puc.getReportedAmount(), 207.0); break;
-          case "5252": assertEquals(puc.getReportedAmount(), 208.0); break;
-          case "5254": assertEquals(puc.getReportedAmount(), 209.0); break;
-          case "5261": assertEquals(puc.getReportedAmount(), 210.0); break;
-          case "5290": assertEquals(puc.getReportedAmount(), 211.0); break;
-          case "5292": assertEquals(puc.getReportedAmount(), 212.0); break;
-          case "5294": assertEquals(puc.getReportedAmount(), 213.0); break;
-          case "5300": assertEquals(puc.getReportedAmount(), 214.0); break;
-          case "5302": assertEquals(puc.getReportedAmount(), 215.0); break;
-          case "5303": assertEquals(puc.getReportedAmount(), 216.0); break;
-          case "5304": assertEquals(puc.getReportedAmount(), 217.0); break;
-          case "5306": assertEquals(puc.getReportedAmount(), 218.0); break;
-          case "5330": assertEquals(puc.getReportedAmount(), 219.0); break;
-          case "5310": assertEquals(puc.getReportedAmount(), 220.0); break;
-          case "5312": assertEquals(puc.getReportedAmount(), 221.0); break;
-          case "5314": assertEquals(puc.getReportedAmount(), 222.0); break;
-          case "5316": assertEquals(puc.getReportedAmount(), 223.0); break;
-          case "5318": assertEquals(puc.getReportedAmount(), 224.0); break;
-          case "5322": assertEquals(puc.getReportedAmount(), 225.0); break;
-          case "5324": assertEquals(puc.getReportedAmount(), 226.0); break;
-          case "5325": assertEquals(puc.getReportedAmount(), 227.0); break;
-          case "5326": assertEquals(puc.getReportedAmount(), 228.0); break;
-          case "5328": assertEquals(puc.getReportedAmount(), 229.0); break;
-          case "5340": assertEquals(puc.getReportedAmount(), 230.0); break;
-          case "5360": assertEquals(puc.getReportedAmount(), 231.0); break;
-          case "5350": assertEquals(puc.getReportedAmount(), 232.0); break;
-          case "5352": assertEquals(puc.getReportedAmount(), 233.0); break;
-          case "5354": assertEquals(puc.getReportedAmount(), 234.0); break;
-          case "5356": assertEquals(puc.getReportedAmount(), 235.0); break;
-          case "5358": assertEquals(puc.getReportedAmount(), 236.0); break;
-          case "5550": assertEquals(puc.getReportedAmount(), 237.0); break;
-          case "6826": assertEquals(puc.getReportedAmount(), 238.0); break;
-          case "5750": assertEquals(puc.getReportedAmount(), 239.0); break;
-          case "5752": assertEquals(puc.getReportedAmount(), 240.0); break;
-          case "5754": assertEquals(puc.getReportedAmount(), 241.0); break;
-          case "5070": assertEquals(puc.getReportedAmount(), 242.0); break;
-          case "5072": assertEquals(puc.getReportedAmount(), 243.0); break;
-          case "5074": assertEquals(puc.getReportedAmount(), 244.0); break;
-          case "5822": assertEquals(puc.getReportedAmount(), 245.0); break;
-          case "5760": assertEquals(puc.getReportedAmount(), 246.0); break;
-          case "5762": assertEquals(puc.getReportedAmount(), 247.0); break;
-          case "5764": assertEquals(puc.getReportedAmount(), 248.0); break;
-          case "5766": assertEquals(puc.getReportedAmount(), 249.0); break;
-          case "5768": assertEquals(puc.getReportedAmount(), 250.0); break;
-          case "5770": assertEquals(puc.getReportedAmount(), 251.0); break;
-          case "5820": assertEquals(puc.getReportedAmount(), 252.0); break;
-          case "5772": assertEquals(puc.getReportedAmount(), 253.0); break;
-          case "5774": assertEquals(puc.getReportedAmount(), 254.0); break;
-          case "5776": assertEquals(puc.getReportedAmount(), 255.0); break;
-          case "5778": assertEquals(puc.getReportedAmount(), 256.0); break;
-          case "5780": assertEquals(puc.getReportedAmount(), 257.0); break;
-          case "5782": assertEquals(puc.getReportedAmount(), 258.0); break;
-          case "5784": assertEquals(puc.getReportedAmount(), 259.0); break;
-          case "5786": assertEquals(puc.getReportedAmount(), 260.0); break;
-          case "5788": assertEquals(puc.getReportedAmount(), 261.0); break;
-          case "5790": assertEquals(puc.getReportedAmount(), 262.0); break;
-          case "5792": assertEquals(puc.getReportedAmount(), 263.0); break;
-          case "5794": assertEquals(puc.getReportedAmount(), 264.0); break;
-          case "5821": assertEquals(puc.getReportedAmount(), 265.0); break;
-          case "5796": assertEquals(puc.getReportedAmount(), 266.0); break;
-          case "5798": assertEquals(puc.getReportedAmount(), 267.0); break;
-          case "5800": assertEquals(puc.getReportedAmount(), 268.0); break;
-          case "5802": assertEquals(puc.getReportedAmount(), 269.0); break;
-          case "5804": assertEquals(puc.getReportedAmount(), 270.0); break;
-          case "5806": assertEquals(puc.getReportedAmount(), 271.0); break;
-          case "5808": assertEquals(puc.getReportedAmount(), 272.0); break;
-          case "5810": assertEquals(puc.getReportedAmount(), 273.0); break;
-          case "5812": assertEquals(puc.getReportedAmount(), 274.0); break;
-          case "5814": assertEquals(puc.getReportedAmount(), 275.0); break;
-          case "5816": assertEquals(puc.getReportedAmount(), 276.0); break;
-          case "5818": assertEquals(puc.getReportedAmount(), 277.0); break;
-          case "5830": assertEquals(puc.getReportedAmount(), 278.0); break;
-          case "5832": assertEquals(puc.getReportedAmount(), 279.0); break;
-          case "5834": assertEquals(puc.getReportedAmount(), 280.0); break;
-          case "5836": assertEquals(puc.getReportedAmount(), 281.0); break;
-          case "5840": assertEquals(puc.getReportedAmount(), 282.0); break;
-          case "5841": assertEquals(puc.getReportedAmount(), 283.0); break;
-          case "5850": assertEquals(puc.getReportedAmount(), 284.0); break;
-          case "5852": assertEquals(puc.getReportedAmount(), 285.0); break;
-          case "5854": assertEquals(puc.getReportedAmount(), 286.0); break;
-          case "5856": assertEquals(puc.getReportedAmount(), 287.0); break;
-          case "5858": assertEquals(puc.getReportedAmount(), 288.0); break;
-          case "5860": assertEquals(puc.getReportedAmount(), 289.0); break;
-          case "5862": assertEquals(puc.getReportedAmount(), 290.0); break;
-          case "5864": assertEquals(puc.getReportedAmount(), 291.0); break;
-          case "5866": assertEquals(puc.getReportedAmount(), 292.0); break;
-          case "5868": assertEquals(puc.getReportedAmount(), 293.0); break;
-          case "5870": assertEquals(puc.getReportedAmount(), 294.0); break;
-          case "5872": assertEquals(puc.getReportedAmount(), 295.0); break;
-          case "5874": assertEquals(puc.getReportedAmount(), 296.0); break;
-          case "5876": assertEquals(puc.getReportedAmount(), 297.0); break;
-          case "5878": assertEquals(puc.getReportedAmount(), 298.0); break;
-          case "5880": assertEquals(puc.getReportedAmount(), 299.0); break;
-          case "5882": assertEquals(puc.getReportedAmount(), 300.0); break;
-          case "5884": assertEquals(puc.getReportedAmount(), 301.0); break;
-          case "5886": assertEquals(puc.getReportedAmount(), 302.0); break;
-          case "5968": assertEquals(puc.getReportedAmount(), 303.0); break;
-          case "5900": assertEquals(puc.getReportedAmount(), 304.0); break;
-          case "5500": assertEquals(puc.getReportedAmount(), 305.0); break;
-          case "5502": assertEquals(puc.getReportedAmount(), 306.0); break;
-          case "5504": assertEquals(puc.getReportedAmount(), 307.0); break;
-          case "5506": assertEquals(puc.getReportedAmount(), 308.0); break;
-          case "5508": assertEquals(puc.getReportedAmount(), 309.0); break;
-          case "5510": assertEquals(puc.getReportedAmount(), 310.0); break;
-          case "5512": assertEquals(puc.getReportedAmount(), 311.0); break;
-          case "5514": assertEquals(puc.getReportedAmount(), 312.0); break;
-          case "5516": assertEquals(puc.getReportedAmount(), 313.0); break;
-          case "5518": assertEquals(puc.getReportedAmount(), 314.0); break;
-          case "5520": assertEquals(puc.getReportedAmount(), 315.0); break;
-          case "5076": assertEquals(puc.getReportedAmount(), 316.0); break;
-          case "5078": assertEquals(puc.getReportedAmount(), 317.0); break;
-          case "5080": assertEquals(puc.getReportedAmount(), 318.0); break;
-          case "5259": assertEquals(puc.getReportedAmount(), 319.0); break;
-          case "5910": assertEquals(puc.getReportedAmount(), 320.0); break;
-          case "5912": assertEquals(puc.getReportedAmount(), 321.0); break;
-          case "5914": assertEquals(puc.getReportedAmount(), 322.0); break;
-          case "5916": assertEquals(puc.getReportedAmount(), 323.0); break;
-          case "5918": assertEquals(puc.getReportedAmount(), 324.0); break;
-          case "5920": assertEquals(puc.getReportedAmount(), 325.0); break;
-          case "5930": assertEquals(puc.getReportedAmount(), 326.0); break;
-          case "5932": assertEquals(puc.getReportedAmount(), 327.0); break;
-          case "5934": assertEquals(puc.getReportedAmount(), 328.0); break;
-          case "5936": assertEquals(puc.getReportedAmount(), 329.0); break;
-          case "5907": assertEquals(puc.getReportedAmount(), 330.0); break;
-          case "5908": assertEquals(puc.getReportedAmount(), 331.0); break;
-          case "5940": assertEquals(puc.getReportedAmount(), 332.0); break;
-          case "5942": assertEquals(puc.getReportedAmount(), 333.0); break;
-          case "5944": assertEquals(puc.getReportedAmount(), 334.0); break;
-          case "5946": assertEquals(puc.getReportedAmount(), 335.0); break;
-          case "5082": assertEquals(puc.getReportedAmount(), 336.0); break;
-          case "5084": assertEquals(puc.getReportedAmount(), 337.0); break;
-          case "5086": assertEquals(puc.getReportedAmount(), 338.0); break;
-          case "5950": assertEquals(puc.getReportedAmount(), 339.0); break;
-          case "5952": assertEquals(puc.getReportedAmount(), 340.0); break;
-          case "5954": assertEquals(puc.getReportedAmount(), 341.0); break;
-          case "5956": assertEquals(puc.getReportedAmount(), 342.0); break;
-          case "5964": assertEquals(puc.getReportedAmount(), 343.0); break;
-          case "5958": assertEquals(puc.getReportedAmount(), 344.0); break;
-          case "5960": assertEquals(puc.getReportedAmount(), 345.0); break;
-          case "5962": assertEquals(puc.getReportedAmount(), 346.0); break;
-          case "5970": assertEquals(puc.getReportedAmount(), 347.0); break;
-          case "5972": assertEquals(puc.getReportedAmount(), 348.0); break;
-          case "5974": assertEquals(puc.getReportedAmount(), 349.0); break;
-          case "5980": assertEquals(puc.getReportedAmount(), 350.0); break;
-          case "5982": assertEquals(puc.getReportedAmount(), 351.0); break;
-          case "5984": assertEquals(puc.getReportedAmount(), 352.0); break;
-          case "6000": assertEquals(puc.getReportedAmount(), 353.0); break;
-  
-          case "5560": assertEquals(puc.getReportedAmount(), 1000.0); break;
-          case "5562": assertEquals(puc.getReportedAmount(), 1001.0); break;
-          case "5564": assertEquals(puc.getReportedAmount(), 1002.0); break;
-          case "5566": assertEquals(puc.getReportedAmount(), 1003.0); break;
-          case "5568": assertEquals(puc.getReportedAmount(), 1004.0); break;
-          case "5570": assertEquals(puc.getReportedAmount(), 1005.0); break;
-          case "5572": assertEquals(puc.getReportedAmount(), 1006.0); break;
-          case "5574": assertEquals(puc.getReportedAmount(), 1007.0); break;
-          case "5576": assertEquals(puc.getReportedAmount(), 1008.0); break;
-          case "5578": assertEquals(puc.getReportedAmount(), 1009.0); break;
-          case "5579": assertEquals(puc.getReportedAmount(), 1010.0); break;
-          case "5580": assertEquals(puc.getReportedAmount(), 1011.0); break;
-          case "5582": assertEquals(puc.getReportedAmount(), 1012.0); break;
-          case "5583": assertEquals(puc.getReportedAmount(), 1013.0); break;
-          case "5586": assertEquals(puc.getReportedAmount(), 1014.0); break;
-          case "5588": assertEquals(puc.getReportedAmount(), 1015.0); break;
-  
-          case "5600": assertEquals(puc.getReportedAmount(), 1016.0); break;
-          case "5603": assertEquals(puc.getReportedAmount(), 1017.0); break;
-          case "5602": assertEquals(puc.getReportedAmount(), 1018.0); break;
-          case "5604": assertEquals(puc.getReportedAmount(), 1019.0); break;
-          case "5606": assertEquals(puc.getReportedAmount(), 1020.0); break;
-          case "5608": assertEquals(puc.getReportedAmount(), 1021.0); break;
-          case "5610": assertEquals(puc.getReportedAmount(), 1022.0); break;
-          case "5736": assertEquals(puc.getReportedAmount(), 1023.0); break;
-          case "5612": assertEquals(puc.getReportedAmount(), 1024.0); break;
-          case "5614": assertEquals(puc.getReportedAmount(), 1025.0); break;
-          case "5724": assertEquals(puc.getReportedAmount(), 1026.0); break;
-          case "5726": assertEquals(puc.getReportedAmount(), 1027.0); break;
-          case "5723": assertEquals(puc.getReportedAmount(), 1028.0); break;
-          case "5725": assertEquals(puc.getReportedAmount(), 1029.0); break;
-          case "5729": assertEquals(puc.getReportedAmount(), 1030.0); break;
-          case "5620": assertEquals(puc.getReportedAmount(), 1031.0); break;
-          case "5622": assertEquals(puc.getReportedAmount(), 1032.0); break;
-          case "5624": assertEquals(puc.getReportedAmount(), 1033.0); break;
-          case "5619": assertEquals(puc.getReportedAmount(), 1034.0); break;
-          case "5628": assertEquals(puc.getReportedAmount(), 1035.0); break;
-          case "5732": assertEquals(puc.getReportedAmount(), 1036.0); break;
-          case "5731": assertEquals(puc.getReportedAmount(), 1037.0); break;
-          case "5734": assertEquals(puc.getReportedAmount(), 1038.0); break;
-          case "5733": assertEquals(puc.getReportedAmount(), 1039.0); break;
-          case "5636": assertEquals(puc.getReportedAmount(), 1040.0); break;
-          case "5638": assertEquals(puc.getReportedAmount(), 1041.0); break;
-          case "5640": assertEquals(puc.getReportedAmount(), 1042.0); break;
-          case "5642": assertEquals(puc.getReportedAmount(), 1043.0); break;
-          case "5727": assertEquals(puc.getReportedAmount(), 1044.0); break;
-          case "5728": assertEquals(puc.getReportedAmount(), 1045.0); break;
-          case "5644": assertEquals(puc.getReportedAmount(), 1046.0); break;
-          case "5646": assertEquals(puc.getReportedAmount(), 1047.0); break;
-          case "5648": assertEquals(puc.getReportedAmount(), 1048.0); break;
-          case "5650": assertEquals(puc.getReportedAmount(), 1049.0); break;
-          case "5652": assertEquals(puc.getReportedAmount(), 1050.0); break;
-          case "5671": assertEquals(puc.getReportedAmount(), 1051.0); break;
-          case "5656": assertEquals(puc.getReportedAmount(), 1052.0); break;
-          case "5658": assertEquals(puc.getReportedAmount(), 1053.0); break;
-          case "5660": assertEquals(puc.getReportedAmount(), 1054.0); break;
-          case "5662": assertEquals(puc.getReportedAmount(), 1055.0); break;
-          case "5664": assertEquals(puc.getReportedAmount(), 1056.0); break;
-          case "5666": assertEquals(puc.getReportedAmount(), 1057.0); break;
-          case "5668": assertEquals(puc.getReportedAmount(), 1058.0); break;
-          case "5670": assertEquals(puc.getReportedAmount(), 1059.0); break;
-          case "5672": assertEquals(puc.getReportedAmount(), 1060.0); break;
-          case "5674": assertEquals(puc.getReportedAmount(), 1061.0); break;
-          case "5676": assertEquals(puc.getReportedAmount(), 1062.0); break;
-          case "5680": assertEquals(puc.getReportedAmount(), 1063.0); break;
-          case "5682": assertEquals(puc.getReportedAmount(), 1064.0); break;
-          case "5684": assertEquals(puc.getReportedAmount(), 1065.0); break;
-          case "5686": assertEquals(puc.getReportedAmount(), 1066.0); break;
-          case "5688": assertEquals(puc.getReportedAmount(), 1067.0); break;
-          case "5690": assertEquals(puc.getReportedAmount(), 1068.0); break;
-          case "5592": assertEquals(puc.getReportedAmount(), 1069.0); break;
-          case "5596": assertEquals(puc.getReportedAmount(), 1070.0); break;
-          case "5593": assertEquals(puc.getReportedAmount(), 1071.0); break;
-          case "5597": assertEquals(puc.getReportedAmount(), 1072.0); break;
-          case "5595": assertEquals(puc.getReportedAmount(), 1073.0); break;
-          case "5599": assertEquals(puc.getReportedAmount(), 1074.0); break;
-          case "5594": assertEquals(puc.getReportedAmount(), 1075.0); break;
-          case "5598": assertEquals(puc.getReportedAmount(), 1076.0); break;
-          case "5699": assertEquals(puc.getReportedAmount(), 1077.0); break;
-          case "5696": assertEquals(puc.getReportedAmount(), 1078.0); break;
-          case "5698": assertEquals(puc.getReportedAmount(), 1079.0); break;
-          case "5700": assertEquals(puc.getReportedAmount(), 1080.0); break;
-          case "5702": assertEquals(puc.getReportedAmount(), 1081.0); break;
-          case "5693": assertEquals(puc.getReportedAmount(), 1082.0); break;
-          case "5695": assertEquals(puc.getReportedAmount(), 1083.0); break;
-          case "5691": assertEquals(puc.getReportedAmount(), 1084.0); break;
-          case "5683": assertEquals(puc.getReportedAmount(), 1085.0); break;
-          case "5685": assertEquals(puc.getReportedAmount(), 1086.0); break;
-          case "5659": assertEquals(puc.getReportedAmount(), 1087.0); break;
-          case "5689": assertEquals(puc.getReportedAmount(), 1088.0); break;
-          case "5687": assertEquals(puc.getReportedAmount(), 1089.0); break;
-          case "5615": assertEquals(puc.getReportedAmount(), 1090.0); break;
-          case "5742": assertEquals(puc.getReportedAmount(), 1091.0); break;
-          case "5704": assertEquals(puc.getReportedAmount(), 1092.0); break;
-          case "5706": assertEquals(puc.getReportedAmount(), 1093.0); break;
-          case "5709": assertEquals(puc.getReportedAmount(), 1094.0); break;
-          case "5708": assertEquals(puc.getReportedAmount(), 1095.0); break;
-          case "5714": assertEquals(puc.getReportedAmount(), 1096.0); break;
-          case "5716": assertEquals(puc.getReportedAmount(), 1097.0); break;
-          case "5718": assertEquals(puc.getReportedAmount(), 1098.0); break;
-          case "5730": assertEquals(puc.getReportedAmount(), 1099.0); break;
-          case "5720": assertEquals(puc.getReportedAmount(), 1100.0); break;
-          case "5722": assertEquals(puc.getReportedAmount(), 1101.0); break;
-  
-          case "6930": assertEquals(puc.getReportedAmount(), 354.0); break;
-          case "6931": assertEquals(puc.getReportedAmount(), 355.0); break;
-          case "6937": assertEquals(puc.getReportedAmount(), 356.0); break;
-          case "6938": assertEquals(puc.getReportedAmount(), 357.0); break;
-          case "6940": assertEquals(puc.getReportedAmount(), 358.0); break;
-          case "6941": assertEquals(puc.getReportedAmount(), 359.0); break;
-          case "6942": assertEquals(puc.getReportedAmount(), 360.0); break;
-          case "6943": assertEquals(puc.getReportedAmount(), 361.0); break;
-          case "6944": assertEquals(puc.getReportedAmount(), 362.0); break;
-          case "6945": assertEquals(puc.getReportedAmount(), 363.0); break;
-          case "6949": assertEquals(puc.getReportedAmount(), 364.0); break;
-          case "6950": assertEquals(puc.getReportedAmount(), 365.0); break;
-          case "6951": assertEquals(puc.getReportedAmount(), 366.0); break;
-          case "6952": assertEquals(puc.getReportedAmount(), 367.0); break;
-          case "6953": assertEquals(puc.getReportedAmount(), 368.0); break;
-          case "6954": assertEquals(puc.getReportedAmount(), 369.0); break;
-          case "6955": assertEquals(puc.getReportedAmount(), 370.0); break;
-          case "6956": assertEquals(puc.getReportedAmount(), 371.0); break;
-          case "6957": assertEquals(puc.getReportedAmount(), 372.0); break;
-          case "6958": assertEquals(puc.getReportedAmount(), 373.0); break;
-          case "6959": assertEquals(puc.getReportedAmount(), 374.0); break;
-          case "6965": assertEquals(puc.getReportedAmount(), 375.0); break;
-          case "7028": assertEquals(puc.getReportedAmount(), 376.0); break;
-          case "7073": assertEquals(puc.getReportedAmount(), 378.0); break;
-          case "7076": assertEquals(puc.getReportedAmount(), 379.0); break;
-          case "7090": assertEquals(puc.getReportedAmount(), 380.0); break;
-          case "7092": assertEquals(puc.getReportedAmount(), 381.0); break;
-          case "7101": assertEquals(puc.getReportedAmount(), 382.0); break;
-          case "7102": assertEquals(puc.getReportedAmount(), 383.0); break;
-          case "7103": assertEquals(puc.getReportedAmount(), 384.0); break;
-          case "7104": assertEquals(puc.getReportedAmount(), 385.0); break;
-          case "7106": assertEquals(puc.getReportedAmount(), 386.0); break;
-          case "7108": assertEquals(puc.getReportedAmount(), 387.0); break;
-          case "7110": assertEquals(puc.getReportedAmount(), 388.0); break;
-          case "7112": assertEquals(puc.getReportedAmount(), 389.0); break;
-          case "7114": assertEquals(puc.getReportedAmount(), 390.0); break;
-          case "7115": assertEquals(puc.getReportedAmount(), 391.0); break;
-          case "7116": assertEquals(puc.getReportedAmount(), 392.0); break;
-          case "7117": assertEquals(puc.getReportedAmount(), 393.0); break;
-          case "7118": assertEquals(puc.getReportedAmount(), 394.0); break;
-          case "7120": assertEquals(puc.getReportedAmount(), 395.0); break;
-          case "7122": assertEquals(puc.getReportedAmount(), 396.0); break;
-          case "7124": assertEquals(puc.getReportedAmount(), 397.0); break;
-          case "7126": assertEquals(puc.getReportedAmount(), 398.0); break;
-          case "7128": assertEquals(puc.getReportedAmount(), 399.0); break;
-          case "7129": assertEquals(puc.getReportedAmount(), 400.0); break;
-          case "7130": assertEquals(puc.getReportedAmount(), 401.0); break;
-          case "7132": assertEquals(puc.getReportedAmount(), 402.0); break;
-          case "7134": assertEquals(puc.getReportedAmount(), 403.0); break;
-          case "7140": assertEquals(puc.getReportedAmount(), 404.0); break;
-          case "7142": assertEquals(puc.getReportedAmount(), 405.0); break;
-          case "7144": assertEquals(puc.getReportedAmount(), 406.0); break;
-          case "7146": assertEquals(puc.getReportedAmount(), 407.0); break;
-          case "7148": assertEquals(puc.getReportedAmount(), 408.0); break;
-  
-          case "104": assertEquals(puc.getReportedAmount(), 409.0); break;
-          case "105": assertEquals(puc.getReportedAmount(), 410.0); break;
-          case "106": assertEquals(puc.getReportedAmount(), 411.0); break;
-  
-          case "100": assertEquals(puc.getReportedAmount(), 419.0); break;
-          case "101": assertEquals(puc.getReportedAmount(), 420.0); break;
-          case "102": assertEquals(puc.getReportedAmount(), 421.0); break;
-          case "103": assertEquals(puc.getReportedAmount(), 422.0); break;
-          case "111": assertEquals(puc.getReportedAmount(), 423.0); break;
-          case "112": assertEquals(puc.getReportedAmount(), 424.0); break;
-          case "113": assertEquals(puc.getReportedAmount(), 425.0); break;
-          case "114": assertEquals(puc.getReportedAmount(), 426.0); break;
-          case "115": assertEquals(puc.getReportedAmount(), 427.0); break;
-          case "117": assertEquals(puc.getReportedAmount(), 428.0); break;
-          case "118": assertEquals(puc.getReportedAmount(), 429.0); break;
-          case "122": assertEquals(puc.getReportedAmount(), 430.0); break;
-          case "126": assertEquals(puc.getReportedAmount(), 431.0); break;
-          case "127": assertEquals(puc.getReportedAmount(), 432.0); break;
-          case "128": assertEquals(puc.getReportedAmount(), 433.0); break;
-          case "129": assertEquals(puc.getReportedAmount(), 434.0); break;
-          case "130": assertEquals(puc.getReportedAmount(), 435.0); break;
-          case "132": assertEquals(puc.getReportedAmount(), 436.0); break;
-          case "136": assertEquals(puc.getReportedAmount(), 437.0); break;
-          case "138": assertEquals(puc.getReportedAmount(), 438.0); break;
-          case "149": assertEquals(puc.getReportedAmount(), 439.0); break;
-          case "150": assertEquals(puc.getReportedAmount(), 440.0); break;
-          case "151": assertEquals(puc.getReportedAmount(), 441.0); break;
-          case "152": assertEquals(puc.getReportedAmount(), 442.0); break;
-          case "166": assertEquals(puc.getReportedAmount(), 443.0); break;
-          case "167": assertEquals(puc.getReportedAmount(), 444.0); break;
-          case "178": assertEquals(puc.getReportedAmount(), 445.0); break;
-          case "191": assertEquals(puc.getReportedAmount(), 446.0); break;
-          case "192": assertEquals(puc.getReportedAmount(), 447.0); break;
-          case "193": assertEquals(puc.getReportedAmount(), 448.0); break;
-          case "194": assertEquals(puc.getReportedAmount(), 449.0); break;
-          case "195": assertEquals(puc.getReportedAmount(), 450.0); break;
-          case "196": assertEquals(puc.getReportedAmount(), 451.0); break;
-        }
-  
-        assertEquals(data.getLayersEggsForHatching_108(), 412.0);
-        assertEquals(data.getLayersEggsForConsumption_109(), 413.0);
-        assertEquals(data.getBroilersChickens_143(), 414.0);
-        assertEquals(data.getBroilersTurkeys_144(), 415.0);
-  
-        assertEquals(data.getProductiveCapacityLC123(), 416.0);
-        assertEquals(data.getFeederHogsFedOver50Lbs_124(), 417.0);
-        assertEquals(data.getFeederHogsFedUpTo50Lbs_125(), 418.0);
+      checkProductiveUnitValuesForEveryCode(data, chefScenario);
+
+      
+      CrmAccountResource crmAccount = null;
+      try {
+        crmAccount = crmDao.getAccountByPin(participantPin);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
       }
+      assertNotNull(crmAccount);
+      
+      assertEquals(participantPin.toString(), crmAccount.getVsi_pin());
+      assertEquals("123456789", crmAccount.getVsi_socialinsurancenumber());
+      assertEquals(businessNumber, crmAccount.getVsi_businessnumber());
+      assertEquals(corporationName, crmAccount.getName());
+      
+      CrmProgramYearResource crmProgramYear = null;
+      try {
+        crmProgramYear = crmDao.getProgramYear(programYear);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
+      }
+      assertNotNull(crmProgramYear);
+      
+  
+      // ------------ ENW Scenario -------------------------------------------------------------------
+      
+      programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+      assertNotNull(programYearMetadata);
+      
+      ScenarioMetaData enwScenarioMetadata = ScenarioUtils.findLatestEnrolmentNoticeWorkflowScenario(programYearMetadata, enwYear);
+      assertNotNull(enwScenarioMetadata);
+      Integer enwScenarioNumber = enwScenarioMetadata.getScenarioNumber();
+      Integer enwDbSubmissionId = enwScenarioMetadata.getChefsFormSubmissionId();
+      assertNotNull(enwScenarioNumber);
+      assertNotNull(enwDbSubmissionId);
+      assertEquals(nppDbSubmissionId, enwDbSubmissionId);
+      
+      Scenario enwScenario = null;
+      try {
+        enwScenario = calculatorService.loadScenario(participantPin, enwYear, enwScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail(formatExceptionFailMessage(e));
+      }
+      assertNotNull(enwScenario);
+      Client client = enwScenario.getClient();
+      assertNotNull(client);
+      assertEquals(participantPin, client.getParticipantPin());
+      assertNull(client.getSin());
+      assertEquals(businessNumber + BUSINESS_NUMBER_SUFFIX, client.getBusinessNumber());
+      assertEquals(enwYear, enwScenario.getYear());
+      assertEquals(enwScenarioNumber, enwScenario.getScenarioNumber());
+      assertEquals(ScenarioCategoryCodes.ENROLMENT_NOTICE_WORKFLOW, enwScenario.getScenarioCategoryCode());
+      assertEquals(ScenarioTypeCodes.USER, enwScenario.getScenarioTypeCode());
+      assertEquals(ScenarioStateCodes.IN_PROGRESS, enwScenario.getScenarioStateCode());
+      assertEquals(enwDbSubmissionId, enwScenario.getChefsSubmissionId());
+      
+      {
+        FarmingOperation enwScenarioOperation = enwScenario.getFarmingYear().getFarmingOperationByNumber(1);
+        assertEquals(1.0, enwScenarioOperation.getPartnershipPercent());
+      }
+      
+      checkProductiveUnitValuesForEveryCode(data, enwScenario);
+      
+      EnwEnrolment enw = enwScenario.getEnwEnrolment();
+      assertEquals(programYear, enw.getEnrolmentYear());
+      assertEquals(EnwEnrolment.CALCULATION_TYPE_PROXY_MARGINS, enw.getEnrolmentCalculationTypeCode());
+      assertEquals(Boolean.FALSE, enw.getHasBpus());
+      assertEquals(Boolean.TRUE, enw.getHasProductiveUnits());
+      assertEquals(Boolean.FALSE, enw.getCanCalculateProxyMargins());
+      assertNull(enw.getEnrolmentFee());
       
     } finally {
       deleteSubmissionsFromFarm(submissionGuid);
@@ -3494,11 +3163,12 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     
   }
 
+
   @Test
   public void duplicateProductiveUnits() {
 
     Integer participantPin = 197623465;
-    Integer programYear = 2023;
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
     String submissionGuid = null;
 
     deletePin(participantPin);
@@ -3638,7 +3308,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionMetaData = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
   
       NppSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
@@ -3652,7 +3322,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -3662,14 +3332,14 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         validationTask = processor.processSubmission(submissionMetaData);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(validationTask);
       assertNotNull(validationTask.getAccountId());
       assertEquals(programYear + " NPP " + participantPin, validationTask.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-      assertEquals(formUserType + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
+      assertEquals(getFormUserType() + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
           + "- The following productive unit codes have duplicates: 100, 5000, 104, 6, 5014, 4784, 6930\n"
           + "\n" + "Environment: DEV\n" + "\n"
           + "First Name: Johnny\n" + "Last Name: Appleseed\n" + "Corporate Name: \n" + "Telephone: (648) 452-4357\n" + "Email: johnny@farmer.ca\n"
@@ -3682,7 +3352,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
       } catch (DataAccessException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(submissionRec);
   
@@ -3714,7 +3384,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   public void missingProductiveUnits() {
     
     Integer participantPin = 197623465;
-    Integer programYear = 2023;
+    Integer programYear = ProgramYearUtils.getCurrentCalendarYear();
     String submissionGuid = null;
     
     deletePin(participantPin);
@@ -3815,7 +3485,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionMetaData = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       
       NppSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
@@ -3823,13 +3493,10 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       resultData.setSubmissionGuid(submissionGuid);
       logger.debug("submissionGuid: " + submissionGuid);
       
-      List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
-      assertNotNull(programYearMetadata);
-      
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       
       // Process the submission data
-      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+      NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
       
@@ -3839,14 +3506,14 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         validationTask = processor.processSubmission(submissionMetaData);
       } catch (ServiceException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(validationTask);
       assertNotNull(validationTask.getAccountId());
       assertEquals(programYear + " NPP " + participantPin, validationTask.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-      assertEquals(formUserType + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
+      assertEquals(getFormUserType() + " NEW PARTICIPANT PLAN form was submitted but has validation errors:\n" + "\n"
           + "- No productive units entered\n"
           + "\n" + "Environment: DEV\n" + "\n"
           + "First Name: Johnny\n" + "Last Name: Appleseed\n" + "Corporate Name: \n" + "Telephone: (648) 452-4357\n" + "Email: johnny@farmer.ca\n"
@@ -3859,7 +3526,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
         submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
       } catch (DataAccessException e) {
         e.printStackTrace();
-        fail("Unexpected Exception");
+        fail(formatExceptionFailMessage(e));
       }
       assertNotNull(submissionRec);
       
@@ -3878,6 +3545,15 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_COMPLETED), validationTask.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATUS_CODE_NOT_STARTED), validationTask.getStatusCode());
       
+      List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+      assertNotNull(programYearMetadata);
+      
+      long scenarioCount = programYearMetadata.stream()
+          .filter(s -> s.getProgramYear().equals(programYear))
+          .count();
+      
+      assertEquals(0, scenarioCount);
+      
     } finally {
       
       deleteSubmissionsFromFarm(submissionGuid);
@@ -3889,32 +3565,11 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
   }
 
 
-  private SubmissionParentResource<NppSubmissionDataResource> buildSubmissionMetaData() {
-
-    SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = new SubmissionParentResource<>();
-    submissionMetaData.setDeleted(false);
-    submissionMetaData.setDraft(false);
-
-    SubmissionResource<NppSubmissionDataResource> submission = new SubmissionResource<>();
-    submissionMetaData.setSubmission(submission);
-
-    NppSubmissionDataResource data = new NppSubmissionDataResource();
-    submission.setData(data);
-
-    return submissionMetaData;
-  }
-
-  @Override
-  protected String getChefsFormType() {
-    return CHEFS_FORM_TYPE;
-  }
-
-
   @Disabled
   @Test
   public void submissionFromJsonFile() {
 
-    Integer participantPin = getUnusedParticpantPin();
+    Integer participantPin = getUnusedParticipantPin();
     Integer programYear = 2026;
     String sinNumber = null;
     String businessNumber = "999999999";
@@ -3933,9 +3588,9 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = null;
     try {
       submissionMetaData = loadSubmissionMetaDataFromJsonFile("data/chefs/npp_unit_test_data.json");
-    } catch (ServiceException e1) {
-      e1.printStackTrace();
-      fail("Unexpected Exception");
+    } catch (ServiceException e) {
+      e.printStackTrace();
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionMetaData);
 
@@ -3960,7 +3615,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionMetaData = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
 
     NppSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
@@ -3975,7 +3630,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, formUserType);
+    NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -3985,7 +3640,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       task = processor.processSubmission(submissionMetaData);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     
     assertNotNull(task);
@@ -4003,7 +3658,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
     } catch (DataAccessException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(submissionRec);
 
@@ -4016,28 +3671,31 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
 
     programYearMetadata = getProgramYearMetadata(participantPin, programYear);
     assertNotNull(programYearMetadata);
-
+    
     ScenarioMetaData nppScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_NPP,
         ScenarioTypeCodes.CHEF);
     Integer nppScenarioNumber = nppScenarioMetadata.getScenarioNumber();
+    Integer nppDbSubmissionId = nppScenarioMetadata.getChefsFormSubmissionId();
+    assertNotNull(nppDbSubmissionId);
+    assertNotNull(nppScenarioNumber);
     logger.debug("nppScenarioNumber:" + nppScenarioNumber);
     
     CalculatorService calculatorService = ServiceFactory.getCalculatorService();
 
-    Scenario scenario = null;
+    Scenario chefScenario = null;
     try {
-      scenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
+      chefScenario = calculatorService.loadScenario(participantPin, programYear, nppScenarioNumber);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
 
-    assertNotNull(scenario);
-    Client client = scenario.getClient();
+    assertNotNull(chefScenario);
+    Client client = chefScenario.getClient();
     assertNotNull(client);
     assertEquals(participantPin, client.getParticipantPin());
-    assertEquals(programYear, scenario.getYear());
-    assertEquals(nppScenarioNumber, scenario.getScenarioNumber());
+    assertEquals(programYear, chefScenario.getYear());
+    assertEquals(nppScenarioNumber, chefScenario.getScenarioNumber());
     
     if(isCorporation) {
       assertEquals(businessNumber + BUSINESS_NUMBER_SUFFIX, client.getBusinessNumber());
@@ -4045,7 +3703,8 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       assertEquals(sinNumber, client.getSin());
     }
     
-    FarmingOperation fo = scenario.getFarmingYear().getFarmingOperationByNumber(1);
+    FarmingOperation fo = chefScenario.getFarmingYear().getFarmingOperationByNumber(1);
+    assertNotNull(fo);
     List<ProductiveUnitCapacity> pucs = fo.getProductiveUnitCapacities();
 
     HashMap<String, Double> productiveUnitsMap = new HashMap<>();
@@ -4060,7 +3719,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       crmAccount = crmDao.getAccountByPin(participantPin);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(crmAccount);
     
@@ -4073,7 +3732,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       crmProgramYear = crmDao.getProgramYear(programYear);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(crmProgramYear);
     
@@ -4089,7 +3748,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       enwScenario = calculatorService.loadScenario(participantPin, programYear, enwScenarioNumber);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(enwScenario);
     client = enwScenario.getClient();
@@ -4103,6 +3762,7 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
     assertEquals(dbSubmissionId, enwScenario.getChefsSubmissionId());
     
     EnwEnrolment enw = enwScenario.getEnwEnrolment();
+    assertEquals(programYear, enw.getEnrolmentYear());
     assertEquals(EnwEnrolment.CALCULATION_TYPE_PROXY_MARGINS, enw.getEnrolmentCalculationTypeCode());
     assertEquals(Boolean.TRUE, enw.getHasBpus());
     assertEquals(Boolean.TRUE, enw.getHasProductiveUnits());
@@ -4118,26 +3778,612 @@ public class ChefsNppIdirSubmissionTest extends ChefsSubmissionTest {
       crmEnrolment = crmDao.getEnrolment(vsi_programyearid, accountId);
     } catch (ServiceException e) {
       e.printStackTrace();
-      fail("Unexpected Exception");
+      fail(formatExceptionFailMessage(e));
     }
     assertNotNull(crmEnrolment);    
     assertNotNull(crmEnrolment.getEnrolmentStatusCode());
-    // TODO Check for a specific Enrolment Status Code?
+  }
+
+
+
+  /**
+   *  First create the participant and data for calendar year - 3.
+   *  Then create data for the calendar year.
+   *  This simulates a participant that opted out for a couple of years,
+   *  is returning and so must fill out the NPP form again.
+   *  
+   *  The system must also create data for calendar year - 1 and -2
+   *  including the productive units since these are needed to create
+   *  an ENW scenario which initiates the enrolment process for calendar year.
+   */
+  @Test
+  public void returningParticipant() {
+    
+    Integer participantPin = getUnusedParticipantPin();
+    Integer programYear2 = ProgramYearUtils.getCurrentCalendarYear();
+    Integer enwYear2 = programYear2 - 2;
+    String businessNumber = "999928888";
+    String submissionGuid2 = null;
+    
+    Integer programYear1 = programYear2 - 3;
+    Integer enwYear1 = programYear1 - 2;
+    String submissionGuid1 = null;
+    
+    try {
+      
+      // --------------- CALENDAR YEAR - 3 -----------------------------------------------------------
+      
+      assertNotNull(participantPin);
+      
+      // NPP IDIR formId and formVersionId
+      String formId = "cdffa52c-8995-4518-960c-0b14fa3077e8";
+      String formVersionId = "79d0f3c8-872c-4759-855a-1d38d4aa1715";
+      
+      NppSubmissionDataResource data = new NppSubmissionDataResource();
+      
+      data.setExistingAccount(false);
+      data.setLateParticipant(false);
+      String corporationName = "CORP " + participantPin + " TEST";
+      data.setCorporationName(corporationName);
+      data.setFirstNameCorporateContact("CORPFIRST");
+      data.setLastNameCorporateContact("CORPLAST");
+      
+      LabelValue farmType = new LabelValue();
+      farmType.setValue(FIELD_VALUE_FARM_TYPE_CORPORATION);
+      farmType.setLabel("Corporation");
+      data.setFarmType(farmType);
+      
+      data.setEmail("ADMIN@FARMER.CA");
+      data.setAgriStabilityAgriInvestPin(participantPin);
+      data.setTelephone("(648) 452-4357");
+      data.setPostalCode("T5Y 4R4");
+      data.setBusinessTaxNumberBn("9999 28888");
+      data.setAddress("1234 HOME ROAD");
+      data.setTownCity("PENTICTON");
+      data.setProvince("BC");
+      data.setFirstYearReporting("2022");
+      data.setAccountingCode("cash");
+      data.setLateEntry(false);
+      
+      data.setMunicipalityCode("37");
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+      
+      data.setAuthorizeThirdParty("yes");
+      data.setThirdPartyFirstName("PAUL");
+      data.setThirdPartyLastName("BUNYAN");
+      data.setThirdPartyBusinessName("LUMBER INC");
+      data.setThirdPartyEmail("PAUL@LUMBER.INC");
+      data.setThirdPartyAddress("345 BUSINESS STREET");
+      data.setThirdPartyTownCity("KELOWNA");
+      data.setThirdPartyProvince("BC");
+      data.setThirdPartyPostalCode("V4N 0C0");
+      data.setThirdPartyTelephone("(604) 555-5555");
+      data.setThirdPartyFax("(604) 125-9338");
+      
+      data.setCropsFarmed(Arrays.asList("berries"));
+      
+      data.setBerryGrid(Arrays.asList(
+          ));
+      
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+      data.setAccountingCode("cash");
+      data.setWhatIsYourMainFarmingActivity("Treefruit");
+      data.setDidYouCompleteAProductionCycle("yes");
+      data.setDidYouStartFarmingWithinTheLastSixMonths("yes");
+      data.setDoYouHaveMultipleOperations("no");
+      NppCropGrid fbg1 = new NppCropGrid();
+      fbg1.setCrop("5572HayClover2");
+      fbg1.setAcres(5.0);
+      NppCropGrid fbg2 = new NppCropGrid();
+      fbg2.setCrop("5564HayAlfalfa");
+      fbg2.setAcres(6.0);
+      data.setForageBasketGrid(Arrays.asList(fbg1, fbg2));
+      
+      data.setFiscalYearStart(Date.from(LocalDate.of(programYear1, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+      data.setFiscalYearEnd(Date.from(LocalDate.of(programYear1, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+      data.setSignDate(new Date());
+      data.setThirdPartySignDate(new Date().toString());
+      
+      PartnershipInformation p1 = new PartnershipInformation("345345", null, "partner", "one", 10.0);
+      PartnershipInformation p2 = new PartnershipInformation("122222", null, "partner", "two", 20.0);
+      PartnershipInformation p3 = new PartnershipInformation(String.valueOf(participantPin), corporationName, null, null, 30.0);
+      data.setPartnershipInformation(Arrays.asList(p1, p2, p3));
+      data.setCommoditiesFarmed(Arrays.asList("treefruitGrapes", "grainLivestock", "nurseriesGreenhouses"));
+      
+      SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+      
+      SubmissionResource<NppSubmissionDataResource> submission = new SubmissionResource<>();
+      
+      submission.setData(data);
+      submissionMetaData.setSubmission(submission);
+      submissionMetaData.setSubmissionGuid(null);
+      
+      NppSubmissionRequestDataResource<NppSubmissionDataResource> request = new NppSubmissionRequestDataResource<>();
+      request.setDraft(false);
+      request.setCreatedBy(user);
+      request.setCreatedAt(new Date().toString());
+      request.setUpdatedBy(user);
+      request.setUpdatedAt(new Date().toString());
+      request.setSubmission(submission);
+      
+      {
+    
+        String postSubmissionUrl = chefsConfig.postSubmissionUrl(formId, formVersionId);
+        assertNotNull(postSubmissionUrl);
+        try {
+          submissionMetaData = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+    
+        NppSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
+        submissionGuid1 = submissionMetaData.getSubmissionGuid();
+        resultData.setSubmissionGuid(submissionGuid1);
+        logger.debug("submissionGuid1: " + submissionGuid1);
+    
+        List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear1);
+        assertNotNull(programYearMetadata);
+        assertTrue(programYearMetadata.isEmpty());
+    
+        Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid1);
+    
+        // Process the submission data
+        NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
+        processor.setUser(user);
+        processor.setItemResourceMap(itemResourceMap);
+    
+        CrmTaskResource task = null;
+        try {
+          processor.loadSubmissionsFromDatabase();
+          task = processor.processSubmission(submissionMetaData);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        
+        assertNotNull(task);
+        assertEquals(programYear1 + " NPP " + participantPin, task.getSubject());
+        assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
+        assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
+        assertEquals("Enrolment not calculated: Ineligible\n"
+            + "\n"
+            + "Primary Farming Activity: Treefruit", task.getDescription());
+        assertNotNull(task.getAccountId());
+        
+        
+        // Get the record from FARM_CHEF_SUBMISSIONS, created by the processor
+        // to track the status of the submission.
+        ChefsSubmission submissionRec = null;
+        try {
+          submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid1);
+        } catch (DataAccessException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(submissionRec);
+    
+        assertEquals(submissionGuid1, submissionRec.getSubmissionGuid());
+        assertEquals(ChefsFormTypeCodes.NPP, submissionRec.getFormTypeCode());
+        assertEquals(ChefsSubmissionStatusCodes.PROCESSED, submissionRec.getSubmissionStatusCode());
+        assertNull(submissionRec.getValidationTaskGuid());
+        assertNotNull(submissionRec.getSubmissionId());
+        assertNotNull(submissionRec.getRevisionCount());
+    
+        programYearMetadata = getProgramYearMetadata(participantPin, programYear1);
+        assertNotNull(programYearMetadata);
+    
+        ScenarioMetaData nppScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear1, ScenarioCategoryCodes.CHEF_NPP,
+            ScenarioTypeCodes.CHEF);
+        Integer nppScenarioNumber = nppScenarioMetadata.getScenarioNumber();
+        Integer nppDbSubmissionId = nppScenarioMetadata.getChefsFormSubmissionId();
+        assertNotNull(nppDbSubmissionId);
+        assertNotNull(nppScenarioNumber);
+        logger.debug("nppScenarioNumber:" + nppScenarioNumber);
+        
+        CalculatorService calculatorService = ServiceFactory.getCalculatorService();
+        Scenario chefScenario = null;
+        try {
+          chefScenario = calculatorService.loadScenario(participantPin, programYear1, nppScenarioNumber);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+    
+        assertNotNull(chefScenario);
+        Client client = chefScenario.getClient();
+        assertNotNull(client);
+        assertEquals(participantPin, client.getParticipantPin());
+        assertEquals(businessNumber + BUSINESS_NUMBER_SUFFIX, client.getBusinessNumber());
+        assertEquals(programYear1, chefScenario.getYear());
+        assertEquals(nppScenarioNumber, chefScenario.getScenarioNumber());
+    
+        FarmingOperation chefScenarioOperation = chefScenario.getFarmingYear().getFarmingOperationByNumber(1);
+        assertEquals(0.30, chefScenarioOperation.getPartnershipPercent());
+        
+        {
+          List<ProductiveUnitCapacity> pucs = chefScenarioOperation.getProductiveUnitCapacities();
+      
+          Map<String, Double> productiveUnitsMap = buildProductiveUnitsMap(pucs);
+          
+          assertEquals(2, productiveUnitsMap.size());
+          assertEquals(Double.valueOf(6.0), productiveUnitsMap.get("5564"));
+          assertEquals(Double.valueOf(5.0), productiveUnitsMap.get("5572"));
+        }
+    
+        List<FarmingOperationPartner> fops = chefScenarioOperation.getFarmingOperationPartners();
+        assertEquals(3, fops.size());
+        {
+          FarmingOperationPartner fop = fops.get(0);
+          assertEquals(122222, fop.getParticipantPin());
+          assertNull(fop.getCorpName());
+          assertEquals("partner", fop.getFirstName());
+          assertEquals("two", fop.getLastName());
+          assertEquals(0.20, fop.getPartnerPercent().doubleValue());
+        }
+        {
+          FarmingOperationPartner fop = fops.get(1);
+          assertEquals(345345, fop.getParticipantPin());
+          assertNull(fop.getCorpName());
+          assertEquals("partner", fop.getFirstName());
+          assertEquals("one", fop.getLastName());
+          assertEquals(0.10, fop.getPartnerPercent().doubleValue());
+        }
+        {
+          FarmingOperationPartner fop = fops.get(2);
+          assertEquals(participantPin, fop.getParticipantPin());
+          assertEquals(corporationName, fop.getCorpName());
+          assertNull(fop.getFirstName());
+          assertNull(fop.getLastName());
+          assertEquals(0.30, fop.getPartnerPercent().doubleValue());
+        }
+  
+        
+        CrmAccountResource crmAccount = null;
+        try {
+          crmAccount = crmDao.getAccountByPin(participantPin);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(crmAccount);
+        
+        assertEquals(participantPin.toString(), crmAccount.getVsi_pin());
+        assertEquals(businessNumber, crmAccount.getVsi_businessnumber());
+        assertEquals(corporationName, crmAccount.getName());
+        
+        CrmProgramYearResource crmProgramYear = null;
+        try {
+          crmProgramYear = crmDao.getProgramYear(programYear1);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(crmProgramYear);
+        
+    
+        // ------------ ENW Scenario -------------------------------------------------------------------
+        
+        programYearMetadata = getProgramYearMetadata(participantPin, programYear1);
+        assertNotNull(programYearMetadata);
+        
+        ScenarioMetaData enwScenarioMetadata = ScenarioUtils.findLatestEnrolmentNoticeWorkflowScenario(programYearMetadata, enwYear1);
+        assertNull(enwScenarioMetadata);
+    
+    
+        String accountId = crmAccount.getAccountid();
+        String vsi_programyearid = crmProgramYear.getVsi_programyearid();
+      
+        CrmEnrolmentResource crmEnrolment = null;
+        try {
+          crmEnrolment = crmDao.getEnrolment(vsi_programyearid, accountId);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(crmEnrolment);
+        assertEnrolmentStatusIsOneOf(crmEnrolment.getEnrolmentStatusCode(), CrmConstants.ENROLMENT_STATUS_CODE_INELIGIBLE);
+      }
+      
+      
+      {
+        // Create a GEN scenario for enwYear2 year to test that a CHEF_NPP scenario will still be created
+        CalculatorService calculatorService = ServiceFactory.getCalculatorService();
+        Scenario scenario = null;
+        try {
+          scenario = calculatorService.loadScenario(participantPin, enwYear2, null);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(scenario);
+
+        try {
+          calculatorService.createYear(
+              scenario,
+              new Integer(participantPin),
+              enwYear2,
+              1,
+              ScenarioTypeCodes.GEN,
+              ScenarioCategoryCodes.LOCAL_DATA_ENTRY,
+              user);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        
+        List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear2);
+        assertNotNull(programYearMetadata);
+        
+        ScenarioMetaData latestBaseDataScenario = ScenarioUtils.findLatestBaseDataScenario(programYearMetadata, enwYear2);
+        assertNotNull(latestBaseDataScenario);
+        assertEquals(ScenarioTypeCodes.GEN, latestBaseDataScenario.getScenarioTypeCode());
+        assertEquals(ScenarioCategoryCodes.LOCAL_DATA_ENTRY, latestBaseDataScenario.getScenarioCategoryCode());
+        assertEquals(1, latestBaseDataScenario.getScenarioNumber());
+      }
+      
+      
+      // --------------- CALENDAR YEAR -----------------------------------------------------------
+      {
+        // Re-use the same request and data but add the productive units
+        // and update the fiscal year start and end dates
+        
+        data.setBerryGrid(Arrays.asList(
+            new NppCommodityGrid("5000 - Blackberries", "5000", 12.0, null, null)
+            ));
+        
+        data.setFiscalYearStart(Date.from(LocalDate.of(programYear2, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        data.setFiscalYearEnd(Date.from(LocalDate.of(programYear2, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        
+        String postSubmissionUrl = chefsConfig.postSubmissionUrl(formId, formVersionId);
+        assertNotNull(postSubmissionUrl);
+        try {
+          submissionMetaData = chefsApiDao.postNppSubmission(postSubmissionUrl, request);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        
+        NppSubmissionDataResource resultData = submissionMetaData.getSubmission().getData();
+        submissionGuid2 = submissionMetaData.getSubmissionGuid();
+        resultData.setSubmissionGuid(submissionGuid2);
+        logger.debug("submissionGuid2: " + submissionGuid2);
+        
+        Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid2);
+        
+        // Process the submission data
+        NppSubmissionProcessor processor = new NppSubmissionProcessor(conn, getFormUserType());
+        processor.setUser(user);
+        processor.setItemResourceMap(itemResourceMap);
+        
+        CrmTaskResource task = null;
+        try {
+          processor.loadSubmissionsFromDatabase();
+          task = processor.processSubmission(submissionMetaData);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        
+        assertNotNull(task);
+        assertEquals(programYear2 + " NPP " + participantPin, task.getSubject());
+        assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
+        assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
+        assertEquals("Primary Farming Activity: Treefruit", task.getDescription());
+        assertNotNull(task.getAccountId());
+        
+        
+        // Get the record from FARM_CHEF_SUBMISSIONS, created by the processor
+        // to track the status of the submission.
+        ChefsSubmission submissionRec = null;
+        try {
+          submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid2);
+        } catch (DataAccessException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(submissionRec);
+        
+        assertEquals(submissionGuid2, submissionRec.getSubmissionGuid());
+        assertEquals(ChefsFormTypeCodes.NPP, submissionRec.getFormTypeCode());
+        assertEquals(ChefsSubmissionStatusCodes.PROCESSED, submissionRec.getSubmissionStatusCode());
+        assertNull(submissionRec.getValidationTaskGuid());
+        assertNotNull(submissionRec.getSubmissionId());
+        assertNotNull(submissionRec.getRevisionCount());
+        
+        List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear2);
+        assertNotNull(programYearMetadata);
+        
+        ScenarioMetaData nppScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear2, ScenarioCategoryCodes.CHEF_NPP,
+            ScenarioTypeCodes.CHEF);
+        Integer nppScenarioNumber = nppScenarioMetadata.getScenarioNumber();
+        Integer nppDbSubmissionId = nppScenarioMetadata.getChefsFormSubmissionId();
+        assertNotNull(nppDbSubmissionId);
+        assertNotNull(nppScenarioNumber);
+        logger.debug("nppScenarioNumber:" + nppScenarioNumber);
+        
+        CalculatorService calculatorService = ServiceFactory.getCalculatorService();
+        
+        {
+          ScenarioMetaData enwYear2NppScenarioMetadata = ScenarioUtils.findLatestScenarioByChefSubmissionGuid(programYearMetadata, enwYear2, ScenarioCategoryCodes.CHEF_NPP, submissionGuid2);
+          assertNotNull(enwYear2NppScenarioMetadata);
+          Integer enwYear2NppScenarioNumber = enwYear2NppScenarioMetadata.getScenarioNumber();
+          
+          Scenario enwYear2NppScenario = null;
+          try {
+            enwYear2NppScenario = calculatorService.loadScenario(participantPin, enwYear2, enwYear2NppScenarioNumber);
+          } catch (ServiceException e) {
+            e.printStackTrace();
+            fail(formatExceptionFailMessage(e));
+          }
+          assertNotNull(enwYear2NppScenario);
+        }
+        
+        Scenario chefScenario = null;
+        try {
+          chefScenario = calculatorService.loadScenario(participantPin, programYear2, nppScenarioNumber);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        
+        assertNotNull(chefScenario);
+        Client client = chefScenario.getClient();
+        assertNotNull(client);
+        assertEquals(participantPin, client.getParticipantPin());
+        assertEquals(businessNumber + BUSINESS_NUMBER_SUFFIX, client.getBusinessNumber());
+        assertEquals(programYear2, chefScenario.getYear());
+        assertEquals(nppScenarioNumber, chefScenario.getScenarioNumber());
+        
+        FarmingOperation chefScenarioOperation = chefScenario.getFarmingYear().getFarmingOperationByNumber(1);
+        assertEquals(0.30, chefScenarioOperation.getPartnershipPercent());
+        
+        {
+          List<ProductiveUnitCapacity> pucs = chefScenarioOperation.getProductiveUnitCapacities();
+          
+          Map<String, Double> productiveUnitsMap = buildProductiveUnitsMap(pucs);
+          
+          assertEquals(3, productiveUnitsMap.size());
+          assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5000"));
+          assertEquals(Double.valueOf(6.0), productiveUnitsMap.get("5564"));
+          assertEquals(Double.valueOf(5.0), productiveUnitsMap.get("5572"));
+        }
+        
+        List<FarmingOperationPartner> fops = chefScenarioOperation.getFarmingOperationPartners();
+        assertEquals(3, fops.size());
+        {
+          FarmingOperationPartner fop = fops.get(0);
+          assertEquals(122222, fop.getParticipantPin());
+          assertNull(fop.getCorpName());
+          assertEquals("partner", fop.getFirstName());
+          assertEquals("two", fop.getLastName());
+          assertEquals(0.20, fop.getPartnerPercent().doubleValue());
+        }
+        {
+          FarmingOperationPartner fop = fops.get(1);
+          assertEquals(345345, fop.getParticipantPin());
+          assertNull(fop.getCorpName());
+          assertEquals("partner", fop.getFirstName());
+          assertEquals("one", fop.getLastName());
+          assertEquals(0.10, fop.getPartnerPercent().doubleValue());
+        }
+        {
+          FarmingOperationPartner fop = fops.get(2);
+          assertEquals(participantPin, fop.getParticipantPin());
+          assertEquals(corporationName, fop.getCorpName());
+          assertNull(fop.getFirstName());
+          assertNull(fop.getLastName());
+          assertEquals(0.30, fop.getPartnerPercent().doubleValue());
+        }
+        
+        
+        CrmAccountResource crmAccount = null;
+        try {
+          crmAccount = crmDao.getAccountByPin(participantPin);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(crmAccount);
+        
+        assertEquals(participantPin.toString(), crmAccount.getVsi_pin());
+        assertEquals(businessNumber, crmAccount.getVsi_businessnumber());
+        assertEquals(corporationName, crmAccount.getName());
+        
+        CrmProgramYearResource crmProgramYear = null;
+        try {
+          crmProgramYear = crmDao.getProgramYear(programYear2);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(crmProgramYear);
+        
+        
+        // ------------ ENW Scenario -------------------------------------------------------------------
+        
+        programYearMetadata = getProgramYearMetadata(participantPin, programYear2);
+        assertNotNull(programYearMetadata);
+        
+        ScenarioMetaData enwScenarioMetadata = ScenarioUtils.findLatestEnrolmentNoticeWorkflowScenario(programYearMetadata, enwYear2);
+        assertNotNull(enwScenarioMetadata);
+        Integer enwScenarioNumber = enwScenarioMetadata.getScenarioNumber();
+        Integer enwDbSubmissionId = enwScenarioMetadata.getChefsFormSubmissionId();
+        assertNotNull(enwScenarioNumber);
+        assertNotNull(enwDbSubmissionId);
+        assertEquals(nppDbSubmissionId, enwDbSubmissionId);
+        
+        Scenario enwScenario = null;
+        try {
+          enwScenario = calculatorService.loadScenario(participantPin, enwYear2, enwScenarioNumber);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(enwScenario);
+        client = enwScenario.getClient();
+        assertNotNull(client);
+        assertEquals(participantPin, client.getParticipantPin());
+        assertNull(client.getSin());
+        assertEquals(businessNumber + BUSINESS_NUMBER_SUFFIX, client.getBusinessNumber());
+        assertEquals(enwYear2, enwScenario.getYear());
+        assertEquals(enwScenarioNumber, enwScenario.getScenarioNumber());
+        assertEquals(ScenarioCategoryCodes.ENROLMENT_NOTICE_WORKFLOW, enwScenario.getScenarioCategoryCode());
+        assertEquals(ScenarioTypeCodes.USER, enwScenario.getScenarioTypeCode());
+        assertEquals(ScenarioStateCodes.ENROLMENT_NOTICE_COMPLETE, enwScenario.getScenarioStateCode());
+        assertEquals(enwDbSubmissionId, enwScenario.getChefsSubmissionId());
+        
+        {
+          FarmingOperation enwScenarioOperation = enwScenario.getFarmingYear().getFarmingOperationByNumber(1);
+          assertEquals(0.30, enwScenarioOperation.getPartnershipPercent());
+          
+          List<ProductiveUnitCapacity> pucs = enwScenarioOperation.getProductiveUnitCapacities();
+          
+          Map<String, Double> productiveUnitsMap = buildProductiveUnitsMap(pucs);
+          
+          assertEquals(3, productiveUnitsMap.size());
+          assertEquals(Double.valueOf(12.0), productiveUnitsMap.get("5000"));
+          assertEquals(Double.valueOf(6.0), productiveUnitsMap.get("5564"));
+          assertEquals(Double.valueOf(5.0), productiveUnitsMap.get("5572"));
+        }
+        
+        EnwEnrolment enw = enwScenario.getEnwEnrolment();
+        assertEquals(programYear2, enw.getEnrolmentYear());
+        assertEquals(EnwEnrolment.CALCULATION_TYPE_PROXY_MARGINS, enw.getEnrolmentCalculationTypeCode());
+        assertEquals(Boolean.TRUE, enw.getHasBpus());
+        assertEquals(Boolean.TRUE, enw.getHasProductiveUnits());
+        assertEquals(Boolean.TRUE, enw.getCanCalculateProxyMargins());
+        assertEquals(Double.valueOf(58.42), enw.getEnrolmentFee());
+        
+        
+        String accountId = crmAccount.getAccountid();
+        String vsi_programyearid = crmProgramYear.getVsi_programyearid();
+        
+        CrmEnrolmentResource crmEnrolment = null;
+        try {
+          crmEnrolment = crmDao.getEnrolment(vsi_programyearid, accountId);
+        } catch (ServiceException e) {
+          e.printStackTrace();
+          fail(formatExceptionFailMessage(e));
+        }
+        assertNotNull(crmEnrolment);
+        assertEnrolmentStatusIsOneOf(crmEnrolment.getEnrolmentStatusCode(),
+            CrmConstants.ENROLMENT_STATUS_CODE_UPDATED_ENROLMENT_FEES_CALCULATED, CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED);
+      }
+      
+      
+    } finally {
+      
+      deleteSubmissionsFromFarm(submissionGuid1, submissionGuid2);
+      deleteValidationErrorTasksBySubmissionGuid(submissionGuid1, submissionGuid2);
+      deleteSubmissionsFromChefs(submissionGuid1, submissionGuid2);
+      deletePin(participantPin);
+    }
+    
   }
   
-  private SubmissionParentResource<NppSubmissionDataResource> loadSubmissionMetaDataFromJsonFile(String fileName) throws ServiceException {
-    String submissionWrapperString = TestUtils.loadFileAsString(fileName);
-
-    ObjectMapper jsonObjectMapper = new ObjectMapper();
-    jsonObjectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-    
-    JavaType parametricType = jsonObjectMapper.getTypeFactory().constructParametricType(SubmissionWrapperResource.class,
-        NppSubmissionDataResource.class);
-    
-    SubmissionWrapperResource<NppSubmissionDataResource> submissionWrapper = chefsApiDao.parseResource(submissionWrapperString, parametricType);
-    
-    SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = submissionWrapper.getSubmissionMetaData();
-    return submissionMetaData;
-  }
-
 }

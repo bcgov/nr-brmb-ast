@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
+import ca.bc.gov.srm.farm.util.StringUtils;
 
 public class SupplementalSubmissionDataResource extends SupplementalBaseDataResource {
 
@@ -158,6 +159,20 @@ public class SupplementalSubmissionDataResource extends SupplementalBaseDataReso
 
   public void setTypeOfAnimalCustomFed(LabelValue typeOfAnimalCustomFed) {
     this.typeOfAnimalCustomFed = typeOfAnimalCustomFed;
+  }
+
+  @Override
+  public Integer getParticipantPin() {
+    return agriStabilityAgriInvestPin;
+  }
+
+  @Override
+  @JsonIgnore
+  public Integer getYear() {
+    if(getProgramYear() != null && StringUtils.isNotBlank(getProgramYear().getValue())) {
+      return Integer.valueOf(getProgramYear().getValue());
+    }
+    return null;
   }
 
 }

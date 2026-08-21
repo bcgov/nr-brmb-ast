@@ -304,6 +304,7 @@ public class ChefsDatabaseDAO extends OracleDAO {
             submission.setFormTypeCode(getString(rs, "Chef_Form_Type_Code"));
             submission.setFormTypeDescription(getString(rs, "Chef_Form_Type_Description"));
             submission.setSubmissionStatusCode(getString(rs, "Chef_Submssn_Status_Code"));
+            submission.setParticipantPin(getInteger(rs, "Participant_Pin"));
             submission.setRevisionCount(getInteger(rs, "Revision_Count"));
             submission.setBceidFormInd(getString(rs, "Bceid_Form_Ind"));
             submission.setCreatedDate(getDate(rs, "When_Created"));
@@ -629,13 +630,13 @@ public class ChefsDatabaseDAO extends OracleDAO {
           } else if (inventoryClassCode.equals(InventoryClassCodes.LIVESTOCK)) {
             proc.setNull(param++, Types.NUMERIC);
             proc.setString(param++, CropUnitCodes.getLivestockUnitCode(item.getInventoryItemCode()));
-            proc.setNull(param++, Types.VARCHAR);
-            proc.setNull(param++, Types.VARCHAR);
+            proc.setNull(param++, Types.NUMERIC);
+            proc.setNull(param++, Types.NUMERIC);
           } else if(item.isAccrual()) {
             proc.setNull(param++, Types.NUMERIC);
             proc.setNull(param++, Types.VARCHAR);
-            proc.setNull(param++, Types.VARCHAR);
-            proc.setNull(param++, Types.VARCHAR);
+            proc.setNull(param++, Types.NUMERIC);
+            proc.setNull(param++, Types.NUMERIC);
           } else {
             throw new UnsupportedOperationException("Unknown inventory class code: " + inventoryClassCode);
           }

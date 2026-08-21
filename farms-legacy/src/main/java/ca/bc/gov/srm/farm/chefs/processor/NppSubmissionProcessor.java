@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,8 +33,6 @@ import java.util.stream.Collectors;
 import org.apache.struts.action.ActionMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JacksonException;
 
 import ca.bc.gov.srm.farm.calculator.BenefitNullFixer;
 import ca.bc.gov.srm.farm.calculator.CalculatorFactory;
@@ -75,7 +72,6 @@ import ca.bc.gov.srm.farm.domain.enrolment.EnwEnrolment;
 import ca.bc.gov.srm.farm.enrolment.EnrolmentCalculatorFactory;
 import ca.bc.gov.srm.farm.enrolment.EnwEnrolmentCalculator;
 import ca.bc.gov.srm.farm.exception.ServiceException;
-import ca.bc.gov.srm.farm.exception.TooManyRequestsException;
 import ca.bc.gov.srm.farm.service.BenefitService;
 import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsSubmissionProcessorService;
@@ -84,6 +80,7 @@ import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.util.DateUtils;
 import ca.bc.gov.srm.farm.util.MathUtils;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
+import ca.bc.gov.srm.farm.util.SleepUtils;
 import ca.bc.gov.srm.farm.util.StringUtils;
 
 public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissionDataResource> {
@@ -132,30 +129,21 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
   private String validationQueueId;
 
   @Override
-  protected void processSubmission(String submissionGuid, String submissionResponseStr) {
+  protected void processSubmission(String submissionGuid, String submissionResponseStr) throws ServiceException {
     logMethodStart(logger);
 
     CrmTaskResource task = null;
     
-    try {
-      SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr, NppSubmissionDataResource.class);
+    SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr, NppSubmissionDataResource.class);
 
-      if( ! submissionMetaData.getDraft() ) {
-        task = processSubmission(submissionMetaData);
-      }
-    } catch (ServiceException e) {
-      if(e.getCause() instanceof TooManyRequestsException) {
-        logger.error("TooManyRequestsException: ", e);
-      } else if(e.getCause() instanceof JacksonException) {
-        task = handleParseError(submissionGuid, e);
-      } else {
-        task = handleSystemError(submissionGuid, e);
-      }
-    } 
+    if( ! submissionMetaData.getDraft() ) {
+      task = processSubmission(submissionMetaData);
+    }
 
     logMethodEnd(logger, task);
   }
 
+  
   public CrmTaskResource processSubmission(SubmissionParentResource<NppSubmissionDataResource> submissionMetaData)
       throws ServiceException {
     logMethodStart(logger);
@@ -171,7 +159,6 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
     
     Integer participantPin = getParticipantPin(data);
     Integer programYear = getProgramYear(data);
-    data.setParsedParticipantPin(participantPin);
     data.setParsedProgramYear(programYear);
 
     ChefsSubmissionProcessData chefsSubmissionProcessData = shouldProcessSubmission(submissionGuid, data, submissionRec);
@@ -238,31 +225,24 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
           createdParticipant = true;
         }
         
-        List<ScenarioMetaData> programYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
-        ScenarioMetaData chefNppScenarioMetaData = ScenarioUtils.findScenarioByCategory(
-            programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_NPP, submissionGuid);
-        
-        if(chefNppScenarioMetaData == null) {
-          chefsSubmissionProcessorService.createNppSupplementalData(data, client.getClientId(), programYear,
-              getApplicationVersion(), createdParticipant, submissionId, participant.getFarmingOperations(), user);
-          
-          programYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
-          chefNppScenarioMetaData = ScenarioUtils.findLatestScenarioByChefSubmissionGuid(
-              programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_NPP, submissionGuid);
-        }
+        chefsSubmissionProcessorService.createNppSupplementalData(data, client.getClientId(), programYear,
+            getApplicationVersion(), createdParticipant, submissionId, participant.getFarmingOperations(), user);
         
         CrmTransferService crmTransferService = ServiceFactory.getCrmTransferService();
         crmAccount = crmTransferService.accountUpdate(connection, crmAccount, client, submissionGuid, formUserType, ChefsFormTypeCodes.NPP);
+        
+        List<ScenarioMetaData> programYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
+        ScenarioMetaData chefNppScenarioMetaData = ScenarioUtils.findLatestScenarioByChefSubmissionGuid(
+            programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_NPP, submissionGuid);
 
         Integer latestChefNppScenarioNumber = chefNppScenarioMetaData.getScenarioNumber();
         Scenario chefNppScenario = calculatorService.loadScenario(participantPin, programYear, latestChefNppScenarioNumber);
 
-        boolean lateParticipant = Boolean.TRUE.equals(data.getLateParticipant());
-
-        if (lateParticipant) {
+        if (data.getLateParticipant()) {
           calculatorService.saveLateParticipantInd(chefNppScenario, chefNppScenario.getRevisionCount(), data.getLateParticipant(), user);
           
-          // getEnrolmentStatusCode waits until the Enrolment has been created in CRM
+          // getEnrolmentStatusCode waits until the Enrolment has been created in CRM.
+          // This gives CORE time to create the Enrolment before we create the Benefit Update (immediateBenefitTransfer).
           @SuppressWarnings("unused")
           Integer enrolmentStatusCode = getEnrolmentStatusCode(crmAccount, programYear);
         }
@@ -273,52 +253,10 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
         crmTransferService.immediateBenefitTransfer(chefNppScenario, verifierUserEmail, user,
             chefsFormNotes, formUserType, formTypeCode, benefitTriageResultType, connection);
         
-        // Check enrolment existence/status before creating an ENW scenario
-        Integer enrolmentStatusCode = getEnrolmentStatusCode(crmAccount, programYear);
-        boolean success;
-        String successMessage = null;
-        
-        if(shouldCalculateEnrolment(lateParticipant, enrolmentStatusCode)) {
-          
-          // In case this process previously failed part way through, check if we already created an ENW scenario
-          Scenario enwScenario = findOrCreateEnwScenario(participantPin, programYear, programYearMetadata, chefNppScenario,
-              submissionGuid, submissionId);
-          
-          if(enwScenario.stateIsOneOf(ScenarioStateCodes.IN_PROGRESS)) {
-            
-            List<String> enwErrors = calculateEnrolment(enwScenario);
-            
-            if(enwErrors.isEmpty()) {
-              success = true;
-            } else {
-              success = false;
-              logger.info("NPP Enrolment calculation failed. Errors: " + enwErrors);
-              
-              newTask = createValidationErrorTask(crmAccount, data, enwErrors, submissionGuid);
-            }
-            
-          } else {
-            
-            success = true;
-            
-            if(enwScenario.stateIsOneOf(ScenarioStateCodes.COMPLETED)) {
-              successMessage = ENW_MESSAGE_FOUND_EXISTING_ENROLMENT_NOTICE_WORKFLOW_SCENARIO;
-            }
-            
-          }
+        if(data.getLateParticipant()) {
+          newTask = createValidNppTask(data, participantPin, crmAccount, null, submissionGuid);
         } else {
-          
-          success = true;
-          
-          if(enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_INELIGIBLE) {
-            successMessage = String.format(ENW_MESSAGE_NOT_CALCULATED_DUE_TO_STATUS_FORMAT,
-                CrmConstants.getEnrolmentStatusDescription(enrolmentStatusCode));
-          }
-        }
-
-        if(success) {
-          logger.debug("Creating valid NPP task...");
-          newTask = createValidNppTask(data, participantPin, crmAccount, successMessage, submissionGuid);
+          newTask = handleEnwEnrolment(data, crmAccount, submissionGuid, submissionId);
         }
 
       }
@@ -332,12 +270,78 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
     return newTask;
   }
 
-  private void waitForDynamicsFlows(int waitSeconds) {
-    try {
-      TimeUnit.SECONDS.sleep(waitSeconds);
-    } catch (InterruptedException e) {
-      logger.error("InterruptedException: ", e);
+
+  private CrmTaskResource handleEnwEnrolment(NppSubmissionDataResource data, CrmAccountResource crmAccount, String submissionGuid,
+      Integer submissionId) throws ServiceException, SQLException {
+    
+    CrmTaskResource newTask = null;
+    
+    boolean success;
+    String successMessage = null;
+    
+    Integer participantPin = getParticipantPin(data);
+    Integer programYear = getProgramYear(data);
+    
+    final int enwScenarioNumRelativeYears = -2;
+    Integer enwScenarioYear = programYear + enwScenarioNumRelativeYears;
+    
+    // Wait for the Enrolment Status to be updated by the Dynamics flows
+    final int waitSeconds = 60;
+    SleepUtils.waitForSeconds(waitSeconds);
+    
+    // Check enrolment existence/status before creating an ENW scenario.
+    // For a Late Participant we already checked above.
+    Integer enrolmentStatusCode = getEnrolmentStatusCode(crmAccount, programYear);
+    
+    if(enrolmentStatusCode == null
+        || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_INITIALIZED
+        || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED) {
+      
+      List<ScenarioMetaData> programYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
+
+      
+      // In case this process previously failed part way through, check if we already created an ENW scenario
+      Scenario enwScenario = findOrCreateEnwScenario(participantPin, enwScenarioYear, programYearMetadata, submissionGuid,
+          submissionId);
+      
+      if(enwScenario.stateIsOneOf(ScenarioStateCodes.IN_PROGRESS)) {
+        
+        List<String> enwErrors = calculateEnrolment(enwScenario);
+        
+        if(enwErrors.isEmpty()) {
+          success = true;
+        } else {
+          success = false;
+          logger.info("NPP Enrolment calculation failed. Errors: " + enwErrors);
+          
+          newTask = createValidationErrorTask(crmAccount, data, enwErrors, submissionGuid);
+        }
+        
+      } else {
+        
+        success = true;
+        
+        if(enwScenario.stateIsOneOf(ScenarioStateCodes.COMPLETED)) {
+          successMessage = ENW_MESSAGE_FOUND_EXISTING_ENROLMENT_NOTICE_WORKFLOW_SCENARIO;
+        }
+        
+      }
+      
+    } else {
+      
+      success = true;
+      
+      if(enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_INELIGIBLE) {
+        successMessage = String.format(ENW_MESSAGE_NOT_CALCULATED_DUE_TO_STATUS_FORMAT,
+            CrmConstants.getEnrolmentStatusDescription(enrolmentStatusCode));
+      }
     }
+    
+    if(success) {
+      logger.debug("Creating valid NPP task...");
+      newTask = createValidNppTask(data, participantPin, crmAccount, successMessage, submissionGuid);
+    }
+    return newTask;
   }
 
   private List<String> calculateEnrolment(Scenario enwScenarioParameter)
@@ -388,14 +392,6 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
     return enwErrors;
   }
 
-
-  static boolean shouldCalculateEnrolment(boolean lateParticipant, Integer enrolmentStatusCode) {
-    return !lateParticipant
-        && (enrolmentStatusCode == null
-            || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_INITIALIZED
-            || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED);
-  }
-
   private void setBpuLead(Scenario enwScenario) {
     
     BenefitNullFixer nullFixer = CalculatorFactory.getBenefitNullFixer(enwScenario);
@@ -416,30 +412,31 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
     }
   }
 
-  private Scenario findOrCreateEnwScenario(Integer participantPin, Integer programYear,
-      List<ScenarioMetaData> programYearMetadata, Scenario chefNppScenario, String submissionGuid, Integer submissionId) throws ServiceException {
+  private Scenario findOrCreateEnwScenario(Integer participantPin, Integer enwScenarioYear,
+      List<ScenarioMetaData> programYearMetadata, String submissionGuid, Integer submissionId) throws ServiceException {
     
     CalculatorService calculatorService = ServiceFactory.getCalculatorService();
     
+    ScenarioMetaData chefNppScenarioMetaData = ScenarioUtils.findScenarioByCategory(programYearMetadata, enwScenarioYear, ScenarioCategoryCodes.CHEF_NPP, ScenarioTypeCodes.CHEF);
     ScenarioMetaData enwScenarioMetaData = ScenarioUtils.findLatestScenarioByChefSubmissionGuid(
-        programYearMetadata, programYear, ScenarioCategoryCodes.ENROLMENT_NOTICE_WORKFLOW, submissionGuid);
+        programYearMetadata, enwScenarioYear, ScenarioCategoryCodes.ENROLMENT_NOTICE_WORKFLOW, submissionGuid);
 
     Integer enwScenarioNumber;
     if(enwScenarioMetaData == null || enwScenarioMetaData.stateIsOneOf(ScenarioStateCodes.CLOSED)) {
-      enwScenarioNumber = calculatorService.saveScenarioAsNew(chefNppScenario.getScenarioId(),
+      enwScenarioNumber = calculatorService.saveScenarioAsNew(chefNppScenarioMetaData.getScenarioId(),
           ScenarioTypeCodes.USER,
           ScenarioCategoryCodes.ENROLMENT_NOTICE_WORKFLOW,
-          programYear,
+          enwScenarioYear,
           user);
     } else {
       enwScenarioNumber = enwScenarioMetaData.getScenarioNumber();
     }
     
-    Scenario enwScenario = calculatorService.loadScenario(participantPin, programYear, enwScenarioNumber);
+    Scenario enwScenario = calculatorService.loadScenario(participantPin, enwScenarioYear, enwScenarioNumber);
     
     if(enwScenario.getChefsSubmissionId() == null) {
       calculatorService.updateScenarioChefsSubmissionId(enwScenario.getScenarioId(), submissionId, user);
-      enwScenario = calculatorService.loadScenario(participantPin, programYear, enwScenarioNumber);
+      enwScenario = calculatorService.loadScenario(participantPin, enwScenarioYear, enwScenarioNumber);
     }
     
     return enwScenario;
@@ -463,7 +460,7 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
         
         logger.debug("crmEnrolment not found. Waiting before retrieving again...");
         
-        waitForDynamicsFlows(eachWaitSeconds);
+        SleepUtils.waitForSeconds(eachWaitSeconds);
         crmEnrolment = crmDao.getEnrolment(vsi_programyearid, accountId);
         secondsWaited += eachWaitSeconds;
       }
@@ -504,7 +501,7 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
 
   private CrmTaskResource createValidationErrorTaskForNppBceid(NppSubmissionDataResource data, String submissionGuid) throws ServiceException {
 
-    Integer participantPin = data.getParsedParticipantPin();
+    Integer participantPin = data.getParticipantPin();
     String method = getMethod(data);
 
     String subject = "BCeID NPP submission";
@@ -661,7 +658,7 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
       
       // If the participant entered themselves as a partner, then use that percentage
       if(fop.getPartnerPercent() != null) {
-        if(data.getParsedParticipantPin().equals(fop.getParticipantPin())) {
+        if(data.getParticipantPin().equals(fop.getParticipantPin())) {
           partnershipPercent = fop.getPartnerPercent().doubleValue();
         }
       
@@ -924,6 +921,7 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
 
   private CrmNppTaskResource createValidNppTask(NppSubmissionDataResource data, Integer participantPin,
       CrmAccountResource crmAccount, String optionalMessage, String submissionGuid) throws ServiceException {
+    logger.debug("Creating valid NPP task...");
 
     String method = getMethod(data);
     String primaryFarmingActivity = data.getWhatIsYourMainFarmingActivity();
@@ -932,7 +930,7 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
     }
 
     String subjectFormatStr = VALID_FORM_TASK_SUBJECT_FORMAT;
-    if (data.getLateParticipant() != null && data.getLateParticipant() == true) {
+    if (data.getLateParticipant()) {
       subjectFormatStr = VALID_FORM_LATE_TASK_SUBJECT_FORMAT;
     }
     

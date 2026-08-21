@@ -564,8 +564,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     String submissionGuid = "STA00000-0000-STA0-0001-000000000000";
     Integer participantPin = 12316589; 
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     
     try {
 
@@ -600,7 +600,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       data.setExternalMethod("chefsForm");
       data.setEnvironment("DEV");
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -619,7 +619,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals("2024 Statement A " + participantPin, task.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
           + "- PIN not found in BCFARMS.\n" + "\n"
           + "Corporation Name: APPLES R US\n" + "Telephone: (250) 555-5555\n"
           + "Email: jsnow@game.of.thrones\n", task.getDescription());
@@ -655,8 +655,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     String submissionGuid = "STA00000-0000-0001-0002-000000000000";
     Integer participantPin = 3707197; 
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
 
@@ -689,7 +689,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       data.setExternalMethod("chefsForm");
       data.setEnvironment("DEV");
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -708,7 +708,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals("2024 Statement A " + participantPin, task.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n" + "\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n" + "\n"
           + "Corporation Name: APPLES R US\n" + "Telephone: (250) 555-5555\n"
           + "Email: targaryen@game.of.thrones\n", task.getDescription());
   
@@ -741,8 +741,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "STA00000-0000-STA0-0003-000000000000";
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
 
@@ -783,7 +783,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -802,7 +802,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals("2024 Statement A 3693470", task.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n\n"
           + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n" + "Corporation Name: APPLES R US\n"
           + "Telephone: (250) 555-5555\n" + "Email: JOHNNY@FARM.CA\n", task.getDescription());
   
@@ -835,8 +835,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
 
     String submissionGuid = "STA00000-0000-STA0-0004-000000000000";
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
       SubmissionParentResource<StatementASubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
@@ -874,7 +874,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -893,7 +893,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals("2024 Statement A 31415976", task.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n\n"
           + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"null\".\n" + "\n" 
           + "Corporation Name: APPLES R US\n"
           + "Telephone: (250) 555-5555\n" + "Email: JOHNNY@FARM.CA\n", task.getDescription());
@@ -929,8 +929,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     String submissionGuid = "STA00000-0000-0001-0004-000000000000";
     Integer participantPin = 31415975;
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
 
@@ -970,7 +970,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -989,7 +989,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals("2024 Statement A 31415975", task.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n" + "\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
           + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n\n" 
           + "Corporation Name: APPLES INC\n"
           + "Telephone: (250) 555-5555\n" 
@@ -1026,8 +1026,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     String submissionGuid = "STA00000-0000-0001-0004-000000000000";
     Integer participantPin = 5070370;
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
 
@@ -1067,7 +1067,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1086,7 +1086,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals("2024 Statement A " + participantPin, task.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n" + "\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
           + "- Field \"Business Number\" with value \"123456789RC0001\" does not match BCFARMS: \"999999999RC0001\"."
           + " Note that only the first nine digits are compared.\n" + "\n" 
           + "Corporation Name: APPLES INC\n" + "Telephone: (250) 555-5555\n"
@@ -1122,8 +1122,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     String submissionGuid = "STA00000-0000-0001-0004-T10000000000";
     Integer participantPin  = 31415975; 
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
 
@@ -1158,7 +1158,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       data.setExternalMethod("chefsForm");
       data.setEnvironment("DEV");
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1178,7 +1178,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
       assertEquals(
-          formUserType + " Statement A form was submitted but has validation errors:\n" + "\n"
+          getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
               + "- Required field is blank: Trust Number\n\n"
               + "Corporation Name: APPLES INC\n" + "Telephone: (250) 555-5555\n"
               + "Email: targaryen@game.of.thrones\n",
@@ -1215,8 +1215,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     String submissionGuid = "STA00000-0000-0001-0004-T10000000000";
     Integer participantPin  = 31415975; 
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
 
@@ -1251,7 +1251,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       data.setExternalMethod("chefsForm");
       data.setEnvironment("DEV");
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1271,7 +1271,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
       assertEquals(
-          formUserType + " Statement A form was submitted but has validation errors:\n" + "\n"
+          getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
               + "- Trust Number in BCFARMS does not start with a 8 digit number. Unable to validate.\n\n"
               + "Corporation Name: APPLES INC\n" + "Telephone: (250) 555-5555\n"
               + "Email: targaryen@game.of.thrones\n",
@@ -1308,8 +1308,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     String submissionGuid = "STA00000-0000-0001-0004-T00000000000";
     Integer participantPin  = 23468788; 
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
 
@@ -1349,7 +1349,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1368,7 +1368,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals("2024 Statement A " + participantPin, task.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n" + "\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
           + "- Field \"Trust Number\" with value \"T12345678\" does not match BCFARMS: \"T99999999\"."
           + " Note that only the first eight digits are compared.\n" + "\n"
           + "Corporation Name: APPLES INC\n" + "Telephone: (250) 555-5555\n"
@@ -1405,8 +1405,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     String submissionGuid = "STA00000-0000-STA0-0005-000000000000";
     Integer participantPin = 22503767;
 
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
 
@@ -1445,7 +1445,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1464,7 +1464,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals("2024 Statement A " + participantPin, task.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n" + "\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
           + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n" + "\n"
           + "Corporation Name: APPLES INC\n" + "Telephone: (250) 555-5555\n"
           + "Email: targaryen@game.of.thrones\n", task.getDescription());
@@ -1506,8 +1506,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
     TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
     deleteUserScenarios(submissionGuid, programYearMetadata);
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
       
@@ -1898,7 +1898,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -2085,6 +2085,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals(2024, triageItemResult.getProgramYear());
       assertEquals("Completed", triageItemResult.getScenarioStateCodeDesc());
       assertTrue(triageItemResult.isZeroPass());
+      assertFalse(triageItemResult.isPaymentPass());
       
       ImportDAO importDao = new ImportDAO();
       ImportVersion importVersion = null;
@@ -2300,8 +2301,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
     TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
     deleteUserScenarios(submissionGuid, programYearMetadata);
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
   
@@ -2448,7 +2449,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -2589,6 +2590,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals(2024, triageItemResult.getProgramYear());
       assertEquals("Completed", triageItemResult.getScenarioStateCodeDesc());
       assertTrue(triageItemResult.isZeroPass());
+      assertFalse(triageItemResult.isPaymentPass());
       
       ImportDAO importDao = new ImportDAO();
       ImportVersion importVersion = null;
@@ -2804,8 +2806,8 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
     TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
     deleteUserScenarios(submissionGuid, programYearMetadata);
-    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
     try {
 
@@ -2855,7 +2857,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -2874,7 +2876,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals("2024 Statement A " + participantPin, validationTask.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n" + "\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
           + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"987654321\".\n" + "\n"
           + "Corporation Name: APPLES R US\n" + "Telephone: (250) 555-5555\n"
           + "Email: APPLES@FARM.CA\n", validationTask.getDescription());
@@ -3227,7 +3229,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(duplicateSubmissionGuid);
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -3359,7 +3361,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+    StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -3375,27 +3377,6 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
 
   }
 
-  @Test
-  @Disabled
-  public void deleteScenarios() {
-
-    Integer participantPin = 31415949;
-    Integer programYear = 2024;
-
-    List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
-    assertNotNull(programYearMetadata);
-    assertFalse(programYearMetadata.isEmpty());
-
-    List<ScenarioMetaData> interimScenarioMetadataList = ScenarioUtils.findScenariosByCategory(programYearMetadata,
-        programYear, ScenarioCategoryCodes.CHEF_STA, ScenarioTypeCodes.CHEF);
-    
-    for (ScenarioMetaData scenarioMetaData : interimScenarioMetadataList) {
-      if(scenarioMetaData.getScenarioNumber() != 1) {
-        deleteUserScenario(scenarioMetaData.getScenarioId());
-      }
-    }
-
-  }
 
   @Test
   public void duplicateProductiveUnits() {
@@ -3528,7 +3509,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -3545,7 +3526,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals(programYear + " Statement A " + participantPin, validationTask.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n" + "\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
           + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n"
           + "- The following productive unit codes have duplicates: 100, 5000, 6, 5014, 4784, 6930\n"
           + "\n" + "Corporation Name: \n"
@@ -3681,7 +3662,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, formUserType);
+      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
       
@@ -3698,7 +3679,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals(programYear + " Statement A " + participantPin, validationTask.getSubject());
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-      assertEquals(formUserType + " Statement A form was submitted but has validation errors:\n" + "\n"
+      assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
           + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n"
           + "- No productive units entered\n"
           + "\n" + "Corporation Name: \n"

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionListItemResource;
 import ca.bc.gov.srm.farm.crm.CrmConfigurationUtil;
+import ca.bc.gov.srm.farm.crm.CrmConstants;
 import ca.bc.gov.srm.farm.crm.CrmRestApiDao;
 import ca.bc.gov.srm.farm.crm.resource.CrmListResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmTaskResource;
@@ -29,6 +31,7 @@ import ca.bc.gov.srm.farm.crm.resource.CrmValidationErrorResource;
 import ca.bc.gov.srm.farm.dao.CalculatorDAO;
 import ca.bc.gov.srm.farm.dao.ChefsDatabaseDAO;
 import ca.bc.gov.srm.farm.dao.ReadDAO;
+import ca.bc.gov.srm.farm.domain.ProductiveUnitCapacity;
 import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
@@ -55,7 +58,6 @@ public abstract class ChefsSubmissionTest {
   protected ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
   protected CalculatorDAO calculatorDao = new CalculatorDAO();
   
-  protected final String formUserType = ChefsConstants.USER_TYPE_IDIR;
   protected String user = this.getClass().getSimpleName();
 
   protected final String USER_EMAIL = "ASTWORK@gov.bc.ca";
@@ -110,23 +112,24 @@ public abstract class ChefsSubmissionTest {
     try {
       
       for (String submissionGuid : submissionGuids) {
+        if(submissionGuid != null) {
         
-        CrmListResource<CrmValidationErrorResource> list = crmDao.getValidationErrorListBySubmissionGuid(submissionGuid, false);
-        if (list != null) {
-          for (CrmValidationErrorResource v : list.getList()) {
-            crmDao.deleteValidationErrorTask(v.getActivityId());
+          CrmListResource<CrmValidationErrorResource> list = crmDao.getValidationErrorListBySubmissionGuid(submissionGuid, false);
+          if (list != null) {
+            for (CrmValidationErrorResource v : list.getList()) {
+              crmDao.deleteValidationErrorTask(v.getActivityId());
+            }
           }
-        }
         
+        }
       }
       
     } catch (ServiceException | IOException e) {
       e.printStackTrace();
-      fail("Error deleting validation error tasks");
     }
   }
 
-  protected int getUnusedParticpantPin() {
+  protected int getUnusedParticipantPin() {
 
     CalculatorService service = ServiceFactory.getCalculatorService();
     Integer participantPin = null;
@@ -149,14 +152,18 @@ public abstract class ChefsSubmissionTest {
 
   private int generateRandomPin() {
     int participantPin;
-    final int min = 99999999;
-    final int max = 999999999;
+    final int min = 1000000;
+    final int max = 99999999;
     participantPin = ThreadLocalRandom.current().nextInt(min, max + 1);
     return participantPin;
   }
 
   protected CrmTaskResource getValidationErrorBySubmissionId(String submissionGuid) throws ServiceException {
-    return crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
+    CrmValidationErrorResource validationErrorTask = null;
+    if(submissionGuid != null) {
+      validationErrorTask = crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
+    }
+    return validationErrorTask;
   }
 
   protected CrmTaskResource completeAndGetTask(String validationErrorUrl, String activityId) throws ServiceException {
@@ -182,12 +189,6 @@ public abstract class ChefsSubmissionTest {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      try {
-        conn.rollback();
-      } catch (SQLException e1) {
-        e1.printStackTrace();
-        fail("Unexpected Exception");
-      }
       fail("Unexpected Exception");
     }
     return programYearMetadata;
@@ -228,29 +229,59 @@ public abstract class ChefsSubmissionTest {
   }
   
   
-  protected void deleteSubmissionsFromChefs(String... submissionGuidList) {
+  protected void deleteSubmissionsFromChefs(String... submissionGuids) {
     try {
-      for (String submissionGuid : submissionGuidList) {
+      for (String submissionGuid : submissionGuids) {
         if(submissionGuid != null) {
           chefsApiDao.deleteSubmission(submissionGuid);
         }
       }
     } catch (ServiceException e) {
       e.printStackTrace();
-      try {
-        conn.rollback();
-      } catch (SQLException e1) {
-        e1.printStackTrace();
-        fail("Unexpected Exception");
-      }
       fail("Unexpected Exception");
     }
   }
   
   protected void deleteUserScenarios(String submissionGuid, List<ScenarioMetaData> programYearMetadata) {
-    List<ScenarioMetaData> scenariosLinkedToSubmission;
-    scenariosLinkedToSubmission = ScenarioUtils.findScenariosByChefSubmissionGuid(programYearMetadata, submissionGuid);
+    List<ScenarioMetaData> scenariosLinkedToSubmission =
+        ScenarioUtils.findScenariosByChefSubmissionGuid(programYearMetadata, submissionGuid);
+    
     for (ScenarioMetaData scenarioMetadata : scenariosLinkedToSubmission) {
+      Integer scenarioId = scenarioMetadata.getScenarioId();
+      assertNotNull(scenarioId);
+
+      if (scenarioMetadata.getScenarioTypeCode().equals(ScenarioTypeCodes.USER)) {
+        
+        deleteUserScenario(scenarioId);
+        
+      } else {
+        try {
+          chefsDatabaseDao.updateScenarioSubmissionId(conn, scenarioId, null, user);
+          conn.commit();
+        } catch (DataAccessException | SQLException e) {
+          e.printStackTrace();
+          try {
+            conn.rollback();
+          } catch (SQLException e1) {
+            e1.printStackTrace();
+            fail("Unexpected Exception");
+          }
+          fail("Unexpected Exception");
+        }
+      }
+    }
+  }
+  
+  protected void deleteUserScenarios(Integer participantPin, Integer programYear) {
+    
+    List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+    
+    List<ScenarioMetaData> userScenarios = programYearMetadata.stream()
+        .filter(y -> y.getProgramYear().equals(programYear)
+            && y.typeIsOneOf(ScenarioTypeCodes.USER))
+        .collect(Collectors.toList());
+    
+    for (ScenarioMetaData scenarioMetadata : userScenarios) {
       Integer scenarioId = scenarioMetadata.getScenarioId();
       assertNotNull(scenarioId);
 
@@ -327,11 +358,57 @@ public abstract class ChefsSubmissionTest {
       logger.debug(msg);
     }
   }
-  
+
+
   protected void logFailMessages(List<String> errorMessages) {
     logger.debug("Fail messages:");
     for (String msg : errorMessages) {
       logger.debug(msg);
     }
+  }
+
+
+  protected Map<String, Double> buildProductiveUnitsMap(List<ProductiveUnitCapacity> pucs) {
+    HashMap<String, Double> productiveUnitsMap = new HashMap<>();
+    for (ProductiveUnitCapacity puc : pucs) {
+      logger.debug("productive unit capacity " + puc.getCode() + " reportedAmount: " + puc.getReportedAmount());
+      productiveUnitsMap.put(puc.getCode(), puc.getReportedAmount());
+    }
+    return productiveUnitsMap;
+  }
+
+
+  protected void assertEnrolmentStatusIsOneOf(Integer actualStatusCode, int... expectedStatusCodes) {
+    assertNotNull(actualStatusCode);
+
+    boolean matches = false;
+    List<String> expectedDescriptions = new ArrayList<>();
+    for (int expectedStatusCode : expectedStatusCodes) {
+      expectedDescriptions.add(CrmConstants.getEnrolmentStatusDescription(expectedStatusCode));
+      if (expectedStatusCode == actualStatusCode) {
+        matches = true;
+      }
+    }
+
+    String actualDescription = CrmConstants.getEnrolmentStatusDescription(actualStatusCode);
+    assertTrue(matches, "Expected one of " + String.join(", ", expectedDescriptions) + ". Actual: " + actualDescription + ".");
+  }
+
+
+  protected String formatExceptionFailMessage(Exception e) {
+    Throwable t = (e.getCause() != null) ? e.getCause() : e;
+
+    StackTraceElement[] stack = t.getStackTrace();
+    StringBuilder msg = new StringBuilder();
+    msg.append(t.toString());
+
+    int lines = Math.min(5, stack.length);
+    for (int i = 0; i < lines; i++) {
+        msg.append("\tat ")
+           .append(stack[i]);
+    }
+
+    String failMessage = msg.toString();
+    return failMessage;
   }
 }

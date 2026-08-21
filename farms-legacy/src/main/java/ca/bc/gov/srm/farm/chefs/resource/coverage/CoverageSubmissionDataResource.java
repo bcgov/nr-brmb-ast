@@ -12,9 +12,12 @@ package ca.bc.gov.srm.farm.chefs.resource.coverage;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ca.bc.gov.srm.farm.chefs.resource.npp.TreeFruitsFarmed;
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
+import ca.bc.gov.srm.farm.util.StringUtils;
 
 
 public class CoverageSubmissionDataResource extends ChefsSubmissionDataResource {
@@ -898,6 +901,22 @@ public class CoverageSubmissionDataResource extends ChefsSubmissionDataResource 
 
   public void setLowDensityCherries5thAnd6thYearProductionAcres_4952(Double lowDensityCherries5thAnd6thYearProductionAcres_4952) {
     this.lowDensityCherries5thAnd6thYearProductionAcres_4952 = lowDensityCherries5thAnd6thYearProductionAcres_4952;
+  }
+
+  @JsonIgnore
+  @Override
+  public Integer getParticipantPin() {
+    return agriStabilityAgriInvestPin;
+  }
+
+  @JsonIgnore
+  @Override
+  public Integer getYear() {
+    Integer year = null;
+    if (getProgramYear() != null && StringUtils.isNotBlank(getProgramYear().getValue())) {
+      year = Integer.valueOf(getProgramYear().getValue());
+    }
+    return year;
   }
 
 }

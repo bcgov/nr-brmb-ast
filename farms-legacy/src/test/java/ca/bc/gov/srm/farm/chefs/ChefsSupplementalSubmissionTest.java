@@ -10,11 +10,13 @@
  */
 package ca.bc.gov.srm.farm.chefs;
 
+import static ca.bc.gov.srm.farm.service.BenefitTriageService.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,19 +46,35 @@ import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
 import ca.bc.gov.srm.farm.chefs.resource.supplemental.SupplementalSubmissionDataResource;
 import ca.bc.gov.srm.farm.crm.CrmConstants;
 import ca.bc.gov.srm.farm.crm.resource.CrmTaskResource;
+import ca.bc.gov.srm.farm.dao.ImportDAO;
 import ca.bc.gov.srm.farm.domain.FarmingOperation;
+import ca.bc.gov.srm.farm.domain.ImportVersion;
 import ca.bc.gov.srm.farm.domain.ProductiveUnitCapacity;
 import ca.bc.gov.srm.farm.domain.Scenario;
 import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
+import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageCalculationItem;
+import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageItemResult;
+import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageResults;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmission;
+import ca.bc.gov.srm.farm.domain.codes.ImportClassCodes;
+import ca.bc.gov.srm.farm.domain.codes.ImportStateCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
+import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
+import ca.bc.gov.srm.farm.domain.codes.StructuralChangeCodes;
+import ca.bc.gov.srm.farm.domain.reasonability.ReasonabilityTestResults;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
+import ca.bc.gov.srm.farm.service.BenefitTriageService;
 import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsService;
+import ca.bc.gov.srm.farm.service.ImportService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
+import ca.bc.gov.srm.farm.ui.domain.dataimport.ImportSearchResult;
+import ca.bc.gov.srm.farm.util.DateUtils;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
+import ca.bc.gov.srm.farm.util.StringUtils;
+import ca.bc.gov.srm.farm.util.TestUtils;
 
 public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
 
@@ -318,71 +336,75 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
 
     String submissionGuid = "00000000-0000-SUPP-0001-000000000000";
 
+    deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
-
-    deleteSubmission(submissionGuid);
-
-    SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
-    SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
-    SupplementalSubmissionDataResource data = submission.getData();
-
-    submissionMetaData.setSubmissionGuid(submissionGuid);
-
-    data.setParticipantName("Jon Snow");
-    data.setTelephone("(250) 555-5555");
-    data.setEmail("jsnow@game.of.thrones");
-
-    data.setBusinessStructure("individual");
-
-    data.setSinNumber("123456789");
-    data.setAgriStabilityAgriInvestPin(12316589);
-    data.setOrigin("external");
-    data.setExternalMethod("chefsForm");
-    data.setEnvironment("DEV");
-
-    data.setProgramYear(new LabelValue("2024", "2024"));
-
-    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
-    processor.setUser(user);
-    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
-    processor.setItemResourceMap(itemResourceMap);
-
-    CrmTaskResource task = null;
+    
     try {
-      processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
+      
+      SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+      SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
+      SupplementalSubmissionDataResource data = submission.getData();
+  
+      submissionMetaData.setSubmissionGuid(submissionGuid);
+  
+      data.setParticipantName("Jon Snow");
+      data.setTelephone("(250) 555-5555");
+      data.setEmail("jsnow@game.of.thrones");
+  
+      data.setBusinessStructure("individual");
+  
+      data.setSinNumber("123456789");
+      data.setAgriStabilityAgriInvestPin(12316589);
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+  
+      data.setProgramYear(new LabelValue("2024", "2024"));
+  
+      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
+      processor.setUser(user);
+      Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+      processor.setItemResourceMap(itemResourceMap);
+  
+      CrmTaskResource task = null;
+      try {
+        processor.loadSubmissionsFromDatabase();
+        task = processor.processSubmission(submissionMetaData);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(task);
+  
+      assertNull(task.getAccountId());
+      assertEquals("2024 Supplemental 12316589", task.getSubject());
+      assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
+      assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
+      assertEquals(getFormUserType() + " Local Supplemental form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
+          + "- PIN not found in BCFARMS.\n" + "\n" + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n",
+          task.getDescription());
+  
+      ChefsSubmission submissionRec = null;
+      try {
+        submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+      } catch (DataAccessException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(submissionRec);
+  
+      assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+      assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
+      assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
+      assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
+      assertNull(submissionRec.getMainTaskGuid());
+      assertNotNull(submissionRec.getSubmissionId());
+      assertNotNull(submissionRec.getRevisionCount());
+
+    } finally {
+      deleteSubmissionsFromFarm(submissionGuid);
+      deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     }
-    assertNotNull(task);
-
-    assertNull(task.getAccountId());
-    assertEquals("2024 Supplemental 12316589", task.getSubject());
-    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
-    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Local Supplemental form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
-        + "- PIN not found in BCFARMS.\n" + "\n" + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n",
-        task.getDescription());
-
-    ChefsSubmission submissionRec = null;
-    try {
-      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
-    } catch (DataAccessException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNotNull(submissionRec);
-
-    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
-    assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
-    assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
-    assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
-    assertNull(submissionRec.getMainTaskGuid());
-    assertNotNull(submissionRec.getSubmissionId());
-    assertNotNull(submissionRec.getRevisionCount());
-
-    deleteSubmission(submissionGuid);
 
   }
 
@@ -393,70 +415,75 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
     int participantPin = 3709672;
     int programYear = 2024;
 
+    deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
-
-    deleteSubmission(submissionGuid);
-
-    SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
-    SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
-    SupplementalSubmissionDataResource data = submission.getData();
-
-    submissionMetaData.setSubmissionGuid(submissionGuid);
-
-    data.setParticipantName("Targaryen Kingdom");
-    data.setTelephone("(250) 555-5555");
-    data.setEmail("targaryen@game.of.thrones");
-
-    data.setBusinessStructure("corporation");
-
-    data.setSinNumber(null);
-    data.setAgriStabilityAgriInvestPin(participantPin);
-    data.setBusinessTaxNumber("123456789");
-    data.setOrigin("external");
-    data.setExternalMethod("chefsForm");
-    data.setEnvironment("DEV");
-    data.setProgramYear(new LabelValue(String.valueOf(programYear), String.valueOf(programYear)));
-
-    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
-    processor.setUser(user);
-    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
-    processor.setItemResourceMap(itemResourceMap);
-
-    CrmTaskResource task = null;
+    
     try {
-      processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
+      
+      SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+      SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
+      SupplementalSubmissionDataResource data = submission.getData();
+  
+      submissionMetaData.setSubmissionGuid(submissionGuid);
+  
+      data.setParticipantName("Targaryen Kingdom");
+      data.setTelephone("(250) 555-5555");
+      data.setEmail("targaryen@game.of.thrones");
+  
+      data.setBusinessStructure("corporation");
+  
+      data.setSinNumber(null);
+      data.setAgriStabilityAgriInvestPin(participantPin);
+      data.setBusinessTaxNumber("123456789");
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+      data.setProgramYear(new LabelValue(String.valueOf(programYear), String.valueOf(programYear)));
+  
+      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
+      processor.setUser(user);
+      Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+      processor.setItemResourceMap(itemResourceMap);
+  
+      CrmTaskResource task = null;
+      try {
+        processor.loadSubmissionsFromDatabase();
+        task = processor.processSubmission(submissionMetaData);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(task);
+  
+      assertNull(task.getAccountId()); // This PIN does not exist in CRM
+      assertEquals(programYear + " Supplemental " + participantPin, task.getSubject());
+      assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
+      assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
+      assertEquals(getFormUserType() + " Local Supplemental form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n" + "\n"
+          + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
+  
+      ChefsSubmission submissionRec = null;
+      try {
+        submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+      } catch (DataAccessException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(submissionRec);
+  
+      assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+      assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
+      assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
+      assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
+      assertNull(submissionRec.getMainTaskGuid());
+      assertNotNull(submissionRec.getSubmissionId());
+      assertNotNull(submissionRec.getRevisionCount());
+
+    } finally {
+      deleteSubmissionsFromFarm(submissionGuid);
+      deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     }
-    assertNotNull(task);
 
-    assertNull(task.getAccountId()); // This PIN does not exist in CRM
-    assertEquals(programYear + " Supplemental " + participantPin, task.getSubject());
-    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
-    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Local Supplemental form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n" + "\n"
-        + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
-
-    ChefsSubmission submissionRec = null;
-    try {
-      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
-    } catch (DataAccessException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNotNull(submissionRec);
-
-    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
-    assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
-    assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
-    assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
-    assertNull(submissionRec.getMainTaskGuid());
-    assertNotNull(submissionRec.getSubmissionId());
-    assertNotNull(submissionRec.getRevisionCount());
-
-    deleteSubmission(submissionGuid);
   }
 
   @Test
@@ -464,71 +491,76 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
 
     String submissionGuid = "00000000-0000-SUPP-0003-000000000000";
 
+    deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
-
-    deleteSubmission(submissionGuid);
-
-    SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
-    SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
-    SupplementalSubmissionDataResource data = submission.getData();
-
-    submissionMetaData.setSubmissionGuid(submissionGuid);
-
-    data.setParticipantName("Jon Snow");
-    data.setTelephone("(250) 555-5555");
-    data.setEmail("jsnow@game.of.thrones");
-
-    data.setBusinessStructure("individual");
-
-    data.setAgriStabilityAgriInvestPin(3693470);
-    data.setSinNumber("123456789");
-    data.setBusinessTaxNumber(null);
-    data.setOrigin("external");
-    data.setExternalMethod("chefsForm");
-    data.setEnvironment("DEV");
-    data.setProgramYear(new LabelValue("2024", "2024"));
-
-    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
-    processor.setUser(user);
-    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
-    processor.setItemResourceMap(itemResourceMap);
-
-    CrmTaskResource task = null;
+    
     try {
-      processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
+      
+      SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+      SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
+      SupplementalSubmissionDataResource data = submission.getData();
+  
+      submissionMetaData.setSubmissionGuid(submissionGuid);
+  
+      data.setParticipantName("Jon Snow");
+      data.setTelephone("(250) 555-5555");
+      data.setEmail("jsnow@game.of.thrones");
+  
+      data.setBusinessStructure("individual");
+  
+      data.setAgriStabilityAgriInvestPin(3693470);
+      data.setSinNumber("123456789");
+      data.setBusinessTaxNumber(null);
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+      data.setProgramYear(new LabelValue("2024", "2024"));
+  
+      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
+      processor.setUser(user);
+      Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+      processor.setItemResourceMap(itemResourceMap);
+  
+      CrmTaskResource task = null;
+      try {
+        processor.loadSubmissionsFromDatabase();
+        task = processor.processSubmission(submissionMetaData);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(task);
+  
+      assertNotNull(task.getAccountId());
+      assertEquals("2024 Supplemental 3693470", task.getSubject());
+      assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
+      assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
+      assertEquals(getFormUserType() + " Local Supplemental form was submitted but has validation errors:\n\n"
+          + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n" + "Participant Name: Jon Snow\n"
+          + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n", task.getDescription());
+  
+      ChefsSubmission submissionRec = null;
+      try {
+        submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+      } catch (DataAccessException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(submissionRec);
+  
+      assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+      assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
+      assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
+      assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
+      assertNull(submissionRec.getMainTaskGuid());
+      assertNotNull(submissionRec.getSubmissionId());
+      assertNotNull(submissionRec.getRevisionCount());
+
+    } finally {
+      deleteSubmissionsFromFarm(submissionGuid);
+      deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     }
-    assertNotNull(task);
 
-    assertNotNull(task.getAccountId());
-    assertEquals("2024 Supplemental 3693470", task.getSubject());
-    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
-    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Local Supplemental form was submitted but has validation errors:\n\n"
-        + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n" + "Participant Name: Jon Snow\n"
-        + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n", task.getDescription());
-
-    ChefsSubmission submissionRec = null;
-    try {
-      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
-    } catch (DataAccessException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNotNull(submissionRec);
-
-    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
-    assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
-    assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
-    assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
-    assertNull(submissionRec.getMainTaskGuid());
-    assertNotNull(submissionRec.getSubmissionId());
-    assertNotNull(submissionRec.getRevisionCount());
-
-    deleteSubmission(submissionGuid);
   }
 
   @Test
@@ -536,71 +568,76 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
 
     String submissionGuid = "00000000-0000-0001-0004-000000000000";
 
+    deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
-
-    deleteSubmission(submissionGuid);
-
-    SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
-    SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
-    SupplementalSubmissionDataResource data = submission.getData();
-
-    submissionMetaData.setSubmissionGuid(submissionGuid);
-
-    data.setParticipantName("Targaryen Kingdom");
-    data.setTelephone("(250) 555-5555");
-    data.setEmail("targaryen@game.of.thrones");
-
-    data.setBusinessStructure("corporation");
-
-    data.setAgriStabilityAgriInvestPin(31415975);
-    data.setSinNumber(null);
-    data.setBusinessTaxNumber("1234 56789");
-    data.setOrigin("external");
-    data.setExternalMethod("chefsForm");
-    data.setEnvironment("DEV");
-    data.setProgramYear(new LabelValue("2024", "2024"));
-
-    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
-    processor.setUser(user);
-    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
-    processor.setItemResourceMap(itemResourceMap);
-
-    CrmTaskResource task = null;
+    
     try {
-      processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
+      
+      SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+      SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
+      SupplementalSubmissionDataResource data = submission.getData();
+  
+      submissionMetaData.setSubmissionGuid(submissionGuid);
+  
+      data.setParticipantName("Targaryen Kingdom");
+      data.setTelephone("(250) 555-5555");
+      data.setEmail("targaryen@game.of.thrones");
+  
+      data.setBusinessStructure("corporation");
+  
+      data.setAgriStabilityAgriInvestPin(31415975);
+      data.setSinNumber(null);
+      data.setBusinessTaxNumber("1234 56789");
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+      data.setProgramYear(new LabelValue("2024", "2024"));
+  
+      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
+      processor.setUser(user);
+      Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+      processor.setItemResourceMap(itemResourceMap);
+  
+      CrmTaskResource task = null;
+      try {
+        processor.loadSubmissionsFromDatabase();
+        task = processor.processSubmission(submissionMetaData);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(task);
+  
+      assertNotNull(task.getAccountId());
+      assertEquals("2024 Supplemental 31415975", task.getSubject());
+      assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
+      assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
+      assertEquals(getFormUserType() + " Local Supplemental form was submitted but has validation errors:\n" + "\n"
+          + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n\n" + "Participant Name: Targaryen Kingdom\n"
+          + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
+  
+      ChefsSubmission submissionRec = null;
+      try {
+        submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+      } catch (DataAccessException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(submissionRec);
+  
+      assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+      assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
+      assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
+      assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
+      assertNull(submissionRec.getMainTaskGuid());
+      assertNotNull(submissionRec.getSubmissionId());
+      assertNotNull(submissionRec.getRevisionCount());
+
+    } finally {
+      deleteSubmissionsFromFarm(submissionGuid);
+      deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     }
-    assertNotNull(task);
 
-    assertNotNull(task.getAccountId());
-    assertEquals("2024 Supplemental 31415975", task.getSubject());
-    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
-    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Local Supplemental form was submitted but has validation errors:\n" + "\n"
-        + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n\n" + "Participant Name: Targaryen Kingdom\n"
-        + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
-
-    ChefsSubmission submissionRec = null;
-    try {
-      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
-    } catch (DataAccessException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNotNull(submissionRec);
-
-    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
-    assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
-    assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
-    assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
-    assertNull(submissionRec.getMainTaskGuid());
-    assertNotNull(submissionRec.getSubmissionId());
-    assertNotNull(submissionRec.getRevisionCount());
-
-    deleteSubmission(submissionGuid);
   }
 
   @Test
@@ -608,72 +645,77 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
 
     String submissionGuid = "00000000-0000-0001-0004-000000000000";
 
+    deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
-
-    deleteSubmission(submissionGuid);
-
-    SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
-    SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
-    SupplementalSubmissionDataResource data = submission.getData();
-
-    submissionMetaData.setSubmissionGuid(submissionGuid);
-
-    data.setParticipantName("Targaryen Kingdom");
-    data.setTelephone("(250) 555-5555");
-    data.setEmail("targaryen@game.of.thrones");
-
-    data.setBusinessStructure("corporation");
-
-    data.setAgriStabilityAgriInvestPin(5070370);
-    data.setSinNumber(null);
-    data.setBusinessTaxNumber("1234 56789");
-    data.setOrigin("external");
-    data.setExternalMethod("chefsForm");
-    data.setEnvironment("DEV");
-    data.setProgramYear(new LabelValue("2024", "2024"));
-
-    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
-    processor.setUser(user);
-    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
-    processor.setItemResourceMap(itemResourceMap);
-
-    CrmTaskResource task = null;
+    
     try {
-      processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
+      
+      SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+      SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
+      SupplementalSubmissionDataResource data = submission.getData();
+  
+      submissionMetaData.setSubmissionGuid(submissionGuid);
+  
+      data.setParticipantName("Targaryen Kingdom");
+      data.setTelephone("(250) 555-5555");
+      data.setEmail("targaryen@game.of.thrones");
+  
+      data.setBusinessStructure("corporation");
+  
+      data.setAgriStabilityAgriInvestPin(5070370);
+      data.setSinNumber(null);
+      data.setBusinessTaxNumber("1234 56789");
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+      data.setProgramYear(new LabelValue("2024", "2024"));
+  
+      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
+      processor.setUser(user);
+      Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+      processor.setItemResourceMap(itemResourceMap);
+  
+      CrmTaskResource task = null;
+      try {
+        processor.loadSubmissionsFromDatabase();
+        task = processor.processSubmission(submissionMetaData);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(task);
+  
+      assertNotNull(task.getAccountId());
+      assertEquals("2024 Supplemental 5070370", task.getSubject());
+      assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
+      assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
+      assertEquals(getFormUserType() + " Local Supplemental form was submitted but has validation errors:\n" + "\n"
+          + "- Field \"Business Number\" with value \"123456789RC0001\" does not match BCFARMS: \"999999999RC0001\"."
+          + " Note that only the first nine digits are compared.\n" + "\n" + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n"
+          + "Email: targaryen@game.of.thrones\n", task.getDescription());
+  
+      ChefsSubmission submissionRec = null;
+      try {
+        submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+      } catch (DataAccessException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(submissionRec);
+  
+      assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+      assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
+      assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
+      assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
+      assertNull(submissionRec.getMainTaskGuid());
+      assertNotNull(submissionRec.getSubmissionId());
+      assertNotNull(submissionRec.getRevisionCount());
+
+    } finally {
+      deleteSubmissionsFromFarm(submissionGuid);
+      deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     }
-    assertNotNull(task);
 
-    assertNotNull(task.getAccountId());
-    assertEquals("2024 Supplemental 5070370", task.getSubject());
-    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
-    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Local Supplemental form was submitted but has validation errors:\n" + "\n"
-        + "- Field \"Business Number\" with value \"123456789RC0001\" does not match BCFARMS: \"999999999RC0001\"."
-        + " Note that only the first nine digits are compared.\n" + "\n" + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n"
-        + "Email: targaryen@game.of.thrones\n", task.getDescription());
-
-    ChefsSubmission submissionRec = null;
-    try {
-      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
-    } catch (DataAccessException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNotNull(submissionRec);
-
-    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
-    assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
-    assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
-    assertEquals(task.getActivityId(), submissionRec.getValidationTaskGuid());
-    assertNull(submissionRec.getMainTaskGuid());
-    assertNotNull(submissionRec.getSubmissionId());
-    assertNotNull(submissionRec.getRevisionCount());
-
-    deleteSubmission(submissionGuid);
   }
 
   @Test
@@ -681,52 +723,58 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
 
     String submissionGuid = "00000000-0000-SUPP-0005-000000000000";
 
+    deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
-
-    deleteSubmission(submissionGuid);
-
-    SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
-    SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
-    SupplementalSubmissionDataResource data = submission.getData();
-
-    submissionMetaData.setSubmissionGuid(submissionGuid);
-
-    data.setParticipantName("Targaryen Kingdom");
-    data.setTelephone("(250) 555-5555");
-    data.setEmail("targaryen@game.of.thrones");
-
-    data.setBusinessStructure("corporation");
-    data.setAgriStabilityAgriInvestPin(22503767);
-    data.setSinNumber(null);
-    data.setProgramYear(new LabelValue("2023", "2023"));
-    data.setBusinessTaxNumber("123456789");
-    data.setOrigin("external");
-    data.setExternalMethod("chefsForm");
-    data.setEnvironment("DEV");
-    data.setProgramYear(new LabelValue("2024", "2024"));
-
-    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
-    processor.setUser(user);
-    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
-    processor.setItemResourceMap(itemResourceMap);
-
-    CrmTaskResource task = null;
+    
     try {
-      processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNotNull(task);
+      
+      SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+      SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
+      SupplementalSubmissionDataResource data = submission.getData();
+  
+      submissionMetaData.setSubmissionGuid(submissionGuid);
+  
+      data.setParticipantName("Targaryen Kingdom");
+      data.setTelephone("(250) 555-5555");
+      data.setEmail("targaryen@game.of.thrones");
+  
+      data.setBusinessStructure("corporation");
+      data.setAgriStabilityAgriInvestPin(22503767);
+      data.setSinNumber(null);
+      data.setProgramYear(new LabelValue("2023", "2023"));
+      data.setBusinessTaxNumber("123456789");
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+      data.setProgramYear(new LabelValue("2024", "2024"));
+  
+      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
+      processor.setUser(user);
+      Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+      processor.setItemResourceMap(itemResourceMap);
+  
+      CrmTaskResource task = null;
+      try {
+        processor.loadSubmissionsFromDatabase();
+        task = processor.processSubmission(submissionMetaData);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(task);
+  
+      assertNotNull(task.getAccountId());
+      assertEquals("2024 Supplemental 22503767", task.getSubject());
+      assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
+      assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
+      assertEquals(getFormUserType() + " Local Supplemental form was submitted but has validation errors:\n" + "\n"
+          + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n" + "\n" + "Participant Name: Targaryen Kingdom\n"
+          + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
 
-    assertNotNull(task.getAccountId());
-    assertEquals("2024 Supplemental 22503767", task.getSubject());
-    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
-    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Local Supplemental form was submitted but has validation errors:\n" + "\n"
-        + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n" + "\n" + "Participant Name: Targaryen Kingdom\n"
-        + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
+    } finally {
+      deleteSubmissionsFromFarm(submissionGuid);
+      deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
+    }
   }
 
   @Test
@@ -739,421 +787,517 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
     List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
     assertNotNull(programYearMetadata);
     assertFalse(programYearMetadata.isEmpty());
-    
-    // Delete the USER scenarios linked to this submission if any exist, from a previous test run.
+
+    // Delete the USER scenarios linked to this submission if any exist, from a
+    // previous test run.
     // Update scenarioSubmissionId to null for non-USER scenarios.
-    List<ScenarioMetaData> scenariosLinkedToSubmission = ScenarioUtils.findScenariosByChefSubmissionGuid(programYearMetadata, submissionGuid);
-    for(ScenarioMetaData scenarioMetadata : scenariosLinkedToSubmission) {
-      Integer linkedScenario = scenarioMetadata.getScenarioId();
-      assertNotNull(linkedScenario);
+    TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
+    TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
+    deleteUserScenarios(submissionGuid, programYearMetadata);
+    deleteSubmissionsFromFarm(submissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
 
-      if(scenarioMetadata.getScenarioTypeCode().equals(ScenarioTypeCodes.USER)) {
-        try {
-          calculatorDao.deleteUserScenario(conn, linkedScenario);
-          conn.commit();
-        } catch (DataAccessException | SQLException e) {
-          e.printStackTrace();
-          try {
-            conn.rollback();
-          } catch (SQLException e1) {
-            e1.printStackTrace();
-            fail("Unexpected Exception");
-          }
-          fail("Unexpected Exception");
-        }
-      } else {
-        try {
-          chefsDatabaseDao.updateScenarioSubmissionId(conn, linkedScenario, null, user);
-          conn.commit();
-        } catch (DataAccessException | SQLException e) {
-          e.printStackTrace();
-          try {
-            conn.rollback();
-          } catch (SQLException e1) {
-            e1.printStackTrace();
-            fail("Unexpected Exception");
-          }
-          fail("Unexpected Exception");
-        }
+    try {
+      // Set up the Supplemental CHEFS Form submission data (not getting it from
+      // CHEFS).
+      SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+      SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
+      SupplementalSubmissionDataResource data = submission.getData();
+  
+      submissionMetaData.setSubmissionGuid(submissionGuid);
+  
+      data.setParticipantName("Johnny Appleseed");
+      data.setTelephone("(250) 555-5555");
+      data.setEmail("johnny@farm.ca");
+      data.setBusinessStructure("individual");
+  
+      data.setAgriStabilityAgriInvestPin(participantPin);
+      data.setSinNumber("999999999");
+      data.setBusinessTaxNumber("999999999");
+      LabelValue municipalityCode = new LabelValue();
+      municipalityCode.setValue("41");
+  
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+      data.setProgramYear(new LabelValue("2023", "2023"));
+  
+      data.setNumberOfCowsThatCalved(12.8);
+      data.setEggsForConsumptionLC109(2.0);
+      data.setEggsForHatchingLC108(5.0);
+      data.setChickenBroilersLC143(4.0);
+      data.setTurkeyBroilersLC144(6.0);
+      data.setNumberFeedersUnder9(6.0);
+      data.setNumberFeedersOver9(7.3);
+      data.setNumberOfHogsFedUpTo50LbsLC124(9.9);
+      data.setNumberOfHogsFedOver50LbsFeedersLC125(9.9);
+      data.setNumberOfSowsThatFarrowedLC123(5.0);
+  
+      data.setLivestockFarmed(Arrays.asList("cattle", "customFeed", "poultry", "swine", "otherLivestock"));
+      data.setCropsFarmed(Arrays.asList("berries", "grainsOilseeds", "treefruitsGrapes", "vegetables", "nurseriesGreenhouse", "nonEdibleHorticulture"));
+  
+      GrainGrid grainGrid = new GrainGrid();
+      grainGrid.setAcres(3423.0);
+      grainGrid.setGrade("AAA");
+      grainGrid.setUnits(new LabelValue("Kilograms", "5"));
+      grainGrid.setCommodity(new LabelValue("5392 - Beans, cranberry, organic", "5392"));
+      grainGrid.setIsIrrigated("yes");
+      grainGrid.setEndingInventory(6.0);
+      grainGrid.setEndingPricePerUnit(7.0);
+      grainGrid.setQuantitySold(4.0);
+      grainGrid.setQuantityProduced(2.0);
+      grainGrid.setQuantityPurchased(3.0);
+      grainGrid.setQuantityUsedForFeed(8.0);
+      grainGrid.setQuantityUsedForSeed(8.0);
+  
+      GrainGrid grainGrid2 = new GrainGrid();
+      grainGrid2.setAcres(34.0);
+      grainGrid2.setGrade("");
+      grainGrid2.setCommodity(new LabelValue("5962 - Sunflowers, oilseed, no. 2", "5962"));
+      grainGrid2.setIsIrrigated("no");
+  
+      List<GrainGrid> grainGridList = new ArrayList<>();
+      grainGridList.add(grainGrid);
+      grainGridList.add(grainGrid2);
+      data.setGrainGrid(grainGridList);
+  
+      CropGrid berryGrid = new CropGrid();
+      berryGrid.setAcres(34.0);
+      berryGrid.setUnits(new LabelValue("Kilograms", "5"));
+      berryGrid.setCommodity(new LabelValue("5012 - Gooseberries", "5012"));
+      berryGrid.setQuantitySold(2.0);
+      berryGrid.setQuantityProduced(5.0);
+      List<CropGrid> berryGridList = new ArrayList<>();
+      berryGridList.add(berryGrid);
+  
+      berryGrid = new CropGrid();
+      berryGrid.setAcres(2.0);
+      berryGrid.setUnits(new LabelValue("Pounds", "1"));
+      berryGrid.setCommodity(new LabelValue("5010 - Elderberries", "5010"));
+      berryGrid.setQuantitySold(4.0);
+      berryGrid.setQuantityProduced(3.0);
+      berryGridList.add(berryGrid);
+  
+      data.setBerryGrid(berryGridList);
+  
+      List<ReceivablesGrid> receivableGridList = new ArrayList<>();
+      ReceivablesGrid receivableGrid = new ReceivablesGrid();
+      receivableGrid.setIncomeSource(new LabelValue("402 - PI insurance", "402"));
+      receivableGrid.setIncomeReceivedAfterYearEnd(1.05);
+      receivableGridList.add(receivableGrid);
+  
+      receivableGrid = new ReceivablesGrid();
+      receivableGrid.setIncomeSource(new LabelValue("9600", "9600"));
+      receivableGrid.setSpecify("other input");
+      receivableGrid.setIncomeReceivedAfterYearEnd(65.5);
+      receivableGridList.add(receivableGrid);
+  
+      receivableGrid = new ReceivablesGrid();
+      receivableGrid.setIncomeSource(new LabelValue("401 - PI insurance", "401"));
+      receivableGrid.setIncomeReceivedAfterYearEnd(1.05);
+      receivableGridList.add(receivableGrid);
+  
+      data.setReceivablesGrid(receivableGridList);
+  
+      List<PayableGrid> payableGridList = new ArrayList<>();
+      PayableGrid payableGrid = new PayableGrid();
+      payableGrid.setSourceOfExpense(new LabelValue("9896 - Other Input (Specify)", "9896"));
+      payableGrid.setSpecify("other input");
+      payableGrid.setProgramExpensesNotPaidByYearEnd(42.02);
+      payableGridList.add(payableGrid);
+  
+      payableGrid = new PayableGrid();
+      payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "135"));
+      payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
+      payableGridList.add(payableGrid);
+      
+      payableGrid = new PayableGrid();
+      payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "264"));
+      payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
+      payableGridList.add(payableGrid);
+      
+      payableGrid = new PayableGrid();
+      payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9662"));
+      payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
+      payableGridList.add(payableGrid);
+      
+      payableGrid = new PayableGrid();
+      payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9663"));
+      payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
+      payableGridList.add(payableGrid);
+      
+      payableGrid = new PayableGrid();
+      payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9714"));
+      payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
+      payableGridList.add(payableGrid);
+      
+      payableGrid = new PayableGrid();
+      payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9764"));
+      payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
+      payableGridList.add(payableGrid);
+      
+      payableGrid = new PayableGrid();
+      payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9815"));
+      payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
+      payableGridList.add(payableGrid);
+      
+      payableGrid = new PayableGrid();
+      payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9836"));
+      payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
+      payableGridList.add(payableGrid);
+  
+      data.setExpensesGrid(payableGridList);
+  
+      List<InputGrid> inputGridList = new ArrayList<>();
+      InputGrid inputGrid = new InputGrid();
+      inputGrid.setInput(new LabelValue("9896 - Other Input (Specify)", "9896"));
+      inputGrid.setSpecify("other input");
+      inputGrid.setAmountRemainingAtYearEnd(44.02);
+      inputGridList.add(inputGrid);
+  
+      inputGrid = new InputGrid();
+      inputGrid.setInput(new LabelValue("9713 - Medicine", "9713"));
+      inputGrid.setAmountRemainingAtYearEnd(1.0);
+      inputGridList.add(inputGrid);
+  
+      inputGrid = new InputGrid();
+      inputGrid.setInput(new LabelValue("9661 - Containers and twine", "9661"));
+      inputGrid.setAmountRemainingAtYearEnd(1.0);
+      inputGridList.add(inputGrid);
+  
+      data.setInputGrid(inputGridList);
+  
+      List<LivestockGrid> otherGridList = new ArrayList<>();
+      LivestockGrid otherGrid = new LivestockGrid();
+      otherGrid.setCommodity(new LabelValue("7616 - Leaf Cutter Bees", "7616"));
+      otherGrid.setEndingFmv(7.0);
+      otherGrid.setEndingInventory(7.0);
+      otherGrid.setQuantitySold(7.0);
+      otherGridList.add(otherGrid);
+  
+      otherGrid = new LivestockGrid();
+      otherGrid.setCommodity(new LabelValue("7560 - Llama; Crias Born", "7560"));
+      otherGrid.setEndingFmv(5.0);
+      otherGrid.setEndingInventory(4.0);
+      otherGrid.setQuantitySold(3.0);
+      otherGridList.add(otherGrid);
+      
+      otherGrid = new LivestockGrid();
+      otherGrid.setCommodity(new LabelValue("7560 - Llama; Crias Born", "7512"));
+      otherGrid.setEndingFmv(5.0);
+      otherGrid.setEndingInventory(4.0);
+      otherGrid.setQuantitySold(3.0);
+      otherGridList.add(otherGrid);
+      
+      otherGrid = new LivestockGrid();
+      otherGrid.setCommodity(new LabelValue("7560 - Llama; Crias Born", "7928"));
+      otherGrid.setEndingFmv(5.0);
+      otherGrid.setEndingInventory(4.0);
+      otherGrid.setQuantitySold(3.0);
+      otherGridList.add(otherGrid);
+  
+      data.setOtherGrid(otherGridList);
+  
+      List<LivestockGrid> swineGridList = new ArrayList<>();
+      LivestockGrid swineGrid = new LivestockGrid();
+      swineGrid.setCommodity(new LabelValue("4001 - Livestock Inventory Default", "4001"));
+      swineGrid.setEndingFmv(9.0);
+      swineGrid.setEndingInventory(43.0);
+      swineGrid.setQuantitySold(3.0);
+      swineGridList.add(swineGrid);
+  
+      swineGrid = new LivestockGrid();
+      swineGrid.setCommodity(new LabelValue("8710 - Pot Bellied Pigs; Piglets Born", "8710"));
+      swineGrid.setEndingFmv(3.0);
+      swineGrid.setEndingInventory(12.0);
+      swineGrid.setQuantitySold(0.0);
+      swineGridList.add(swineGrid);
+      
+      swineGrid = new LivestockGrid();
+      swineGrid.setCommodity(new LabelValue("8710 - Pot Bellied Pigs; Piglets Born", "8708"));
+      swineGrid.setEndingFmv(3.0);
+      swineGrid.setEndingInventory(12.0);
+      swineGrid.setQuantitySold(0.0);
+      swineGridList.add(swineGrid);
+      
+      swineGrid = new LivestockGrid();
+      swineGrid.setCommodity(new LabelValue("8710 - Pot Bellied Pigs; Piglets Born", "4001"));
+      swineGrid.setEndingFmv(3.0);
+      swineGrid.setEndingInventory(12.0);
+      swineGrid.setQuantitySold(0.0);
+      swineGridList.add(swineGrid);
+  
+      data.setSwineGrid(swineGridList);
+      
+      List<OtherPucGrid> otherPucGridList = new ArrayList<>();
+      OtherPucGrid otherPucGrid = new OtherPucGrid();
+      otherPucGrid.setSelectOtherLivestock(new LabelValue("101 - Bison", "101"));
+      otherPucGrid.setOtherLivestockNumber(7);
+      otherPucGridList.add(otherPucGrid);
+      data.setOpdGrid(otherPucGridList);
+  
+      Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+  
+      // Process the submission data
+      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
+      processor.setUser(user);
+      processor.setItemResourceMap(itemResourceMap);
+  
+      CrmTaskResource task = null;
+      try {
+        processor.loadSubmissionsFromDatabase();
+        task = processor.processSubmission(submissionMetaData);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
       }
-    }
-
-    deleteSubmission(submissionGuid);
-
-    // Set up the Supplemental CHEFS Form submission data (not getting it from
-    // CHEFS).
-    SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
-    SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
-    SupplementalSubmissionDataResource data = submission.getData();
-
-    submissionMetaData.setSubmissionGuid(submissionGuid);
-
-    data.setParticipantName("Johnny Appleseed");
-    data.setTelephone("(250) 555-5555");
-    data.setEmail("johnny@farm.ca");
-    data.setBusinessStructure("individual");
-
-    data.setAgriStabilityAgriInvestPin(participantPin);
-    data.setSinNumber("999999999");
-    data.setBusinessTaxNumber("999999999");
-    LabelValue municipalityCode = new LabelValue();
-    municipalityCode.setValue("41");
-
-    data.setOrigin("external");
-    data.setExternalMethod("chefsForm");
-    data.setEnvironment("DEV");
-    data.setProgramYear(new LabelValue("2023", "2023"));
-
-    data.setNumberOfCowsThatCalved(12.8);
-    data.setEggsForConsumptionLC109(2.0);
-    data.setEggsForHatchingLC108(5.0);
-    data.setChickenBroilersLC143(4.0);
-    data.setTurkeyBroilersLC144(6.0);
-    data.setNumberFeedersUnder9(6.0);
-    data.setNumberFeedersOver9(7.3);
-    data.setNumberOfHogsFedUpTo50LbsLC124(9.9);
-    data.setNumberOfHogsFedOver50LbsFeedersLC125(9.9);
-    data.setNumberOfSowsThatFarrowedLC123(5.0);
-
-    data.setLivestockFarmed(Arrays.asList("cattle", "customFeed", "poultry", "swine", "otherLivestock"));
-    data.setCropsFarmed(Arrays.asList("berries", "grainsOilseeds", "treefruitsGrapes", "vegetables", "nurseriesGreenhouse", "nonEdibleHorticulture"));
-
-    GrainGrid grainGrid = new GrainGrid();
-    grainGrid.setAcres(3423.0);
-    grainGrid.setGrade("AAA");
-    grainGrid.setUnits(new LabelValue("Kilograms", "5"));
-    grainGrid.setCommodity(new LabelValue("5392 - Beans, cranberry, organic", "5392"));
-    grainGrid.setIsIrrigated("yes");
-    grainGrid.setEndingInventory(6.0);
-    grainGrid.setEndingPricePerUnit(7.0);
-    grainGrid.setQuantitySold(4.0);
-    grainGrid.setQuantityProduced(2.0);
-    grainGrid.setQuantityPurchased(3.0);
-    grainGrid.setQuantityUsedForFeed(8.0);
-    grainGrid.setQuantityUsedForSeed(8.0);
-
-    GrainGrid grainGrid2 = new GrainGrid();
-    grainGrid2.setAcres(34.0);
-    grainGrid2.setGrade("");
-    grainGrid2.setCommodity(new LabelValue("5962 - Sunflowers, oilseed, no. 2", "5962"));
-    grainGrid2.setIsIrrigated("no");
-
-    List<GrainGrid> grainGridList = new ArrayList<>();
-    grainGridList.add(grainGrid);
-    grainGridList.add(grainGrid2);
-    data.setGrainGrid(grainGridList);
-
-    CropGrid berryGrid = new CropGrid();
-    berryGrid.setAcres(34.0);
-    berryGrid.setUnits(new LabelValue("Kilograms", "5"));
-    berryGrid.setCommodity(new LabelValue("5012 - Gooseberries", "5012"));
-    berryGrid.setQuantitySold(2.0);
-    berryGrid.setQuantityProduced(5.0);
-    List<CropGrid> berryGridList = new ArrayList<>();
-    berryGridList.add(berryGrid);
-
-    berryGrid = new CropGrid();
-    berryGrid.setAcres(2.0);
-    berryGrid.setUnits(new LabelValue("Pounds", "1"));
-    berryGrid.setCommodity(new LabelValue("5010 - Elderberries", "5010"));
-    berryGrid.setQuantitySold(4.0);
-    berryGrid.setQuantityProduced(3.0);
-    berryGridList.add(berryGrid);
-
-    data.setBerryGrid(berryGridList);
-
-    List<ReceivablesGrid> receivableGridList = new ArrayList<>();
-    ReceivablesGrid receivableGrid = new ReceivablesGrid();
-    receivableGrid.setIncomeSource(new LabelValue("402 - PI insurance", "402"));
-    receivableGrid.setIncomeReceivedAfterYearEnd(1.05);
-    receivableGridList.add(receivableGrid);
-
-    receivableGrid = new ReceivablesGrid();
-    receivableGrid.setIncomeSource(new LabelValue("9600", "9600"));
-    receivableGrid.setSpecify("other input");
-    receivableGrid.setIncomeReceivedAfterYearEnd(65.5);
-    receivableGridList.add(receivableGrid);
-
-    receivableGrid = new ReceivablesGrid();
-    receivableGrid.setIncomeSource(new LabelValue("401 - PI insurance", "401"));
-    receivableGrid.setIncomeReceivedAfterYearEnd(1.05);
-    receivableGridList.add(receivableGrid);
-
-    data.setReceivablesGrid(receivableGridList);
-
-    List<PayableGrid> payableGridList = new ArrayList<>();
-    PayableGrid payableGrid = new PayableGrid();
-    payableGrid.setSourceOfExpense(new LabelValue("9896 - Other Input (Specify)", "9896"));
-    payableGrid.setSpecify("other input");
-    payableGrid.setProgramExpensesNotPaidByYearEnd(42.02);
-    payableGridList.add(payableGrid);
-
-    payableGrid = new PayableGrid();
-    payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "135"));
-    payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
-    payableGridList.add(payableGrid);
-    
-    payableGrid = new PayableGrid();
-    payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "264"));
-    payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
-    payableGridList.add(payableGrid);
-    
-    payableGrid = new PayableGrid();
-    payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9662"));
-    payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
-    payableGridList.add(payableGrid);
-    
-    payableGrid = new PayableGrid();
-    payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9663"));
-    payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
-    payableGridList.add(payableGrid);
-    
-    payableGrid = new PayableGrid();
-    payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9714"));
-    payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
-    payableGridList.add(payableGrid);
-    
-    payableGrid = new PayableGrid();
-    payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9764"));
-    payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
-    payableGridList.add(payableGrid);
-    
-    payableGrid = new PayableGrid();
-    payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9815"));
-    payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
-    payableGridList.add(payableGrid);
-    
-    payableGrid = new PayableGrid();
-    payableGrid.setSourceOfExpense(new LabelValue("9713 - Medicine", "9836"));
-    payableGrid.setProgramExpensesNotPaidByYearEnd(51.0);
-    payableGridList.add(payableGrid);
-
-    data.setExpensesGrid(payableGridList);
-
-    List<InputGrid> inputGridList = new ArrayList<>();
-    InputGrid inputGrid = new InputGrid();
-    inputGrid.setInput(new LabelValue("9896 - Other Input (Specify)", "9896"));
-    inputGrid.setSpecify("other input");
-    inputGrid.setAmountRemainingAtYearEnd(44.02);
-    inputGridList.add(inputGrid);
-
-    inputGrid = new InputGrid();
-    inputGrid.setInput(new LabelValue("9713 - Medicine", "9713"));
-    inputGrid.setAmountRemainingAtYearEnd(1.0);
-    inputGridList.add(inputGrid);
-
-    inputGrid = new InputGrid();
-    inputGrid.setInput(new LabelValue("9661 - Containers and twine", "9661"));
-    inputGrid.setAmountRemainingAtYearEnd(1.0);
-    inputGridList.add(inputGrid);
-
-    data.setInputGrid(inputGridList);
-
-    List<LivestockGrid> otherGridList = new ArrayList<>();
-    LivestockGrid otherGrid = new LivestockGrid();
-    otherGrid.setCommodity(new LabelValue("7616 - Leaf Cutter Bees", "7616"));
-    otherGrid.setEndingFmv(7.0);
-    otherGrid.setEndingInventory(7.0);
-    otherGrid.setQuantitySold(7.0);
-    otherGridList.add(otherGrid);
-
-    otherGrid = new LivestockGrid();
-    otherGrid.setCommodity(new LabelValue("7560 - Llama; Crias Born", "7560"));
-    otherGrid.setEndingFmv(5.0);
-    otherGrid.setEndingInventory(4.0);
-    otherGrid.setQuantitySold(3.0);
-    otherGridList.add(otherGrid);
-    
-    otherGrid = new LivestockGrid();
-    otherGrid.setCommodity(new LabelValue("7560 - Llama; Crias Born", "7512"));
-    otherGrid.setEndingFmv(5.0);
-    otherGrid.setEndingInventory(4.0);
-    otherGrid.setQuantitySold(3.0);
-    otherGridList.add(otherGrid);
-    
-    otherGrid = new LivestockGrid();
-    otherGrid.setCommodity(new LabelValue("7560 - Llama; Crias Born", "7928"));
-    otherGrid.setEndingFmv(5.0);
-    otherGrid.setEndingInventory(4.0);
-    otherGrid.setQuantitySold(3.0);
-    otherGridList.add(otherGrid);
-
-    data.setOtherGrid(otherGridList);
-
-    List<LivestockGrid> swineGridList = new ArrayList<>();
-    LivestockGrid swineGrid = new LivestockGrid();
-    swineGrid.setCommodity(new LabelValue("4001 - Livestock Inventory Default", "4001"));
-    swineGrid.setEndingFmv(9.0);
-    swineGrid.setEndingInventory(43.0);
-    swineGrid.setQuantitySold(3.0);
-    swineGridList.add(swineGrid);
-
-    swineGrid = new LivestockGrid();
-    swineGrid.setCommodity(new LabelValue("8710 - Pot Bellied Pigs; Piglets Born", "8710"));
-    swineGrid.setEndingFmv(3.0);
-    swineGrid.setEndingInventory(12.0);
-    swineGrid.setQuantitySold(0.0);
-    swineGridList.add(swineGrid);
-    
-    swineGrid = new LivestockGrid();
-    swineGrid.setCommodity(new LabelValue("8710 - Pot Bellied Pigs; Piglets Born", "8708"));
-    swineGrid.setEndingFmv(3.0);
-    swineGrid.setEndingInventory(12.0);
-    swineGrid.setQuantitySold(0.0);
-    swineGridList.add(swineGrid);
-    
-    swineGrid = new LivestockGrid();
-    swineGrid.setCommodity(new LabelValue("8710 - Pot Bellied Pigs; Piglets Born", "4001"));
-    swineGrid.setEndingFmv(3.0);
-    swineGrid.setEndingInventory(12.0);
-    swineGrid.setQuantitySold(0.0);
-    swineGridList.add(swineGrid);
-
-    data.setSwineGrid(swineGridList);
-    
-    List<OtherPucGrid> otherPucGridList = new ArrayList<>();
-    OtherPucGrid otherPucGrid = new OtherPucGrid();
-    otherPucGrid.setSelectOtherLivestock(new LabelValue("101 - Bison", "101"));
-    otherPucGrid.setOtherLivestockNumber(7);
-    otherPucGridList.add(otherPucGrid);
-    data.setOpdGrid(otherPucGridList);
-
-    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
-
-    // Process the submission data
-    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
-    processor.setUser(user);
-    processor.setItemResourceMap(itemResourceMap);
-
-    CrmTaskResource task = null;
-    try {
-      processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNull(task);
-
-    // Get the record from FARM_CHEF_SUBMISSIONS, created by the processor
-    // to track the status of the submission.
-    ChefsSubmission submissionRec = null;
-    try {
-      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
-    } catch (DataAccessException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNotNull(submissionRec);
-
-    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
-    assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
-    assertEquals(ChefsSubmissionStatusCodes.PROCESSED, submissionRec.getSubmissionStatusCode());
-    assertNull(submissionRec.getValidationTaskGuid());
-    assertNotNull(submissionRec.getSubmissionId());
-    assertNotNull(submissionRec.getRevisionCount());
-
-    programYearMetadata = getProgramYearMetadata(participantPin, programYear);
-    assertNotNull(programYearMetadata);
-
-    ScenarioMetaData supplementalScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_SUPP,
-        ScenarioTypeCodes.CHEF);
-    Integer supplementalScenarioNumber = supplementalScenarioMetadata.getScenarioNumber();
-
-    CalculatorService calculatorService = ServiceFactory.getCalculatorService();
-    Scenario scenario = null;
-    try {
-      scenario = calculatorService.loadScenario(participantPin, programYear, supplementalScenarioNumber);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-
-    assertNotNull(scenario);
-    assertEquals(participantPin, scenario.getClient().getParticipantPin());
-    assertEquals(programYear, scenario.getYear());
-    assertEquals(supplementalScenarioNumber, scenario.getScenarioNumber());
-    assertEquals(submissionRec.getSubmissionId(), scenario.getChefsSubmissionId());
-    assertEquals(ScenarioCategoryCodes.CHEF_SUPP, scenario.getScenarioCategoryCode());
-    assertEquals(submissionGuid, scenario.getChefsSubmissionGuid());
-
-    FarmingOperation fo = scenario.getFarmingYear().getFarmingOperations().get(0);
-
-    HashMap<String, Double> productiveUnitsMap = new HashMap<>();
-    for (ProductiveUnitCapacity puc : fo.getProductiveUnitCapacities()) {
-      productiveUnitsMap.put(puc.getCode(), puc.getReportedAmount());
-    }
-    logger.debug("productiveUnitsMap: " + productiveUnitsMap);
-    assertEquals(Double.valueOf(12.8), productiveUnitsMap.get("104"));
-    assertEquals(Double.valueOf(5.0), productiveUnitsMap.get("108"));
-    assertEquals(Double.valueOf(2.0), productiveUnitsMap.get("109"));
-    assertEquals(Double.valueOf(3423.0), productiveUnitsMap.get("5392"));
-    assertEquals(Double.valueOf(34.0), productiveUnitsMap.get("5962"));
-    assertEquals(Double.valueOf(2.0), productiveUnitsMap.get("5010"));
-    assertEquals(Double.valueOf(34.0), productiveUnitsMap.get("5012"));
-    assertEquals(Double.valueOf(7.0), productiveUnitsMap.get("101"));
-
-    HashMap<String, Double> localProductiveUnitsMap = new HashMap<>();
-    for (ProductiveUnitCapacity puc : fo.getLocalProductiveUnitCapacities()) {
-      localProductiveUnitsMap.put(puc.getCode(), puc.getReportedAmount());
-    }
-    logger.debug("localProductiveUnitsMap: " + localProductiveUnitsMap);
-    assertEquals(Double.valueOf(12.8), localProductiveUnitsMap.get("104"));
-    assertEquals(Double.valueOf(5.0), localProductiveUnitsMap.get("108"));
-    assertEquals(Double.valueOf(2.0), localProductiveUnitsMap.get("109"));
-    assertEquals(Double.valueOf(3423.0), localProductiveUnitsMap.get("5392"));
-    assertEquals(Double.valueOf(34.0), localProductiveUnitsMap.get("5962"));
-    assertEquals(Double.valueOf(2.0), localProductiveUnitsMap.get("5010"));
-    assertEquals(Double.valueOf(34.0), localProductiveUnitsMap.get("5012"));
-    assertEquals(Double.valueOf(7.0), productiveUnitsMap.get("101"));
-    
-    HashMap<String, Double> craProductiveUnitsMap = new HashMap<>();
-    for (ProductiveUnitCapacity puc : fo.getCraProductiveUnitCapacities()) {
-      craProductiveUnitsMap.put(puc.getCode(), puc.getReportedAmount());
-    }
-    logger.debug("craProductiveUnitsMap: " + craProductiveUnitsMap);
-    assertEquals(0, fo.getCraProductiveUnitCapacities().size());
-
-
-    // Delete the USER scenarios linked to this submission if any exist, from a previous test run.
-    // Update scenarioSubmissionId to null for non-USER scenarios.
-    scenariosLinkedToSubmission = ScenarioUtils.findScenariosByChefSubmissionGuid(programYearMetadata, submissionGuid);
-    for(ScenarioMetaData scenarioMetadata : scenariosLinkedToSubmission) {
-      Integer linkedScenario = scenarioMetadata.getScenarioId();
-      assertNotNull(linkedScenario);
-
-      if(scenarioMetadata.getScenarioTypeCode().equals(ScenarioTypeCodes.USER)) {
-        try {
-          calculatorDao.deleteUserScenario(conn, linkedScenario);
-          conn.commit();
-        } catch (DataAccessException | SQLException e) {
-          e.printStackTrace();
-          try {
-            conn.rollback();
-          } catch (SQLException e1) {
-            e1.printStackTrace();
-            fail("Unexpected Exception");
-          }
-          fail("Unexpected Exception");
-        }
-      } else {
-        try {
-          chefsDatabaseDao.updateScenarioSubmissionId(conn, linkedScenario, null, user);
-          conn.commit();
-        } catch (DataAccessException | SQLException e) {
-          e.printStackTrace();
-          try {
-            conn.rollback();
-          } catch (SQLException e1) {
-            e1.printStackTrace();
-            fail("Unexpected Exception");
-          }
-          fail("Unexpected Exception");
-        }
+      assertNull(task);
+  
+      // Get the record from FARM_CHEF_SUBMISSIONS, created by the processor
+      // to track the status of the submission.
+      ChefsSubmission submissionRec = null;
+      try {
+        submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+      } catch (DataAccessException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
       }
+      assertNotNull(submissionRec);
+  
+      assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+      assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
+      assertEquals(ChefsSubmissionStatusCodes.PROCESSED, submissionRec.getSubmissionStatusCode());
+      assertNull(submissionRec.getValidationTaskGuid());
+      assertNotNull(submissionRec.getSubmissionId());
+      assertNotNull(submissionRec.getRevisionCount());
+  
+      programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+      assertNotNull(programYearMetadata);
+  
+      ScenarioMetaData supplementalScenarioMetadata = ScenarioUtils.findScenarioByCategory(programYearMetadata, programYear, ScenarioCategoryCodes.CHEF_SUPP,
+          ScenarioTypeCodes.CHEF);
+      Integer supplementalScenarioNumber = supplementalScenarioMetadata.getScenarioNumber();
+  
+      CalculatorService calculatorService = ServiceFactory.getCalculatorService();
+      Scenario scenario = null;
+      try {
+        scenario = calculatorService.loadScenario(participantPin, programYear, supplementalScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+  
+      assertNotNull(scenario);
+      assertEquals(participantPin, scenario.getClient().getParticipantPin());
+      assertEquals(programYear, scenario.getYear());
+      assertEquals(supplementalScenarioNumber, scenario.getScenarioNumber());
+      assertEquals(submissionRec.getSubmissionId(), scenario.getChefsSubmissionId());
+      assertEquals(ScenarioCategoryCodes.CHEF_SUPP, scenario.getScenarioCategoryCode());
+      assertEquals(submissionGuid, scenario.getChefsSubmissionGuid());
+  
+      FarmingOperation fo = scenario.getFarmingYear().getFarmingOperations().get(0);
+  
+      HashMap<String, Double> productiveUnitsMap = new HashMap<>();
+      for (ProductiveUnitCapacity puc : fo.getProductiveUnitCapacities()) {
+        productiveUnitsMap.put(puc.getCode(), puc.getReportedAmount());
+      }
+      logger.debug("productiveUnitsMap: " + productiveUnitsMap);
+      assertEquals(Double.valueOf(12.8), productiveUnitsMap.get("104"));
+      assertEquals(Double.valueOf(5.0), productiveUnitsMap.get("108"));
+      assertEquals(Double.valueOf(2.0), productiveUnitsMap.get("109"));
+      assertEquals(Double.valueOf(3423.0), productiveUnitsMap.get("5392"));
+      assertEquals(Double.valueOf(34.0), productiveUnitsMap.get("5962"));
+      assertEquals(Double.valueOf(2.0), productiveUnitsMap.get("5010"));
+      assertEquals(Double.valueOf(34.0), productiveUnitsMap.get("5012"));
+      assertEquals(Double.valueOf(7.0), productiveUnitsMap.get("101"));
+  
+      HashMap<String, Double> localProductiveUnitsMap = new HashMap<>();
+      for (ProductiveUnitCapacity puc : fo.getLocalProductiveUnitCapacities()) {
+        localProductiveUnitsMap.put(puc.getCode(), puc.getReportedAmount());
+      }
+      logger.debug("localProductiveUnitsMap: " + localProductiveUnitsMap);
+      assertEquals(Double.valueOf(12.8), localProductiveUnitsMap.get("104"));
+      assertEquals(Double.valueOf(5.0), localProductiveUnitsMap.get("108"));
+      assertEquals(Double.valueOf(2.0), localProductiveUnitsMap.get("109"));
+      assertEquals(Double.valueOf(3423.0), localProductiveUnitsMap.get("5392"));
+      assertEquals(Double.valueOf(34.0), localProductiveUnitsMap.get("5962"));
+      assertEquals(Double.valueOf(2.0), localProductiveUnitsMap.get("5010"));
+      assertEquals(Double.valueOf(34.0), localProductiveUnitsMap.get("5012"));
+      assertEquals(Double.valueOf(7.0), productiveUnitsMap.get("101"));
+      
+      HashMap<String, Double> craProductiveUnitsMap = new HashMap<>();
+      for (ProductiveUnitCapacity puc : fo.getCraProductiveUnitCapacities()) {
+        craProductiveUnitsMap.put(puc.getCode(), puc.getReportedAmount());
+      }
+      logger.debug("craProductiveUnitsMap: " + craProductiveUnitsMap);
+      assertEquals(0, fo.getCraProductiveUnitCapacities().size());
+      
+      
+      // ------------ Run Benefit Triage ---------------------------------------------------------
+      
+      Integer triageImportVersionId = processor.getTriageImportVersionId();
+      assertNotNull(triageImportVersionId);
+      
+      BenefitTriageCalculationItem triageItem = new BenefitTriageCalculationItem();
+      triageItem.setCraProgramYearVersionId(supplementalScenarioMetadata.getProgramYearVersionId());
+      triageItem.setCraScenarioId(supplementalScenarioMetadata.getScenarioId());
+      triageItem.setCraScenarioNumber(supplementalScenarioNumber);
+      triageItem.setParticipantPin(participantPin);
+      triageItem.setProgramYear(programYear);
+      
+      List<BenefitTriageCalculationItem> triageItems = Collections.singletonList(triageItem);
+      
+      BenefitTriageService triageService = ServiceFactory.getBenefitTriageService();
+      BenefitTriageResults benefitTriageResults = null;
+      try {
+        benefitTriageResults = triageService.processBenefitTriageItems(conn, triageImportVersionId, triageItems, user);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(benefitTriageResults);
+      assertNull(benefitTriageResults.getUnexpectedError());
+      
+      
+      // ------------ Benefit Triage Results ---------------------------------------------------------
+      
+      List<BenefitTriageItemResult> triageItemResults = benefitTriageResults.getTriageItemResults();
+      assertNotNull(triageItemResults);
+      assertEquals(1, triageItemResults.size());
+      
+      BenefitTriageItemResult triageItemResult = triageItemResults.get(0);
+      List<String> triageErrorMessages = triageItemResult.getErrorMessages();
+      List<String> triageFailMessages = triageItemResult.getFailMessages();
+      
+      assertNotNull(triageErrorMessages);
+      assertNotNull(triageFailMessages);
+      logErrorMessages(triageErrorMessages);
+      logFailMessages(triageFailMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+      }), triageErrorMessages);
+      
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_REFERENCE_MARGIN_FAILED_AT_LOW_END,
+          MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED,
+          MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED,
+          MESSAGE_FAIL_COMBINED_FARM
+      }), triageFailMessages);
+      
+      assertEquals("OBLX AJZIEU", triageItemResult.getClientName());
+      assertEquals(Double.valueOf(0), triageItemResult.getEstimatedBenefit());
+      assertEquals(Boolean.FALSE, triageItemResult.getIsPaymentFile());
+      assertEquals(participantPin, triageItemResult.getParticipantPin());
+      assertEquals(2023, triageItemResult.getProgramYear());
+      assertEquals("Completed", triageItemResult.getScenarioStateCodeDesc());
+      assertFalse(triageItemResult.isZeroPass());
+      assertFalse(triageItemResult.isPaymentPass());
+      
+      ImportDAO importDao = new ImportDAO();
+      ImportVersion importVersion = null;
+      try {
+        importVersion = importDao.getImportVersion(conn, triageImportVersionId);
+      } catch (DataAccessException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(importVersion);
+      assertEquals(ImportClassCodes.TRIAGE, importVersion.getImportClassCode());
+      assertEquals(ImportStateCodes.IMPORT_COMPLETE, importVersion.getImportStateCode());
+      
+      
+      // ------------ Triage Scenario ----------------------------------------------------------------
+      
+      programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+
+      List<ScenarioMetaData> triageScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadata, programYear, ScenarioCategoryCodes.TRIAGE, ScenarioTypeCodes.TRIAGE);
+      assertNotNull(triageScenarios);
+      assertEquals(1, triageScenarios.size());
+      
+      ScenarioMetaData triageScenarioMetaData = triageScenarios.get(0);
+      Integer triageScenarioNumber = triageScenarioMetaData.getScenarioNumber();
+      assertNotNull(triageScenarioNumber);
+      Scenario triageScenario = null;
+      try {
+        triageScenario = calculatorService.loadScenario(participantPin, programYear, triageScenarioNumber);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+
+      assertNotNull(triageScenario);
+      assertNotNull(triageScenario.getClient());
+      assertEquals(participantPin, triageScenario.getClient().getParticipantPin());
+      assertEquals(programYear, triageScenario.getYear());
+      assertEquals(ScenarioTypeCodes.TRIAGE, triageScenario.getScenarioTypeCode());
+      assertEquals(ScenarioCategoryCodes.TRIAGE, triageScenario.getScenarioCategoryCode());
+      assertEquals(ScenarioStateCodes.COMPLETED, triageScenario.getScenarioStateCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getStructuralChangeMethodCode());
+      assertEquals(StructuralChangeCodes.RATIO, triageScenario.getBenefit().getExpenseStructuralChangeMethodCode());
+      assertNotNull(triageScenario.getBenefit());
+      assertNotNull(triageScenario.getBenefit().getTotalBenefit());
+      assertEquals(0.0, triageScenario.getBenefit().getTotalBenefit());
+      
+      ReasonabilityTestResults triageTestResults = triageScenario.getReasonabilityTestResults();
+      assertNotNull(triageTestResults);
+      assertNotNull(triageTestResults.getMarginTest());
+      Boolean triageReferenceMarginTestPassed = triageTestResults.getMarginTest().getWithinLimitOfReferenceMargin();
+      assertEquals(Boolean.FALSE, triageReferenceMarginTestPassed);
+      Double triageReferenceMarginVariance = triageTestResults.getMarginTest().getAdjustedReferenceMarginVariance();
+      assertNull(triageReferenceMarginVariance);
+//      Double triageReferenceMarginVarianceLimit = triageTestResults.getMarginTest().getAdjustedReferenceMarginVarianceLimit();
+//      assertTrue(triageReferenceMarginVariance >= triageReferenceMarginVarianceLimit);
+      
+      assertNotNull(triageTestResults.getStructuralChangeTest());
+      Boolean triageStructuralChangeTestPassed = triageTestResults.getStructuralChangeTest().getResult();
+      assertEquals(Boolean.FALSE, triageStructuralChangeTestPassed);
+
+
+      // ------------ Verified Final ----------------------------------------------------------------
+      List<ScenarioMetaData> verifiedFinalScenarios =
+          ScenarioUtils.findScenariosByCategory(programYearMetadata, programYear, ScenarioCategoryCodes.FINAL, ScenarioTypeCodes.USER);
+      assertNotNull(verifiedFinalScenarios);
+      assertEquals(0, verifiedFinalScenarios.size());
+      
+      // ------------ CRM Transfers ----------------------------------------------------------------
+      
+      ImportService importService = ServiceFactory.getImportService();
+      List<String> importClassCodes = Collections.singletonList(ImportClassCodes.XSTATE);
+      List<ImportSearchResult> stateTransfers = null;
+      try {
+        stateTransfers = importService.searchImports(importClassCodes, DateUtils.todayAtStartOfDay());
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(stateTransfers);
+      assertTrue(stateTransfers.size() > 0);
+      
+      // State Transfers are ordered latest first.
+      // Two should have been created so index 1 should be the first of those.
+      {
+        ImportSearchResult stateTransfer = stateTransfers.get(0);
+        assertNotNull(stateTransfer);
+        assertTrue(StringUtils.isOneOf(stateTransfer.getStateCode(),
+            ImportStateCodes.SCHEDULED_FOR_STAGING,
+            ImportStateCodes.IMPORT_COMPLETE));
+        assertEquals("State Change Transfer for " + programYear
+            + " PIN: " + participantPin
+            + ", State: Completed"
+            + ", Category: Benefit Triage",
+            stateTransfer.getDescription());
+      }
+  
+    } finally {
+      
+      TestUtils.deleteBenefitTriageScenarios(participantPin, programYear, conn);
+      TestUtils.deleteFinalScenarios(participantPin, programYear, conn);
+      deleteUserScenarios(submissionGuid, programYearMetadata);
+      deleteSubmissionsFromFarm(submissionGuid);
+      deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     }
 
-    deleteSubmission(submissionGuid);
   }
 
   @Test
@@ -1163,122 +1307,129 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
     Integer programYear = 2024;
     String submissionGuid = "2c695023-1611-41fa-91f6-95ca1fd5a120";
 
+    deleteSubmissionsFromFarm(submissionGuid);
     deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
-
-    List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
-    assertNotNull(programYearMetadata);
-    assertFalse(programYearMetadata.isEmpty());
-
-    deleteSubmission(submissionGuid);
-
-    SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
-    SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
-    SupplementalSubmissionDataResource data = submission.getData();
-
-    submissionMetaData.setSubmissionGuid(submissionGuid);
-
-    data.setParticipantName("Jon Snow");
-    data.setTelephone("(250) 555-5555");
-    data.setEmail("jsnow@game.of.thrones");
-
-    data.setBusinessStructure("individual");
-
-    data.setAgriStabilityAgriInvestPin(participantPin);
-    data.setSinNumber("123456789");
-    data.setBusinessTaxNumber(null);
-    data.setOrigin("external");
-    data.setExternalMethod("chefsForm");
-    data.setEnvironment("DEV");
-    data.setProgramYear(new LabelValue(programYear.toString(), programYear.toString()));
-
-    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
-    processor.setUser(user);
-    Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
-    processor.setItemResourceMap(itemResourceMap);
-
-    CrmTaskResource validationTask = null;
+    
     try {
-      processor.loadSubmissionsFromDatabase();
-      validationTask = processor.processSubmission(submissionMetaData);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
+      
+      List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+      assertNotNull(programYearMetadata);
+      assertFalse(programYearMetadata.isEmpty());
+  
+      deleteSubmissionsFromFarm(submissionGuid);
+  
+      SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = buildSubmissionMetaData();
+      SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
+      SupplementalSubmissionDataResource data = submission.getData();
+  
+      submissionMetaData.setSubmissionGuid(submissionGuid);
+  
+      data.setParticipantName("Jon Snow");
+      data.setTelephone("(250) 555-5555");
+      data.setEmail("jsnow@game.of.thrones");
+  
+      data.setBusinessStructure("individual");
+  
+      data.setAgriStabilityAgriInvestPin(participantPin);
+      data.setSinNumber("123456789");
+      data.setBusinessTaxNumber(null);
+      data.setOrigin("external");
+      data.setExternalMethod("chefsForm");
+      data.setEnvironment("DEV");
+      data.setProgramYear(new LabelValue(programYear.toString(), programYear.toString()));
+  
+      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
+      processor.setUser(user);
+      Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
+      processor.setItemResourceMap(itemResourceMap);
+  
+      CrmTaskResource validationTask = null;
+      try {
+        processor.loadSubmissionsFromDatabase();
+        validationTask = processor.processSubmission(submissionMetaData);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+  
+      assertNotNull(validationTask);
+      // assertNotNull(validationTask.getAccountId());
+      assertEquals("2024 Supplemental " + participantPin, validationTask.getSubject());
+      assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
+      assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
+      assertEquals(getFormUserType() + " Local Supplemental form was submitted but has validation errors:\n" + "\n"
+          + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n" + "Participant Name: Jon Snow\n"
+          + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n", validationTask.getDescription());
+  
+      ChefsSubmission submissionRec = null;
+      try {
+        submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+      } catch (DataAccessException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(submissionRec);
+  
+      assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+      assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
+      assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
+      assertEquals(validationTask.getActivityId(), submissionRec.getValidationTaskGuid());
+      assertNull(submissionRec.getMainTaskGuid());
+      assertNotNull(submissionRec.getSubmissionId());
+      assertNotNull(submissionRec.getRevisionCount());
+  
+      // Correct the SIN Number
+      data.setSinNumber("999999999");
+  
+      try {
+        validationTask = completeAndGetTask(crmConfig.getValidationErrorUrl(), validationTask.getActivityId());
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+  
+      assertNotNull(validationTask);
+      assertNotNull(validationTask.getAccountId());
+      assertEquals("2024 Supplemental " + participantPin, validationTask.getSubject());
+      assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_COMPLETED), validationTask.getStateCode());
+      assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_COMPLETED), validationTask.getStatusCode());
+  
+      CrmTaskResource task = null;
+      try {
+        processor.loadSubmissionsFromDatabase();
+        task = processor.processSubmission(submissionMetaData);
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+  
+      assertNull(task);
+  
+      programYearMetadata = getProgramYearMetadata(participantPin, programYear);
+      assertNotNull(programYearMetadata);
+      assertFalse(programYearMetadata.isEmpty());
+  
+      submissionRec = null;
+      try {
+        submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
+      } catch (DataAccessException e) {
+        e.printStackTrace();
+        fail("Unexpected Exception");
+      }
+      assertNotNull(submissionRec);
+  
+      assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
+      assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
+      assertEquals(ChefsSubmissionStatusCodes.PROCESSED, submissionRec.getSubmissionStatusCode());
+      assertEquals(validationTask.getActivityId(), submissionRec.getValidationTaskGuid());
+      assertNotNull(submissionRec.getSubmissionId());
+      assertNotNull(submissionRec.getRevisionCount());
+
+    } finally {
+      deleteSubmissionsFromFarm(submissionGuid);
+      deleteValidationErrorTasksBySubmissionGuid(submissionGuid);
     }
 
-    assertNotNull(validationTask);
-    // assertNotNull(validationTask.getAccountId());
-    assertEquals("2024 Supplemental " + participantPin, validationTask.getSubject());
-    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
-    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-    assertEquals(formUserType + " Local Supplemental form was submitted but has validation errors:\n" + "\n"
-        + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n" + "Participant Name: Jon Snow\n"
-        + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n", validationTask.getDescription());
-
-    ChefsSubmission submissionRec = null;
-    try {
-      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
-    } catch (DataAccessException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNotNull(submissionRec);
-
-    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
-    assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
-    assertEquals(ChefsSubmissionStatusCodes.INVALID, submissionRec.getSubmissionStatusCode());
-    assertEquals(validationTask.getActivityId(), submissionRec.getValidationTaskGuid());
-    assertNull(submissionRec.getMainTaskGuid());
-    assertNotNull(submissionRec.getSubmissionId());
-    assertNotNull(submissionRec.getRevisionCount());
-
-    // Correct the SIN Number
-    data.setSinNumber("999999999");
-
-    try {
-      validationTask = completeAndGetTask(crmConfig.getValidationErrorUrl(), validationTask.getActivityId());
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-
-    assertNotNull(validationTask);
-    assertNotNull(validationTask.getAccountId());
-    assertEquals("2024 Supplemental " + participantPin, validationTask.getSubject());
-    assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_COMPLETED), validationTask.getStateCode());
-    assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_COMPLETED), validationTask.getStatusCode());
-
-    CrmTaskResource task = null;
-    try {
-      processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
-    } catch (ServiceException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-
-    assertNull(task);
-
-    programYearMetadata = getProgramYearMetadata(participantPin, programYear);
-    assertNotNull(programYearMetadata);
-    assertFalse(programYearMetadata.isEmpty());
-
-    submissionRec = null;
-    try {
-      submissionRec = chefsDatabaseDao.readSubmissionByGuid(conn, submissionGuid);
-    } catch (DataAccessException e) {
-      e.printStackTrace();
-      fail("Unexpected Exception");
-    }
-    assertNotNull(submissionRec);
-
-    assertEquals(submissionGuid, submissionRec.getSubmissionGuid());
-    assertEquals(ChefsFormTypeCodes.SUPP, submissionRec.getFormTypeCode());
-    assertEquals(ChefsSubmissionStatusCodes.PROCESSED, submissionRec.getSubmissionStatusCode());
-    assertEquals(validationTask.getActivityId(), submissionRec.getValidationTaskGuid());
-    assertNotNull(submissionRec.getSubmissionId());
-    assertNotNull(submissionRec.getRevisionCount());
-
-    deleteSubmission(submissionGuid);
   }
 
   @Test
@@ -1525,10 +1676,10 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
     String existingSubmissionGuid = "b6526118-7dfc-4a5a-9475-3232e50e7ebc";
     String duplicateSubmissionGuid = "0a23f0e7-93e3-4742-be8f-051db476c044";
     
+    deleteSubmissionsFromFarm(duplicateSubmissionGuid);
+    deleteValidationErrorTasksBySubmissionGuid(duplicateSubmissionGuid);
+    
     try {
-
-      // Delete the submission if it exists, from a previous test run.
-      deleteSubmission(duplicateSubmissionGuid);
   
       List<ScenarioMetaData> programYearMetadata = getProgramYearMetadata(participantPin, programYear);
       assertNotNull(programYearMetadata);
@@ -1559,7 +1710,7 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
       
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(duplicateSubmissionGuid);
       // Process the submission data
-      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
+      SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -1606,9 +1757,8 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
       assertNotNull(submissionRec.getRevisionCount());
       
     } finally {
-      
-      deleteSubmission(duplicateSubmissionGuid);
-      
+      deleteSubmissionsFromFarm(duplicateSubmissionGuid);
+      deleteValidationErrorTasksBySubmissionGuid(duplicateSubmissionGuid);
     }
   }
 
@@ -1687,7 +1837,7 @@ public class ChefsSupplementalSubmissionTest extends ChefsSubmissionTest{
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, formUserType);
+    SupplementalSubmissionProcessor processor = new SupplementalSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 

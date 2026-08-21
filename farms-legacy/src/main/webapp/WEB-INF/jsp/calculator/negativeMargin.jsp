@@ -248,7 +248,9 @@
 </table>
 
 <div align="right" style="margin-top:10px">
-  <a id="saveButton" href="#"><fmt:message key="Save"/></a>
+  <c:if test="${ ! form.readOnly }">
+    <a id="saveButton" href="#"><fmt:message key="Save"/></a>
+  </c:if>
 </div>
 
 <script type="text/javascript">

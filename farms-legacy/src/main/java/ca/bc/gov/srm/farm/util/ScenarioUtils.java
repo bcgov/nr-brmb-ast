@@ -347,11 +347,7 @@ public final class ScenarioUtils {
     int maxPyv = 0;
     
     for(ScenarioMetaData scMeta : scenario.getScenarioMetaDataList()) {
-      if(scMeta.getProgramYear().equals(year)
-          && (scMeta.getScenarioTypeCode().equals(ScenarioTypeCodes.CRA)
-              || scMeta.getScenarioTypeCode().equals(ScenarioTypeCodes.GEN)
-              || scMeta.getScenarioTypeCode().equals(ScenarioTypeCodes.LOCAL)
-              || scMeta.getScenarioTypeCode().equals(ScenarioTypeCodes.CHEF))) {
+      if(scMeta.getProgramYear().equals(year) && scMeta.isBaseData()) {
 
         int curPyv = scMeta.getProgramYearVersion().intValue();
         
@@ -1039,6 +1035,41 @@ public final class ScenarioUtils {
     return reportedIncomes;
   }
 
+  
+  public static boolean checkHasIncomeForAllYears(Scenario scenario) {
+    return checkHasIncomeOrExpenseForAllYears(scenario, false);
+  }
+  
+  public static boolean checkHasExpensesForAllYears(Scenario scenario) {
+    return checkHasIncomeOrExpenseForAllYears(scenario, true);
+  }
+
+  private static boolean checkHasIncomeOrExpenseForAllYears(Scenario scenario, boolean expense) {
+    
+    boolean result = true;
+      
+    for (ReferenceScenario refScenario : scenario.getAllScenarios()) {
+      
+      Map<Integer, IncomeExpense> incomeExpenses;
+      
+      if(expense) {
+        incomeExpenses = ScenarioUtils.getConsolidatedIncomeExpense(scenario, true, null, refScenario.getYear());
+      } else {
+        incomeExpenses = ScenarioUtils.getConsolidatedIncomeExpense(scenario, false, null, refScenario.getYear());
+      }
+      
+      boolean hasIncomeExpenses = incomeExpenses.values().stream().anyMatch(i -> i.getTotalAmount() != 0);
+      
+      if(!hasIncomeExpenses) {
+        result = false;
+        break;
+      }
+    }
+    
+    return result;
+  }
+
+
   public static boolean hasInventoryOfFruitVegType(Scenario scenario, String fruitVegTypeCode) {
     boolean hasType = false;
     
@@ -1427,11 +1458,11 @@ public final class ScenarioUtils {
 	}
 
 
-  public static ScenarioMetaData findLatestScenarioByType(List<ScenarioMetaData> programYearMetadata, Integer programYear, String typeCode) {
+  public static ScenarioMetaData findLatestBaseDataScenario(List<ScenarioMetaData> programYearMetadata, Integer programYear) {
     ScenarioMetaData scenarioMetaData = programYearMetadata
         .stream()
         .filter(y -> y.getProgramYear().equals(programYear)
-            && y.getScenarioTypeCode().equals(typeCode))
+            && ScenarioTypeCodes.isBaseData(y.getScenarioTypeCode()))
         .max(Comparator.comparing(ScenarioMetaData::getScenarioNumber))
         .orElse(null);
     return scenarioMetaData;

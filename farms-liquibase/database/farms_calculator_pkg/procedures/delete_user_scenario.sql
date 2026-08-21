@@ -126,6 +126,8 @@ begin
         where t.agristability_scenario_id = v_sc_id;
         delete from farms.farm_scenario_config_params t
         where t.agristability_scenario_id = v_sc_id;
+        delete from farms.farm_negative_margins t
+        where t.agristability_scenario_id = v_sc_id;
         delete from farms.farm_reference_scenarios t
         where t.agristability_scenario_id = v_sc_id;
         delete from farms.farm_agristability_scenarios t
