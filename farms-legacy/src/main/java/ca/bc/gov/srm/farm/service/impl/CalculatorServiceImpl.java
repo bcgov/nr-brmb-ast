@@ -521,7 +521,10 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
           && scenario.getPreVerificationChecklist() != null
           && scenario.getPreVerificationChecklist().getTriageQueue() != null
           && TriageQueueCodes.ZERO_PAYMENT_PASS.equals(scenario.getPreVerificationChecklist().getTriageQueue());
-      boolean verifyingLateParticipant = lateParticipant && stateChanged && isVerified && isRealBenefit;
+      boolean verifyingLateParticipant = lateParticipant && stateChanged && isVerified && isRealBenefit
+          && !INTERIM.equals(newCategoryCode);
+      boolean verifyingForFutureEnrolment = shouldGeneratePyPlusTwoEnrolment(
+          stateChanged, newStateCode, newCategoryCode);
       boolean completingEnrolmentNotice = stateChanged && isEnrolmentNoticeComplete;
       boolean isNoticeOfLoss = NOL.equals(newCategoryCode);
       boolean isCoverageNotice = COVERAGE_NOTICE.equals(newCategoryCode);
@@ -627,12 +630,17 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
             user);
       }
       
-      boolean generateEnrolment = verifyingLateParticipant || completingEnrolmentNotice;
+      boolean generateEnrolment = verifyingLateParticipant || verifyingForFutureEnrolment || completingEnrolmentNotice;
       if(generateEnrolment) {
         EnrolmentService enrolmentService = ServiceFactory.getEnrolmentService();
         for(Scenario curScenario : scenarios) {
-          enrolmentService.processEnrolmentFromScenarioWorkflow(curScenario,
-              verifyingLateParticipant, completingEnrolmentNotice, user, transaction);
+          if(verifyingForFutureEnrolment) {
+            enrolmentService.processEnrolmentFromVerifiedScenario(curScenario, user, transaction);
+          }
+          if(verifyingLateParticipant || completingEnrolmentNotice) {
+            enrolmentService.processEnrolmentFromScenarioWorkflow(curScenario,
+                verifyingLateParticipant, completingEnrolmentNotice, user, transaction);
+          }
         }
       }
       
@@ -681,6 +689,17 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     }
     
     return errors;
+  }
+
+
+  static boolean shouldGeneratePyPlusTwoEnrolment(
+      boolean stateChanged,
+      String newStateCode,
+      String newCategoryCode) {
+    return stateChanged
+        && VERIFIED.equals(newStateCode)
+        && ScenarioUtils.categoryIsRealBenefit(newCategoryCode)
+        && !INTERIM.equals(newCategoryCode);
   }
 
 

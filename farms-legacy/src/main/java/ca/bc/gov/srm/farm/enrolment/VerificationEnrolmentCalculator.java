@@ -25,9 +25,9 @@ import ca.bc.gov.srm.farm.util.MathUtils;
 /**
  * @author awilkinson
  */
-public class LateParticipantEnrolmentCalculator {
+public class VerificationEnrolmentCalculator {
 
-  protected LateParticipantEnrolmentCalculator() {
+  protected VerificationEnrolmentCalculator() {
   }
   
   /**
@@ -39,8 +39,16 @@ public class LateParticipantEnrolmentCalculator {
    * (ReferenceScenario.usedInCalc).
    */
   public Enrolment calculateEnrolment(Scenario scenario) {
+    return calculateEnrolment(scenario, scenario.getYear());
+  }
+
+
+  /**
+   * Calculates an enrolment for the requested year using the scenario's Reference Margin.
+   * This supports PY + 2 enrolments while preserving the existing Late Participant behavior.
+   */
+  public Enrolment calculateEnrolment(Scenario scenario, int enrolmentYear) {
     int scenarioProgramYear = scenario.getYear();
-    int enrolmentYear = scenarioProgramYear;
     
     Benefit benefit = scenario.getFarmingYear().getBenefit();
     double percentOfMargin;
