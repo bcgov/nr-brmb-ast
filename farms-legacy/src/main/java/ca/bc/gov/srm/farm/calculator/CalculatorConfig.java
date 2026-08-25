@@ -264,7 +264,8 @@ public final class CalculatorConfig {
   }
   
   public static boolean reasonabilityTestsRequired(int programYear, String scenarioCategoryCode) {
-    return programYear >= GROWING_FORWARD_2013 && ! COVERAGE_NOTICE.equals(scenarioCategoryCode);
+    return programYear >= GROWING_FORWARD_2013
+            && ! StringUtils.isOneOf(scenarioCategoryCode, COVERAGE_NOTICE, ENROLMENT_NOTICE_WORKFLOW);
   }
 
   public static double getPreVerificationPaymentAmountRequiringASpecialist() {
