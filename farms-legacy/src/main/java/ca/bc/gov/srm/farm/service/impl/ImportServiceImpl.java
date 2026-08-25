@@ -33,6 +33,7 @@ import ca.bc.gov.srm.farm.configuration.ConfigurationUtility;
 import ca.bc.gov.srm.farm.dao.ImportDAO;
 import ca.bc.gov.srm.farm.dao.ImportXmlDAO;
 import ca.bc.gov.srm.farm.dao.SearchDAO;
+import ca.bc.gov.srm.farm.dao.VersionDAO;
 import ca.bc.gov.srm.farm.domain.ImportVersion;
 import ca.bc.gov.srm.farm.domain.benefit.triage.BenefitTriageResults;
 import ca.bc.gov.srm.farm.domain.codes.ImportClassCodes;
@@ -510,28 +511,64 @@ final class ImportServiceImpl extends BaseService implements ImportService {
       if (scheduledImport != null) {
         String stateCode = scheduledImport.getImportStateCode();
 
-        if (ImportStateCodes.isScheduledForStaging(stateCode)) {
-          String windowStartKey = ConfigurationKeys.IMPORT_STAGING_START_TIME;
-          String windowEndKey = ConfigurationKeys.IMPORT_STAGING_END_TIME;
+        try {
+          if (ImportStateCodes.isScheduledForStaging(stateCode)) {
+            String windowStartKey = ConfigurationKeys.IMPORT_STAGING_START_TIME;
+            String windowEndKey = ConfigurationKeys.IMPORT_STAGING_END_TIME;
 
-          if (isInTimeWindow(windowStartKey, windowEndKey)) {
-            processStaging(scheduledImport, connection);
-          }
-        } else {
-          String windowStartKey = ConfigurationKeys.IMPORT_START_TIME;
-          String windowEndKey = ConfigurationKeys.IMPORT_END_TIME;
+            if (isInTimeWindow(windowStartKey, windowEndKey)) {
+              processStaging(scheduledImport, connection);
+            }
+          } else {
+            String windowStartKey = ConfigurationKeys.IMPORT_START_TIME;
+            String windowEndKey = ConfigurationKeys.IMPORT_END_TIME;
 
-          if (isInTimeWindow(windowStartKey, windowEndKey)) {
-            processImport(scheduledImport, connection);
+            if (isInTimeWindow(windowStartKey, windowEndKey)) {
+              processImport(scheduledImport, connection);
+            }
           }
+
+          connection.commit();
+        } catch (Exception e) {
+          //
+          // The per-class handlers record their own failures, but anything
+          // that fails before the handler is entered -- reading the blob,
+          // writing the temp file -- would leave the record in its scheduled
+          // state, so the agent would pick it up again on every notification.
+          //
+          logger.error("Failed to process import version "
+              + scheduledImport.getImportVersionId(), e);
+
+          markImportFailed(connection, scheduledImport, e);
         }
-
-        connection.commit();
       }
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       throw new ServiceException(e);
+    }
+  }
+
+  /**
+   * Move a scheduled job to the failed state so that it is not retried on the
+   * next notification.
+   *
+   * @param connection connection
+   * @param iv         the job that could not be processed
+   * @param cause      why it could not be processed
+   */
+  private void markImportFailed(final Connection connection, final ImportVersion iv, final Exception cause) {
+
+    try {
+      VersionDAO vdao = new VersionDAO(connection);
+
+      vdao.importFailed(iv.getImportVersionId(),
+          ImportLogFormatter.formatImportException(cause),
+          iv.getImportedByUser());
+
+      connection.commit();
+    } catch (Exception e) {
+      logger.error("Could not record failure for import version " + iv.getImportVersionId(), e);
     }
   }
 
@@ -713,6 +750,12 @@ final class ImportServiceImpl extends BaseService implements ImportService {
     }
 
     byte[] blob = dao.getBlob(connection, importVersionId, false);
+
+    if (blob == null) {
+      throw new ServiceException("Import version " + importVersionId + " ("
+          + iv.getImportClassCode() + ") has no import file content, so it cannot be staged.");
+    }
+
     File tempFile = fu.write(new ByteArrayInputStream(blob), fileExt);
 
     return tempFile;
