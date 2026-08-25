@@ -389,9 +389,9 @@ public class EnrolmentReadDAO extends OracleDAO {
           while (rs.next()) {
             
             Integer enrolmentId = getInteger(rs, "Program_Enrolment_Id");
-            String partnershipName = getString(rs, "Partnership_Name");
-            Integer partnershipPin = getInteger(rs, "Partnership_Pin");
-            BigDecimal partnershipPercent = rs.getBigDecimal("Partnership_Percent");
+            String partnershipName = getString(rs, "Partner_Name");
+            Integer partnershipPin = getInteger(rs, "Partner_Pin");
+            BigDecimal partnershipPercent = rs.getBigDecimal("Partner_Percent");
             
             for (Enrolment enrolment : enrolments) {
               if(enrolment.getEnrolmentId().equals(enrolmentId)) {
