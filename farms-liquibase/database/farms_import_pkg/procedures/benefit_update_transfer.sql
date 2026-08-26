@@ -98,7 +98,6 @@ declare
     fmv_set_complete_ind varchar(1);
     import_date farms.farm_import_versions.when_created%type;
     import_description farms.farm_import_versions.description%type;
-    import_file farms.farm_import_versions.import_file%type;
 begin
 
     open received_cursor;
@@ -107,11 +106,9 @@ begin
     if transfer_val is not null then
 
         select iv.when_created,
-               iv.description,
-               iv.import_file
+               iv.description
         into import_date,
-             import_description,
-             import_file
+             import_description
         from farms.farm_import_versions iv
         where iv.import_version_id = in_cra_version_id;
 
@@ -123,14 +120,9 @@ begin
             to_char(import_date, 'YYYY/MM/DD') || ', Description: ' || import_description,
             'farm_received.csv',
             null,
-            import_file,
+            null,
             in_user
         );
-
-        select import_file
-        into b
-        from farms.farm_import_versions iv
-        where import_version_id = transfer_version_id;
 
         loop
             cnt := cnt + 1;
@@ -156,47 +148,48 @@ begin
             );
             bpu_set_complete_ind := farms_import_pkg.is_bpu_set_complete(transfer_val.agristability_scenario_id, scenario_ids);
             fmv_set_complete_ind := farms_import_pkg.is_fmv_set_complete(scenario_ids);
-            cur_line := transfer_val.participant_pin || ',' ||
-                        transfer_val.program_year || ',' ||
-                        transfer_val.state || ',' ||
-                        transfer_val.state_change_date || ',' ||
-                        transfer_val.verifier || ',' ||
-                        transfer_val.supplemental_received_date || ',' ||
-                        transfer_val.file_start_date || ',"' ||
-                        farm_sector || '","' ||
-                        farm_sector_detail || '",' ||
-                        transfer_val.benefit_amount || ',' ||
-                        null || ',' || -- scenario number is null unless the scenario is COMP
-                        transfer_val.partnership_indicator || ',' ||
-                        bpu_set_complete_ind || ',' ||
-                        fmv_set_complete_ind || ',' ||
-                        'N,,"' || -- inCombinedFarm indictor and combinedFarmPins list
-                        transfer_val.municipality_description || '",' ||
-                        transfer_val.non_participant_ind || ',' ||
-                        transfer_val.scenario_category_code || ',' ||
-                        transfer_val.interim_benefit_percent || ',' ||
-                        transfer_val.allocated_reference_margin || ',' ||
-                        transfer_val.negative_margin_decline || ',' ||
-                        transfer_val.negative_margin_benefit || ',' ||
-                        transfer_val.late_participant_ind || ',' ||
-                        transfer_val.provincially_funded_amount || ',' ||
-                        transfer_val.prod_insur_deemed_benefit || ',' ||
-                        transfer_val.late_enrolment_penalty || ',' ||
-                        transfer_val.local_supp_date_string || ',' ||
-                        transfer_val.local_statement_a_date_string || ',' ||
-                        transfer_val.cra_statement_a_date_string || ',' ||
-                        transfer_val.send_copy_to_contact_person_ind || ',' ||
-                        null || ',' || -- CHEFS form notes
-                        null || ',' || -- CHEFS form user type
-                        null || ',' || -- CHEF form submission GUID
-                        null || ',' || -- Expecting Payment Indicator
-                        null || ',' || -- CHEFS form type
-                        null || ',' || -- Cash Margins Opt In Flag
-                        null || ',' || -- Cash Margins Opt In Date
-                        null || ',' || -- Farm Type Detailed Codes
-                        null || ',' || -- Benefit Triage Result Type
-                        null ||        -- Transaction Benefit
-                        chr(10);
+            cur_line := concat(
+                        transfer_val.participant_pin, ',',
+                        transfer_val.program_year, ',',
+                        transfer_val.state, ',',
+                        transfer_val.state_change_date, ',',
+                        transfer_val.verifier, ',',
+                        transfer_val.supplemental_received_date, ',',
+                        transfer_val.file_start_date, ',"',
+                        farm_sector, '","',
+                        farm_sector_detail, '",',
+                        transfer_val.benefit_amount, ',',
+                        '', ',', -- scenario number is null unless the scenario is COMP
+                        transfer_val.partnership_indicator, ',',
+                        bpu_set_complete_ind, ',',
+                        fmv_set_complete_ind, ',',
+                        'N,,"', -- inCombinedFarm indictor and combinedFarmPins list
+                        transfer_val.municipality_description, '",',
+                        transfer_val.non_participant_ind, ',',
+                        transfer_val.scenario_category_code, ',',
+                        transfer_val.interim_benefit_percent, ',',
+                        transfer_val.allocated_reference_margin, ',',
+                        transfer_val.negative_margin_decline, ',',
+                        transfer_val.negative_margin_benefit, ',',
+                        transfer_val.late_participant_ind, ',',
+                        transfer_val.provincially_funded_amount, ',',
+                        transfer_val.prod_insur_deemed_benefit, ',',
+                        transfer_val.late_enrolment_penalty, ',',
+                        transfer_val.local_supp_date_string, ',',
+                        transfer_val.local_statement_a_date_string, ',',
+                        transfer_val.cra_statement_a_date_string, ',',
+                        transfer_val.send_copy_to_contact_person_ind, ',',
+                        '', ',', -- CHEFS form notes
+                        '', ',', -- CHEFS form user type
+                        '', ',', -- CHEF form submission GUID
+                        '', ',', -- Expecting Payment Indicator
+                        '', ',', -- CHEFS form type
+                        '', ',', -- Cash Margins Opt In Flag
+                        '', ',', -- Cash Margins Opt In Date
+                        '', ',', -- Farm Type Detailed Codes
+                        '', ',', -- Benefit Triage Result Type
+                        '',      -- Transaction Benefit
+                        chr(10));
 
             b := coalesce(b, ''::bytea) || convert_to(cur_line, 'UTF8');
 

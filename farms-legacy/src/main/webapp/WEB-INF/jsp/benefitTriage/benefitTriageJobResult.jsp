@@ -70,7 +70,7 @@
           "startIndex":0,
           "sort":null,
           "dir":"asc",
-          "pageSize": 10,
+          "pageSize": 5000,
           "records":[
             <c:forEach varStatus="loop" var="result" items="${form.triageResults.triageItemResults}">
               {
@@ -105,7 +105,7 @@
         };
   
         var configs = {
-            paginator: new YAHOO.widget.Paginator({ rowsPerPage: 10 })
+            paginator: new YAHOO.widget.Paginator({ rowsPerPage: 5000 })
         };
   
         function showSelectedRow(oArgs) {
@@ -115,9 +115,9 @@
           var scenarioNumber = oRecord.getData("scenarioNumber");
           var farmAction = "farm830";
           
-          showProcessing();
           var url = farmAction + ".do?pin=" + pin + "&year=" +  year + "&scenarioNumber=" + scenarioNumber + "&refresh=true"
-          document.location.href = url;
+          window.open(url, '_blank');
+          this.unselectAllRows();
         };
   
         var dataTable = new YAHOO.widget.DataTable("searchresults", columnDefs, dataSource, configs);

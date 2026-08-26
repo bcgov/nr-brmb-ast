@@ -371,7 +371,6 @@ final class BenefitServiceImpl extends BaseService implements BenefitService {
       e.printStackTrace();
       logger.error("Unexpected error: ", e);
       logger.error(ScenarioUtils.getScenarioInfoForLog(scenario));
-      
       if(e instanceof ServiceException) {
         throw e;
       }

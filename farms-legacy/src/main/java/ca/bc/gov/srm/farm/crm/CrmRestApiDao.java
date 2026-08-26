@@ -155,16 +155,23 @@ public class CrmRestApiDao extends RestApiDao {
     logMethodStart(logger);
     
     HttpURLConnection conn = getHttpURLConnection(endpointUrl, HTTP_METHOD_GET);
-    
+
     int httpResponseCode = conn.getResponseCode();
-    String response = readResponse(conn);
-    
+
     if(httpResponseCode != HttpURLConnection.HTTP_OK) {
-      
+      String errorResponse;
+      try {
+        errorResponse = readErrorResponse(conn);
+      } catch (IOException e) {
+        errorResponse = "(unable to read response body: " + e.getMessage() + ")";
+      }
+
       throw new IOException("Error getting CRM resource. Expected 200 - OK. Actual HTTP code: " +
           httpResponseCode + " - " + conn.getResponseMessage() +
-          ". Response Body: " + response);
+          ". Response Body: " + errorResponse);
     }
+
+    String response = readResponseIfPresent(conn);
     
     ObjectMapper jsonObjectMapper = new ObjectMapper();
     jsonObjectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
@@ -362,6 +369,11 @@ public class CrmRestApiDao extends RestApiDao {
     return getFirstResource(url, CrmEnrolmentResource.class);
   }
 
+  public CrmEnrolmentResource updateEnrolment(CrmEnrolmentResource enrolment) throws ServiceException {
+    
+    return super.patch(enrolment, crmConfig.getEnrolmentUpdateUrl(enrolment.getVsi_participantprogramyearid()), CrmConstants.HEADER_ENTITY_URL);
+  }
+
 
   public CrmQueueResource getQueueByName(String queueName) throws ServiceException {
     
@@ -466,22 +478,26 @@ public class CrmRestApiDao extends RestApiDao {
     
       int httpResponseCode = conn.getResponseCode();
       logRateLimit(conn);
-      
-      String response = readResponse(conn);
-      
+
       if(httpResponseCode != HttpURLConnection.HTTP_NO_CONTENT) {
-        
+        String errorResponse;
+        try {
+          errorResponse = readErrorResponse(conn);
+        } catch (IOException e) {
+          errorResponse = "(unable to read response body: " + e.getMessage() + ")";
+        }
+
         throw new IOException("Error deleting resource. Expected 204 - OK. Actual HTTP code: " +
             httpResponseCode + " - " + conn.getResponseMessage() +
-            ". Response Body: " + response);
+            ". Response Body: " + errorResponse);
       }
-      
+
     } catch(IOException e) {
       logger.error("IOException deleting resource: ", e);
       logger.error("Response headers: " + conn.getHeaderFields());
       throw new ServiceException("Error deleting resource", e);
     }
-    
+
     logMethodEnd(logger);
   }
   

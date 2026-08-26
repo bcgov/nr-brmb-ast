@@ -6,8 +6,12 @@ create or replace procedure farms_import_pkg.contact_transfer(
 language plpgsql
 as $$
 declare
+    -- Skip null client ids. unnest() would otherwise yield a null id_char, and
+    -- convert_to(null) turns the whole accumulator null, blanking import_file.
     client_id_cursor cursor for
-        select unnest(in_changed_contact_client_ids) client_id;
+        select t.client_id
+        from unnest(in_changed_contact_client_ids) as t(client_id)
+        where t.client_id is not null;
     client_id_val record;
 
     b bytea := null;
@@ -17,17 +21,14 @@ declare
 
     import_date farms.farm_import_versions.when_created%type;
     import_description farms.farm_import_versions.description%type;
-    import_file farms.farm_import_versions.import_file%type;
 begin
 
     if array_length(in_changed_contact_client_ids, 1) > 0 then
 
         select iv.when_created,
-               iv.description,
-               iv.import_file
+               iv.description
         into import_date,
-             import_description,
-             import_file
+             import_description
         from farms.farm_import_versions iv
         where iv.import_version_id = in_cra_version_id;
 
@@ -39,14 +40,9 @@ begin
             to_char(import_date, 'YYYY/MM/DD') || ', Description: ' || import_description,
             'farm_received.csv',
             null,
-            import_file,
+            null,
             in_user
         );
-
-        select iv.import_file
-        into b
-        from farms.farm_import_versions iv
-        where iv.import_version_id = transfer_version_id;
 
         for client_id_val in client_id_cursor
         loop

@@ -72,6 +72,12 @@
                 <artifactId>commons-beanutils</artifactId>
                 <version>1.6</version>
             </dependency>
+            <!-- suppressed rather than used - see the "provided" declaration below -->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.0</version>
+            </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
@@ -387,6 +393,23 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
+        </dependency>
+        <!--
+          Keep commons-logging out of WEB-INF/lib. jcl-over-slf4j already supplies the
+          org.apache.commons.logging API; shipping the real thing as well leaves the classloader
+          free to pick either, and if it picks commons-logging then every JCL-based library
+          (Struts among them) runs its own log discovery and bypasses log4j2 entirely.
+
+          Six dependencies pull it in transitively - commons-beanutils, commons-digester,
+          commons-discovery, httpclient (and pdfbox/fontbox beneath it), struts and struts-el -
+          so declaring it "provided" here suppresses all of them at once and keeps working when
+          new dependencies are added. This is the approach SLF4J documents for the purpose; it is
+          not a dependency the application actually uses.
+        -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>

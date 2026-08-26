@@ -10,7 +10,9 @@
  */
 package ca.bc.gov.srm.farm.chefs.resource.interim;
 
-public class CommoditiesFarmed {
+import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
+
+public class CommoditiesFarmed extends ChefsResource {
 
 	private Boolean crops;
 	private Boolean livestock;

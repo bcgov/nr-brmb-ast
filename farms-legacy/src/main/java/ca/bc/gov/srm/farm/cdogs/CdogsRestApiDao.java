@@ -182,14 +182,19 @@ public class CdogsRestApiDao extends RestApiDao {
 
   private String parseResponse(HttpURLConnection conn) throws IOException {
     int httpResponseCode = conn.getResponseCode();
-    String response = readResponse(conn);
 
     if (httpResponseCode != HttpURLConnection.HTTP_OK) {
+      String errorResponse;
+      try {
+        errorResponse = readErrorResponse(conn);
+      } catch (IOException e) {
+        errorResponse = "(unable to read response body: " + e.getMessage() + ")";
+      }
 
       throw new IOException("Error getting CDOGS resource. Expected 200 - OK. Actual HTTP code: " + httpResponseCode
-          + " - " + conn.getResponseMessage() + ". Response Body: " + response);
+          + " - " + conn.getResponseMessage() + ". Response Body: " + errorResponse);
     }
-    return response;
+    return readResponseIfPresent(conn);
   }
 
 }

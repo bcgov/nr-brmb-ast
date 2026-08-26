@@ -29,6 +29,7 @@ public class ChefsSubmission {
   private String userFormTypeCode;
   private Date createdDate;
   private Date updatedDate;
+  private Integer participantPin;
 
   public Integer getSubmissionId() {
     return submissionId;
@@ -127,12 +128,21 @@ public class ChefsSubmission {
     this.userFormTypeCode = userFormTypeCode;
   }
 
+  public Integer getParticipantPin() {
+    return participantPin;
+  }
+
+  public void setParticipantPin(Integer participantPin) {
+    this.participantPin = participantPin;
+  }
+
   @Override
   public String toString() {
     return "ChefsSubmission [submissionId=" + submissionId + ", submissionGuid=" + submissionGuid + ", validationTaskGuid=" + validationTaskGuid
         + ", mainTaskGuid=" + mainTaskGuid + ", formTypeCode=" + formTypeCode + ", formTypeDescription=" + formTypeDescription
         + ", submissionStatusCode=" + submissionStatusCode + ", revisionCount=" + revisionCount + ", bceidFormInd=" + bceidFormInd
-        + ", userFormTypeCode=" + userFormTypeCode + ", createdDate=" + createdDate + ", updatedDate=" + updatedDate + "]";
+        + ", userFormTypeCode=" + userFormTypeCode + ", createdDate=" + createdDate + ", updatedDate=" + updatedDate
+        + ", participantPin=" + participantPin + "]";
   }
 
   

@@ -1,6 +1,8 @@
 package ca.bc.gov.srm.farm.chefs.resource.preflight;
 
-public class PreflightSubmissionResource {
+import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
+
+public class PreflightSubmissionResource extends ChefsResource {
   private String id;
   private String formVersionId;
 

@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,6 +55,7 @@ import ca.bc.gov.srm.farm.dao.ReadDAO;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmission;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
+import ca.bc.gov.srm.farm.exception.TooManyRequestsException;
 import ca.bc.gov.srm.farm.util.StringUtils;
 
 /**
@@ -178,7 +180,19 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
         }
         
         if( process && submissionResponseStr != null ) {
-          processSubmission(submissionGuid, submissionResponseStr);
+          try {
+            processSubmission(submissionGuid, submissionResponseStr);
+          } catch (ServiceException e) {
+            if(e.getCause() instanceof TooManyRequestsException) {
+              logger.error("TooManyRequestsException: ", e);
+            } else if(e.getCause() instanceof JacksonException) {
+              handleParseError(submissionGuid, e);
+            } else {
+              handleSystemError(submissionGuid, e);
+            }
+          } catch (RuntimeException e) {
+            handleSystemError(submissionGuid, e);
+          }
         }
         
       } catch (Exception e) {
@@ -240,7 +254,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     return existingValidationErrorTask;
   }
 
-  protected void updateSubmissionRec(String submissionGuid, String submissionStatusCode, CrmTaskResource validationErrorTask,
+  private void updateSubmissionRec(String submissionGuid, String submissionStatusCode, CrmTaskResource validationErrorTask,
       CrmTaskResource mainTask)
       throws ServiceException {
     
@@ -257,18 +271,6 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     submissionRec.setSubmissionStatusCode(submissionStatusCode);
     submissionRec = createOrUpdateSubmission(submissionRec);
   }
-  
-  
-  protected void updateSubmission(ChefsSubmission submissionRec) throws ServiceException {
-    
-    try {
-      chefsDatabaseDao.updateSubmission(connection, submissionRec, user);
-      connection.commit();
-    } catch (DataAccessException | SQLException e) {
-      logger.error("Error updating submission record: ", e);
-      throw new ServiceException(e);
-    }
-  }
 
   protected void setSubmissionInvalid(String submissionGuid, CrmTaskResource task) throws ServiceException {
     updateSubmissionRec(submissionGuid, ChefsSubmissionStatusCodes.INVALID, task, null);
@@ -279,7 +281,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   }
 
 
-  protected abstract void processSubmission(String submissionGuid, String submissionResponseStr);
+  protected abstract void processSubmission(String submissionGuid, String submissionResponseStr) throws ServiceException;
 
 
   private CrmTaskResource createSystemErrorTask(String submissionGuid, Exception e) throws ServiceException {
@@ -514,7 +516,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     Collection<String> existingSubmissionGuids = null;
     
     String submissionGuid = data.getSubmissionGuid();
-    Integer participantPin = data.getParsedParticipantPin();
+    Integer participantPin = data.getParticipantPin();
     Integer programYear = data.getParsedProgramYear();
     
     if(participantPin != null && programYear != null) {
@@ -616,7 +618,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   private CrmTaskResource createValidationErrorTaskForDuplicate(ChefsSubmissionDataResource data,
       Collection<String> existingSubmissionGuids) throws ServiceException {
 
-    Integer participantPin = data.getParsedParticipantPin();
+    Integer participantPin = data.getParticipantPin();
     Integer programYear = data.getParsedProgramYear();
     String method = getMethod(data);
     

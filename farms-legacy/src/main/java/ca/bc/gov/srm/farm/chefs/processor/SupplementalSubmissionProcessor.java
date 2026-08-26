@@ -11,7 +11,6 @@
 package ca.bc.gov.srm.farm.chefs.processor;
 
 import static ca.bc.gov.srm.farm.chefs.ChefsConstants.*;
-import static ca.bc.gov.srm.farm.chefs.database.ChefsSubmissionStatusCodes.*;
 import static ca.bc.gov.srm.farm.chefs.forms.ChefsFormConstants.*;
 import static ca.bc.gov.srm.farm.chefs.forms.SupplementalFormConstants.*;
 import static ca.bc.gov.srm.farm.log.LoggingUtils.*;
@@ -26,8 +25,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JacksonException;
 
 import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionParentResource;
@@ -48,7 +45,7 @@ import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
-import ca.bc.gov.srm.farm.exception.TooManyRequestsException;
+import ca.bc.gov.srm.farm.service.BenefitTriageService;
 import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsSubmissionProcessorService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
@@ -69,29 +66,20 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
   }
 
   private String validationQueueId;
+  
+  private Integer triageImportVersionId; // only used by unit tests
 
   @Override
-  protected void processSubmission(String submissionGuid, String submissionResponseStr) {
+  protected void processSubmission(String submissionGuid, String submissionResponseStr) throws ServiceException {
     logMethodStart(logger);
 
     CrmTaskResource task = null;
 
-    try {
-      SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr,
-          SupplementalSubmissionDataResource.class);
+    SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr,
+        SupplementalSubmissionDataResource.class);
 
-      if (!submissionMetaData.getDraft()) {
-        task = processSubmission(submissionMetaData);
-      }
-
-    } catch (ServiceException e) {
-      if (e.getCause() instanceof TooManyRequestsException) {
-        logger.error("TooManyRequestsException: ", e);
-      } else if (e.getCause() instanceof JacksonException) {
-        task = handleParseError(submissionGuid, e);
-      } else {
-        task = handleSystemError(submissionGuid, e);
-      }
+    if (!submissionMetaData.getDraft()) {
+      task = processSubmission(submissionMetaData);
     }
 
     logMethodEnd(logger, task);
@@ -101,6 +89,8 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
     logMethodStart(logger);
 
     CrmTaskResource newTask = null;
+    
+    this.triageImportVersionId = null; // only used by unit tests
 
     SubmissionResource<SupplementalSubmissionDataResource> submission = submissionMetaData.getSubmission();
     String submissionGuid = submissionMetaData.getSubmissionGuid();
@@ -111,7 +101,6 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
     
     Integer participantPin = getParticipantPin(data);
     Integer programYear = getProgramYear(data);
-    data.setParsedParticipantPin(participantPin);
     data.setParsedProgramYear(programYear);
 
     ChefsSubmissionProcessData chefsSubmissionProcessData = shouldProcessSubmission(submissionGuid, data, submissionRec);
@@ -138,20 +127,17 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
     boolean hasErrors = !validationErrors.isEmpty();
 
     if (hasErrors) {
-      CrmTaskResource existingValidationErrorTask = crmDao.getValidationErrorBySubmissionGuid(submissionGuid);
+      CrmTaskResource existingValidationErrorTask = getValidationErrorTask(submissionGuid);
       if (existingValidationErrorTask == null) {
-        newTask = createValidationErrorTask(crmAccount, data, validationErrors);
+        newTask = createValidationErrorTask(crmAccount, data, validationErrors, submissionGuid);
       } else {
         logger.debug("Validation error task already exists: " + existingValidationErrorTask.toString());
         if (existingValidationErrorTask.getStateCode() == CrmConstants.TASK_STATE_CODE_COMPLETED) {
-          newTask = createValidationErrorTask(crmAccount, data, validationErrors);
+          newTask = createValidationErrorTask(crmAccount, data, validationErrors, submissionGuid);
         } else {
           newTask = existingValidationErrorTask;
         }
       }
-      submissionRec.setSubmissionStatusCode(INVALID);
-      submissionRec.setValidationTaskGuid(newTask.getActivityId());
-      submissionRec = createOrUpdateSubmission(submissionRec);
 
     } else {
       // Validation passed
@@ -169,7 +155,8 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
       throws ServiceException {
 
     ChefsSubmission submissionRec = submissionRecParam;
-    Integer supplementalScenarioNumber = null;
+    String submissionGuid = submissionRec.getSubmissionGuid();
+    
     try {
 
       Integer participantPin = client.getParticipantPin();
@@ -186,7 +173,7 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
 
       ScenarioMetaData chefScenarioMetaData = ScenarioUtils.findScenarioByCategory(updatedProgramYearMetadata, programYear,
           ScenarioCategoryCodes.CHEF_SUPP, ScenarioTypeCodes.CHEF);
-      supplementalScenarioNumber = chefScenarioMetaData.getScenarioNumber();
+      Integer supplementalScenarioNumber = chefScenarioMetaData.getScenarioNumber();
 
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
       Scenario chefScenario = calculatorService.loadScenario(participantPin, programYear, chefScenarioMetaData.getScenarioNumber());
@@ -202,22 +189,33 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
 
       chefScenario.setLocalSupplementalReceivedDate(currentDate);
 
-      submissionRec.setSubmissionStatusCode(PROCESSED);
-      submissionRec = createOrUpdateSubmission(submissionRec);
       Integer submissionId = submissionRec.getSubmissionId();
-
       ScenarioMetaData supplementalScenarioMetaData = ScenarioUtils.findScenarioByYearAndNumber(updatedProgramYearMetadata, programYear,
           supplementalScenarioNumber);
       Integer supplementalScenarioId = supplementalScenarioMetaData.getScenarioId();
-      chefsDatabaseDao.updateScenarioSubmissionId(connection, supplementalScenarioId, submissionId, user);
-      connection.commit();
+      updateScenarioSubmissionId(submissionId, supplementalScenarioId);
+      
+      queueBenefitTriage(participantPin, programYear, submissionGuid);
+      
+      setSubmissionProcessed(submissionGuid, null);
 
+      return supplementalScenarioNumber;
+      
     } catch (SQLException | DataAccessException e) {
       logger.error("Unexpected error: ", e);
       throw new ServiceException(e);
     }
-    return supplementalScenarioNumber;
 
+  }
+
+
+  private void queueBenefitTriage(Integer participantPin, Integer programYear, String submissionGuid) throws ServiceException {
+    
+    BenefitTriageService triageService = ServiceFactory.getBenefitTriageService();
+    
+    String triageJobDescription = String.format("Benefit Triage Calculation for %d PIN %d, %s form submissionGuid: %s",
+        programYear, participantPin, formLongName, submissionGuid);
+    this.triageImportVersionId = triageService.queueBenefitTriage(triageJobDescription, connection, user);
   }
 
   private List<String> validate(SupplementalSubmissionDataResource data, Client client, CrmAccountResource crmAccount) {
@@ -276,7 +274,7 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
   }
 
   private CrmTaskResource createValidationErrorTask(CrmAccountResource crmAccount, SupplementalSubmissionDataResource data,
-      List<String> validationErrors) throws ServiceException {
+      List<String> validationErrors, String submissionGuid) throws ServiceException {
 
     Integer participantPin = getParticipantPin(data);
     Integer programYear = getProgramYear(data);
@@ -322,7 +320,11 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
     task.setCr4dd_chefsurl(chefsSubmissionUrl.toString());
 
     String queueId = getValidationQueueId();
-    return crmDao.createValidationErrorTask(task, queueId);
+    CrmValidationErrorResource newTask = crmDao.createValidationErrorTask(task, queueId);
+    
+    setSubmissionInvalid(submissionGuid, newTask);
+    
+    return newTask;
   }
 
   private void validateBusinessNumbersMatch(String chefsValue, String farmValue, List<String> validationErrors) {
@@ -419,6 +421,13 @@ public class SupplementalSubmissionProcessor extends ChefsSubmissionProcessor<Su
 
   private Integer getProgramYear(SupplementalSubmissionDataResource data) {
     return Integer.valueOf(data.getProgramYear().getValue());
+  }
+
+  /**
+   * only used by unit tests
+   */
+  public Integer getTriageImportVersionId() {
+    return triageImportVersionId;
   }
 
 }

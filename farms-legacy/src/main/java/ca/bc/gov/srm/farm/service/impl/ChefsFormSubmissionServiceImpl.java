@@ -25,6 +25,7 @@ import ca.bc.gov.srm.farm.chefs.resource.nol.NolSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.preflight.PreflightWrapperResource;
 import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementASubmissionDataResource;
+import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
 import ca.bc.gov.srm.farm.chefs.resource.supplemental.SupplementalSubmissionDataResource;
 import ca.bc.gov.srm.farm.crm.CrmConfigurationUtil;
@@ -103,7 +104,7 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
   }
 
   @Override
-  public SubmissionWrapperResource<?> getSubmissionWrapperResource(String submissionGuid, String formType, String userType) throws ServiceException {
+  public SubmissionWrapperResource<? extends ChefsSubmissionDataResource> getSubmissionWrapperResource(String submissionGuid, String formType, String userType) throws ServiceException {
 
     formCredentials = chefsConfig.getFormCredentials(formType, userType);
     chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
@@ -174,7 +175,7 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
   public void updateSubmission(ChefsSubmission submission) throws ServiceException {
 
     logMethodStart(logger);
-    
+
     String user = CurrentUser.getUser().getUserId();
 
     try (Transaction transaction = openTransaction()) {

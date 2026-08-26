@@ -13,6 +13,8 @@ package ca.bc.gov.srm.farm.chefs.resource.coverage;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 
 public class CoverageReportDataResource extends ChefsSubmissionDataResource {
@@ -136,6 +138,17 @@ public class CoverageReportDataResource extends ChefsSubmissionDataResource {
 
   public void setRefs(List<CoverageRefScenarioDataResource> refs) {
     this.refs = refs;
+  }
+
+  @Override
+  public Integer getParticipantPin() {
+    return agriStabilityAgriInvestPin;
+  }
+
+  @JsonIgnore
+  @Override
+  public Integer getYear() {
+    return getProgramYear();
   }
 
   @Override

@@ -31,7 +31,9 @@ begin
            1 partnership_percent,
            0 partnership_pin,
            operation_number,
-           chr(64 + operation_number) alignment_key,
+           -- num_operations is bigint, so generate_series yields bigint and chr() has no
+           -- bigint overload; cast as farms_import_pkg.operation already does.
+           chr(64 + operation_number::int) alignment_key,
            'Y' locally_updated_ind,
            'Y' locally_generated_ind,
            new_pyv_id program_year_version_id,

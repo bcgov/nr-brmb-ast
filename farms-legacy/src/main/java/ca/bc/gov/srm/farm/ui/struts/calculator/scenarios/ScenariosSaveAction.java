@@ -143,10 +143,7 @@ public class ScenariosSaveAction extends ScenariosViewAction {
           
         }
         
-        if(benefitNotCalculated) {
-          errors.add("", new ActionMessage(MessageConstants.ERRORS_STATE_CHANGE_BENEFIT_NOT_CALCULATED, newState));
-          
-        } else if(ENROLMENT_NOTICE_COMPLETE.equals(newStateCode)) {
+        if(ENROLMENT_NOTICE_COMPLETE.equals(newStateCode)) {
           EnwEnrolment enw = scenario.getEnwEnrolment();
           
           boolean enrolmentFeeNotCalculated = enw == null || enw.getEnrolmentFee() == null;
@@ -156,6 +153,9 @@ public class ScenariosSaveAction extends ScenariosViewAction {
           if(enrolmentFeeNotCalculated || calcTypeIsBenefitAndBenefitNotCalculated) {
             errors.add("", new ActionMessage(MessageConstants.ERRORS_STATE_CHANGE_ENROLMENT_NOT_CALCULATED, newState));
           }
+        } else if(benefitNotCalculated) {
+          errors.add("", new ActionMessage(MessageConstants.ERRORS_STATE_CHANGE_BENEFIT_NOT_CALCULATED, newState));
+
         }
         
         if(CalculatorConfig.reasonabilityTestsRequired(scenario.getYear(), newCategoryCode)) {

@@ -9,8 +9,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -45,6 +47,7 @@ import ca.bc.gov.srm.farm.chefs.resource.npp.NppSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.npp.VeggieGrid;
 import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementASubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.supplemental.SupplementalBaseDataResource;
+import ca.bc.gov.srm.farm.chefs.resource.supplemental.SupplementalSubmissionDataResource;
 import ca.bc.gov.srm.farm.dao.CalculatorDAO;
 import ca.bc.gov.srm.farm.dao.ChefsDatabaseDAO;
 import ca.bc.gov.srm.farm.dao.ReadDAO;
@@ -60,7 +63,7 @@ import ca.bc.gov.srm.farm.domain.LivestockItem;
 import ca.bc.gov.srm.farm.domain.PayableItem;
 import ca.bc.gov.srm.farm.domain.ProductiveUnitCapacity;
 import ca.bc.gov.srm.farm.domain.ReceivableItem;
-import ca.bc.gov.srm.farm.domain.Scenario;
+import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
 import ca.bc.gov.srm.farm.domain.codes.InventoryClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.LineItemCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
@@ -69,10 +72,9 @@ import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.InvalidRevisionCountException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.service.BaseService;
-import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ChefsSubmissionProcessorService;
-import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.transaction.Transaction;
+import ca.bc.gov.srm.farm.util.ScenarioUtils;
 
 public class ChefsSubmissionProcessorServiceImpl extends BaseService implements ChefsSubmissionProcessorService {
 
@@ -174,55 +176,105 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
   }
 
   @Override
-  public Integer createNppSupplementalData(NppSubmissionDataResource data, Integer clientId, Integer programYear,
+  public void createNppSupplementalData(NppSubmissionDataResource data, Integer clientId, Integer programYear,
       String applicationVersion, boolean createdParticipant, Integer submissionId, List<FarmingOperation> farmingOperations, String user) throws ServiceException {
 
     logMethodStart(logger);
     CalculatorDAO calculatorDAO = new CalculatorDAO();
     ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
-    Integer chefsScenarioId = null;
+    FarmingOperation farmingOperationParam = farmingOperations.get(0);
+    
+    final int enwScenarioNumRelativeYears = 2;
+    int enwYear = programYear - enwScenarioNumRelativeYears;
 
     try (Transaction transaction = openTransaction()) {
       transaction.begin();
       
-      FarmingOperation farmingOperation;
-
-      if (createdParticipant) {
-        CalculatorService calculatorService = ServiceFactory.getCalculatorService();
-        Scenario scenario = calculatorService.loadScenario(data.getAgriStabilityAgriInvestPin(), programYear, 1);
-        farmingOperation = scenario.getFarmingYear().getFarmingOperationByNumber(1);
-
-        chefsScenarioId = scenario.getScenarioId();
-
-      } else {
-        Integer programYearId = getProgramYearId(transaction, clientId, programYear);
-        if (programYearId == null) {
-          programYearId = calculatorDAO.createProgramYear(transaction, clientId, programYear, user);
-        }
-        Integer programYearVersionId = calculatorDAO.createProgramYearVersion(transaction, programYearId, data.getMunicipalityCode(), user);
-
-        farmingOperation = farmingOperations.get(0);
-        FarmingYear farmingYear = new FarmingYear();
-        farmingYear.setProgramYearVersionId(programYearVersionId);
-        farmingOperation.setFarmingYear(farmingYear);
-        calculatorDAO.createFarmingOperation(transaction, farmingOperation, user);
-        
-        List<FarmingOperationPartner> partners = farmingOperation.getFarmingOperationPartners();
-        calculatorDAO.createPartners(transaction, partners, user);
-
-        chefsScenarioId = calculatorDAO.createScenario(transaction, programYearVersionId, ScenarioTypeCodes.CHEF, ScenarioCategoryCodes.CHEF_NPP,
-            user);
-
-      }
-      List<ProductiveUnitCapacity> pucList = createPucList(data, farmingOperation);
-      createProductiveUnitCapacities(transaction, pucList, user);
-      
       @SuppressWarnings("resource")
       Connection connection = (Connection) transaction.getDatastore();
-      chefsDatabaseDao.updateScenarioSubmissionId(connection, chefsScenarioId, submissionId, user);
+      ReadDAO readDAO = new ReadDAO(connection);
       
-      logger.debug("scenario: " + chefsScenarioId);
+      Integer participantPin = data.getAgriStabilityAgriInvestPin();
 
+      String submissionGuid = data.getSubmissionGuid();
+      List<ScenarioMetaData> programYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
+      
+      final int numRefYears = 5;
+      for(int year = (programYear - numRefYears); year <= programYear; year++) {
+        
+        Integer programYearId = getProgramYearId(transaction, clientId, year);
+        if (programYearId == null) {
+          programYearId = calculatorDAO.createProgramYear(transaction, clientId, year, user);
+        }
+        
+        ScenarioMetaData latestBaseDataScenarioMetaData = ScenarioUtils.findLatestBaseDataScenario(programYearMetadata, year);
+        ScenarioMetaData nppScenarioMetaData = ScenarioUtils.findLatestScenarioByChefSubmissionGuid(
+            programYearMetadata, year, ScenarioCategoryCodes.CHEF_NPP, submissionGuid);
+        
+        Integer programYearVersionId = null;
+        Integer nppScenarioId = null;
+        if(nppScenarioMetaData != null) {
+          programYearVersionId = nppScenarioMetaData.getProgramYearVersionId();
+          nppScenarioId = nppScenarioMetaData.getScenarioId();
+        }
+        
+        boolean createNppScenario = latestBaseDataScenarioMetaData == null
+            || (nppScenarioId == null && (year == programYear.intValue() || year == enwYear)
+                );
+        
+        // Make sure we have a CHEF_NPP scenario created for this submission for the program year and ENW year.
+        // An ENW scenario will be created with the CHEF_NPP scenario as its base data.
+        if(createNppScenario) {
+          programYearVersionId = calculatorDAO.createProgramYearVersion(transaction, programYearId, data.getMunicipalityCode(), user);
+          nppScenarioId = calculatorDAO.createScenario(transaction, programYearVersionId, ScenarioTypeCodes.CHEF,
+              ScenarioCategoryCodes.CHEF_NPP, user);
+          chefsDatabaseDao.updateScenarioSubmissionId(connection, nppScenarioId, submissionId, user);
+        }
+        
+        // If there is a CHEF_NPP scenario for this submission, also create farming operation, PUCs, and Partners if needed
+        if(nppScenarioId != null) {
+        
+          FarmingOperation farmingOperation;
+          {
+            HashMap<Integer, List<FarmingOperation>> operationMap = readDAO.readOperation(new Integer[] {programYearVersionId});
+            List<FarmingOperation> opList = operationMap.get(programYearVersionId);
+            
+            FarmingYear farmingYear = new FarmingYear();
+            farmingYear.setProgramYearVersionId(programYearVersionId);
+            
+            if(opList == null || opList.isEmpty()) {
+              farmingOperation = farmingOperationParam;
+              farmingOperation.setFarmingYear(farmingYear);
+              calculatorDAO.createFarmingOperation(transaction, farmingOperation, user);
+            } else {
+              farmingOperation = opList.get(0);
+              farmingOperation.setFarmingYear(farmingYear);
+            }
+          }
+          
+          Integer farmingOperationId = farmingOperation.getFarmingOperationId();
+          Integer[] operationIds = new Integer[] {farmingOperationId};
+          Integer[] scenarioIds = new Integer[] {nppScenarioId};
+          
+          Map<Integer, List<ProductiveUnitCapacity>> pucMap = readDAO.readProductiveUnitCapacity(operationIds, scenarioIds);
+          List<ProductiveUnitCapacity> existingPucList = pucMap.get(farmingOperationId);
+          
+          if(existingPucList == null || existingPucList.isEmpty()) {
+            List<ProductiveUnitCapacity> nppPucList = createNppPucList(data, farmingOperation);
+            createProductiveUnitCapacities(transaction, nppPucList, user);
+          }
+          
+          Map<Integer, List<FarmingOperationPartner>> existingPartners = readDAO.readOperationPartners(operationIds);
+          if(existingPartners.isEmpty()
+              || existingPartners.get(farmingOperationId) == null
+              || existingPartners.get(farmingOperationId).isEmpty()) {
+            List<FarmingOperationPartner> partners = farmingOperationParam.getFarmingOperationPartners();
+            calculatorDAO.createPartners(transaction, partners, user);
+          }
+        }
+        
+      }
+      
       transaction.commit();
 
     } catch (Exception e) {
@@ -231,11 +283,10 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
     }
 
     logMethodEnd(logger);
-    return chefsScenarioId;
   }
   
   @Override
-  public Integer createSupplementalChefsScenario(SupplementalBaseDataResource data, Integer clientId, Integer programYear,
+  public Integer createSupplementalChefsScenario(SupplementalSubmissionDataResource data, Integer clientId, Integer programYear,
       String applicationVersion, String municipalityCode, String user,  String scenarioCategoryCode) throws ServiceException {
 
     logMethodStart(logger);
@@ -246,7 +297,7 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     try (Transaction transaction = openTransaction()) {
       transaction.begin();
-
+      
       Integer programYearId = getProgramYearId(transaction, clientId, programYear);
 
       if (programYearId == null) {
@@ -269,15 +320,85 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
       chefsScenarioId = calculatorDAO.createScenario(transaction, programYearVersionId, ScenarioTypeCodes.CHEF,
           scenarioCategoryCode, user);
       
+      createIncomeExpensesFromEarlierVersion(data, programYear, farmingOperation, transaction, user);
+      
       transaction.commit();
 
-    } catch (Exception e) {
+    } catch (SQLException e) {
       logger.error("Unexpected error: ", e);
       throw new ServiceException(e);
     }
 
     logMethodEnd(logger);
     return chefsScenarioId;
+  }
+
+  private void createIncomeExpensesFromEarlierVersion(SupplementalSubmissionDataResource data, Integer programYear,
+      FarmingOperation farmingOperation, Transaction transaction, String user) throws SQLException, ServiceException {
+    
+    @SuppressWarnings("resource")
+    Connection connection = (Connection) transaction.getDatastore();
+    ReadDAO readDAO = new ReadDAO(connection);
+    Integer participantPin = data.getAgriStabilityAgriInvestPin();
+    
+    List<ScenarioMetaData> scenarioMetadataList = readDAO.readProgramYearMetadata(participantPin, programYear);
+    
+    List<ScenarioMetaData> baseDataScenarios = scenarioMetadataList
+        .stream()
+        .filter(y -> y.getProgramYear().equals(programYear)
+            && ScenarioTypeCodes.isBaseData(y.getScenarioTypeCode())
+            && ! y.typeIsOneOf(ScenarioTypeCodes.GEN)               // These don't have income/expenses
+            && ! y.categoryIsOneOf(ScenarioCategoryCodes.CHEF_SUPP) // These don't have income/expenses
+            && ! y.categoryIsOneOf(ScenarioCategoryCodes.CHEF_INTRM) // These might have preliminary, incomplete data
+            )
+        .collect(Collectors.toList());
+    
+    List<IncomeExpense> sourceIncomeExpenseList = null;
+    
+    scenarioLoop:
+    for (ScenarioMetaData scenarioMetaData : baseDataScenarios) {
+      
+      Integer curScenarioId = scenarioMetaData.getScenarioId();
+      Integer programYearVersionId = scenarioMetaData.getProgramYearVersionId();
+      
+      HashMap<Integer, List<FarmingOperation>> operationMap = readDAO.readOperation(new Integer[] {programYearVersionId});
+      List<FarmingOperation> opList = operationMap.get(programYearVersionId);
+
+      List<Integer> opIdList = opList.stream()
+          .map(FarmingOperation::getFarmingOperationId)
+          .collect(Collectors.toList());
+      Integer[] opIdArray = opIdList.toArray(new Integer[opIdList.size()]);
+      Integer[] scIdArray = new Integer[] {curScenarioId};
+      HashMap<Integer, List<IncomeExpense>> opIeMap = readDAO.readIncomeExpense(opIdArray, scIdArray, programYear, null);
+      
+      for(FarmingOperation curOp : opList) {
+        Integer curOpId = curOp.getFarmingOperationId();
+        List<IncomeExpense> opIeList = opIeMap.get(curOpId);
+        if(opIeList != null) {
+          boolean hasIncome = opIeList.stream().anyMatch(ie -> ! ie.getIsExpense());
+          boolean hasExpenses = opIeList.stream().anyMatch(ie -> ie.getIsExpense());
+          if(hasIncome && hasExpenses) {
+            sourceIncomeExpenseList = opIeList;
+            break scenarioLoop;
+          }
+        }
+      }
+    }
+    
+    if(sourceIncomeExpenseList != null) {
+      List<IncomeExpense> copiedIncomeExpenseList = new ArrayList<>();
+      
+      for (IncomeExpense sourceIe : sourceIncomeExpenseList) {
+        IncomeExpense copiedIncomeExpense = new IncomeExpense();
+        copiedIncomeExpense.setAdjAmount(sourceIe.getReportedAmount());
+        copiedIncomeExpense.setFarmingOperation(farmingOperation);
+        copiedIncomeExpense.setLineItem(sourceIe.getLineItem());
+        copiedIncomeExpense.setIsExpense(sourceIe.getIsExpense());
+        copiedIncomeExpenseList.add(copiedIncomeExpense);
+      }
+
+      createIncomeExpenses(transaction, copiedIncomeExpenseList, user);
+    }
   }
 
   @Override
@@ -633,28 +754,36 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
     return livestockItem;
   }
 
-  private List<ProductiveUnitCapacity> createPucList(NppSubmissionDataResource data,
+  private List<ProductiveUnitCapacity> createNppPucList(NppSubmissionDataResource data,
       FarmingOperation farmingOperation) {
 
-    Map<String, Double> productiveCapacityMap = getProductiveCapacityMap(data);
+    Map<String, Double> productiveCapacityMap = getProductiveCapacityMapFromSingleFields(data);
+    productiveCapacityMap.putAll(getNppPreDec2025PucMap(data));
     productiveCapacityMap.putAll(getProductiveCapacityMapForNppDecember2025Version(data));
 
     List<ProductiveUnitCapacity> productiveUnitCapacityList = new ArrayList<>();
 
+    final int structureGroupCodeLength = 3;
+    
     for (Map.Entry<String, Double> entry : productiveCapacityMap.entrySet()) {
       if (entry.getValue() != null && entry.getValue() > 0) {
         ProductiveUnitCapacity puc = new ProductiveUnitCapacity();
         puc.setAdjAmount(entry.getValue());
         puc.setFarmingOperation(farmingOperation);
-        if (entry.getKey().length() == 3) {
+        if (entry.getKey().length() == structureGroupCodeLength) {
           puc.setStructureGroupCode(entry.getKey());
         } else {
           puc.setInventoryItemCode(entry.getKey());
         }
         productiveUnitCapacityList.add(puc);
-
       }
     }
+
+    return productiveUnitCapacityList;
+  }
+
+  private Map<String, Double> getNppPreDec2025PucMap(NppSubmissionDataResource data) {
+    Map<String, Double> productiveCapacityMap = new HashMap<>();
 
     for (NppNurseryGrid nursery : data.getNurseryGrid()) {
       if (nursery.getCommodity() != null && nursery.getCommodity().getLabel() != null) {
@@ -667,48 +796,32 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
         }
         
         if (adjAmount > 0) {
-          ProductiveUnitCapacity puc = new ProductiveUnitCapacity();
-          puc.setInventoryItemCode(nursery.getCommodity().getValue());
-          puc.setFarmingOperation(farmingOperation);
-          puc.setAdjAmount(adjAmount);
-          productiveUnitCapacityList.add(puc);
+          productiveCapacityMap.put(nursery.getCommodity().getValue(), adjAmount);
         }
       }
     }
 
     for (NppCropGrid crop : data.getForageBasketGrid()) {
-      String cropCodeValue = getNumericPrefix(crop.getCrop());
-      if (cropCodeValue != null && !cropCodeValue.isEmpty() &&
+      String inventoryItemCode = getNumericPrefix(crop.getCrop());
+      if (inventoryItemCode != null && !inventoryItemCode.isEmpty() &&
           crop.getAcres() != null && crop.getAcres() > 0) {
-        ProductiveUnitCapacity puc = new ProductiveUnitCapacity();
-        puc.setInventoryItemCode(cropCodeValue);
-        puc.setFarmingOperation(farmingOperation);
-        puc.setAdjAmount(crop.getAcres());
-        productiveUnitCapacityList.add(puc);
+        productiveCapacityMap.put(inventoryItemCode, crop.getAcres());
       }
     }
 
     for (NppCropGrid crop : data.getForageSeedGrid()) {
-      String cropCodeValue = getNumericPrefix(crop.getCrop());
-      if (cropCodeValue != null && !cropCodeValue.isEmpty() && 
+      String inventoryItemCode = getNumericPrefix(crop.getCrop());
+      if (inventoryItemCode != null && !inventoryItemCode.isEmpty() && 
           crop.getAcres() != null && crop.getAcres() > 0) {
-        ProductiveUnitCapacity puc = new ProductiveUnitCapacity();
-        puc.setInventoryItemCode(cropCodeValue);
-        puc.setFarmingOperation(farmingOperation);
-        puc.setAdjAmount(crop.getAcres());
-        productiveUnitCapacityList.add(puc);
+        productiveCapacityMap.put(inventoryItemCode, crop.getAcres());
       }
     }
 
     for (NppCropGrid crop : data.getCropBasketTypeGrid()) {
-      String cropCodeValue = getNumericPrefix(crop.getCrop());
-      if (cropCodeValue != null && !cropCodeValue.isEmpty() &&
+      String inventoryItemCode = getNumericPrefix(crop.getCrop());
+      if (inventoryItemCode != null && !inventoryItemCode.isEmpty() &&
           crop.getAcres() != null && crop.getAcres() > 0) {
-        ProductiveUnitCapacity puc = new ProductiveUnitCapacity();
-        puc.setInventoryItemCode(cropCodeValue);
-        puc.setFarmingOperation(farmingOperation);
-        puc.setAdjAmount(crop.getAcres());
-        productiveUnitCapacityList.add(puc);
+        productiveCapacityMap.put(inventoryItemCode, crop.getAcres());
       }
     }
 
@@ -723,17 +836,12 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
         }
         
         if (adjAmount > 0) {
-          ProductiveUnitCapacity puc = new ProductiveUnitCapacity();
-          puc.setInventoryItemCode(veggie.getVegetables().getValue());
-          puc.setFarmingOperation(farmingOperation);
-          puc.setAdjAmount(adjAmount);
-          productiveUnitCapacityList.add(puc);
+          String inventoryItemCode = veggie.getVegetables().getValue();
+          productiveCapacityMap.put(inventoryItemCode, adjAmount);
         }
       }
     }
-
-    return productiveUnitCapacityList;
-
+    return productiveCapacityMap;
   }
 
   private String getNumericPrefix(String s) {
@@ -751,7 +859,7 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
     return result;
   }
 
-  private static Map<String, Double> getProductiveCapacityMap(NppSubmissionDataResource data) {
+  private static Map<String, Double> getProductiveCapacityMapFromSingleFields(NppSubmissionDataResource data) {
     Map<String, Double> productiveCapacityMap = new HashMap<>();
 
     productiveCapacityMap.put("104", data.getBredCow_104());
@@ -822,6 +930,8 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
     productiveCapacityMap.put("6962", data.getChristmasTreesEstablishmentAcres2());
     productiveCapacityMap.put("6963", data.getChristmasTreesEstablishmentAcres3());
     productiveCapacityMap.put("6964", data.getChristmasTreesEstablishmentAcres4());
+    
+    productiveCapacityMap.values().removeIf(Objects::isNull);
 
     return productiveCapacityMap;
   }
@@ -973,6 +1083,8 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
         }
       }
     }
+    
+    productiveCapacityMap.values().removeIf(Objects::isNull);
 
     return productiveCapacityMap;
   }
@@ -1616,17 +1728,17 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     List<IncomeExpense> incomeExpenseList = new ArrayList<>();
 
-    AddToIncomeExpenseList(data.getAllowableIncomeGrid(), farmingOperation, incomeExpenseList, true, false);
-    AddToIncomeExpenseList(data.getNonAllowablesGrid(), farmingOperation, incomeExpenseList, false, false);
+    addToIncomeExpenseList(data.getAllowableIncomeGrid(), farmingOperation, incomeExpenseList, true, false);
+    addToIncomeExpenseList(data.getNonAllowablesGrid(), farmingOperation, incomeExpenseList, false, false);
 
-    AddToIncomeExpenseList(data.getAllowableExpensesGrid(), farmingOperation, incomeExpenseList, true, true);
-    AddToIncomeExpenseList(data.getNonAllowableExpensesGrid(), farmingOperation, incomeExpenseList, false, true);
+    addToIncomeExpenseList(data.getAllowableExpensesGrid(), farmingOperation, incomeExpenseList, true, true);
+    addToIncomeExpenseList(data.getNonAllowableExpensesGrid(), farmingOperation, incomeExpenseList, false, true);
 
     return incomeExpenseList;
 
   }
 
-  private void AddToIncomeExpenseList(List<IncomeExpenseGrid> statementAIncomeExpenses, FarmingOperation farmingOperation,
+  private void addToIncomeExpenseList(List<IncomeExpenseGrid> statementAIncomeExpenses, FarmingOperation farmingOperation,
       List<IncomeExpense> incomeList, boolean isEligible, boolean isExpense) {
 
     Double otherAllowableAmount = 0.0;
@@ -1680,8 +1792,8 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
 
     List<IncomeExpense> incomeExpenseList = new ArrayList<>();
 
-    AddToIncomeExpenseList(data.getAllowableIncomeGrid(), farmingOperation, incomeExpenseList, true, false);
-    AddToIncomeExpenseList(data.getAllowableExpensesGrid(), farmingOperation, incomeExpenseList, true, true);
+    addToIncomeExpenseList(data.getAllowableIncomeGrid(), farmingOperation, incomeExpenseList, true, false);
+    addToIncomeExpenseList(data.getAllowableExpensesGrid(), farmingOperation, incomeExpenseList, true, true);
 
     return incomeExpenseList;
 

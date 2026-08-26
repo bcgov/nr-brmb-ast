@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
 
@@ -176,6 +178,18 @@ public class AdjustmentSubmissionDataResource extends ChefsSubmissionDataResourc
     }
     return null;
     
+  }
+
+  @JsonIgnore
+  @Override
+  public Integer getParticipantPin() {
+    return agriStabilityPin;
+  }
+
+  @JsonIgnore
+  @Override
+  public Integer getYear() {
+    return getProgramYear();
   }
 
 }

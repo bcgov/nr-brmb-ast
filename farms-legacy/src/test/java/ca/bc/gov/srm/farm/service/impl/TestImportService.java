@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ca.bc.gov.srm.farm.domain.ImportVersion;
+import ca.bc.gov.srm.farm.domain.codes.ImportClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.ImportStateCodes;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.service.ConfigurationService;
@@ -49,7 +50,6 @@ public class TestImportService {
   
   @Test
   public void runQueuedImport() {
-    ImportService service = ServiceFactory.getImportService();
     ConfigurationService configService = ServiceFactory.getConfigurationService();
     
     try {
@@ -61,8 +61,8 @@ public class TestImportService {
       
       try(Connection conn = TestUtils.openConnection();) {
       
-        service.checkForScheduledImport(conn);
-        conn.commit();
+        int executions = 1;
+        TestUtils.runQueuedImports(conn, executions);
       }
       
     } catch(Exception ex) {
@@ -82,7 +82,7 @@ public class TestImportService {
       
         @SuppressWarnings("unused")
         ImportVersion importVersion = service.createImportVersion(
-            "CRA",
+            ImportClassCodes.CRA,
             ImportStateCodes.SCHEDULED_FOR_STAGING,
             IMPORT_FILE_NAME, 
             IMPORT_FILE_PATH,

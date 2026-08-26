@@ -13,6 +13,8 @@ package ca.bc.gov.srm.farm.chefs.resource.cashMargin;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 
 /**
@@ -143,6 +145,12 @@ public class CashMarginsSubmissionDataResource extends ChefsSubmissionDataResour
 
   public void setSignatureDate(Date signatureDate) {
     this.signatureDate = signatureDate;
+  }
+
+  @JsonIgnore
+  @Override
+  public Integer getParticipantPin() {
+    return agriStabilityPin;
   }
 
   @Override

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
+import ca.bc.gov.srm.farm.util.DateUtils;
 
 public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
 
@@ -34,9 +35,9 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
   private String trustNumber;
   private String bandNumber;
   private String accountingCode;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d", timezone = "America/Vancouver")
   private Date fiscalYearStart;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d", timezone = "America/Vancouver")
   private Date fiscalYearEnd;
   private Integer agriStabilityAgriInvestPin;
   private Boolean noPin;
@@ -187,6 +188,9 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
   }
 
   public Boolean getLateParticipant() {
+    if(lateParticipant == null) {
+      lateParticipant = Boolean.FALSE;
+    }
     return lateParticipant;
   }
 
@@ -1333,6 +1337,17 @@ public class NppSubmissionDataResource extends ChefsSubmissionDataResource {
 
   public void setBandNumber(String bandNumber) {
     this.bandNumber = bandNumber;
+  }
+
+  @Override
+  public Integer getParticipantPin() {
+    return agriStabilityAgriInvestPin;
+  }
+
+  @Override
+  @JsonIgnore
+  public Integer getYear() {
+    return DateUtils.getYearFromDate(getFiscalYearEnd());
   }
 
 }

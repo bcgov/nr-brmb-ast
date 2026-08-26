@@ -40,7 +40,7 @@ import ca.bc.gov.webade.user.service.UserInfoServiceException;
  * WebADEUserProvider.
  *
  * @author   $Author: awilkinson $
- * @version  $Revision: 5662 $
+ * @version  $Revision: 6338 $
  */
 final class WebADEUserProvider implements UserProvider {
 
@@ -135,15 +135,22 @@ final class WebADEUserProvider implements UserProvider {
         logger.debug("Loaded authorized users for role: " + role);
   
         //convert them and add to the result...
-        for (UserCredentials cred : creds) {
-          logger.debug("Loaded user credentials: " + cred);
+        for (UserCredentials storedCred : creds) {
+          logger.debug("Loaded user credentials: " + storedCred);
           
-          boolean alreadyInTheList = result.stream().anyMatch(u -> u.getGuid().equals(cred.getUserGuid().toString()));
+          boolean alreadyInTheList = result.stream().anyMatch(u -> u.getGuid().equals(storedCred.getUserGuid().toString()));
           if(!alreadyInTheList) {
-            WebADEUserInfo info = app.getUserInfoService().getWebADEUserInfo(cred);
+            
+            // Fix error: Attribute match failed: attribute 'webade.account.name' is set to different values in each credentials instance.
+            // This error was caused by an accountName change presumably because the user got married and changed their name.
+            // If the accountName is null then it won't be compared.
+            UserCredentials credToSearchFor = new UserCredentials(UserTypeCode.GOVERNMENT);
+            credToSearchFor.setUserGuid(storedCred.getUserGuid());
+            
+            WebADEUserInfo info = app.getUserInfoService().getWebADEUserInfo(credToSearchFor);
             
             if(info == null) {
-              logger.debug("UserInfoService.getWebADEUserInfo returned null for: " + cred + ". The user is no longer active. Skipping.");
+              logger.debug("UserInfoService.getWebADEUserInfo returned null for: " + storedCred + ". The user is no longer active. Skipping.");
             } else {
               logger.debug("Loaded user info. Account Name: " + info.getUserCredentials().getSourceDirectory() + "\\" +
                   info.getUserCredentials().getAccountName() +

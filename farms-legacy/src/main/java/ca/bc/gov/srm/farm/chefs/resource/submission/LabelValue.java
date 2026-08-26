@@ -12,7 +12,9 @@ package ca.bc.gov.srm.farm.chefs.resource.submission;
 
 import java.util.Objects;
 
-public class LabelValue {
+import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
+
+public class LabelValue extends ChefsResource {
 
 	private String label;
 	private String value;

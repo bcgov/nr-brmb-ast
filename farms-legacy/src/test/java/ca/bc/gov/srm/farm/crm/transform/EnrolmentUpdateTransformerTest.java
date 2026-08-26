@@ -1,7 +1,6 @@
 package ca.bc.gov.srm.farm.crm.transform;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -44,7 +43,7 @@ public class EnrolmentUpdateTransformerTest {
   public void transformToCrmResourceOnlySendsDisplayablePartnerRows() {
     Enrolment enrolment = createBaseEnrolment();
     enrolment.setEnrolmentPartners(Arrays.asList(
-        createPartner("null", BigDecimal.valueOf(0.5), null),
+        createPartner("null, null", BigDecimal.valueOf(0.5), null),
         createPartner("PARTNER FARM", BigDecimal.valueOf(0.4), null),
         createPartner(null, BigDecimal.valueOf(0.6), 123456789)));
 

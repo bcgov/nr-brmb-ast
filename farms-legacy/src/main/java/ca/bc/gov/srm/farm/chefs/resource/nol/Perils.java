@@ -1,6 +1,8 @@
 package ca.bc.gov.srm.farm.chefs.resource.nol;
 
-public class Perils {
+import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
+
+public class Perils extends ChefsResource {
 
   private Boolean heat;
   private Boolean rain;

@@ -214,7 +214,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -233,7 +233,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertEquals(ProgramYearUtils.getCurrentCalendarYear() + " Cash Margins 12316589", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Cash Margins form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
+    assertEquals(getFormUserType() + " Cash Margins form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
         + "- PIN not found in BCFARMS.\n" + "\n" + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n"
         + "Participant Type: individual\n" + "SIN Number: 123456789\n", task.getDescription());
 
@@ -286,7 +286,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -308,7 +308,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2024 Cash Margins 4302394", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Cash Margins form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n" + "\n"
+    assertEquals(getFormUserType() + " Cash Margins form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n" + "\n"
         + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n"
         + "Participant Type: corporation\n" + "Business Number: 1234 56789RC0001\n", task.getDescription());
 
@@ -360,7 +360,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -383,7 +383,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
     assertEquals(
-        formUserType + " Cash Margins form was submitted but has validation errors:\n" + "\n"
+        getFormUserType() + " Cash Margins form was submitted but has validation errors:\n" + "\n"
             + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n" + "Participant Name: Jon Snow\n"
             + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n" + "Participant Type: individual\n" + "SIN Number: 123456789\n",
         task.getDescription());
@@ -438,7 +438,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -458,7 +458,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
     assertEquals(
-        formUserType + " Cash Margins form was submitted but has validation errors:\n" + "\n"
+        getFormUserType() + " Cash Margins form was submitted but has validation errors:\n" + "\n"
             + "- Field \"Business Number\" with value \"123456789RC0001\" does not match BCFARMS: \"999999999RC0001\"."
             + " Note that only the first nine digits are compared.\n" + "\n" + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n"
             + "Email: targaryen@game.of.thrones\n" + "Participant Type: corporation\n" + "Business Number: 1234 56789RC0001\n",
@@ -514,7 +514,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -533,7 +533,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertEquals(ProgramYearUtils.getCurrentCalendarYear() + " Cash Margins 22503767", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Cash Margins form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Cash Margins form was submitted but has validation errors:\n" + "\n"
         + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n" + "\n" + "Participant Name: Targaryen Kingdom\n"
         + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n" + "Participant Type: corporation\n"
         + "Business Number: 1234 56789RC0001\n", task.getDescription());
@@ -576,7 +576,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -671,7 +671,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -691,7 +691,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
     assertEquals(
-        formUserType + " Cash Margins form was submitted but has validation errors:\n" + "\n"
+        getFormUserType() + " Cash Margins form was submitted but has validation errors:\n" + "\n"
             + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n" + "Participant Name: Jon Snow\n"
             + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n" + "Participant Type: individual\n" + "SIN Number: 123456789\n",
         validationTask.getDescription());
@@ -796,7 +796,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("TEST");
 
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -860,7 +860,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment(null);
 
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -1134,7 +1134,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid1);
   
       // Process the submission data
-      CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+      CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -1227,7 +1227,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid2);
       
       // Process the submission data
-      CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+      CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -1289,7 +1289,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
 
     try {
 
-      CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+      CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.loadSubmissionsFromChefs();
       processor.loadSubmissionsFromDatabase();
@@ -1349,7 +1349,7 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, formUserType);
+    CashMarginsSubmissionProcessor processor = new CashMarginsSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 

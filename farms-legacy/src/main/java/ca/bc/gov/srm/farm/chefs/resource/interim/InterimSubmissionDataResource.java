@@ -29,6 +29,7 @@ import ca.bc.gov.srm.farm.chefs.resource.common.NurseryGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.OtherPucGrid;
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
+import ca.bc.gov.srm.farm.util.DateUtils;
 
 public class InterimSubmissionDataResource extends ChefsSubmissionDataResource {
 
@@ -37,9 +38,9 @@ public class InterimSubmissionDataResource extends ChefsSubmissionDataResource {
   private String telephone;
   private String businessStructure;
   private String email;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d", timezone = "America/Vancouver")
   private Date fiscalYearStart;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-M-d", timezone = "America/Vancouver")
   private Date fiscalYearEnd;
   private LabelValue municipalityCode;
 
@@ -657,6 +658,17 @@ public class InterimSubmissionDataResource extends ChefsSubmissionDataResource {
   public void setWereYouUnableToCompleteAProductionCycleDueToCircumstancesBeyondYourControl(
       String wereYouUnableToCompleteAProductionCycleDueToCircumstancesBeyondYourControl) {
     this.wereYouUnableToCompleteAProductionCycleDueToCircumstancesBeyondYourControl = wereYouUnableToCompleteAProductionCycleDueToCircumstancesBeyondYourControl;
+  }
+
+  @Override
+  public Integer getParticipantPin() {
+    return agriStabilityAgriInvestPin;
+  }
+
+  @Override
+  @JsonIgnore
+  public Integer getYear() {
+    return DateUtils.getYearFromDate(getFiscalYearEndDate());
   }
 
 }

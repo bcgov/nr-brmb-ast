@@ -86,6 +86,9 @@ public class BenefitTriageItemResult {
   }
 
   public List<String> getErrorMessages() {
+    if(errorMessages == null) {
+      errorMessages = new ArrayList<>();
+    }
     return errorMessages;
   }
 

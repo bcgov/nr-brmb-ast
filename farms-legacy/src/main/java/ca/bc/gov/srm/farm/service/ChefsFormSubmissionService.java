@@ -12,6 +12,7 @@ package ca.bc.gov.srm.farm.service;
 
 import java.util.List;
 
+import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmission;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmssnCrmEntity;
@@ -23,7 +24,7 @@ public interface ChefsFormSubmissionService {
 
   ChefsSubmission getSubmissionByGuid(String submissionGuid) throws ServiceException;
 
-  SubmissionWrapperResource<?> getSubmissionWrapperResource(String submissionGuid, String formType, String userType) throws ServiceException;
+  SubmissionWrapperResource<? extends ChefsSubmissionDataResource> getSubmissionWrapperResource(String submissionGuid, String formType, String userType) throws ServiceException;
 
   String getUserFormType(ChefsSubmission submission);
 

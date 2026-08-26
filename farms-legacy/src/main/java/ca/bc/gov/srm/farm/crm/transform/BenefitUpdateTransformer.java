@@ -34,8 +34,8 @@ import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
 import ca.bc.gov.srm.farm.exception.ServiceException;
-import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.BenefitTriageService;
+import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.util.DataParseUtils;
 import ca.bc.gov.srm.farm.util.DateUtils;
@@ -88,9 +88,10 @@ public class BenefitUpdateTransformer {
     String submissionGuidString = scenario.getChefsSubmissionGuid();
     
     boolean lateParticipant = scenario.isLateParticipant();
+    boolean inCombinedFarm = scenario.isInCombinedFarm();
     String lateParticipantString = getIndicatorString(lateParticipant);
     
-    String benefitAmountString = "";
+    String standardBenefitAmountString = "";
     String allocatedReferenceMarginString = "";
     String scenarioNumberString = "";
     String interimBenefitPercentString = "";
@@ -111,36 +112,40 @@ public class BenefitUpdateTransformer {
     }
     
     if(stateCode.equals(VERIFIED)) {
-      Benefit benefit = scenario.getFarmingYear().getBenefit();
-      Double benefitAmount;
+      
+      Benefit individualBenefit = scenario.getFarmingYear().getBenefit();
+      Double standardBenefitAmount;
+      Double totalBenefitAmount = individualBenefit.getTotalBenefit();
+      Double bcFundedBenefitAmount = null;
+      
       if(CalculatorConfig.hasEnhancedBenefits(programYear)) {
-        benefitAmount = benefit.getStandardBenefit();
-        
-        Double bcFundedBenefitAmount = benefit.getEnhancedAdditionalBenefit();
-        bcFundedBenefitAmountString = StringUtils.formatDouble(bcFundedBenefitAmount, dollarFormat);
+        standardBenefitAmount = individualBenefit.getStandardBenefit();
+        bcFundedBenefitAmount = individualBenefit.getEnhancedAdditionalBenefit();
       } else {
-        benefitAmount = benefit.getTotalBenefit();
+        standardBenefitAmount = individualBenefit.getTotalBenefit();
       }
       
       if(programYear >= CalculatorConfig.GROWING_FORWARD_2018) {
-        if(benefitAmount != null && benefitAmount.doubleValue() < CalculatorConfig.MIN_BENEFIT) {
-          benefitAmount = Double.valueOf(0);
+        if(totalBenefitAmount != null && totalBenefitAmount < CalculatorConfig.MIN_BENEFIT) {
+          standardBenefitAmount = 0.0;
+          bcFundedBenefitAmount = 0.0;
+          totalBenefitAmount = 0.0;
         }
         
         if(lateParticipant) {
           Double lateEnrolmentPenalty;
           
           if(CalculatorConfig.hasEnhancedBenefits(programYear)) {
-            if(scenario.isInCombinedFarm()) {
-              lateEnrolmentPenalty = benefit.getEnhancedLateEnrolmentPenaltyAfterAppliedBenefitPercent();
+            if(inCombinedFarm) {
+              lateEnrolmentPenalty = individualBenefit.getEnhancedLateEnrolmentPenaltyAfterAppliedBenefitPercent();
             } else {
-              lateEnrolmentPenalty = benefit.getEnhancedLateEnrolmentPenalty();
+              lateEnrolmentPenalty = individualBenefit.getEnhancedLateEnrolmentPenalty();
             }
           } else {
-            if(scenario.isInCombinedFarm()) {
-              lateEnrolmentPenalty = benefit.getLateEnrolmentPenaltyAfterAppliedBenefitPercent();
+            if(inCombinedFarm) {
+              lateEnrolmentPenalty = individualBenefit.getLateEnrolmentPenaltyAfterAppliedBenefitPercent();
             } else {
-              lateEnrolmentPenalty = benefit.getLateEnrolmentPenalty();
+              lateEnrolmentPenalty = individualBenefit.getLateEnrolmentPenalty();
             }
           }
           
@@ -148,19 +153,20 @@ public class BenefitUpdateTransformer {
         }
       }
       
-      Double allocatedReferenceMargin = benefit.getAllocatedReferenceMargin();
-      Double negativeMarginDecline = benefit.getNegativeMarginDecline();
-      Double prodInsurDeemedBenefit = benefit.getProdInsurDeemedBenefit();
-      Double enhancedRefMarginForBenefitCalc = benefit.getEnhancedReferenceMarginForBenefitCalculation();
-      benefitAmountString = StringUtils.formatDouble(benefitAmount, dollarFormat);
+      Double allocatedReferenceMargin = individualBenefit.getAllocatedReferenceMargin();
+      Double negativeMarginDecline = individualBenefit.getNegativeMarginDecline();
+      Double prodInsurDeemedBenefit = individualBenefit.getProdInsurDeemedBenefit();
+      Double enhancedRefMarginForBenefitCalc = individualBenefit.getEnhancedReferenceMarginForBenefitCalculation();
+      standardBenefitAmountString = StringUtils.formatDouble(standardBenefitAmount, dollarFormat);
+      bcFundedBenefitAmountString = StringUtils.formatDouble(bcFundedBenefitAmount, dollarFormat);
       negativeMarginDeclineString = StringUtils.formatDouble(negativeMarginDecline, dollarFormat);
       prodInsurDeemedBenefitString = StringUtils.formatDouble(prodInsurDeemedBenefit, dollarFormat);
       
-      Double negativeMarginBenefit = benefit.getNegativeMarginBenefit();
+      Double negativeMarginBenefit = individualBenefit.getNegativeMarginBenefit();
       if (prodInsurDeemedBenefit != null) {
         BenefitCalculator benefitCalculator = CalculatorFactory.getBenefitCalculator(scenario);
-        double prodInsuranceDeduction = benefitCalculator.calculateProductionInsuranceDeduction(benefit, programYear, false);
-        negativeMarginBenefit = Double.valueOf(negativeMarginBenefit.doubleValue() - prodInsuranceDeduction);
+        double prodInsuranceDeduction = benefitCalculator.calculateProductionInsuranceDeduction(individualBenefit, programYear, false);
+        negativeMarginBenefit = negativeMarginBenefit - prodInsuranceDeduction;
       }
       negativeMarginBenefitString = StringUtils.formatDouble(negativeMarginBenefit, dollarFormat);
       
@@ -171,19 +177,22 @@ public class BenefitUpdateTransformer {
       }
       
       if(categoryCode.equals(ScenarioCategoryCodes.INTERIM)) {
-        double ratio = benefit.getInterimBenefitPercent().doubleValue();
+        double ratio = individualBenefit.getInterimBenefitPercent();
         final int hundred = 100;
         double percentage = ratio * hundred;
         interimBenefitPercentString = String.valueOf(percentage);
       }
 
-      Double combinedFarmsTotal;
-      if(CalculatorConfig.hasEnhancedBenefits(programYear)) {
-        combinedFarmsTotal = benefit.getEnhancedTotalBenefit();
-      } else {
-        combinedFarmsTotal = benefit.getTotalBenefit();
+      if(inCombinedFarm) {
+        Benefit combinedFarmBenefit = scenario.getCombinedFarm().getBenefit();
+        Double combinedFarmsTotal;
+        if(CalculatorConfig.hasEnhancedBenefits(programYear)) {
+          combinedFarmsTotal = combinedFarmBenefit.getEnhancedTotalBenefit();
+        } else {
+          combinedFarmsTotal = combinedFarmBenefit.getTotalBenefit();
+        }
+        combinedFarmsTotalString = StringUtils.formatDouble(combinedFarmsTotal, dollarFormat);
       }
-      combinedFarmsTotalString = StringUtils.formatDouble(combinedFarmsTotal, dollarFormat);
     }
     
     boolean expectingPayment = false;
@@ -212,7 +221,6 @@ public class BenefitUpdateTransformer {
     boolean fmvSetComplete = ScenarioUtils.isFmvSetComplete(scenario);
     String fmvSetCompleteString = getIndicatorString(fmvSetComplete);
     
-    boolean inCombinedFarm = scenario.isInCombinedFarm();
     String inCombinedFarmString = getIndicatorString(inCombinedFarm);
     String combinedFarmPinsString = "";
     if(inCombinedFarm) {
@@ -255,7 +263,7 @@ public class BenefitUpdateTransformer {
     sb.append(",");
     sb.append(convertForCsv(oldFarmTypeDetailCodeDescription));
     sb.append(",");
-    sb.append(convertForCsv(benefitAmountString));
+    sb.append(convertForCsv(standardBenefitAmountString));
     sb.append(",");
     sb.append(convertForCsv(scenarioNumberString));
     sb.append(",");

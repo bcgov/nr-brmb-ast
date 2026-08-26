@@ -121,7 +121,7 @@ public class Enrolment implements Serializable {
   private String sectorCodeDescription;
   private String sectorDetailCodeDescription;
   
-  private List<EnrolmentPartner> enrolmentPartners = new ArrayList<>();
+  private List<EnrolmentPartner> enrolmentPartners;
   private List<EnrolmentCombinedFarmOwner> combinedFarmOwners = new ArrayList<>();
   
   /**
@@ -137,7 +137,7 @@ public class Enrolment implements Serializable {
   public void setEnrolmentFee(Double enrolmentFee) {
     this.enrolmentFee = enrolmentFee;
   }
-  
+
   /**
    * @return the previousYearEnrolmentFee
    */
@@ -151,7 +151,7 @@ public class Enrolment implements Serializable {
   public void setPreviousYearEnrolmentFee(Double previousYearEnrolmentFee) {
     this.previousYearEnrolmentFee = previousYearEnrolmentFee;
   }
-  
+
   /**
    * @return the prevYearPartNotVerified
    */
@@ -673,6 +673,11 @@ public class Enrolment implements Serializable {
   }
 
   public void setEnrolmentPartners(List<EnrolmentPartner> enrolmentPartners) {
+    if(enrolmentPartners != null) {
+      for(EnrolmentPartner partner : enrolmentPartners) {
+        partner.setEnrolment(this);
+      }
+    }
     this.enrolmentPartners = enrolmentPartners;
   }
   

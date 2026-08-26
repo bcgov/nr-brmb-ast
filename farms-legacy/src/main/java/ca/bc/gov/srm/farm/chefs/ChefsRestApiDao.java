@@ -108,7 +108,16 @@ public class ChefsRestApiDao extends RestApiDao {
 
       int httpResponseCode = conn.getResponseCode();
 
-      String responseContent = readResponse(conn);
+      String responseContent;
+      if(httpResponseCode == HTTP_STATUS_TOO_MANY_REQUEST || httpResponseCode != HttpURLConnection.HTTP_CREATED) {
+        try {
+          responseContent = readErrorResponse(conn);
+        } catch (IOException e) {
+          responseContent = "(unable to read response body: " + e.getMessage() + ")";
+        }
+      } else {
+        responseContent = readResponseIfPresent(conn);
+      }
 
       if(httpResponseCode == HTTP_STATUS_TOO_MANY_REQUEST) {
         throw new ServiceException("Too many request to CHEFS. httpResponseCode: " +
@@ -117,7 +126,7 @@ public class ChefsRestApiDao extends RestApiDao {
       } else if(httpResponseCode != HttpURLConnection.HTTP_CREATED) {
         String formattedJson = getFormattedJson(resource);
         logger.error("Error posting JSON:\n" + formattedJson);
-        
+
         throw new ServiceException("Error posting to CHEFS. Expected 201 - Created. Actual HTTP code: "
             + httpResponseCode + " - " + conn.getResponseMessage() + ". Response Body: " + responseContent);
       }
@@ -182,31 +191,40 @@ public class ChefsRestApiDao extends RestApiDao {
     
     HttpURLConnection conn = getHttpURLConnection(endpointUrl, HTTP_METHOD_GET);
     
-    String response = null;
+    String response;
     
     try {
 
-      int httpResponseCode = conn.getResponseCode();  
-      response = readResponse(conn);
+      int httpResponseCode = conn.getResponseCode();
 
-      if(httpResponseCode == HTTP_STATUS_TOO_MANY_REQUEST) {
-        throw new ServiceException("Too many request to CHEFS. httpResponseCode: " +
-            httpResponseCode + " Message: " + conn.getResponseMessage() +
-            " Response Body: " + response, new TooManyRequestsException("Too many request to CHEF"));
-        
+      if(httpResponseCode == HttpURLConnection.HTTP_OK) {
+        response = readResponseIfPresent(conn);
+
       } else if(httpResponseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-        // return null
-        
-      } else if(httpResponseCode != HttpURLConnection.HTTP_OK) {
-        
+        response = null;
+
+      } else {
+        String errorResponse;
+        try {
+          errorResponse = readErrorResponse(conn);
+        } catch (IOException e) {
+          errorResponse = "(unable to read response body: " + e.getMessage() + ")";
+        }
+
+        if(httpResponseCode == HTTP_STATUS_TOO_MANY_REQUEST) {
+          throw new ServiceException("Too many request to CHEFS. httpResponseCode: " +
+              httpResponseCode + " Message: " + conn.getResponseMessage() +
+              " Response Body: " + errorResponse, new TooManyRequestsException("Too many request to CHEF"));
+        }
+
         throw new IOException("Error getting resource. Expected 200 - OK. Actual HTTP code: " +
             httpResponseCode + " - " + conn.getResponseMessage() +
-            ". Response Body: " + response);
+            ". Response Body: " + errorResponse);
       }
-      
+      // else HTTP_NOT_FOUND: response stays null
+
       logRateLimit(conn);
     } catch(IOException e) {
-      logger.error("getResource response: \n" + response);
       logger.error("IOException getting resource: ", e);
       logger.error("Response headers: " + conn.getHeaderFields());
       throw new ServiceException("Error getting resource", e);

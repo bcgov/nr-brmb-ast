@@ -126,7 +126,15 @@ public final class CdogsTokenFetcher {
       int httpResponseCode = httpConn.getResponseCode();
 
       if (httpResponseCode != 200) {
-        throw new ServiceException("httpResponseCode: " + httpResponseCode);
+        String errorResponse;
+        try {
+          errorResponse = readErrorResponse(httpConn);
+        } catch (IOException e) {
+          errorResponse = "(unable to read response body: " + e.getMessage() + ")";
+        }
+        throw new ServiceException("Error getting CDOGS token. Expected 200 - OK. Actual HTTP code: " +
+            httpResponseCode + " - " + httpConn.getResponseMessage() +
+            ". Response Body: " + errorResponse);
       }
 
       String response = readResponse(httpConn);
@@ -158,6 +166,22 @@ public final class CdogsTokenFetcher {
       }
     }
     return response.toString();
+  }
+
+  private String readErrorResponse(HttpURLConnection conn) throws IOException {
+    java.io.InputStream errorStream = conn.getErrorStream();
+    if (errorStream == null) {
+      return "";
+    }
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(errorStream))) {
+
+      String inputLine;
+      StringBuilder response = new StringBuilder();
+      while ((inputLine = in.readLine()) != null) {
+        response.append(inputLine);
+      }
+      return response.toString();
+    }
   }
 
   private void initialize() throws ServiceException {

@@ -96,7 +96,7 @@ public class EnrolmentPartner implements Serializable {
 
     return "EnrolmentPartner"+"\n"+
     "\t enrolmentId : "+enrolmentId+"\n"+
-    partnershipName+partnershipName+"\n"+
+    partnershipName+"\n"+
     "\t partnershipPercent : "+partnershipPercent+"\n"+
     "\t partnershipPin : "+partnershipPin+"\n";
   }

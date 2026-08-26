@@ -26,6 +26,10 @@ public class ChefsSubmissionResultForm extends ValidatorForm {
   private String userFormType;
   private String resourceJson;
   private String submissionStatusCode;
+  private Integer participantPin;
+  private Integer programYear;
+  private Integer scenarioNumber;
+  private boolean pinExists;
 
   private ChefsSubmission submission = new ChefsSubmission();
 
@@ -99,6 +103,38 @@ public class ChefsSubmissionResultForm extends ValidatorForm {
 
   public void setMainTaskUrl(String mainTaskUrl) {
     this.mainTaskUrl = mainTaskUrl;
+  }
+
+  public Integer getParticipantPin() {
+    return participantPin;
+  }
+
+  public void setParticipantPin(Integer participantPin) {
+    this.participantPin = participantPin;
+  }
+
+  public Integer getProgramYear() {
+    return programYear;
+  }
+
+  public void setProgramYear(Integer programYear) {
+    this.programYear = programYear;
+  }
+
+  public Integer getScenarioNumber() {
+    return scenarioNumber;
+  }
+
+  public void setScenarioNumber(Integer scenarioNumber) {
+    this.scenarioNumber = scenarioNumber;
+  }
+
+  public boolean isPinExists() {
+    return pinExists;
+  }
+
+  public void setPinExists(boolean pinExists) {
+    this.pinExists = pinExists;
   }
 
 }

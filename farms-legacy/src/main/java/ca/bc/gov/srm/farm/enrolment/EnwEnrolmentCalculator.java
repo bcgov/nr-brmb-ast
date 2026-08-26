@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import ca.bc.gov.srm.farm.calculator.CalculatorConfig;
-import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.domain.BasePricePerUnit;
 import ca.bc.gov.srm.farm.domain.BasePricePerUnitYear;
 import ca.bc.gov.srm.farm.domain.ProductiveUnitCapacity;
@@ -159,7 +158,7 @@ public class EnwEnrolmentCalculator {
 
     boolean canCalculateProxyMargins = enw.getCanCalculateProxyMargins();
 
-    if(canCalculateProxyMargins) {
+     if(canCalculateProxyMargins) {
       for (String code : productiveUnits.keySet()) {
         ProductiveUnitCapacity puc = productiveUnits.get(code);
         EnwProductiveUnit enwPuc = new EnwProductiveUnit();
@@ -401,13 +400,9 @@ public class EnwEnrolmentCalculator {
 
   
   private int getEnrolmentYear(Scenario scenario) {
-    int enrolmentYear = scenario.getYear();
     
-    String chefsFormTypeCode = scenario.getChefsFormTypeCode();
-    if( ! ChefsFormTypeCodes.NPP.equals(chefsFormTypeCode) ) {
-      final int numYearsToAddForStandardEnw = 2;
-      enrolmentYear += numYearsToAddForStandardEnw;
-    }
+    final int numYearsToAddForStandardEnw = 2;
+    int enrolmentYear = scenario.getYear() + numYearsToAddForStandardEnw;
     
     return enrolmentYear;
   }

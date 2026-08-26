@@ -7,14 +7,14 @@
 <td><h1><fmt:message key="Chefs.title"/></h1></td>
 <td style="width:360px;">
   <div style="float:right;text-align:center">
-	  <fieldset style="width:100%;">
-	     <legend><fmt:message key="Chefs.select.form.type"/></legend>
-	     <u:menuSelect action="farm256.do"
-	         name="formTypePicker"
-	         paramName="formType"
-	         options="${form.formTypes}"
-	         selectedValue="${form.formType}"
-	         toolTip="Click here to open a different Program Year."/>
+    <fieldset style="width:100%;">
+       <legend><fmt:message key="Chefs.select.form.type"/></legend>
+       <u:menuSelect action="farm256.do"
+           name="formTypePicker"
+           paramName="formType"
+           options="${form.formTypes}"
+           selectedValue="${form.formType}"
+           toolTip="Click here to open a different Program Year."/>
     </fieldset>
   </div>
 </td>
@@ -67,8 +67,9 @@
           "records":[
             <c:forEach varStatus="loop" var="result" items="${form.searchResults}">
               {
-                "submissionGuid":"<c:out value="${result.submissionGuid}"/>",  
-                "formTypeCode":"<c:out value="${result.formTypeCode}"/>",  
+                "submissionGuid":"<c:out value="${result.submissionGuid}"/>",
+                "formTypeCode":"<c:out value="${result.formTypeCode}"/>",
+                "participantPin":"<c:out value="${result.participantPin}"/>",
                 "submissionStatusCode":"<fmt:message key="Chefs.${result.submissionStatusCode}"/>",
                 "userFormTypeCode":"<c:out value="${result.userFormTypeCode}"/>",
                 "updated":"<fmt:formatDate value="${result.updatedDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
@@ -82,6 +83,7 @@
         var columnDefs = [
             {key:"submissionGuid", label:"<fmt:message key="Chefs.submissionGuid"/>", sortable:true},
             {key:"submissionStatusCode", label:"<fmt:message key="Chefs.submissionStatusCode"/>", sortable:true},
+            {key:"participantPin", label:"<fmt:message key="PIN"/>", sortable:true},
             {key:"userFormTypeCode", label:"<fmt:message key="Chefs.userFormTypeCode"/>", sortable:true},
             {key:"updated", label:"<fmt:message key="Chefs.updated.date"/>", sortable:true}
         ];
@@ -107,11 +109,12 @@
         Farm.codesDataSource.responseSchema = {
             resultsList: "records",
             fields: [
-            	{key:"submissionGuid"},
-            	{key:"formTypeCode"},
-            	{key:"submissionStatusCode"},
-            	{key:"userFormTypeCode"},
-            	{key:"updated", parser:"string"}
+              {key:"submissionGuid"},
+              {key:"formTypeCode"},
+              {key:"participantPin"},
+              {key:"submissionStatusCode"},
+              {key:"userFormTypeCode"},
+              {key:"updated", parser:"string"}
             ]
         };
   

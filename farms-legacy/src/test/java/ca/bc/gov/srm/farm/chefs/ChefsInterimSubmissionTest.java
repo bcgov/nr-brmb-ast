@@ -332,7 +332,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     data.setExternalMethod("chefsForm");
     data.setEnvironment("DEV");
 
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -351,7 +351,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2022 Interim 12316589", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Interim form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
+    assertEquals(getFormUserType() + " Interim form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n"
         + "- PIN not found in BCFARMS.\n" + "\n" + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n"
         + "Email: jsnow@game.of.thrones\n", task.getDescription());
 
@@ -415,7 +415,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     data.setEnvironment("DEV");
     data.setMunicipalityCode(new LabelValue("code", "41"));
 
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -434,7 +434,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " Interim " + participantPin, task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Interim form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n" + "\n"
+    assertEquals(getFormUserType() + " Interim form was submitted but has validation errors:\n" + "\n" + "- PIN not found in CRM.\n" + "\n"
         + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n"
         + "Email: targaryen@game.of.thrones\n", task.getDescription());
 
@@ -500,7 +500,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
     ));
 
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -520,7 +520,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
     assertEquals(
-        formUserType + " Interim form was submitted but has validation errors:\n\n"
+        getFormUserType() + " Interim form was submitted but has validation errors:\n\n"
             + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n"
             + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n",
         task.getDescription());
@@ -587,7 +587,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
     ));
 
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -607,7 +607,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
     assertEquals(
-        formUserType + " Interim form was submitted but has validation errors:\n\n"
+        getFormUserType() + " Interim form was submitted but has validation errors:\n\n"
             + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"null\".\n" + "\n"
             + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n",
         task.getDescription());
@@ -675,7 +675,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
     ));
 
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -694,7 +694,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2022 Interim 31415975", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Interim form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Interim form was submitted but has validation errors:\n" + "\n"
         + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n\n"
         + "Participant Name: Targaryen Kingdom\n"
         + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
@@ -761,7 +761,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
     ));
 
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -780,7 +780,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2022 Interim 5070370", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Interim form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Interim form was submitted but has validation errors:\n" + "\n"
         + "- Field \"Business Number\" with value \"123456789RC0001\" does not match BCFARMS: \"999999999RC0001\"."
         + " Note that only the first nine digits are compared.\n" + "\n" + "Participant Name: Targaryen Kingdom\n"
         + "Telephone: (250) 555-5555\n" + "Email: targaryen@game.of.thrones\n", task.getDescription());
@@ -847,7 +847,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
     ));
 
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -866,7 +866,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals("2022 Interim 22503767", task.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), task.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), task.getStatusCode());
-    assertEquals(formUserType + " Interim form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Interim form was submitted but has validation errors:\n" + "\n"
         + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n" + "\n"
         + "Participant Name: Targaryen Kingdom\n" + "Telephone: (250) 555-5555\n"
         + "Email: targaryen@game.of.thrones\n", task.getDescription());
@@ -876,7 +876,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
   public void submissionAlreadyProcessed() {
     String submissionGuid = "d67b7e26-521b-42d9-9ef2-3d3295d0ca89";
 
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     try {
       processor.loadSubmissionsFromChefs();
@@ -1017,7 +1017,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -1161,7 +1161,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     
     String benefitTriageResultType = null;
     try {
-      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, formUserType,
+      calculatorService.updateScenario(scenario, newStateCode, stateChangeReason, newCategoryCode, USER_EMAIL, null, getFormUserType(),
           ChefsFormTypeCodes.INTERIM, benefitTriageResultType, user);
     } catch (ServiceException e) {
       e.printStackTrace();
@@ -1270,7 +1270,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
       new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
     ));
 
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
@@ -1290,7 +1290,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
     assertEquals(
-        formUserType + " Interim form was submitted but has validation errors:\n" + "\n"
+        getFormUserType() + " Interim form was submitted but has validation errors:\n" + "\n"
             + "- Field \"SIN Number\" with value \"123456789\" does not match BCFARMS: \"999999999\".\n" + "\n"
             + "Participant Name: Jon Snow\n" + "Telephone: (250) 555-5555\n" + "Email: jsnow@game.of.thrones\n",
         validationTask.getDescription());
@@ -1384,7 +1384,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     }
     
     // Process the submission data
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
 
     Boolean isCorrectEnvironment = null;
@@ -1413,7 +1413,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     }
     
     // Process the submission data
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
 
     Boolean isCorrectEnvironment = null;
@@ -1719,7 +1719,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
 
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(duplicateSubmissionGuid);
     // Process the submission data
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -1837,7 +1837,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -1962,7 +1962,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -1979,7 +1979,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " Interim " + participantPin, validationTask.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-    assertEquals(formUserType + " Interim form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Interim form was submitted but has validation errors:\n" + "\n"
         + "- The following productive unit codes have duplicates: 100, 5000, 6, 5014, 4784, 6930\n"
         + "\n" + "Participant Name: \n"
         + "Telephone: (648) 452-4357\n" + "Email: johnny@farmer.ca\n", validationTask.getDescription());
@@ -2088,7 +2088,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     
     // Process the submission data
-    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, formUserType);
+    InterimSubmissionProcessor processor = new InterimSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
     
@@ -2105,7 +2105,7 @@ public class ChefsInterimSubmissionTest extends ChefsSubmissionTest {
     assertEquals(programYear + " Interim " + participantPin, validationTask.getSubject());
     assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
     assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
-    assertEquals(formUserType + " Interim form was submitted but has validation errors:\n" + "\n"
+    assertEquals(getFormUserType() + " Interim form was submitted but has validation errors:\n" + "\n"
         + "- No productive units entered\n"
         + "\n" + "Participant Name: \n"
         + "Telephone: (648) 452-4357\n" + "Email: johnny@farmer.ca\n", validationTask.getDescription());

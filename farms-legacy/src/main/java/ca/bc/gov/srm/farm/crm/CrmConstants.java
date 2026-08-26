@@ -39,7 +39,9 @@ public final class CrmConstants {
   public static final int ENROLMENT_STATUS_CODE_INITIALIZED = 865520004;
   public static final int ENROLMENT_STATUS_CODE_INELIGIBLE = 865520002;
   public static final int ENROLMENT_STATUS_CODE_TO_BE_REVIEWED = 865520009;
-  
+  public static final int ENROLMENT_STATUS_CODE_UPDATED_ENROLMENT_FEES_CALCULATED = 865520006;
+  public static final int ENROLMENT_STATUS_CODE_ENROLMENT_NOTICE_SENT = 865520007;
+
   
   // ------------------------ API Endpoints --------------------------------------------------------------- //
   public static final String ACCOUNT_ENDPOINT = "accounts";
@@ -107,6 +109,14 @@ public final class CrmConstants {
     case ENROLMENT_STATUS_CODE_TO_BE_REVIEWED:
       description = "To Be Reviewed";
       break;
+    case ENROLMENT_STATUS_CODE_UPDATED_ENROLMENT_FEES_CALCULATED:
+      description = "Updated Enrolment Fees Calculated";
+      break;
+      case ENROLMENT_STATUS_CODE_ENROLMENT_NOTICE_SENT:
+      description = "Enrolment Notice Sent";
+      break;
+    default:
+      description = Integer.toString(enrolmentStatusCode);
     }
     
     return description;

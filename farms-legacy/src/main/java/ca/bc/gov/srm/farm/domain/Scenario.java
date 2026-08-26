@@ -1143,16 +1143,20 @@ public class Scenario extends ReferenceScenario {
   public boolean isNegativeMarginCalculationEnabled() {
     
     boolean userScenario = isUserScenario();
+    boolean triageScenario = isBenefitTriageScenario();
+    boolean userOrTriageScenario = userScenario || triageScenario;
     boolean inProgress = isInProgress();
     boolean enabledForProgramYear = CalculatorConfig.isNegativeMarginCalculationEnabled(getYear());
     boolean interim = isInterim();
+    boolean enrolmentNoticeWorkflow = isEnrolmentNoticeWorkflow();
     Benefit benefit = getBenefit();
     
     boolean result = false;
     
     if(enabledForProgramYear
-        && userScenario
+        && userOrTriageScenario
         && ! interim
+        && ! enrolmentNoticeWorkflow
         && benefit != null) {
     
       Boolean piDeemedBenefitManualCalc = benefit.getProdInsurDeemedBenefitManuallyCalculated();
