@@ -70,4 +70,7 @@ public interface EnrolmentService {
   void processEnrolmentFromScenarioWorkflow(Scenario scenario, boolean verifyingLatePartipant,
       boolean completingEnrolmentNotice, String user, Connection connection)
   throws ServiceException;
+
+  void processEnrolmentFromVerifiedScenario(Scenario scenario, String user, Transaction transaction)
+  throws ServiceException;
 }

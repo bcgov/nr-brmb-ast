@@ -22,8 +22,8 @@ public final class EnrolmentCalculatorFactory {
     return new StandardEnrolmentCalculator();
   }
   
-  public static LateParticipantEnrolmentCalculator getLateParticipantEnrolmentCalculator() {
-    return new LateParticipantEnrolmentCalculator();
+  public static VerificationEnrolmentCalculator getVerificationEnrolmentCalculator() {
+    return new VerificationEnrolmentCalculator();
   }
   
   public static EnwEnrolmentCalculator getEnwEnrolmentCalculator() {
