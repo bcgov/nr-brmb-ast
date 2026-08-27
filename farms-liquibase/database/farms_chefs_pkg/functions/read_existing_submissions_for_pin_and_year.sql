@@ -13,7 +13,7 @@ declare
 
 begin
     open cur for
-        select sub.chef_submission_guid
+        select distinct sub.chef_submission_guid
         from farms.farm_chef_submissions sub
         join farms.farm_scenarios_vw sv on sv.chef_submission_guid = sub.chef_submission_guid
         where sub.chef_submssn_status_code not in ('CANCELLED')
