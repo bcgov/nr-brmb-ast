@@ -26,6 +26,7 @@ COMMENT ON COLUMN farms.farm_productve_unit_capacities.productve_unit_capacity_i
 COMMENT ON COLUMN farms.farm_productve_unit_capacities.revision_count IS E'REVISION COUNT is a counter identifying the number of times this record as been modified. Used in the web page access to determine if the record as been modified since the data was first retrieved.';
 COMMENT ON COLUMN farms.farm_productve_unit_capacities.structure_group_code IS E'STRUCTURE GROUP CODE identifies the type of structure group.';
 COMMENT ON COLUMN farms.farm_productve_unit_capacities.when_created IS E'WHEN CREATED indicates when the physical record was created in the database.';
+COMMENT ON COLUMN farms.farm_productve_unit_capacities.when_updated IS E'WHEN UPDATED indicates when the physical record was updated in the database.';
 COMMENT ON COLUMN farms.farm_productve_unit_capacities.who_created IS E'WHO CREATED indicates the user that created the physical record in the database.';
 COMMENT ON COLUMN farms.farm_productve_unit_capacities.who_updated IS E'WHO UPDATED indicates the user that updated the physical record in the database.';
 CREATE INDEX farm_puc_farm_as_fk_i ON farms.farm_productve_unit_capacities (agristability_scenario_id);
