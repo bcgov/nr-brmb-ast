@@ -26,7 +26,7 @@ begin
             where sv.year in (((to_char(current_timestamp, 'YYYY'))::numeric  - 1), (to_char(current_timestamp, 'YYYY'))::numeric)
             and (
                 sv.scenario_class_code = 'CRA'
-                or sv.scenario_category_code in ('CHEF_STA' /*, 'CHEF_SUPP'*/)
+                or sv.scenario_category_code in ('CHEF_STA', 'CHEF_SUPP')
             )
             and (
                 sc.cra_supplemental_received_date is not null -- Has supplemental data
@@ -38,7 +38,8 @@ begin
                 where sv3.program_year_id = sv.program_year_id
                 and (
                     -- Skip if there is an existing USER scenario (ignore Comparison Scenarios).
-                    (sv3.scenario_class_code = 'USER' and sv3.scenario_category_code not in ('CS','UNK'))
+                    (sv3.scenario_class_code = 'USER'
+                     and (sv3.scenario_category_code not in ('CS','UNK') or sv3.scenario_state_code in ('CLO')))
                     -- Skip if there is already a Benefit Triage scenario.
                     or (sv3.scenario_class_code = 'TRIAGE' and sv3.scenario_state_code in ('COMPLETED', 'FAILED'))
                 )

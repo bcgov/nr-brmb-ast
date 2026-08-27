@@ -85,7 +85,7 @@ begin
         ), claims_calc as (
             select a.*,
                  (case
-                     when (a.guaranteed_prod_value - a.reported) <= 0 or a.guaranteed_prod_value * a.negative_margin_purchase_requirement > a.reported then 0
+                     when a.guaranteed_prod_value * a.negative_margin_purchase_requirement <= a.reported then 0
                      else (a.guaranteed_prod_value - a.reported) * a.negative_margin_purchase_requirement * a.required_insurable_value
                  end) as est_claims_received
             from a
