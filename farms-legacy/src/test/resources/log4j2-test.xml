@@ -1,0 +1,29 @@
+<!--
+  Unit test logging - console only, deliberately no file appender, so a test run
+  never writes to the same farms-legacy.log a locally running Tomcat holds open.
+
+  The "-test" suffix is not decorative: log4j2 searches for log4j2-test.xml ahead
+  of log4j2.xml, so this wins over src/main/resources/log4j2.xml whenever
+  target/test-classes is on the classpath, without relying on classpath ordering.
+  It is only reachable from a test run - test resources are not packaged into the
+  war, and SmartTomcat mounts only target/classes as WEB-INF/classes.
+-->
+<Configuration>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%-5p: [%c:%L] - %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="ca.bc.gov.srm.farm" level="DEBUG"/>
+    
+    <Logger name="ca.bc.gov.webade" level="ERROR"/>
+    <Logger name="org.apache.axis" level="ERROR"/>
+    <Logger name="org.apache.commons" level="ERROR"/>
+    <Logger name="org.apache.pdfbox" level="ERROR"/>
+    
+    <Root level="DEBUG">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>
