@@ -188,7 +188,7 @@ begin
                         '', ',', -- Cash Margins Opt In Date
                         '', ',', -- Farm Type Detailed Codes
                         '', ',', -- Benefit Triage Result Type
-                        '',      -- Transaction Benefit
+                        '',      -- Combined Farms Total
                         chr(10));
 
             b := coalesce(b, ''::bytea) || convert_to(cur_line, 'UTF8');
