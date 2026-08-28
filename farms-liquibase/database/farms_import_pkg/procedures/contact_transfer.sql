@@ -1,5 +1,5 @@
 create or replace procedure farms_import_pkg.contact_transfer(
-   in in_cra_version_id numeric,
+   in in_cra_version_id farms.farm_import_versions.import_version_id%type,
    in in_changed_contact_client_ids numeric[],
    in in_user varchar
 )
@@ -65,5 +65,12 @@ begin
         );
 
     end if;
+
+exception
+    when others then
+        call farms_import_pkg.append_imp1(
+            in_cra_version_id,
+            '<WARNING>Encountered a warning when transferring Contact Information: ' || farms_import_pkg.scrub(sqlerrm) || '</WARNING>'
+        );
 end;
 $$;

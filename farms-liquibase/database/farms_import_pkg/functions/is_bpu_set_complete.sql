@@ -33,7 +33,7 @@ begin
                 and (bpu.municipality_code = ppyv.municipality_code
                      or bpu.municipality_code = '0')
                 and (bpu.inventory_item_code = puc.inventory_item_code
-                     or bpu.inventory_group_code = puc.inventory_group_code)
+                     or bpu.structure_group_code = puc.structure_group_code)
             )
         ) then 'N'
         else 'Y'

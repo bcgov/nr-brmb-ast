@@ -103,7 +103,7 @@ begin
     open received_cursor;
     fetch received_cursor into transfer_val;
 
-    if transfer_val is not null then
+    if found then
 
         select iv.when_created,
                iv.description
@@ -160,7 +160,7 @@ begin
                         farm_sector_detail, '",',
                         transfer_val.benefit_amount, ',',
                         '', ',', -- scenario number is null unless the scenario is COMP
-                        transfer_val.partnership_indicator, ',',
+                        transfer_val.partnership_ind, ',',
                         bpu_set_complete_ind, ',',
                         fmv_set_complete_ind, ',',
                         'N,,"', -- inCombinedFarm indictor and combinedFarmPins list
@@ -211,5 +211,12 @@ begin
             'Saved State Transfer List'
         );
     end if;
+
+exception
+    when others then
+        call farms_import_pkg.append_imp1(
+            in_cra_version_id,
+            '<WARNING>Encountered a warning when transferring State Change Data: ' || farms_import_pkg.scrub(sqlerrm) || '</WARNING>'
+        );
 end;
 $$;
