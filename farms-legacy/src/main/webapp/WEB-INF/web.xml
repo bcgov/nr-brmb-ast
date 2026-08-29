@@ -31,12 +31,6 @@
     <filter-class>ca.bc.gov.srm.farm.ui.j2ee.DataServiceSessionFilter</filter-class>
   </filter>
 
-  <!-- Host restrict filter for the web service -->
-  <filter>
-    <filter-name>RestrictHostFilter</filter-name>
-    <filter-class>ca.bc.gov.srm.farm.ui.j2ee.RestrictHostFilter</filter-class>
-  </filter>
-
   <filter>
     <filter-name>CompressionFilter</filter-name>
     <filter-class>ca.bc.gov.srm.farm.ui.j2ee.CompressionFilter</filter-class>
