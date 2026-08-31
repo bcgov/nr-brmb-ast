@@ -377,4 +377,3 @@ pyrightconfig.json
 *.iml
 *.ipr
 .smarttomcat
-farms-legacy/src/main/resources/log4j2.xml

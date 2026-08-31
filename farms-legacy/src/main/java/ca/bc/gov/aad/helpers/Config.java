@@ -1,6 +1,8 @@
 package ca.bc.gov.aad.helpers;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -14,6 +16,18 @@ import java.util.logging.Logger;
 
 public class Config {
     private static Logger logger = Logger.getLogger(Config.class.getName());
+
+    /**
+     * Optional path to an authentication.properties outside the source tree. Set it locally
+     * (-Daad.config.location=...) to keep developer credentials out of the working copy, so the
+     * checked-in file can stay at its placeholder values and never shows up as a local change.
+     * When unset - the deployed case - the classpath resource is used, which OpenShift replaces
+     * with a ConfigMap mounted over WEB-INF/classes/aadConfig/authentication.properties.
+     */
+    private static final String CONFIG_LOCATION_PROPERTY = "aad.config.location";
+
+    private static final String CONFIG_CLASSPATH_RESOURCE = "aadConfig/authentication.properties";
+
     private static Properties props = instantiateProperties();
     private static final String[] REQUIRED = {"aad.authority", "aad.clientId", "aad.secret", "aad.signOutEndpoint", "aad.postSignOutFragment", "app.stateTTL", "app.homePage", "app.redirectEndpoint", "app.sessionParam",
     "app.protect.authenticated", "app.roles", "app.protect.roles"}; // app.roles and app.protect.roles required for roles+routes authorization
@@ -21,8 +35,8 @@ public class Config {
 
     private static Properties instantiateProperties() {
         final Properties props = new Properties();
-        try {
-            props.load(Config.class.getClassLoader().getResourceAsStream("aadConfig/authentication.properties"));
+        try (InputStream is = openConfig()) {
+            props.load(is);
         } catch (final IOException ex) {
             ex.printStackTrace();
             logger.log(Level.SEVERE, "Could not load properties file. Exiting");
@@ -31,6 +45,19 @@ public class Config {
             return null;
         }
         return props;
+    }
+
+    /**
+     * Opens the override file named by {@value #CONFIG_LOCATION_PROPERTY} if that system property
+     * is set, otherwise the classpath resource.
+     */
+    private static InputStream openConfig() throws IOException {
+        final String location = System.getProperty(CONFIG_LOCATION_PROPERTY);
+        if (location != null && !location.trim().isEmpty()) {
+            logger.log(Level.INFO, "Loading AAD configuration from {0}", location);
+            return new FileInputStream(location.trim());
+        }
+        return Config.class.getClassLoader().getResourceAsStream(CONFIG_CLASSPATH_RESOURCE);
     }
 
     public static final String AUTHORITY = Config.getProperty("aad.authority");

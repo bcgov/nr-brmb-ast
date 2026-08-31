@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Local / IDE logging, used by SmartTomcat. The container uses
+  deploy-tools/log4j2.xml instead - the Dockerfile copies that over
+  WEB-INF/classes/log4j2.xml at image build time. Unit tests use
+  src/test/resources/log4j2-test.xml, which log4j2 resolves ahead of this file.
+
+  Logs go to both the console and a rolling file under Tomcat's logs directory,
+  so a stack trace survives after the run window is closed or scrolled past.
+  catalina.base resolves to the SmartTomcat instance directory when run from the
+  IDE; the "." fallback keeps this working if the property is absent.
+
+  Old archives are removed automatically on rollover: anything older than 7 days,
+  or the oldest archives once they total more than 1 GB, whichever hits first.
+-->
+<Configuration>
+
+
+  <Properties>
+    <Property name="logDir">${sys:catalina.base:-.}/logs</Property>
+    <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+  </Properties>
+
+  <Appenders>
+
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="${logPattern}" />
+    </Console>
+
+    <RollingFile name="File"
+        fileName="${logDir}/farms-legacy.log"
+        filePattern="${logDir}/farms-legacy.%d{yyyy-MM-dd}.%i.log.gz">
+      <PatternLayout pattern="${logPattern}" />
+      <Policies>
+        <!-- roll at midnight, and again whenever the current file gets large -->
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="50 MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="50">
+        <Delete basePath="${logDir}" maxDepth="1">
+          <IfFileName glob="farms-legacy.*.log.gz">
+            <IfAny>
+              <IfLastModified age="7d" />
+              <IfAccumulatedFileSize exceeds="1 GB" />
+            </IfAny>
+          </IfFileName>
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+
+  </Appenders>
+
+  <Loggers>
+    <Logger name="ca.bc.gov.srm.farm" level="DEBUG" />
+
+    <Logger name="ca.bc.gov.webade" level="ERROR" />
+    <Logger name="org.apache.axis" level="ERROR" />
+    <Logger name="org.apache.commons" level="ERROR" />
+    <Logger name="org.apache.pdfbox" level="ERROR" />
+    <Logger name="org.apache.struts.tiles" level="ERROR" />
+
+    <Root level="DEBUG">
+      <AppenderRef ref="Console" />
+      <AppenderRef ref="File" />
+    </Root>
+  </Loggers>
+
+</Configuration>
