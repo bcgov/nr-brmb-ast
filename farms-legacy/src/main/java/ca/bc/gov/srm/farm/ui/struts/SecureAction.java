@@ -69,7 +69,7 @@ public abstract class SecureAction extends Action {
 
     } catch(Exception e) {
       logger.error("Error occurred performing action requested by user: " +
-                   CurrentUser.getUser().getAccountName());
+                   CurrentUser.getUser().getAccountName(), e);
       throw e;
     }
   }
