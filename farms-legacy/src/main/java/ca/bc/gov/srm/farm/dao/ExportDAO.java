@@ -253,7 +253,7 @@ public final class ExportDAO {
       }
     }
 
-    logger.debug("addEntry: " + fileName);
+    logger.info("addEntry: " + fileName);
   }
 
   /**
