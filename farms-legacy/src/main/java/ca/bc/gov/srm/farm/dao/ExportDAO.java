@@ -244,20 +244,34 @@ public final class ExportDAO {
       }
       throw e;
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (proc != null) {
-        proc.close();
-      }
+      closeQuietly(rs, "result set for " + fileName);
+      closeQuietly(proc, "stored procedure for " + fileName);
       try {
         conn.setAutoCommit(originalAutoCommit);
       } catch (SQLException ex) {
-        throw ex;
+        logger.warn("Unable to restore autoCommit after " + fileName, ex);
       }
     }
-    
-    logger.debug("addEntry: " + fileName);
+
+    logger.info("addEntry: " + fileName);
+  }
+
+  /**
+   * Closes a resource, logging rather than throwing on failure so that cleanup
+   * never replaces the exception that is already propagating.
+   *
+   * @param closeable   closeable, may be null
+   * @param description description used in the warning message
+   */
+  private void closeQuietly(AutoCloseable closeable, String description) {
+    if (closeable == null) {
+      return;
+    }
+    try {
+      closeable.close();
+    } catch (Exception ex) {
+      logger.warn("Error closing " + description, ex);
+    }
   }
 
   /**
