@@ -10,7 +10,30 @@ declare
 
 begin
 
-    open cur for
+    /* These have to be SET LOCAL statements in the body, not a SET clause on the
+     * function. A refcursor's query is not executed when the function runs - it is
+     * executed later, when the caller issues FETCH - and a SET clause attached to a
+     * function is reverted the moment the function returns, taking any SET LOCAL made
+     * inside it along with it. Set this way, with no SET clause on the function, they
+     * last until the caller's transaction ends, so they cover the CREATE TABLE AS
+     * below, the planning of the cursor's query, and the FETCH that executes it.
+     * Planning under one work_mem and executing under another is what has to be
+     * avoided: the planner sizes hash joins for the memory it was told about, and the
+     * executor then has to spill them into a far larger number of batches.
+     *
+     * Parallelism is disabled because CREATE TABLE AS, unlike the cursor's query, is
+     * parallelised, and each worker gets its own work_mem for every hash and sort node.
+     */
+    set local work_mem to '32MB';
+    set local max_parallel_workers_per_gather to 0;
+
+    /* The scenarios CTE - and the ranked/chosen pipeline feeding it - is materialized
+     * into a temporary table rather than left inline in the cursor's query, so that the
+     * three window sorts over it happen once, here, leaving the cursor a plain join
+     * against an analyzed table. scenarios was already the filtered projection of
+     * ranked/chosen, so this needs no change to what it selects.
+     */
+    create temporary table tmp_f21_scenarios on commit drop as
         with ranked as (
                 /* this subquery is duplicated in F01, F02, F03, F20, F21, F30, F31, F40, F60.
                  * if it is modified here, it should be modified there as well.
@@ -65,20 +88,24 @@ begin
             from ranked
             where rnk = 1
             group by program_year_id
-        ), scenarios as (
-            select t.agristability_scenario_id,
-                   t.program_year_version_id,
-                   t.participant_pin,
-                   t.program_year "Year"
-            from (
-                select r.*
-                from ranked r
-                join chosen c on r.program_year_id = c.program_year_id
-                              and r.agristability_scenario_id = c.latest_sc_id
-            ) t
-            where (t.scenario_state_audit_id = t.verified_state_id or coalesce(t.verified_state_id::text, '') = '')
-            and t.non_participant_ind = 'N'
         )
+        select t.agristability_scenario_id,
+               t.program_year_version_id,
+               t.participant_pin,
+               t.program_year "Year"
+        from (
+            select r.*
+            from ranked r
+            join chosen c on r.program_year_id = c.program_year_id
+                          and r.agristability_scenario_id = c.latest_sc_id
+        ) t
+        where (t.scenario_state_audit_id = t.verified_state_id or coalesce(t.verified_state_id::text, '') = '')
+        and t.non_participant_ind = 'N';
+
+    create index on tmp_f21_scenarios (program_year_version_id);
+    analyze tmp_f21_scenarios;
+
+    open cur for
         select i.participant_pin,
                in_program_year "Year",
                i.prior_year,
@@ -166,7 +193,7 @@ begin
                    case when coalesce(ri.agristability_scenario_id::text, '') = '' then adj.price_end else ri.price_end end adj_price_end,
                    case when coalesce(ri.agristability_scenario_id::text, '') = '' then adj.start_of_year_amount else ri.start_of_year_amount end adj_start_of_year_amount,
                    case when coalesce(ri.agristability_scenario_id::text, '') = '' then adj.end_of_year_amount else ri.end_of_year_amount end adj_end_of_year_amount
-            from scenarios s
+            from tmp_f21_scenarios s
             join farms.farm_farming_operations op on op.program_year_version_id = s.program_year_version_id
             join farms.farm_reported_inventories ri on ri.farming_operation_id = op.farming_operation_id
                                                     and (
