@@ -19,156 +19,249 @@ returns table(
     when_updated                farms.farm_program_enrolments.when_updated%type,
     enrolment_revision_count    farms.farm_program_enrolments.revision_count%type
 )
-language sql
+language plpgsql
 as $$
-WITH params AS (
-  SELECT
-      in_enrolment_year::smallint AS enrol_year,
-      (in_enrolment_year - 2)::smallint AS y_m2,
-      (in_enrolment_year - 3)::smallint AS y_m3
-),
+declare
 
-py_sc AS (
-  SELECT
-      py.agristability_client_id,
-      py.program_year_id,
-      py.year,
-      pyv.program_year_version_id,
-      sc.agristability_scenario_id,
-      sc.scenario_state_code,
-      sc.scenario_category_code,
-      sc.scenario_class_code,
-      sc.scenario_number
-  FROM farms.farm_program_years           py
-  JOIN farms.farm_program_year_versions   pyv ON py.program_year_id = pyv.program_year_id
-  JOIN farms.farm_agristability_scenarios sc  ON pyv.program_year_version_id = sc.program_year_version_id
-  CROSS JOIN params p
-  WHERE
-      py.year <= p.y_m2
-      AND (
-           in_regional_office_code = 'ALL'
-           OR EXISTS (
-                SELECT 1
-                FROM farms.farm_office_municipality_xref omx
-                WHERE omx.municipality_code    = pyv.municipality_code
-                  AND omx.regional_office_code = in_regional_office_code
-           )
-      )
-),
+    v_enrol_year smallint := in_enrolment_year::smallint;
+    v_y_m2       smallint := (in_enrolment_year - 2)::smallint;
+    v_y_m3       smallint := (in_enrolment_year - 3)::smallint;
 
-ranked AS (
-  SELECT
-      s.*,
-      CASE
-        WHEN s.year BETWEEN p.y_m3 AND p.y_m2
-         AND s.scenario_state_code IN ('COMP','AMEND')
-         AND s.scenario_category_code = 'FIN'
-         AND s.scenario_class_code    = 'USER'
-          THEN 1
-        WHEN s.year = p.y_m2
-         AND s.scenario_state_code = 'EN_COMP'
-         AND s.scenario_category_code = 'ENW'
-          THEN 2
-        WHEN s.year = p.y_m2
-         AND s.scenario_state_code = 'IP'
-         AND s.scenario_category_code = 'ENW'
-          THEN 3
-        ELSE 4
-      END AS pri,
-      CASE WHEN s.scenario_state_code = 'REC' THEN 0 ELSE 1 END AS rec_first
-  FROM py_sc s
-  CROSS JOIN params p
-),
+begin
 
-best AS (
-  SELECT DISTINCT ON (agristability_client_id)
-      agristability_client_id,
-      program_year_id,
-      year,
-      program_year_version_id,
-      agristability_scenario_id,
-      scenario_state_code,
-      scenario_category_code,
-      scenario_class_code,
-      scenario_number
-  FROM ranked
-  ORDER BY agristability_client_id, pri, year DESC, rec_first, scenario_number DESC
-),
+    /* Every column reference below is qualified with a table alias on purpose. The
+     * RETURNS TABLE columns are PL/pgSQL variables inside this body, and most of them
+     * share a name with a column of farm_program_enrolments, so an unqualified
+     * reference would be rejected as ambiguous.
+     */
 
-y2_has_latest_base_with_unassigned_rie AS (
-  SELECT DISTINCT lb.agristability_client_id
-  FROM (
-    SELECT DISTINCT ON (py.program_year_id)
-           py.program_year_id,
-           py.agristability_client_id,
-           sc.program_year_version_id,
-           sc.scenario_number
-    FROM farms.farm_program_years           py
-    JOIN farms.farm_program_year_versions   pyv ON pyv.program_year_id = py.program_year_id
-    JOIN farms.farm_agristability_scenarios sc  ON sc.program_year_version_id = pyv.program_year_version_id
-    CROSS JOIN params p
-    WHERE py.year = p.y_m2
-      AND sc.scenario_class_code IN ('CRA', 'CHEF', 'LOCAL', 'GEN')
-    ORDER BY py.program_year_id, sc.scenario_number DESC
-  ) AS lb
-  JOIN farms.farm_farming_operations fo
-    ON fo.program_year_version_id = lb.program_year_version_id
-  JOIN farms.farm_reported_income_expenses rie
-    ON rie.farming_operation_id = fo.farming_operation_id
-   AND rie.agristability_scenario_id IS NULL
-),
+    /* Belt and braces: the temporary table is ON COMMIT DROP and the screen calls this
+     * function once per transaction, so this is a no-op today. It keeps the function
+     * callable twice in one transaction rather than failing on the second call.
+     */
+    drop table if exists tmp_read_enrolments_best;
 
-clients AS (
-  SELECT
-      ac.agristability_client_id,
-      ac.participant_pin,
-      COALESCE(o.corp_name, o.last_name || ', ' || o.first_name) AS producer_name
-  FROM farms.farm_agristability_clients ac
-  JOIN farms.farm_persons o ON o.person_id = ac.person_id
-)
+    /* One row per client, holding the single scenario that decides that client's
+     * displayed state.
+     *
+     * The previous version built this over every program year with year <= y_m2 - the
+     * client's whole history - and sorted the lot to take DISTINCT ON (client). That
+     * sort was the bulk of the screen's load time, and almost all of it was wasted:
+     * the priority buckets that produce a state other than 'REC' (pri 1, 2 and 3) only
+     * ever match a scenario in the two-year window y_m3..y_m2, and DISTINCT ON orders
+     * by pri first, so a scenario outside that window can only win when the client has
+     * nothing inside it. Ordering within the losing bucket therefore cannot change the
+     * output - every row in it yields 'REC' - so only the window is ranked here, and
+     * the clients with nothing in it are added below as a semi-join.
+     */
+    create temporary table tmp_read_enrolments_best on commit drop as
+    with cand as (
+        select py.agristability_client_id,
+               py.year,
+               sc.scenario_state_code,
+               sc.scenario_category_code,
+               sc.scenario_class_code,
+               sc.scenario_number,
+               case
+                 when py.year between v_y_m3 and v_y_m2
+                  and sc.scenario_state_code in ('COMP','AMEND')
+                  and sc.scenario_category_code = 'FIN'
+                  and sc.scenario_class_code    = 'USER'
+                   then 1
+                 when py.year = v_y_m2
+                  and sc.scenario_state_code = 'EN_COMP'
+                  and sc.scenario_category_code = 'ENW'
+                   then 2
+                 when py.year = v_y_m2
+                  and sc.scenario_state_code = 'IP'
+                  and sc.scenario_category_code = 'ENW'
+                   then 3
+                 else 4
+               end as pri,
+               case when sc.scenario_state_code = 'REC' then 0 else 1 end as rec_first
+        from farms.farm_program_years           py
+        join farms.farm_program_year_versions   pyv on pyv.program_year_id = py.program_year_id
+        join farms.farm_agristability_scenarios sc  on sc.program_year_version_id = pyv.program_year_version_id
+        where py.year between v_y_m3 and v_y_m2
+          and (
+               in_regional_office_code = 'ALL'
+               or exists (
+                    select 1
+                    from farms.farm_office_municipality_xref omx
+                    where omx.municipality_code    = pyv.municipality_code
+                      and omx.regional_office_code = in_regional_office_code
+               )
+          )
+    )
+    select distinct on (c.agristability_client_id)
+           c.agristability_client_id,
+           c.year,
+           c.scenario_state_code,
+           c.scenario_category_code,
+           c.scenario_class_code
+    from cand c
+    order by c.agristability_client_id, c.pri, c.year desc, c.rec_first, c.scenario_number desc;
 
-SELECT
-  b.agristability_client_id,
-  c.participant_pin,
-  c.producer_name,
-  CASE
-    WHEN b.year = p.y_m2
-     AND b.scenario_state_code IN ('COMP','AMEND')
-     AND b.scenario_category_code = 'FIN'
-     AND b.scenario_class_code    = 'USER'
-      THEN 'COMP'
-    WHEN b.year = p.y_m3
-     AND b.scenario_state_code IN ('COMP','AMEND')
-     AND b.scenario_category_code = 'FIN'
-     AND b.scenario_class_code    = 'USER'
-     AND b.agristability_client_id IN (SELECT agristability_client_id FROM y2_has_latest_base_with_unassigned_rie)
-      THEN 'COMP'
-    WHEN b.year = p.y_m2
-     AND b.scenario_state_code = 'EN_COMP'
-     AND b.scenario_category_code = 'ENW'
-      THEN 'EN_COMP'
-    WHEN b.year = p.y_m2
-     AND b.scenario_state_code = 'IP'
-     AND b.scenario_category_code = 'ENW'
-      THEN 'EN_IP'
-    ELSE 'REC'
-  END AS scenario_state,
-  pe.failed_to_generate_ind,
-  pe.failed_reason,
-  pe.program_enrolment_id,
-  pe.enrolment_year,
-  pe.enrolment_fee,
-  pe.generated_date,
-  pe.generated_from_cra_ind,
-  pe.generated_from_enw_ind,
-  pe.combined_farm_percent,
-  pe.when_updated,
-  pe.revision_count AS enrolment_revision_count
-FROM best b
-JOIN clients c
-  ON c.agristability_client_id = b.agristability_client_id
-CROSS JOIN params p
-LEFT JOIN farms.farm_program_enrolments pe
-  ON pe.agristability_client_id = b.agristability_client_id
- AND pe.enrolment_year = p.enrol_year;
+    create index on tmp_read_enrolments_best (agristability_client_id);
+
+    /* Clients whose only scenarios sit before the window. They were previously carried
+     * by the full-history sort, and they are a large share of the population - roughly
+     * half of the rows on this screen - so this step has to stay cheap.
+     *
+     * The null columns fall through the CASE below to 'REC', which is the state the
+     * full-history sort always gave these clients.
+     *
+     * The two branches exist because "is there an older scenario" and "is there an
+     * older scenario in this office" want opposite plans, and writing them as one
+     * statement - with the region test as an OR against the parameter - gets the
+     * ALL-shaped plan for both. The region code cannot be pushed into a join either,
+     * because farm_program_year_versions.municipality_code is nullable and those rows
+     * still count under 'ALL'.
+     */
+    if in_regional_office_code = 'ALL' then
+
+        /* No region to filter on, so ask each client the question directly, anti-joined
+         * against the rows already inserted: a few thousand clients, each stopping at
+         * its first old scenario. Driving this from farm_program_years instead reads far
+         * more than it needs to - the planner pulls the EXISTS up into a semi-join and
+         * satisfies it by hash joining all million-odd scenarios to every program year
+         * version, which is slower than the full-history sort it replaced.
+         */
+        insert into tmp_read_enrolments_best (
+            agristability_client_id,
+            year,
+            scenario_state_code,
+            scenario_category_code,
+            scenario_class_code
+        )
+        select ac.agristability_client_id,
+               null::smallint,
+               null::varchar(10),
+               null::varchar(10),
+               null::varchar(10)
+        from farms.farm_agristability_clients ac
+        where not exists (
+                select 1
+                from tmp_read_enrolments_best t
+                where t.agristability_client_id = ac.agristability_client_id
+          )
+          and exists (
+                select 1
+                from farms.farm_program_years           py
+                join farms.farm_program_year_versions   pyv on pyv.program_year_id = py.program_year_id
+                join farms.farm_agristability_scenarios sc  on sc.program_year_version_id = pyv.program_year_version_id
+                where py.agristability_client_id = ac.agristability_client_id
+                  and py.year < v_y_m3
+          );
+
+    else
+
+        /* Asking each client the same question with a region attached is the worst case
+         * for that shape: most clients are not in the region, and proving that walks
+         * their whole history because there is no match to stop at. Driven from the
+         * xref instead - a small lookup table, only a few rows for any one office - the
+         * municipality index on farm_program_year_versions only ever touches versions
+         * that do match.
+         */
+        insert into tmp_read_enrolments_best (
+            agristability_client_id,
+            year,
+            scenario_state_code,
+            scenario_category_code,
+            scenario_class_code
+        )
+        select distinct py.agristability_client_id,
+               null::smallint,
+               null::varchar(10),
+               null::varchar(10),
+               null::varchar(10)
+        from farms.farm_office_municipality_xref omx
+        join farms.farm_program_year_versions pyv on pyv.municipality_code = omx.municipality_code
+        join farms.farm_program_years         py  on py.program_year_id = pyv.program_year_id
+        where omx.regional_office_code = in_regional_office_code
+          and py.year < v_y_m3
+          and exists (
+                select 1
+                from farms.farm_agristability_scenarios sc
+                where sc.program_year_version_id = pyv.program_year_version_id
+          )
+          and not exists (
+                select 1
+                from tmp_read_enrolments_best t
+                where t.agristability_client_id = py.agristability_client_id
+          );
+
+    end if;
+
+    analyze tmp_read_enrolments_best;
+
+    /* The y_m3 branch used to be a CTE listing every client whose latest y_m2 base
+     * scenario has unassigned reported income/expense rows, hashed and probed with IN.
+     * Building it meant walking farm_reported_income_expenses for the whole population
+     * to answer a question that only the handful of clients reaching that branch ask.
+     * As a correlated EXISTS it is a SubPlan, so it runs only for those clients, and
+     * stops at the first matching row rather than collecting all of them.
+     */
+    return query
+    select b.agristability_client_id,
+           ac.participant_pin,
+           coalesce(o.corp_name, o.last_name || ', ' || o.first_name) as producer_name,
+           (case
+              when b.year = v_y_m2
+               and b.scenario_state_code in ('COMP','AMEND')
+               and b.scenario_category_code = 'FIN'
+               and b.scenario_class_code    = 'USER'
+                then 'COMP'
+              when b.year = v_y_m3
+               and b.scenario_state_code in ('COMP','AMEND')
+               and b.scenario_category_code = 'FIN'
+               and b.scenario_class_code    = 'USER'
+               and exists (
+                     select 1
+                     from farms.farm_farming_operations fo
+                     join farms.farm_reported_income_expenses rie
+                       on rie.farming_operation_id = fo.farming_operation_id
+                      and rie.agristability_scenario_id is null
+                     where fo.program_year_version_id = (
+                         select sc2.program_year_version_id
+                         from farms.farm_program_years           py2
+                         join farms.farm_program_year_versions   pyv2 on pyv2.program_year_id = py2.program_year_id
+                         join farms.farm_agristability_scenarios sc2  on sc2.program_year_version_id = pyv2.program_year_version_id
+                         where py2.agristability_client_id = b.agristability_client_id
+                           and py2.year = v_y_m2
+                           and sc2.scenario_class_code in ('CRA','CHEF','LOCAL','GEN')
+                         order by sc2.scenario_number desc
+                         limit 1
+                     )
+               )
+                then 'COMP'
+              when b.year = v_y_m2
+               and b.scenario_state_code = 'EN_COMP'
+               and b.scenario_category_code = 'ENW'
+                then 'EN_COMP'
+              when b.year = v_y_m2
+               and b.scenario_state_code = 'IP'
+               and b.scenario_category_code = 'ENW'
+                then 'EN_IP'
+              else 'REC'
+            end)::varchar as scenario_state,
+           pe.failed_to_generate_ind,
+           pe.failed_reason,
+           pe.program_enrolment_id,
+           pe.enrolment_year,
+           pe.enrolment_fee,
+           pe.generated_date,
+           pe.generated_from_cra_ind,
+           pe.generated_from_enw_ind,
+           pe.combined_farm_percent,
+           pe.when_updated,
+           pe.revision_count as enrolment_revision_count
+    from tmp_read_enrolments_best b
+    join farms.farm_agristability_clients ac on ac.agristability_client_id = b.agristability_client_id
+    join farms.farm_persons o on o.person_id = ac.person_id
+    left join farms.farm_program_enrolments pe
+      on pe.agristability_client_id = b.agristability_client_id
+     and pe.enrolment_year = v_enrol_year;
+
+end;
 $$;

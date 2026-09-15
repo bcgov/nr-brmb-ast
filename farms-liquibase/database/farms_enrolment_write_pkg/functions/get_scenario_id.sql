@@ -14,8 +14,11 @@ declare
 
 begin
 
-    py_id_ref_cursor := farms_read_pkg.read_py_id(in_participant_pin, target_scenario_year, null, 'ENROL');
+    open py_id_ref_cursor for
+        select * from farms_read_pkg.read_py_id(in_participant_pin, target_scenario_year, null, 'ENROL');
 
+    -- read_py_id returns one row per program year, ordered by year descending,
+    -- so the first row is the target year when that year has a scenario.
     fetch py_id_ref_cursor into py_id_rec;
 
     if found then
