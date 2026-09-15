@@ -124,8 +124,5 @@ spec:
               cpu: #{API_CPU_LIMIT}#
               memory: #{API_MEMORY_LIMIT}#
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
+    type: Recreate
   paused: false
