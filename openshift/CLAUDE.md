@@ -29,16 +29,32 @@ Both `farms-api` and `farms-legacy` follow the identical Deployment/Service/Rout
 - **`*-deployment.yaml`** — single-replica `Deployment`, `RollingUpdate` strategy. Runs Tomcat via `catalina.sh run`, prefixed by `. /vault/secrets/env` to source secrets HashiCorp Vault has written to a local file (see below) before startup. Config values come in as env vars via `configMapKeyRef` against the app's `*-configmap*.yaml`.
   - `farms-api-deployment.yaml` has a `livenessProbe` hitting `/farms-api/v1/checkHealth?callstack=test`; `farms-legacy-deployment.yaml` has none.
   - `farms-legacy-deployment.yaml` additionally mounts two ConfigMaps as files directly into the WAR's `WEB-INF/classes/` (`webadeConfig/applicationConfiguration.json`, `aadConfig/authentication.properties`) — these are the *deployed* counterparts of the same-named files under `../farms-legacy/src/main/resources/`, so a change to the checked-in dev version of those files usually needs a matching change to `farms-legacy-configmap-webade.yaml`/`farms-legacy-configmap-aad.yaml` here to take effect in a deployed environment.
-- **`*-configmap.yaml`** — plain key/value env config (ports, thread pools, log level, Postgres connection string built from the in-cluster `crunchy-postgres-#{ENV}#-pgbouncer` service DNS name, Azure AD client/tenant IDs).
+- **`*-configmap.yaml`** — plain key/value env config (ports, thread pools, log level, Postgres connection string built from the in-cluster `crunchy-postgres-#{ENV}#-pgbouncer` service DNS name, Azure AD client/tenant IDs, and for `farms-api` the Azure AD `CLIENT_SECRET` — see "Secrets" below).
 - **`*-configmap-aad.yaml`** / **`*-configmap-webade.yaml`** (legacy only) — whole config *files* embedded as ConfigMap data, mounted as volumes rather than env vars, because the underlying frameworks (see `../farms-legacy/CLAUDE.md` — AAD filter, WebADE filter) read them as files, not env.
 - **`*-db-access.yaml`** — `NetworkPolicy` opening ingress to the shared `crunchy-postgres-#{ENV}#` pods from just this app's pods, keyed by pod label (`app: <app>-#{ENV}#`). `farms-liquibase` gets its own copy since the migration Job runs as a distinct pod identity from the running app.
 - **`*-route.yaml`** — edge-TLS `Route` (HTTP→HTTPS redirect) fronting the app's `Service`.
 - **`*-service.yaml`** — `ClusterIP`-style `Service` selecting the deployment's pods.
 - **`farms-api-autoscaler.yaml`** / **`farms-legacy-autoscaler.yaml`** — HPA scaling 1..`#{MAX_API_COUNT}#`/`#{MAX_LEGACY_COUNT}#` replicas on CPU (30%) and memory (150%) utilization, asymmetric scale-up (fast, 15s stabilization) vs scale-down (slow, 120s period).
 
-## Secrets — Vault, not plain Kubernetes Secrets
+## Secrets — split between Vault and GitHub-secret-backed ConfigMaps
 
-None of these manifests define a `Secret` object. Every pod template instead carries `vault.hashicorp.com/agent-inject*` annotations (HashiCorp Vault Agent Injector sidecar pattern): the annotations point at a path in Vault (`#{LICENSE_PLATE}#-#{VAULT_RESOURCE}#/data/#{ENV}#/secrets`) and an inline template that renders the fetched values as `export VAR="..."` lines into `/vault/secrets/env` before the container's real entrypoint runs. `vault.hashicorp.com/auth-path` selects the cluster (`k8s-silver`/`k8s-gold`/`k8s-golddr`/`k8s-emerald` — this repo deploys to Silver). When adding a new secret-backed env var, extend the `agent-inject-template-env` block (not a `configMapKeyRef`) and reference it as a plain shell env var in the container's `args`/`command`, matching the existing `POSTGRES_PASSWORD` pattern.
+None of these manifests define a Kubernetes `Secret` object (a short-lived `farms-legacy-secret.yaml` was added in `e75de147` and removed in `00d9e5be`). Secrets reach pods in one of two ways:
+
+**1. HashiCorp Vault — database passwords only.** Every pod template carries `vault.hashicorp.com/agent-inject*` annotations (HashiCorp Vault Agent Injector pattern). They point at a path in Vault (`#{LICENSE_PLATE}#-#{VAULT_RESOURCE}#/data/#{ENV}#/secrets`) and give an inline template that renders the fetched values as `export VAR="..."` lines into `/vault/secrets/env` before the container's real entrypoint runs. `vault.hashicorp.com/auth-path` selects the cluster (`k8s-silver`/`k8s-gold`/`k8s-golddr`/`k8s-emerald`; this repo deploys to Silver). Today that path supplies only `POSTGRES_PASSWORD` (both apps) and `POSTGRES_ADMIN_PASSWORD` (liquibase job).
+- `agent-pre-populate-only: 'true'` means Vault is read **once, at pod startup**. If the Vault entry breaks, running pods keep working, and the next restart hangs in `Init:0/1`. Check `oc logs <pod> -c vault-agent-init`. A `no secret exists at ...` loop means the KV v2 latest version was deleted (undelete it in the Vault UI, namespace `platform-services`) or the path is gone.
+
+**2. GitHub Actions environment secrets → ConfigMaps — app client secrets and passwords.** These are `#{TOKEN}#` placeholders filled from `secrets.*` in `openshift-deploy.yml`, so they end up in **plain ConfigMaps**, readable by anyone with view access to the namespace:
+
+| Token | Lands in |
+|---|---|
+| `CLIENT_SECRET` | `farms-api-configmap.yaml` (env var) |
+| `BCFARMS_CLIENT_SECRET` | `farms-legacy-configmap-aad.yaml` (`aad.secret` in `authentication.properties`) |
+| `CRM_CLIENT_SECRET` | `farms-legacy-configmap-webade.yaml` (`applicationConfiguration.json`) |
+| `REPORTS_JASPER_USER_PASSWORD` | `farms-legacy-configmap-webade.yaml` (`applicationConfiguration.json`) |
+
+To rotate one, update the GitHub environment secret, re-run `openshift-deploy.yml`, then `oc rollout restart` (subPath-mounted ConfigMaps don't refresh in place). No image rebuild is needed.
+
+**Adding a new secret.** For a plain env var, prefer Vault: extend the `agent-inject-template-env` block (not a `configMapKeyRef`) and reference it as a shell env var in the container's `args`/`command`, matching `POSTGRES_PASSWORD`. A value that has to sit *inside* a framework-read config file (the legacy AAD/WebADE files) can't come from the `export`-line template as-is. That's why those use the ConfigMap route. Moving them to Vault would take a Vault template rendering the whole file, or app changes to read env vars.
 
 ## Adding a third app / new environment
 
