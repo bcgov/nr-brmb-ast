@@ -182,6 +182,39 @@ jobs:
           do
             oc apply -f "$file"
           done
+
+      - name: Wait for rollout to complete
+        run: |
+          set -o pipefail
+          DEPLOYMENT='${{ inputs.MICROSERVICE_NAME }}-deployment-${{ inputs.ENVIRONMENT_NAME }}'
+          SELECTOR='app=${{ inputs.MICROSERVICE_NAME }}-${{ inputs.ENVIRONMENT_NAME }}'
+          NS='${{ inputs.NAMESPACE }}'
+
+          # oc apply returns as soon as the spec is accepted, so a rollout that never starts -
+          # no quota for the pod, an unpullable image, a crashing container - still leaves this
+          # job green while the old image keeps serving. Block until the new pod is actually
+          # ready and fail the run if it is not.
+          if oc rollout status "deployment/$DEPLOYMENT" -n "$NS" --timeout=10m; then
+            echo "Rollout of $DEPLOYMENT complete."
+            oc get pods -n "$NS" -l "$SELECTOR" -o wide
+            exit 0
+          fi
+
+          echo "::error::Rollout of $DEPLOYMENT did not complete within 10m - see diagnostics below."
+
+          echo "--- deployment conditions ---"
+          oc get deployment "$DEPLOYMENT" -n "$NS" \
+            -o jsonpath='{range .status.conditions[*]}{.type}: {.status} / {.reason}{"\n"}  {.message}{"\n"}{end}' || true
+          echo "--- pods ---"
+          oc get pods -n "$NS" -l "$SELECTOR" -o wide || true
+          echo "--- replicasets ---"
+          oc get rs -n "$NS" -l "$SELECTOR" || true
+          echo "--- resource quota ---"
+          oc get resourcequota -n "$NS" || true
+          echo "--- recent events ---"
+          oc get events -n "$NS" --sort-by=.lastTimestamp | tail -30 || true
+
+          exit 1
       
 
 
