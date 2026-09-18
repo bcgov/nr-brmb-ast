@@ -60,22 +60,22 @@ public final class ChefsAgent implements NotificationListener {
 
 
   public void initialize(Application app) throws Exception {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     application = app;
     startTimer();
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
   
   
   
   public void shutdown() throws Exception {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     stopTimer();
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
 
 
@@ -98,7 +98,7 @@ public final class ChefsAgent implements NotificationListener {
 
   /** See if there is an scheduled import job to process. */
   private void processSubmissions() {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     ChefsService service = ServiceFactory.getChefsService();
 
@@ -123,7 +123,7 @@ public final class ChefsAgent implements NotificationListener {
       }
     }
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
 
 
@@ -136,7 +136,7 @@ public final class ChefsAgent implements NotificationListener {
    * @throws  Exception  on exception
    */
   private void startTimer() throws Exception {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     final String domain = "ChefsDomain";
     MBeanServer server = MBeanServerFactory.createMBeanServer(domain);
@@ -158,7 +158,7 @@ public final class ChefsAgent implements NotificationListener {
     server.addNotificationListener(timerName, this, null, null);
     timer.start();
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
   
   

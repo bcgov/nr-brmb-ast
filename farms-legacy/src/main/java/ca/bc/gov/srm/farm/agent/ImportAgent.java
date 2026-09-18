@@ -68,13 +68,13 @@ public final class ImportAgent implements NotificationListener {
    * @throws  Exception  on exception
    */
   public void initialize(Application app) throws Exception {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     application = app;
     checkForInProgessImports();
     startTimer();
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
   
   
@@ -111,7 +111,7 @@ public final class ImportAgent implements NotificationListener {
 
   /** See if there is an scheduled import job to process. */
   private void checkForScheduledImport() {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     ImportService service = ServiceFactory.getImportService();
 
@@ -136,13 +136,13 @@ public final class ImportAgent implements NotificationListener {
       }
     }
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
 
 
   /** Upon startup look for imports that are stuck in an "In Progress" state. */
   private void checkForInProgessImports() {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     ImportService service = ServiceFactory.getImportService();
 
@@ -158,7 +158,7 @@ public final class ImportAgent implements NotificationListener {
       logger.error("Unexpected error: ", e);
     }
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
 
 
@@ -171,7 +171,7 @@ public final class ImportAgent implements NotificationListener {
    * @throws  Exception  on exception
    */
   private void startTimer() throws Exception {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     //
     // OAS forces us to use the OAS application name as the domain. It
@@ -199,7 +199,7 @@ public final class ImportAgent implements NotificationListener {
     server.addNotificationListener(timerName, this, null, null);
     timer.start();
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
   
   
