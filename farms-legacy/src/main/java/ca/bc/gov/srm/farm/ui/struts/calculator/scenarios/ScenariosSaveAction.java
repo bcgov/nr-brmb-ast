@@ -166,7 +166,7 @@ public class ScenariosSaveAction extends ScenariosViewAction {
         }
 
         if ((verifiedUserId == null || verifiedUserId == 0) &&
-            newStateCode.equals(VERIFIED) && StringUtils.isOneOf(newCategoryCode, INTERIM, FINAL, PRODUCER_ADJUSTMENT)) {
+            newStateCode.equals(VERIFIED) && StringUtils.isOneOf(newCategoryCode, INTERIM, FINAL, PRODUCER_ADJUSTMENT, ADMINISTRATIVE_ADJUSTMENT)) {
           errors.add("", new ActionMessage(MessageConstants.ERROR_VERIFIED_BY_REQUIRED));
         }
         
