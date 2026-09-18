@@ -11,6 +11,7 @@ import java.util.Map;
 
 import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
 import ca.bc.gov.srm.farm.configuration.ConfigurationUtility;
+import ca.bc.gov.srm.farm.domain.enrolment.EnwEnrolment;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.util.StringUtils;
 
@@ -263,9 +264,18 @@ public final class CalculatorConfig {
     return getPercentParameter(programYear, ENHANCED_BENEFIT_POSITIVE_MARGIN_COMPENSATION_RATE);
   }
   
-  public static boolean reasonabilityTestsRequired(int programYear, String scenarioCategoryCode) {
-    return programYear >= GROWING_FORWARD_2013
-            && ! StringUtils.isOneOf(scenarioCategoryCode, COVERAGE_NOTICE, ENROLMENT_NOTICE_WORKFLOW);
+  public static boolean reasonabilityTestsRequired(int programYear, String scenarioCategoryCode, EnwEnrolment enwEnrolment) {
+    boolean result = false;
+
+    if(programYear >= GROWING_FORWARD_2013) {
+      if(ENROLMENT_NOTICE_WORKFLOW.equals(scenarioCategoryCode)) {
+        result = (enwEnrolment == null || enwEnrolment.getEnrolmentCalculationTypeCode() == null
+                || enwEnrolment.getEnrolmentCalculationTypeCode().equals(EnwEnrolment.CALCULATION_TYPE_BENEFIT_MARGINS));
+      } else {
+        result = ! StringUtils.isOneOf(scenarioCategoryCode, COVERAGE_NOTICE);
+      }
+    }
+    return result;
   }
 
   public static double getPreVerificationPaymentAmountRequiringASpecialist() {

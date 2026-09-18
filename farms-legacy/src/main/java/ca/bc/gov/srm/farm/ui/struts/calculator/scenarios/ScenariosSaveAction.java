@@ -158,7 +158,7 @@ public class ScenariosSaveAction extends ScenariosViewAction {
 
         }
         
-        if(CalculatorConfig.reasonabilityTestsRequired(scenario.getYear(), newCategoryCode)) {
+        if(CalculatorConfig.reasonabilityTestsRequired(scenario.getYear(), newCategoryCode, scenario.getEnwEnrolment())) {
           ReasonabilityTestResults reasonabilityTestResults = scenario.getReasonabilityTestResults();
           if(reasonabilityTestResults == null || ! reasonabilityTestResults.getIsFresh()) {
             errors.add("", new ActionMessage(MessageConstants.ERRORS_STATE_REASONABILITY_TESTS_NOT_RUN, newState));
