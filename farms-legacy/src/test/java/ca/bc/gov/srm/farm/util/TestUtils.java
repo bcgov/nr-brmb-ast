@@ -95,6 +95,29 @@ public final class TestUtils {
 
     return con;
   }
+
+	public static Connection openProdConnection() throws SQLException {
+	  String user = "username";
+	  String server = "nrkdb02.bcgov";
+	  String port = "1521";
+	  String serviceName = "malprod1.nrs.bcgov";
+	  String pwd = "password";
+
+	  Connection con = null;
+	  String driver = "oracle.jdbc.driver.OracleDriver";
+	  String url = "jdbc:oracle:thin:@//" + server + ":" + port + "/" + serviceName;
+
+	  try {
+	    Class.forName(driver);
+	  } catch (java.lang.ClassNotFoundException e) {
+	    e.printStackTrace();
+	  }
+
+	  con = DriverManager.getConnection(url, user, pwd);
+	  con.setAutoCommit(false);
+
+	  return con;
+	}
 	
 	
   public static void closeConnection(Connection conn) {
