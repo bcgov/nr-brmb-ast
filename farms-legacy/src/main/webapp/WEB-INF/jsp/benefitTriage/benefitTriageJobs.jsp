@@ -80,3 +80,22 @@
 
 </c:if>
 
+<c:if test="${form.newImportAllowed}">
+
+    <button type="button" id="benefitTriageJobButton"><fmt:message key="Benefit.Triage.Job"/></button>
+
+    <script type="text/javascript">
+      function queueBenefitTriageJob() {
+        var message = '<fmt:message key="Are.you.sure.you.want.to.queue.a.Benefit.Triage.job"/>';
+        var answer = confirm(message);
+        if(answer) {
+          showProcessing();
+          document.location.href = "<html:rewrite action="farm261"/>";
+        }
+      }
+
+      new YAHOO.widget.Button("benefitTriageJobButton", {onclick: {fn: queueBenefitTriageJob}});
+    </script>
+
+</c:if>
+

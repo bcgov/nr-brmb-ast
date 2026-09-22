@@ -408,6 +408,15 @@
       <forward name="success" path="page.farm259" />
       <forward name="failure" path="page.farm259" />
     </action>
+
+    <action path="/farm261"
+            type="ca.bc.gov.srm.farm.ui.struts.benefit.triage.QueueBenefitTriageAction"
+            name="benefitTriageJobsForm"
+            scope="request"
+            validate="false">
+      <set-property property="secureAction" value="fifoView"/>
+      <forward name="success" path="/farm259.do" redirect="true" />
+    </action>
     
     <action path="/farm254" 
             type="ca.bc.gov.srm.farm.ui.struts.dataimport.InProgressAction" 

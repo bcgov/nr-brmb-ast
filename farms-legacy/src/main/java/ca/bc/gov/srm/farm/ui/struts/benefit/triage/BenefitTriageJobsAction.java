@@ -37,6 +37,9 @@ public class BenefitTriageJobsAction extends SecureAction {
     List<ImportSearchResult> searchResults = service.searchImports(importTypes);
     form.setSearchResults(searchResults);
 
+    boolean newImportAllowed = service.getAllowNewImport(searchResults, ImportClassCodes.TRIAGE);
+    form.setNewImportAllowed(newImportAllowed);
+
     return mapping.findForward(ActionConstants.SUCCESS);
   }
 }
