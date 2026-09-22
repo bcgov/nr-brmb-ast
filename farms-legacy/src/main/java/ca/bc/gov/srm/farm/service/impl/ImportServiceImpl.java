@@ -15,14 +15,18 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.bc.gov.srm.farm.cache.Cache;
@@ -444,17 +448,43 @@ final class ImportServiceImpl extends BaseService implements ImportService {
     logger.debug("> getTriageResult");
 
     BenefitTriageResults triageResults = new BenefitTriageResults();
-    try {
-      ObjectMapper jsonObjectMapper = new ObjectMapper();
-      if (!importVersion.getAuditInfo().isEmpty()) {
-        triageResults = jsonObjectMapper.readValue(importVersion.getAuditInfo(), BenefitTriageResults.class);
+    String auditInfo = importVersion.getAuditInfo();
+
+    if ((auditInfo != null) && (auditInfo.trim().length() > 0)) {
+
+      if (auditInfo.trim().startsWith("{")) {
+
+        try {
+          ObjectMapper jsonObjectMapper = new ObjectMapper();
+          triageResults = jsonObjectMapper.readValue(auditInfo, BenefitTriageResults.class);
+        } catch (Exception e) {
+          throw new ServiceException(e);
+        }
+
+      } else {
+        //
+        // A job that fails before the triage calculation is entered is recorded
+        // by the generic import handling, which writes an XML import log instead
+        // of the JSON results. Show that message rather than failing to render
+        // the page at all.
+        //
+        triageResults.setUnexpectedError(importLogToText(auditInfo));
       }
-    } catch (Exception e) {
-      throw new ServiceException(e);
-    } 
+    }
     logger.debug("< getTriageResult");
 
     return triageResults;
+  }
+
+  /**
+   * Turn an XML import log into something readable for display.
+   *
+   * @param importLogXml the log as written by ImportLogFormatter
+   *
+   * @return the message it wraps
+   */
+  private String importLogToText(final String importLogXml) {
+    return StringEscapeUtils.unescapeXml(importLogXml.replaceAll("<[^>]*>", "")).trim();
   }
 
   /**
@@ -561,15 +591,51 @@ final class ImportServiceImpl extends BaseService implements ImportService {
 
     try {
       VersionDAO vdao = new VersionDAO(connection);
+      String message;
 
-      vdao.importFailed(iv.getImportVersionId(),
-          ImportLogFormatter.formatImportException(cause),
-          iv.getImportedByUser());
+      if (ImportClassCodes.TRIAGE.equals(iv.getImportClassCode())) {
+        //
+        // The Benefit Triage results page reads the audit info as the JSON form
+        // of BenefitTriageResults rather than the XML log the other classes use.
+        //
+        message = formatTriageFailure(cause);
+      } else {
+        message = ImportLogFormatter.formatImportException(cause);
+      }
+
+      vdao.importFailed(iv.getImportVersionId(), message, iv.getImportedByUser());
 
       connection.commit();
     } catch (Exception e) {
       logger.error("Could not record failure for import version " + iv.getImportVersionId(), e);
     }
+  }
+
+  /**
+   * Record why a Benefit Triage job could not be processed in the same shape
+   * the triage calculation itself uses when it fails.
+   *
+   * @param cause why the job could not be processed
+   *
+   * @return the results as JSON
+   *
+   * @throws JsonProcessingException if the results cannot be written
+   */
+  private String formatTriageFailure(final Exception cause) throws JsonProcessingException {
+    StringWriter stringWriter = new StringWriter();
+
+    stringWriter.append("Unexpected Exception: ");
+    stringWriter.append(cause.getMessage());
+    stringWriter.append("\n");
+
+    PrintWriter printWriter = new PrintWriter(stringWriter);
+    cause.printStackTrace(printWriter);
+    printWriter.flush();
+
+    BenefitTriageResults triageResults = new BenefitTriageResults();
+    triageResults.setUnexpectedError(stringWriter.toString());
+
+    return new ObjectMapper().writeValueAsString(triageResults);
   }
 
   /**
@@ -651,8 +717,18 @@ final class ImportServiceImpl extends BaseService implements ImportService {
     logger.debug("> processStaging");
 
     String userId = iv.getImportedByUser();
-    File file = saveBlobToTempFile(iv, connection);
     Integer ivId = iv.getImportVersionId();
+
+    //
+    // Benefit Triage jobs are queued by FARMS_IMPORT_PKG.QUEUE_BENEFIT_TRIAGE_CALCULATION
+    // with no import file -- the calculation reads everything it needs from the
+    // operational tables -- so there is no blob to write out for them.
+    //
+    File file = null;
+
+    if (! ImportClassCodes.TRIAGE.equals(iv.getImportClassCode())) {
+      file = saveBlobToTempFile(iv, connection);
+    }
 
     if (ImportClassCodes.CRA.equals(iv.getImportClassCode())
         || ImportClassCodes.BCCRA.equals(iv.getImportClassCode())) {
@@ -723,8 +799,7 @@ final class ImportServiceImpl extends BaseService implements ImportService {
     } else if (ImportClassCodes.TRIAGE.equals(iv.getImportClassCode())) {
       BenefitTriageService service = ServiceFactory.getBenefitTriageService();
 
-      service.processBenefitTriage(connection, ivId, userId); 
-      file.delete();
+      service.processBenefitTriage(connection, ivId, userId);
     }
 
     logger.debug("< processStaging");
