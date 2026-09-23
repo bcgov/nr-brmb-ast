@@ -86,6 +86,13 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "../../../../../database/farms_webapp_pkg/procedures/update_cob_document.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "../../../../../database/farms_webapp_pkg/procedures/update_subscription_status.sql"
                         }
                     }

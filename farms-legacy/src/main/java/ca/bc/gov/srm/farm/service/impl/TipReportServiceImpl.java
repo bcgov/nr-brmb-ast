@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -14,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,7 +33,6 @@ import ca.bc.gov.srm.farm.cache.CacheFactory;
 import ca.bc.gov.srm.farm.cache.CacheKeys;
 import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
 import ca.bc.gov.srm.farm.configuration.ConfigurationUtility;
-import ca.bc.gov.srm.farm.dao.BlobReaderWriter;
 import ca.bc.gov.srm.farm.dao.StagingDAO;
 import ca.bc.gov.srm.farm.dao.TipBenchmarkExtractDAO;
 import ca.bc.gov.srm.farm.dao.TipReportDAO;
@@ -86,24 +83,22 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
   @Override
   public void writeTipReportToResponse(Integer tipReportDocId, HttpServletResponse response)
       throws Exception {
-    Blob blob = null;
 
     try (Transaction transaction = openTransaction()) {
       TipReportDAO dao = new TipReportDAO();
       @SuppressWarnings("resource")
       Connection dbConnection = (Connection) transaction.getDatastore();
-      blob = dao.getTipReportBlob(dbConnection, tipReportDocId, null, false);
+      byte[] document = dao.getTipReportDocument(dbConnection, tipReportDocId, null);
 
       response.reset();
       response.addHeader("content-disposition", "inline;filename=TIP_Report.pdf");
       response.setContentType(IOUtils.CONTENT_TYPE_PDF);
-      response.setContentLength((int) blob.length());
-      
+      response.setContentLength(document.length);
+
       @SuppressWarnings("resource")
       OutputStream outputStream = response.getOutputStream();
-
-      BlobReaderWriter blobReaderWriter = new BlobReaderWriter();
-      blobReaderWriter.readBlob(blob, outputStream);
+      outputStream.write(document);
+      outputStream.flush();
     }
   }
 
@@ -477,11 +472,10 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
           reportFilePaths.add(reportFilePath);
           
           try(OutputStream outputStream = Files.newOutputStream(reportFilePath, StandardOpenOption.TRUNCATE_EXISTING); ) {
-          
+
             TipReportDAO dao = new TipReportDAO();
-            Blob blob = dao.getTipReportBlob(connection, null, farmingOperationId, false);
-            BlobReaderWriter blobReaderWriter = new BlobReaderWriter();
-            blobReaderWriter.readBlob(blob, outputStream);
+            byte[] document = dao.getTipReportDocument(connection, null, farmingOperationId);
+            outputStream.write(document);
           }
           
           if(zipPath != null && (opCount % REPORTS_PER_PDF_MERGE == 0 || opCount == numOps)) {
@@ -545,12 +539,9 @@ public class TipReportServiceImpl extends BaseService implements TipReportServic
       
       Integer id = dao.upsertTipReport(connection, userId, farmingOperationId);
 
-      // put the response into a Blob
-      BlobReaderWriter blobReaderWriter = new BlobReaderWriter();
-      Blob blob = dao.getTipReportBlob(connection, id, null, true);
-      try (InputStream inStream = Files.newInputStream(reportFile, StandardOpenOption.READ)) {
-        blobReaderWriter.writeBlob(blob, inStream);
-      }
+      // put the response into the document column
+      byte[] document = Files.readAllBytes(reportFile);
+      dao.saveTipReportDocument(connection, id, document, userId);
 
       connection.commit();
     } catch (Exception e) {

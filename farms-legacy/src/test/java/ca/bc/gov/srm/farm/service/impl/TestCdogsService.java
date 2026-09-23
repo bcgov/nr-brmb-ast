@@ -13,7 +13,6 @@ package ca.bc.gov.srm.farm.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Blob;
 import java.sql.Connection;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -68,8 +67,8 @@ public class TestCdogsService {
       reportService.deleteBenefitDocument(scenario.getScenarioId());
       
       try (Connection conn = TestUtils.openConnection();) {
-        Blob blob = dao.getBlob(conn, scenario.getScenarioId(), false);
-        assertNull(blob);
+        byte[] document = dao.getDocument(conn, scenario.getScenarioId());
+        assertNull(document);
       }
 
       assertNotNull(scenario.getClient());
@@ -81,8 +80,9 @@ public class TestCdogsService {
 
       try (Connection conn = TestUtils.openConnection();) {
 
-        Blob blob = dao.getBlob(conn, scenario.getScenarioId(), false);
-        assertNotNull(blob);
+        byte[] document = dao.getDocument(conn, scenario.getScenarioId());
+        assertNotNull(document);
+        assertTrue(document.length > 0);
       }
     } catch (Exception ex) {
       ex.printStackTrace();

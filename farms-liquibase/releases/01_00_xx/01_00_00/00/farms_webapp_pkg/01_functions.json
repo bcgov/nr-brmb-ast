@@ -44,13 +44,6 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
-                            "path": "../../../../../database/farms_webapp_pkg/functions/get_cob_blob_upd.sql"
-                        }
-                    },
-                    {
-                        "sqlFile": {
-                            "relativeToChangeLogFile": "true",
-                            "splitStatements": "false",
                             "path": "../../../../../database/farms_webapp_pkg/functions/get_cob_blob.sql"
                         }
                     },

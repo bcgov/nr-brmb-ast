@@ -4,12 +4,14 @@ GRANT ALL ON SCHEMA "farms_webapp_pkg" TO postgres;
 GRANT USAGE ON SCHEMA "farms_webapp_pkg" TO "app_farms_rest_proxy";
 
 -- functions
-GRANT EXECUTE ON FUNCTION farms_webapp_pkg.decrypt TO "app_farms_rest_proxy";
-GRANT EXECUTE ON FUNCTION farms_webapp_pkg.encrypt TO "app_farms_rest_proxy";
+-- signatures are required here: the pgcrypto extension is installed into this
+-- schema (see db_preconditions/extensions/farms.ddl.create_extensions.sql) and
+-- supplies its own decrypt/encrypt overloads, so the bare name is ambiguous.
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.decrypt(text) TO "app_farms_rest_proxy";
+GRANT EXECUTE ON FUNCTION farms_webapp_pkg.encrypt(text) TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_authorized_users TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_chef_submssn_status_codes TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_clients TO "app_farms_rest_proxy";
-GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_cob_blob_upd TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_cob_blob TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_combined_farm_ip_sc TO "app_farms_rest_proxy";
 GRANT EXECUTE ON FUNCTION farms_webapp_pkg.get_configuration_parameters TO "app_farms_rest_proxy";
@@ -66,4 +68,5 @@ GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.insert_representative TO "app_farms_
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.insert_subscription TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.retry_staging TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.update_cob TO "app_farms_rest_proxy";
+GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.update_cob_document TO "app_farms_rest_proxy";
 GRANT EXECUTE ON PROCEDURE farms_webapp_pkg.update_subscription_status TO "app_farms_rest_proxy";

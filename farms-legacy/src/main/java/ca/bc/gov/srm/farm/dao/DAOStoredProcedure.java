@@ -541,19 +541,6 @@ public class DAOStoredProcedure implements AutoCloseable {
   }
 
   /**
-   * getBlob.
-   *
-   * @param   index  Input parameter.
-   *
-   * @return  The return value.
-   *
-   * @throws  SQLException  On exception.
-   */
-  public final Blob getBlob(final int index) throws SQLException {
-    return stmt.getBlob(index);
-  }
-
-  /**
    * getArray.
    *
    * @param   index  Input parameter.
