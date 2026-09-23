@@ -74,13 +74,13 @@
           "records":[
             <c:forEach varStatus="loop" var="result" items="${form.triageResults.triageItemResults}">
               {
-                "clientName":"<c:out value="${result.clientName}"/>",  
+                "clientName":"<c:out value="${result.displayClientName}" escapeXml="false"/>",
                 "participantPin":"<c:out value="${result.participantPin}"/>",
-                "programYear":"<c:out value="${result.programYear}"/>",  
+                "programYear":"<c:out value="${result.programYear}"/>",
                 "estimatedBenefit":"<c:out value="${result.estimatedBenefit}"/>",
                 "scenarioStateCodeDesc":"<c:out value="${result.scenarioStateCodeDesc}"/>",
                 "scenarioNumber":"<c:out value="${result.scenarioNumber}"/>",
-                "errorMessages":"<c:forEach var="err" items="${result.errorMessages}"><c:out value="${err}" /><br/></c:forEach><c:forEach var="msg" items="${result.failMessages}"><c:out value="${msg}" /><br/></c:forEach>",
+                "errorMessages":"<c:out value="${result.displayMessages}" escapeXml="false"/>",
               }<c:if test="${loop.index < (form.numTriageItemResults-1)}">,</c:if>
             </c:forEach> 
           ]

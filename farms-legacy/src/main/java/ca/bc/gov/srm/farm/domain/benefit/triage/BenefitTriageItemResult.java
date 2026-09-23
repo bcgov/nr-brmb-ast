@@ -13,6 +13,10 @@ package ca.bc.gov.srm.farm.domain.benefit.triage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class BenefitTriageItemResult {
 
   private Integer participantPin;
@@ -124,6 +128,45 @@ public class BenefitTriageItemResult {
 
   public void setFailMessages(List<String> failMessages) {
     this.failMessages = failMessages;
+  }
+
+  /**
+   * The error and fail messages as one HTML fragment, ready to drop into the
+   * JavaScript literal the results grid is built from.
+   *
+   * These messages are whatever the database or the calculator threw, so they
+   * routinely carry newlines, quotes and backslashes. Written out raw those
+   * terminate the JavaScript string early and the whole inline script fails to
+   * parse, which leaves the grid empty, so escape for JavaScript here after
+   * escaping the message text itself for HTML.
+   *
+   * @return the messages, one per line, or an empty string if there are none
+   */
+  @JsonIgnore
+  public String getDisplayMessages() {
+    StringBuilder text = new StringBuilder();
+
+    for (String message : getErrorMessages()) {
+      text.append(StringEscapeUtils.escapeHtml(message)).append("<br/>");
+    }
+    for (String message : getFailMessages()) {
+      text.append(StringEscapeUtils.escapeHtml(message)).append("<br/>");
+    }
+
+    return StringEscapeUtils.escapeJavaScript(text.toString());
+  }
+
+  /**
+   * The client name, escaped the same way as {@link #getDisplayMessages()}.
+   *
+   * @return the client name, or an empty string if it is not set
+   */
+  @JsonIgnore
+  public String getDisplayClientName() {
+    if (clientName == null) {
+      return "";
+    }
+    return StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(clientName));
   }
 
   @Override
