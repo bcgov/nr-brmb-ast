@@ -133,34 +133,34 @@ begin
                 who_created,
                 who_updated)
             select nextval('farms.farm_sl_seq'),
-                   '[' || case
-                              when x.inventory_class_code='1' then 'Crop'
-                              when x.inventory_class_code='2' then 'Livestock'
-                              when x.inventory_class_code='3' then 'Purchased Input'
-                              when x.inventory_class_code='4' then 'Receivable'
-                              when x.inventory_class_code='5' then 'Payable'
-                          end
-                   || ' Adjustment] Code: "'
-                   || iic.inventory_item_code
-                   || ' - '
-                   || iic.description
-                   || '", Year: '
-                   || m.year
-                   || case
-                          when in_action = 'DELETE' then ', Adjustment Deleted'
-                          else ', Adjustments: '
-                               || case
-                                      when x.inventory_class_code = '1' then 'Qty Produced: ' || round((in_quantity_produced)::numeric, 3) || ', '
-                                  end
-                               || case
-                                      when x.inventory_class_code in ('1','2') then 'Qty Start: ' || round((in_quantity_start)::numeric, 3)
-                                      || ', Price Start: ' || round((in_price_start)::numeric, 2)
-                                      || ', Qty End: ' || round((in_quantity_end)::numeric, 3)
-                                      || ', Price End: ' || round((in_price_end)::numeric, 2)
-                                      when x.inventory_class_code in ('3','4','5') then 'Start Value: ' || round((in_start_of_year_amount)::numeric, 3)
-                                      || ', End Value: ' || round((in_end_of_year_amount)::numeric, 3)
-                                  end
-                      end
+                   concat('[', case
+                                   when x.inventory_class_code='1' then 'Crop'
+                                   when x.inventory_class_code='2' then 'Livestock'
+                                   when x.inventory_class_code='3' then 'Purchased Input'
+                                   when x.inventory_class_code='4' then 'Receivable'
+                                   when x.inventory_class_code='5' then 'Payable'
+                               end,
+                          ' Adjustment] Code: "',
+                          iic.inventory_item_code,
+                          ' - ',
+                          iic.description,
+                          '", Year: ',
+                          m.year,
+                          case
+                              when in_action = 'DELETE' then ', Adjustment Deleted'
+                              else concat(', Adjustments: ',
+                                          case
+                                              when x.inventory_class_code = '1' then concat('Qty Produced: ', round((in_quantity_produced)::numeric, 3), ', ')
+                                          end,
+                                          case
+                                              when x.inventory_class_code in ('1','2') then concat('Qty Start: ', round((in_quantity_start)::numeric, 3),
+                                                  ', Price Start: ', round((in_price_start)::numeric, 2),
+                                                  ', Qty End: ', round((in_quantity_end)::numeric, 3),
+                                                  ', Price End: ', round((in_price_end)::numeric, 2))
+                                              when x.inventory_class_code in ('3','4','5') then concat('Start Value: ', round((in_start_of_year_amount)::numeric, 3),
+                                                  ', End Value: ', round((in_end_of_year_amount)::numeric, 3))
+                                          end)
+                          end)
                    log_message,
                    in_parent_scenario_id,
                    in_user,
