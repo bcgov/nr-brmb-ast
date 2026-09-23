@@ -376,13 +376,13 @@ public class AdjustmentDAO extends OracleDAO {
               } else if(item.getInventoryClassCode().equals(InventoryClassCodes.LIVESTOCK)) {
                 proc.setNull(param++, Types.NUMERIC);
                 proc.setString(param++, CropUnitCodes.getLivestockUnitCode(item.getInventoryItemCode()));
-                proc.setNull(param++, Types.VARCHAR);
-                proc.setNull(param++, Types.VARCHAR);
+                proc.setNull(param++, Types.NUMERIC);
+                proc.setNull(param++, Types.NUMERIC);
               } else {
                 proc.setNull(param++, Types.NUMERIC);
                 proc.setNull(param++, Types.VARCHAR);
-                proc.setNull(param++, Types.VARCHAR);
-                proc.setNull(param++, Types.VARCHAR);
+                proc.setNull(param++, Types.NUMERIC);
+                proc.setNull(param++, Types.NUMERIC);
               }
               proc.setLong(param++, item.getCommodityXrefId() == null ? null : item.getCommodityXrefId().longValue());
               proc.setInt(param++, item.getRevisionCount());
@@ -581,13 +581,13 @@ public class AdjustmentDAO extends OracleDAO {
           } else if(sourceItem.getInventoryClassCode().equals(InventoryClassCodes.LIVESTOCK)) {
             proc.setNull(param++, Types.NUMERIC);
             proc.setString(param++, CropUnitCodes.getLivestockUnitCode(sourceItem.getInventoryItemCode()));
-            proc.setNull(param++, Types.VARCHAR);
-            proc.setNull(param++, Types.VARCHAR);
+            proc.setNull(param++, Types.NUMERIC);
+            proc.setNull(param++, Types.NUMERIC);
           } else {
             proc.setNull(param++, Types.NUMERIC);
             proc.setNull(param++, Types.VARCHAR);
-            proc.setNull(param++, Types.VARCHAR);
-            proc.setNull(param++, Types.VARCHAR);
+            proc.setNull(param++, Types.NUMERIC);
+            proc.setNull(param++, Types.NUMERIC);
           }
           proc.setLong(param++, sourceItem.getCommodityXrefId() == null ? null : sourceItem.getCommodityXrefId().longValue());
           proc.setInt(param++, revisionCount);
