@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -46,7 +45,6 @@ import org.slf4j.LoggerFactory;
 import ca.bc.gov.srm.farm.calculator.CalculatorConfig;
 import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
 import ca.bc.gov.srm.farm.configuration.ConfigurationUtility;
-import ca.bc.gov.srm.farm.dao.BlobReaderWriter;
 import ca.bc.gov.srm.farm.dao.CobDAO;
 import ca.bc.gov.srm.farm.dao.ReportDAO;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
@@ -404,16 +402,14 @@ final class ReportServiceImpl extends BaseService implements ReportService {
       } else {
       
         //
-        // put the response into a Blob
+        // put the response into the document column
         //
-        BlobReaderWriter blobReaderWriter = new BlobReaderWriter();
-        @SuppressWarnings("resource")
-        Connection dbConnection = (Connection) transaction.getDatastore();
-        Blob blob = dao.getBlob(dbConnection, scenarioId, true);
+        byte[] document;
         try(InputStream inStream = reportConnection.getInputStream();) {
-          blobReaderWriter.writeBlob(blob, inStream);
+          document = org.apache.commons.io.IOUtils.toByteArray(inStream);
         }
-        
+        dao.saveDocument(transaction, scenarioId, document, userId);
+
       }
       
       transaction.commit();
@@ -431,30 +427,26 @@ final class ReportServiceImpl extends BaseService implements ReportService {
    * @throws Exception on error
    */
   @Override
-  public void writeCobToResponse(final Integer scenarioId, final HttpServletResponse response, String fileName) 
+  public void writeCobToResponse(final Integer scenarioId, final HttpServletResponse response, String fileName)
   throws Exception {
-    Blob blob = null;
-    
+
     try (Transaction transaction = openTransaction()) {
       CobDAO dao = new CobDAO();
       @SuppressWarnings("resource")
       Connection dbConnection = (Connection) transaction.getDatastore();
-      blob = dao.getBlob(dbConnection, scenarioId, false);
+      byte[] document = dao.getDocument(dbConnection, scenarioId);
 
       response.reset();
       response.addHeader("content-disposition", "inline;filename=" + fileName);
       response.setContentType(IOUtils.CONTENT_TYPE_PDF);
-      response.setContentLength((int) blob.length());
-      
-      try(InputStream inputStream = blob.getBinaryStream();) {
-        @SuppressWarnings("resource")
-        OutputStream outputStream = response.getOutputStream();
-        
-        BlobReaderWriter blobReaderWriter = new BlobReaderWriter();
-        blobReaderWriter.readBlob(blob, outputStream);
-      }
+      response.setContentLength(document.length);
+
+      @SuppressWarnings("resource")
+      OutputStream outputStream = response.getOutputStream();
+      outputStream.write(document);
+      outputStream.flush();
     }
-    
+
   }
   
   

@@ -203,22 +203,6 @@ abstract class OracleDAO {
   }
 
   /**
-   * getBlob.
-   *
-   * @param   resultSet  Input parameter.
-   *
-   * @return  The return value.
-   *
-   * @throws  SQLException  On exception.
-   */
-  protected Blob getBlob(final ResultSet resultSet) throws SQLException {
-    Blob blob = resultSet.getBlob(1);
-
-    return blob;
-  }
-
-
-  /**
    * getBooleanValue.
    *
    * @param   statement  Input parameter.
@@ -1072,29 +1056,6 @@ abstract class OracleDAO {
   }
 
   /**
-   * readBlob.
-   *
-   * @param   blob          The parameter value.
-   * @param   outputStream  The parameter value.
-   *
-   * @return  The return value.
-   *
-   * @throws  SQLException  On exception.
-   * @throws  IOException   On exception.
-   */
-  protected Long readBlob(final Blob blob, final OutputStream outputStream)
-    throws SQLException, IOException {
-    Long result = new Long(0);
-    try(InputStream inputStream = blob.getBinaryStream();) {
-      result = new Long(blob.length());
-      copyStream(inputStream, outputStream);
-    }
-
-    return result;
-  }
-
-
-  /**
    * Sets the value for array.
    *
    * @param   statement  Input parameter.
@@ -1721,22 +1682,6 @@ abstract class OracleDAO {
     }
 
     setSqlTimestamp(statement, index, sqlTS);
-  }
-
-  /**
-   * writeBlob.
-   *
-   * @param   blob         The parameter value.
-   * @param   inputStream  The parameter value.
-   *
-   * @throws  SQLException  On exception.
-   * @throws  IOException   On exception.
-   */
-  protected void writeBlob(final Blob blob, final InputStream inputStream)
-    throws SQLException, IOException {
-    try(OutputStream outputStream = blob.setBinaryStream(0L);) {
-      copyStream(inputStream, outputStream);
-    }
   }
 
   /**

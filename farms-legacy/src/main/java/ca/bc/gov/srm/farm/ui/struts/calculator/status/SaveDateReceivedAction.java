@@ -82,7 +82,7 @@ public class SaveDateReceivedAction extends CalculatorStatusViewAction {
 
           CalculatorService calculatorService = ServiceFactory.getCalculatorService();
           calculatorService.updateProgramYearLocalReceivedDates(scenario, newLocalStatementAReceivedDate, newLocalSuppDate, getUserId(),
-              getUserEmail());
+              getUserAccountName());
         }
 
         scenario = refreshScenario(form);

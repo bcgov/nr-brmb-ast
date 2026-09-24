@@ -59,7 +59,7 @@ public class NewParticipantSaveAction extends SecureAction {
     } else {
 
       String user = CurrentUser.getUser().getUserId();
-      String userEmail = CurrentUser.getUser().getEmailAddress();
+      String userEmail = getUserAccountName();
       
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
 

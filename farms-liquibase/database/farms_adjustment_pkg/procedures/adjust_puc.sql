@@ -64,27 +64,27 @@ begin
            who_created,
            who_updated)
         select nextval('farms.farm_sl_seq'),
-                 '[Productive Capacity Adjustment] '
-                 || (case
-                        when (in_structure_group_code is not null and in_structure_group_code::text <> '') then 'Structure Group'
-                        else 'Inventory Item'
-                    end)
-                 || ' Code: "'
-                 || (case
-                        when (in_structure_group_code is not null and in_structure_group_code::text <> '') then in_structure_group_code
-                        else in_inventory_item_code
-                    end)
-                 || ' - '
-                 || (case
-                        when (in_structure_group_code is not null and in_structure_group_code::text <> '') then sgc.description
-                        else iic.description
-                    end)
-                 || '", Year: '
-                 || m.year
-                 || case
-                        when in_action = 'DELETE' then ', Adjustment Deleted'
-                        else ', Adjustment Amount: ' || round((in_adj_amount)::numeric, 3)
-                    end
+               concat('[Productive Capacity Adjustment] ',
+                      (case
+                          when (in_structure_group_code is not null and in_structure_group_code::text <> '') then 'Structure Group'
+                          else 'Inventory Item'
+                      end),
+                      ' Code: "',
+                      (case
+                          when (in_structure_group_code is not null and in_structure_group_code::text <> '') then in_structure_group_code
+                          else in_inventory_item_code
+                      end),
+                      ' - ',
+                      (case
+                          when (in_structure_group_code is not null and in_structure_group_code::text <> '') then sgc.description
+                          else iic.description
+                      end),
+                      '", Year: ',
+                      m.year,
+                      case
+                          when in_action = 'DELETE' then ', Adjustment Deleted'
+                          else concat(', Adjustment Amount: ', round((in_adj_amount)::numeric, 3))
+                      end)
                log_message,
                in_parent_scenario_id,
                in_user,

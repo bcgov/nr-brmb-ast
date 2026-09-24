@@ -8,10 +8,10 @@ as $$
 begin
 
     update farms.farm_agristability_clients ac
-    set ac.tip_participant_ind = 'Y',
-        ac.revision_count = ac.revision_count + 1,
-        ac.who_updated = in_user,
-        ac.when_updated = current_timestamp
+    set tip_participant_ind = 'Y',
+        revision_count = ac.revision_count + 1,
+        who_updated = in_user,
+        when_updated = current_timestamp
     where ac.agristability_client_id in (
       select py.agristability_client_id
       from farms.farm_farming_operations fo
@@ -33,12 +33,12 @@ begin
     on (o.program_year_id = n.program_year_id and o.alignment_key = n.alignment_key)
     when matched then
       update set
-       o.generation_date = current_timestamp,
-       o.document = '',
-       o.farming_operation_id = n.farming_operation_id,
-       o.revision_count = o.revision_count + 1,
-       o.who_updated = in_user,
-       o.when_updated = current_timestamp
+       generation_date = current_timestamp,
+       document = '',
+       farming_operation_id = n.farming_operation_id,
+       revision_count = o.revision_count + 1,
+       who_updated = in_user,
+       when_updated = current_timestamp
     when not matched then
       insert(
         tip_report_document_id,

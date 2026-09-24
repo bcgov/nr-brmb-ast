@@ -23,13 +23,6 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
-                            "path": "../../../../../database/farms_tip_user_pkg/functions/get_tip_report_blob_upd.sql"
-                        }
-                    },
-                    {
-                        "sqlFile": {
-                            "relativeToChangeLogFile": "true",
-                            "splitStatements": "false",
                             "path": "../../../../../database/farms_tip_user_pkg/functions/get_tip_report_blob.sql"
                         }
                     },

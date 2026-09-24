@@ -156,6 +156,29 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
   
   
   @Override
+  public Integer queueBenefitTriage(String triageJobDescription, String userId) throws ServiceException {
+    logMethodStart(logger);
+
+    Integer importVersionId = null;
+    try (Transaction transaction = openTransaction()) {
+
+      Connection connection = (Connection) transaction.getDatastore();
+      connection.setAutoCommit(false);
+
+      importVersionId = queueBenefitTriage(triageJobDescription, connection, userId);
+
+    } catch (ServiceException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new ServiceException(e);
+    }
+
+    logMethodEnd(logger);
+    return importVersionId;
+  }
+
+
+  @Override
   public Integer queueBenefitTriage(String triageJobDescription, Connection connection, String userId) throws ServiceException {
     
     try {
@@ -294,7 +317,9 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       Integer baseScenarioNumber, List<BenefitTriageItemResult> results, String verifierUserEmail,
       Map<Integer, List<BPU>> yearBpuListMap, BigDecimal paymentThreshold, Connection connection, String userId)
       throws ServiceException {
-    
+
+    logger.info("Calculating Triage Benefit for {} PIN {}", programYear, participantPin);
+
     List<String> errorMessages = new ArrayList<>();
     
     BenefitTriageItemResult result = new BenefitTriageItemResult();

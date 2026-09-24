@@ -836,7 +836,7 @@ data:
             "description": null,
             "dataTypeCode": "STRING",
             "sensitiveDataInd": false,
-            "value": "#{FIFO_AGENT_ENABLED}#"
+            "value": "#{BENEFIT_TRIAGE_AGENT_ENABLED}#"
         },
         {
             "subTypeCode": "app-config",

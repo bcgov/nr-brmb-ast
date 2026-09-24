@@ -23,6 +23,13 @@
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
                             "splitStatements": "false",
+                            "path": "../../../../../database/farms_tip_user_pkg/procedures/update_tip_report_document.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "../../../../../database/farms_tip_user_pkg/procedures/upsert_tip_report_document.sql"
                         }
                     }

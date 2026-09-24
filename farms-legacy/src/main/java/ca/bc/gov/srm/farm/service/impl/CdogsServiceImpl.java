@@ -13,7 +13,6 @@ package ca.bc.gov.srm.farm.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,7 +58,6 @@ import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionParentResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
 import ca.bc.gov.srm.farm.chefs.resource.supplemental.SupplementalSubmissionDataResource;
-import ca.bc.gov.srm.farm.dao.BlobReaderWriter;
 import ca.bc.gov.srm.farm.dao.CobDAO;
 import ca.bc.gov.srm.farm.domain.Benefit;
 import ca.bc.gov.srm.farm.domain.MarginTotal;
@@ -207,18 +205,20 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
       CobDAO dao = new CobDAO();
       Connection dbConnection = (Connection) transaction.getDatastore();
       
-      Blob blob = dao.getBlob(dbConnection, scenarioId, false);
-      
-      if (blob == null) {
+      byte[] existingDocument = dao.getDocument(dbConnection, scenarioId);
+
+      if (existingDocument == null) {
         dao.insertCob(transaction, scenarioId, userId);
       } else {
         dao.updateCob(transaction, scenarioId, userId);
       }
-      
-      BlobReaderWriter blobReaderWriter = new BlobReaderWriter();
-      blob = dao.getBlob(dbConnection, scenarioId, true);
-      blobReaderWriter.writeBlob(blob, inputStream);
-        
+
+      byte[] document;
+      try (InputStream inStream = inputStream) {
+        document = org.apache.commons.io.IOUtils.toByteArray(inStream);
+      }
+      dao.saveDocument(transaction, scenarioId, document, userId);
+
       transaction.commit();
     } catch (Exception e) {
       throw new ServiceException(e);

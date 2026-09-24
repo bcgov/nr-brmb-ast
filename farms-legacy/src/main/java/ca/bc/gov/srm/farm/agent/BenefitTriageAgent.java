@@ -61,22 +61,22 @@ public final class BenefitTriageAgent implements NotificationListener {
 
 
   public void initialize(Application app) throws Exception {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     application = app;
     startTimer();
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
   
   
   
   public void shutdown() throws Exception {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     stopTimer();
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
 
 
@@ -99,7 +99,7 @@ public final class BenefitTriageAgent implements NotificationListener {
 
   /** See if there is an scheduled job to process. */
   private void runBenefitTriage() {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     ImportService service = ServiceFactory.getImportService();
 
@@ -124,7 +124,7 @@ public final class BenefitTriageAgent implements NotificationListener {
       }
     }
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
 
 
@@ -137,7 +137,7 @@ public final class BenefitTriageAgent implements NotificationListener {
    * @throws  Exception  on exception
    */
   private void startTimer() throws Exception {
-    logMethodStart(logger);
+    logMethodStartAtInfo(logger);
 
     final String domain = "BenefitTriageDomain";
     MBeanServer server = MBeanServerFactory.createMBeanServer(domain);
@@ -159,7 +159,7 @@ public final class BenefitTriageAgent implements NotificationListener {
     server.addNotificationListener(timerName, this, null, null);
     timer.start();
 
-    logMethodEnd(logger);
+    logMethodEndAtInfo(logger);
   }
   
   

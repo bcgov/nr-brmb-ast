@@ -74,4 +74,10 @@ public interface BenefitTriageService {
   
   Integer queueBenefitTriage(String triageJobDescription, Connection connection, String userId) throws ServiceException;
 
+  /**
+   * Queue a Benefit Triage job using a new transaction. For callers, such as
+   * Struts actions, that do not already have a connection to pass in.
+   */
+  Integer queueBenefitTriage(String triageJobDescription, String userId) throws ServiceException;
+
 }

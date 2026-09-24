@@ -11,7 +11,6 @@
  */
 package ca.bc.gov.srm.farm.dao;
 
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,9 +32,9 @@ public class CobDAO extends OracleDAO {
   
   private static final String DELETE_PROC = "DELETE_COB";
 
-  private static final String BLOB_UPDATE_PROC = "GET_COB_BLOB_UPD";
-
   private static final String GET_BLOB_PROC = "GET_COB_BLOB";
+
+  private static final String UPDATE_DOCUMENT_PROC = "UPDATE_COB_DOCUMENT";
   
 
 
@@ -147,29 +146,23 @@ public class CobDAO extends OracleDAO {
 
 
   /**
-   * @param   connection       connection
+   * @param   connection  connection
    * @param   scenarioId  scenarioId
-   * @param   update           update
    *
-   * @return  BLOB
+   * @return  the document content, or null if there is no COB record for the scenario
    *
    * @throws  DataAccessException  on exception
    */
   @SuppressWarnings("resource")
-  public Blob getBlob(
+  public byte[] getDocument(
   	final Connection connection,
-    final Integer scenarioId, 
-    final boolean update)
+    final Integer scenarioId)
     throws DataAccessException {
-    Blob blob = null;
+    byte[] document = null;
     DAOStoredProcedure proc = null;
     ResultSet resultSet = null;
     final int paramCount = 1;
     String procName = PACKAGE_NAME + "." + GET_BLOB_PROC;
-
-    if (update) {
-      procName = PACKAGE_NAME + "." + BLOB_UPDATE_PROC;
-    }
 
     boolean originalAutoCommit = true;
 
@@ -183,7 +176,7 @@ public class CobDAO extends OracleDAO {
       resultSet = proc.getResultSet();
 
       if (resultSet.next()) {
-        blob = resultSet.getBlob(1);
+        document = resultSet.getBytes(1);
       }
 
       connection.commit();
@@ -203,9 +196,66 @@ public class CobDAO extends OracleDAO {
       }
     }
 
-    return blob;
+    return document;
   }
-  
+
+
+
+  /**
+   * Write the generated document content onto the COB record for the scenario.
+   *
+   * @param   transaction  transaction
+   * @param   scenarioId   scenarioId
+   * @param   document     document content
+   * @param   userId       userId
+   *
+   * @throws  DataAccessException  on exception
+   */
+  public final void saveDocument(
+    final Transaction transaction,
+    final Integer scenarioId,
+    final byte[] document,
+    final String userId)
+  throws DataAccessException {
+    String procName = PACKAGE_NAME + "." + UPDATE_DOCUMENT_PROC;
+
+    @SuppressWarnings("resource")
+    Connection connection = getConnection(transaction);
+    boolean originalAutoCommit = true;
+
+    final int paramCount = 3;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+
+        int index = 1;
+        proc.setLong(index++, scenarioId == null ? null : scenarioId.longValue());
+        proc.setBytes(index++, document);
+        proc.setString(index++, userId);
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      getLog().error("Unexpected error: ", e);
+      handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
+  }
+
   
   
   /**

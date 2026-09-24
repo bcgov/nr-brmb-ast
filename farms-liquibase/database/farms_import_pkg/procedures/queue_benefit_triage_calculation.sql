@@ -9,15 +9,12 @@ declare
 
     import_date farms.farm_import_versions.when_created%type;
     import_description farms.farm_import_versions.description%type;
-    import_file farms.farm_import_versions.import_file%type;
 begin
 
     select iv.when_created,
-           iv.description,
-           iv.import_file
+           iv.description
     into import_date,
-         import_description,
-         import_file
+         import_description
     from farms.farm_import_versions iv
     where iv.import_version_id = in_cra_version_id;
 
@@ -29,13 +26,9 @@ begin
         to_char(import_date, 'YYYY/MM/DD') || ', Description: ' || import_description,
         'benefitTriage.csv',
         null,
-        import_file,
+        null, -- the triage calculation reads the operational tables, so there is no import file
         in_user
     );
-
-    update farms.farm_import_versions
-    set import_file = null
-    where import_version_id = transfer_version_id;
 
     call farms_import_pkg.update_status(
         in_cra_version_id,

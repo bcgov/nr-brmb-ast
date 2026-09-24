@@ -998,6 +998,8 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     String generateCobEnabled = System.getProperty("generate.cob.enabled");
     boolean generateCobReports = ! "N".equals(generateCobEnabled);
+    // TODO temporarily disabled for OpenShift until the new Jasper report is integrated
+    generateCobReports = false;
 
     if(generateCobReports) {
       for(Scenario curScenario : scenarios) {

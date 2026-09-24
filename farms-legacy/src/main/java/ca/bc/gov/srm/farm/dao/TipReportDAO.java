@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Array;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +43,7 @@ public class TipReportDAO extends OracleDAO {
 
   private static final String GET_BLOB_PROC = "GET_TIP_REPORT_BLOB";
   
-  private static final String BLOB_UPDATE_PROC = "GET_TIP_REPORT_BLOB_UPD";
+  private static final String UPDATE_DOCUMENT_PROC = "UPDATE_TIP_REPORT_DOCUMENT";
 
   private static final String GET_TIP_REPORT_DOCUMENT_ID_PROC = "GET_TIP_REPORT_DOCUMENT_ID";
   
@@ -182,28 +181,22 @@ public class TipReportDAO extends OracleDAO {
   }
 
   /**
-   * @param connection connection
-   * @param scenarioId scenarioId
-   * @param update     update
+   * @param connection         connection
+   * @param tipReportDocId     tipReportDocId
+   * @param farmingOperationId farmingOperationId
    *
-   * @return BLOB
+   * @return the document content, or null if there is no TIP report record
    *
    * @throws DataAccessException on exception
    */
   @SuppressWarnings("resource")
-  public Blob getTipReportBlob(Connection connection, Integer tipReportDocId, Integer farmingOperationId, boolean isForUpdate)
+  public byte[] getTipReportDocument(Connection connection, Integer tipReportDocId, Integer farmingOperationId)
       throws DataAccessException {
-    Blob blob = null;
+    byte[] document = null;
     DAOStoredProcedure proc = null;
     ResultSet resultSet = null;
     final int paramCount = 2;
-    String procName;
-    
-    if (isForUpdate) {
-      procName = USER_PACKAGE_NAME + "." + BLOB_UPDATE_PROC;
-    } else {
-      procName = USER_PACKAGE_NAME + "." + GET_BLOB_PROC;
-    }
+    String procName = USER_PACKAGE_NAME + "." + GET_BLOB_PROC;
 
     boolean originalAutoCommit = true;
 
@@ -212,7 +205,7 @@ public class TipReportDAO extends OracleDAO {
       connection.setAutoCommit(false);
 
       proc = new DAOStoredProcedure(connection, procName, paramCount, true);
-      
+
       int index = 1;
       proc.setLong(index++, tipReportDocId == null ? null : tipReportDocId.longValue());
       proc.setLong(index++, farmingOperationId == null ? null : farmingOperationId.longValue());
@@ -220,7 +213,7 @@ public class TipReportDAO extends OracleDAO {
       resultSet = proc.getResultSet();
 
       if (resultSet.next()) {
-        blob = resultSet.getBlob(1);
+        document = resultSet.getBytes(1);
       }
 
       connection.commit();
@@ -240,13 +233,63 @@ public class TipReportDAO extends OracleDAO {
       }
     }
 
-    return blob;
+    return document;
+  }
+
+  /**
+   * Write the generated report content onto the TIP report document record.
+   *
+   * @param connection             connection
+   * @param tipReportDocumentId    tipReportDocumentId
+   * @param document               document content
+   * @param userId                 userId
+   *
+   * @throws DataAccessException on exception
+   */
+  public final void saveTipReportDocument(
+      final Connection connection,
+      final Integer tipReportDocumentId,
+      final byte[] document,
+      final String userId) throws DataAccessException {
+    String procName = USER_PACKAGE_NAME + "." + UPDATE_DOCUMENT_PROC;
+    final int paramCount = 3;
+
+    boolean originalAutoCommit = true;
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procName, paramCount, false);) {
+
+        int index = 1;
+        proc.setLong(index++, tipReportDocumentId == null ? null : tipReportDocumentId.longValue());
+        proc.setBytes(index++, document);
+        proc.setString(index++, userId);
+        proc.execute();
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      getLog().error("Unexpected error: ", e);
+      handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
   }
 
   /**
    * @param transaction transaction
    * @param userId      userId
-   * 
+   *
    * @throws DataAccessException on exception
    */
   public final Integer getTipReportDocumentId(Connection connection, Integer farmingOperationId) throws DataAccessException {

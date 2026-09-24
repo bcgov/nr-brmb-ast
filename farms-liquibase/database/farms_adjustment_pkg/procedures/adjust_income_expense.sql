@@ -46,7 +46,7 @@ begin
         and current_timestamp between pyli.established_date and pyli.expiry_date;
 
         if v_line_item_count != 1 and (in_scenario_id is not null and in_scenario_id::text <> '') then
-            raise exception '%', farms_types_pkg.line_item_not_found_msg() || ' PY: ' || v_program_year || ' - ' || in_line_item || ' - ' || v_line_item_description || ' Eligibility: ' || in_eligibility_ind
+            raise exception '%', concat(farms_types_pkg.line_item_not_found_msg(), ' PY: ', v_program_year, ' - ', in_line_item, ' - ', v_line_item_description, ' Eligibility: ', in_eligibility_ind)
             using errcode = farms_types_pkg.line_item_not_found_num()::text;
         end if;
 
@@ -94,17 +94,17 @@ begin
            who_created,
            who_updated)
         select nextval('farms.farm_sl_seq'),
-               '[' || case when in_expense_ind='Y' then  'Expense'  else 'Income' end
-               || ' Adjustment] Code: "'
-               || li.line_item
-               || ' - '
-               || li.description
-               || '", Year: '
-               || sv.year
-               || case
-                      when in_action = 'DELETE' then ', Adjustment Deleted'
-                      else ', Adjustment Amount: ' || round((in_adj_amount)::numeric, 2)
-                  end
+               concat('[', case when in_expense_ind='Y' then  'Expense'  else 'Income' end,
+                      ' Adjustment] Code: "',
+                      li.line_item,
+                      ' - ',
+                      li.description,
+                      '", Year: ',
+                      sv.year,
+                      case
+                          when in_action = 'DELETE' then ', Adjustment Deleted'
+                          else concat(', Adjustment Amount: ', round((in_adj_amount)::numeric, 2))
+                      end)
                log_message,
                in_parent_scenario_id,
                in_user,

@@ -162,17 +162,31 @@ public final class LoggingUtils {
   public static void logMethodStart(Logger logger) {
     logger.debug("<" + Thread.currentThread().getStackTrace()[2].getMethodName());
   }
-  
+
+  public static void logMethodStartAtInfo(Logger logger) {
+    logger.info("<" + Thread.currentThread().getStackTrace()[2].getMethodName());
+  }
+
   public static void logMethodEnd(Logger logger) {
     logger.debug(">" + Thread.currentThread().getStackTrace()[2].getMethodName());
   }
-  
+
+  public static void logMethodEndAtInfo(Logger logger) {
+    logger.info(">" + Thread.currentThread().getStackTrace()[2].getMethodName());
+  }
+
   public static void logMethodEnd(Logger logger, Object result) {
     logger.debug(">" + Thread.currentThread().getStackTrace()[2].getMethodName() + " - result: " + result);
+  }
+  public static void logMethodEndAtInfo(Logger logger, Object result) {
+    logger.info(">" + Thread.currentThread().getStackTrace()[2].getMethodName() + " - result: " + result);
   }
   
   public static void logWithMethodName(Logger logger, String message) {
     logger.debug(Thread.currentThread().getStackTrace()[2].getMethodName() + ": " + message);
+  }
+  public static void logWithMethodNameAtInfo(Logger logger, String message) {
+    logger.info(Thread.currentThread().getStackTrace()[2].getMethodName() + ": " + message);
   }
   
   public static String getStackTraceString(Exception e) {
