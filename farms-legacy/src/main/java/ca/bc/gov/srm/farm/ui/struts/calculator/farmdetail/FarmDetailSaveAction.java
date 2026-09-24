@@ -113,7 +113,7 @@ public class FarmDetailSaveAction extends FarmDetailViewAction {
           if (localStatementAReceivedDateChanged || localSuppDateChanged) {
 
             calculatorService.updateProgramYearLocalReceivedDates(scenario, newLocalStatementAReceivedDate, newLocalSuppDate, getUserId(),
-                getUserEmail());
+                getUserAccountName());
           }
           
           if (!newCashMargins.equals(oldCashMargins) || 

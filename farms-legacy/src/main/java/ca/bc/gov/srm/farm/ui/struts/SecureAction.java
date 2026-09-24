@@ -150,15 +150,9 @@ public abstract class SecureAction extends Action {
 
 
   /**
-   * @return The user account email for the currently logged in user.
-   */
-  protected String getUserEmail() {
-    return CurrentUser.getUser().getEmailAddress();
-  }
-
-
-  /**
-   * @return The user account name for the currently logged in user.
+   * @return The user account name for the currently logged in user. Siteminder
+   *         hands us the address in the SMGOV_EMAIL header and it is loaded as
+   *         the account name, so this is the user's email address.
    */
   protected String getUserAccountName() {
     return CurrentUser.getUser().getAccountName();

@@ -26,7 +26,7 @@ public class QueueBenefitTriageAction extends SecureAction {
 
     BenefitTriageService service = ServiceFactory.getBenefitTriageService();
 
-    String triageJobDescription = String.format("Benefit Triage Calculation requested by user %s", getUserEmail());
+    String triageJobDescription = String.format("Benefit Triage Calculation requested by user %s", getUserAccountName());
 
     Integer importVersionId = service.queueBenefitTriage(triageJobDescription, getUserId());
     logger.debug("Queued Benefit Triage job importVersionId: " + importVersionId);

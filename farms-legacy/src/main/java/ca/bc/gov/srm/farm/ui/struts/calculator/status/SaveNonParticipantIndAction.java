@@ -23,7 +23,6 @@ import ca.bc.gov.srm.farm.domain.Scenario;
 import ca.bc.gov.srm.farm.service.CrmTransferService;
 import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
-import ca.bc.gov.srm.farm.ui.cache.CurrentUser;
 import ca.bc.gov.srm.farm.ui.struts.ActionConstants;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
 
@@ -79,7 +78,7 @@ public class SaveNonParticipantIndAction extends CalculatorStatusViewAction {
       boolean isRealBenefit = ScenarioUtils.categoryIsRealBenefit(scenario.getScenarioCategoryCode());
       if(isRealBenefit) {
         CrmTransferService transferService = ServiceFactory.getCrmTransferService();
-        String userEmail = CurrentUser.getUser().getEmailAddress();
+        String userEmail = getUserAccountName();
         transferService.scheduleBenefitTransfer(scenario, userEmail, getUserId());
       }
 

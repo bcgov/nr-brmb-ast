@@ -42,7 +42,6 @@ import ca.bc.gov.srm.farm.service.CalculatorService;
 import ca.bc.gov.srm.farm.service.ReasonabilityTestService;
 import ca.bc.gov.srm.farm.service.ServiceFactory;
 import ca.bc.gov.srm.farm.service.impl.ReasonabilityTestServiceFactory;
-import ca.bc.gov.srm.farm.ui.cache.CurrentUser;
 import ca.bc.gov.srm.farm.ui.struts.ActionConstants;
 import ca.bc.gov.srm.farm.ui.struts.message.MessageConstants;
 import ca.bc.gov.srm.farm.util.ScenarioUtils;
@@ -201,7 +200,7 @@ public class ScenariosSaveAction extends ScenariosViewAction {
               newStateCode,
               stateChangeReason,
               newCategoryCode,
-              CurrentUser.getUser().getEmailAddress(),
+              getUserAccountName(),
               null,
               null,
               null,
@@ -279,7 +278,7 @@ public class ScenariosSaveAction extends ScenariosViewAction {
         VERIFIED,
         null,
         scenario.getScenarioCategoryCode(),
-        CurrentUser.getUser().getEmailAddress(),
+        getUserAccountName(),
         null,
         null,
         null,
