@@ -37,6 +37,7 @@ public final class CrmTokenFetcher {
 
   private Logger logger = LoggerFactory.getLogger(CrmTokenFetcher.class);
 
+  /** Don't let a hung token endpoint block the calling thread indefinitely. */
   private static final long TOKEN_FETCH_TIMEOUT_SECONDS = 30;
 
   private static CrmTokenFetcher instance = new CrmTokenFetcher();
@@ -104,11 +105,11 @@ public final class CrmTokenFetcher {
       throws InterruptedException, ExecutionException, TimeoutException {
 
     logger.debug("Fetching new CRM-dynamics token...");
-
+    
     // With client credentials flows the scope is ALWAYS of the shape "resource/.default", as the
     // application permissions need to be set statically (in the portal), and then granted by a tenant administrator
     ClientCredentialParameters clientCredentialParam = ClientCredentialParameters.builder(Collections.singleton(scope)).build();
-
+    
     CompletableFuture<IAuthenticationResult> future = app.acquireToken(clientCredentialParam);
     return future.get(TOKEN_FETCH_TIMEOUT_SECONDS, TimeUnit.SECONDS);
   }
@@ -126,7 +127,9 @@ public final class CrmTokenFetcher {
       clientId = cu.getValue(ConfigurationKeys.CRM_CLIENT_ID);
       secret = cu.getValue(ConfigurationKeys.CRM_CLIENT_SECRET);
       scope = dynamicsUrl + "/.default";
-      
+
+      logger.info("Initializing CRM token fetcher with client secret: " + maskSecret(secret));
+
       app = ConfidentialClientApplication.builder(
                 clientId,
                 ClientCredentialFactory.createFromSecret(secret))
@@ -135,6 +138,24 @@ public final class CrmTokenFetcher {
       
       initialized = true;
     }
+  }
+
+  /**
+   * Mask the secret the same way the Azure portal does: show the first
+   * three characters and a fixed-length mask, so the log never reveals
+   * the rest of the secret or its length.
+   */
+  private static String maskSecret(String value) {
+    final int visibleChars = 3;
+    final String mask = "******************";
+
+    if(value == null) {
+      return "null";
+    }
+    if(value.length() <= visibleChars) {
+      return mask;
+    }
+    return value.substring(0, visibleChars) + mask;
   }
 
 }
