@@ -1,5 +1,5 @@
 name: Liquibase DDL application
-run-name: Deploy Liquibase to ${{ inputs.ENVIRONMENT_NAME }}
+run-name: Deploy Liquibase:${{ inputs.TAG }} to ${{ inputs.ENVIRONMENT_NAME }}
 
 on:
   workflow_dispatch:
