@@ -1,4 +1,4 @@
-name: Build farms-legacy.war files
+name: Build farms-legacy
 run-name: Build farms-legacy ${{ inputs.TAG }}
 
 on:

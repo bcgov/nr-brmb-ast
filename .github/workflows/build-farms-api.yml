@@ -1,4 +1,4 @@
-name: Build farms-api.war files
+name: Build farms-api
 run-name: Build farms-api ${{ inputs.TAG }}
 
 on:
