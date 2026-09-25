@@ -7,7 +7,6 @@ on:
           required: true
           type: string
           description: Additional tag to apply to images being built
-          default: latest
 
 jobs:
   

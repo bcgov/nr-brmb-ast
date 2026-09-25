@@ -40,6 +40,17 @@ jobs:
       contents: read
       packages: write
     steps:
+      # docker/metadata-action silently drops a raw tag with an empty value, so a blank TAG
+      # would push the image without the requested tag instead of failing.
+      - name: Reject empty TAG
+        env:
+          TAG: ${{ inputs.TAG }}
+        run: |
+          if [ -z "${TAG// /}" ]; then
+            echo "::error::TAG must be entered."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
