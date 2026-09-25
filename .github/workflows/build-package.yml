@@ -46,7 +46,7 @@ jobs:
         env:
           TAG: ${{ inputs.TAG }}
         run: |
-          if [ -z "${TAG// /}" ]; then
+          if [ -z "${TAG//[[:space:]]/}" ]; then
             echo "::error::TAG must be entered."
             exit 1
           fi

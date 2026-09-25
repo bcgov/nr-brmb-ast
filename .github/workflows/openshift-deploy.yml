@@ -65,7 +65,7 @@ jobs:
           FAILED=0
           for NAME in MICROSERVICE_NAME ENVIRONMENT_NAME NAMESPACE TAG; do
             VALUE="${!NAME}"
-            if [ -z "${VALUE// /}" ] || [ "$VALUE" == "-- select --" ]; then
+            if [ -z "${VALUE//[[:space:]]/}" ] || [ "$VALUE" == "-- select --" ]; then
               echo "::error::$NAME must be selected/entered."
               FAILED=1
             fi

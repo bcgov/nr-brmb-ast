@@ -57,7 +57,7 @@ jobs:
           FAILED=0
           for NAME in FORM_NAME TARGET_ENVIRONMENT; do
             VALUE="${!NAME}"
-            if [ -z "${VALUE// /}" ] || [ "$VALUE" == "-- select --" ]; then
+            if [ -z "${VALUE//[[:space:]]/}" ] || [ "$VALUE" == "-- select --" ]; then
               echo "::error::$NAME must be selected."
               FAILED=1
             fi
