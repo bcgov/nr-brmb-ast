@@ -40,14 +40,33 @@ jobs:
       contents: read
       packages: write
     steps:
+      # docker/metadata-action silently drops a raw tag with an empty value, so a blank TAG
+      # would push the image without the requested tag instead of failing.
+      - name: Reject empty TAG
+        env:
+          TAG: ${{ inputs.TAG }}
+        run: |
+          if [ -z "${TAG// /}" ]; then
+            echo "::error::TAG must be entered."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.DEPLOYMENT_BRANCH }}
 
+      # Read the project's own <version>, a direct child of <project>. Grepping for the first
+      # <version> picked up <parent><version> instead (e.g. Spring Boot's 3.4.10 for farms-api).
       - name: Extract version number
         id: getVersion
-        run: echo "VERSION_NUMBER=$(grep -Po -m 1 '(?<=<version>)[0-9\.]+(-SNAPSHOT)?'  ${{ inputs.MICROSERVICE_NAME }}/pom.xml )" >> $GITHUB_OUTPUT
+        run: |
+          VERSION_NUMBER=$(python3 -c "
+          import sys, xml.etree.ElementTree as ET
+          root = ET.parse(sys.argv[1]).getroot()
+          print(next(c.text.strip() for c in root if c.tag.split('}')[-1] == 'version'))
+          " '${{ inputs.MICROSERVICE_NAME }}/pom.xml')
+          echo "VERSION_NUMBER=$VERSION_NUMBER" >> $GITHUB_OUTPUT
 
       - name: Set up JDK
         uses: actions/setup-java@v3

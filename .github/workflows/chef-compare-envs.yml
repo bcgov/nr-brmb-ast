@@ -4,10 +4,13 @@ run-name: Compare ${{ inputs.SOURCE_ENVIRONMENT}} to ${{ inputs.TARGET_ENVIRONME
 on:
   workflow_dispatch:
     inputs:
+      # GitHub always preselects the first choice option, so FORM_NAME and TARGET_ENVIRONMENT
+      # start with a placeholder that the validate-inputs job rejects - forces an explicit selection.
       FORM_NAME:
         required: true
         type: choice
         options:
+          - "-- select --"
           - ADJUSTMENT_REQUEST_BCEID
           - ADJUSTMENT_REQUEST_IDIR
           - ADVANCED_PAYMENT_INTERIM_BCEID
@@ -35,12 +38,34 @@ on:
         required: true
         type: choice
         options:
+          - "-- select --"
           - dev
           - test
           - prod
 
 jobs:
+  # Rejects any input left on its "-- select --" placeholder. Runs as a separate job so a bad
+  # TARGET_ENVIRONMENT fails before export-target references it as a GitHub environment.
+  validate-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject unselected inputs
+        env:
+          FORM_NAME: ${{ inputs.FORM_NAME }}
+          TARGET_ENVIRONMENT: ${{ inputs.TARGET_ENVIRONMENT }}
+        run: |
+          FAILED=0
+          for NAME in FORM_NAME TARGET_ENVIRONMENT; do
+            VALUE="${!NAME}"
+            if [ -z "${VALUE// /}" ] || [ "$VALUE" == "-- select --" ]; then
+              echo "::error::$NAME must be selected."
+              FAILED=1
+            fi
+          done
+          exit $FAILED
+
   export-source:
+    needs: validate-inputs
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.SOURCE_ENVIRONMENT }}
@@ -70,6 +95,7 @@ jobs:
           path: output/source-form-pretty.json
 
   export-target:
+    needs: validate-inputs
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.TARGET_ENVIRONMENT }}

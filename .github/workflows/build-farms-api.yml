@@ -1,4 +1,5 @@
-name: Build farms-api.war files
+name: Build farms-api
+run-name: Build farms-api ${{ inputs.TAG }}
 
 on:
   workflow_dispatch:
@@ -7,7 +8,6 @@ on:
           required: true
           type: string
           description: Additional tag to apply to images being built
-          default: latest
 
 jobs:
   

@@ -4,22 +4,47 @@ run-name: Load test ${{ inputs.MICROSERVICE_NAME }} in ${{ inputs.ENVIRONMENT_NA
 on:
   workflow_dispatch:
     inputs:
+      # GitHub always preselects the first choice option, so each list starts with a
+      # placeholder that the validate-inputs job rejects - forces an explicit selection.
       MICROSERVICE_NAME:
         required: true
         type: choice
         options:
+          - "-- select --"
           - farms-api
       ENVIRONMENT_NAME:
         required: true
         type: choice
         options:
+          - "-- select --"
           - dev
           - dlvr
           - test
           - prod
 
 jobs:
+  # Rejects any input left on its "-- select --" placeholder. Runs as a separate job so a bad
+  # ENVIRONMENT_NAME fails before the build job references it as a GitHub environment.
+  validate-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject unselected inputs
+        env:
+          MICROSERVICE_NAME: ${{ inputs.MICROSERVICE_NAME }}
+          ENVIRONMENT_NAME: ${{ inputs.ENVIRONMENT_NAME }}
+        run: |
+          FAILED=0
+          for NAME in MICROSERVICE_NAME ENVIRONMENT_NAME; do
+            VALUE="${!NAME}"
+            if [ -z "${VALUE// /}" ] || [ "$VALUE" == "-- select --" ]; then
+              echo "::error::$NAME must be selected."
+              FAILED=1
+            fi
+          done
+          exit $FAILED
+
   build:
+    needs: validate-inputs
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.ENVIRONMENT_NAME }}
