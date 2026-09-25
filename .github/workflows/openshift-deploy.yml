@@ -22,14 +22,6 @@ on:
           - dlvr
           - test
           - prod
-      NAMESPACE:
-        required: true
-        type: choice
-        options:
-          - "-- select --"
-          - e980f4-dev
-          - e980f4-test
-          - e980f4-prod
       TAG:
         required: true
         type: string
@@ -41,9 +33,6 @@ on:
       ENVIRONMENT_NAME:
         required: true
         type: string
-      NAMESPACE:
-        required: true
-        type: string
       TAG:
         required: true
         type: string
@@ -52,18 +41,20 @@ on:
 jobs:
   # Rejects any input left on its "-- select --" placeholder or blank. Runs as a separate
   # job so a bad ENVIRONMENT_NAME fails before the build job references it as a GitHub environment.
+  # Also derives the OpenShift namespace from ENVIRONMENT_NAME (dlvr shares the dev namespace).
   validate-inputs:
     runs-on: ubuntu-latest
+    outputs:
+      NAMESPACE: ${{ steps.namespace.outputs.NAMESPACE }}
     steps:
       - name: Reject unselected or empty inputs
         env:
           MICROSERVICE_NAME: ${{ inputs.MICROSERVICE_NAME }}
           ENVIRONMENT_NAME: ${{ inputs.ENVIRONMENT_NAME }}
-          NAMESPACE: ${{ inputs.NAMESPACE }}
           TAG: ${{ inputs.TAG }}
         run: |
           FAILED=0
-          for NAME in MICROSERVICE_NAME ENVIRONMENT_NAME NAMESPACE TAG; do
+          for NAME in MICROSERVICE_NAME ENVIRONMENT_NAME TAG; do
             VALUE="${!NAME}"
             if [ -z "${VALUE//[[:space:]]/}" ] || [ "$VALUE" == "-- select --" ]; then
               echo "::error::$NAME must be selected/entered."
@@ -71,6 +62,22 @@ jobs:
             fi
           done
           exit $FAILED
+
+      - name: Derive namespace from environment
+        id: namespace
+        env:
+          ENVIRONMENT_NAME: ${{ inputs.ENVIRONMENT_NAME }}
+        run: |
+          case "$ENVIRONMENT_NAME" in
+            dev|dlvr) NAMESPACE=e980f4-dev ;;
+            test)     NAMESPACE=e980f4-test ;;
+            prod)     NAMESPACE=e980f4-prod ;;
+            *)
+              echo "::error::No namespace known for ENVIRONMENT_NAME '$ENVIRONMENT_NAME'."
+              exit 1
+              ;;
+          esac
+          echo "NAMESPACE=$NAMESPACE" >> "$GITHUB_OUTPUT"
 
   build:
     needs: validate-inputs
@@ -116,9 +123,9 @@ jobs:
           #Common variables
           LICENSE_PLATE: 'e980f4'
           #Vault path is different for prod than all other environments
-          VAULT_RESOURCE: ${{ inputs.NAMESPACE == 'e980f4-prod' && 'prod' || 'nonprod'  }}
+          VAULT_RESOURCE: ${{ needs.validate-inputs.outputs.NAMESPACE == 'e980f4-prod' && 'prod' || 'nonprod'  }}
           ENV: ${{ inputs.ENVIRONMENT_NAME }}
-          NAMESPACE: ${{ inputs.NAMESPACE }}
+          NAMESPACE: ${{ needs.validate-inputs.outputs.NAMESPACE }}
           TAG: ${{ inputs.TAG }}
           IMAGE_BY_DIGEST: ${{ steps.getDigest.outputs.IMAGE_BY_DIGEST }}
           SID: ${{ github.run_id }}
@@ -161,7 +168,7 @@ jobs:
           
           #Frontend variables
           MAX_UI_COUNT: ${{ vars.MAX_UI_COUNT }}
-          FARMS_REST_URI: https://farms-api-route-${{ inputs.ENVIRONMENT_NAME }}-${{inputs.NAMESPACE}}.apps.silver.devops.gov.bc.ca/farms-api/v1
+          FARMS_REST_URI: https://farms-api-route-${{ inputs.ENVIRONMENT_NAME }}-${{needs.validate-inputs.outputs.NAMESPACE}}.apps.silver.devops.gov.bc.ca/farms-api/v1
 
           ACTIVE_PORT: ${{ vars.TOMCAT_PORT }}
           LOCAL_CHECKTOKEN_ENDPOINT: ${{ vars.LOCAL_CHECKTOKEN_ENDPOINT }}
@@ -201,7 +208,7 @@ jobs:
         with:
           openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
           openshift_token: ${{secrets.OPENSHIFT_TOKEN}}
-          namespace: ${{ inputs.NAMESPACE }}
+          namespace: ${{ needs.validate-inputs.outputs.NAMESPACE }}
 
       - name: Apply .yaml files to openshift
         run: |
@@ -215,7 +222,7 @@ jobs:
           set -o pipefail
           DEPLOYMENT='${{ inputs.MICROSERVICE_NAME }}-deployment-${{ inputs.ENVIRONMENT_NAME }}'
           SELECTOR='app=${{ inputs.MICROSERVICE_NAME }}-${{ inputs.ENVIRONMENT_NAME }}'
-          NS='${{ inputs.NAMESPACE }}'
+          NS='${{ needs.validate-inputs.outputs.NAMESPACE }}'
 
           # oc apply returns as soon as the spec is accepted, so a rollout that never starts -
           # no quota for the pod, an unpullable image, a crashing container - still leaves this
