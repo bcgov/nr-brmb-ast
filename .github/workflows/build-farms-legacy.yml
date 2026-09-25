@@ -1,5 +1,5 @@
 name: Build farms-legacy.war files
-run-name: Build farms-legacy:${{ inputs.TAG }}
+run-name: Build farms-legacy ${{ inputs.TAG }}
 
 on:
   workflow_dispatch:
