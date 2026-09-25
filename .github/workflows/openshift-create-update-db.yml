@@ -16,29 +16,22 @@ on:
           - test
           - prod
           - tools
-      NAMESPACE:
-        required: true
-        type: choice
-        options:
-          - "-- select --"
-          - e980f4-dev
-          - e980f4-test
-          - e980f4-prod
-          - e980f4-tools
 
 jobs:
   # Rejects any input left on its "-- select --" placeholder. Runs as a separate job so a bad
   # ENVIRONMENT_NAME fails before the build job references it as a GitHub environment.
+  # Also derives the OpenShift namespace from ENVIRONMENT_NAME (dlvr shares the dev namespace).
   validate-inputs:
     runs-on: ubuntu-latest
+    outputs:
+      NAMESPACE: ${{ steps.namespace.outputs.NAMESPACE }}
     steps:
       - name: Reject unselected inputs
         env:
           ENVIRONMENT_NAME: ${{ inputs.ENVIRONMENT_NAME }}
-          NAMESPACE: ${{ inputs.NAMESPACE }}
         run: |
           FAILED=0
-          for NAME in ENVIRONMENT_NAME NAMESPACE; do
+          for NAME in ENVIRONMENT_NAME; do
             VALUE="${!NAME}"
             if [ -z "${VALUE//[[:space:]]/}" ] || [ "$VALUE" == "-- select --" ]; then
               echo "::error::$NAME must be selected."
@@ -46,6 +39,23 @@ jobs:
             fi
           done
           exit $FAILED
+
+      - name: Derive namespace from environment
+        id: namespace
+        env:
+          ENVIRONMENT_NAME: ${{ inputs.ENVIRONMENT_NAME }}
+        run: |
+          case "$ENVIRONMENT_NAME" in
+            dev|dlvr) NAMESPACE=e980f4-dev ;;
+            test)     NAMESPACE=e980f4-test ;;
+            prod)     NAMESPACE=e980f4-prod ;;
+            tools)    NAMESPACE=e980f4-tools ;;
+            *)
+              echo "::error::No namespace known for ENVIRONMENT_NAME '$ENVIRONMENT_NAME'."
+              exit 1
+              ;;
+          esac
+          echo "NAMESPACE=$NAMESPACE" >> "$GITHUB_OUTPUT"
 
   build:
     needs: validate-inputs
@@ -69,7 +79,7 @@ jobs:
         env:
           LICENSE_PLATE: 'e980f4'
           #Vault path is different for prod than all other environments
-          VAULT_RESOURCE: ${{ inputs.NAMESPACE == 'e980f4-prod' && 'prod' || 'nonprod'  }}        
+          VAULT_RESOURCE: ${{ needs.validate-inputs.outputs.NAMESPACE == 'e980f4-prod' && 'prod' || 'nonprod'  }}        
           ENV: ${{ inputs.ENVIRONMENT_NAME }}
           DB_STORAGE: ${{ vars.DB_STORAGE }}
           DB_MAX_CPU: ${{ vars.DB_MAX_CPU }}
@@ -95,7 +105,7 @@ jobs:
         with:
           openshift_server_url: ${{secrets.openshift_server_url}}
           openshift_token: ${{secrets.openshift_token}}
-          namespace: ${{ inputs.NAMESPACE }}
+          namespace: ${{ needs.validate-inputs.outputs.NAMESPACE }}
 
       - name: zip and install helm chart
         run: |

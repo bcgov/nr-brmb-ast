@@ -25,6 +25,5 @@ jobs:
     with:
       TAG: 1.0.0
       MICROSERVICE_NAME: farms-api
-      NAMESPACE: e980f4-dev
       ENVIRONMENT_NAME: dev
 
