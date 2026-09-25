@@ -463,10 +463,10 @@ final class ImportServiceImpl extends BaseService implements ImportService {
 
       } else {
         //
-        // A job that fails before the triage calculation is entered is recorded
-        // by the generic import handling, which writes an XML import log instead
-        // of the JSON results. Show that message rather than failing to render
-        // the page at all.
+        // Triage failures are all recorded as JSON now, but jobs that failed
+        // before that change had their error written by the generic import
+        // handling as an XML import log. Show that message for those older
+        // records rather than failing to render the page at all.
         //
         triageResults.setUnexpectedError(importLogToText(auditInfo));
       }
