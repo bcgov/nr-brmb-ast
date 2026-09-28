@@ -61,7 +61,7 @@
       <li><a href="<html:rewrite action="farm256"/>"><fmt:message key="Chefs"/></a></li>
     </w:ifUserCanPerformAction>
     <w:ifUserCanPerformAction action="fifoView">
-      <li><a href="<html:rewrite action="farm258"/>"><fmt:message key="Benefit.Triage"/></a></li>
+      <li><a href="<html:rewrite action="farm259"/>"><fmt:message key="Benefit.Triage"/></a></li>
     </w:ifUserCanPerformAction>
   </ul>
 </div>
