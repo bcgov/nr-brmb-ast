@@ -118,8 +118,8 @@ declare
     p1_msg varchar(4000) := null;
     p2_msg varchar(4000) := null;
 
-    person_id bigint := null;
-    person_rep_id bigint := null;
+    v_person_id bigint := null;
+    v_person_rep_id bigint := null;
 begin
     errors := 0;
 
@@ -163,8 +163,8 @@ begin
             or not farms_import_pkg.text_equal(z01_val.p_in_participant_language_code::varchar, z01_val.p_out_participant_language_code)
             or not farms_import_pkg.text_equal(z01_val.p_in_public_office_indicator, z01_val.p_out_public_office_indicator)
             or not farms_import_pkg.text_equal(to_char(z01_val.p_in_identity_effective_date, 'YYYYMMDD'), to_char(z01_val.p_out_identity_effective_date, 'YYYYMMDD'))
-            or not farms_import_pkg.numbers_equal(z01_val.c_person_id, person_id)
-            or not farms_import_pkg.numbers_equal(z01_val.r_person_id, person_rep_id) then
+            or not farms_import_pkg.numbers_equal(z01_val.c_person_id, v_person_id)
+            or not farms_import_pkg.numbers_equal(z01_val.r_person_id, v_person_rep_id) then
             in_out_activity := in_out_activity + 1;
             if z01_val.p_locally_updated_indicator = 'Y' then
                 out_agristability_client_id := z01_val.agristability_client_id;
@@ -242,15 +242,15 @@ begin
                 '<AGRISTATIBLITY_CLIENT action="update" participant_pin="' ||
                 farms_import_pkg.scrub(z01_val.participant_pin::varchar) || '"/>');
         end if;
-        person_id := z01_val.c_person_id;
-        person_rep_id := z01_val.r_person_id;
+        v_person_id := z01_val.c_person_id;
+        v_person_rep_id := z01_val.r_person_id;
 
         if (z01_val.p_out_identity_effective_date is null
             or z01_val.p_out_identity_effective_date <> z01_val.p_in_identity_effective_date) then
 
-            select * into person_id, in_out_activity, in_changed_contact_client_ids, p1_msg from farms_import_pkg.person(
+            select * into v_person_id, in_out_activity, in_changed_contact_client_ids, p1_msg from farms_import_pkg.person(
                 in_version_id,
-                person_id,
+                v_person_id,
                 z01_val.c_in_address_1,
                 z01_val.c_in_address_2,
                 z01_val.c_in_city,
@@ -285,9 +285,9 @@ begin
                 in_changed_contact_client_ids
             );
 
-            select * into person_rep_id, in_out_activity, in_changed_contact_client_ids, p2_msg from farms_import_pkg.person(
+            select * into v_person_rep_id, in_out_activity, in_changed_contact_client_ids, p2_msg from farms_import_pkg.person(
                 in_version_id,
-                person_rep_id,
+                v_person_rep_id,
                 z01_val.r_in_address_1,
                 z01_val.r_in_address_2,
                 z01_val.r_in_city,
@@ -356,8 +356,8 @@ begin
                 z01_val.p_in_participant_class_code::varchar,
                 z01_val.p_in_participant_language_code::varchar,
                 z01_val.p_in_public_office_indicator,
-                person_id,
-                person_rep_id,
+                v_person_id,
+                v_person_rep_id,
                 'N',
                 1,
                 in_user,
@@ -373,8 +373,8 @@ begin
             or z01_val.p_in_participant_language_code::varchar <> z01_val.p_out_participant_language_code
             or z01_val.p_in_public_office_indicator <> z01_val.p_out_public_office_indicator
             or z01_val.p_in_identity_effective_date <> z01_val.p_out_identity_effective_date
-            or z01_val.c_person_id <> person_id
-            or z01_val.r_person_id <> person_rep_id then
+            or z01_val.c_person_id <> v_person_id
+            or z01_val.r_person_id <> v_person_rep_id then
             if z01_val.p_locally_updated_indicator <> 'Y' then
                 -- update
                 update farms.farm_agristability_clients
@@ -386,8 +386,8 @@ begin
                     participant_lang_code = z01_val.p_in_participant_language_code::varchar,
                     public_office_ind = z01_val.p_in_public_office_indicator,
                     ident_effective_date = z01_val.p_in_identity_effective_date,
-                    person_id = person_id,
-                    person_id_client_contacted_by = person_rep_id,
+                    person_id = v_person_id,
+                    person_id_client_contacted_by = v_person_rep_id,
                     revision_count = revision_count + 1,
                     who_updated = in_user,
                     when_updated = current_timestamp
@@ -406,6 +406,7 @@ begin
     end if;
 exception
     when others then
+        errors := errors + 1;
         if p1_msg is not null or p2_msg is not null then
             call farms_import_pkg.append_imp1(in_version_id,
                 '<AGRISTATIBLITY_CLIENT action="error" participant_pin="' ||
