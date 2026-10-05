@@ -998,11 +998,13 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     String generateCobEnabled = System.getProperty("generate.cob.enabled");
     boolean generateCobReports = ! "N".equals(generateCobEnabled);
-    // TODO temporarily disabled for OpenShift until the new Jasper report is integrated
-    generateCobReports = false;
 
     if(generateCobReports) {
       for(Scenario curScenario : scenarios) {
+        // Only the 2023+ COB has been migrated; historical automatic generation remains disabled.
+        if (curScenario.getYear() < CalculatorConfig.GROWING_FORWARD_2023) {
+          continue;
+        }
         //
         // Automatically generate a new COB
         // It is important to do this after the state change because the

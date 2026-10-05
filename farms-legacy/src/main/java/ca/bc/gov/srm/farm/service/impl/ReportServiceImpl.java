@@ -51,6 +51,7 @@ import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.ProviderException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.log.LoggingUtils;
+import ca.bc.gov.srm.farm.report.CobReportRenderer;
 import ca.bc.gov.srm.farm.service.BaseService;
 import ca.bc.gov.srm.farm.service.ReportService;
 import ca.bc.gov.srm.farm.transaction.Transaction;
@@ -70,9 +71,6 @@ final class ReportServiceImpl extends BaseService implements ReportService {
   // These keys are found in the Oracle reports config file
   //
   private static final String KEY_BENEFITS = "farm_benefits";
-  
-  // The CoB for 2023 forward
-  private static final String KEY_BENEFIT_NOTICE_2023 = "farm_benefit_notice_2023";
   
   // The CoB for 2021 forward, if BC Enhanced Benefit is enabled
   private static final String KEY_BENEFIT_NOTICE_2021_BC_ENHANCED = "farm_benefit_notice_2021bc";
@@ -309,11 +307,18 @@ final class ReportServiceImpl extends BaseService implements ReportService {
    * @throws Exception if it could not be saved
    */
   private void generateCob(final Integer scenarioId, Integer programYear, boolean isInsert, String userId) throws Exception {
+    if (scenarioId == null || scenarioId <= 0 || programYear == null) {
+      throw new ServiceException("A scenario ID and program year are required to generate a COB.");
+    }
+    if (programYear >= CalculatorConfig.GROWING_FORWARD_2023) {
+      generateJasperCob(scenarioId, isInsert, userId);
+      return;
+    }
+
+    // Historical program years retain their year-specific Oracle templates.
     String reportKey;
     
-    if(programYear.intValue() >= CalculatorConfig.GROWING_FORWARD_2023) {
-      reportKey = KEY_BENEFIT_NOTICE_2023;
-    } else if(programYear.intValue() >= CalculatorConfig.GROWING_FORWARD_2021) {
+    if(programYear.intValue() >= CalculatorConfig.GROWING_FORWARD_2021) {
       if(CalculatorConfig.hasEnhancedBenefits(programYear)) {
         reportKey = KEY_BENEFIT_NOTICE_2021_BC_ENHANCED;
       } else {
@@ -419,6 +424,20 @@ final class ReportServiceImpl extends BaseService implements ReportService {
   }
   
   
+  private void generateJasperCob(Integer scenarioId, boolean isInsert, String userId) throws ServiceException {
+    try (Transaction transaction = openTransaction()) {
+      transaction.begin();
+      Connection connection = (Connection) transaction.getDatastore();
+      // Finish rendering before touching the saved document. A failed reprint must keep the old PDF.
+      byte[] document = new CobReportRenderer().render(connection, scenarioId);
+      CobDAO dao = new CobDAO();
+      dao.saveJasperCob(transaction, scenarioId, document, isInsert, userId);
+      transaction.commit();
+    } catch (Exception e) {
+      throw new ServiceException("Unable to generate Jasper COB for scenario " + scenarioId, e);
+    }
+  }
+
   /**
    * get the cob blob
    *
