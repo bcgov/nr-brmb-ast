@@ -18,6 +18,7 @@ It is one component of the larger `nr-brmb-ast` repo (siblings: `farms-api`, `fa
 - Logging: three separate log4j2 configs, one per run mode — `src/main/resources/log4j2.xml` (SmartTomcat), `src/test/resources/log4j2-test.xml` (unit tests; the `-test` suffix makes log4j2 resolve it ahead of the main file), and `deploy-tools/log4j2.xml` (container). All three are in version control. The main one does ship inside the war, but the `Dockerfile` copies `deploy-tools/log4j2.xml` over `WEB-INF/classes/log4j2.xml` after unzipping, so it never takes effect in a deployed container.
 - Deployment target: Tomcat 9 / Java 8, containerized (`Dockerfile`) for OpenShift. `deploy-tools/` holds the runtime `context.xml` (JNDI Postgres datasource), `server.xml`, `setenv.sh`, and `log4j2.xml` that get copied into the image at build time.
 - Database: PostgreSQL, accessed via a container-managed JNDI datasource (`jdbc/${POSTGRES_RESOURCE_NAME}`, configured in `deploy-tools/context.xml`). No connection pooling logic in the app itself — it's all Tomcat's DBCP/pool.
+- Local datasource (SmartTomcat in IntelliJ): when running locally, the datasource is configured in `.smarttomcat/farms-legacy/conf/context.xml` at the repo root (not `deploy-tools/context.xml`). It points at `jdbc:postgresql://localhost:5433/farmsdev`, so port 5433 is a local forward to the dev database that must be open before starting the app. The `.smarttomcat/` directory is git-ignored, so it won't show up in default searches.
 
 ## Architecture
 
