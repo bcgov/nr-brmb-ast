@@ -47,7 +47,7 @@
         exportBPUs.do
         exportMissingBPUs.do
         backgroundReportDownload.do
-        viewCob.do
+        viewBenefitDocument.do
         outputIncomeExpenses.do
         outputInventory.do
         outputAccruals.do
