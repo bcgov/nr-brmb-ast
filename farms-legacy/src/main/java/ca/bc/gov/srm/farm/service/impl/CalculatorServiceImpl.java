@@ -667,11 +667,12 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       } else {
         if (stateChanged && isVerified) {
           generateCobs(user, scenarios);
-        } else if (reopened) {
+        } else if (reopened && scenario.getYear() >= CalculatorConfig.GROWING_FORWARD_2023) {
+          // Pre-2023 COBs can't be regenerated, so keep the saved document.
           deleteBenefitDocuments(user, scenarios);
         }
       }
-      
+
       
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
