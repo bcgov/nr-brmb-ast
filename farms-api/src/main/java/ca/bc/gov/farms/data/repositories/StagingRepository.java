@@ -256,10 +256,10 @@ public class StagingRepository {
         jdbcTemplate.execute("call farms_staging_pkg.insert_z22(?, ?, ?, ?, ?, ?)", (CallableStatement cs) -> {
 
             int i = 1;
-            cs.setBigDecimal(i++, toBigDecimal(obj.getProductionInsuranceKey()));
-            cs.setBigDecimal(i++, toBigDecimal(obj.getParticipantPin()));
-            cs.setBigDecimal(i++, toBigDecimal(obj.getProgramYear()));
-            cs.setBigDecimal(i++, toBigDecimal(obj.getOperationNumber()));
+            cs.setObject(i++, toLong(obj.getProductionInsuranceKey()), Types.BIGINT);
+            cs.setObject(i++, obj.getParticipantPin(), Types.INTEGER);
+            cs.setObject(i++, toShort(obj.getProgramYear()), Types.SMALLINT);
+            cs.setObject(i++, toShort(obj.getOperationNumber()), Types.SMALLINT);
             cs.setString(i++, obj.getProductionInsuranceNumber());
             cs.setString(i++, userId);
 
