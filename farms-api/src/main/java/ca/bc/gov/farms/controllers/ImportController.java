@@ -139,7 +139,11 @@ public class ImportController extends CommonController {
             Long importVersionId = importVersionDto.getImportVersionId();
             InputStream inputStream = new ByteArrayInputStream(fileContent);
             String userId = "UserId";
-            importCRAService.importCSV(importVersionId, inputStream, userId);
+            if (!importCRAService.importCSV(importVersionId, inputStream, userId)) {
+                log.error("CRA staging failed for import version {}. See staging audit information for details.",
+                        importVersionId);
+                return internalServerError();
+            }
 
             importCRAService.processImport(importVersionId, userId);
 

@@ -49,8 +49,11 @@ public class ImportCRAService {
 
     private static final int DEFAULT_ERRORS = 250000;
 
+    /**
+     * Return true if staging completed successfully; false if staging errors were recorded
+     */
     @Transactional
-    public void importCSV(Long importVersionId, InputStream archive, String userId) {
+    public boolean importCSV(Long importVersionId, InputStream archive, String userId) {
 
         try {
             log.debug("Starting import: " + importVersionId);
@@ -94,13 +97,16 @@ public class ImportCRAService {
             }
 
             log.debug("updating import version");
+            boolean hasErrors = !errors.isEmpty() || !validated;
             importVersionRepository.updateControlFileInfoStg(importVersionId, userId);
             importVersionRepository.uploadedVersion(
                     importVersionId,
                     ImportLogFormatter.formatStagingXml(errors, warnings, errorRepository),
-                    Boolean.valueOf(!(errors.size() == 0) || !validated),
+                    hasErrors,
                     userId);
             log.debug("Completed csv load");
+            // Return normally so the staging status and audit information are committed.
+            return !hasErrors;
         } catch (Exception e) {
             log.error("Unexpected error: ", e);
 
