@@ -3,8 +3,10 @@
 <w:ifUserCanPerformAction action="copyYear" var="canCopy"></w:ifUserCanPerformAction>
 <w:ifUserCanPerformAction action="regenerateCob" var="canRegenerateCob"></w:ifUserCanPerformAction>
 
-<c:set var="showGenerateCob" value="${form.assignedToCurrentUser and not scenario.coverageNotice and not scenario.hasBenefitDocument and (scenario.verified or scenario.amended)}"/>
-<c:set var="showRegenerateCob" value="${form.assignedToCurrentUser and canRegenerateCob and not scenario.coverageNotice and scenario.hasBenefitDocument and (scenario.verified or scenario.amended)}"/>
+<%-- Match the cutoff in ReportServiceImpl. View COB stays available for saved reports from any year. --%>
+<c:set var="cobGenerationSupported" value="${not empty scenario.year and scenario.year ge 2023}"/>
+<c:set var="showGenerateCob" value="${cobGenerationSupported and form.assignedToCurrentUser and not scenario.coverageNotice and not scenario.hasBenefitDocument and (scenario.verified or scenario.amended)}"/>
+<c:set var="showRegenerateCob" value="${cobGenerationSupported and form.assignedToCurrentUser and canRegenerateCob and not scenario.coverageNotice and scenario.hasBenefitDocument and (scenario.verified or scenario.amended)}"/>
 
 <c:set var="showGenerateCoverageNotice" value="${form.assignedToCurrentUser and scenario.coverageNotice and not scenario.hasBenefitDocument and (scenario.verified or scenario.amended)}"/>
 <c:set var="showRegenerateCoverageNotice" value="${form.assignedToCurrentUser and scenario.coverageNotice and scenario.hasBenefitDocument and scenario.completed}"/>
@@ -230,6 +232,9 @@
                 </c:when>
                 <c:otherwise>
                   <c:choose>
+                    <c:when test="${not cobGenerationSupported}">
+                      <c:set var="cobTTText" value="COB generation is only available for program years 2023 onward."/>
+                    </c:when>
                     <c:when test="${scenario.verified}">
                       <c:set var="cobTTText" value="The Benefit has not yet been calculated."/>
                     </c:when>
@@ -260,6 +265,9 @@
                 </c:when>
                 <c:when test="${showGenerateCob}">
                   <a id="generateCobButton" href="javascript:generateCob();"><fmt:message key="Print.COB"/></a>
+                </c:when>
+                <c:when test="${not cobGenerationSupported}">
+                  COB generation is only available for program years 2023 onward.
                 </c:when>
                 <c:otherwise>
                   &nbsp;

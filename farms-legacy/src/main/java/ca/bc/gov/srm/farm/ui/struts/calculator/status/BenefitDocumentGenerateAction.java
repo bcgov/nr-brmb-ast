@@ -108,7 +108,7 @@ public class BenefitDocumentGenerateAction extends CalculatorStatusViewAction {
       // browser that reads the blob into the response.
       //
       scenario.setBenefitDocCreatedDate(new java.util.Date());
-      form.setReportUrl("viewCob.do");
+      form.setReportUrl("viewBenefitDocument.do");
       
       addScenarioLog(form, scenario, "Print COB");
     }

@@ -12,6 +12,7 @@
 package ca.bc.gov.srm.farm.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -35,6 +36,67 @@ public class CobDAO extends OracleDAO {
   private static final String GET_BLOB_PROC = "GET_COB_BLOB";
 
   private static final String UPDATE_DOCUMENT_PROC = "UPDATE_COB_DOCUMENT";
+
+  /**
+   * Persist a completed Jasper PDF within the caller's transaction. Unlike the legacy
+   * helpers, this operation never commits an empty document or clears an existing PDF
+   * in a separate transaction. The service must commit, or roll back on failure.
+   */
+  public void saveJasperCob(Transaction transaction, Integer scenarioId, byte[] document,
+      boolean isInsert, String userId) throws DataAccessException {
+    if (scenarioId == null || document == null || document.length == 0) {
+      throw new IllegalArgumentException("A scenario and non-empty COB document are required.");
+    }
+    Connection connection = getConnection(transaction);
+    try {
+      if (connection.getAutoCommit()) {
+        throw new SQLException("Saving a Jasper COB requires an active transaction.");
+      }
+      // Serialize new Jasper saves for a scenario; there is no unique document/scenario constraint.
+      try (PreparedStatement lock = connection.prepareStatement(
+          "SELECT agristability_scenario_id FROM farms.farm_agristability_scenarios "
+              + "WHERE agristability_scenario_id = ? FOR UPDATE")) {
+        lock.setLong(1, scenarioId.longValue());
+        try (ResultSet rows = lock.executeQuery()) {
+          if (!rows.next()) {
+            throw new SQLException("COB scenario no longer exists: " + scenarioId);
+          }
+        }
+      }
+      try (PreparedStatement check = connection.prepareStatement(
+          "SELECT count(*) FROM farms.farm_benefit_calc_documents WHERE agristability_scenario_id = ?")) {
+        check.setLong(1, scenarioId.longValue());
+        try (ResultSet rows = check.executeQuery()) {
+          rows.next();
+          int count = rows.getInt(1);
+          if ((isInsert && count != 0) || (!isInsert && count != 1)) {
+            throw new SQLException("COB document state changed for scenario " + scenarioId
+                + "; reload the scenario before generating or reprinting.");
+          }
+        }
+      }
+      String procedure = PACKAGE_NAME + "." + (isInsert ? INSERT_PROC : UPDATE_PROC);
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection, procedure, isInsert ? 3 : 2, false)) {
+        int index = 1;
+        if (isInsert) {
+          proc.registerOutParameter(index, Types.BIGINT);
+          proc.setLong(index++, (Long) null);
+        }
+        proc.setLong(index++, scenarioId.longValue());
+        proc.setString(index, userId);
+        proc.execute();
+      }
+      try (DAOStoredProcedure proc = new DAOStoredProcedure(connection,
+          PACKAGE_NAME + "." + UPDATE_DOCUMENT_PROC, 3, false)) {
+        proc.setLong(1, scenarioId.longValue());
+        proc.setBytes(2, document);
+        proc.setString(3, userId);
+        proc.execute();
+      }
+    } catch (SQLException e) {
+      throw new DataAccessException(e);
+    }
+  }
   
 
 

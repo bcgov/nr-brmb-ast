@@ -16,12 +16,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -51,6 +47,7 @@ import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.ProviderException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.log.LoggingUtils;
+import ca.bc.gov.srm.farm.report.CobReportRenderer;
 import ca.bc.gov.srm.farm.service.BaseService;
 import ca.bc.gov.srm.farm.service.ReportService;
 import ca.bc.gov.srm.farm.transaction.Transaction;
@@ -71,32 +68,6 @@ final class ReportServiceImpl extends BaseService implements ReportService {
   //
   private static final String KEY_BENEFITS = "farm_benefits";
   
-  // The CoB for 2023 forward
-  private static final String KEY_BENEFIT_NOTICE_2023 = "farm_benefit_notice_2023";
-  
-  // The CoB for 2021 forward, if BC Enhanced Benefit is enabled
-  private static final String KEY_BENEFIT_NOTICE_2021_BC_ENHANCED = "farm_benefit_notice_2021bc";
-  
-  // The CoB for 2021 forward, if BC Enhanced Benefit is disabled
-  private static final String KEY_BENEFIT_NOTICE_2021 = "farm_benefit_notice_2021";
-  
-  // The CoB for 2020
-  private static final String KEY_BENEFIT_NOTICE_2020 = "farm_benefit_notice_2020";
-  
-  // The CoB for 2019
-  private static final String KEY_BENEFIT_NOTICE_2019 = "farm_benefit_notice_2019";
-  
-  // The CoB for 2018
-  private static final String KEY_BENEFIT_NOTICE_2018 = "farm_benefit_notice_2018";
-  
-  // The CoB / Benefit Notice for 2017
-  private static final String KEY_BENEFIT_NOTICE_2017 = "farm_benefit_notice_2017";
-  
-  // The CoB / Benefit Notice for 2013 to 2016
-  private static final String KEY_BENEFIT_NOTICE_2013_TO_2016 = "farm_benefit_notice_2013-2016";
-  
-  // The CoB / Benefit Notice for 2012 and previous years
-  private static final String KEY_BENEFIT_NOTICE_2012 = "farm_benefit_notice_2012";
 
   private static final String KEY_SUBMISSIONS = "farm_submissions";
   
@@ -309,116 +280,34 @@ final class ReportServiceImpl extends BaseService implements ReportService {
    * @throws Exception if it could not be saved
    */
   private void generateCob(final Integer scenarioId, Integer programYear, boolean isInsert, String userId) throws Exception {
-    String reportKey;
-    
-    if(programYear.intValue() >= CalculatorConfig.GROWING_FORWARD_2023) {
-      reportKey = KEY_BENEFIT_NOTICE_2023;
-    } else if(programYear.intValue() >= CalculatorConfig.GROWING_FORWARD_2021) {
-      if(CalculatorConfig.hasEnhancedBenefits(programYear)) {
-        reportKey = KEY_BENEFIT_NOTICE_2021_BC_ENHANCED;
-      } else {
-        reportKey = KEY_BENEFIT_NOTICE_2021;
-      }
-    } else if(programYear.intValue() == CalculatorConfig.GROWING_FORWARD_2020) {
-      reportKey = KEY_BENEFIT_NOTICE_2020;
-    } else if(programYear.intValue() == CalculatorConfig.GROWING_FORWARD_2019) {
-      reportKey = KEY_BENEFIT_NOTICE_2019;
-    } else if(programYear.intValue() == CalculatorConfig.GROWING_FORWARD_2018) {
-      reportKey = KEY_BENEFIT_NOTICE_2018;
-    } else if(programYear.intValue() == CalculatorConfig.GROWING_FORWARD_2017) {
-      reportKey = KEY_BENEFIT_NOTICE_2017;
-    } else if(programYear.intValue() >= CalculatorConfig.GROWING_FORWARD_2013) {
-      reportKey = KEY_BENEFIT_NOTICE_2013_TO_2016;
-    } else {
-      reportKey = KEY_BENEFIT_NOTICE_2012;
+    if (scenarioId == null || scenarioId <= 0 || programYear == null) {
+      throw new ServiceException("A scenario ID and program year are required to generate a COB.");
     }
-
-    try (Transaction transaction = openTransaction()) {
-      transaction.begin();
-      
-      //
-      // Insert an entry into the Blob table.
-      //
-      CobDAO dao = new CobDAO();
-      
-      if(isInsert) {
-        dao.insertCob(transaction, scenarioId, userId);
-      } else {
-        dao.updateCob(transaction, scenarioId, userId);
-      }
-      
-      //
-      // Create the URL. note that this is a special direct URL to the report 
-      // server so we don't need to worry about proxy server redirects and whatnot.
-      //
-      ConfigurationUtility cu = ConfigurationUtility.getInstance();
-      String server = cu.getValue(ConfigurationKeys.DIRECT_REPORTS_SERVER);
-      String href = server + "?" + reportKey;
-      href += ("+IN_SCENARIO_ID" + "=" + "\"" + scenarioId.toString() + "\"");
-      logger.debug("generateCob URL: " + href);
-      
-      //
-      // call the URL directly
-      //
-      URL url = new URL(href);
-      HttpURLConnection reportConnection = (HttpURLConnection) url.openConnection();
-      reportConnection.setRequestMethod("GET");
-      reportConnection.setDoOutput(true);
-      reportConnection.connect();
-      
-      int responseCode = reportConnection.getResponseCode();
-      logger.debug("generateCob response code: " + responseCode);
-      
-      if(responseCode == HttpURLConnection.HTTP_MOVED_PERM
-          || responseCode == HttpURLConnection.HTTP_MOVED_TEMP
-          || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
-        
-        // Redirect
-        String locationHeader = reportConnection.getHeaderField("Location");
-        logger.warn("Received response code " + responseCode + " with redirect URL: " + locationHeader);
-
-        URL redirectUrl = new URL(locationHeader);
-        reportConnection = (HttpURLConnection) redirectUrl.openConnection();
-        reportConnection.setRequestMethod("GET");
-        reportConnection.setDoOutput(true);
-        reportConnection.connect();
-        responseCode = reportConnection.getResponseCode();
-        logger.warn("generateCob REDIRECT response code: " + responseCode);
-      }
-      
-      
-      if(responseCode >= HttpURLConnection.HTTP_BAD_REQUEST) {
-        
-        try(InputStream inputStream = reportConnection.getInputStream();) {
-          String errorOutput = org.apache.commons.io.IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-          if(StringUtils.isEmpty(errorOutput)) {
-            try(InputStream errorStream = reportConnection.getErrorStream()) {
-              errorOutput = org.apache.commons.io.IOUtils.toString(errorStream, StandardCharsets.UTF_8.name());
-            }
-          }
-          throw new Exception(errorOutput);
-        }
-        
-      } else {
-      
-        //
-        // put the response into the document column
-        //
-        byte[] document;
-        try(InputStream inStream = reportConnection.getInputStream();) {
-          document = org.apache.commons.io.IOUtils.toByteArray(inStream);
-        }
-        dao.saveDocument(transaction, scenarioId, document, userId);
-
-      }
-      
-      transaction.commit();
-    } catch (Exception e) {
-      throw new ServiceException(e);
+    // Oracle COB reports are being retired; historical notices will not be regenerated.
+    // Reject both Print and Reprint before opening a transaction. Saved PDFs are still viewable.
+    if (programYear < CalculatorConfig.GROWING_FORWARD_2023) {
+      throw new ServiceException(
+          "COB generation and reprinting are only available for program years 2023 onward. "
+          + "Existing saved COB reports can still be viewed.");
     }
+    generateJasperCob(scenarioId, isInsert, userId);
   }
   
   
+  private void generateJasperCob(Integer scenarioId, boolean isInsert, String userId) throws ServiceException {
+    try (Transaction transaction = openTransaction()) {
+      transaction.begin();
+      Connection connection = (Connection) transaction.getDatastore();
+      // Finish rendering before touching the saved document. A failed reprint must keep the old PDF.
+      byte[] document = new CobReportRenderer().render(connection, scenarioId);
+      CobDAO dao = new CobDAO();
+      dao.saveJasperCob(transaction, scenarioId, document, isInsert, userId);
+      transaction.commit();
+    } catch (Exception e) {
+      throw new ServiceException("Unable to generate Jasper COB for scenario " + scenarioId, e);
+    }
+  }
+
   /**
    * get the cob blob
    *

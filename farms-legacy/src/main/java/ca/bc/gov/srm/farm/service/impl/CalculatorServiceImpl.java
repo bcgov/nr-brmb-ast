@@ -667,11 +667,12 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
       } else {
         if (stateChanged && isVerified) {
           generateCobs(user, scenarios);
-        } else if (reopened) {
+        } else if (reopened && scenario.getYear() >= CalculatorConfig.GROWING_FORWARD_2023) {
+          // Pre-2023 COBs can't be regenerated, so keep the saved document.
           deleteBenefitDocuments(user, scenarios);
         }
       }
-      
+
       
     } catch (InvalidRevisionCountException e) {
       logger.warn("Optimistic locking exception: ", e);
@@ -998,11 +999,13 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
     
     String generateCobEnabled = System.getProperty("generate.cob.enabled");
     boolean generateCobReports = ! "N".equals(generateCobEnabled);
-    // TODO temporarily disabled for OpenShift until the new Jasper report is integrated
-    generateCobReports = false;
 
     if(generateCobReports) {
       for(Scenario curScenario : scenarios) {
+        // Only the 2023+ COB has been migrated; historical automatic generation remains disabled.
+        if (curScenario.getYear() < CalculatorConfig.GROWING_FORWARD_2023) {
+          continue;
+        }
         //
         // Automatically generate a new COB
         // It is important to do this after the state change because the
