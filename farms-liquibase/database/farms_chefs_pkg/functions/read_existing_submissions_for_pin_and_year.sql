@@ -15,7 +15,7 @@ begin
     open cur for
         select distinct sub.chef_submission_guid
         from farms.farm_chef_submissions sub
-        join farms.farm_scenarios_vw sv on sv.chef_submission_guid = sub.chef_submission_guid
+        join farms.farm_scenarios_vw sv on sv.chef_submission_id = sub.chef_submission_id
         where sub.chef_submssn_status_code not in ('CANCELLED')
         and sub.chef_form_type_code = in_chef_form_type_code
         and sub.chef_submission_guid != in_new_chef_submission_guid

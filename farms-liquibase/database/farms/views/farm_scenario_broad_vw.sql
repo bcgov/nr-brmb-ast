@@ -14,9 +14,12 @@ select ac.participant_pin,
        mc.description municipality_code_description,
        sc.agristability_scenario_id,
        ac.agristability_client_id,
+       ac.person_id,
+       ac.person_id_client_contacted_by,
        py.program_year_id,
        pyv.program_year_version_id,
        sc.combined_farm_number,
+       sc.chef_submission_id,
        sub.chef_submission_guid
 from farms.farm_agristability_clients ac
 join farms.farm_program_years py on py.agristability_client_id = ac.agristability_client_id
