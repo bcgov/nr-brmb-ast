@@ -18,8 +18,10 @@ as $$
                max(prev_fy_mv.municipality_code) over (partition by prev_fy_mv.inventory_item_code, prev_fy_mv.crop_unit_code, prev_fy_mv.program_year, prev_fy_mv.period) mx_municipality_code,
                prev_fy_mv.average_price prev_fy_end_average_price
         from (
-            select distinct extract(year from (op.fiscal_year_start - interval '1 month')) prev_fiscal_end_year,
-                   extract(month from (op.fiscal_year_start - interval '1 month')) prev_fiscal_end_month,
+            -- extract() returns numeric, so we need to cast to int to match the program_year/period columns
+            -- in farm_fair_market_values to allow the use of the index on those columns
+            select distinct extract(year from (op.fiscal_year_start - interval '1 month'))::int prev_fiscal_end_year,
+                   extract(month from (op.fiscal_year_start - interval '1 month'))::int prev_fiscal_end_month,
                    pyv.municipality_code,
                    x.inventory_item_code,
                    x.inventory_class_code,
