@@ -1505,7 +1505,24 @@ order by payable_item_code</queryString>
     <parameter name="IN_SCENARIO_ID" class="java.lang.Integer">
 
     </parameter>
-    <queryString language="SQL">with a as (
+    <parameter name="ONLY_ADJUSTED" class="java.lang.Boolean">
+      <defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
+    </parameter>
+    <queryString language="SQL">with s as (
+  select sc.agristability_scenario_id, sc.scenario_state_code,
+         py.year, pyv.municipality_code,
+         exists (
+           select 1 from farms.farm_scenario_bpu_xref x
+           where x.agristability_scenario_id = sc.agristability_scenario_id
+             and x.scenario_bpu_purpose_code = 'STANDARD'
+         ) has_saved_bpus
+  from farms.farm_agristability_scenarios sc
+  join farms.farm_program_year_versions pyv
+    on pyv.program_year_version_id = sc.program_year_version_id
+  join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+  where sc.agristability_scenario_id = $P{IN_SCENARIO_ID}
+),
+a as (
   select
     puc.productve_unit_capacity_id,
     puc.productive_capacity_amount,
@@ -1545,6 +1562,8 @@ p as (
     sgc.description structure_group_description,
     iic.inventory_item_code,
     iic.description inventory_item_description,
+    coalesce(iia.rollup_inventory_item_code, iic.inventory_item_code) rollup_inventory_item_code,
+    coalesce(sga.rollup_structure_group_code, sgc.structure_group_code) rollup_structure_group_code,
     a.productve_unit_capacity_id
       cra_productve_unit_capacity_id,
     a.productive_capacity_amount
@@ -1569,66 +1588,16 @@ p as (
   left outer join farms.farm_inventory_item_codes iic
     on a.inventory_item_code = iic.inventory_item_code
     or b.inventory_item_code = iic.inventory_item_code
+  left outer join farms.farm_inventory_item_attributes iia
+    on iia.inventory_item_code = iic.inventory_item_code
   left outer join farms.farm_inventory_item_details iid
     on iic.inventory_item_code = iid.inventory_item_code
    and iid.program_year = py.year
   left outer join farms.farm_structure_group_codes sgc
     on a.structure_group_code = sgc.structure_group_code
     or b.structure_group_code = sgc.structure_group_code
-),
-bpu2 as (
-  select
-    x.inventory_item_code,
-    x.structure_group_code,
-    x.average_margin
-  from (
-    select
-      bpu.municipality_code,
-      max(bpu.municipality_code) over (
-        partition by
-          bpu.program_year,
-          bpu.inventory_item_code,
-          bpu.structure_group_code
-      ) mx_municipality_code,
-      bpu.inventory_item_code,
-      bpu.structure_group_code,
-      bnch.average_margin
-    from farms.farm_benchmark_per_units bpu
-    join farms.farm_benchmark_years bnch
-      on bpu.benchmark_per_unit_id =
-         bnch.benchmark_per_unit_id
-     and bnch.benchmark_year = bpu.program_year - 1
-    join farms.farm_agristability_scenarios sc
-      on sc.agristability_scenario_id =
-         $P{IN_SCENARIO_ID}
-    join farms.farm_program_year_versions pyv
-      on sc.program_year_version_id =
-         pyv.program_year_version_id
-     and (
-       bpu.municipality_code = pyv.municipality_code
-       or bpu.municipality_code = '0'
-     )
-    join farms.farm_program_years py
-      on py.program_year_id = pyv.program_year_id
-    where bpu.program_year = py.year
-      and (
-        bpu.expiry_date is null
-        or bpu.expiry_date &gt;= LOCALTIMESTAMP(0)
-      )
-      and (
-        bpu.inventory_item_code in (
-          SELECT DISTINCT inventory_item_code
-          from p
-          where inventory_item_code is not null
-        )
-        or bpu.structure_group_code in (
-          SELECT DISTINCT structure_group_code
-          from p
-          where structure_group_code is not null
-        )
-      )
-  ) x
-  where x.municipality_code = x.mx_municipality_code
+  left outer join farms.farm_structure_group_attributs sga
+    on sga.structure_group_code = sgc.structure_group_code
 )
 select
   COALESCE(CAST(p.structure_group_code AS text), CAST(p.inventory_item_code AS text)) productive_unit_item_code,
@@ -1644,11 +1613,66 @@ select
   COALESCE(p.cra_productive_capacity_amount, 0)
     + COALESCE(p.adj_productive_capacity_amount, 0)
     productive_unit_new_amount,
-  bpu2.average_margin bpu_average_margin
+  coalesce(chosen.inventory_item_code, chosen.structure_group_code) bpu_lookup_code,
+  margins.year_minus_1_margin bpu_average_margin,
+  margins.year_minus_5_margin,
+  margins.year_minus_4_margin,
+  margins.year_minus_3_margin,
+  margins.year_minus_2_margin,
+  margins.year_minus_1_margin
 from p
-left outer join bpu2
-  on bpu2.inventory_item_code = p.inventory_item_code
-  or bpu2.structure_group_code = p.structure_group_code
+cross join s
+-- Use the saved set for historical notices, even if those BPUs have expired.
+left join lateral (
+  select bpu.*
+  from farms.farm_benchmark_per_units bpu
+  where bpu.program_year = s.year
+    and (
+      (s.has_saved_bpus and exists (
+        select 1 from farms.farm_scenario_bpu_xref x
+        where x.agristability_scenario_id = s.agristability_scenario_id
+          and x.scenario_bpu_purpose_code = 'STANDARD'
+          and x.benchmark_per_unit_id = bpu.benchmark_per_unit_id
+      ))
+      or (
+        not s.has_saved_bpus
+        and s.scenario_state_code not in ('COMP', 'AMEND', 'COMPLETED')
+        and (bpu.expiry_date is null or bpu.expiry_date &gt;= current_date)
+        and (bpu.municipality_code = s.municipality_code or bpu.municipality_code = '0')
+      )
+    )
+    and (
+      (p.structure_group_code is not null and bpu.structure_group_code =
+        case when s.has_saved_bpus then p.structure_group_code
+             when s.year &gt;= 2024 then p.rollup_structure_group_code
+             else p.structure_group_code end)
+      or (p.structure_group_code is null and bpu.inventory_item_code =
+        case when s.has_saved_bpus then p.inventory_item_code
+             when s.year &gt;= 2024 then p.rollup_inventory_item_code
+             else p.inventory_item_code end)
+      or (s.has_saved_bpus and s.year &gt;= 2024 and (
+        (p.structure_group_code is not null and bpu.structure_group_code = p.rollup_structure_group_code)
+        or (p.structure_group_code is null and bpu.inventory_item_code = p.rollup_inventory_item_code)
+      ))
+    )
+  -- An explicitly saved individual BPU takes precedence over a saved rollup.
+  order by
+    case when bpu.structure_group_code = p.structure_group_code
+           or bpu.inventory_item_code = p.inventory_item_code then 0 else 1 end,
+    bpu.municipality_code desc,
+    bpu.benchmark_per_unit_id desc
+  limit 1
+) chosen on true
+left join lateral (
+  select
+    max(case when byear.benchmark_year = s.year - 5 then byear.average_margin end) year_minus_5_margin,
+    max(case when byear.benchmark_year = s.year - 4 then byear.average_margin end) year_minus_4_margin,
+    max(case when byear.benchmark_year = s.year - 3 then byear.average_margin end) year_minus_3_margin,
+    max(case when byear.benchmark_year = s.year - 2 then byear.average_margin end) year_minus_2_margin,
+    max(case when byear.benchmark_year = s.year - 1 then byear.average_margin end) year_minus_1_margin
+  from farms.farm_benchmark_years byear
+  where byear.benchmark_per_unit_id = chosen.benchmark_per_unit_id
+) margins on true
 order by CAST(COALESCE(CAST(p.structure_group_code AS text), CAST(p.inventory_item_code AS text)) AS numeric)</queryString>
     <field name="PRODUCTIVE_UNIT_ITEM_CODE" class="java.lang.String">
       <property name="com.jaspersoft.studio.field.label" value="PRODUCTIVE_UNIT_ITEM_CODE" />
@@ -1668,6 +1692,14 @@ order by CAST(COALESCE(CAST(p.structure_group_code AS text), CAST(p.inventory_it
     <field name="BPU_AVERAGE_MARGIN" class="java.math.BigDecimal">
       <property name="com.jaspersoft.studio.field.label" value="BPU_AVERAGE_MARGIN" />
     </field>
+    <field name="BPU_LOOKUP_CODE" class="java.lang.String"/>
+    <field name="YEAR_MINUS_5_MARGIN" class="java.math.BigDecimal"/>
+    <field name="YEAR_MINUS_4_MARGIN" class="java.math.BigDecimal"/>
+    <field name="YEAR_MINUS_3_MARGIN" class="java.math.BigDecimal"/>
+    <field name="YEAR_MINUS_2_MARGIN" class="java.math.BigDecimal"/>
+    <field name="YEAR_MINUS_1_MARGIN" class="java.math.BigDecimal"/>
+    <!-- Page 3 includes every category; the changes section includes only actual adjustments. -->
+    <filterExpression><![CDATA[!Boolean.TRUE.equals($P{ONLY_ADJUSTED}) || ($F{PRODUCTIVE_UNIT_ADJ_AMOUNT} != null && $F{PRODUCTIVE_UNIT_ADJ_AMOUNT}.signum() != 0)]]></filterExpression>
   </subDataset>
   <subDataset name="DS_ADJUSTMENT_COUNTS" uuid="e2f66ac9-c12c-4f8b-9998-8c069f5ef66b">
     <property name="com.jaspersoft.studio.data.sql.tables" value="" />
@@ -2658,78 +2690,64 @@ FROM (
         </textElement>
         <textFieldExpression><![CDATA["Region"]]></textFieldExpression>
       </textField>
+      <!-- Participant amounts include their allocated BC enhancement, not the whole-farm enhancement. -->
       <frame>
-        <reportElement x="0" y="158" width="573" height="96" isRemoveLineWhenBlank="true" uuid="300fbe92-9f3a-4823-9317-46104cbac469">
-          <printWhenExpression><![CDATA[$F{COMBINED_FARM_NUMBER} != null]]></printWhenExpression>
-        </reportElement>
-        <staticText>
-          <reportElement x="12" y="6" width="300" height="14" forecolor="#70858C" uuid="932b65b2-5c5e-4d14-b0dc-56432e7d4881" />
-          <textElement>
-            <font size="8" isBold="true" />
-          </textElement>
-          <text><![CDATA[COMBINED FARM ALLOCATION]]></text>
-        </staticText>
-        <staticText>
-          <reportElement x="12" y="23" width="350" height="20" forecolor="#193E4B" uuid="3adb17f5-30f2-4306-88cd-a3abaa3c76aa" />
-          <textElement>
-            <font size="11" isBold="true" />
-          </textElement>
-          <text><![CDATA[Combined Farm Participant Share]]></text>
-        </staticText>
+        <reportElement key="participant-payment-breakdown" x="0" y="158" width="572" height="116"/>
+          <textField isBlankWhenNull="true">
+            <reportElement x="12" y="4" width="548" height="18" forecolor="#193E4B"/>
+            <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="11" isBold="true"/></textElement>
+            <textFieldExpression><![CDATA[$F{COMBINED_FARM_NUMBER} != null ? "Combined Farm Participant Share" : "Participant Payment"]]></textFieldExpression>
+          </textField>
+          <textField isBlankWhenNull="true">
+            <reportElement x="12" y="24" width="548" height="16" forecolor="#586A7E"/>
+            <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="8" isBold="false"/></textElement>
+            <textFieldExpression><![CDATA[$F{COMBINED_FARM_NUMBER} != null ? "Combined farm standard benefit: " + ($F{BENEFIT_BEFORE_COMBIND_FRM_PCT} == null ? "N/A" : new java.text.DecimalFormat("$#,##0.00").format($F{BENEFIT_BEFORE_COMBIND_FRM_PCT})) : "Your standard benefit and additional BC enhancement"]]></textFieldExpression>
+          </textField>
         <frame>
-          <reportElement x="12" y="47" width="240" height="45" backcolor="#FFFFFF" uuid="311f3a30-cb21-4820-9354-b51d38d8009e" />
-          <box>
-            <pen lineWidth="0.5" lineColor="#DDE2E8" />
-          </box>
-          <staticText>
-            <reportElement x="8" y="4" width="220" height="12" forecolor="#70858C" uuid="e70b817a-0abf-49ad-9fae-28b26b3b09c5" />
-            <textElement>
-              <font size="8" isBold="true" />
-            </textElement>
-            <text><![CDATA[COMBINED FARM BENEFIT]]></text>
-          </staticText>
-          <textField pattern="$#,##0.00;- $#,##0.00">
-            <reportElement x="8" y="19" width="220" height="20" forecolor="#365B68" uuid="1bf2f646-7cbf-4443-9e89-bb64dba8fe53" />
-            <textElement>
-              <font size="12" isBold="true" />
-            </textElement>
-            <textFieldExpression><![CDATA[$F{BENEFIT_BEFORE_COMBIND_FRM_PCT}]]></textFieldExpression>
+          <reportElement key="participant-standard" mode="Opaque" x="12" y="45" width="548" height="20" backcolor="#FFFFFF"/>
+          <box><bottomPen lineWidth="0.4" lineColor="#DDE2E8"/></box>
+          <textField isBlankWhenNull="true">
+            <reportElement x="8" y="1" width="370" height="18" forecolor="#183247"/>
+            <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="9" isBold="false"/></textElement>
+            <textFieldExpression><![CDATA["Standard benefit share" + ($F{COMBINED_FARM_NUMBER} != null && $F{APPLIED_BENEFIT_PERCENT} != null ? " (" + new java.text.DecimalFormat("0.0").format($F{APPLIED_BENEFIT_PERCENT}) + "%)" : "")]]></textFieldExpression>
+          </textField>
+          <textField pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
+            <reportElement key="participant-standard-amount" x="390" y="1" width="150" height="18" forecolor="#063569"/>
+            <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="9" isBold="false"/></textElement>
+            <textFieldExpression><![CDATA[$F{STANDARD_BENEFIT} != null ? $F{STANDARD_BENEFIT} : ($F{COMBINED_FARM_NUMBER} != null ? $F{BENEFIT_AFTER_APPL_BENEFIT_PCT} : $F{TOTAL_BENEFIT})]]></textFieldExpression>
           </textField>
         </frame>
         <frame>
-          <reportElement mode="Opaque" x="262" y="47" width="240" height="45" backcolor="#ECF8F4" uuid="f6b91062-a35a-4eb7-a5bd-323dd358121e" />
-          <box>
-            <pen lineWidth="0.5" lineColor="#DDE2E8" />
-          </box>
-          <staticText>
-            <reportElement x="8" y="4" width="150" height="12" forecolor="#70858C" uuid="3234a506-7b56-4390-9905-de969383ff0f" />
-            <textElement>
-              <font size="8" isBold="true" />
-            </textElement>
-            <text><![CDATA[THIS PARTICIPANT]]></text>
-          </staticText>
-          <textField>
-            <reportElement mode="Transparent" x="170" y="4" width="62" height="12" forecolor="#267D73" uuid="6ed0e2d4-2d9c-4033-8c8e-d3b6fbee2c8b">
-              <printWhenExpression><![CDATA[$F{APPLIED_BENEFIT_PERCENT} != null]]></printWhenExpression>
-            </reportElement>
-            <textElement textAlignment="Right">
-              <font size="8" isBold="true" />
-            </textElement>
-            <textFieldExpression><![CDATA[new java.text.DecimalFormat("0.0").format(
-    $F{APPLIED_BENEFIT_PERCENT}
-) + "%"]]></textFieldExpression>
+          <reportElement key="participant-enhancement" mode="Opaque" x="12" y="65" width="548" height="20" backcolor="#FFFFFF"/>
+          <box><bottomPen lineWidth="0.4" lineColor="#DDE2E8"/></box>
+          <textField isBlankWhenNull="true">
+            <reportElement x="8" y="1" width="370" height="18" forecolor="#183247"/>
+            <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="9" isBold="false"/></textElement>
+            <textFieldExpression><![CDATA["Additional BC Enhancement"]]></textFieldExpression>
           </textField>
           <textField pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
-            <reportElement x="8" y="22" width="220" height="20" forecolor="#267D73" uuid="f2821af6-a000-49c6-9446-6af23697d3f5" />
-            <textElement>
-              <font size="12" isBold="true" />
-            </textElement>
-            <textFieldExpression><![CDATA[$F{BENEFIT_AFTER_APPL_BENEFIT_PCT}]]></textFieldExpression>
+            <reportElement key="participant-enhancement-amount" x="390" y="1" width="150" height="18" forecolor="#063569"/>
+            <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="9" isBold="false"/></textElement>
+            <textFieldExpression><![CDATA[$F{ENH_ADDITIONAL_BENEFIT} == null ? java.math.BigDecimal.ZERO : $F{ENH_ADDITIONAL_BENEFIT}]]></textFieldExpression>
+          </textField>
+        </frame>
+        <frame>
+          <reportElement key="participant-total" mode="Opaque" x="12" y="85" width="548" height="20" backcolor="#ECF8F4"/>
+          <box><bottomPen lineWidth="0.4" lineColor="#DDE2E8"/></box>
+          <textField isBlankWhenNull="true">
+            <reportElement x="8" y="1" width="370" height="18" forecolor="#183247"/>
+            <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="9" isBold="true"/></textElement>
+            <textFieldExpression><![CDATA["Total participant payment"]]></textFieldExpression>
+          </textField>
+          <textField pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
+            <reportElement key="participant-total-amount" x="390" y="1" width="150" height="18" forecolor="#267D73"/>
+            <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="9" isBold="true"/></textElement>
+            <textFieldExpression><![CDATA[$F{BENEFIT_TOTAL}]]></textFieldExpression>
           </textField>
         </frame>
       </frame>
       <frame>
-        <reportElement positionType="Float" x="0" y="254" width="572" height="338" forecolor="#183247" uuid="e7116af6-f910-47d8-97b2-3bb15568750c" />
+        <reportElement positionType="Float" x="0" y="274" width="572" height="318" forecolor="#183247" uuid="e7116af6-f910-47d8-97b2-3bb15568750c" />
         <textField isBlankWhenNull="true">
           <reportElement x="12" y="9" width="540" height="13" forecolor="#063569" uuid="09361589-4229-4562-aca0-53f7b6c25d66" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
@@ -2777,7 +2795,7 @@ FROM (
             <bottomPen lineWidth="0.4" lineColor="#DFE6EE" />
           </box>
           <textField isBlankWhenNull="true">
-            <reportElement x="33" y="1" width="355" height="10" forecolor="#183247" uuid="54191322-e44b-4b61-8d60-27aa368afd06" />
+            <reportElement x="33" y="1" width="355" height="18" forecolor="#183247" uuid="54191322-e44b-4b61-8d60-27aa368afd06" />
             <textElement textAlignment="Left" verticalAlignment="Middle">
               <font fontName="Arial" size="8.5" isBold="true" />
             </textElement>
@@ -3053,7 +3071,7 @@ FROM (
             <bottomPen lineWidth="0.4" lineColor="#DFE6EE" />
           </box>
           <textField isBlankWhenNull="true">
-            <reportElement x="33" y="1" width="355" height="10" forecolor="#183247" uuid="318eeae6-f675-4aed-9f26-8d9e3ba7890c" />
+            <reportElement x="33" y="1" width="355" height="18" forecolor="#183247" uuid="318eeae6-f675-4aed-9f26-8d9e3ba7890c" />
             <textElement textAlignment="Left" verticalAlignment="Middle">
               <font fontName="Arial" size="8.5" isBold="true" />
             </textElement>
@@ -3119,7 +3137,7 @@ FROM (
             <bottomPen lineWidth="0.4" lineColor="#DFE6EE" />
           </box>
           <textField isBlankWhenNull="true">
-            <reportElement x="33" y="1" width="355" height="10" forecolor="#183247" uuid="e9e177a8-9d4e-434c-a3d2-1b3e316e2803" />
+            <reportElement x="33" y="1" width="355" height="18" forecolor="#183247" uuid="e9e177a8-9d4e-434c-a3d2-1b3e316e2803" />
             <textElement textAlignment="Left" verticalAlignment="Middle">
               <font fontName="Arial" size="8.5" isBold="true" />
             </textElement>
@@ -3153,7 +3171,7 @@ FROM (
             <bottomPen lineWidth="0.4" lineColor="#DFE6EE" />
           </box>
           <textField isBlankWhenNull="true">
-            <reportElement x="33" y="1" width="355" height="10" forecolor="#183247" uuid="7110d741-5378-44ed-93dc-c4888479fba2" />
+            <reportElement x="33" y="1" width="355" height="18" forecolor="#183247" uuid="7110d741-5378-44ed-93dc-c4888479fba2" />
             <textElement textAlignment="Left" verticalAlignment="Middle">
               <font fontName="Arial" size="8.5" isBold="true" />
             </textElement>
@@ -3174,35 +3192,9 @@ FROM (
             <textFieldExpression><![CDATA[$F{PROD_INSUR_DEEMED_BENEFIT} == null || $F{PROD_INSUR_DEEMED_BENEFIT}.signum() == 0 ? "N/A" : new java.text.DecimalFormat("$#,##0.00;- $#,##0.00").format($F{PROD_INSUR_DEEMED_BENEFIT})]]></textFieldExpression>
           </textField>
         </frame>
+
         <frame>
-          <reportElement x="12" y="296" width="548" height="20" forecolor="#183247" uuid="ebb53cb2-b464-4021-9adc-011e2f6d1828" />
-          <box>
-            <bottomPen lineWidth="0.4" lineColor="#DFE6EE" />
-          </box>
-          <textField isBlankWhenNull="true">
-            <reportElement x="33" y="1" width="355" height="10" forecolor="#183247" uuid="4cbcdfb2-a9cc-44bc-ba01-330264f9dbd4" />
-            <textElement textAlignment="Left" verticalAlignment="Middle">
-              <font fontName="Arial" size="8.5" isBold="true" />
-            </textElement>
-            <textFieldExpression><![CDATA["BC Enhancement Benefit"]]></textFieldExpression>
-          </textField>
-          <textField isBlankWhenNull="true">
-            <reportElement x="33" y="11" width="355" height="8" forecolor="#586A7E" uuid="29406e8a-5513-433d-a54b-deeb79ae0dd4" />
-            <textElement textAlignment="Left" verticalAlignment="Middle">
-              <font fontName="Arial" size="6.5" isBold="false" />
-            </textElement>
-            <textFieldExpression><![CDATA["Additional benefit from BC"]]></textFieldExpression>
-          </textField>
-          <textField pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
-            <reportElement x="394" y="1" width="147" height="18" forecolor="#063569" uuid="fb200623-a216-4559-b0ee-b325fcdaa350" />
-            <textElement textAlignment="Right" verticalAlignment="Middle">
-              <font fontName="Arial" size="9" isBold="false" />
-            </textElement>
-            <textFieldExpression><![CDATA[$F{ENH_ADDITIONAL_BENEFIT}]]></textFieldExpression>
-          </textField>
-        </frame>
-        <frame>
-          <reportElement x="12" y="316" width="548" height="20" forecolor="#183247" uuid="45892adb-85e8-46bf-b2e8-9d448f0411b7" />
+          <reportElement x="12" y="296" width="548" height="20" forecolor="#183247" uuid="45892adb-85e8-46bf-b2e8-9d448f0411b7" />
           <box>
             <bottomPen lineWidth="0.4" lineColor="#DFE6EE" />
           </box>
@@ -3250,13 +3242,7 @@ FROM (
       </frame>
     </band>
     <!-- Leave only the space needed below the list, so row growth does not spill blank space onto another page. -->
-    <band height="508" splitType="Stretch">
-      <rectangle>
-        <reportElement stretchType="RelativeToBandHeight" x="25" y="380" width="522" height="124" uuid="64f85758-c549-4937-81c9-38544adc9478" />
-        <graphicElement>
-          <pen lineWidth="0.5" />
-        </graphicElement>
-      </rectangle>
+    <band height="380" splitType="Stretch">
       <rectangle>
         <reportElement x="25" y="10" width="522" height="360" uuid="2c9d4c71-267d-4a22-a7fe-a9da98b50127" />
         <graphicElement>
@@ -3494,92 +3480,6 @@ Adjustments (E) = (C+D)]]></text>
         </textElement>
         <textFieldExpression><![CDATA[$F{ADJUSTED_REFERENCE_MARGIN}]]></textFieldExpression>
       </textField>
-      <componentElement>
-        <reportElement x="24" y="430" width="525" height="69" uuid="aa7e143c-d144-4e35-b5f9-47914fee52e6" />
-        <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
-          <datasetRun subDataset="DS_BPU_STRUCTURAL_CHANGE" uuid="90a881b2-266e-4202-a2e3-9204840019b8">
-            <datasetParameter name="IN_SCENARIO_ID">
-              <datasetParameterExpression><![CDATA[$P{IN_SCENARIO_ID}]]></datasetParameterExpression>
-            </datasetParameter>
-            <datasetParameter name="V_YEAR">
-              <datasetParameterExpression><![CDATA[$F{YEAR}.intValue()]]></datasetParameterExpression>
-            </datasetParameter>
-            <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-          </datasetRun>
-          <jr:listContents height="22" width="525">
-            <textField isBlankWhenNull="true">
-              <reportElement x="0" y="0" width="55" height="22" uuid="46507b6a-c8b7-4fcb-9c5e-6429aa2c6526" />
-              <textElement textAlignment="Right">
-                <font size="7" />
-              </textElement>
-              <textFieldExpression><![CDATA[$F{BPU_CODE}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-              <reportElement x="55" y="0" width="125" height="22" uuid="dca64c3d-93fd-4936-a463-386d714a761b" />
-              <textElement textAlignment="Right">
-                <font size="7" />
-              </textElement>
-              <textFieldExpression><![CDATA[$F{BPU_DESCRIPTION}]]></textFieldExpression>
-            </textField>
-            <textField pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
-              <reportElement x="180" y="0" width="60" height="22" uuid="55d58408-380d-416f-b430-e964cd70ea95" />
-              <textElement textAlignment="Right">
-                <font size="7" />
-              </textElement>
-              <textFieldExpression><![CDATA[$F{YEAR_MINUS_5_MARGIN}]]></textFieldExpression>
-            </textField>
-            <textField pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
-              <reportElement x="240" y="0" width="65" height="22" uuid="66a9a0ee-a358-48b4-b914-9d792a8c5c62" />
-              <textElement textAlignment="Right">
-                <font size="7" />
-              </textElement>
-              <textFieldExpression><![CDATA[$F{YEAR_MINUS_4_MARGIN}]]></textFieldExpression>
-            </textField>
-            <textField pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
-              <reportElement x="305" y="0" width="65" height="22" uuid="d2c96896-22bb-4e37-9bae-53ff409ccda1" />
-              <textElement textAlignment="Right">
-                <font size="7" />
-              </textElement>
-              <textFieldExpression><![CDATA[$F{YEAR_MINUS_3_MARGIN}]]></textFieldExpression>
-            </textField>
-            <textField pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
-              <reportElement x="370" y="0" width="65" height="22" uuid="6044ca30-1f30-436f-bbf9-0b20d94e96b0" />
-              <textElement textAlignment="Right">
-                <font size="7" />
-              </textElement>
-              <textFieldExpression><![CDATA[$F{YEAR_MINUS_2_MARGIN}]]></textFieldExpression>
-            </textField>
-            <textField pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
-              <reportElement x="435" y="0" width="65" height="22" uuid="1941028e-dd63-4eb5-aac4-3a257ae383ce" />
-              <textElement textAlignment="Right">
-                <font size="7" />
-              </textElement>
-              <textFieldExpression><![CDATA[$F{YEAR_MINUS_1_MARGIN}]]></textFieldExpression>
-            </textField>
-          </jr:listContents>
-        </jr:list>
-      </componentElement>
-      <staticText>
-        <reportElement x="36" y="390" width="140" height="15" uuid="c6840ce8-7df2-4518-b6bf-f22a9cb0d918" />
-        <textElement>
-          <font isBold="true" />
-        </textElement>
-        <text><![CDATA[Benchmark Per Units Used]]></text>
-      </staticText>
-      <staticText>
-        <reportElement x="34" y="410" width="44" height="10" uuid="f4f949e8-d41f-435e-a2dc-7c911e4ec25f" />
-        <textElement textAlignment="Right">
-          <font size="7" isBold="true" />
-        </textElement>
-        <text><![CDATA[Code]]></text>
-      </staticText>
-      <staticText>
-        <reportElement x="78" y="410" width="125" height="10" uuid="377630df-d769-4a0d-8d23-9645d5bbcf21" />
-        <textElement textAlignment="Right">
-          <font size="7" isBold="true" />
-        </textElement>
-        <text><![CDATA[Description]]></text>
-      </staticText>
       <staticText>
         <reportElement x="35" y="330" width="160" height="22" uuid="41c1750d-cd28-4864-aac6-9904f0ee7955" />
         <textElement>
@@ -3587,47 +3487,136 @@ Adjustments (E) = (C+D)]]></text>
         </textElement>
         <text><![CDATA[(Average of the reference margin figures used)]]></text>
       </staticText>
-      <textField>
-        <reportElement x="203" y="410" width="60" height="10" uuid="e5f21fd1-4f9b-4cb7-ae15-18d904b890af" />
-        <textElement textAlignment="Right">
-          <font size="7" />
-        </textElement>
-        <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 5]]></textFieldExpression>
-      </textField>
-      <textField>
-        <reportElement x="263" y="410" width="65" height="10" uuid="d0cf388b-7411-4f47-b7f1-7cca130cb0c8" />
-        <textElement textAlignment="Right">
-          <font size="7" />
-        </textElement>
-        <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 4]]></textFieldExpression>
-      </textField>
-      <textField>
-        <reportElement x="328" y="410" width="65" height="10" uuid="73fdcfcd-eec5-497a-b67d-b2a706026eb2" />
-        <textElement textAlignment="Right">
-          <font size="7" />
-        </textElement>
-        <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 3]]></textFieldExpression>
-      </textField>
-      <textField>
-        <reportElement x="393" y="410" width="65" height="10" uuid="3c6c1fe2-2461-455f-8db0-feb8f1c3b7ba" />
-        <textElement textAlignment="Right">
-          <font size="7" />
-        </textElement>
-        <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 2]]></textFieldExpression>
-      </textField>
-      <textField>
-        <reportElement x="458" y="410" width="65" height="10" uuid="95c48caf-2e35-4eb2-9ccf-9629a8c3ebce" />
-        <textElement textAlignment="Right">
-          <font size="7" />
-        </textElement>
-        <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 1]]></textFieldExpression>
-      </textField>
     </band>
     <!-- Break before the detail band is laid out, not inside a band that can already overflow. -->
     <band height="1" splitType="Immediate">
       <break>
         <reportElement x="0" y="0" width="1" height="1" uuid="ab7eea00-dfff-474a-b7e0-934c67289d1b" />
       </break>
+    </band>
+    <!-- Show final capacities even when no productive-unit adjustments were made. -->
+    <band height="128" splitType="Stretch">
+      <textField isBlankWhenNull="true">
+        <reportElement x="12" y="10" width="548" height="24" forecolor="#063569"/>
+        <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="12" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["Productive Capacity Used"]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="12" y="36" width="548" height="24" forecolor="#183247"/>
+        <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="8" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA["Individual categories and final units used. Applicable BPUs are shown by benchmark year."]]></textFieldExpression>
+      </textField>
+      <frame>
+        <reportElement mode="Opaque" x="12" y="64" width="548" height="24" backcolor="#18447D"/>
+      <textField isBlankWhenNull="true">
+        <reportElement x="4" y="0" width="28" height="24" forecolor="#FFFFFF"/>
+        <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="34" y="0" width="144" height="24" forecolor="#FFFFFF"/>
+        <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["Commodity / category"]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="180" y="0" width="50" height="24" forecolor="#FFFFFF"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["Units used"]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="232" y="0" width="40" height="24" forecolor="#FFFFFF"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["BPU code"]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="274" y="0" width="52" height="24" forecolor="#FFFFFF"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["BPU " + ($F{YEAR}.intValue() - 5)]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="328" y="0" width="52" height="24" forecolor="#FFFFFF"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["BPU " + ($F{YEAR}.intValue() - 4)]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="382" y="0" width="52" height="24" forecolor="#FFFFFF"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["BPU " + ($F{YEAR}.intValue() - 3)]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="436" y="0" width="52" height="24" forecolor="#FFFFFF"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["BPU " + ($F{YEAR}.intValue() - 2)]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="490" y="0" width="52" height="24" forecolor="#FFFFFF"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["BPU " + ($F{YEAR}.intValue() - 1)]]></textFieldExpression>
+      </textField>
+      </frame>
+      <componentElement>
+        <reportElement key="capacity-used-list" x="12" y="88" width="548" height="40"/>
+        <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+          <datasetRun subDataset="DS_PRODUCTIVE_UNIT_ADJUSTMENTS">
+            <datasetParameter name="IN_SCENARIO_ID"><datasetParameterExpression><![CDATA[$P{IN_SCENARIO_ID}]]></datasetParameterExpression></datasetParameter>
+            <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+          </datasetRun>
+          <jr:listContents height="40" width="548">
+            <rectangle>
+              <reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="548" height="40" backcolor="#F4F4F4"><printWhenExpression><![CDATA[$V{REPORT_COUNT}.intValue() % 2 == 0]]></printWhenExpression></reportElement>
+              <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+      <textField isBlankWhenNull="true">
+        <reportElement x="4" y="0" width="28" height="40" forecolor="#183247"/>
+        <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_ITEM_CODE}]]></textFieldExpression>
+      </textField>
+      <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+        <reportElement x="34" y="0" width="144" height="40" forecolor="#183247"/>
+        <textElement textAlignment="Left" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_DESCRIPTION}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="180" y="0" width="50" height="40" forecolor="#183247"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_NEW_AMOUNT} == null ? "N/A" : new java.text.DecimalFormat("#,##0.000").format($F{PRODUCTIVE_UNIT_NEW_AMOUNT})]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="232" y="0" width="40" height="40" forecolor="#183247"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA[$F{BPU_LOOKUP_CODE} == null ? "N/A" : $F{BPU_LOOKUP_CODE}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="274" y="0" width="52" height="40" forecolor="#183247"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA[$F{YEAR_MINUS_5_MARGIN} == null ? "N/A" : new java.text.DecimalFormat("$#,##0.00;-$#,##0.00").format($F{YEAR_MINUS_5_MARGIN})]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="328" y="0" width="52" height="40" forecolor="#183247"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA[$F{YEAR_MINUS_4_MARGIN} == null ? "N/A" : new java.text.DecimalFormat("$#,##0.00;-$#,##0.00").format($F{YEAR_MINUS_4_MARGIN})]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="382" y="0" width="52" height="40" forecolor="#183247"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA[$F{YEAR_MINUS_3_MARGIN} == null ? "N/A" : new java.text.DecimalFormat("$#,##0.00;-$#,##0.00").format($F{YEAR_MINUS_3_MARGIN})]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="436" y="0" width="52" height="40" forecolor="#183247"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA[$F{YEAR_MINUS_2_MARGIN} == null ? "N/A" : new java.text.DecimalFormat("$#,##0.00;-$#,##0.00").format($F{YEAR_MINUS_2_MARGIN})]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement x="490" y="0" width="52" height="40" forecolor="#183247"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="7" isBold="false"/></textElement>
+        <textFieldExpression><![CDATA[$F{YEAR_MINUS_1_MARGIN} == null ? "N/A" : new java.text.DecimalFormat("$#,##0.00;-$#,##0.00").format($F{YEAR_MINUS_1_MARGIN})]]></textFieldExpression>
+      </textField>
+          </jr:listContents>
+        </jr:list>
+      </componentElement>
+    </band>
+    <band height="1" splitType="Immediate">
+      <break><reportElement x="0" y="0" width="1" height="1"/></break>
     </band>
     <band height="621" splitType="Stretch">
       <staticText>
@@ -5651,44 +5640,41 @@ Adjustments (E) = (C+D)]]></text>
           <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
         </textField>
         <textField>
-          <reportElement x="40" y="28" width="172" height="30" uuid="6231b482-2eb5-4064-8d9e-2124c37170cf" />
+          <reportElement x="40" y="28" width="214" height="30" uuid="6231b482-2eb5-4064-8d9e-2124c37170cf" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
             <font size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Description"]]></textFieldExpression>
         </textField>
         <textField>
-          <reportElement x="212" y="28" width="142" height="30" uuid="27e74246-68da-469c-ab61-4681829c14cd" />
+          <reportElement x="254" y="28" width="120" height="30" uuid="27e74246-68da-469c-ab61-4681829c14cd" />
+          <box rightPadding="6" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
             <font size="8" isUnderline="true" />
           </textElement>
-          <textFieldExpression><![CDATA["Submitted Productive Units"]]></textFieldExpression>
+          <textFieldExpression><![CDATA["Submitted\nProductive Units"]]></textFieldExpression>
         </textField>
         <textField>
-          <reportElement x="354" y="28" width="47" height="30" uuid="265a8164-ee91-401c-8615-8c95d8547f09" />
+          <reportElement x="374" y="28" width="74" height="30" uuid="265a8164-ee91-401c-8615-8c95d8547f09" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
             <font size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Adjustment"]]></textFieldExpression>
         </textField>
         <textField>
-          <reportElement x="401" y="28" width="81" height="30" uuid="71dcb0a6-4114-4ab9-9d8f-97f6e61401fa" />
+          <reportElement x="448" y="28" width="100" height="30" uuid="71dcb0a6-4114-4ab9-9d8f-97f6e61401fa" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
             <font size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Productive Units"]]></textFieldExpression>
         </textField>
-        <textField>
-          <reportElement x="482" y="28" width="66" height="30" uuid="0cad6f29-67f7-44bb-9a96-2764972ae30f" />
-          <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
-          </textElement>
-          <textFieldExpression><![CDATA["BPU"]]></textFieldExpression>
-        </textField>
         <componentElement>
           <reportElement x="0" y="58" width="548" height="32" uuid="ba841ca1-1967-41b9-927e-2e93edb29c15" />
           <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
             <datasetRun subDataset="DS_PRODUCTIVE_UNIT_ADJUSTMENTS" uuid="15ede39a-c979-438d-97ab-98bcc05a77b8">
+              <datasetParameter name="ONLY_ADJUSTED">
+                <datasetParameterExpression><![CDATA[Boolean.TRUE]]></datasetParameterExpression>
+              </datasetParameter>
               <datasetParameter name="IN_SCENARIO_ID">
                 <datasetParameterExpression><![CDATA[$P{IN_SCENARIO_ID}]]></datasetParameterExpression>
               </datasetParameter>
@@ -5712,7 +5698,7 @@ Adjustments (E) = (C+D)]]></text>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_ITEM_CODE}]]></textFieldExpression>
               </textField>
               <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement x="40" y="0" width="172" height="32" uuid="880f95a9-eed3-4ece-b708-1f310fac92b8" />
+                <reportElement x="40" y="0" width="214" height="32" uuid="880f95a9-eed3-4ece-b708-1f310fac92b8" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
                   <font size="8" />
@@ -5720,7 +5706,7 @@ Adjustments (E) = (C+D)]]></text>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_DESCRIPTION}]]></textFieldExpression>
               </textField>
               <textField isStretchWithOverflow="true" pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
-                <reportElement x="212" y="0" width="142" height="32" uuid="c3eb3349-8727-46a1-97a2-f9fed1a989c0" />
+                <reportElement x="254" y="0" width="120" height="32" uuid="c3eb3349-8727-46a1-97a2-f9fed1a989c0" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
                   <font size="8" />
@@ -5728,7 +5714,7 @@ Adjustments (E) = (C+D)]]></text>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_CRA_AMOUNT}]]></textFieldExpression>
               </textField>
               <textField isStretchWithOverflow="true" pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
-                <reportElement x="354" y="0" width="47" height="32" uuid="e55ba7b4-c773-49d6-bd6d-62e1b87971a4" />
+                <reportElement x="374" y="0" width="74" height="32" uuid="e55ba7b4-c773-49d6-bd6d-62e1b87971a4" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
                   <font size="8" />
@@ -5736,20 +5722,12 @@ Adjustments (E) = (C+D)]]></text>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_ADJ_AMOUNT}]]></textFieldExpression>
               </textField>
               <textField isStretchWithOverflow="true" pattern="#,##0.000;-#,##0.000" isBlankWhenNull="true">
-                <reportElement x="401" y="0" width="81" height="32" uuid="03335bea-a141-4778-a57d-9dc0a3c08aff" />
+                <reportElement x="448" y="0" width="100" height="32" uuid="03335bea-a141-4778-a57d-9dc0a3c08aff" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
                   <font size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_NEW_AMOUNT}]]></textFieldExpression>
-              </textField>
-              <textField isStretchWithOverflow="true" pattern="$#,##0.00;- $#,##0.00" isBlankWhenNull="true">
-                <reportElement x="482" y="0" width="66" height="32" uuid="738145ce-05b6-43bb-adf0-bdace5c76a50" />
-                <box leftPadding="2" rightPadding="2" />
-                <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
-                </textElement>
-                <textFieldExpression><![CDATA[$F{BPU_AVERAGE_MARGIN}]]></textFieldExpression>
               </textField>
             </jr:listContents>
           </jr:list>
