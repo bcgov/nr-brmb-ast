@@ -16,30 +16,38 @@ begin
     select count(*)
     into v_missing_from_new
     from (
-        select sv.participant_pin
+        select ac.participant_pin
         from farms.farm_agristability_scenarios s
-        join farms.farm_scenarios_vw sv on sv.agristability_scenario_id = s.agristability_scenario_id
+        join farms.farm_program_year_versions pyv on pyv.program_year_version_id = s.program_year_version_id
+        join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+        join farms.farm_agristability_clients ac on ac.agristability_client_id = py.agristability_client_id
         where s.combined_farm_number = in_verified_cf_number
         except
-        select sv.participant_pin
+        select ac.participant_pin
         from farms.farm_agristability_scenarios s
         join farms.farm_agristability_scenarios s2 on s2.combined_farm_number = s.combined_farm_number
-        join farms.farm_scenarios_vw sv on sv.agristability_scenario_id = s2.agristability_scenario_id
+        join farms.farm_program_year_versions pyv on pyv.program_year_version_id = s2.program_year_version_id
+        join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+        join farms.farm_agristability_clients ac on ac.agristability_client_id = py.agristability_client_id
         where s.agristability_scenario_id = in_agristability_scenario_id
     ) alias1;
 
     select count(*)
     into v_missing_from_old
     from (
-        select sv.participant_pin
+        select ac.participant_pin
         from farms.farm_agristability_scenarios s
         join farms.farm_agristability_scenarios s2 on s2.combined_farm_number = s.combined_farm_number
-        join farms.farm_scenarios_vw sv on sv.agristability_scenario_id = s2.agristability_scenario_id
+        join farms.farm_program_year_versions pyv on pyv.program_year_version_id = s2.program_year_version_id
+        join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+        join farms.farm_agristability_clients ac on ac.agristability_client_id = py.agristability_client_id
         where s.agristability_scenario_id = in_agristability_scenario_id
         except
-        select sv.participant_pin
+        select ac.participant_pin
         from farms.farm_agristability_scenarios s
-        join farms.farm_scenarios_vw sv on sv.agristability_scenario_id = s.agristability_scenario_id
+        join farms.farm_program_year_versions pyv on pyv.program_year_version_id = s.program_year_version_id
+        join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+        join farms.farm_agristability_clients ac on ac.agristability_client_id = py.agristability_client_id
         where s.combined_farm_number = in_verified_cf_number
     ) alias1;
 
