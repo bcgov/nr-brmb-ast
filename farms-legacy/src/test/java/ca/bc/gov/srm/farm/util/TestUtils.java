@@ -12,9 +12,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.sql.DataSource;
+
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.slf4j.Logger;
+
+import org.postgresql.ds.PGSimpleDataSource;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -43,14 +47,38 @@ import ca.bc.gov.webade.WebADEException;
  * common test code
  */
 public final class TestUtils {
-	
-  private static Application app;
   
-	/** empty private constructor. */
-	private TestUtils() {
-	}
-        
-	public static Connection openConnection() throws SQLException {
+  private static Application app;
+
+  /*
+   * Same database and user as the local SmartTomcat jdbc/farms_rest datasource. Override with
+   * -Dfarms.test.db.url / -Dfarms.test.db.user. No password is set: the PostgreSQL driver reads
+   * it from pgpass.conf (%APPDATA%\postgresql\pgpass.conf on Windows).
+   */
+  private static final String DB_URL = System.getProperty("farms.test.db.url", "jdbc:postgresql://localhost:5433/farmsdev");
+  private static final String DB_USER = System.getProperty("farms.test.db.user", "proxy_farms_rest");
+
+  /** empty private constructor. */
+  private TestUtils() {
+  }
+
+  public static Connection openConnection() throws SQLException {
+    Connection con = getDataSource().getConnection();
+    con.setAutoCommit(false);
+    return con;
+  }
+
+  /**
+   * @return the DataSource served from JNDI as java:comp/env/jdbc/farms_rest by TestInitialContextFactory
+   */
+  public static DataSource getDataSource() {
+    PGSimpleDataSource dataSource = new PGSimpleDataSource();
+    dataSource.setUrl(DB_URL);
+    dataSource.setUser(DB_USER);
+    return dataSource;
+  }
+
+  public static Connection openDevOracleConnection() throws SQLException {
     String user = "farm";
     String server = "oradb19c.vividsolutions.com";
     String port = "1521";
@@ -73,16 +101,16 @@ public final class TestUtils {
     return con;
   }
 
-	public static Connection openQAConnection() throws SQLException {
-    String user = "farm";
-    String server = "oracledb.vividsolutions.com";
+  public static Connection openProdOracleConnection() throws SQLException {
+    String user = "username";
+    String server = "nrkdb02.bcgov";
     String port = "1521";
-    String sid = "qa";
+    String serviceName = "malprod1.nrs.bcgov";
     String pwd = "password";
 
     Connection con = null;
     String driver = "oracle.jdbc.driver.OracleDriver";
-    String url = "jdbc:oracle:thin:@" + server + ":" + port + ":" + sid;
+    String url = "jdbc:oracle:thin:@//" + server + ":" + port + "/" + serviceName;
 
     try {
       Class.forName(driver);
@@ -95,41 +123,18 @@ public final class TestUtils {
 
     return con;
   }
-
-	public static Connection openProdConnection() throws SQLException {
-	  String user = "username";
-	  String server = "nrkdb02.bcgov";
-	  String port = "1521";
-	  String serviceName = "malprod1.nrs.bcgov";
-	  String pwd = "password";
-
-	  Connection con = null;
-	  String driver = "oracle.jdbc.driver.OracleDriver";
-	  String url = "jdbc:oracle:thin:@//" + server + ":" + port + "/" + serviceName;
-
-	  try {
-	    Class.forName(driver);
-	  } catch (java.lang.ClassNotFoundException e) {
-	    e.printStackTrace();
-	  }
-
-	  con = DriverManager.getConnection(url, user, pwd);
-	  con.setAutoCommit(false);
-
-	  return con;
-	}
-	
-	
+  
+  
   public static void closeConnection(Connection conn) {
-		try {
-			if (conn != null) {
-	      conn.close();
-	    }
-		} catch(Exception ex) {
-			// ignore
-		    ex.toString();
-		}
-	}
+    try {
+      if (conn != null) {
+        conn.close();
+      }
+    } catch(Exception ex) {
+      // ignore
+        ex.toString();
+    }
+  }
   
   
   public static void useTestTransaction() {
