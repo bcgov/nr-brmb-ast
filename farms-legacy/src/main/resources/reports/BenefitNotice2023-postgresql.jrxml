@@ -2630,36 +2630,6 @@ FROM (
     : (($F{FIRST_NAME} == null ? "" : $F{FIRST_NAME}) + " " +
        ($F{LAST_NAME} == null ? "" : $F{LAST_NAME})).trim()]]></textFieldExpression>
       </textField>
-      <textField>
-        <reportElement x="15" y="112" width="105" height="12" forecolor="#586A7E" uuid="d1639278-d771-4963-8121-2b177dcc294d" />
-        <textElement>
-          <font size="8" />
-        </textElement>
-        <textFieldExpression><![CDATA["Federal account"]]></textFieldExpression>
-      </textField>
-      <textField>
-        <reportElement x="15" y="127" width="105" height="22" forecolor="#26313D" uuid="90a3f43d-84fc-4545-92e1-6d141fed037d" />
-        <textElement>
-          <font size="10" isBold="true" />
-        </textElement>
-        <textFieldExpression><![CDATA[$F{PARTICIPANT_PIN} == null
-    ? ""
-    : $F{PARTICIPANT_PIN}.toPlainString()]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="130" y="112" width="72" height="12" forecolor="#586A7E" uuid="583554cd-33a1-43a9-a044-a97a261a1495" />
-        <textElement>
-          <font size="8" />
-        </textElement>
-        <text><![CDATA[Program year]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="130" y="127" width="72" height="22" forecolor="#26313D" uuid="1d636842-da29-45e4-9e23-863fd5199336" />
-        <textElement>
-          <font size="10" isBold="true" />
-        </textElement>
-        <textFieldExpression><![CDATA[$F{YEAR} == null ? "" : String.valueOf($F{YEAR}.intValue())]]></textFieldExpression>
-      </textField>
       <staticText>
         <reportElement x="333" y="125" width="227" height="18" forecolor="#18743A" uuid="308c249c-a762-4dc4-96f8-801ea471c2ba" />
         <textElement>
@@ -2675,7 +2645,7 @@ FROM (
         <text><![CDATA[✓]]></text>
       </staticText>
       <textField>
-        <reportElement x="211" y="127" width="84" height="28" forecolor="#26313D" uuid="c39cb409-6ad5-4c8d-a028-2df49f9971ec">
+        <reportElement x="15" y="127" width="275" height="28" forecolor="#26313D" uuid="c39cb409-6ad5-4c8d-a028-2df49f9971ec">
           <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0bc05620-fcdf-4fdc-a67e-992e28c60af4" />
         </reportElement>
         <textElement>
@@ -2684,7 +2654,7 @@ FROM (
         <textFieldExpression><![CDATA[$F{REGION}]]></textFieldExpression>
       </textField>
       <textField>
-        <reportElement x="211" y="112" width="84" height="12" forecolor="#586A7E" uuid="23775df8-6d68-4189-b621-f8f0245d4c08" />
+        <reportElement x="15" y="112" width="275" height="12" forecolor="#586A7E" uuid="23775df8-6d68-4189-b621-f8f0245d4c08" />
         <textElement>
           <font size="8" />
         </textElement>
@@ -3255,7 +3225,7 @@ FROM (
       <staticText>
         <reportElement x="35" y="20" width="180" height="18" uuid="db7c87a0-3f4f-4f72-bcfb-ac06c0bc0d46" />
         <textElement>
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <text><![CDATA[Program Year Margin Summary
 3.]]></text>
@@ -3274,42 +3244,42 @@ FROM (
             <textField>
               <reportElement x="0" y="0" width="55" height="18" uuid="95f8967b-0365-4421-8bd3-d4884ecb027c" />
               <textElement textAlignment="Right">
-                <font size="8" isBold="true" isUnderline="true" />
+                <font fontName="Arial" size="8" isBold="true" isUnderline="true" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="28" width="55" height="16" uuid="664528f0-d9af-4a5a-8f62-0a0b9788dcd7" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{UNADJUSTED_PRODUCTION_MARGIN}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="190" width="55" height="16" uuid="73ed527b-206a-4356-a7cc-99c2a85997ce" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{PRODUCTION_MARG_ACCR_ADJS}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="0" y="218" width="55" height="16" uuid="af27dc9b-bfe6-4c93-89e9-e5cce8e3bcbb" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{STRUCTURAL_CHANGE_ADJS}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="0" y="246" width="55" height="16" uuid="5cf6763d-e626-4bcb-8954-378f9b7cc9af" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{PRODUCTION_MARG_AFT_STR_CHANGS}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0'%'" isBlankWhenNull="true">
               <reportElement x="0" y="274" width="55" height="16" uuid="547feaf9-6383-44d9-b312-cb45eeed0c6e" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{SCA_PERCENT_CHANGE} == null
 ? null
@@ -3318,42 +3288,42 @@ FROM (
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="64" width="55" height="16" uuid="cfe8a8a8-1259-483e-a9ab-f4d87639a525" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_CROPS}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="82" width="55" height="16" uuid="a8cfd86c-55c7-419b-a002-6123cf53bcc6" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_LIVESTOCK}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="100" width="55" height="16" uuid="1a6e9de0-7223-494f-85a5-1ec7ef61ebb3" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_PI}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="118" width="55" height="16" uuid="5f01ea32-0a99-4cfb-85a7-ea20a580c725" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_DIAR}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="136" width="55" height="16" uuid="4a126f53-77cb-498c-8d9a-9655e73e37d9" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_AP}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="154" width="55" height="16" uuid="b6506530-9b31-46d5-b32f-c77b7c02f378" />
               <textElement textAlignment="Right">
-                <font size="7" isBold="true" />
+                <font fontName="Arial" size="7" isBold="true" />
               </textElement>
               <textFieldExpression><![CDATA[($F{CHANGE_IN_CROPS} == null ? java.math.BigDecimal.ZERO : $F{CHANGE_IN_CROPS})
 .add($F{CHANGE_IN_LIVESTOCK} == null ? java.math.BigDecimal.ZERO : $F{CHANGE_IN_LIVESTOCK})
@@ -3364,7 +3334,7 @@ FROM (
             <textField>
               <reportElement x="0" y="302" width="55" height="16" uuid="54867d44-8840-4848-b503-606c6b433ff5" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA["Y".equals($F{USED_IN_CALC_IND})
 ? new java.text.DecimalFormat("$#,##0;- $#,##0")
@@ -3377,63 +3347,63 @@ FROM (
       <staticText>
         <reportElement x="35" y="43" width="145" height="16" uuid="3a32016f-f28c-4ee4-bb58-cdf3d0eac05e" />
         <textElement textAlignment="Left" verticalAlignment="Middle">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Program Year Margin (C)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="61" width="145" height="16" uuid="0552e5ed-5052-4e2e-b51e-b0ae92a774ed" />
         <textElement verticalAlignment="Middle">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Accrual Adjustments]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="79" width="125" height="16" uuid="8d278dc0-118a-4a95-a365-86145e42d3a8" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Crops]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="97" width="125" height="16" uuid="3d925b71-3c34-4ce5-bb5c-36d760578ef1" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Livestock]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="115" width="125" height="16" uuid="a4e45e3b-97fd-417f-bf0d-f465d425e93a" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Purchased Inputs]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="133" width="135" height="16" uuid="1b2facd1-5819-4f31-a090-3d53a8133593" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Accounts Receivable]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="151" width="135" height="16" uuid="94de78a8-8f48-4953-86e4-99c93b78c2f8" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Accounts Payable]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="169" width="150" height="16" uuid="64697757-51f7-4b60-b899-f04d0c339f51" />
         <textElement>
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Total Accrual Adjustments (D)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="205" width="150" height="28" uuid="7f9da4f7-4e35-4043-a240-7cdad24f0b45" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Program Year Margin with Accrual
 Adjustments (E) = (C+D)]]></text>
@@ -3441,49 +3411,49 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement x="35" y="233" width="150" height="16" uuid="ea21c9b6-c77f-4cc2-b52a-104385369c2b" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Structural Change Adjustment (F)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="261" width="124" height="28" uuid="10e43a84-47b1-4089-bb47-e9b9eec4ed46" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Structural Change Adjusted Margin (G)=(E+F)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="289" width="150" height="16" uuid="dbdbfcaf-a823-417e-ae59-c9859ce85c7c" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Percentage Change (G/E)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="317" width="150" height="16" uuid="dc1b9939-b5e7-404d-87ad-b143cbeefbe3" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Reference Margin Calculation]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="344" width="150" height="16" uuid="54164015-6146-4f9f-a55c-e48dfe124910" />
         <textElement>
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Calculated Reference Margin]]></text>
       </staticText>
       <textField pattern="$#,##0;- $#,##0">
         <reportElement x="185" y="344" width="60" height="16" uuid="f809b178-6652-4225-8ff6-d0f2e0e644e2" />
         <textElement textAlignment="Right">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <textFieldExpression><![CDATA[$F{ADJUSTED_REFERENCE_MARGIN}]]></textFieldExpression>
       </textField>
       <staticText>
         <reportElement x="35" y="330" width="160" height="22" uuid="41c1750d-cd28-4864-aac6-9904f0ee7955" />
         <textElement>
-          <font size="6" isItalic="true" />
+          <font fontName="Arial" size="6" isItalic="true" />
         </textElement>
         <text><![CDATA[(Average of the reference margin figures used)]]></text>
       </staticText>
