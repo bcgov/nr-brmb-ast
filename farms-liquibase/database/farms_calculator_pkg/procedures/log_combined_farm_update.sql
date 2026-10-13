@@ -22,9 +22,9 @@ begin
     for sc_rec in (
         select s2.agristability_scenario_id
         from farms.farm_agristability_scenarios s
-        join farms.farm_scenarios_vw sv on sv.agristability_scenario_id = s.agristability_scenario_id
-        join farms.farm_scenarios_vw sv2 on sv2.program_year_id = sv.program_year_id
-        join farms.farm_agristability_scenarios s2 on s2.agristability_scenario_id = sv2.agristability_scenario_id
+        join farms.farm_program_year_versions pyv on pyv.program_year_version_id = s.program_year_version_id
+        join farms.farm_program_year_versions pyv2 on pyv2.program_year_id = pyv.program_year_id
+        join farms.farm_agristability_scenarios s2 on s2.program_year_version_id = pyv2.program_year_version_id
         where s2.scenario_class_code = 'USER'
         and s2.scenario_state_code = 'IP'
         and s.combined_farm_number = in_combined_farm_number

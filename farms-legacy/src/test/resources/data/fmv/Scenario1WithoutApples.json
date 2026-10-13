@@ -2837,7 +2837,7 @@
       "isLocallyUpdated" : true,
       "isLocallyGenerated" : true,
       "revisionCount" : 2,
-      "galaAppleFmvPrice" : null
+      "appleFmvPrice" : null
     } ],
     "marginTotal" : {
       "marginTotalId" : 453913,
@@ -6318,7 +6318,7 @@
         "isLocallyUpdated" : false,
         "isLocallyGenerated" : false,
         "revisionCount" : 1,
-        "galaAppleFmvPrice" : null
+        "appleFmvPrice" : null
       } ],
       "marginTotal" : {
         "marginTotalId" : 453914,
@@ -9498,7 +9498,7 @@
         "isLocallyUpdated" : false,
         "isLocallyGenerated" : false,
         "revisionCount" : 1,
-        "galaAppleFmvPrice" : null
+        "appleFmvPrice" : null
       } ],
       "marginTotal" : {
         "marginTotalId" : 453915,
@@ -12647,7 +12647,7 @@
         "isLocallyUpdated" : false,
         "isLocallyGenerated" : false,
         "revisionCount" : 1,
-        "galaAppleFmvPrice" : null
+        "appleFmvPrice" : null
       } ],
       "marginTotal" : {
         "marginTotalId" : 453916,
@@ -15749,7 +15749,7 @@
         "isLocallyUpdated" : false,
         "isLocallyGenerated" : false,
         "revisionCount" : 1,
-        "galaAppleFmvPrice" : null
+        "appleFmvPrice" : null
       } ],
       "marginTotal" : {
         "marginTotalId" : 453917,
@@ -18138,7 +18138,7 @@
         "isLocallyUpdated" : false,
         "isLocallyGenerated" : false,
         "revisionCount" : 1,
-        "galaAppleFmvPrice" : null
+        "appleFmvPrice" : null
       } ],
       "marginTotal" : {
         "marginTotalId" : 453918,

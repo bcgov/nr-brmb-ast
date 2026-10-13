@@ -91,7 +91,7 @@ public class CraImportFileDownloadTest {
 
   @BeforeAll
   protected static void setUp() throws Exception {
-    conn = TestUtils.openProdConnection();
+    conn = TestUtils.openProdOracleConnection();
   }
 
   @AfterAll

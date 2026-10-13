@@ -19,7 +19,7 @@ begin
                fs.chef_submssn_status_code,
                (select max(sv.participant_pin)
                   from farms.farm_scenarios_vw sv
-                 where sv.chef_submission_guid = fs.chef_submission_guid) participant_pin,
+                 where sv.chef_submission_id = fs.chef_submission_id) participant_pin,
                fs.revision_count,
                fs.bceid_form_ind,
                fs.when_created,

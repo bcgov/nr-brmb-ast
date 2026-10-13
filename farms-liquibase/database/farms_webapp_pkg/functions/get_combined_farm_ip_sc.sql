@@ -11,23 +11,25 @@ declare
 
 begin
     open cur for
-        select ipsv.participant_pin,
+        select ip_ac.participant_pin,
                ip.scenario_number
         from farms.farm_agristability_scenarios sc
-        join farms.farm_scenarios_vw sv on sv.agristability_scenario_id = sc.agristability_scenario_id
         join farms.farm_program_year_versions pyv on pyv.program_year_version_id = sc.program_year_version_id
+        join farms.farm_program_years py on py.program_year_id = pyv.program_year_id
+        join farms.farm_agristability_clients ac on ac.agristability_client_id = py.agristability_client_id
         join farms.farm_agristability_scenarios sc2 on sc2.combined_farm_number = sc.combined_farm_number
-        join farms.farm_scenarios_vw sv2 on sv2.agristability_scenario_id = sc2.agristability_scenario_id
-        join farms.farm_scenarios_vw ipsv on ipsv.program_year_id = sv2.program_year_id
-        join farms.farm_agristability_scenarios ip on ip.agristability_scenario_id = ipsv.agristability_scenario_id
-        join farms.farm_program_year_versions ip_pyv on ip_pyv.program_year_version_id = ip.program_year_version_id
+        join farms.farm_program_year_versions pyv2 on pyv2.program_year_version_id = sc2.program_year_version_id
+        join farms.farm_program_year_versions ip_pyv on ip_pyv.program_year_id = pyv2.program_year_id
+        join farms.farm_agristability_scenarios ip on ip.program_year_version_id = ip_pyv.program_year_version_id
+        join farms.farm_program_years ip_py on ip_py.program_year_id = ip_pyv.program_year_id
+        join farms.farm_agristability_clients ip_ac on ip_ac.agristability_client_id = ip_py.agristability_client_id
         where ip.scenario_class_code = 'USER'
         and ip.scenario_state_code = 'IP'
         and ip.scenario_category_code != 'UNK'
         and ip_pyv.municipality_code = pyv.municipality_code
         and sc.combined_farm_number = in_combined_farm_number
-        and sv.participant_pin = in_participant_pin
-        order by ipsv.participant_pin, ip.scenario_number;
+        and ac.participant_pin = in_participant_pin
+        order by ip_ac.participant_pin, ip.scenario_number;
     return cur;
 end;
 $$;
