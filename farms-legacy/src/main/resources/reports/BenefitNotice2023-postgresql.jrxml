@@ -11,6 +11,7 @@
   <property name="com.jaspersoft.studio.unit.rightMargin" value="pixel" />
   <property name="com.jaspersoft.studio.unit.columnWidth" value="pixel" />
   <property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel" />
+  <style name="ReportFont" isDefault="true" fontName="Arial"/>
   <subDataset name="DS_PROD_MARGIN" uuid="fec9fd18-8d3f-4ca2-9fb0-c81013ef1862">
     <property name="com.jaspersoft.studio.data.sql.tables" value="" />
     <parameter name="IN_SCENARIO_ID" class="java.lang.Integer" />
@@ -2580,28 +2581,28 @@ FROM (
       <staticText>
         <reportElement x="322" y="56" width="238" height="14" forecolor="#586A7E" uuid="7902f31a-129e-45be-b88f-3a240bec2730" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[TOTAL BENEFIT PAYMENT]]></text>
       </staticText>
       <textField pattern="$#,##0.00;- $#,##0.00">
         <reportElement x="318" y="79" width="242" height="38" forecolor="#063569" uuid="e62e5ed9-3464-4181-9548-0bc45e1e3d3c" />
         <textElement>
-          <font size="28" isBold="true" />
+          <font fontName="Arial" size="28" isBold="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{BENEFIT_TOTAL}]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="15" y="6" width="300" height="10" forecolor="#FFB900" uuid="488e9826-95c0-4ec4-aa85-8505fc6723b5" />
         <textElement>
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <textFieldExpression><![CDATA["FINAL BENEFIT CERTIFICATE"]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="15" y="18" width="180" height="12" forecolor="#FFFFFF" uuid="b6f64faf-c1c6-43b0-b6a9-55c278faa004" />
         <textElement>
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA["Prepared " + new java.text.SimpleDateFormat(
     "dd MMMM yyyy", java.util.Locale.ENGLISH
@@ -2616,77 +2617,47 @@ FROM (
       <staticText>
         <reportElement x="15" y="56" width="275" height="13" forecolor="#586A7E" uuid="54f97ef2-8b74-4122-9cf3-f0062e18690b" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[PARTICIPANT:]]></text>
       </staticText>
       <textField>
         <reportElement x="15" y="73" width="275" height="36" forecolor="#063569" uuid="f68c4a47-4026-48a8-97ba-83127372e527" />
         <textElement>
-          <font size="16" isBold="true" />
+          <font fontName="Arial" size="16" isBold="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{CORP_NAME} != null && !$F{CORP_NAME}.trim().isEmpty()
     ? $F{CORP_NAME}
     : (($F{FIRST_NAME} == null ? "" : $F{FIRST_NAME}) + " " +
        ($F{LAST_NAME} == null ? "" : $F{LAST_NAME})).trim()]]></textFieldExpression>
       </textField>
-      <textField>
-        <reportElement x="15" y="112" width="105" height="12" forecolor="#586A7E" uuid="d1639278-d771-4963-8121-2b177dcc294d" />
-        <textElement>
-          <font size="8" />
-        </textElement>
-        <textFieldExpression><![CDATA["Federal account"]]></textFieldExpression>
-      </textField>
-      <textField>
-        <reportElement x="15" y="127" width="105" height="22" forecolor="#26313D" uuid="90a3f43d-84fc-4545-92e1-6d141fed037d" />
-        <textElement>
-          <font size="10" isBold="true" />
-        </textElement>
-        <textFieldExpression><![CDATA[$F{PARTICIPANT_PIN} == null
-    ? ""
-    : $F{PARTICIPANT_PIN}.toPlainString()]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="130" y="112" width="72" height="12" forecolor="#586A7E" uuid="583554cd-33a1-43a9-a044-a97a261a1495" />
-        <textElement>
-          <font size="8" />
-        </textElement>
-        <text><![CDATA[Program year]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="130" y="127" width="72" height="22" forecolor="#26313D" uuid="1d636842-da29-45e4-9e23-863fd5199336" />
-        <textElement>
-          <font size="10" isBold="true" />
-        </textElement>
-        <textFieldExpression><![CDATA[$F{YEAR} == null ? "" : String.valueOf($F{YEAR}.intValue())]]></textFieldExpression>
-      </textField>
       <staticText>
         <reportElement x="333" y="125" width="227" height="18" forecolor="#18743A" uuid="308c249c-a762-4dc4-96f8-801ea471c2ba" />
         <textElement>
-          <font size="9" isBold="true" />
+          <font fontName="Arial" size="9" isBold="true" />
         </textElement>
         <text><![CDATA[Net amount payable to producer]]></text>
       </staticText>
       <staticText>
         <reportElement x="322" y="125" width="10" height="18" forecolor="#389596" uuid="5d364e75-ccf4-43e1-b8c6-9dd5e442ccf7" />
         <textElement>
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <text><![CDATA[✓]]></text>
       </staticText>
       <textField>
-        <reportElement x="211" y="127" width="84" height="28" forecolor="#26313D" uuid="c39cb409-6ad5-4c8d-a028-2df49f9971ec">
+        <reportElement x="15" y="127" width="275" height="28" forecolor="#26313D" uuid="c39cb409-6ad5-4c8d-a028-2df49f9971ec">
           <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0bc05620-fcdf-4fdc-a67e-992e28c60af4" />
         </reportElement>
         <textElement>
-          <font size="10" isBold="true" />
+          <font fontName="Arial" size="10" isBold="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{REGION}]]></textFieldExpression>
       </textField>
       <textField>
-        <reportElement x="211" y="112" width="84" height="12" forecolor="#586A7E" uuid="23775df8-6d68-4189-b621-f8f0245d4c08" />
+        <reportElement x="15" y="112" width="275" height="12" forecolor="#586A7E" uuid="23775df8-6d68-4189-b621-f8f0245d4c08" />
         <textElement>
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA["Region"]]></textFieldExpression>
       </textField>
@@ -3255,7 +3226,7 @@ FROM (
       <staticText>
         <reportElement x="35" y="20" width="180" height="18" uuid="db7c87a0-3f4f-4f72-bcfb-ac06c0bc0d46" />
         <textElement>
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <text><![CDATA[Program Year Margin Summary
 3.]]></text>
@@ -3274,42 +3245,42 @@ FROM (
             <textField>
               <reportElement x="0" y="0" width="55" height="18" uuid="95f8967b-0365-4421-8bd3-d4884ecb027c" />
               <textElement textAlignment="Right">
-                <font size="8" isBold="true" isUnderline="true" />
+                <font fontName="Arial" size="8" isBold="true" isUnderline="true" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="28" width="55" height="16" uuid="664528f0-d9af-4a5a-8f62-0a0b9788dcd7" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{UNADJUSTED_PRODUCTION_MARGIN}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="190" width="55" height="16" uuid="73ed527b-206a-4356-a7cc-99c2a85997ce" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{PRODUCTION_MARG_ACCR_ADJS}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="0" y="218" width="55" height="16" uuid="af27dc9b-bfe6-4c93-89e9-e5cce8e3bcbb" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{STRUCTURAL_CHANGE_ADJS}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="0" y="246" width="55" height="16" uuid="5cf6763d-e626-4bcb-8954-378f9b7cc9af" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{PRODUCTION_MARG_AFT_STR_CHANGS}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0'%'" isBlankWhenNull="true">
               <reportElement x="0" y="274" width="55" height="16" uuid="547feaf9-6383-44d9-b312-cb45eeed0c6e" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{SCA_PERCENT_CHANGE} == null
 ? null
@@ -3318,42 +3289,42 @@ FROM (
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="64" width="55" height="16" uuid="cfe8a8a8-1259-483e-a9ab-f4d87639a525" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_CROPS}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="82" width="55" height="16" uuid="a8cfd86c-55c7-419b-a002-6123cf53bcc6" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_LIVESTOCK}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="100" width="55" height="16" uuid="1a6e9de0-7223-494f-85a5-1ec7ef61ebb3" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_PI}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="118" width="55" height="16" uuid="5f01ea32-0a99-4cfb-85a7-ea20a580c725" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_DIAR}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="136" width="55" height="16" uuid="4a126f53-77cb-498c-8d9a-9655e73e37d9" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA[$F{CHANGE_IN_AP}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0">
               <reportElement x="0" y="154" width="55" height="16" uuid="b6506530-9b31-46d5-b32f-c77b7c02f378" />
               <textElement textAlignment="Right">
-                <font size="7" isBold="true" />
+                <font fontName="Arial" size="7" isBold="true" />
               </textElement>
               <textFieldExpression><![CDATA[($F{CHANGE_IN_CROPS} == null ? java.math.BigDecimal.ZERO : $F{CHANGE_IN_CROPS})
 .add($F{CHANGE_IN_LIVESTOCK} == null ? java.math.BigDecimal.ZERO : $F{CHANGE_IN_LIVESTOCK})
@@ -3364,7 +3335,7 @@ FROM (
             <textField>
               <reportElement x="0" y="302" width="55" height="16" uuid="54867d44-8840-4848-b503-606c6b433ff5" />
               <textElement textAlignment="Right">
-                <font size="7" />
+                <font fontName="Arial" size="7" />
               </textElement>
               <textFieldExpression><![CDATA["Y".equals($F{USED_IN_CALC_IND})
 ? new java.text.DecimalFormat("$#,##0;- $#,##0")
@@ -3377,63 +3348,63 @@ FROM (
       <staticText>
         <reportElement x="35" y="43" width="145" height="16" uuid="3a32016f-f28c-4ee4-bb58-cdf3d0eac05e" />
         <textElement textAlignment="Left" verticalAlignment="Middle">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Program Year Margin (C)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="61" width="145" height="16" uuid="0552e5ed-5052-4e2e-b51e-b0ae92a774ed" />
         <textElement verticalAlignment="Middle">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Accrual Adjustments]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="79" width="125" height="16" uuid="8d278dc0-118a-4a95-a365-86145e42d3a8" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Crops]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="97" width="125" height="16" uuid="3d925b71-3c34-4ce5-bb5c-36d760578ef1" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Livestock]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="115" width="125" height="16" uuid="a4e45e3b-97fd-417f-bf0d-f465d425e93a" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Purchased Inputs]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="133" width="135" height="16" uuid="1b2facd1-5819-4f31-a090-3d53a8133593" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Accounts Receivable]]></text>
       </staticText>
       <staticText>
         <reportElement x="55" y="151" width="135" height="16" uuid="94de78a8-8f48-4953-86e4-99c93b78c2f8" />
         <textElement verticalAlignment="Middle">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <text><![CDATA[Change in Accounts Payable]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="169" width="150" height="16" uuid="64697757-51f7-4b60-b899-f04d0c339f51" />
         <textElement>
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Total Accrual Adjustments (D)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="205" width="150" height="28" uuid="7f9da4f7-4e35-4043-a240-7cdad24f0b45" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Program Year Margin with Accrual
 Adjustments (E) = (C+D)]]></text>
@@ -3441,49 +3412,49 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement x="35" y="233" width="150" height="16" uuid="ea21c9b6-c77f-4cc2-b52a-104385369c2b" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Structural Change Adjustment (F)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="261" width="124" height="28" uuid="10e43a84-47b1-4089-bb47-e9b9eec4ed46" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Structural Change Adjusted Margin (G)=(E+F)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="289" width="150" height="16" uuid="dbdbfcaf-a823-417e-ae59-c9859ce85c7c" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Percentage Change (G/E)]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="317" width="150" height="16" uuid="dc1b9939-b5e7-404d-87ad-b143cbeefbe3" />
         <textElement verticalAlignment="Top">
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Reference Margin Calculation]]></text>
       </staticText>
       <staticText>
         <reportElement x="35" y="344" width="150" height="16" uuid="54164015-6146-4f9f-a55c-e48dfe124910" />
         <textElement>
-          <font size="7" isBold="true" />
+          <font fontName="Arial" size="7" isBold="true" />
         </textElement>
         <text><![CDATA[Calculated Reference Margin]]></text>
       </staticText>
       <textField pattern="$#,##0;- $#,##0">
         <reportElement x="185" y="344" width="60" height="16" uuid="f809b178-6652-4225-8ff6-d0f2e0e644e2" />
         <textElement textAlignment="Right">
-          <font size="7" />
+          <font fontName="Arial" size="7" />
         </textElement>
         <textFieldExpression><![CDATA[$F{ADJUSTED_REFERENCE_MARGIN}]]></textFieldExpression>
       </textField>
       <staticText>
         <reportElement x="35" y="330" width="160" height="22" uuid="41c1750d-cd28-4864-aac6-9904f0ee7955" />
         <textElement>
-          <font size="6" isItalic="true" />
+          <font fontName="Arial" size="6" isItalic="true" />
         </textElement>
         <text><![CDATA[(Average of the reference margin figures used)]]></text>
       </staticText>
@@ -3622,7 +3593,7 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement x="12" y="10" width="155" height="18" uuid="f67aba7e-ca1e-4465-80e5-8f409ca1f960" />
         <textElement>
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <text><![CDATA[Production Margin Detail]]></text>
       </staticText>
@@ -3656,56 +3627,56 @@ Adjustments (E) = (C+D)]]></text>
             <textField isBlankWhenNull="true">
               <reportElement x="0" y="0" width="155" height="22" uuid="9ff132db-6224-4555-9c26-4f6b9d2d5f7d" />
               <textElement>
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{INCOME_DESCRIPTION}]]></textFieldExpression>
             </textField>
             <textField pattern="0" isBlankWhenNull="true">
               <reportElement x="155" y="0" width="39" height="22" uuid="52a586cd-24af-4694-bb15-5987f242bb6b" />
               <textElement textAlignment="Center">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{INCOME_CODE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="194" y="0" width="59" height="22" uuid="59ee6c08-965c-42f9-8a13-6d6d983c4bd5" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_5_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="253" y="0" width="59" height="22" uuid="f03126f6-74a2-4b2e-98c0-7b1b677f4b37" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_4_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="312" y="0" width="59" height="22" uuid="b36d7558-dcd3-4c4f-8dd6-27f6dcf9cee9" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_3_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="371" y="0" width="59" height="22" uuid="5b06df1f-b945-452f-b905-ba74366b9c64" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_2_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="430" y="0" width="59" height="22" uuid="457bf882-3b00-4068-8e86-6fbe504f89e3" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_1_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="489" y="0" width="57" height="22" uuid="14cb6a95-9f71-4f95-875c-92c0a7dba8e2" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_INCOME}]]></textFieldExpression>
             </textField>
@@ -3715,63 +3686,63 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement mode="Opaque" x="12" y="32" width="548" height="16" forecolor="#FFFFFF" backcolor="#18447D" uuid="5fa8a114-a918-41ea-9435-86dd979a42d9" />
         <textElement>
-          <font isBold="true" />
+          <font fontName="Arial" isBold="true" />
         </textElement>
         <text><![CDATA[Allowable Income]]></text>
       </staticText>
       <staticText>
         <reportElement x="167" y="10" width="39" height="18" uuid="2e8652b8-fc81-4144-a97f-9d5869f6505f" />
         <textElement textAlignment="Center">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <text><![CDATA[Code]]></text>
       </staticText>
       <textField>
         <reportElement x="206" y="10" width="61" height="18" uuid="2eb6f4dc-ad24-4b74-9e4a-e715ab06da8d" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 5]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="267" y="10" width="57" height="18" uuid="f29b88fc-3fd3-4aed-83d3-2a8747d3ae69" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 4]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="324" y="10" width="59" height="18" uuid="c0dccafe-bc7b-4f10-bbdd-a1f0de94eae0" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 3]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="383" y="10" width="61" height="18" uuid="afedaa97-9a17-4843-b989-df28bb371053" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 2]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="444" y="10" width="58" height="18" uuid="a57f7519-2208-4160-bdad-87e348e63e17" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 1]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="502" y="10" width="58" height="18" uuid="e3fd0c19-1499-4025-aaf5-711e43e03716" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue()]]></textFieldExpression>
       </textField>
       <staticText>
         <reportElement positionType="Float" x="12" y="80" width="155" height="22" uuid="7605d08a-0524-4de2-b6b1-11edaa5c3845" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[Less Yardage]]></text>
       </staticText>
@@ -3797,42 +3768,42 @@ Adjustments (E) = (C+D)]]></text>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="0" y="0" width="59" height="22" uuid="a7a0db9e-3de8-4a43-bc0b-5f926c918818" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_5_YARDAGE_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="59" y="0" width="59" height="22" uuid="11c4aabc-50b8-45a6-b9d9-e1b84e9f2b88" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_4_YARDAGE_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="118" y="0" width="59" height="22" uuid="ae0910a2-0bbc-4133-8fa0-41d9db55b68f" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_3_YARDAGE_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="177" y="0" width="59" height="22" uuid="aad9cfc6-fef6-4943-bcde-d28e3cb43ea5" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_2_YARDAGE_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="236" y="0" width="59" height="22" uuid="13737f2e-0e1e-4ce2-b0ca-65bff7e2de85" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_1_YARDAGE_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="295" y="0" width="59" height="22" uuid="805ff5db-cae7-4252-ac9b-2088ff3a0484" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_YARDAGE_INCOME}]]></textFieldExpression>
             </textField>
@@ -3842,7 +3813,7 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement positionType="Float" x="12" y="110" width="155" height="22" uuid="48dad655-15a2-4e98-b379-dc10105ca3bc" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[Less Program Payments]]></text>
       </staticText>
@@ -3867,35 +3838,35 @@ Adjustments (E) = (C+D)]]></text>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="0" y="0" width="59" height="22" uuid="ce6cc01f-cfbf-48cc-a23e-c86cf757410b" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_5_PAYMENTS_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="59" y="0" width="59" height="22" uuid="9081e07c-8928-4fca-8d4c-03470314e1e3" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_4_PAYMENTS_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="118" y="0" width="59" height="22" uuid="077ed2ed-d7ce-4390-9271-0c9621ff9013" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_3_PAYMENTS_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="177" y="0" width="59" height="22" uuid="a629d3c9-029e-43f1-874a-693565ae4265" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_2_PAYMENTS_INCOME}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="236" y="0" width="59" height="22" uuid="0b7e1e8e-b908-4ced-b122-3c923c1f7754" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_1_PAYMENTS_INCOME}]]></textFieldExpression>
             </textField>
@@ -3905,14 +3876,14 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement positionType="Float" x="12" y="140" width="155" height="22" uuid="84d60994-4e09-4769-90e2-cf765b192202" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[Total Allowable Income (A)]]></text>
       </staticText>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="206" y="136" width="59" height="22" uuid="8a5fa90e-185c-43b9-9760-dcb7c2b1f62b" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M5} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M5})
@@ -3928,7 +3899,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="266" y="136" width="59" height="22" uuid="aadc2828-a98b-4e3d-89d6-2a553f8dbbc1" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M4} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M4})
@@ -3944,7 +3915,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="324" y="136" width="63" height="22" uuid="6c89e775-a0e7-47e2-ac87-465f2a340af8" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M3} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M3})
@@ -3960,7 +3931,7 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement mode="Opaque" x="11" y="250" width="548" height="16" forecolor="#FFFFFF" backcolor="#18447D" uuid="64b2d660-a87d-40ec-914b-30621de9a6a3" />
         <textElement>
-          <font isBold="true" />
+          <font fontName="Arial" isBold="true" />
         </textElement>
         <text><![CDATA[Allowable Expenses]]></text>
       </staticText>
@@ -3994,56 +3965,56 @@ Adjustments (E) = (C+D)]]></text>
             <textField isBlankWhenNull="true">
               <reportElement x="0" y="0" width="155" height="22" uuid="f32df3a8-cd43-4725-846e-90c46ec66d74" />
               <textElement>
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{EXPENSE_DESCRIPTION}]]></textFieldExpression>
             </textField>
             <textField pattern="0" isBlankWhenNull="true">
               <reportElement x="155" y="0" width="39" height="22" uuid="67b87a2b-1577-451f-ada7-75ce47751231" />
               <textElement textAlignment="Center">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{EXPENSE_CODE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="194" y="0" width="59" height="22" uuid="222eb82f-68b0-49fa-bb35-a4d92f23bd22" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_5_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="253" y="0" width="59" height="22" uuid="415823fe-70b8-47f3-9140-50bb7fd0e129" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_4_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="312" y="0" width="59" height="22" uuid="120a8a90-52c1-47e0-9528-e47d547df895" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_3_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="371" y="0" width="59" height="22" uuid="9d9630da-7cc8-4bb1-8b5b-e142f9c390de" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_2_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="430" y="0" width="59" height="22" uuid="c6454478-d33a-4f17-b3c8-7530a0df40c2" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_1_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="489" y="0" width="57" height="22" uuid="2642d628-9d43-451b-aaa2-0b112e019574" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_EXPENSE}]]></textFieldExpression>
             </textField>
@@ -4053,7 +4024,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="387" y="136" width="59" height="22" uuid="997053bc-60ba-4980-9bb5-549f487ad3d7" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M2} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M2})
@@ -4069,7 +4040,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="446" y="136" width="59" height="22" uuid="b48fb630-6408-464b-bc9e-b28d80758231" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M1} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M1})
@@ -4085,7 +4056,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="505" y="136" width="56" height="22" uuid="2c16aa8a-ed88-4e1b-8ddf-d44273d04750" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_YEAR} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_YEAR})
@@ -4097,28 +4068,28 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement positionType="Float" x="12" y="300" width="155" height="22" uuid="5d2dba7a-b65d-49fe-a981-148bd5bbe2e4" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[Less Yardage]]></text>
       </staticText>
       <staticText>
         <reportElement positionType="Float" x="12" y="330" width="155" height="22" uuid="a686e019-5ed4-4146-93c3-23da1399fa2d" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[Less Contract Work]]></text>
       </staticText>
       <staticText>
         <reportElement positionType="Float" x="12" y="360" width="155" height="22" uuid="f21cfb02-b820-48b9-8997-09eded463645" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[Manual Expense Adjustment]]></text>
       </staticText>
       <staticText>
         <reportElement positionType="Float" x="12" y="390" width="155" height="22" uuid="2909611d-654f-4305-97c1-de05190f6430" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[Total Allowable Expenses (B)]]></text>
       </staticText>
@@ -4144,42 +4115,42 @@ Adjustments (E) = (C+D)]]></text>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="0" y="0" width="59" height="22" uuid="a6b78c35-2079-4e65-8fe5-2cfc4603a168" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_5_YARDAGE_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="59" y="0" width="59" height="22" uuid="d3aec3d0-352b-4441-ad31-7fec6180e109" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_4_YARDAGE_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="118" y="0" width="59" height="22" uuid="fa348c1d-5ae0-4261-90e0-1b0e2f8ae000" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_3_YARDAGE_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="177" y="0" width="59" height="22" uuid="ab08d5d6-ee35-450c-99c5-f1a485261776" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_2_YARDAGE_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="236" y="0" width="59" height="22" uuid="8f1b72c2-9589-4323-b879-3089f7c3639d" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_1_YARDAGE_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="295" y="0" width="59" height="22" uuid="7d37e13c-32a7-4b63-9855-c55bcb887669" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_YARDAGE_EXPENSE}]]></textFieldExpression>
             </textField>
@@ -4208,42 +4179,42 @@ Adjustments (E) = (C+D)]]></text>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="0" y="0" width="59" height="22" uuid="d90b56ac-8f9b-483f-951b-47559083364e" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_5_CONTRACT_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="59" y="0" width="59" height="22" uuid="f957e250-2cda-4e1d-ae31-f9f3878622f8" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_4_CONTRACT_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="118" y="0" width="59" height="22" uuid="76113de4-5e38-40f9-a264-3873827a65a5" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_3_CONTRACT_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="177" y="0" width="59" height="22" uuid="c4a6bf00-29b4-46d1-bf05-e362a26016b1" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_2_CONTRACT_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="236" y="0" width="59" height="22" uuid="a81e1e80-5229-4ec7-bcde-6763a7703c75" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_1_CONTRACT_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="295" y="0" width="59" height="22" uuid="d22332dc-3b3c-434c-80b3-e04a5be45e7b" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_CONTRACT_EXPENSE}]]></textFieldExpression>
             </textField>
@@ -4272,42 +4243,42 @@ Adjustments (E) = (C+D)]]></text>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="0" y="0" width="59" height="22" uuid="c93f4190-28ea-4dec-a241-397bd23304e2" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_5_MANUAL_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="59" y="0" width="59" height="22" uuid="291edf63-a23f-4052-9ef5-373802d3b43b" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_4_MANUAL_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="118" y="0" width="59" height="22" uuid="c91bfbf1-2c15-4314-963d-054da3925941" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_3_MANUAL_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="177" y="0" width="59" height="22" uuid="df2ff5ae-d2dd-414d-ad94-34785ea81c0a" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_2_MANUAL_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="236" y="0" width="59" height="22" uuid="91df32a9-64d1-4248-b05e-be82ff096589" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MINUS_1_MANUAL_EXPENSE}]]></textFieldExpression>
             </textField>
             <textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
               <reportElement x="295" y="0" width="59" height="22" uuid="c2b21190-6db1-4d2a-b3c7-8f5bb45f5a90" />
               <textElement textAlignment="Right">
-                <font size="8" />
+                <font fontName="Arial" size="8" />
               </textElement>
               <textFieldExpression><![CDATA[$F{YEAR_MANUAL_EXPENSE}]]></textFieldExpression>
             </textField>
@@ -4317,7 +4288,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="208" y="390" width="59" height="22" uuid="a7edd58d-b27b-4b51-b391-d33af7c1294e" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{EXPENSE_SUM_M5} == null
     ? java.math.BigDecimal.ZERO : $V{EXPENSE_SUM_M5})
@@ -4337,7 +4308,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="267" y="390" width="59" height="22" uuid="62923862-caf3-4720-a2a1-4982bbbb8e47" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{EXPENSE_SUM_M4} == null
     ? java.math.BigDecimal.ZERO : $V{EXPENSE_SUM_M4})
@@ -4357,7 +4328,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="326" y="390" width="59" height="22" uuid="4f161c75-4239-4083-85d0-1da4dfb4998f" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{EXPENSE_SUM_M3} == null
     ? java.math.BigDecimal.ZERO : $V{EXPENSE_SUM_M3})
@@ -4377,7 +4348,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="385" y="390" width="59" height="22" uuid="72f911b1-3339-48c1-b535-8d485d9e7cbc" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{EXPENSE_SUM_M2} == null
     ? java.math.BigDecimal.ZERO : $V{EXPENSE_SUM_M2})
@@ -4397,7 +4368,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="444" y="390" width="59" height="22" uuid="c4457800-053d-4fe2-8a6a-c5e598dfeab9" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{EXPENSE_SUM_M1} == null
     ? java.math.BigDecimal.ZERO : $V{EXPENSE_SUM_M1})
@@ -4417,7 +4388,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField evaluationTime="Band" pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="503" y="390" width="59" height="22" uuid="1f1405bf-5e25-463c-902c-1b2b2364d525" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{EXPENSE_SUM_YEAR} == null
     ? java.math.BigDecimal.ZERO : $V{EXPENSE_SUM_YEAR})
@@ -4439,63 +4410,63 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement x="167" y="10" width="39" height="18" uuid="0869db77-3923-4282-823a-bb43207a08ba" />
         <textElement textAlignment="Center">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <text><![CDATA[Code]]></text>
       </staticText>
       <staticText>
         <reportElement x="12" y="10" width="155" height="18" uuid="5b552a5e-06df-47c5-b913-2524f26ba82f" />
         <textElement>
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <text><![CDATA[Production Margin Detail]]></text>
       </staticText>
       <textField>
         <reportElement x="267" y="10" width="57" height="18" uuid="cec013a3-bf2a-455a-842a-8c5f006b806b" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 4]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="383" y="10" width="61" height="18" uuid="3457e3cf-c903-4019-b036-a7a63fd3c519" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 2]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="206" y="10" width="61" height="18" uuid="8c3fc83e-81ec-43bb-8b9b-1bf602617c8f" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 5]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="324" y="10" width="59" height="18" uuid="9067cfab-f0cc-463e-9069-052529ec8f66" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 3]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="444" y="10" width="58" height="18" uuid="5890e409-a99a-49f5-be8d-19908b9ffde3" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue() - 1]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement x="502" y="10" width="58" height="18" uuid="e0e6a019-875b-4ee9-9325-2a94f4f23da0" />
         <textElement textAlignment="Right">
-          <font isBold="true" isUnderline="true" />
+          <font fontName="Arial" isBold="true" isUnderline="true" />
         </textElement>
         <textFieldExpression><![CDATA[$F{YEAR}.intValue()]]></textFieldExpression>
       </textField>
       <textField pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="208" y="40" width="59" height="22" uuid="a58d493d-f25d-452d-9e11-6f4c2f2d5683" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M5} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M5})
@@ -4527,7 +4498,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="267" y="40" width="59" height="22" uuid="f726e119-f92e-460d-841e-c487009184c3" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M4} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M4})
@@ -4559,7 +4530,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="503" y="40" width="59" height="22" uuid="ee176810-dc3b-49dc-a247-77599103cef9" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_YEAR} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_YEAR})
@@ -4587,14 +4558,14 @@ Adjustments (E) = (C+D)]]></text>
       <staticText>
         <reportElement positionType="Float" x="12" y="40" width="155" height="22" uuid="798688b5-bda2-4327-ab05-40944f35c240" />
         <textElement>
-          <font size="8" isBold="true" />
+          <font fontName="Arial" size="8" isBold="true" />
         </textElement>
         <text><![CDATA[Production Margin (C) = (A - B)]]></text>
       </staticText>
       <textField pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="385" y="40" width="59" height="22" uuid="e4772f07-f0a0-465f-9e1e-7e759b417dee" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M2} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M2})
@@ -4626,7 +4597,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="326" y="40" width="59" height="22" uuid="1d154282-21c8-4a99-b3a6-b3b3a2b4ece5" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M3} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M3})
@@ -4658,7 +4629,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField pattern="$#,##0;- $#,##0">
         <reportElement positionType="Float" x="444" y="40" width="59" height="22" uuid="c576d605-3880-4776-80de-df4cfe7485ac" />
         <textElement textAlignment="Right">
-          <font size="8" />
+          <font fontName="Arial" size="8" />
         </textElement>
         <textFieldExpression><![CDATA[($V{INCOME_SUM_M1} == null
     ? java.math.BigDecimal.ZERO : $V{INCOME_SUM_M1})
@@ -4723,7 +4694,7 @@ Adjustments (E) = (C+D)]]></text>
       <textField>
         <reportElement x="12" y="10" width="548" height="30" uuid="32784ff1-d439-4b68-9a6c-40b254c8aab1" />
         <textElement>
-          <font isBold="true" />
+          <font fontName="Arial" isBold="true" />
         </textElement>
         <textFieldExpression><![CDATA["CHANGES TO INFORMATION SUBMITTED ON YOUR "
 + new java.text.DecimalFormat("0").format($F{YEAR})
@@ -4746,42 +4717,42 @@ Adjustments (E) = (C+D)]]></text>
 && $V{ADJ_INCOME_COUNT}.intValue() > 0]]></printWhenExpression>
           </reportElement>
           <textElement verticalAlignment="Middle">
-            <font size="11" isBold="true" />
+            <font fontName="Arial" size="11" isBold="true" />
           </textElement>
           <textFieldExpression><![CDATA["Income"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="0" y="28" width="40" height="30" uuid="7488cec4-e66c-4ffc-a0cd-0d5c3217a305" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="40" y="28" width="180" height="30" uuid="22588567-17ff-4c30-ad67-c342311af625" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Description"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="220" y="28" width="140" height="30" uuid="4761ffef-04bd-4b13-8f28-cb818086d5c1" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted Income Amount"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="360" y="28" width="92" height="30" uuid="64dc31d2-c7d3-440b-b570-5e565856c4ca" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Adjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="452" y="28" width="96" height="30" uuid="a97ead03-06c5-4cb4-a30c-5de6465fe81b" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Income Amount"]]></textFieldExpression>
         </textField>
@@ -4807,7 +4778,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="0" y="0" width="40" height="32" uuid="faa91d33-88c9-4351-be6c-16d77e16e829" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INCOME_ADJ_CODE}]]></textFieldExpression>
               </textField>
@@ -4815,7 +4786,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="40" y="0" width="180" height="32" uuid="502f1a42-612b-455b-8a85-e856beb0d653" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INCOME_ADJ_DESCRIPTION}]]></textFieldExpression>
               </textField>
@@ -4823,7 +4794,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="220" y="0" width="140" height="32" uuid="760f0ec4-d0b4-4c77-950b-573101424bfb" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INCOME_CRA_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -4831,7 +4802,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="360" y="0" width="92" height="32" uuid="2f89fc62-d461-4b3e-a48f-0b87458d57ee" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INCOME_ADJ_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -4839,7 +4810,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="452" y="0" width="96" height="32" uuid="a1e4ca73-4947-46fa-98f0-84fa7ebaedc3" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INCOME_NEW_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -4857,42 +4828,42 @@ Adjustments (E) = (C+D)]]></text>
         <textField>
           <reportElement mode="Opaque" x="0" y="0" width="548" height="24" forecolor="#FFFFFF" backcolor="#18447D" uuid="f8ec6651-5308-4eda-b900-3fa417cb14a0" />
           <textElement verticalAlignment="Middle">
-            <font size="11" isBold="true" />
+            <font fontName="Arial" size="11" isBold="true" />
           </textElement>
           <textFieldExpression><![CDATA["Expense"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="0" y="28" width="40" height="30" uuid="2a13a665-d4a4-487d-b55b-896ae16ef95c" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="40" y="28" width="180" height="30" uuid="190b3802-f5cc-4077-b561-9e313e9368af" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Description"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="220" y="28" width="140" height="30" uuid="e3d77bd1-1c4d-438f-a62a-9d02c2a34b54" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted Expense Amount"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="360" y="28" width="92" height="30" uuid="7c2fccbd-0cf2-4168-92cc-a9a7b59c5a1a" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Adjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="452" y="28" width="96" height="30" uuid="6ab8379a-a133-4e1a-9272-a89c888d2913" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Expense Amount"]]></textFieldExpression>
         </textField>
@@ -4918,7 +4889,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="0" y="0" width="40" height="32" uuid="94229b6c-d03b-4188-9be8-836ef28b4e76" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{EXPENSE_ADJ_CODE}]]></textFieldExpression>
               </textField>
@@ -4926,7 +4897,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="40" y="0" width="180" height="32" uuid="dd90eebb-f546-493b-9629-98a7cd139b3c" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{EXPENSE_ADJ_DESCRIPTION}]]></textFieldExpression>
               </textField>
@@ -4934,7 +4905,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="220" y="0" width="140" height="32" uuid="b5759c36-9076-4006-945d-0165413c4709" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{EXPENSE_CRA_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -4942,7 +4913,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="360" y="0" width="92" height="32" uuid="95579d9b-bfcf-4682-8204-19be97ce49e6" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{EXPENSE_ADJ_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -4950,7 +4921,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="452" y="0" width="96" height="32" uuid="78b13ce5-761b-4383-9a5b-93dd1e29470b" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{EXPENSE_NEW_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -4968,63 +4939,63 @@ Adjustments (E) = (C+D)]]></text>
         <textField>
           <reportElement mode="Opaque" x="0" y="0" width="548" height="24" forecolor="#FFFFFF" backcolor="#18447D" uuid="c105cd52-2ace-4f94-a0e5-89756709b741" />
           <textElement verticalAlignment="Middle">
-            <font size="11" isBold="true" />
+            <font fontName="Arial" size="11" isBold="true" />
           </textElement>
           <textFieldExpression><![CDATA["Livestock Inventory"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="0" y="28" width="30" height="30" uuid="0c54a44e-753a-4153-985a-810accf7f898" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="30" y="28" width="164" height="30" uuid="680daab2-0bfe-48eb-a78b-c9ddf985d78b" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Description"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="194" y="28" width="59" height="30" uuid="50838f60-23d7-4b1a-930f-972e80eb2766" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted\nEnding Quantity"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="253" y="28" width="59" height="30" uuid="461149c8-84bd-4df5-a5d4-c360f0221140" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Quantity\nAdjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="312" y="28" width="59" height="30" uuid="7503c6cf-d4a6-47ca-a247-67f42d4be00c" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Ending\nQuantity"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="371" y="28" width="59" height="30" uuid="8fbe7774-f698-4e3a-8d6f-58effaa13eae" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted\nEnding Price"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="430" y="28" width="59" height="30" uuid="e7bcf485-a7f3-4f13-ae27-b652e9bfd11a" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Price\nAdjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="489" y="28" width="59" height="30" uuid="7c9d5be2-d838-45d3-9c06-977f832ab574" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Ending\nPrice"]]></textFieldExpression>
         </textField>
@@ -5050,7 +5021,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="0" y="0" width="30" height="32" uuid="338e33bf-fcb4-4f54-bb9b-6733591a412d" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{LIVESTOCK_ITEM_CODE}]]></textFieldExpression>
               </textField>
@@ -5058,7 +5029,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="30" y="0" width="164" height="32" uuid="336451cb-ed5a-4bbc-812d-31436e96cbe0" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{LIVESTOCK_DESCRIPTION}]]></textFieldExpression>
               </textField>
@@ -5066,7 +5037,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="194" y="0" width="59" height="32" uuid="e4b7bca5-a582-46df-9bdd-0f6dfb75774d" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{LIVESTOCK_CRA_QYT_END}]]></textFieldExpression>
               </textField>
@@ -5074,7 +5045,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="253" y="0" width="59" height="32" uuid="82c1f9fd-eee7-4ce2-a26d-a923e50fd4cf" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{LIVESTOCK_ADJ_QYT_END}]]></textFieldExpression>
               </textField>
@@ -5082,7 +5053,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="312" y="0" width="59" height="32" uuid="810d86ef-25c3-4907-954b-8467c2846e5a" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{LIVESTOCK_NEW_QYT_END}]]></textFieldExpression>
               </textField>
@@ -5090,7 +5061,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="371" y="0" width="59" height="32" uuid="deb71dfe-4ff4-45da-b73b-dd6113e998fa" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{LIVESTOCK_CRA_PRICE_END}]]></textFieldExpression>
               </textField>
@@ -5098,7 +5069,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="430" y="0" width="59" height="32" uuid="fb1897fd-c16b-488b-b770-b5cf5d169682" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{LIVESTOCK_ADJ_PRICE_END}]]></textFieldExpression>
               </textField>
@@ -5106,7 +5077,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="489" y="0" width="59" height="32" uuid="e3cc1f06-7ffb-4b4c-ae6d-bff4e5a79a3d" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{LIVESTOCK_NEW_PRICE_END}]]></textFieldExpression>
               </textField>
@@ -5124,70 +5095,70 @@ Adjustments (E) = (C+D)]]></text>
         <textField>
           <reportElement mode="Opaque" x="0" y="0" width="548" height="24" forecolor="#FFFFFF" backcolor="#18447D" uuid="922a6bb7-cf0f-49ff-b170-67ccbce52f36" />
           <textElement verticalAlignment="Middle">
-            <font size="11" isBold="true" />
+            <font fontName="Arial" size="11" isBold="true" />
           </textElement>
           <textFieldExpression><![CDATA["Crop Inventory"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="0" y="28" width="30" height="30" uuid="9ed4019f-c632-4844-aab8-2a325316b5b4" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="30" y="28" width="120" height="30" uuid="7ded6cdb-3b88-4ce7-8fd1-5029dcfd734e" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Description"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="150" y="28" width="44" height="30" uuid="9d6ee52a-bbcf-4348-8f4e-2a17d4efd6b7" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Units"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="194" y="28" width="59" height="30" uuid="50bf498c-dfe3-45c2-81f5-b3952c02f2ae" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted\nEnding Quantity"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="253" y="28" width="59" height="30" uuid="754d5478-6203-44f4-994d-175a9164d1ea" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Quantity\nAdjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="312" y="28" width="59" height="30" uuid="0b6275a7-d2e1-4aa0-ae93-19cfad8e7428" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Ending\nQuantity"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="371" y="28" width="59" height="30" uuid="afa470b1-8745-4111-84a8-ccfcd0b7a358" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted\nEnding Price"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="430" y="28" width="59" height="30" uuid="660f84be-b30b-4bd4-a0e4-4d18a78a9edb" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Price\nAdjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="489" y="28" width="59" height="30" uuid="e47b3420-0979-4b01-b4b7-a2c9ca0ad05d" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Ending\nPrice"]]></textFieldExpression>
         </textField>
@@ -5213,7 +5184,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="0" y="0" width="30" height="32" uuid="52d47b64-0e02-4fec-96c8-df32a1ee3609" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{CROP_ITEM_CODE}]]></textFieldExpression>
               </textField>
@@ -5221,7 +5192,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="30" y="0" width="120" height="32" uuid="a1d8f9fc-020c-4ede-9ae7-95ca89c2930b" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{CROP_DESCRIPTION}]]></textFieldExpression>
               </textField>
@@ -5229,7 +5200,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="150" y="0" width="44" height="32" uuid="825dc2a4-0f0c-4566-918c-655aa0e225ef" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{CROP_UNIT_DESCRIPTION}]]></textFieldExpression>
               </textField>
@@ -5237,7 +5208,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="194" y="0" width="59" height="32" uuid="f4f83f25-f2a1-4541-81ac-8175024b26ec" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{CROP_CRA_QYT_END}]]></textFieldExpression>
               </textField>
@@ -5245,7 +5216,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="253" y="0" width="59" height="32" uuid="5b8c8977-e563-479e-a995-721b25ceabef" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{CROP_ADJ_QYT_END}]]></textFieldExpression>
               </textField>
@@ -5253,7 +5224,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="312" y="0" width="59" height="32" uuid="e853eee6-48f7-420e-98d9-374255f33794" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{CROP_NEW_QYT_END}]]></textFieldExpression>
               </textField>
@@ -5261,7 +5232,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="371" y="0" width="59" height="32" uuid="eaac70a8-995a-4df4-b8d9-31d439e4b8cc" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{CROP_CRA_PRICE_END}]]></textFieldExpression>
               </textField>
@@ -5269,7 +5240,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="430" y="0" width="59" height="32" uuid="ce9f9e6c-60e5-4211-a6ab-4dc3cd9962fe" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{CROP_ADJ_PRICE_END}]]></textFieldExpression>
               </textField>
@@ -5277,7 +5248,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="489" y="0" width="59" height="32" uuid="05452fa3-fe82-49c5-a3d4-9b454eb39da2" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{CROP_NEW_PRICE_END}]]></textFieldExpression>
               </textField>
@@ -5295,42 +5266,42 @@ Adjustments (E) = (C+D)]]></text>
         <textField>
           <reportElement mode="Opaque" x="0" y="0" width="548" height="24" forecolor="#FFFFFF" backcolor="#18447D" uuid="b41f6010-a859-4ad1-84a0-d628dee7e8df" />
           <textElement verticalAlignment="Middle">
-            <font size="11" isBold="true" />
+            <font fontName="Arial" size="11" isBold="true" />
           </textElement>
           <textFieldExpression><![CDATA["Purchased Inputs"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="0" y="28" width="40" height="30" uuid="43675753-8d3b-457f-9c64-9eb683f6953f" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="40" y="28" width="160" height="30" uuid="44301114-7ca7-482d-b544-60509452bb8d" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Description"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="200" y="28" width="140" height="30" uuid="85864d2c-b3d8-4f4e-b2f5-fb188d91f9de" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted Ending Purchased Inputs"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="340" y="28" width="68" height="30" uuid="6e51b0ae-d0f9-40fd-8e46-d404154c0dc4" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Adjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="408" y="28" width="140" height="30" uuid="d513ac0b-79b9-4fd4-b6cc-907f78447248" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Ending Purchased Inputs"]]></textFieldExpression>
         </textField>
@@ -5356,7 +5327,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="0" y="0" width="40" height="32" uuid="cbd63455-df51-446a-8a23-e1e88fdfd991" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INPUT_ITEM_CODE}]]></textFieldExpression>
               </textField>
@@ -5364,7 +5335,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="40" y="0" width="160" height="32" uuid="c36b5b90-9f22-4d92-88d3-a95a846abc07" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INPUT_DESCRIPTION}]]></textFieldExpression>
               </textField>
@@ -5372,7 +5343,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="200" y="0" width="140" height="32" uuid="9fec5d79-4e67-4153-8ba0-dc575af3b784" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INPUT_CRA_END_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5380,7 +5351,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="340" y="0" width="68" height="32" uuid="3965cddd-e892-4544-aeb2-a55c7c45949e" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INPUT_ADJ_END_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5388,7 +5359,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="408" y="0" width="140" height="32" uuid="684410af-00cf-4042-a155-0e003e9a2632" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{INPUT_NEW_END_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5406,42 +5377,42 @@ Adjustments (E) = (C+D)]]></text>
         <textField>
           <reportElement mode="Opaque" x="0" y="0" width="548" height="24" forecolor="#FFFFFF" backcolor="#18447D" uuid="f1de39bb-24ff-4187-835d-3a9fee67686c" />
           <textElement verticalAlignment="Middle">
-            <font size="11" isBold="true" />
+            <font fontName="Arial" size="11" isBold="true" />
           </textElement>
           <textFieldExpression><![CDATA["Deferred Income and Receivables"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="0" y="28" width="40" height="30" uuid="ca84f87b-f680-4447-9b8b-aa2f40e491da" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="40" y="28" width="160" height="30" uuid="fd84a167-5f1b-47cd-9641-0978a2e60f86" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Description"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="200" y="28" width="140" height="30" uuid="f266d114-d0ad-4179-a1e8-c99a4c6932dc" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted Ending Deferred Income and Receivables"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="340" y="28" width="68" height="30" uuid="24e7fb91-1a21-42d8-8558-7168d8056b89" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Adjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="408" y="28" width="140" height="30" uuid="83bcdc9c-5616-4ed5-af26-979140fba6c1" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Ending Deferred Income and Receivables"]]></textFieldExpression>
         </textField>
@@ -5467,7 +5438,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="0" y="0" width="40" height="32" uuid="36f4c4f0-2cfd-4db1-acd9-fd622fcc9896" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{RECEIVABLE_ITEM_CODE}]]></textFieldExpression>
               </textField>
@@ -5475,7 +5446,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="40" y="0" width="160" height="32" uuid="1b383d31-16c9-42a4-a475-a8100d25f75d" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{RECEIVABLE_DESCRIPTION}]]></textFieldExpression>
               </textField>
@@ -5483,7 +5454,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="200" y="0" width="140" height="32" uuid="6a284062-8004-4b30-891f-a42c83ee5c81" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{RECEIVABLE_CRA_END_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5491,7 +5462,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="340" y="0" width="68" height="32" uuid="9e4ba3aa-acbb-4ff6-b844-2fd300e87f97" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{RECEIVABLE_ADJ_END_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5499,7 +5470,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="408" y="0" width="140" height="32" uuid="69a22f05-48f9-4fcc-a9d9-395c8b32ff45" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{RECEIVABLE_NEW_END_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5517,42 +5488,42 @@ Adjustments (E) = (C+D)]]></text>
         <textField>
           <reportElement mode="Opaque" x="0" y="0" width="548" height="24" forecolor="#FFFFFF" backcolor="#18447D" uuid="9d4c3fc1-8678-42a2-b707-116e61b98b91" />
           <textElement verticalAlignment="Middle">
-            <font size="11" isBold="true" />
+            <font fontName="Arial" size="11" isBold="true" />
           </textElement>
           <textFieldExpression><![CDATA["Accounts Payable"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="0" y="28" width="40" height="30" uuid="ee59b902-a879-44ec-9297-7b9bb74eb1ef" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="40" y="28" width="160" height="30" uuid="37b8071b-a06d-4a73-9e4e-4366ea2bc2e6" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Description"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="200" y="28" width="140" height="30" uuid="e3c7cb81-881c-41c0-a7e0-c1b97e0d59eb" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted Ending Accounts Payable"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="340" y="28" width="68" height="30" uuid="bd35f49f-5c84-40ef-afb5-007b59970108" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Adjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="408" y="28" width="140" height="30" uuid="7486a468-7698-4172-87c9-5d33c7b35277" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Ending Accounts Payable"]]></textFieldExpression>
         </textField>
@@ -5578,7 +5549,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="0" y="0" width="40" height="32" uuid="adc30db2-3fd9-472a-b0c0-ba07c0bf8351" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PAYABLE_ITEM_CODE}]]></textFieldExpression>
               </textField>
@@ -5586,7 +5557,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="40" y="0" width="160" height="32" uuid="9f625842-a6d6-4037-b2b8-ba93b6a27925" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PAYABLE_DESCRIPTION}]]></textFieldExpression>
               </textField>
@@ -5594,7 +5565,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="200" y="0" width="140" height="32" uuid="88f9bcf4-fd23-4de6-8578-831507b4697a" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PAYABLE_CRA_END_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5602,7 +5573,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="340" y="0" width="68" height="32" uuid="cc45a990-f740-4dad-ae02-b4fc79ae7d78" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PAYABLE_ADJ_END_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5610,7 +5581,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="408" y="0" width="140" height="32" uuid="5c46f2b3-42ef-4429-9189-c5016121db0d" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PAYABLE_NEW_END_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5628,21 +5599,21 @@ Adjustments (E) = (C+D)]]></text>
         <textField>
           <reportElement mode="Opaque" x="0" y="0" width="548" height="24" forecolor="#FFFFFF" backcolor="#18447D" uuid="40c96d08-16cf-4510-b365-cab391296603" />
           <textElement verticalAlignment="Middle">
-            <font size="11" isBold="true" />
+            <font fontName="Arial" size="11" isBold="true" />
           </textElement>
           <textFieldExpression><![CDATA["Crop and Livestock Productive Capacity"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="0" y="28" width="40" height="30" uuid="85d66cde-0153-4d11-8497-eaf5990a1ad5" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Code"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="40" y="28" width="214" height="30" uuid="6231b482-2eb5-4064-8d9e-2124c37170cf" />
           <textElement textAlignment="Left" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Description"]]></textFieldExpression>
         </textField>
@@ -5650,21 +5621,21 @@ Adjustments (E) = (C+D)]]></text>
           <reportElement x="254" y="28" width="120" height="30" uuid="27e74246-68da-469c-ab61-4681829c14cd" />
           <box rightPadding="6" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Submitted\nProductive Units"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="374" y="28" width="74" height="30" uuid="265a8164-ee91-401c-8615-8c95d8547f09" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["Adjustment"]]></textFieldExpression>
         </textField>
         <textField>
           <reportElement x="448" y="28" width="100" height="30" uuid="71dcb0a6-4114-4ab9-9d8f-97f6e61401fa" />
           <textElement textAlignment="Right" verticalAlignment="Middle">
-            <font size="8" isUnderline="true" />
+            <font fontName="Arial" size="8" isUnderline="true" />
           </textElement>
           <textFieldExpression><![CDATA["New Productive Units"]]></textFieldExpression>
         </textField>
@@ -5693,7 +5664,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="0" y="0" width="40" height="32" uuid="6a090adc-7362-43d2-9825-707a5ebadcb6" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_ITEM_CODE}]]></textFieldExpression>
               </textField>
@@ -5701,7 +5672,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="40" y="0" width="214" height="32" uuid="880f95a9-eed3-4ece-b708-1f310fac92b8" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Left" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_DESCRIPTION}]]></textFieldExpression>
               </textField>
@@ -5709,7 +5680,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="254" y="0" width="120" height="32" uuid="c3eb3349-8727-46a1-97a2-f9fed1a989c0" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_CRA_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5717,7 +5688,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="374" y="0" width="74" height="32" uuid="e55ba7b4-c773-49d6-bd6d-62e1b87971a4" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_ADJ_AMOUNT}]]></textFieldExpression>
               </textField>
@@ -5725,7 +5696,7 @@ Adjustments (E) = (C+D)]]></text>
                 <reportElement x="448" y="0" width="100" height="32" uuid="03335bea-a141-4778-a57d-9dc0a3c08aff" />
                 <box leftPadding="2" rightPadding="2" />
                 <textElement textAlignment="Right" verticalAlignment="Middle">
-                  <font size="8" />
+                  <font fontName="Arial" size="8" />
                 </textElement>
                 <textFieldExpression><![CDATA[$F{PRODUCTIVE_UNIT_NEW_AMOUNT}]]></textFieldExpression>
               </textField>
