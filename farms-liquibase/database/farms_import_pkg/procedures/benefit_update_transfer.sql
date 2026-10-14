@@ -49,7 +49,7 @@ declare
                null late_enrolment_penalty,
                to_char(py.local_supplemntl_received_date, 'YYYY-MM-DD') local_supp_date_string,
                to_char(py.local_statement_a_receivd_date, 'YYYY-MM-DD') local_statement_a_date_string,
-               to_char(pyv.received_date, 'YYYY-MM-DD') cra_statement_a_date_string,
+               to_char(s.cra_income_expns_received_date, 'YYYY-MM-DD') cra_statement_a_date_string,
                pyv.can_send_cob_to_rep_ind send_copy_to_contact_person_ind
         from farms.farm_program_year_versions pyv
         join farms.farm_agristability_scenarios s on s.program_year_version_id = pyv.program_year_version_id
