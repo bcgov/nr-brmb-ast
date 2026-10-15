@@ -70,6 +70,7 @@ public class EnrolmentUpdateTransformer {
     resource.setVsi_fee(e.getEnrolmentFee());
     resource.setVsi_previousyearcalculatedenfee(e.getPreviousYearEnrolmentFee());
     resource.setVsi_prevyearpartnotverified(e.getPrevYearPartNotVerified());
+    resource.setProgramYearMinus2Verified(e.getProgramYearMinus2Verified());
     resource.setVsi_feemodifiedby(feeModifiedByUser);
     resource.setVsi_fullyprovinciallyfunded(e.getIsLateParticipant());
     resource.setVsi_generateddate(CrmTransferFormatUtil.formatDate(e.getGeneratedDate()));

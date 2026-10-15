@@ -79,6 +79,9 @@ public class Enrolment implements Serializable {
   private Double previousYearEnrolmentFee;
   private Boolean prevYearPartNotVerified;
 
+  /** True when the enrolment year minus 2 has a verified final or adjustment scenario */
+  private Boolean programYearMinus2Verified;
+
   private Date generatedDate;
   
   private Date whenUpdated;
@@ -164,6 +167,14 @@ public class Enrolment implements Serializable {
    */
   public void setPrevYearPartNotVerified(Boolean prevYearPartNotVerified) {
     this.prevYearPartNotVerified = prevYearPartNotVerified;
+  }
+
+  public Boolean getProgramYearMinus2Verified() {
+    return programYearMinus2Verified;
+  }
+
+  public void setProgramYearMinus2Verified(Boolean programYearMinus2Verified) {
+    this.programYearMinus2Verified = programYearMinus2Verified;
   }
 
   /**

@@ -10,6 +10,8 @@
  */
 package ca.bc.gov.srm.farm.crm.resource;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author awilkinson
  */
@@ -46,7 +48,10 @@ public class CrmEnrolmentUpdateResource extends CrmResource {
   private String vsi_partnershippercents;
   private String vsi_partnershippins;
   private Boolean vsi_prevyearpartnotverified;
-  
+
+  @JsonProperty("vsi_py2verified")
+  private Boolean programYearMinus2Verified;
+
   public Double getVsi_fee() {
     return vsi_fee;
   }
@@ -294,5 +299,12 @@ public class CrmEnrolmentUpdateResource extends CrmResource {
   public void setVsi_combinedfarmpercents(String vsi_combinedfarmpercents) {
     this.vsi_combinedfarmpercents = vsi_combinedfarmpercents;
   }
-  
+
+  public Boolean getProgramYearMinus2Verified() {
+    return programYearMinus2Verified;
+  }
+
+  public void setProgramYearMinus2Verified(Boolean programYearMinus2Verified) {
+    this.programYearMinus2Verified = programYearMinus2Verified;
+  }
 }

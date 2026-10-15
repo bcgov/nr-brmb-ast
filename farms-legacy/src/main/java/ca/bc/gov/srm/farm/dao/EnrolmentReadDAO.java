@@ -358,7 +358,8 @@ public class EnrolmentReadDAO extends OracleDAO {
             e.setSectorDetailCodeDescription(getString(rs, "sector_detail_code_desc"));
             e.setIsInCombinedFarm(getIndicator(rs, "Is_In_Combined_Farm"));
             e.setCombinedFarmPercent(getDouble(rs, "combined_farm_percent"));
-            
+            e.setProgramYearMinus2Verified(getIndicator(rs, "program_year_minus_2_verified"));
+
             enrolments.add(e);
             enrolmentIds.add(e.getEnrolmentId());
           }

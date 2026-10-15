@@ -1,3 +1,8 @@
+drop function if exists farms_enrolment_read_pkg.read_transfer(
+    smallint,
+    integer[]
+);
+
 create or replace function farms_enrolment_read_pkg.read_transfer(
     in in_enrolment_year farms.farm_program_enrolments.enrolment_year%type,
     in in_pins integer[]
@@ -31,7 +36,8 @@ returns table(
     sector_code_desc                farms.farm_sector_codes.description%type,
     sector_detail_code_desc         farms.farm_sector_detail_codes.description%type,
     is_in_combined_farm             varchar,
-    combined_farm_percent           farms.farm_program_enrolments.combined_farm_percent%type
+    combined_farm_percent           farms.farm_program_enrolments.combined_farm_percent%type,
+    program_year_minus_2_verified   varchar
 )
 language sql
 as $$
@@ -65,7 +71,18 @@ as $$
            case when scen.combined_farm_number is not null then 'Y'
                 else 'N'
            end is_in_combined_farm,
-           pe.combined_farm_percent
+           pe.combined_farm_percent,
+           case when exists (
+                    select 1
+                    from farms.farm_scenarios_vw sv
+                    where sv.agristability_client_id = pe.agristability_client_id
+                      and sv.year = pe.enrolment_year - 2
+                      and sv.scenario_class_code = 'USER'
+                      and sv.scenario_category_code in ('FIN','PADJ','AADJ')
+                      and sv.scenario_state_code = 'COMP'
+                ) then 'Y'
+                else 'N'
+           end program_year_minus_2_verified
     from farms.farm_agristability_clients ac
     join (
         select e.*,
