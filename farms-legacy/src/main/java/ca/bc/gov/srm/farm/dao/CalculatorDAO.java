@@ -38,6 +38,7 @@ import ca.bc.gov.srm.farm.domain.Scenario;
 import ca.bc.gov.srm.farm.domain.enrolment.EnwEnrolment;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.transaction.Transaction;
+import ca.bc.gov.srm.farm.util.StringUtils;
 
 /**
  * @author awilkinson
@@ -1068,7 +1069,7 @@ public class CalculatorDAO extends OracleDAO {
         proc.setLong(param++, scenarioId == null ? null : scenarioId.longValue());
         proc.setString(param++, scenarioTypeCode);
         proc.setString(param++, scenarioCategoryCode);
-        proc.setString(param++, applicationVersion);
+        proc.setString(param++, StringUtils.formatBenefitsCalculatorVersion(applicationVersion));
         proc.setString(param++, user);
         proc.execute();
         
@@ -1123,7 +1124,7 @@ public class CalculatorDAO extends OracleDAO {
       proc.setLong(param++, forScenario.getScenarioId() == null ? null : forScenario.getScenarioId().longValue());
       proc.setLong(param++, fromScenarioId == null ? null : fromScenarioId.longValue());
       proc.setString(param++, scenarioStateCode);
-      proc.setString(param++, applicationVersion);
+      proc.setString(param++, StringUtils.formatBenefitsCalculatorVersion(applicationVersion));
       proc.setString(param++, user);
       proc.execute();
       

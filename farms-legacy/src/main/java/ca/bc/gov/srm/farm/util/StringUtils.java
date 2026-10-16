@@ -393,4 +393,24 @@ public final class StringUtils {
     
     return String.format(format, fixedParams);
   }
+
+  /**
+   * Formats an application version for saving as a benefits calculator version.
+   * The '.' separators become '_' and single-digit numeric parts get a leading zero,
+   * e.g. 1.4.12 becomes 01_04_12. Non-numeric parts are left as-is.
+   */
+  public static String formatBenefitsCalculatorVersion(String applicationVersion) {
+    if(applicationVersion == null) {
+      return null;
+    }
+
+    String[] parts = applicationVersion.split("\\.", -1);
+    for(int i = 0; i < parts.length; i++) {
+      if(parts[i].matches("\\d")) {
+        parts[i] = "0" + parts[i];
+      }
+    }
+
+    return String.join("_", parts);
+  }
 }

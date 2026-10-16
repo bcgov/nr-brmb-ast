@@ -24,6 +24,7 @@ import ca.bc.gov.srm.farm.domain.MarginTotal;
 import ca.bc.gov.srm.farm.domain.ReferenceScenario;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.transaction.Transaction;
+import ca.bc.gov.srm.farm.util.StringUtils;
 
 
 /**
@@ -82,7 +83,7 @@ public final class WriteDAO extends OracleDAO {
 
       int index = 1;
       proc.setLong(index++, scenarioId == null ? null : scenarioId.longValue());
-      proc.setString(index++, version);
+      proc.setString(index++, StringUtils.formatBenefitsCalculatorVersion(version));
       proc.setString(index++, userId);
       
       proc.execute();
