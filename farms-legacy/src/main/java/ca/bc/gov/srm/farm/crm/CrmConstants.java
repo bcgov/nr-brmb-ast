@@ -41,6 +41,11 @@ public final class CrmConstants {
   public static final int ENROLMENT_STATUS_CODE_TO_BE_REVIEWED = 865520009;
   public static final int ENROLMENT_STATUS_CODE_UPDATED_ENROLMENT_FEES_CALCULATED = 865520006;
   public static final int ENROLMENT_STATUS_CODE_ENROLMENT_NOTICE_SENT = 865520007;
+  public static final int ENROLMENT_STATUS_CODE_OPTED_OUT = 865520001;
+  public static final int ENROLMENT_STATUS_CODE_ENROLMENT_FEES_CALCULATED = 865520005;
+  public static final int ENROLMENT_STATUS_CODE_ENROLLED_NOT_PAID = 865520008;
+  public static final int ENROLMENT_STATUS_CODE_NOT_ENOUGH_INFORMATION = 865520010;
+  public static final int ENROLMENT_STATUS_CODE_DORMANT = 865520012;
 
   
   // ------------------------ API Endpoints --------------------------------------------------------------- //
@@ -114,6 +119,21 @@ public final class CrmConstants {
       break;
       case ENROLMENT_STATUS_CODE_ENROLMENT_NOTICE_SENT:
       description = "Enrolment Notice Sent";
+      break;
+    case ENROLMENT_STATUS_CODE_OPTED_OUT:
+      description = "Opted Out";
+      break;
+    case ENROLMENT_STATUS_CODE_ENROLMENT_FEES_CALCULATED:
+      description = "Enrolment Fees Calculated";
+      break;
+    case ENROLMENT_STATUS_CODE_ENROLLED_NOT_PAID:
+      description = "Enrolled, Not Paid";
+      break;
+    case ENROLMENT_STATUS_CODE_NOT_ENOUGH_INFORMATION:
+      description = "Not Enough Information";
+      break;
+    case ENROLMENT_STATUS_CODE_DORMANT:
+      description = "Dormant";
       break;
     default:
       description = Integer.toString(enrolmentStatusCode);

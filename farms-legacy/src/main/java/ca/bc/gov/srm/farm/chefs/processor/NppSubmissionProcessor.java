@@ -113,7 +113,7 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
       "Found unexpected existing Enrolment Notice Workflow scenario. Please review.";
   
   private static final String ENW_MESSAGE_NOT_CALCULATED_DUE_TO_STATUS_FORMAT =
-      "Enrolment not calculated: %s";
+      "Enrolment not calculated. Enrolment Status: %s";
   
   private static final String ERROR_ENW_CALCULATION_FAILED = "Enrolment Fee calculation failed.";
   private static final String ERROR_ENW_MISSING_BPU = "Missing BPUs for program year Productive Units.";
@@ -277,7 +277,7 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
     CrmTaskResource newTask = null;
     
     boolean success;
-    String successMessage = null;
+    String nppTaskMessage = null;
     
     Integer participantPin = getParticipantPin(data);
     Integer programYear = getProgramYear(data);
@@ -295,7 +295,8 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
     
     if(enrolmentStatusCode == null
         || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_INITIALIZED
-        || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED) {
+        || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_TO_BE_REVIEWED
+        || enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_DORMANT) {
       
       List<ScenarioMetaData> programYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
 
@@ -322,7 +323,7 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
         success = true;
         
         if(enwScenario.stateIsOneOf(ScenarioStateCodes.COMPLETED)) {
-          successMessage = ENW_MESSAGE_FOUND_EXISTING_ENROLMENT_NOTICE_WORKFLOW_SCENARIO;
+          nppTaskMessage = ENW_MESSAGE_FOUND_EXISTING_ENROLMENT_NOTICE_WORKFLOW_SCENARIO;
         }
         
       }
@@ -330,16 +331,14 @@ public class NppSubmissionProcessor extends ChefsSubmissionProcessor<NppSubmissi
     } else {
       
       success = true;
-      
-      if(enrolmentStatusCode == CrmConstants.ENROLMENT_STATUS_CODE_INELIGIBLE) {
-        successMessage = String.format(ENW_MESSAGE_NOT_CALCULATED_DUE_TO_STATUS_FORMAT,
-            CrmConstants.getEnrolmentStatusDescription(enrolmentStatusCode));
-      }
+
+      nppTaskMessage = String.format(ENW_MESSAGE_NOT_CALCULATED_DUE_TO_STATUS_FORMAT,
+          CrmConstants.getEnrolmentStatusDescription(enrolmentStatusCode));
     }
     
     if(success) {
       logger.debug("Creating valid NPP task...");
-      newTask = createValidNppTask(data, participantPin, crmAccount, successMessage, submissionGuid);
+      newTask = createValidNppTask(data, participantPin, crmAccount, nppTaskMessage, submissionGuid);
     }
     return newTask;
   }
