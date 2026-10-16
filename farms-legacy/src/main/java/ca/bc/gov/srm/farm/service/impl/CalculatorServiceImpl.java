@@ -70,7 +70,6 @@ import ca.bc.gov.srm.farm.domain.codes.ImportClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.ImportStateCodes;
 import ca.bc.gov.srm.farm.domain.codes.ParticipantClassCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioBpuPurposeCodes;
-import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioStateCodes;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
 import ca.bc.gov.srm.farm.domain.codes.TriageQueueCodes;
@@ -2621,11 +2620,19 @@ public class CalculatorServiceImpl extends BaseService implements CalculatorServ
 
       List<ScenarioMetaData> scenarioMetaDataList = readDao.readProgramYearMetadata(participantPin, programYear-2);
       enrolment.setPrevYearPartNotVerified(!scenarioMetaDataList.stream().anyMatch(scenarioMetaData -> {
-        return ScenarioStateCodes.VERIFIED.equals(scenarioMetaData.getScenarioStateCode())
-        && ScenarioCategoryCodes.FINAL.equals(scenarioMetaData.getScenarioCategoryCode())
+        return VERIFIED.equals(scenarioMetaData.getScenarioStateCode())
+        && StringUtils.isOneOf(scenarioMetaData.getScenarioCategoryCode(),
+            FINAL, PRODUCER_ADJUSTMENT, ADMINISTRATIVE_ADJUSTMENT)
         && "USER".equals(scenarioMetaData.getScenarioTypeCode());
       }));
-      
+      // Same criteria as farms_enrolment_read_pkg.read_transfer
+      enrolment.setProgramYearMinus2Verified(scenarioMetaDataList.stream().anyMatch(scenarioMetaData -> {
+        return VERIFIED.equals(scenarioMetaData.getScenarioStateCode())
+        && StringUtils.isOneOf(scenarioMetaData.getScenarioCategoryCode(),
+            FINAL, PRODUCER_ADJUSTMENT, ADMINISTRATIVE_ADJUSTMENT)
+        && "USER".equals(scenarioMetaData.getScenarioTypeCode());
+      }));
+
       Integer importVersionId = importVersion.getImportVersionId();
       
       CrmTransferService crmTransferService = ServiceFactory.getCrmTransferService();

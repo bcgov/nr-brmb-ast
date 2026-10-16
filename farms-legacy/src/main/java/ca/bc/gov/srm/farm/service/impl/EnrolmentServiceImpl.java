@@ -688,7 +688,10 @@ public class EnrolmentServiceImpl extends BaseService implements EnrolmentServic
         List<ScenarioMetaData> scenarioMetaDataList = readDao.readProgramYearMetadata(e.getPin(), e.getEnrolmentYear()-2);
         e.setPrevYearPartNotVerified(!scenarioMetaDataList.stream().anyMatch(scenarioMetaData -> {
           return ScenarioStateCodes.VERIFIED.equals(scenarioMetaData.getScenarioStateCode())
-          && ScenarioCategoryCodes.FINAL.equals(scenarioMetaData.getScenarioCategoryCode())
+          && StringUtils.isOneOf(scenarioMetaData.getScenarioCategoryCode(),
+              ScenarioCategoryCodes.FINAL,
+              ScenarioCategoryCodes.PRODUCER_ADJUSTMENT,
+              ScenarioCategoryCodes.ADMINISTRATIVE_ADJUSTMENT)
           && "USER".equals(scenarioMetaData.getScenarioTypeCode());
         }));
         transferService.postEnrolment(e, importVersionId, user);
