@@ -124,5 +124,7 @@ jobs:
           push: true
           tags: ${{ steps.meta_pr.outputs.tags }}
           labels: ${{ steps.meta_pr.outputs.labels }}
+          build-args: |
+            APP_VERSION=${{ inputs.TAG }}
 
       # NOTE: We store built images in ghcr.io, but use artifactory as a pull-through repository - artifacts.developer.gov.bc.ca/github-docker-remote/bcgov

@@ -1,5 +1,12 @@
 FROM tomcat:9.0.86-jre8
 
+# Build TAG, substituted for the #app.ver# token in applicationResources.properties.
+# Shown in the screen footer, and saved to benefits_calculator_version (varchar(20)) in the
+# form produced by StringUtils.formatBenefitsCalculatorVersion (1.4.12 -> 01_04_12).
+ARG APP_VERSION=local
+RUN CALC_VERSION=$(echo "${APP_VERSION}" | awk -F. -v OFS=_ '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]$/) $i="0"$i; $1=$1; print}') &&\
+  if [ ${#CALC_VERSION} -gt 20 ]; then echo "APP_VERSION '${APP_VERSION}' saves as '${CALC_VERSION}', which is longer than 20 characters" >&2; exit 1; fi
+
 COPY ./target/farms-legacy-1.0-SNAPSHOT.war .
 COPY ./deploy-tools ./deploy-tools
 
@@ -18,6 +25,7 @@ RUN rm -rf /usr/local/tomcat/webapps/ROOT  &&\
   cp ./deploy-tools/setenv.sh /usr/local/tomcat/bin/setenv.sh &&\
   cp ./deploy-tools/server.xml /usr/local/tomcat/conf/server.xml &&\
   cp ./deploy-tools/log4j2.xml /usr/local/tomcat/webapps/farms-legacy/WEB-INF/classes/log4j2.xml &&\
+  sed -i "s|#app.ver#|${APP_VERSION}|" /usr/local/tomcat/webapps/farms-legacy/WEB-INF/classes/config/applicationResources.properties &&\
   mkdir -p /app6/userInfoFileLocation &&\
   cp ./deploy-tools/ora2-webade-user-info.xml /app6/userInfoFileLocation/ora2-webade-user-info.xml &&\
   adduser --system tomcat &&\
