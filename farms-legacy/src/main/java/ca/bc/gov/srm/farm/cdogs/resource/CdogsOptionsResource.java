@@ -10,6 +10,8 @@ public class CdogsOptionsResource extends CrmResource {
 
 	private Boolean overwrite = true;
 
+	private String timezone = "America/Vancouver";
+
 	public String getConvertTo() {
 		return convertTo;
 	}
@@ -33,7 +35,15 @@ public class CdogsOptionsResource extends CrmResource {
 	public void setOverwrite(Boolean overwrite) {
 		this.overwrite = overwrite;
 	}
-	
+
+	public String getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
+	}
+
 	public CdogsOptionsResource(String reportName) {
 		this.reportName = reportName;
 	}

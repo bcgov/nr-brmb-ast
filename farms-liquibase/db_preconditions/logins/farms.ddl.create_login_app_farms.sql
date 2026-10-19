@@ -12,6 +12,6 @@ CREATE ROLE "app_farms" WITH
   
 ALTER ROLE app_farms SET search_path TO farms;
 
-ALTER USER app_farms set TIMEZONE to 'America/New_York';
+ALTER USER app_farms set TIMEZONE to 'America/Vancouver';
 
 COMMENT ON ROLE "app_farms" IS 'Farmer Access to Risk Management Service.';
