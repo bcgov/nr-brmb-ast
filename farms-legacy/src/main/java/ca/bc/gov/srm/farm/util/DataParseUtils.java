@@ -46,15 +46,6 @@ public final class DataParseUtils {
       ORACLE_DEFAULT_DATE_FORMAT
     };
 
-  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(
-      DATE_FORMAT);
-
-  private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat(
-      TIME_FORMAT);
-
-  private static final SimpleDateFormat DATE_TIME_FORMATTER =
-    new SimpleDateFormat(DATETIME_FORMAT);
-
 
   private DataParseUtils() {
 
@@ -290,7 +281,7 @@ public final class DataParseUtils {
     if (StringUtils.isNotBlank(format)) {
       f = new SimpleDateFormat(format);
     } else {
-      f = DATE_FORMATTER;
+      f = new SimpleDateFormat(DATE_FORMAT);
     }
 
     return f.format(date);
@@ -337,7 +328,7 @@ public final class DataParseUtils {
     if (StringUtils.isNotBlank(format)) {
       f = new SimpleDateFormat(format);
     } else {
-      f = DATE_TIME_FORMATTER;
+      f = new SimpleDateFormat(DATETIME_FORMAT);
     }
 
     return f.format(date);
@@ -373,7 +364,7 @@ public final class DataParseUtils {
     if (StringUtils.isNotBlank(format)) {
       f = new SimpleDateFormat(format);
     } else {
-      f = TIME_FORMATTER;
+      f = new SimpleDateFormat(TIME_FORMAT);
     }
 
     return f.format(date);

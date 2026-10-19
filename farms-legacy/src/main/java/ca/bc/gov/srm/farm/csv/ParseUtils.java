@@ -34,7 +34,7 @@ public final class ParseUtils {
   private static Logger logger = LoggerFactory.getLogger(ParseUtils.class);
 
   /**  */
-  public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+  public static final String DATE_FORMAT = "yyyyMMdd";
 
   /**
    * @param   s  x
@@ -49,7 +49,8 @@ public final class ParseUtils {
         String t = s.trim();
 
         if (!"".equals(t)) {
-          return DATE_FORMAT.parse(t);
+          DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+          return df.parse(t);
         }
       } catch (ParseException e) {
         logger.error("Unexpected error: ", e);

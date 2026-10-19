@@ -257,7 +257,7 @@ public final class WebADEDeveloperFilter implements Filter, Serializable {
 				
 				if(filterConfigurator.isHeaderRequired(UserTypeCode.BC_SERVICES_CARD, SiteminderConstants.SMGOV_BIRTHDATE_HEADER)) {
 					
-					DateFormat df = new SimpleDateFormat("YYYMMDD");
+					DateFormat df = new SimpleDateFormat("yyyyMMdd");
 					String birthDate = df.format(dateOfBirth);
 					result.put(SiteminderConstants.SMGOV_BIRTHDATE_HEADER, birthDate);
 				}
