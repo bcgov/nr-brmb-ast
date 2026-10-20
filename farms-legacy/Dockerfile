@@ -1,4 +1,4 @@
-FROM tomcat:9.0.86-jre8
+FROM tomcat:9.0.123-jre8
 
 # Build TAG, substituted for the #app.ver# token in applicationResources.properties.
 # Shown in the screen footer, and saved to benefits_calculator_version (varchar(20)) in the

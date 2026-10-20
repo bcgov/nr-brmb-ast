@@ -430,7 +430,7 @@ final class ReportServiceImpl extends BaseService implements ReportService {
    * @return header lines
    */
   private String[] getNationalSurveillanceStrategyHeaderLines(Integer year) {
-    DateFormat df = new SimpleDateFormat("MMMM dd YYYY");
+    DateFormat df = new SimpleDateFormat("MMMM dd yyyy");
     // Need quotes around lines that have commas in them.
     // Quoted them all just in case they are modified later.
     return new String[]{
@@ -500,7 +500,7 @@ final class ReportServiceImpl extends BaseService implements ReportService {
    * @return header lines
    */
   private String[] getAnalyticalSurveillanceStrategyHeaderLines(Integer year) {
-    DateFormat df = new SimpleDateFormat("MMMM dd YYYY");
+    DateFormat df = new SimpleDateFormat("MMMM dd yyyy");
     // Need quotes around lines that have commas in them.
     // Quoted them all just in case they are modified later.
     return new String[]{

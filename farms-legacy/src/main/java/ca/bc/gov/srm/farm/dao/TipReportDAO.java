@@ -675,7 +675,7 @@ public class TipReportDAO extends OracleDAO {
     boolean originalAutoCommit = true;
     final int mainProcParamCount = 5;
     
-    DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm a");
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
     
 
     try {

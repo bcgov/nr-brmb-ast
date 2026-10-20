@@ -113,7 +113,7 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   @JsonIgnore
   private static final String pattern = "yyyy-MM-dd";
   @JsonIgnore
-  private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+  private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
   public String getCorporationName() {
     return corporationName;

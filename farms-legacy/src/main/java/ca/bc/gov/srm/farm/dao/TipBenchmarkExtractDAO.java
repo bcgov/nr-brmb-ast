@@ -47,7 +47,7 @@ public final class TipBenchmarkExtractDAO extends OracleDAO {
   private static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat("#0.00##");
   private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#0.000#");
   private static final DecimalFormat RATIO_FORMAT = new DecimalFormat("#0.000#");
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYYY-MM-dd HH:mm a");
+  private static final String DATE_FORMAT = "yyyy-MM-dd hh:mm a";
   
   public Path exportDataToFile(Connection conn,
       String name,
@@ -186,7 +186,7 @@ public final class TipBenchmarkExtractDAO extends OracleDAO {
         CURRENCY_FORMAT, // Overhead_Expenses,
         RATIO_FORMAT,    // Overhead_Expenses_Ratio,
         RATIO_FORMAT,    // Overhead_Expn_Ratio_High_25pct,
-        DATE_FORMAT,     // Generated_Date
+        new SimpleDateFormat(DATE_FORMAT), // Generated_Date
     };
   }
   
@@ -201,7 +201,7 @@ public final class TipBenchmarkExtractDAO extends OracleDAO {
         INTEGER_FORMAT,  // Income_Range_Low,
         INTEGER_FORMAT,  // Income_Range_High,
         INTEGER_FORMAT,  // Tip_Benchmark_Year_Id,
-        DATE_FORMAT,     // Generated_Date,
+        new SimpleDateFormat(DATE_FORMAT), // Generated_Date,
         INTEGER_FORMAT,  // Line_Item,
         null,            // Description,
         null,            // Eligibility_Ind,
@@ -333,7 +333,7 @@ public final class TipBenchmarkExtractDAO extends OracleDAO {
         null,            // Machinery_Expenses_Ratio_Ratng,
         null,            // Land_Build_Expens_Ratio_Indctr,
         null,            // Overhead_Expenses_Ratio_Indctr,
-        DATE_FORMAT,     // Generated_Date
+        new SimpleDateFormat(DATE_FORMAT), // Generated_Date
     };
   }
   
@@ -367,7 +367,7 @@ public final class TipBenchmarkExtractDAO extends OracleDAO {
         INTEGER_FORMAT,  // Tip_Report_Result_Id,
         INTEGER_FORMAT,  // Parent_Tip_Report_Result_Id Parent_Id,
         INTEGER_FORMAT,  // Tip_Report_Expense_Id
-        DATE_FORMAT,     // Generated_Date
+        new SimpleDateFormat(DATE_FORMAT), // Generated_Date
         INTEGER_FORMAT,  // Reference_Year_Count
     };
   }

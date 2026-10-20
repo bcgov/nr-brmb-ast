@@ -18,9 +18,6 @@ public final class DateUtils {
 
   public static final String TIME_FORMAT_STR = "HH:mm";
 
-  public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(
-      TIME_FORMAT_STR);
-  
   public static final String YEAR_FORMAT_STR = "yyyy";
   
   public static final String NEVER_EXPIRES_DATE_STRING = "9999-12-31";
@@ -78,7 +75,8 @@ public final class DateUtils {
   public static Date setTime(Date d, String timeStr) {
     Calendar t = Calendar.getInstance();
 
-    Date timeDate = TIME_FORMAT.parse(timeStr, new ParsePosition(0));
+    SimpleDateFormat tf = new SimpleDateFormat(TIME_FORMAT_STR);
+    Date timeDate = tf.parse(timeStr, new ParsePosition(0));
     t.setTime(timeDate);
 
     return getTimestamp(d,

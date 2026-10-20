@@ -12,7 +12,7 @@ CREATE ROLE "proxy_farms_rest" WITH
   
 ALTER ROLE proxy_farms_rest SET search_path TO farms;
 
-ALTER USER proxy_farms_rest set TIMEZONE to 'America/New_York';
+ALTER USER proxy_farms_rest set TIMEZONE to 'America/Vancouver';
 
 COMMENT ON ROLE "proxy_farms_rest" IS 'Proxy account for Farmer Access to Risk Management Service.';
 

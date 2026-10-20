@@ -17,12 +17,13 @@ public final class ParseUtils {
 
     private static Logger logger = LoggerFactory.getLogger(ParseUtils.class);
 
-    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+    public static final String DATE_FORMAT = "yyyyMMdd";
 
     public static Date parseDate(final String s) {
         try {
             if (StringUtils.isNotBlank(s)) {
-                return DATE_FORMAT.parse(s.trim());
+                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+                return df.parse(s.trim());
             }
         } catch (ParseException e) {
             logger.error("Unexpected error: ", e);

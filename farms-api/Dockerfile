@@ -1,4 +1,4 @@
-FROM tomcat:10.1.44-jre21
+FROM tomcat:10.1.61-jre21
 
 COPY ./target/farms-api-1.0.0-SNAPSHOT.war .
 COPY ./deploy-tools ./deploy-tools
