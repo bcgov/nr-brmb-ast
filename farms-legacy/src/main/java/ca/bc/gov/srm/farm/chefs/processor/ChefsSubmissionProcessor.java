@@ -153,8 +153,12 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   }
   
   
-  public void processSubmissions() {
-    
+  /**
+   * @throws ServiceException if CHEFS rate limited us. Remaining submissions are
+   *         left for the next run, since further requests would also be rejected.
+   */
+  public void processSubmissions() throws ServiceException {
+
     for(SubmissionListItemResource item : submissionItems) {
       
       String submissionGuid = item.getSubmissionGuid();
@@ -178,13 +182,13 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
           submissionResponseStr = restDao.get(submissionUrl);
           process = isCorrectEnvironment(submissionResponseStr);
         }
-        
+
         if( process && submissionResponseStr != null ) {
           try {
             processSubmission(submissionGuid, submissionResponseStr);
           } catch (ServiceException e) {
-            if(e.getCause() instanceof TooManyRequestsException) {
-              logger.error("TooManyRequestsException: ", e);
+            if(TooManyRequestsException.findIn(e) != null) {
+              throw e;
             } else if(e.getCause() instanceof JacksonException) {
               handleParseError(submissionGuid, e);
             } else {
@@ -196,6 +200,10 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
         }
         
       } catch (Exception e) {
+        if(TooManyRequestsException.findIn(e) != null) {
+          throw new ServiceException(String.format("CHEFS rate limit reached processing %s %s submission: %s",
+              formTypeCode, formUserType, submissionGuid), e);
+        }
         logger.error(String.format("Error processing %s %s submission: %s",
             formTypeCode, formUserType, submissionGuid), e);
       }
@@ -573,7 +581,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     if (webADEEnvironment.equals(PROD_ENVIRONMENT) || webADEEnvironment.equals(TEST_ENVIRONMENT)) {
       return true;
     }
-    
+
     ObjectMapper jsonObjectMapper = new ObjectMapper();
     JavaType parametricType = jsonObjectMapper.getTypeFactory().constructParametricType(SubmissionWrapperResource.class,
         ChefsSubmissionDataResource.class);
@@ -584,7 +592,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     ChefsSubmissionDataResource adminUseSubmissionDataResource = submissionWrapper.getSubmissionMetaData().getSubmission().getData();
     String chefsFormEnvironment = adminUseSubmissionDataResource.getEnvironment();
     logger.debug("webADEEnvironment = {}, chefsFormEnvironment = {}", webADEEnvironment, chefsFormEnvironment);
-    
+
     return webADEEnvironment.equals(chefsFormEnvironment);
   }
 

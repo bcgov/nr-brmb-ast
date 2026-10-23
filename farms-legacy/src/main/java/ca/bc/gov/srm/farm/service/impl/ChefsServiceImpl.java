@@ -32,6 +32,7 @@ import ca.bc.gov.srm.farm.chefs.processor.NppSubmissionProcessor;
 import ca.bc.gov.srm.farm.chefs.processor.StatementASubmissionProcessor;
 import ca.bc.gov.srm.farm.chefs.processor.SupplementalSubmissionProcessor;
 import ca.bc.gov.srm.farm.exception.ServiceException;
+import ca.bc.gov.srm.farm.exception.TooManyRequestsException;
 import ca.bc.gov.srm.farm.security.BusinessAction;
 import ca.bc.gov.srm.farm.service.BaseService;
 import ca.bc.gov.srm.farm.service.ChefsService;
@@ -84,8 +85,14 @@ public class ChefsServiceImpl extends BaseService implements ChefsService {
 
       processSubmissions(new StatementASubmissionProcessor(connection, USER_TYPE_IDIR));
       processSubmissions(new StatementASubmissionProcessor(connection, USER_TYPE_BASIC_BCEID));
-      
+
     } catch (Exception e) {
+      if(TooManyRequestsException.findIn(e) != null) {
+        // Not a failure. Remaining forms are picked up on the next run.
+        logger.warn("CHEFS rate limit reached. Skipping remaining forms until the next run: " + e.getMessage());
+        logMethodEnd(logger);
+        return;
+      }
       logger.error("Error processing submissions: ", e);
       throw new ServiceException(e);
     }
@@ -93,7 +100,10 @@ public class ChefsServiceImpl extends BaseService implements ChefsService {
   }
 
 
-  private void processSubmissions(ChefsSubmissionProcessor<?> submissionProcessor) {
+  /**
+   * @throws ServiceException if CHEFS rate limited us, so that the remaining forms are skipped
+   */
+  private void processSubmissions(ChefsSubmissionProcessor<?> submissionProcessor) throws ServiceException {
     
     ChefsConfigurationUtil chefsConfig = ChefsConfigurationUtil.getInstance();
     
@@ -113,6 +123,9 @@ public class ChefsServiceImpl extends BaseService implements ChefsService {
         submissionProcessor.processSubmissions();
       
       } catch (Exception e) {
+        if(TooManyRequestsException.findIn(e) != null) {
+          throw new ServiceException(String.format("CHEFS rate limit reached processing %s %s submissions", formTypeCode, formUserType), e);
+        }
         logger.error(String.format("Error processing %s %s submissions: ", formTypeCode, formUserType), e);
       }
       
