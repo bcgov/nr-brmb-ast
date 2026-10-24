@@ -183,7 +183,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
           process = isCorrectEnvironment(submissionResponseStr);
         }
 
-        if( process && submissionResponseStr != null ) {
+        if( process ) {
           try {
             processSubmission(submissionGuid, submissionResponseStr);
           } catch (ServiceException e) {
@@ -582,18 +582,20 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
       return true;
     }
 
-    ObjectMapper jsonObjectMapper = new ObjectMapper();
-    JavaType parametricType = jsonObjectMapper.getTypeFactory().constructParametricType(SubmissionWrapperResource.class,
-        ChefsSubmissionDataResource.class);
-    
-    SubmissionWrapperResource<ChefsSubmissionDataResource> submissionWrapper = null;
-    submissionWrapper = restDao.parseResource(submissionResponseStr, parametricType);
-
-    ChefsSubmissionDataResource adminUseSubmissionDataResource = submissionWrapper.getSubmissionMetaData().getSubmission().getData();
+    ChefsSubmissionDataResource adminUseSubmissionDataResource = parseSubmissionData(submissionResponseStr);
     String chefsFormEnvironment = adminUseSubmissionDataResource.getEnvironment();
     logger.debug("webADEEnvironment = {}, chefsFormEnvironment = {}", webADEEnvironment, chefsFormEnvironment);
 
     return webADEEnvironment.equals(chefsFormEnvironment);
+  }
+
+  private ChefsSubmissionDataResource parseSubmissionData(String submissionResponseStr) throws ServiceException {
+    ObjectMapper jsonObjectMapper = new ObjectMapper();
+    JavaType parametricType = jsonObjectMapper.getTypeFactory().constructParametricType(SubmissionWrapperResource.class,
+        ChefsSubmissionDataResource.class);
+
+    SubmissionWrapperResource<ChefsSubmissionDataResource> submissionWrapper = restDao.parseResource(submissionResponseStr, parametricType);
+    return submissionWrapper.getSubmissionMetaData().getSubmission().getData();
   }
 
   public String getFormTypeCode() {
