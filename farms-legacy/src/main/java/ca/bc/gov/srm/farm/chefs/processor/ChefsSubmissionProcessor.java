@@ -68,6 +68,9 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   private static final String ERROR_TASK_SUBJECT_FORMAT = "%s System Error for Submission GUID: %s";
   private static final String ERROR_TASK_DESCRIPTION_PREFIX_FORMAT =
       "A %s form was submitted but an unexpected system error occurred while processing:\n\n%s";
+  private static final String PROD_ENVIRONMENT = "PROD";
+  private static final String TEST_ENVIRONMENT = "TEST";
+
   private static final String DUPLICATE_SUBMISSION_TASK_SUBJECT_FORMAT = "Duplicate form: %d %s %d";
 
   private static final String INVALID_FORM_TASK_DESCRIPTION_PREFIX_FORMAT =
@@ -180,7 +183,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
         }
         if(process) {
           submissionResponseStr = restDao.get(submissionUrl);
-          process = isCorrectEnvironment(submissionResponseStr);
+          process = checkEnvironment(submissionGuid, submissionResponseStr);
         }
 
         if( process ) {
@@ -208,6 +211,93 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
             formTypeCode, formUserType, submissionGuid), e);
       }
     }
+  }
+
+
+  private boolean checkEnvironment(String submissionGuid, String submissionResponseStr) throws ServiceException {
+    if(submissionResponseStr == null) {
+      // 404. Most likely deleted after the submission list was read.
+      // If so, the next run will see it as deleted and skip it.
+      logger.warn(String.format("%s %s submission %s not found in CHEFS. It may have been deleted. Skipping.",
+          formTypeCode, formUserType, submissionGuid));
+      return false;
+    }
+    return checkEnvironment(parseSubmissionMetaData(submissionResponseStr));
+  }
+
+
+  /**
+   * Decides whether this environment should process the submission, before any form-specific
+   * processing is done. A submission for another environment, or a Basic BCeID submission while
+   * those forms are disabled, is recorded as OTHER_ENV so that it is not fetched again.
+   *
+   * @return true if the submission should be processed
+   */
+  public boolean checkEnvironment(SubmissionParentResource<? extends ChefsSubmissionDataResource> submissionMetaData)
+      throws ServiceException {
+
+    // Drafts are not processed. Don't record anything until the form is submitted.
+    if(Boolean.TRUE.equals(submissionMetaData.getDraft())) {
+      return false;
+    }
+
+    ChefsSubmissionDataResource data = submissionMetaData.getSubmission().getData();
+    if(isForThisEnvironment(data)) {
+      return true;
+    }
+
+    // An IDIR form's environment is only final once staff complete the Admin Use section.
+    // Until then, check it again on the next run.
+    if(isBasicBCeIDForm() || checkAdminUseSectionCompleted(data)) {
+      recordOtherEnvironment(submissionMetaData.getSubmissionGuid());
+    }
+    return false;
+  }
+
+
+  private boolean isForThisEnvironment(ChefsSubmissionDataResource data) {
+    if(isBasicBCeIDForm()) {
+      // Basic BCeID users can't see the Admin Use section, so its Environment field is always blank.
+      return basicBCeIDFormsEnabled;
+    }
+    if( ! usesEnvironmentField() ) {
+      return true;
+    }
+
+    String webADEEnvironment = getWebADEEnvironment();
+    String chefsFormEnvironment = data.getEnvironment();
+    logger.debug("webADEEnvironment = {}, chefsFormEnvironment = {}", webADEEnvironment, chefsFormEnvironment);
+
+    return webADEEnvironment.equals(chefsFormEnvironment);
+  }
+
+
+  /**
+   * DEV and DLVR share a CHEFS environment, so staff use the Environment field in the
+   * Admin Use section to say which one a submission is for. Every submission in the
+   * TEST and PROD CHEFS environments is for that environment, so they ignore the field.
+   */
+  private boolean usesEnvironmentField() {
+    String webADEEnvironment = getWebADEEnvironment();
+    return ! (PROD_ENVIRONMENT.equals(webADEEnvironment) || TEST_ENVIRONMENT.equals(webADEEnvironment));
+  }
+
+
+  private boolean isBasicBCeIDForm() {
+    return formUserType.equals(USER_TYPE_BASIC_BCEID);
+  }
+
+
+  private void recordOtherEnvironment(String submissionGuid) throws ServiceException {
+    ChefsSubmission submissionRec = submissionRecordMap.get(submissionGuid);
+    if(submissionRec == null) {
+      submissionRec = newSubmissionRecord(submissionGuid);
+    } else if( ! isOneOf(submissionRec.getSubmissionStatusCode(), SUBMITTED) ) {
+      // Leave error statuses alone so that their validation task handling still applies.
+      return;
+    }
+    submissionRec.setSubmissionStatusCode(OTHER_ENV);
+    createOrUpdateSubmission(submissionRec);
   }
 
 
@@ -379,50 +469,24 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   protected ChefsSubmissionProcessData handleAdminSection(String submissionGuid, ChefsSubmissionDataResource data, ChefsSubmission submissionRecParam) throws ServiceException {
     logMethodStart(logger);
     
-    ChefsSubmission submissionRec = submissionRecParam;
-    
-    if(formUserType.equals(USER_TYPE_BASIC_BCEID)) {
+    if(isBasicBCeIDForm()) {
+      // Basic BCeID users can't see the Admin Use section, so it is always blank. Fill in its values.
+      // checkEnvironment() only lets them through when they are enabled,
+      // so they are for this environment.
       data.setOrigin(FIELD_VALUE_ORIGIN_EXTERNAL);
-      
       data.setExternalMethod(FIELD_VALUE_METHOD_CHEFS_FORM);
-      
-      // If Basic BCeID Forms are enabled for this environment then set the environment
-      // to the current one so that submissions will be processed.
-      // Once testing in DEV, DLVR, and TEST has been completed,
-      // this setting will be turned off so that the forms are only processed in PROD.
-      if(basicBCeIDFormsEnabled) {
-        data.setEnvironment(getWebADEEnvironment());
-      } else {
-        // We just need this to be a value that's different
-        // from this environment so that it will be treated as
-        // belonging to a different environment.
-        data.setEnvironment("formTypeDisabled");
-      }
+      data.setEnvironment(getWebADEEnvironment());
     }
-    
-    boolean process = false;
+
+    // The environment has already been checked by checkEnvironment().
     // If we have not processed this record before, then check if the
     // Admin Use section of the form has been completed by AgriStability staff.
     // If so, then attempt to process the submission. Otherwise, ignore it for now.
-    boolean adminCompleted = checkAdminUseSectionCompleted(data);
-    
-    if(adminCompleted) {
-      
-      boolean isForThisEnvironment = checkIsForThisEnvironment(data);
-      if(isForThisEnvironment) {
-        process = true;
-      } else {
-        if(submissionRec == null) {
-          submissionRec = newSubmissionRecord(submissionGuid);
-        }
-        submissionRec.setSubmissionStatusCode(OTHER_ENV);
-        submissionRec = createOrUpdateSubmission(submissionRec);
-      }
-    }
-    
+    boolean process = checkAdminUseSectionCompleted(data);
+
     ChefsSubmissionProcessData chefsSubmissionProcessData = new ChefsSubmissionProcessData();
     chefsSubmissionProcessData.setProcess(process);
-    chefsSubmissionProcessData.setChefsSubmission(submissionRec);
+    chefsSubmissionProcessData.setChefsSubmission(submissionRecParam);
 
     logMethodEnd(logger, process);
     return chefsSubmissionProcessData;
@@ -438,7 +502,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     
     boolean result = StringUtils.isNotBlank(origin)
         && StringUtils.isNotBlank(method)
-        && StringUtils.isNotBlank(env);
+        && ( ! usesEnvironmentField() || StringUtils.isNotBlank(env) );
     
     logMethodEnd(logger, result);
     return result;
@@ -455,19 +519,6 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     return method;
   }
 
-  protected boolean checkIsForThisEnvironment(ChefsSubmissionDataResource data) {
-    String webADEEnvironment = getWebADEEnvironment();
-    String formEnvironment = data.getEnvironment();
-    
-    logger.debug("webADEEnvironment: " + webADEEnvironment);
-    logger.debug("formEnvironment  : " + formEnvironment);
-    
-    boolean result = webADEEnvironment.equals(formEnvironment);
-    logger.debug("isForThisEnvironment: " + result);
-    
-    return result;
-  }
-  
   protected ChefsSubmissionProcessData shouldProcessSubmission(String submissionGuid, ChefsSubmissionDataResource data, ChefsSubmission submissionRec)
       throws ServiceException {
 
@@ -571,31 +622,25 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     this.user = user;
   }
   
+  /**
+   * @return true if this environment should process the submission. Unlike checkEnvironment(), records nothing.
+   */
   public boolean isCorrectEnvironment(String submissionResponseStr) throws ServiceException {
-    
-    String webADEEnvironment = getWebADEEnvironment();
-    
-    final String PROD_ENVIRONMENT = "PROD";
-    final String TEST_ENVIRONMENT = "TEST";
-    
-    if (webADEEnvironment.equals(PROD_ENVIRONMENT) || webADEEnvironment.equals(TEST_ENVIRONMENT)) {
-      return true;
-    }
-
-    ChefsSubmissionDataResource adminUseSubmissionDataResource = parseSubmissionData(submissionResponseStr);
-    String chefsFormEnvironment = adminUseSubmissionDataResource.getEnvironment();
-    logger.debug("webADEEnvironment = {}, chefsFormEnvironment = {}", webADEEnvironment, chefsFormEnvironment);
-
-    return webADEEnvironment.equals(chefsFormEnvironment);
+    return isForThisEnvironment(parseSubmissionMetaData(submissionResponseStr).getSubmission().getData());
   }
 
-  private ChefsSubmissionDataResource parseSubmissionData(String submissionResponseStr) throws ServiceException {
+  /**
+   * Parses only the fields common to all forms, so that a submission for another environment
+   * is never parsed into a form-specific class that it might not fit.
+   */
+  private SubmissionParentResource<ChefsSubmissionDataResource> parseSubmissionMetaData(String submissionResponseStr)
+      throws ServiceException {
     ObjectMapper jsonObjectMapper = new ObjectMapper();
     JavaType parametricType = jsonObjectMapper.getTypeFactory().constructParametricType(SubmissionWrapperResource.class,
         ChefsSubmissionDataResource.class);
 
     SubmissionWrapperResource<ChefsSubmissionDataResource> submissionWrapper = restDao.parseResource(submissionResponseStr, parametricType);
-    return submissionWrapper.getSubmissionMetaData().getSubmission().getData();
+    return submissionWrapper.getSubmissionMetaData();
   }
 
   public String getFormTypeCode() {
