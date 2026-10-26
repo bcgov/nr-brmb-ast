@@ -68,8 +68,6 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   private static final String ERROR_TASK_SUBJECT_FORMAT = "%s System Error for Submission GUID: %s";
   private static final String ERROR_TASK_DESCRIPTION_PREFIX_FORMAT =
       "A %s form was submitted but an unexpected system error occurred while processing:\n\n%s";
-  private static final String PROD_ENVIRONMENT = "PROD";
-  private static final String TEST_ENVIRONMENT = "TEST";
 
   private static final String DUPLICATE_SUBMISSION_TASK_SUBJECT_FORMAT = "Duplicate form: %d %s %d";
 
