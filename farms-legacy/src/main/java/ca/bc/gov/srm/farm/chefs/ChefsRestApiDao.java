@@ -63,7 +63,7 @@ public class ChefsRestApiDao extends RestApiDao {
   // attempted because callers include user requests and the ChefsAgent timer, which
   // does not schedule its next run until the current one finishes.
   private static final int MAX_RATE_LIMIT_RETRIES = 2;
-  private static final int MAX_RATE_LIMIT_WAIT_SECONDS = 30;
+  private static final int MAX_RATE_LIMIT_WAIT_SECONDS = 60;
   private static final int DEFAULT_RATE_LIMIT_WAIT_SECONDS = 15;
 
   public ChefsRestApiDao(RestAuthenticationHandler authenticationHandler) {
