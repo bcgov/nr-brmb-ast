@@ -59,10 +59,8 @@ public class CdogsRestApiTest {
   protected static final String HTTP_METHOD_GET = "GET";
 
   private static CdogsRestApiDao cdogsDao;
-  private static ChefsRestApiDao chefsApiDao;
   private static CdogsConfigurationUtil cdogsConfig;
   private static ChefsConfigurationUtil chefsConfig;
-  private static ChefsFormCredentials formCredentials;
 
   @BeforeAll
   protected static void set() throws Exception {
@@ -227,8 +225,8 @@ public class CdogsRestApiTest {
   @Test
   public void generatePdfFromAdjustmentTemplateGuidTest() {
 
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.ADJ, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.ADJ, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String adjustmentTemplateGuid = cdogsConfig.getAdjustmentTemplateGuid();
     String submissionGuid = "328a8ecd-e292-46cd-bbdd-0dafdb532233";
@@ -490,8 +488,8 @@ public class CdogsRestApiTest {
   @Test
   public void generatePdfFromCoverageNoticeTemplateGuidTest() {
   
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.CN, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.CN, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
   
     String coverageNoticeTemplateGuid = cdogsConfig.getCoverageTemplateGuid();
     String submissionGuid = "71581b60-4706-48f5-907d-8e640c57d3b2";
@@ -566,8 +564,8 @@ public class CdogsRestApiTest {
   @Test
   public void generatePdfFromInterimTemplateGuidTest() {
 
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.INTERIM, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.INTERIM, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String interimTemplateGuid = cdogsConfig.getInterimTemplateGuid(null);
     String submissionGuid = "7d93ad6f-37c3-4502-a037-fc0db3f4786d";
@@ -641,8 +639,8 @@ public class CdogsRestApiTest {
   @Test
   public void generatePdfFromInterimTemplateGuidV2Test() {
 
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.INTERIM, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.INTERIM, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String interimTemplateGuid = cdogsConfig.getInterimTemplateGuid(2);
     String submissionGuid = "7d93ad6f-37c3-4502-a037-fc0db3f4786d";
@@ -731,8 +729,8 @@ public class CdogsRestApiTest {
       logger.debug("Failed to delete the file: " + saveFilePath);
     }
     
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NOL, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NOL, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
     assertNotNull(submissionUrl);
@@ -804,8 +802,8 @@ public class CdogsRestApiTest {
       logger.debug("Failed to delete the file: " + saveFilePath);
     }
     
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
     assertNotNull(submissionUrl);
@@ -878,8 +876,8 @@ public class CdogsRestApiTest {
       logger.debug("Failed to delete the file: " + saveFilePath);
     }
     
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
     assertNotNull(submissionUrl);
@@ -938,8 +936,8 @@ public class CdogsRestApiTest {
   @Test
   public void generatePdfFromSupplementalTemplateGuidTest() {
 
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.SUPP, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.SUPP, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String supplementalTemplateGuid = cdogsConfig.getSupplementalTemplateGuid();
     String submissionGuid = "948dd6fa-6c13-48bc-ab9c-5849b9ed0eb2";
@@ -1026,8 +1024,8 @@ public class CdogsRestApiTest {
   @Test
   public void generatePdfFromStatementATemplateGuidTest() {
   
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.STA, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.STA, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
   
     String statementATemplateGuid = cdogsConfig.getStatementATemplateGuid();
     String submissionGuid = "ff0c841c-724f-46fa-b8ab-fa4680257d32";

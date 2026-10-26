@@ -77,7 +77,6 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private static ChefsRestApiDao chefsApiDao;
   private static final ChefsConfigurationUtil chefsConfig = ChefsConfigurationUtil.getInstance();
   private static final CdogsConfigurationUtil cdogsConfig = CdogsConfigurationUtil.getInstance();
 
@@ -88,7 +87,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   public Map<Integer,File> createCdogsAdjustmentFormDocument(String submissionGuid, String formUserType) throws ServiceException {
 
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.ADJ, formUserType);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String templateGuid = cdogsConfig.getAdjustmentTemplateGuid();
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
@@ -118,7 +117,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   @Override
   public Map<Integer, File> createCdogsCashMarginsFormDocument(String submissionGuid, String formUserType) throws ServiceException {
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.CM, formUserType);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String templateGuid = cdogsConfig.getCashMarginsTemplateGuid();
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
@@ -147,7 +146,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   public Map<Integer, File> createCdogsCoverageFormDocument(String submissionGuid, String formUserType) throws ServiceException {
 
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.CN, formUserType);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String templateGuid = cdogsConfig.getCoverageTemplateGuid();
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
@@ -229,7 +228,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   public Map<Integer, File> createCdogsInterimFormDocument(String submissionGuid, String formUserType) throws ServiceException {
 
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.INTERIM, formUserType);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
 
@@ -259,7 +258,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   public Map<Integer, File> createCdogsNolFormDocument(String submissionGuid, String formUserType) throws ServiceException {
 
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NOL, formUserType);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String templateGuid = cdogsConfig.getNolTemplateGuid();
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
@@ -287,7 +286,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   public Map<Integer, File> createCdogsNppFormDocument(String submissionGuid, String formUserType) throws ServiceException {
 
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, formUserType);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
 
@@ -316,7 +315,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   public Map<Integer, File> createCdogsStatementAFormDocument(String submissionGuid, String formUserType) throws ServiceException {
 
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.STA, formUserType);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String templateGuid = cdogsConfig.getStatementATemplateGuid();
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
@@ -345,7 +344,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   public Map<Integer, File> createCdogsSupplementalFormDocument(String submissionGuid, String formUserType) throws ServiceException {
 
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.SUPP, formUserType);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
 
     String templateGuid = cdogsConfig.getSupplementalTemplateGuid();
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
