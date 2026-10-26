@@ -74,13 +74,23 @@ jobs:
           java-version: ${{ inputs.JAVA_VERSION }}
           distribution: 'adopt'
           
+      # Pass the credentials through env and quote them, so the shell doesn't interpret
+      # special characters in them. Secrets pasted inline into the script break on those.
       - name: Build with Maven and push to artifactory
+        env:
+          REPO_LOGIN: ${{ secrets.IDIR_AS_EMAIL }}
+          REPO_PASSWORD: ${{ secrets.IDIR_PASSWORD }}
+          OPENSHIFT_REPO_LOGIN: ${{ secrets.OPENSHIFT_ACCOUNT }}
+          OPENSHIFT_REPO_PASSWORD: ${{ secrets.OPENSHIFT_PASSWORD }}
         run: |
           export MAVEN_OPTS="-Xmx3072m -XX:MaxMetaspaceSize=512m"
           export NODE_OPTIONS="--max-old-space-size=4096"
           export RELEASE_URL=${{ vars.RELEASE_URL }}
           export SNAPSHOT_URL=${{ vars.SNAPSHOT_URL }}
-          mvn --settings=settings.xml --batch-mode --update-snapshots -f ${{ inputs.MICROSERVICE_NAME }}/pom.xml -Drepo.login=${{ secrets.IDIR_AS_EMAIL }} -Drepo.password=${{ secrets.IDIR_PASSWORD }}  -DopenshiftRepo.login=${{ secrets.OPENSHIFT_ACCOUNT }} -DopenshiftRepo.password=${{ secrets.OPENSHIFT_PASSWORD }} deploy
+          mvn --settings=settings.xml --batch-mode --update-snapshots -f ${{ inputs.MICROSERVICE_NAME }}/pom.xml \
+            "-Drepo.login=$REPO_LOGIN" "-Drepo.password=$REPO_PASSWORD" \
+            "-DopenshiftRepo.login=$OPENSHIFT_REPO_LOGIN" "-DopenshiftRepo.password=$OPENSHIFT_REPO_PASSWORD" \
+            deploy
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
