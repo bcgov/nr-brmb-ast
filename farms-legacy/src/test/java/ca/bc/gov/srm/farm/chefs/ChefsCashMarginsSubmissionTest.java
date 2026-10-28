@@ -801,16 +801,13 @@ public class ChefsCashMarginsSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
-    CrmTaskResource task = null;
     try {
       processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
+      assertFalse(processor.checkEnvironment(submissionMetaData));
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected Exception");
     }
-    // If the task is non-null, the validation eror task will need to be manually completed.
-    assertNull(task);
 
     ChefsSubmission submissionRec = null;
     try {

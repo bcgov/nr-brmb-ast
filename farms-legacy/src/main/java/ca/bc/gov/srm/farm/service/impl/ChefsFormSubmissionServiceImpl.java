@@ -45,8 +45,6 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private static ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
   private final ChefsConfigurationUtil chefsConfig = ChefsConfigurationUtil.getInstance();
-  private ChefsRestApiDao chefsApiDao = null;
-  private ChefsFormCredentials formCredentials = null;
   private CrmConfigurationUtil crmConfig = CrmConfigurationUtil.getInstance();
   private static CrmRestApiDao crmDao = new CrmRestApiDao();
 
@@ -106,8 +104,8 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
   @Override
   public SubmissionWrapperResource<? extends ChefsSubmissionDataResource> getSubmissionWrapperResource(String submissionGuid, String formType, String userType) throws ServiceException {
 
-    formCredentials = chefsConfig.getFormCredentials(formType, userType);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(formType, userType);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
 
     switch (formType) {
@@ -148,8 +146,8 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
   @Override
   public String getUserFormTypeFromPreflight(String submissionGuid) throws ServiceException {
     // using arbitrary form type and user type, will working with anything.
-    formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, ChefsConstants.USER_TYPE_IDIR);
-    chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, ChefsConstants.USER_TYPE_IDIR);
+    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
     String submissionUrl = chefsConfig.getSubmissionOptionsUrl(submissionGuid);
 
     PreflightWrapperResource<?> preflightWrapperResource;

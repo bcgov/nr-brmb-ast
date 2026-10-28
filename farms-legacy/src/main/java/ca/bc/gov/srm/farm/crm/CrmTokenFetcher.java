@@ -61,7 +61,10 @@ public final class CrmTokenFetcher {
     return instance;
   }
 
-  public String getToken() throws ServiceException {
+  /**
+   * Synchronized because this singleton is shared by all requests and caches the token.
+   */
+  public synchronized String getToken() throws ServiceException {
 
     try {
       initialize();

@@ -38,11 +38,18 @@ public final class CdogsTokenFetcher {
 
   private static final CdogsTokenFetcher instance = new CdogsTokenFetcher();
 
+  /** Get a new token this long before the current one expires,
+   *  to ensure it's still valid when the server receives the request. */
+  private static final long EXPIRY_MARGIN_MILLIS = 60 * 1000;
+
+  /** Used if the token response has no expires_in. */
+  private static final int DEFAULT_EXPIRES_IN_SECONDS = 5 * 60;
+
   private String authority;
   private String clientId;
   private String secret;
   private String token;
-  private Date createdDate = new Date();
+  private Date expiryDate;
 
   private boolean initialized = false;
 
@@ -54,14 +61,19 @@ public final class CdogsTokenFetcher {
     return instance;
   }
 
-  public String getToken() throws ServiceException {
+  /**
+   * Synchronized because this singleton is shared by all requests and caches the token.
+   */
+  public synchronized String getToken() throws ServiceException {
 
     try {
       initialize();
 
       if (needNewToken()) {
-        token = getAccessToken();
-        createdDate = new Date();
+        CdogsTokenResource resource = getAccessToken();
+        int expiresIn = resource.getExpiresIn() == null ? DEFAULT_EXPIRES_IN_SECONDS : resource.getExpiresIn();
+        token = resource.getAccessToken();
+        expiryDate = new Date(new Date().getTime() + expiresIn * 1000L);
       }
 
     } catch (Exception e) {
@@ -73,23 +85,20 @@ public final class CdogsTokenFetcher {
   }
 
   /**
-   * If the token will expire in the next 5 minutes then get a new one just to be
-   * safe. Tokens expire one hour after they are issued.
+   * If the token will expire in the next minute then get a new one just to be safe.
    */
   private boolean needNewToken() {
 
     if (token != null) {
+      long millisecondsLeft = expiryDate.getTime() - new Date().getTime();
 
-      final long fiveMinute = 5 * 60 * 1000;
-      long milliSecondsLeft = (new Date().getTime()) - createdDate.getTime();
-
-      return milliSecondsLeft >= fiveMinute;
+      return millisecondsLeft < EXPIRY_MARGIN_MILLIS;
     }
 
     return true;
   }
 
-  private String getAccessToken() throws ServiceException {
+  private CdogsTokenResource getAccessToken() throws ServiceException {
 
     logger.debug("Fetching new CDOGS token...");
 
@@ -152,7 +161,7 @@ public final class CdogsTokenFetcher {
 
     }
 
-    return resource.getAccessToken();
+    return resource;
   }
 
   private String readResponse(HttpURLConnection conn) throws IOException {
@@ -193,8 +202,6 @@ public final class CdogsTokenFetcher {
       authority = cu.getValue(ConfigurationKeys.CDOGS_AUTHORITY_URL);
       clientId = cu.getValue(ConfigurationKeys.CDOGS_CLIENT_ID);
       secret = cu.getValue(ConfigurationKeys.CDOGS_CLIENT_SECRET);
-
-      token = getAccessToken();
 
       initialized = true;
     }

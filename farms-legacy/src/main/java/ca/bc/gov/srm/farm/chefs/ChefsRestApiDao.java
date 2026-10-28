@@ -17,6 +17,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,16 @@ public class ChefsRestApiDao extends RestApiDao {
 
   private static final int HTTP_STATUS_TOO_MANY_REQUEST = 429;
 
+  private static final String HEADER_RETRY_AFTER = "Retry-After";
+  private static final Pattern RATELIMIT_RESET_PATTERN = Pattern.compile("reset=(\\d+)");
+
+  // On a 429, wait and retry a limited number of times. Waits longer than the max are not
+  // attempted because callers include user requests and the ChefsAgent timer, which
+  // does not schedule its next run until the current one finishes.
+  private static final int MAX_RATE_LIMIT_RETRIES = 2;
+  private static final int MAX_RATE_LIMIT_WAIT_SECONDS = 60;
+  private static final int DEFAULT_RATE_LIMIT_WAIT_SECONDS = 15;
+
   public ChefsRestApiDao(RestAuthenticationHandler authenticationHandler) {
     super(authenticationHandler);
 
@@ -80,6 +92,18 @@ public class ChefsRestApiDao extends RestApiDao {
   }
 
   public <T extends ChefsResource> SubmissionParentResource<T> postSubmission(String endpointUrl,
+      Object resource, Class<T> resourceClass) throws ServiceException {
+    // A 429 means the request was rejected without being processed, so a POST is safe to retry.
+    for(int retry = 0; ; retry++) {
+      try {
+        return postSubmissionOnce(endpointUrl, resource, resourceClass);
+      } catch(ServiceException e) {
+        waitBeforeRetry(e, retry);
+      }
+    }
+  }
+
+  private <T extends ChefsResource> SubmissionParentResource<T> postSubmissionOnce(String endpointUrl,
       Object resource, Class<T> resourceClass) throws ServiceException {
 
     logMethodStart(logger);
@@ -120,9 +144,7 @@ public class ChefsRestApiDao extends RestApiDao {
       }
 
       if(httpResponseCode == HTTP_STATUS_TOO_MANY_REQUEST) {
-        throw new ServiceException("Too many request to CHEFS. httpResponseCode: " +
-            httpResponseCode + " Message: " + conn.getResponseMessage() +
-            " Response Body: " + responseContent, new TooManyRequestsException("Too many request to CHEF"));
+        throw newTooManyRequestsException(conn, responseContent);
       } else if(httpResponseCode != HttpURLConnection.HTTP_CREATED) {
         String formattedJson = getFormattedJson(resource);
         logger.error("Error posting JSON:\n" + formattedJson);
@@ -187,6 +209,16 @@ public class ChefsRestApiDao extends RestApiDao {
   }
 
   public String get(String endpointUrl) throws ServiceException {
+    for(int retry = 0; ; retry++) {
+      try {
+        return getOnce(endpointUrl);
+      } catch(ServiceException e) {
+        waitBeforeRetry(e, retry);
+      }
+    }
+  }
+
+  private String getOnce(String endpointUrl) throws ServiceException {
     logger.debug(String.format("GET request to %s", endpointUrl));
     
     HttpURLConnection conn = getHttpURLConnection(endpointUrl, HTTP_METHOD_GET);
@@ -212,9 +244,7 @@ public class ChefsRestApiDao extends RestApiDao {
         }
 
         if(httpResponseCode == HTTP_STATUS_TOO_MANY_REQUEST) {
-          throw new ServiceException("Too many request to CHEFS. httpResponseCode: " +
-              httpResponseCode + " Message: " + conn.getResponseMessage() +
-              " Response Body: " + errorResponse, new TooManyRequestsException("Too many request to CHEF"));
+          throw newTooManyRequestsException(conn, errorResponse);
         }
 
         throw new IOException("Error getting resource. Expected 200 - OK. Actual HTTP code: " +
@@ -230,6 +260,68 @@ public class ChefsRestApiDao extends RestApiDao {
       throw new ServiceException("Error getting resource", e);
     }
     return response;
+  }
+
+  private ServiceException newTooManyRequestsException(HttpURLConnection conn, String responseContent) throws IOException {
+    Integer retryAfterSeconds = getRetryAfterSeconds(conn);
+    return new ServiceException("Too many request to CHEFS. httpResponseCode: " +
+        HTTP_STATUS_TOO_MANY_REQUEST + " Message: " + conn.getResponseMessage() +
+        " Retry-After: " + retryAfterSeconds + " Response Body: " + responseContent,
+        new TooManyRequestsException("Too many request to CHEF", retryAfterSeconds));
+  }
+
+  /**
+   * @return seconds to wait from the Retry-After header, falling back to the reset value
+   *         of the RateLimit header (e.g. "limit=120, remaining=0, reset=42"), or null if neither is usable.
+   */
+  private Integer getRetryAfterSeconds(HttpURLConnection conn) {
+    String retryAfter = conn.getHeaderField(HEADER_RETRY_AFTER);
+    if(retryAfter != null) {
+      try {
+        return Integer.valueOf(retryAfter.trim());
+      } catch(NumberFormatException e) {
+        // Could be an HTTP-date. Fall through to the RateLimit header.
+      }
+    }
+
+    String rateLimit = conn.getHeaderField(HEADER_RATELIMIT);
+    if(rateLimit != null) {
+      Matcher matcher = RATELIMIT_RESET_PATTERN.matcher(rateLimit);
+      if(matcher.find()) {
+        return Integer.valueOf(matcher.group(1));
+      }
+    }
+
+    logger.warn("Unable to determine retry delay. Headers: " + conn.getHeaderFields());
+    return null;
+  }
+
+  /**
+   * Waits out a CHEFS rate limit so the request can be retried.
+   * Rethrows e if it is not a rate limit error, or if it is not worth retrying.
+   */
+  private void waitBeforeRetry(ServiceException e, int retry) throws ServiceException {
+    TooManyRequestsException tooManyRequests = TooManyRequestsException.findIn(e);
+    if(tooManyRequests == null || retry >= MAX_RATE_LIMIT_RETRIES) {
+      throw e;
+    }
+
+    Integer retryAfterSeconds = tooManyRequests.getRetryAfterSeconds();
+    int waitSeconds = retryAfterSeconds == null ? DEFAULT_RATE_LIMIT_WAIT_SECONDS : Math.max(retryAfterSeconds, 1);
+    if(waitSeconds > MAX_RATE_LIMIT_WAIT_SECONDS) {
+      logger.warn(String.format("CHEFS rate limit reached. Retry-After of %d seconds exceeds the maximum wait of %d. Not retrying.",
+          waitSeconds, MAX_RATE_LIMIT_WAIT_SECONDS));
+      throw e;
+    }
+
+    logger.warn(String.format("CHEFS rate limit reached. Waiting %d seconds before retry %d of %d.",
+        waitSeconds, retry + 1, MAX_RATE_LIMIT_RETRIES));
+    try {
+      Thread.sleep(waitSeconds * 1000L);
+    } catch(InterruptedException ie) {
+      Thread.currentThread().interrupt();
+      throw e;
+    }
   }
 
   public <T> T parseResource(String response, JavaType type) throws ServiceException {

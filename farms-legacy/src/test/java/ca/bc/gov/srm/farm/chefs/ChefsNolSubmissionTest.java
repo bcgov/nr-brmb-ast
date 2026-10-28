@@ -1343,15 +1343,13 @@ public class ChefsNolSubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
     processor.setItemResourceMap(itemResourceMap);
 
-    CrmTaskResource task = null;
     try {
       processor.loadSubmissionsFromDatabase();
-      task = processor.processSubmission(submissionMetaData);
+      assertFalse(processor.checkEnvironment(submissionMetaData));
     } catch (ServiceException e) {
       e.printStackTrace();
       fail("Unexpected Exception");
     }
-    assertNull(task);
 
     ChefsSubmission submissionRec = null;
     try {

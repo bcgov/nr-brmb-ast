@@ -47,6 +47,7 @@ public class RestApiDao {
   protected static final String HTTP_METHOD_PATCH = "PATCH";
   
   protected static final String HEADER_RATELIMIT = "ratelimit";
+  protected static final String HEADER_IF_MATCH = "If-Match";
 
   protected static final int CONNECT_TIMEOUT_MILLIS = 30_000;
   protected static final int READ_TIMEOUT_MILLIS = 300_000;
@@ -106,6 +107,12 @@ public class RestApiDao {
       conn.setRequestProperty("Content-Length", String.valueOf(content.length()));
 
       conn.setRequestMethod(method);
+
+      if(HTTP_METHOD_PATCH.equals(method)) {
+        // Only update an existing resource. Without this, Dynamics CRM treats a PATCH
+        // to a missing record as an upsert and creates it.
+        conn.setRequestProperty(HEADER_IF_MATCH, "*");
+      }
 
       authenticationHandler.handleAuthentication(conn);
 

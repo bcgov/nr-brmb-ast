@@ -50,6 +50,7 @@ public class ChefsDatabaseDAO extends OracleDAO {
   private static final String DELETE_SUBMISSION_PROC = "DELETE_SUBMISSION";
   private static final String READ_SUBMISSIONS_BY_FORM_TYPE_PROC = "READ_SUBMISSIONS_BY_FORM_TYPE";
   private static final String READ_SUBMISSIONS_BY_GUID_PROC = "READ_SUBMISSIONS_BY_GUID";
+  private static final String READ_OLD_ERROR_SUBMISSIONS_PROC = "READ_OLD_ERROR_SUBMISSIONS";
   private static final String UPDATE_SCENARIO_SUBMISSION_ID_PROC = "UPDATE_SCENARIO_SUBMISSION_ID";
   
   private static final String ADD_PUC_PROC = "ADD_PUC";
@@ -393,6 +394,55 @@ public class ChefsDatabaseDAO extends OracleDAO {
     }
     
     return submissionMap;
+  }
+
+
+  /**
+   * @return submissions created more than monthsOld months ago that are still in an error status
+   *         (INVALID, SYSTEM_ERR or PARSE_ERR), at most maxRows of them
+   */
+  public Collection<ChefsSubmission> readOldErrorSubmissions(Connection connection,
+      int monthsOld,
+      int maxRows)
+      throws DataAccessException {
+
+    final int paramCount = 2;
+    Map<String, ChefsSubmission> submissionMap = new HashMap<>();
+    boolean originalAutoCommit = true;
+
+    try {
+      originalAutoCommit = connection.getAutoCommit();
+      connection.setAutoCommit(false);
+
+      try(DAOStoredProcedure proc = new DAOStoredProcedure(connection, PACKAGE_NAME + "."
+            + READ_OLD_ERROR_SUBMISSIONS_PROC, paramCount, true); ) {
+
+        int param = 1;
+        proc.setInt(param++, monthsOld);
+        proc.setInt(param++, maxRows);
+        proc.execute();
+
+        submissionMap = submissionResultSetToMap(proc);
+      }
+
+      connection.commit();
+    } catch (SQLException e) {
+      try {
+        connection.rollback();
+      } catch (SQLException rollbackEx) {
+        e.addSuppressed(rollbackEx);
+      }
+      getLog().error("Unexpected error: ", e);
+      handleException(e);
+    } finally {
+      try {
+        connection.setAutoCommit(originalAutoCommit);
+      } catch (SQLException ex) {
+        handleException(ex);
+      }
+    }
+
+    return submissionMap.values();
   }
 
 

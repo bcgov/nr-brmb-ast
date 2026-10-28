@@ -16,6 +16,11 @@ package ca.bc.gov.srm.farm.chefs;
 public final class ChefsConstants {
   
   public static final String SYSTEM_USER = "CHEFS";
+
+  public static final String PROD_ENVIRONMENT = "PROD";
+  public static final String TEST_ENVIRONMENT = "TEST";
+  public static final String DLVR_ENVIRONMENT = "DELIVERY";
+  public static final String DEV_ENVIRONMENT = "DEV";
   
   public static final String URL_VIEW_CHEFS_SUBMISSION_FORM = "app/form/view?s=";
   
