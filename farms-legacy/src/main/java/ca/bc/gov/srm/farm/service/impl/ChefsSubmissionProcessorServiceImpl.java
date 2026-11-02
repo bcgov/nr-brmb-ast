@@ -363,6 +363,10 @@ public class ChefsSubmissionProcessorServiceImpl extends BaseService implements 
       
       HashMap<Integer, List<FarmingOperation>> operationMap = readDAO.readOperation(new Integer[] {programYearVersionId});
       List<FarmingOperation> opList = operationMap.get(programYearVersionId);
+      // A base-data version can exist without operations. Keep searching older versions.
+      if (opList == null || opList.isEmpty()) {
+        continue;
+      }
 
       List<Integer> opIdList = opList.stream()
           .map(FarmingOperation::getFarmingOperationId)

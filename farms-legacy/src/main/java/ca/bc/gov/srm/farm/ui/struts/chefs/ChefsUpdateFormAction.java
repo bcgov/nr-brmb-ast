@@ -49,6 +49,7 @@ public class ChefsUpdateFormAction extends SecureAction {
 
     ChefsFormSubmissionService chefsFormSubmissionService = ServiceFactory.getChefsFormSubmissionService();
     ChefsSubmission submission = chefsFormSubmissionService.getSubmissionByGuid(submissionGuid);
+    form.setFormType(submission.getFormTypeCode());
     submission.setSubmissionStatusCode(submissionStatusCode);
 
     chefsFormSubmissionService.updateSubmission(submission);

@@ -628,7 +628,8 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       }), errorMessages);
       
       assertEquals(Arrays.asList(new String[] {
-          MESSAGE_FAIL_LESS_THAN_5_YEARS_OF_DATA
+          MESSAGE_FAIL_LESS_THAN_5_YEARS_OF_DATA,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       
       
@@ -748,7 +749,8 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       }), errorMessages);
       
       assertEquals(Arrays.asList(new String[] {
-          MESSAGE_FAIL_REFERENCE_MARGIN_FAILED_AT_LOW_END
+          MESSAGE_FAIL_REFERENCE_MARGIN_FAILED_AT_LOW_END,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       
       assertEquals(participantPin, itemResult.getParticipantPin());
@@ -870,7 +872,8 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       }), errorMessages);
       
       assertEquals(Arrays.asList(new String[] {
-          MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED
+          MESSAGE_FAIL_FISCAL_YEAR_END_DATE_CHANGED,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       
       assertEquals(participantPin, itemResult.getParticipantPin());
@@ -1011,7 +1014,8 @@ public class BenefitTriageZeroTest extends AbstractBenefitTriageTest {
       assertEquals(Arrays.asList(new String[] {
           MESSAGE_FAIL_REFERENCE_MARGIN_FAILED_AT_LOW_END,
           MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED,
-          MESSAGE_FAIL_COMBINED_FARM
+          MESSAGE_FAIL_COMBINED_FARM,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       
       assertEquals(participantPin, itemResult.getParticipantPin());

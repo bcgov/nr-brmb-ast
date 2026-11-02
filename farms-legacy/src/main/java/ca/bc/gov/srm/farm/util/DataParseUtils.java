@@ -18,7 +18,6 @@ import org.apache.commons.lang.time.DateUtils;
  * DataParseUtils.
  *
  * @author   $Author: awilkinson $
- * @version  $Revision: 4416 $
  */
 public final class DataParseUtils {
 

@@ -281,6 +281,7 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
     return ChefsFormTypeCodes.CM.equals(chefsFormType) ||
            ChefsFormTypeCodes.CN.equals(chefsFormType) ||
            ChefsFormTypeCodes.STA.equals(chefsFormType) ||
+           ChefsFormTypeCodes.STA_IND.equals(chefsFormType) ||
            ChefsFormTypeCodes.SUPP.equals(chefsFormType) ||
            benefitCategory.equals(ScenarioCategoryCodes.CHEF_CM) ||
            benefitCategory.equals(ScenarioCategoryCodes.CHEF_STA) ||
@@ -539,7 +540,13 @@ public class CrmTransferServiceImpl extends BaseService implements CrmTransferSe
       scenarioCategoryCode = "Cash Margins";
       break;
     case ScenarioCategoryCodes.CHEF_STA:
-      participantPinFileMap = cdogsService.createCdogsStatementAFormDocument(submissionGuid, userType);
+      // Both Statement A forms create CHEF_STA scenarios; use the persisted form type for the document.
+      String statementAFormType = submission == null ? chefsFormType : submission.getFormTypeCode();
+      if (ChefsFormTypeCodes.STA_IND.equals(statementAFormType)) {
+        participantPinFileMap = cdogsService.createCdogsStatementAIndividualsFormDocument(submissionGuid, userType);
+      } else {
+        participantPinFileMap = cdogsService.createCdogsStatementAFormDocument(submissionGuid, userType);
+      }
       scenarioCategoryCode = "Statement A";
       break;
     }

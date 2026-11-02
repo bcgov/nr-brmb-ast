@@ -23,6 +23,7 @@ import ca.bc.gov.srm.farm.chefs.forms.InterimFormConstants;
 import ca.bc.gov.srm.farm.chefs.forms.NolFormConstants;
 import ca.bc.gov.srm.farm.chefs.forms.NppFormConstants;
 import ca.bc.gov.srm.farm.chefs.forms.StatementAFormConstants;
+import ca.bc.gov.srm.farm.chefs.forms.StatementAIndividualsFormConstants;
 import ca.bc.gov.srm.farm.chefs.forms.SupplementalFormConstants;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmission;
 import ca.bc.gov.srm.farm.list.CodeListView;
@@ -52,8 +53,10 @@ public class ChefsSearchAction extends SecureAction {
     formTypes.add(new CodeListView(ChefsFormTypeCodes.INTERIM, "Interim"));
     formTypes.add(new CodeListView(ChefsFormTypeCodes.NOL, ChefsFormTypeCodes.NOL));
     formTypes.add(new CodeListView(ChefsFormTypeCodes.NPP, ChefsFormTypeCodes.NPP));
-    formTypes.add(new CodeListView(ChefsFormTypeCodes.STA, "Statement A"));
+    formTypes.add(new CodeListView(ChefsFormTypeCodes.STA, "Statement A - Corporations"));
+    formTypes.add(new CodeListView(ChefsFormTypeCodes.STA_IND, "Statement A - Individuals"));
     formTypes.add(new CodeListView(ChefsFormTypeCodes.SUPP, "Supplemental"));
+    formTypes.add(new CodeListView(ChefsFormTypeCodes.OPT_OUT, "Opt Out"));
     form.setFormTypes(formTypes);
     
     String formType = form.getFormType();
@@ -117,6 +120,10 @@ public class ChefsSearchAction extends SecureAction {
       break;
     case ChefsFormTypeCodes.STA:
       cdogsTemplate = new CdogsTemplate(StatementAFormConstants.FORM_SHORT_NAME, cdogsConfig.getStatementATemplateGuid());
+      templates.add(cdogsTemplate);
+      break;
+    case ChefsFormTypeCodes.STA_IND:
+      cdogsTemplate = new CdogsTemplate(StatementAIndividualsFormConstants.FORM_SHORT_NAME, cdogsConfig.getStatementAIndividualsTemplateGuid());
       templates.add(cdogsTemplate);
       break;
     case ChefsFormTypeCodes.SUPP:

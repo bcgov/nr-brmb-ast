@@ -15,6 +15,9 @@ package ca.bc.gov.srm.farm.chefs.database;
  */
 public final class ChefsFormTypeCodes {
 
+  /** Opt Out Form */
+  public static final String OPT_OUT = "OPT_OUT";
+
   /** Notice of Loss */
   public static final String NOL = "NOL";
   
@@ -35,6 +38,9 @@ public final class ChefsFormTypeCodes {
   
   /** Statement */
   public static final String STA = "STA";
+
+  /** Statement A for Individuals */
+  public static final String STA_IND = "STA_IND";
 
   /** Supplemental */
   public static final String SUPP = "SUPP";

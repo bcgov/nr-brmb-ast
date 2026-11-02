@@ -46,6 +46,10 @@ public class ChefsConfigurationUtil {
     if(formUserType.equals(ChefsConstants.USER_TYPE_IDIR)) {
       
       switch(formTypeCode) {
+      case ChefsFormTypeCodes.OPT_OUT:
+        formIdParameterName = ConfigurationKeys.CHEFS_OPT_OUT_IDIR_FORM_GUID;
+        apiKeyParameterName = ConfigurationKeys.CHEFS_OPT_OUT_IDIR_FORM_API_KEY;
+        break;
       case ChefsFormTypeCodes.ADJ:
         formIdParameterName = ConfigurationKeys.CHEFS_ADJUSTMENT_IDIR_FORM_GUID;
         apiKeyParameterName = ConfigurationKeys.CHEFS_ADJUSTMENT_IDIR_FORM_API_KEY;
@@ -74,6 +78,10 @@ public class ChefsConfigurationUtil {
         formIdParameterName = ConfigurationKeys.CHEFS_STATEMENT_A_IDIR_FORM_GUID;
         apiKeyParameterName = ConfigurationKeys.CHEFS_STATEMENT_A_IDIR_FORM_API_KEY;
         break;
+      case ChefsFormTypeCodes.STA_IND:
+        formIdParameterName = ConfigurationKeys.CHEFS_STATEMENT_A_INDIVIDUALS_IDIR_FORM_GUID;
+        apiKeyParameterName = ConfigurationKeys.CHEFS_STATEMENT_A_INDIVIDUALS_IDIR_FORM_API_KEY;
+        break;
       case ChefsFormTypeCodes.SUPP:
         formIdParameterName = ConfigurationKeys.CHEFS_SUPPLEMENTAL_IDIR_FORM_GUID;
         apiKeyParameterName = ConfigurationKeys.CHEFS_SUPPLEMENTAL_IDIR_FORM_API_KEY;
@@ -83,6 +91,10 @@ public class ChefsConfigurationUtil {
     } else {
       
       switch(formTypeCode) {
+      case ChefsFormTypeCodes.OPT_OUT:
+        formIdParameterName = ConfigurationKeys.CHEFS_OPT_OUT_BASIC_BCEID_FORM_GUID;
+        apiKeyParameterName = ConfigurationKeys.CHEFS_OPT_OUT_BASIC_BCEID_FORM_API_KEY;
+        break;
       case ChefsFormTypeCodes.ADJ:
         formIdParameterName = ConfigurationKeys.CHEFS_ADJUSTMENT_BASIC_BCEID_FORM_GUID;
         apiKeyParameterName = ConfigurationKeys.CHEFS_ADJUSTMENT_BASIC_BCEID_FORM_API_KEY;
@@ -110,6 +122,10 @@ public class ChefsConfigurationUtil {
       case ChefsFormTypeCodes.STA:
         formIdParameterName = ConfigurationKeys.CHEFS_STATEMENT_A_BASIC_BCEID_FORM_GUID;
         apiKeyParameterName = ConfigurationKeys.CHEFS_STATEMENT_A_BASIC_BCEID_FORM_API_KEY;
+        break;
+      case ChefsFormTypeCodes.STA_IND:
+        formIdParameterName = ConfigurationKeys.CHEFS_STATEMENT_A_INDIVIDUALS_BASIC_BCEID_FORM_GUID;
+        apiKeyParameterName = ConfigurationKeys.CHEFS_STATEMENT_A_INDIVIDUALS_BASIC_BCEID_FORM_API_KEY;
         break;
       case ChefsFormTypeCodes.SUPP:
         formIdParameterName = ConfigurationKeys.CHEFS_SUPPLEMENTAL_BASIC_BCEID_FORM_GUID;

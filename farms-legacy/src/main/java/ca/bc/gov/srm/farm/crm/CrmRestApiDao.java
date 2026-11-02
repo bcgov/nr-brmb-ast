@@ -37,6 +37,7 @@ import ca.bc.gov.srm.farm.crm.resource.CrmBenefitUpdateResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmCoreConfigurationResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmCoverageTaskResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmEnrolmentResource;
+import ca.bc.gov.srm.farm.crm.resource.CrmEnrolmentStatusUpdateResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmEnrolmentUpdateResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmListResource;
 import ca.bc.gov.srm.farm.crm.resource.CrmNolTaskResource;
@@ -372,6 +373,12 @@ public class CrmRestApiDao extends RestApiDao {
   public CrmEnrolmentResource updateEnrolment(CrmEnrolmentResource enrolment) throws ServiceException {
     
     return super.patch(enrolment, crmConfig.getEnrolmentUpdateUrl(enrolment.getVsi_participantprogramyearid()), CrmConstants.HEADER_ENTITY_URL);
+  }
+
+  public void updateEnrolmentStatus(String enrolmentId, Integer statusCode) throws ServiceException {
+    CrmEnrolmentStatusUpdateResource update = new CrmEnrolmentStatusUpdateResource();
+    update.setEnrolmentStatusCode(statusCode);
+    super.patch(update, crmConfig.getEnrolmentUpdateUrl(enrolmentId), CrmConstants.HEADER_ENTITY_URL);
   }
 
 

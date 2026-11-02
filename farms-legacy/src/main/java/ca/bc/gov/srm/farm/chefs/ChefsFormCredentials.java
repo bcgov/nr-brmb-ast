@@ -25,6 +25,13 @@ public class ChefsFormCredentials {
     this.apiKey = apiKey;
   }
 
+  public boolean isConfigured() {
+    return formId != null && !formId.trim().isEmpty()
+        && !ChefsConstants.API_KEY_PLACEHOLDER.equals(formId)
+        && apiKey != null && !apiKey.trim().isEmpty()
+        && !ChefsConstants.API_KEY_PLACEHOLDER.equals(apiKey);
+  }
+
   public String getApiKey() {
     return apiKey;
   }

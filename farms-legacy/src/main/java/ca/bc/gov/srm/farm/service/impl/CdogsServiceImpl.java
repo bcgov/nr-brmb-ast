@@ -43,6 +43,7 @@ import ca.bc.gov.srm.farm.chefs.forms.InterimFormConstants;
 import ca.bc.gov.srm.farm.chefs.forms.NolFormConstants;
 import ca.bc.gov.srm.farm.chefs.forms.NppFormConstants;
 import ca.bc.gov.srm.farm.chefs.forms.StatementAFormConstants;
+import ca.bc.gov.srm.farm.chefs.forms.StatementAIndividualsFormConstants;
 import ca.bc.gov.srm.farm.chefs.forms.SupplementalFormConstants;
 import ca.bc.gov.srm.farm.chefs.resource.adjustment.AdjustmentSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.cashMargin.CashMarginsSubmissionDataResource;
@@ -53,6 +54,7 @@ import ca.bc.gov.srm.farm.chefs.resource.interim.InterimSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.nol.NolSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementASubmissionDataResource;
+import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementAIndividualsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionParentResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionResource;
@@ -313,25 +315,30 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   
   @Override
   public Map<Integer, File> createCdogsStatementAFormDocument(String submissionGuid, String formUserType) throws ServiceException {
+    return createCdogsStatementAFormDocument(submissionGuid, formUserType, ChefsFormTypeCodes.STA,
+        cdogsConfig.getStatementATemplateGuid(), StatementAFormConstants.FORM_SHORT_NAME);
+  }
 
-    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.STA, formUserType);
-    ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
+  @Override
+  public Map<Integer, File> createCdogsStatementAIndividualsFormDocument(String submissionGuid, String formUserType) throws ServiceException {
+    return createCdogsStatementAFormDocument(submissionGuid, formUserType, ChefsFormTypeCodes.STA_IND,
+        cdogsConfig.getStatementAIndividualsTemplateGuid(), StatementAIndividualsFormConstants.FORM_SHORT_NAME);
+  }
 
-    String templateGuid = cdogsConfig.getStatementATemplateGuid();
-    String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
-
-    SubmissionWrapperResource<StatementASubmissionDataResource> submissionWrapper;
-    submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, StatementASubmissionDataResource.class);
-
-    SubmissionParentResource<StatementASubmissionDataResource> submissionMetaData = submissionWrapper
-        .getSubmissionMetaData();
-    SubmissionResource<StatementASubmissionDataResource> submission = submissionMetaData.getSubmission();
-
-    StatementASubmissionDataResource data = submission.getData();
+  private Map<Integer, File> createCdogsStatementAFormDocument(String submissionGuid, String formUserType,
+      String formType, String templateGuid, String formShortName) throws ServiceException {
+    ChefsFormCredentials credentials = chefsConfig.getFormCredentials(formType, formUserType);
+    ChefsRestApiDao submissionDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(credentials));
+    Class<? extends StatementASubmissionDataResource> dataClass = ChefsFormTypeCodes.STA_IND.equals(formType)
+        ? StatementAIndividualsSubmissionDataResource.class : StatementASubmissionDataResource.class;
+    SubmissionWrapperResource<? extends StatementASubmissionDataResource> submissionWrapper = submissionDao
+        .getSubmissionWrapperResource(chefsConfig.getSubmissionUrl(submissionGuid), dataClass);
+    SubmissionParentResource<? extends StatementASubmissionDataResource> submissionMetaData = submissionWrapper.getSubmissionMetaData();
+    StatementASubmissionDataResource data = submissionMetaData.getSubmission().getData();
     populateSubmissionMetaData(submissionMetaData, data);
 
     String fileName = StringUtils.formatWithNullAsEmptyString(PDF_FILENAME_FORMAT,
-        DateUtils.getYearFromDate(data.getFiscalYearEndDate()), StatementAFormConstants.FORM_SHORT_NAME, data.getAgriStabilityAgriInvestPin());
+        DateUtils.getYearFromDate(data.getFiscalYearEndDate()), formShortName, data.getAgriStabilityAgriInvestPin());
 
     CdogsTemplateDataResource cdogsTemplateDataResource = createCdogsTemplateDataResource(data, fileName);
 
@@ -393,6 +400,9 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
       break;
     case ChefsFormTypeCodes.STA:
       participantPinFileMap = createCdogsStatementAFormDocument(submissionGuid, formUserType);
+      break;
+    case ChefsFormTypeCodes.STA_IND:
+      participantPinFileMap = createCdogsStatementAIndividualsFormDocument(submissionGuid, formUserType);
       break;
     case ChefsFormTypeCodes.SUPP:
       participantPinFileMap = createCdogsSupplementalFormDocument(submissionGuid, formUserType);

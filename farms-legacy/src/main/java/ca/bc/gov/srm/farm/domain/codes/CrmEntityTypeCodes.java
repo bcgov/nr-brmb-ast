@@ -20,5 +20,6 @@ public final class CrmEntityTypeCodes {
   public static final String TASK = "TASK";
   public static final String VLDTN_TASK = "VLDTN_TASK";
   public static final String NOTE = "NOTE";
+  public static final String ENROLMENT = "ENROLMENT";
 
 }

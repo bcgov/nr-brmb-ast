@@ -61,6 +61,9 @@ public interface BenefitTriageService {
   public static final String MESSAGE_FAIL_PAYMENT_TOO_LARGE =
       "Fail: Payment too large.";
 
+  public static final String MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED =
+      "Fail: Last year not verified.";
+
   List<BenefitTriageStatus> getBenefitTriageStatusByYear(int year) throws ServiceException;
 
   BenefitTriageResults processBenefitTriage(Connection connection, Integer importVersionId, String userId) throws ServiceException;
