@@ -27,6 +27,8 @@ on:
           - SIMPLIFIED_REFERENCE_MARGIN_REQUEST_IDIR
           - STATEMENT_A_BCEID
           - STATEMENT_A_IDIR
+          - STATEMENT_A_INDIVIDUALS_BCEID
+          - STATEMENT_A_INDIVIDUALS_IDIR
       SOURCE_ENVIRONMENT:
         required: true
         type: choice
