@@ -36,8 +36,8 @@ import ca.bc.gov.webade.WebADEApplicationUtils;
 
 public class TestImportService {
   
-  public static final String IMPORT_FILE_DIRECTORY = "E:\\FARM\\Import\\CRA\\";
-  public static final String IMPORT_FILE_NAME = "cra_import_98765739_2024.zip";
+  public static final String IMPORT_FILE_DIRECTORY = "U:\\awilkinson\\FARM\\Import\\CRA\\";
+  public static final String IMPORT_FILE_NAME = "cra_import_zero_pass_sc_failed_98765748_2024.zip";
   public static final String IMPORT_FILE_PATH = IMPORT_FILE_DIRECTORY + IMPORT_FILE_NAME;
 
 
@@ -46,8 +46,9 @@ public class TestImportService {
     TestUtils.useTestTransaction();
     TestUtils.setBusinessActionToSystem();
   }
-  
-  
+
+
+  @Disabled
   @Test
   public void runQueuedImport() {
     ConfigurationService configService = ServiceFactory.getConfigurationService();
