@@ -25,9 +25,11 @@ import ca.bc.gov.srm.farm.chefs.resource.nol.NolSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.npp.NppSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.preflight.PreflightWrapperResource;
 import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementASubmissionDataResource;
+import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementAIndividualsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
 import ca.bc.gov.srm.farm.chefs.resource.supplemental.SupplementalSubmissionDataResource;
+import ca.bc.gov.srm.farm.chefs.resource.optOut.OptOutSubmissionDataResource;
 import ca.bc.gov.srm.farm.crm.CrmConfigurationUtil;
 import ca.bc.gov.srm.farm.crm.CrmRestApiDao;
 import ca.bc.gov.srm.farm.dao.ChefsDatabaseDAO;
@@ -109,6 +111,8 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
     String submissionUrl = chefsConfig.getSubmissionUrl(submissionGuid);
 
     switch (formType) {
+    case ChefsFormTypeCodes.OPT_OUT:
+      return chefsApiDao.getSubmissionWrapperResource(submissionUrl, OptOutSubmissionDataResource.class);
     case ChefsFormTypeCodes.ADJ:
       return chefsApiDao.getSubmissionWrapperResource(submissionUrl, AdjustmentSubmissionDataResource.class);
     case ChefsFormTypeCodes.CM:
@@ -123,6 +127,8 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
       return chefsApiDao.getSubmissionWrapperResource(submissionUrl, NppSubmissionDataResource.class);
     case ChefsFormTypeCodes.STA:
       return chefsApiDao.getSubmissionWrapperResource(submissionUrl, StatementASubmissionDataResource.class);
+    case ChefsFormTypeCodes.STA_IND:
+      return chefsApiDao.getSubmissionWrapperResource(submissionUrl, StatementAIndividualsSubmissionDataResource.class);
     case ChefsFormTypeCodes.SUPP:
       return chefsApiDao.getSubmissionWrapperResource(submissionUrl, SupplementalSubmissionDataResource.class);
     }

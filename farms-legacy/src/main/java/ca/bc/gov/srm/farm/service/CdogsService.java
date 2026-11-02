@@ -32,6 +32,8 @@ public interface CdogsService {
 
   Map<Integer, File> createCdogsDocumentByFormType(String submissionGuid, String formUserType, String formType) throws ServiceException;
 
+  Map<Integer, File> createCdogsStatementAIndividualsFormDocument(String submissionGuid, String formUserType) throws ServiceException;
+
   Map<Integer, File> createCdogsStatementAFormDocument(String submissionGuid, String formUserType) throws ServiceException;
 
   Map<Integer, File> createCdogsSupplementalFormDocument(String submissionGuid, String formUserType) throws ServiceException;

@@ -1,0 +1,66 @@
+{
+  "participantName": "SAMPLE ONLY - Alex Farmer",
+  "agriStabilityAgriInvestPin": 1234567,
+  "sinNumber": "123456789",
+  "fiscalYearStart": "2024-01-01T00:00:00-08:00",
+  "fiscalYearEnd": "2024-12-31T00:00:00-08:00",
+  "businessStructure": "soleProprietorship",
+  "completedProductionCycle": "yes",
+  "doYouHaveMultipleOperations": "yes",
+  "accountingMethod": "cash",
+  "netIncomeAfterAdjustments": 1000,
+  "adjustmentToBusinessUseOfHomeExpenses": -100,
+  "gsthstRebateForPartnersReceivedInTheYear": 25,
+  "netFarmingIncome": 999999,
+  "thirdPartyFirstName": "SAMPLE ONLY",
+  "thirdPartyLastName": "Representative",
+  "thirdPartyEmail": "sample@example.com",
+  "allowableIncomeGrid": [
+    {
+      "category": {
+        "label": "Wheat",
+        "value": "9420"
+      },
+      "amount": 1000
+    }
+  ],
+  "allowableExpensesGrid": [
+    {
+      "category": {
+        "label": "Fertilizer",
+        "value": "9661"
+      },
+      "amount": 200
+    }
+  ],
+  "grainGrid": [
+    {
+      "commodity": {
+        "label": "Wheat",
+        "value": "5000"
+      },
+      "acres": 10,
+      "quantityProduced": 20
+    }
+  ],
+  "vegetableGrid": [
+    {
+      "commodity": {
+        "label": "SAMPLE ONLY vegetable",
+        "value": "5001"
+      },
+      "acres": 3,
+      "quantityProduced": 40
+    }
+  ],
+  "cattleGrid": [
+    {
+      "cattleType": {
+        "label": "SAMPLE ONLY cattle",
+        "value": "8000"
+      },
+      "endingInventory": 12,
+      "endingFmvCattle": 1200
+    }
+  ]
+}

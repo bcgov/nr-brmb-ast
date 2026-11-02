@@ -79,6 +79,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   protected ConfigurationUtility configUtil;
   protected ChefsConfigurationUtil chefsConfig;
   protected String submissionsUrl;
+  private final ChefsFormCredentials formCredentials;
   protected ChefsRestApiDao restDao;
   protected CrmRestApiDao crmDao;
   protected ChefsDatabaseDAO chefsDatabaseDao = new ChefsDatabaseDAO();
@@ -108,7 +109,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
       String formLongName,
       String formUserType,
       Connection connection) {
-    
+
     this.connection = connection;
     
     this.formTypeCode = formTypeCode;
@@ -118,7 +119,7 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
     
     configUtil = ConfigurationUtility.getInstance();
     chefsConfig = ChefsConfigurationUtil.getInstance();
-    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(formTypeCode, formUserType);
+    formCredentials = chefsConfig.getFormCredentials(formTypeCode, formUserType);
     submissionsUrl = chefsConfig.getSubmissionsUrl(formCredentials.getFormId());
     basicBCeIDFormsEnabled = configUtil.getBoolean(ConfigurationKeys.CHEFS_BASIC_BCEID_FORMS_ENABLED);
     verifierUserEmail = configUtil.getValue(ConfigurationKeys.CHEFS_VERIFIER_USER_EMAIL);
@@ -399,16 +400,16 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
   }
 
 
-  protected SubmissionParentResource<T> getSubmissionMetaData(String submissionResponseStr, Class<T> clazz) throws ServiceException {
+  protected <D extends ChefsSubmissionDataResource> SubmissionParentResource<D> getSubmissionMetaData(String submissionResponseStr, Class<D> clazz) throws ServiceException {
 
     ObjectMapper jsonObjectMapper = new ObjectMapper();
     JavaType parametricType = jsonObjectMapper.getTypeFactory().constructParametricType(SubmissionWrapperResource.class,
         clazz);
     
-    SubmissionWrapperResource<T> submissionWrapper = null;
+    SubmissionWrapperResource<D> submissionWrapper = null;
     submissionWrapper = restDao.parseResource(submissionResponseStr, parametricType);
     
-    SubmissionParentResource<T> submissionMetaData = submissionWrapper.getSubmissionMetaData();
+    SubmissionParentResource<D> submissionMetaData = submissionWrapper.getSubmissionMetaData();
     return submissionMetaData;
   }
 
@@ -639,6 +640,10 @@ public abstract class ChefsSubmissionProcessor<T extends ChefsResource> {
 
     SubmissionWrapperResource<ChefsSubmissionDataResource> submissionWrapper = restDao.parseResource(submissionResponseStr, parametricType);
     return submissionWrapper.getSubmissionMetaData();
+  }
+
+  public ChefsFormCredentials getFormCredentials() {
+    return formCredentials;
   }
 
   public String getFormTypeCode() {

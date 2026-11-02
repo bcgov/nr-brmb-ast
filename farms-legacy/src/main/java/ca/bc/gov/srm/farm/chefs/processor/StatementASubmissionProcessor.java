@@ -12,7 +12,6 @@ package ca.bc.gov.srm.farm.chefs.processor;
 
 import static ca.bc.gov.srm.farm.chefs.ChefsConstants.*;
 import static ca.bc.gov.srm.farm.chefs.forms.ChefsFormConstants.*;
-import static ca.bc.gov.srm.farm.chefs.forms.StatementAFormConstants.*;
 import static ca.bc.gov.srm.farm.log.LoggingUtils.*;
 
 import java.math.BigDecimal;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.chefs.forms.ChefsFarmTypeCodes;
 import ca.bc.gov.srm.farm.chefs.resource.common.CropGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.CustomFeedGrid;
@@ -40,6 +38,7 @@ import ca.bc.gov.srm.farm.chefs.resource.common.NurseryGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.OtherPucGrid;
 import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementAPartner;
 import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementASubmissionDataResource;
+import ca.bc.gov.srm.farm.chefs.resource.statementA.StatementAOperationMapper;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionParentResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionResource;
 import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
@@ -56,7 +55,6 @@ import ca.bc.gov.srm.farm.domain.Scenario;
 import ca.bc.gov.srm.farm.domain.ScenarioMetaData;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmission;
 import ca.bc.gov.srm.farm.domain.codes.ScenarioCategoryCodes;
-import ca.bc.gov.srm.farm.domain.codes.ScenarioTypeCodes;
 import ca.bc.gov.srm.farm.exception.DataAccessException;
 import ca.bc.gov.srm.farm.exception.ServiceException;
 import ca.bc.gov.srm.farm.service.BenefitTriageService;
@@ -71,24 +69,24 @@ import ca.bc.gov.srm.farm.util.ScenarioUtils;
 import ca.bc.gov.srm.farm.util.SleepUtils;
 import ca.bc.gov.srm.farm.util.StringUtils;
 
-public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<StatementASubmissionDataResource> {
+public abstract class StatementASubmissionProcessor extends ChefsSubmissionProcessor<StatementASubmissionDataResource> {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private static final String INVALID_FORM_TASK_SUBJECT_FORMAT = "%d %s %d";
 
   private static final String INVALID_FORM_TASK_DESCRIPTION_PREFIX_FORMAT = "%s %s form was submitted but has validation errors:\n\n" + "%s\n"
-      + "Corporation Name: %s\n" + "Telephone: %s\n" + "Email: %s\n";
+      + "%s: %s\n" + "Telephone: %s\n" + "Email: %s\n";
 
   private static final String DUPLICATE_PRODUCTIVE_UNIT_CODE = "The following productive unit codes have duplicates: %s";
 
   private static final String MISSING_PRODUCTIVE_UNITS = "No productive units entered";
 
   private static final String PARTNERSHIP = "partnership";
-  private static final String ACCOUNTING_METHOD_CASH = "cash";
 
-  public StatementASubmissionProcessor(Connection connection, String formUserType) {
-    super(ChefsFormTypeCodes.STA, FORM_SHORT_NAME, FORM_LONG_NAME, formUserType, connection);
+  protected StatementASubmissionProcessor(Connection connection, String formUserType, String formTypeCode,
+      String formShortName, String formLongName) {
+    super(formTypeCode, formShortName, formLongName, formUserType, connection);
   }
 
   private String validationQueueId;
@@ -101,8 +99,8 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
 
     CrmTaskResource task = null;
 
-    SubmissionParentResource<StatementASubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr,
-        StatementASubmissionDataResource.class);
+    SubmissionParentResource<? extends StatementASubmissionDataResource> submissionMetaData = getSubmissionMetaData(submissionResponseStr,
+        getSubmissionDataClass());
 
     if (!submissionMetaData.getDraft()) {
       task = processSubmission(submissionMetaData);
@@ -111,14 +109,14 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
     logMethodEnd(logger, task);
   }
 
-  public CrmTaskResource processSubmission(SubmissionParentResource<StatementASubmissionDataResource> submissionMetaData) throws ServiceException {
+  public CrmTaskResource processSubmission(SubmissionParentResource<? extends StatementASubmissionDataResource> submissionMetaData) throws ServiceException {
     logMethodStart(logger);
 
     CrmTaskResource newTask = null;
     
     this.triageImportVersionId = null; // only used by unit tests
 
-    SubmissionResource<StatementASubmissionDataResource> submission = submissionMetaData.getSubmission();
+    SubmissionResource<? extends StatementASubmissionDataResource> submission = submissionMetaData.getSubmission();
     String submissionGuid = submissionMetaData.getSubmissionGuid();
     StatementASubmissionDataResource data = submission.getData();
     data.setSubmissionGuid(submissionGuid);
@@ -174,7 +172,7 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
       populateCrmAccount(participantPin, crmAccount);
 
       CrmTransferService crmTransferService = ServiceFactory.getCrmTransferService();
-      crmAccount = crmTransferService.accountUpdate(connection, crmAccount, client, submissionGuid, formUserType, ChefsFormTypeCodes.STA);
+      crmAccount = crmTransferService.accountUpdate(connection, crmAccount, client, submissionGuid, formUserType, formTypeCode);
       
       queueBenefitTriage(participantPin, programYear, submissionGuid);
       
@@ -201,13 +199,15 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
       logger.debug("municipalityCode = " + municipalityCode);
 
       ChefsSubmissionProcessorService chefsSubmissionProcessorService = ServiceFactory.getChefsSubmissionProcessorService();
-      chefsSubmissionProcessorService.createStatementAChefsScenario(data, client.getClientId(), programYear, getApplicationVersion(),
+      Integer createdScenarioId = chefsSubmissionProcessorService.createStatementAChefsScenario(data, client.getClientId(), programYear, getApplicationVersion(),
           municipalityCode, user, ScenarioCategoryCodes.CHEF_STA);
 
       updatedProgramYearMetadata = readDAO.readProgramYearMetadata(participantPin, programYear);
 
-      ScenarioMetaData chefScenarioMetaData = ScenarioUtils.findScenarioByCategory(updatedProgramYearMetadata, programYear,
-          ScenarioCategoryCodes.CHEF_STA, ScenarioTypeCodes.CHEF);
+      ScenarioMetaData chefScenarioMetaData = ScenarioUtils.findScenarioById(updatedProgramYearMetadata, createdScenarioId);
+      if (chefScenarioMetaData == null) {
+        throw new ServiceException("Unable to load the created Statement A scenario: " + createdScenarioId);
+      }
       scenarioNumber = chefScenarioMetaData.getScenarioNumber();
 
       CalculatorService calculatorService = ServiceFactory.getCalculatorService();
@@ -225,20 +225,21 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
       calculatorService.updateFarmingYear(fy, user);
 
       scenario = calculatorService.loadScenario(participantPin, programYear, scenario.getScenarioNumber());
-      FarmingOperation fo = populateFarmingOperation(data, scenario);
+      FarmingOperation fo = scenario.getFarmingYear().getFarmingOperations().get(0);
+      StatementAOperationMapper.populate(data, fo);
       calculatorService.updateFarmingOperation(fo, user);
 
       scenario = calculatorService.loadScenario(participantPin, programYear, scenario.getScenarioNumber());
       List<FarmingOperationPartner> partners = new ArrayList<>();
       populatePartners(data, fo, partners);
-      if (partners.size() > 0) {
+      if (!partners.isEmpty()) {
         calculatorService.updateFarmingOperationPartners(scenario, new ArrayList<>(), partners, new ArrayList<>(), user);
       }
 
       String reasonForApplying = null;
       scenario.setChefsSubmissionGuid(data.getSubmissionGuid());
       calculatorService.updateProgramYearLocalReceivedDates(scenario, currentDate, currentDate, user, verifierUserEmail,
-          reasonForApplying, formUserType, ChefsFormTypeCodes.STA, null);
+          reasonForApplying, formUserType, formTypeCode, null);
       SleepUtils.waitASecond(); // to ensure XSTATE (benefit updatates) are processed in the correct order 
 
     } catch (SQLException | DataAccessException | ParseException e) {
@@ -274,7 +275,7 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
             p.setLastName(client.getOwner().getLastName());
             p.setCorpName(client.getOwner().getCorpName());
           }
-          if (sap.getPercent() > 0) {
+          if (sap.getPercent() != null && sap.getPercent() > 0) {
             p.setPartnerPercent(BigDecimal.valueOf(sap.getPercent() / 100));
           } else {
             p.setPartnerPercent(BigDecimal.valueOf(0));
@@ -333,6 +334,12 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
       fy.setIsSoleProprietor(true);
     }
 
+    populateFarmType(data, fy);
+
+    return fy;
+  }
+
+  protected void populateFarmType(StatementASubmissionDataResource data, FarmingYear fy) {
     switch (data.getFarmType().getValue()) {
     case ChefsFarmTypeCodes.CORPORATION:
       fy.setIsCorporateShareholder(true);
@@ -345,32 +352,6 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
       break;
     }
 
-    return fy;
-  }
-
-  private FarmingOperation populateFarmingOperation(StatementASubmissionDataResource data, Scenario scenario) {
-    FarmingOperation fo = scenario.getFarmingYear().getFarmingOperations().get(0);
-
-    fo.setFiscalYearStart(data.getFiscalYearStartDate());
-    fo.setFiscalYearEnd(data.getFiscalYearEndDate());
-    fo.setGrossIncome(data.getTotalIncome());
-    fo.setFarmingExpenses(data.getTotalExpenses());
-    fo.setInventoryAdjustments(data.getTotalAdjustments());
-    fo.setNetIncomeBeforeAdj(data.getNetIncomeBeforeAdjustments());
-    fo.setNetIncomeAfterAdj(data.getNetIncomeAfterAdjustments());
-
-    if (ACCOUNTING_METHOD_CASH.equals(data.getAccountingMethod())) {
-      fo.setAccountingCode("2");
-    } else {
-      fo.setAccountingCode("1");
-    }
-    
-    if (PARTNERSHIP.equals(data.getBusinessStructure()) && 
-        data.getFarmingOperationPercentage() != null && 
-        data.getFarmingOperationPercentage() > 0.0) {
-      fo.setPartnershipPercent(data.getFarmingOperationPercentage()/100.00);
-    } 
-    return fo;
   }
 
   private List<String> validate(StatementASubmissionDataResource data, Client client, CrmAccountResource crmAccount) {
@@ -379,10 +360,7 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
     List<String> validationErrors = new ArrayList<>();
 
     validateRequiredField(validationErrors, FIELD_NAME_AGRISTABILITY_PIN, getParticipantPin(data));
-    validateRequiredField(validationErrors, FIELD_NAME_FARM_TYPE, data.getFarmType().getLabel());
-
-    String farmType = getFarmType(data);
-    validateRequiredField(validationErrors, FIELD_NAME_FARM_TYPE, farmType);
+    validateFarmType(data, validationErrors);
 
     if (isIndividual(data)) {
       validateRequiredField(validationErrors, FIELD_NAME_SIN_NUMBER, data.getSinNumber());
@@ -411,7 +389,7 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
 
     } else if (validationErrors.isEmpty()) {
 
-      if (ChefsFarmTypeCodes.STATUS_INDIAN_FARMING_ON_A_RESERVE.equals(data.getFarmType().getValue())) {
+      if (isIndividual(data)) {
         validateValuesMatch(FIELD_NAME_SIN_NUMBER, data.getSinNumber(), client.getSin(), validationErrors);
       } else if (ChefsFarmTypeCodes.COMMUNAL_ORGANIZATION.equals(data.getFarmType().getValue()) || 
           ChefsFarmTypeCodes.TRUST.equals(data.getFarmType().getValue())) {
@@ -420,6 +398,7 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
         validateBusinessNumbersMatch(data.getBusinessTaxNumber(), client.getBusinessNumber(), validationErrors);
       }
 
+      validateFiscalDates(data, validationErrors);
       validateProductiveUnits(data, validationErrors);
     }
 
@@ -427,7 +406,25 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
     return validationErrors;
   }
 
-  private String getFarmType(StatementASubmissionDataResource data) {
+  protected Class<? extends StatementASubmissionDataResource> getSubmissionDataClass() {
+    return StatementASubmissionDataResource.class;
+  }
+
+  protected void validateFarmType(StatementASubmissionDataResource data, List<String> validationErrors) {
+    validateRequiredField(validationErrors, FIELD_NAME_FARM_TYPE,
+        data.getFarmType() == null ? null : data.getFarmType().getLabel());
+    validateRequiredField(validationErrors, FIELD_NAME_FARM_TYPE, getFarmType(data));
+  }
+
+  protected String getApplicantName(StatementASubmissionDataResource data) {
+    return data.getCorporationName();
+  }
+
+  protected String getApplicantNameLabel() {
+    return "Corporation Name";
+  }
+
+  protected String getFarmType(StatementASubmissionDataResource data) {
     String farmType = null;
     if(data.getFarmType() != null
         && data.getFarmType().getValue() != null) {
@@ -436,26 +433,18 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
     return farmType;
   }
 
-  private boolean isIndividual(StatementASubmissionDataResource data) {
-    String farmType = getFarmType(data);
-    return FIELD_VALUE_PARTICIPANT_TYPE_INDIVIDUAL.equals(data.getBusinessStructure())
-        || FIELD_VALUE_FARM_TYPE_STATUS_INDIAN.equals(farmType)
-        || FIELD_VALUE_FARM_TYPE_INDIVIDUAL.equals(farmType);
-  }
+  protected abstract boolean isIndividual(StatementASubmissionDataResource data);
 
-  private boolean isBusinessNumberRequired(StatementASubmissionDataResource data) {
-    String farmType = getFarmType(data);
-    return FIELD_VALUE_PARTICIPANT_TYPE_CORPORATION.equals(data.getBusinessStructure())
-        || FIELD_VALUE_FARM_TYPE_CORPORATION.equals(farmType)
-        || FIELD_VALUE_FARM_TYPE_COOPERATIVE.equals(farmType)
-        || FIELD_VALUE_FARM_TYPE_MEMBER_OF_A_PARTNERSHIP.equals(farmType)
-        || FIELD_VALUE_FARM_TYPE_LIMITED_PARTNERSHIP.equals(farmType);
-  }
+  protected abstract boolean isBusinessNumberRequired(StatementASubmissionDataResource data);
 
-  private boolean isTrustNumberRequired(StatementASubmissionDataResource data) {
-    String farmType = getFarmType(data);
-    return FIELD_VALUE_FARM_TYPE_COMMUNAL_ORGANIZATION.equals(farmType)
-        || FIELD_VALUE_FARM_TYPE_TRUST.equals(farmType);
+  protected abstract boolean isTrustNumberRequired(StatementASubmissionDataResource data);
+
+  protected void validateFiscalDates(StatementASubmissionDataResource data, List<String> validationErrors) {
+    if (data.getFiscalYearStartDate() == null || data.getFiscalYearEndDate() == null) {
+      validationErrors.add("Fiscal year start and end are required.");
+    } else if (data.getFiscalYearStartDate().after(data.getFiscalYearEndDate())) {
+      validationErrors.add("Fiscal year start must be on or before fiscal year end.");
+    }
   }
 
   private CrmTaskResource createValidationErrorTask(CrmAccountResource crmAccount, StatementASubmissionDataResource data,
@@ -481,10 +470,10 @@ public class StatementASubmissionProcessor extends ChefsSubmissionProcessor<Stat
       errorsText.append("\n");
     }
 
-    String subject = String.format(INVALID_FORM_TASK_SUBJECT_FORMAT, programYear, FORM_SHORT_NAME, participantPin);
+    String subject = String.format(INVALID_FORM_TASK_SUBJECT_FORMAT, programYear, formShortName, participantPin);
 
-    String description = StringUtils.formatWithNullAsEmptyString(INVALID_FORM_TASK_DESCRIPTION_PREFIX_FORMAT, formUserType, FORM_LONG_NAME,
-        errorsText, data.getCorporationName(), data.getTelephone(), data.getEmail());
+    String description = StringUtils.formatWithNullAsEmptyString(INVALID_FORM_TASK_DESCRIPTION_PREFIX_FORMAT, formUserType, formLongName,
+        errorsText, getApplicantNameLabel(), getApplicantName(data), data.getTelephone(), data.getEmail());
 
     String accountId = null;
     if (crmAccount != null) {

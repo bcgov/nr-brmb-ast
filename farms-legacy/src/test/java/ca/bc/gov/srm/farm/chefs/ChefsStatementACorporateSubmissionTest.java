@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import ca.bc.gov.srm.farm.chefs.database.ChefsFormTypeCodes;
 import ca.bc.gov.srm.farm.chefs.database.ChefsSubmissionStatusCodes;
 import ca.bc.gov.srm.farm.chefs.forms.ChefsFarmTypeCodes;
-import ca.bc.gov.srm.farm.chefs.processor.StatementASubmissionProcessor;
+import ca.bc.gov.srm.farm.chefs.processor.StatementACorporateSubmissionProcessor;
 import ca.bc.gov.srm.farm.chefs.resource.common.CropGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.GrainGrid;
 import ca.bc.gov.srm.farm.chefs.resource.common.IncomeExpenseGrid;
@@ -91,9 +91,14 @@ import ca.bc.gov.srm.farm.util.ScenarioUtils;
 import ca.bc.gov.srm.farm.util.StringUtils;
 import ca.bc.gov.srm.farm.util.TestUtils;
 
-public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
+public class ChefsStatementACorporateSubmissionTest extends ChefsSubmissionTest {
 
-  private static Logger logger = LoggerFactory.getLogger(ChefsStatementASubmissionTest.class);
+  private static Logger logger = LoggerFactory.getLogger(ChefsStatementACorporateSubmissionTest.class);
+
+  // Preserve the original audit user: database audit columns allow 30 characters.
+  public ChefsStatementACorporateSubmissionTest() {
+    user = "ChefsStatementASubmissionTest";
+  }
 
   private final String CHEFS_FORM_TYPE = ChefsFormTypeCodes.STA;
 
@@ -600,7 +605,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       data.setExternalMethod("chefsForm");
       data.setEnvironment("DEV");
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -689,7 +694,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       data.setExternalMethod("chefsForm");
       data.setEnvironment("DEV");
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -783,7 +788,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -874,7 +879,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -970,7 +975,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1067,7 +1072,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1158,7 +1163,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       data.setExternalMethod("chefsForm");
       data.setEnvironment("DEV");
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1251,7 +1256,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       data.setExternalMethod("chefsForm");
       data.setEnvironment("DEV");
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1349,7 +1354,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1445,7 +1450,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -1898,7 +1903,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -2449,7 +2454,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -2857,7 +2862,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
         new CropGrid("5000 - Blackberries", "5000", 1.0, null, null)
       ));
   
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       processor.setItemResourceMap(itemResourceMap);
@@ -3229,7 +3234,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(duplicateSubmissionGuid);
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -3361,7 +3366,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
     Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
 
     // Process the submission data
-    StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+    StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
     processor.setUser(user);
     processor.setItemResourceMap(itemResourceMap);
 
@@ -3509,7 +3514,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
   
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
   
@@ -3527,7 +3532,6 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
       assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
-          + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n"
           + "- The following productive unit codes have duplicates: 100, 5000, 6, 5014, 4784, 6930\n"
           + "\n" + "Corporation Name: \n"
           + "Telephone: (648) 452-4357\n" + "Email: johnny@farmer.ca\n", validationTask.getDescription());
@@ -3662,7 +3666,7 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       Map<String, SubmissionListItemResource> itemResourceMap = buildSubmissionItemResourceMap(submissionGuid);
       
       // Process the submission data
-      StatementASubmissionProcessor processor = new StatementASubmissionProcessor(conn, getFormUserType());
+      StatementACorporateSubmissionProcessor processor = new StatementACorporateSubmissionProcessor(conn, getFormUserType());
       processor.setUser(user);
       processor.setItemResourceMap(itemResourceMap);
       
@@ -3680,7 +3684,6 @@ public class ChefsStatementASubmissionTest extends ChefsSubmissionTest {
       assertEquals(Integer.valueOf(CrmConstants.TASK_STATE_CODE_OPEN), validationTask.getStateCode());
       assertEquals(Integer.valueOf(CrmConstants.STATUS_CODE_OPEN), validationTask.getStatusCode());
       assertEquals(getFormUserType() + " Statement A form was submitted but has validation errors:\n" + "\n"
-          + "- Business Number in BCFARMS does not start with a 9 digit number. Unable to validate.\n"
           + "- No productive units entered\n"
           + "\n" + "Corporation Name: \n"
           + "Telephone: (648) 452-4357\n" + "Email: johnny@farmer.ca\n", validationTask.getDescription());

@@ -325,7 +325,8 @@ public class BenefitTriageGeneralTest extends AbstractBenefitTriageTest {
       
       assertEquals(Arrays.asList(new String[] {
           MESSAGE_FAIL_REFERENCE_MARGIN_FAILED_AT_LOW_END,
-          MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED
+          MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       
       assertEquals(participantPin, itemResult.getParticipantPin());
@@ -434,7 +435,8 @@ public class BenefitTriageGeneralTest extends AbstractBenefitTriageTest {
       assertEquals(Arrays.asList(new String[] {
           MESSAGE_FAIL_STRUCTURE_CHANGE_NOT_ENABLED,
           MESSAGE_FAIL_STRUCTURAL_CHANGE_ADD_DIV_FAILED,
-          MESSAGE_FAIL_PAYMENT_TOO_LARGE
+          MESSAGE_FAIL_PAYMENT_TOO_LARGE,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       
       assertEquals(participantPin, itemResult.getParticipantPin());
@@ -535,7 +537,8 @@ public class BenefitTriageGeneralTest extends AbstractBenefitTriageTest {
       
       assertEquals(Arrays.asList(new String[] {
           MESSAGE_FAIL_BENEFIT_RISK_FAILED_AT_HIGH_END,
-          MESSAGE_FAIL_PAYMENT_TOO_LARGE
+          MESSAGE_FAIL_PAYMENT_TOO_LARGE,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       assertEquals(participantPin, itemResult.getParticipantPin());
       assertEquals(programYear, itemResult.getProgramYear());
@@ -634,7 +637,8 @@ public class BenefitTriageGeneralTest extends AbstractBenefitTriageTest {
       }), errorMessages);
       
       assertEquals(Arrays.asList(new String[] {
-          MESSAGE_FAIL_STRUCTURE_CHANGE_NOT_ENABLED
+          MESSAGE_FAIL_STRUCTURE_CHANGE_NOT_ENABLED,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       
       assertEquals(participantPin, itemResult.getParticipantPin());
@@ -748,7 +752,8 @@ public class BenefitTriageGeneralTest extends AbstractBenefitTriageTest {
       }), errorMessages);
       
       assertEquals(Arrays.asList(new String[] {
-          MESSAGE_FAIL_PAYMENT_TOO_LARGE
+          MESSAGE_FAIL_PAYMENT_TOO_LARGE,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       
       assertEquals(participantPin, itemResult.getParticipantPin());
@@ -1005,7 +1010,9 @@ public class BenefitTriageGeneralTest extends AbstractBenefitTriageTest {
       logErrorMessages(errorMessages);
       logFailMessages(failMessages);
       assertEquals(1, errorMessages.size());
-      assertEquals(0, failMessages.size());
+      assertEquals(Arrays.asList(new String[] {
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
+      }), failMessages);
       
       String errorMessage1 = errorMessages.get(0);
       assertEquals("One or more of the reference years has both no income and no expenses.", errorMessage1);

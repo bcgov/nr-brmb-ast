@@ -12,6 +12,8 @@ package ca.bc.gov.srm.farm.chefs.resource.common;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 import ca.bc.gov.srm.farm.chefs.resource.ChefsResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
 
@@ -98,6 +100,7 @@ public class CattleGrid extends ChefsResource {
     return endingInventoryCattle;
   }
 
+  @JsonAlias("endingInventory")
   public void setEndingInventoryCattle(Double endingInventoryCattle) {
     this.endingInventoryCattle = endingInventoryCattle;
   }

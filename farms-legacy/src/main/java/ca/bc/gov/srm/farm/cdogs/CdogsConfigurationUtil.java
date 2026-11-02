@@ -87,6 +87,10 @@ public class CdogsConfigurationUtil {
 		return configUtil.getValue(ConfigurationKeys.CDOGS_NPP_TEMPLATE_GUID);
 	}
 	
+	public String getStatementAIndividualsTemplateGuid() {
+	    return configUtil.getValue(ConfigurationKeys.CDOGS_STATEMENT_A_INDIVIDUALS_TEMPLATE_GUID);
+	}
+
 	public String getStatementATemplateGuid() {
 	    return configUtil.getValue(ConfigurationKeys.CDOGS_STATEMENT_A_TEMPLATE_GUID);
 	}

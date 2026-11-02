@@ -49,6 +49,7 @@ public class ChefsResultAction extends SecureAction {
     CrmConfigurationUtil crmConfig = CrmConfigurationUtil.getInstance();
     
     ChefsSubmission submission = chefsFormSubmissionService.getSubmissionByGuid(submissionGuid);
+    form.setFormType(submission.getFormTypeCode());
 
     String mainTaskGuid = submission.getMainTaskGuid();
     String validationTaskGuid = submission.getValidationTaskGuid();

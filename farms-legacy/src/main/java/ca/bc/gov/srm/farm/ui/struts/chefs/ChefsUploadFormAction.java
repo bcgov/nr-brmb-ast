@@ -60,6 +60,7 @@ public class ChefsUploadFormAction extends SecureAction {
       case ChefsFormTypeCodes.CM:
       case ChefsFormTypeCodes.INTERIM:
       case ChefsFormTypeCodes.STA:
+      case ChefsFormTypeCodes.STA_IND:
       case ChefsFormTypeCodes.SUPP:
         List<String> crmEntityGuids = getCrmEntityGuids(submissionGuid);
         if (crmEntityGuids.size() > 0) {

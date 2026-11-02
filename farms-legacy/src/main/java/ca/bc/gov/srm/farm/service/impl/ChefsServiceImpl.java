@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.srm.farm.cache.CacheFactory;
 import ca.bc.gov.srm.farm.cache.CacheKeys;
-import ca.bc.gov.srm.farm.chefs.ChefsConfigurationUtil;
 import ca.bc.gov.srm.farm.chefs.ChefsFormCredentials;
 import ca.bc.gov.srm.farm.chefs.database.ChefsSubmissionStatusCodes;
 import ca.bc.gov.srm.farm.chefs.processor.AdjustmentSubmissionProcessor;
@@ -33,7 +32,9 @@ import ca.bc.gov.srm.farm.chefs.processor.CoverageSubmissionProcessor;
 import ca.bc.gov.srm.farm.chefs.processor.InterimSubmissionProcessor;
 import ca.bc.gov.srm.farm.chefs.processor.NolSubmissionProcessor;
 import ca.bc.gov.srm.farm.chefs.processor.NppSubmissionProcessor;
-import ca.bc.gov.srm.farm.chefs.processor.StatementASubmissionProcessor;
+import ca.bc.gov.srm.farm.chefs.processor.OptOutSubmissionProcessor;
+import ca.bc.gov.srm.farm.chefs.processor.StatementACorporateSubmissionProcessor;
+import ca.bc.gov.srm.farm.chefs.processor.StatementAIndividualsSubmissionProcessor;
 import ca.bc.gov.srm.farm.chefs.processor.SupplementalSubmissionProcessor;
 import ca.bc.gov.srm.farm.configuration.ConfigurationKeys;
 import ca.bc.gov.srm.farm.configuration.ConfigurationUtility;
@@ -106,8 +107,14 @@ public class ChefsServiceImpl extends BaseService implements ChefsService {
       processSubmissions(new CashMarginsSubmissionProcessor(connection, USER_TYPE_IDIR));
       processSubmissions(new CashMarginsSubmissionProcessor(connection, USER_TYPE_BASIC_BCEID));
 
-      processSubmissions(new StatementASubmissionProcessor(connection, USER_TYPE_IDIR));
-      processSubmissions(new StatementASubmissionProcessor(connection, USER_TYPE_BASIC_BCEID));
+      processSubmissions(new StatementACorporateSubmissionProcessor(connection, USER_TYPE_IDIR));
+      processSubmissions(new StatementACorporateSubmissionProcessor(connection, USER_TYPE_BASIC_BCEID));
+
+      processSubmissions(new StatementAIndividualsSubmissionProcessor(connection, USER_TYPE_IDIR));
+      processSubmissions(new StatementAIndividualsSubmissionProcessor(connection, USER_TYPE_BASIC_BCEID));
+
+      processSubmissions(new OptOutSubmissionProcessor(connection, USER_TYPE_IDIR));
+      processSubmissions(new OptOutSubmissionProcessor(connection, USER_TYPE_BASIC_BCEID));
 
     } catch (Exception e) {
       if(TooManyRequestsException.findIn(e) != null) {
@@ -128,17 +135,14 @@ public class ChefsServiceImpl extends BaseService implements ChefsService {
    */
   private void processSubmissions(ChefsSubmissionProcessor<?> submissionProcessor) throws ServiceException {
     
-    ChefsConfigurationUtil chefsConfig = ChefsConfigurationUtil.getInstance();
-    
     String formTypeCode = submissionProcessor.getFormTypeCode();
     String formUserType = submissionProcessor.getFormUserType();
     
-    ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(formTypeCode, formUserType);
-    String apiKey = formCredentials.getApiKey();
+    ChefsFormCredentials formCredentials = submissionProcessor.getFormCredentials();
 
     // The configured value for an API Key is initially set to "placeholder".
     // Submissions for forms not be processed until the form's API Key is updated.
-    if( ! API_KEY_PLACEHOLDER.equals(apiKey) ) {
+    if (formCredentials.isConfigured()) {
       
       try {
         submissionProcessor.loadSubmissionsFromChefs();

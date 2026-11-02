@@ -326,6 +326,8 @@ public final class ConfigurationKeys {
 
   public static final String CRM_QUEUES_SUPPLEMENTAL_VALIDATION = "CRM - Queues - Supplemental Validation";
 
+  public static final String CRM_QUEUES_OPT_OUT_VALIDATION = "CRM - Queues - Opt Out Validation";
+
   public static final String CRM_QUEUES_STATEMENT_A_VALIDATION = "CRM - Queues - Statement A Validation";
 
   public static final String CRM_QUEUES_COVERAGE_CORPORATE = "CRM - Queues - Coverage Corp";
@@ -410,6 +412,20 @@ public final class ConfigurationKeys {
 
   public static final String CHEFS_CASH_MARGINS_BASIC_BCEID_FORM_API_KEY = "CHEFS - Cash Margins - Basic BCeID Form API Key";
   
+  public static final String CHEFS_OPT_OUT_IDIR_FORM_GUID = "CHEFS - Opt Out - IDIR Form GUID";
+  public static final String CHEFS_OPT_OUT_ENABLED = "CHEFS - Opt Out - Enabled";
+  public static final String CHEFS_OPT_OUT_IDIR_FORM_API_KEY = "CHEFS - Opt Out - IDIR Form API Key";
+  public static final String CHEFS_OPT_OUT_BASIC_BCEID_FORM_GUID = "CHEFS - Opt Out - Basic BCeID Form GUID";
+  public static final String CHEFS_OPT_OUT_BASIC_BCEID_FORM_API_KEY = "CHEFS - Opt Out - Basic BCeID Form API Key";
+
+  public static final String CHEFS_STATEMENT_A_INDIVIDUALS_IDIR_FORM_GUID = "CHEFS - Statement A Individuals - IDIR Form GUID";
+
+  public static final String CHEFS_STATEMENT_A_INDIVIDUALS_IDIR_FORM_API_KEY = "CHEFS - Statement A Individuals - IDIR Form API Key";
+
+  public static final String CHEFS_STATEMENT_A_INDIVIDUALS_BASIC_BCEID_FORM_GUID = "CHEFS - Statement A Individuals - Basic BCeID Form GUID";
+
+  public static final String CHEFS_STATEMENT_A_INDIVIDUALS_BASIC_BCEID_FORM_API_KEY = "CHEFS - Statement A Individuals - Basic BCeID Form API Key";
+
   public static final String CHEFS_STATEMENT_A_IDIR_FORM_GUID = "CHEFS - Statement A - IDIR Form GUID";
 
   public static final String CHEFS_STATEMENT_A_IDIR_FORM_API_KEY = "CHEFS - Statement A - IDIR Form API Key";
@@ -450,6 +466,8 @@ public final class ConfigurationKeys {
   public static final String CDOGS_COVERAGE_REPORT_TEMPLATE_GUID = "CDOGS - Coverage Notice Report - Template GUID";
 
   public static final String CDOGS_CASH_MARGINS_TEMPLATE_GUID = "CDOGS - Cash Margins - Template GUID";
+
+  public static final String CDOGS_STATEMENT_A_INDIVIDUALS_TEMPLATE_GUID = "CDOGS - Statement A Individuals - Template GUID";
 
   public static final String CDOGS_STATEMENT_A_TEMPLATE_GUID = "CDOGS - Statement A - Template GUID";
 

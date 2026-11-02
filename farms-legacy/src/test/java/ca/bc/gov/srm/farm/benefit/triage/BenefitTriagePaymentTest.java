@@ -816,7 +816,8 @@ public class BenefitTriagePaymentTest extends AbstractBenefitTriageTest {
       }), errorMessages);
       
       assertEquals(Arrays.asList(new String[] {
-          MESSAGE_FAIL_BENEFIT_RISK_FAILED_AT_HIGH_END
+          MESSAGE_FAIL_BENEFIT_RISK_FAILED_AT_HIGH_END,
+          MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED
       }), failMessages);
       
       assertEquals(participantPin, itemResult.getParticipantPin());

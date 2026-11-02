@@ -346,6 +346,8 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
       result.setClientName(triageScenario.getClient().getOwner().getFullName());
       result.setScenarioNumber(triageScenario.getScenarioNumber());
       
+      boolean lastYearVerified = checkLastYearVerified(triageScenario);
+      
       calculateBenefit(triageScenario, yearBpuListMap, errorMessages, connection, userId);
       triageScenario = reloadScenario(triageScenario, connection);
       
@@ -396,7 +398,8 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
                 && accountingMethodConsistent
                 && municipalityConsistent
                 && benefitRiskTestPassedOrBenefitLowerThanEstimated
-                && paymentWithinThreshold;
+                && paymentWithinThreshold
+                && lastYearVerified;
             
             addPaymentPassMessages(
                 result,
@@ -425,7 +428,8 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
                 && hasIncomeForAllYears
                 && hasExpensesForAllYears
                 && fiscalEndDatesConsistent
-                && notCombinedFarm;
+                && notCombinedFarm
+                && lastYearVerified;
             
             addZeroPassMessages(
                 result,
@@ -440,6 +444,11 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
           }
           
         }
+      }
+      
+      // Fail regardless of the benefit calculation result if last year not verified
+      if( ! lastYearVerified ) {
+        result.getFailMessages().add(MESSAGE_FAIL_LAST_YEAR_NOT_VERIFIED);
       }
       
       result.setZeroPass(zeroPass);       // These are only used by the unit tests
@@ -611,6 +620,19 @@ public class BenefitTriageServiceImpl extends BaseService implements BenefitTria
         ScenarioUtils.findCombinedFarmScenarios(scenarioMetaDataList, lastYear);
     
     return lastYearCombinedFarmScenarios.isEmpty();
+  }
+
+  private boolean checkLastYearVerified(Scenario triageScenario) {
+    
+    int programYear = triageScenario.getYear();
+    int lastYear = programYear - 1;
+    List<ScenarioMetaData> scenarioMetaDataList = triageScenario.getScenarioMetaDataList();
+    
+    return scenarioMetaDataList.stream()
+        .anyMatch(y -> y.getProgramYear().equals(lastYear)
+            && y.getScenarioTypeCode().equals(ScenarioTypeCodes.USER)
+            && y.categoryIsOneOf(FINAL)
+            && y.stateIsOneOf(VERIFIED, AMENDED));
   }
 
 

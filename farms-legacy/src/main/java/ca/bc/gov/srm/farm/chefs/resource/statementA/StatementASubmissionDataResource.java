@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import ca.bc.gov.srm.farm.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -22,6 +21,7 @@ import ca.bc.gov.srm.farm.chefs.resource.common.IncomeExpenseGrid;
 import ca.bc.gov.srm.farm.chefs.resource.submission.LabelValue;
 import ca.bc.gov.srm.farm.chefs.resource.supplemental.SupplementalAccruals;
 import ca.bc.gov.srm.farm.chefs.resource.supplemental.SupplementalBaseDataResource;
+import ca.bc.gov.srm.farm.util.DateUtils;
 
 public class StatementASubmissionDataResource extends SupplementalBaseDataResource {
 
@@ -87,6 +87,9 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   private Double mandatoryAdjustments;
   private Double totalAdjustments;
   private Double netIncomeAfterAdjustments;
+  private Double businessUseOfHomeAdjustment;
+  private Double gstHstRebateForPartners;
+  private Double netFarmingIncome;
 
   private SupplementalAccruals checkAllThatApply;
   private LabelValue typeOfAnimalCustomFed;
@@ -114,6 +117,30 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   private static final String pattern = "yyyy-MM-dd";
   @JsonIgnore
   private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+  public Double getBusinessUseOfHomeAdjustment() {
+    return businessUseOfHomeAdjustment;
+  }
+
+  public void setBusinessUseOfHomeAdjustment(Double businessUseOfHomeAdjustment) {
+    this.businessUseOfHomeAdjustment = businessUseOfHomeAdjustment;
+  }
+
+  public Double getGstHstRebateForPartners() {
+    return gstHstRebateForPartners;
+  }
+
+  public void setGstHstRebateForPartners(Double gstHstRebateForPartners) {
+    this.gstHstRebateForPartners = gstHstRebateForPartners;
+  }
+
+  public Double getNetFarmingIncome() {
+    return netFarmingIncome;
+  }
+
+  public void setNetFarmingIncome(Double netFarmingIncome) {
+    this.netFarmingIncome = netFarmingIncome;
+  }
 
   public String getCorporationName() {
     return corporationName;
