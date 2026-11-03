@@ -117,7 +117,7 @@
         </tr>
         <tr>
           <th>
-            <c:out value="${form.nextLineNumber}"/>.
+            <c:out value="${form.nextLineNumber}"/>. <c:set var="prodInsDeductedLineNumber" value="${form.lineNumber}" />
             Production Insurance Deducted
           </th>
           <td>&nbsp;</td>
@@ -125,7 +125,7 @@
         </tr>
         <tr>
           <th>
-            <c:out value="${form.nextLineNumber}"/>.
+            <c:out value="${form.nextLineNumber}"/>. <c:set var="interimBenefitLineNumber" value="${form.lineNumber}" />
             <fmt:message key="Interim.Benefit"/>
           </th>
           <td>
@@ -142,8 +142,13 @@
         </tr>
         <tr>
           <th>
+            <c:choose>
+              <c:when test="${not empty form.benefit.benefitAfterInterimDeduction}"><c:set var="cappedBenefitLineNumber" value="${interimBenefitLineNumber}" /></c:when>
+              <c:when test="${not empty form.benefit.benefitAfterProdInsDeduction}"><c:set var="cappedBenefitLineNumber" value="${prodInsDeductedLineNumber}" /></c:when>
+              <c:otherwise><c:set var="cappedBenefitLineNumber" value="${totalLineNumber}" /></c:otherwise>
+            </c:choose>
             <c:out value="${form.nextLineNumber}"/>.
-            Apply Payment Limitation (lesser of <c:out value="${paymentLimitationNumber}"/> and <c:out value="${totalLineNumber}"/>)
+            Apply Payment Limitation (lesser of <c:out value="${paymentLimitationNumber}"/> and <c:out value="${cappedBenefitLineNumber}"/>)
           </th>
           <td></td>
           <td><fmt:formatNumber type="currency" value="${form.benefit.benefitAfterPaymentCap}"/></td>
@@ -236,7 +241,7 @@
 	        </tr>
           <tr>
             <th>
-              <c:out value="${form.nextLineNumber}"/>.
+              <c:out value="${form.nextLineNumber}"/>. <c:set var="enhancedProdInsDeductedLineNumber" value="${form.lineNumber}" />
               Production Insurance Deducted
             </th>
             <td>&nbsp;</td>
@@ -244,7 +249,7 @@
           </tr>
 	        <tr>
 	          <th>
-              <c:out value="${form.nextLineNumber}"/>.
+              <c:out value="${form.nextLineNumber}"/>. <c:set var="enhancedInterimBenefitLineNumber" value="${form.lineNumber}" />
               <fmt:message key="Interim.Benefit"/>
             </th>
 	          <td>
@@ -261,8 +266,13 @@
 	        </tr>
           <tr>
             <th>
+              <c:choose>
+                <c:when test="${not empty form.benefit.enhancedBenefitAfterInterimDeduction}"><c:set var="enhancedCappedBenefitLineNumber" value="${enhancedInterimBenefitLineNumber}" /></c:when>
+                <c:when test="${not empty form.benefit.enhancedBenefitAfterProdInsDeduction}"><c:set var="enhancedCappedBenefitLineNumber" value="${enhancedProdInsDeductedLineNumber}" /></c:when>
+                <c:otherwise><c:set var="enhancedCappedBenefitLineNumber" value="${enhancedTotalLineNumber}" /></c:otherwise>
+              </c:choose>
               <c:out value="${form.nextLineNumber}"/>.
-              Apply Payment Limitation (lesser of <c:out value="${paymentLimitationNumber}"/> and <c:out value="${enhancedTotalLineNumber}"/>)
+              Apply Payment Limitation (lesser of <c:out value="${paymentLimitationNumber}"/> and <c:out value="${enhancedCappedBenefitLineNumber}"/>)
             </th>
             <td></td>
             <td><fmt:formatNumber type="currency" value="${form.benefit.enhancedBenefitAfterPaymentCap}"/></td>
