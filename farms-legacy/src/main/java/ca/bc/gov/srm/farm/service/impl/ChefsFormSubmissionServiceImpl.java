@@ -31,7 +31,9 @@ import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
 import ca.bc.gov.srm.farm.chefs.resource.supplemental.SupplementalSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.optOut.OptOutSubmissionDataResource;
 import ca.bc.gov.srm.farm.crm.CrmConfigurationUtil;
+import ca.bc.gov.srm.farm.crm.CrmConstants;
 import ca.bc.gov.srm.farm.crm.CrmRestApiDao;
+import ca.bc.gov.srm.farm.crm.resource.CrmTaskResource;
 import ca.bc.gov.srm.farm.dao.ChefsDatabaseDAO;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmission;
 import ca.bc.gov.srm.farm.domain.chefs.ChefsSubmssnCrmEntity;
@@ -193,10 +195,14 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
     String validationTaskGuid = submission.getValidationTaskGuid();
     String submissionStatusCode = submission.getSubmissionStatusCode();
 
-    if ((submissionStatusCode.equals(ChefsSubmissionStatusCodes.SUBMITTED) || submissionStatusCode.equals(ChefsSubmissionStatusCodes.CANCELLED))
-        && validationTaskGuid != null) {
-      logger.debug("Complete validation task validationTaskGuid: " + validationTaskGuid);
-      crmDao.completeTask(crmConfig.getValidationErrorUrl(), validationTaskGuid);
+    if (submissionStatusCode.equals(ChefsSubmissionStatusCodes.CANCELLED) && validationTaskGuid != null) {
+      // The task may have been deleted, in which case getValidationErrorTask returns null.
+      CrmTaskResource validationTask = crmDao.getValidationErrorTask(validationTaskGuid);
+      if (validationTask != null && validationTask.getStateCode() != null
+          && validationTask.getStateCode() == CrmConstants.TASK_STATE_CODE_OPEN) {
+        logger.debug("Complete validation task validationTaskGuid: " + validationTaskGuid);
+        crmDao.completeTask(crmConfig.getValidationErrorUrl(), validationTaskGuid);
+      }
     }
     logMethodEnd(logger);
   }

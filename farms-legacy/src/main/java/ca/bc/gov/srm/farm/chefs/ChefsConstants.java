@@ -29,7 +29,7 @@ public final class ChefsConstants {
   public static final String USER_TYPE_BASIC_BCEID = "Basic BCeID";
   
   public static final String IDPHINTS_IDIR = "idir";
-  public static final String IDPHINTS_BASIC_BCEID = "bceid-basic";
+  public static final String IDPHINTS_BASIC_BCEID = "bceidbasic";
   
   public static final String API_KEY_PLACEHOLDER = "placeholder";
   
