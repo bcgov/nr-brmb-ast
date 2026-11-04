@@ -76,7 +76,7 @@ public class ChefsResultAction extends SecureAction {
 
     if (userFormType == null) {
       logger.error("BCeID form indicator is not set for submission " + submissionGuid);
-        return mapping.findForward(ActionConstants.FAILURE);
+      return mapping.findForward(ActionConstants.FAILURE);
     }
     form.setUserFormType(userFormType);
 
@@ -93,9 +93,12 @@ public class ChefsResultAction extends SecureAction {
       logger.debug(e.getMessage());
       return mapping.findForward(ActionConstants.FAILURE);
     }
-    ObjectMapper jsonObjectMapper = JsonUtils.getJsonObjectMapper();
-    String jsonResource = jsonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(submissionWrapper);
-    form.setResourceJson(jsonResource);
+    // Leave resourceJson null if the submission is not in CHEFS so the page shows "Form submission not found."
+    if (submissionWrapper != null) {
+      ObjectMapper jsonObjectMapper = JsonUtils.getJsonObjectMapper();
+      String jsonResource = jsonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(submissionWrapper);
+      form.setResourceJson(jsonResource);
+    }
 
     return mapping.findForward(ActionConstants.SUCCESS);
   }

@@ -85,9 +85,12 @@ public class ChefsUpdateFormAction extends SecureAction {
       logger.error(e.getMessage());
       return mapping.findForward(ActionConstants.FAILURE);
     }
-    ObjectMapper jsonObjectMapper = JsonUtils.getJsonObjectMapper();
-    String jsonResource = jsonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(submissionWrapper);
-    form.setResourceJson(jsonResource);
+    // Leave resourceJson null if the submission is not in CHEFS so the page shows "Form submission not found."
+    if (submissionWrapper != null) {
+      ObjectMapper jsonObjectMapper = JsonUtils.getJsonObjectMapper();
+      String jsonResource = jsonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(submissionWrapper);
+      form.setResourceJson(jsonResource);
+    }
 
     return mapping.findForward(ActionConstants.SUCCESS);
   }

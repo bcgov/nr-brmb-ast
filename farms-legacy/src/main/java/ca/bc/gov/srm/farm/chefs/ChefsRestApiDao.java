@@ -205,6 +205,10 @@ public class ChefsRestApiDao extends RestApiDao {
     String response = get(endpointUrl);
     
     logMethodEnd(logger);
+    if(response == null) {
+      logger.warn("Resource not found: " + endpointUrl);
+      return null;
+    }
     return parseResource(response, type);
   }
 
