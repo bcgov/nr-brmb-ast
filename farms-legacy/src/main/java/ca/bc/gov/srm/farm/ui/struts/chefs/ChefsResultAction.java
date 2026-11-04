@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.bc.gov.srm.farm.chefs.ChefsConfigurationUtil;
-import ca.bc.gov.srm.farm.chefs.ChefsConstants;
 import ca.bc.gov.srm.farm.chefs.resource.submission.ChefsSubmissionDataResource;
 import ca.bc.gov.srm.farm.chefs.resource.submission.SubmissionWrapperResource;
 import ca.bc.gov.srm.farm.crm.CrmConfigurationUtil;
@@ -76,13 +75,8 @@ public class ChefsResultAction extends SecureAction {
     form.setSubmissionUrl(chefsSubmissionUrl);
 
     if (userFormType == null) {
-      userFormType = chefsFormSubmissionService.getUserFormTypeFromPreflight(submissionGuid);
-      if (userFormType == null) {
+      logger.error("BCeID form indicator is not set for submission " + submissionGuid);
         return mapping.findForward(ActionConstants.FAILURE);
-      } else {
-        submission.setBceidFormInd(getBceidFormIndFromUserFormType(userFormType));
-        chefsFormSubmissionService.updateSubmission(submission);
-      }
     }
     form.setUserFormType(userFormType);
 
@@ -130,16 +124,6 @@ public class ChefsResultAction extends SecureAction {
     form.setProgramYear(programYear);
     form.setScenarioNumber(scenarioNumber);
     form.setPinExists(pinExists);
-  }
-
-  private String getBceidFormIndFromUserFormType(String userFormType) {
-    if (userFormType.equals(ChefsConstants.USER_TYPE_BASIC_BCEID)) {
-      return "Y";
-    }
-    if (userFormType.equals(ChefsConstants.USER_TYPE_IDIR)) {
-      return "N";
-    }
-    return null;
   }
 
 }

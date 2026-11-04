@@ -167,7 +167,10 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
     }
 
     if (preflightWrapperResource != null) {
-      if (preflightWrapperResource.getForm().getIdpHints().size() > 0 && preflightWrapperResource.getForm().getIdpHints().get(0).equals(ChefsConstants.IDPHINTS_BASIC_BCEID)) {
+      List<String> idpHints = preflightWrapperResource.getForm().getIdpHints();
+      // IDIR forms have no idp hints. Any other identity provider (Basic BCeID, Business BCeID,
+      // BC Services Card) means the submission came from the external (BCeID) version of the form.
+      if (idpHints != null && !idpHints.isEmpty() && !idpHints.contains(ChefsConstants.IDPHINTS_IDIR)) {
         return ChefsConstants.USER_TYPE_BASIC_BCEID;
       } else {
         return ChefsConstants.USER_TYPE_IDIR;
@@ -195,7 +198,8 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
     String validationTaskGuid = submission.getValidationTaskGuid();
     String submissionStatusCode = submission.getSubmissionStatusCode();
 
-    if (submissionStatusCode.equals(ChefsSubmissionStatusCodes.CANCELLED) && validationTaskGuid != null) {
+    if (validationTaskGuid != null
+        && (submissionStatusCode.equals(ChefsSubmissionStatusCodes.CANCELLED) || submissionStatusCode.equals(ChefsSubmissionStatusCodes.SUBMITTED))) {
       // The task may have been deleted, in which case getValidationErrorTask returns null.
       CrmTaskResource validationTask = crmDao.getValidationErrorTask(validationTaskGuid);
       if (validationTask != null && validationTask.getStateCode() != null
