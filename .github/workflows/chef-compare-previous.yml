@@ -68,14 +68,15 @@ jobs:
       - name: Fetch previous form
         run: |
 
+          set -o pipefail
           mkdir output
 
-          FORM_VERSION_ID=$(curl \
+          FORM_VERSION_ID=$(curl --fail \
             -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
             -H "Content-Type: application/json" \
             ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/ | jq -r '.versions[0].id')
 
-          curl \
+          curl --fail \
             -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
             -H "Content-Type: application/json" \
             ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/versions/$FORM_VERSION_ID \
@@ -98,14 +99,15 @@ jobs:
       - name: Fetch draft form
         run: |
 
+          set -o pipefail
           mkdir output
 
-          FORM_VERSION_DRAFT_ID=$(curl \
+          FORM_VERSION_DRAFT_ID=$(curl --fail \
             -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
             -H "Content-Type: application/json" \
             ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/drafts | jq -r '.[0].id')
 
-          curl \
+          curl --fail \
             -u "${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}:${{ secrets[format('{0}_FORM_SECRET', inputs.FORM_NAME)] }}" \
             -H "Content-Type: application/json" \
             ${{ vars.CHEFS_API_URL }}/v1/forms/${{ secrets[format('{0}_FORM_ID', inputs.FORM_NAME)] }}/drafts/$FORM_VERSION_DRAFT_ID \
