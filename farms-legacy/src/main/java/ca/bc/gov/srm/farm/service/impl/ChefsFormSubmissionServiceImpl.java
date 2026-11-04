@@ -43,6 +43,7 @@ import ca.bc.gov.srm.farm.service.BaseService;
 import ca.bc.gov.srm.farm.service.ChefsFormSubmissionService;
 import ca.bc.gov.srm.farm.transaction.Transaction;
 import ca.bc.gov.srm.farm.ui.cache.CurrentUser;
+import ca.bc.gov.srm.farm.util.StringUtils;
 
 public class ChefsFormSubmissionServiceImpl extends BaseService implements ChefsFormSubmissionService {
 
@@ -153,6 +154,10 @@ public class ChefsFormSubmissionServiceImpl extends BaseService implements Chefs
 
   @Override
   public String getUserFormTypeFromPreflight(String submissionGuid) throws ServiceException {
+    // A blank GUID would request the wrong URL (submissions//options), which CHEFS answers with 404 Not Found.
+    if (StringUtils.isBlank(submissionGuid)) {
+      throw new ServiceException("Submission GUID is required.");
+    }
     // using arbitrary form type and user type, will working with anything.
     ChefsFormCredentials formCredentials = chefsConfig.getFormCredentials(ChefsFormTypeCodes.NPP, ChefsConstants.USER_TYPE_IDIR);
     ChefsRestApiDao chefsApiDao = new ChefsRestApiDao(new ChefsAuthenticationHandler(formCredentials));
