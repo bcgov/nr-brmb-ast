@@ -96,6 +96,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
 
     SubmissionWrapperResource<AdjustmentSubmissionDataResource> submissionWrapper;
     submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, AdjustmentSubmissionDataResource.class);
+    checkSubmissionFound(submissionWrapper, submissionGuid);
 
     SubmissionParentResource<AdjustmentSubmissionDataResource> submissionMetaData = submissionWrapper
         .getSubmissionMetaData();
@@ -126,6 +127,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
 
     SubmissionWrapperResource<CashMarginsSubmissionDataResource> submissionWrapper;
     submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, CashMarginsSubmissionDataResource.class);
+    checkSubmissionFound(submissionWrapper, submissionGuid);
 
     SubmissionParentResource<CashMarginsSubmissionDataResource> submissionMetaData = submissionWrapper
         .getSubmissionMetaData();
@@ -155,6 +157,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
 
     SubmissionWrapperResource<CoverageSubmissionDataResource> submissionWrapper;
     submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, CoverageSubmissionDataResource.class);
+    checkSubmissionFound(submissionWrapper, submissionGuid);
 
     SubmissionParentResource<CoverageSubmissionDataResource> submissionMetaData = submissionWrapper.getSubmissionMetaData();
     SubmissionResource<CoverageSubmissionDataResource> submission = submissionMetaData.getSubmission();
@@ -236,6 +239,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
 
     SubmissionWrapperResource<InterimSubmissionDataResource> submissionWrapper;
     submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, InterimSubmissionDataResource.class);
+    checkSubmissionFound(submissionWrapper, submissionGuid);
 
     SubmissionParentResource<InterimSubmissionDataResource> submissionMetaData = submissionWrapper
         .getSubmissionMetaData();
@@ -267,6 +271,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
 
     SubmissionWrapperResource<NolSubmissionDataResource> submissionWrapper;
     submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, NolSubmissionDataResource.class);
+    checkSubmissionFound(submissionWrapper, submissionGuid);
 
     SubmissionParentResource<NolSubmissionDataResource> submissionMetaData = submissionWrapper.getSubmissionMetaData();
     SubmissionResource<NolSubmissionDataResource> submission = submissionMetaData.getSubmission();
@@ -294,6 +299,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
 
     SubmissionWrapperResource<NppSubmissionDataResource> submissionWrapper;
     submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, NppSubmissionDataResource.class);
+    checkSubmissionFound(submissionWrapper, submissionGuid);
 
     SubmissionParentResource<NppSubmissionDataResource> submissionMetaData = submissionWrapper.getSubmissionMetaData();
     SubmissionResource<NppSubmissionDataResource> submission = submissionMetaData.getSubmission();
@@ -333,6 +339,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
         ? StatementAIndividualsSubmissionDataResource.class : StatementASubmissionDataResource.class;
     SubmissionWrapperResource<? extends StatementASubmissionDataResource> submissionWrapper = submissionDao
         .getSubmissionWrapperResource(chefsConfig.getSubmissionUrl(submissionGuid), dataClass);
+    checkSubmissionFound(submissionWrapper, submissionGuid);
     SubmissionParentResource<? extends StatementASubmissionDataResource> submissionMetaData = submissionWrapper.getSubmissionMetaData();
     StatementASubmissionDataResource data = submissionMetaData.getSubmission().getData();
     populateSubmissionMetaData(submissionMetaData, data);
@@ -358,6 +365,7 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
 
     SubmissionWrapperResource<SupplementalSubmissionDataResource> submissionWrapper;
     submissionWrapper = chefsApiDao.getSubmissionWrapperResource(submissionUrl, SupplementalSubmissionDataResource.class);
+    checkSubmissionFound(submissionWrapper, submissionGuid);
 
     SubmissionParentResource<SupplementalSubmissionDataResource> submissionMetaData = submissionWrapper
         .getSubmissionMetaData();
@@ -521,6 +529,12 @@ public class CdogsServiceImpl extends BaseService implements CdogsService {
   private CdogsTemplateDataResource createCdogsTemplateDataResource(ChefsSubmissionDataResource data, String fileName) {
 
     return new CdogsTemplateDataResource(data, fileName);
+  }
+
+  private void checkSubmissionFound(SubmissionWrapperResource<?> submissionWrapper, String submissionGuid) throws ServiceException {
+    if (submissionWrapper == null) {
+      throw new ServiceException("Submission not found in CHEFS: " + submissionGuid);
+    }
   }
 
   private <T> void populateSubmissionMetaData(SubmissionParentResource<T> submissionMetaData,
