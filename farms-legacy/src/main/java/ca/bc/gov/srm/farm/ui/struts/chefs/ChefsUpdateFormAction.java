@@ -59,11 +59,6 @@ public class ChefsUpdateFormAction extends SecureAction {
         && (submissionStatusCode.equals(ChefsSubmissionStatusCodes.CANCELLED) || submissionStatusCode.equals(ChefsSubmissionStatusCodes.SUBMITTED))) {
       crmDao.completeTask(crmConfig.getNolTaskUrl(), mainTaskGuid);
     }
-    String validationTaskGuid = submission.getValidationTaskGuid();
-    if (validationTaskGuid != null
-        && (submissionStatusCode.equals(ChefsSubmissionStatusCodes.CANCELLED) || submissionStatusCode.equals(ChefsSubmissionStatusCodes.SUBMITTED))) {
-      crmDao.completeTask(crmConfig.getValidationErrorUrl(), validationTaskGuid);
-    }
 
     form.setSubmission(submission);
     StringBuilder chefsSubmissionUrl = new StringBuilder();
@@ -72,10 +67,10 @@ public class ChefsUpdateFormAction extends SecureAction {
     chefsSubmissionUrl.append(submissionGuid);
     form.setSubmissionUrl(chefsSubmissionUrl.toString());
 
-    String userFormType = chefsFormSubmissionService.getUserFormTypeFromPreflight(submissionGuid);
+    String userFormType = chefsFormSubmissionService.getUserFormType(submission);
 
     if (userFormType == null) {
-      logger.error("getUserFormTypeFromPreflight returned null");
+      logger.error("BCeID form indicator is not set for submission " + submissionGuid);
       return mapping.findForward(ActionConstants.FAILURE);
     }
     form.setUserFormType(userFormType);
@@ -90,9 +85,12 @@ public class ChefsUpdateFormAction extends SecureAction {
       logger.error(e.getMessage());
       return mapping.findForward(ActionConstants.FAILURE);
     }
-    ObjectMapper jsonObjectMapper = JsonUtils.getJsonObjectMapper();
-    String jsonResource = jsonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(submissionWrapper);
-    form.setResourceJson(jsonResource);
+    // Leave resourceJson null if the submission is not in CHEFS so the page shows "Form submission not found."
+    if (submissionWrapper != null) {
+      ObjectMapper jsonObjectMapper = JsonUtils.getJsonObjectMapper();
+      String jsonResource = jsonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(submissionWrapper);
+      form.setResourceJson(jsonResource);
+    }
 
     return mapping.findForward(ActionConstants.SUCCESS);
   }
