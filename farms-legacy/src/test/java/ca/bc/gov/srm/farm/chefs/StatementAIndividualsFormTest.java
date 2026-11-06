@@ -22,10 +22,10 @@ import ca.bc.gov.srm.farm.service.impl.ChefsSubmissionProcessorServiceImpl;
 public class StatementAIndividualsFormTest {
 
   @Test
-  void mapsMichelleFieldsAndPreservesCanonicalPdfAmounts() throws Exception {
+  void mapsCurrentIndividualsForm() throws Exception {
     ObjectMapper mapper = new ObjectMapper();
     StatementAIndividualsSubmissionDataResource data;
-    try (InputStream input = getClass().getResourceAsStream("/chefs/statement-a-individuals-michelle.json")) {
+    try (InputStream input = getClass().getResourceAsStream("/chefs/statement-a-individuals-test-1.json")) {
       assertNotNull(input);
       data = mapper.readValue(input, StatementAIndividualsSubmissionDataResource.class);
     }
@@ -37,30 +37,34 @@ public class StatementAIndividualsFormTest {
     assertEquals("yes", data.getDoYouHaveMultipleOperations());
     FarmingOperation operation = new FarmingOperation();
     StatementAOperationMapper.populate(data, operation);
-    assertEquals(-100.0, operation.getBusinessUseHomeExpense());
-    assertEquals(925.0, operation.getNetFarmIncome());
+    assertEquals(1000.0, operation.getNetFarmIncome());
     assertEquals(data.getFiscalYearStartDate(), operation.getFiscalYearStart());
     assertEquals("2", operation.getAccountingCode());
     JsonNode pdf = mapper.valueToTree(data);
     assertEquals(data.getParticipantName(), pdf.get("participantName").asText());
-    assertEquals(-100.0, pdf.get("businessUseOfHomeAdjustment").asDouble());
-    assertEquals(25.0, pdf.get("gstHstRebateForPartners").asDouble());
-    assertFalse(pdf.has("adjustmentToBusinessUseOfHomeExpenses"));
+  }
+
+  @Test
+  void usesLine9944ForNetFarmIncome() throws Exception {
+    ObjectMapper mapper = new ObjectMapper();
+    StatementAIndividualsSubmissionDataResource data = mapper.readValue(
+        "{\"netIncomeAfterAdjustments\":1000,\"netFarmingIncome\":999999,"
+        + "\"fiscalYearStart\":1704067200000,\"fiscalYearEnd\":1735603200000}",
+        StatementAIndividualsSubmissionDataResource.class);
+    FarmingOperation operation = new FarmingOperation();
+    StatementAOperationMapper.populate(data, operation);
+    assertEquals(1000.0, operation.getNetFarmIncome());
   }
 
   @Test
   void readsEarlierIndividualsPayloadWithoutChangingCorporateNames() throws Exception {
-    String previous = "{\"corporationName\":\"Existing name\",\"businessUseOfHomeAdjustment\":-100,\"gstHstRebateForPartners\":25,"
+    String previous = "{\"corporationName\":\"Existing name\","
         + "\"fiscalYearStart\":1704067200000,\"fiscalYearEnd\":1735603200000}";
     ObjectMapper mapper = new ObjectMapper();
     StatementAIndividualsSubmissionDataResource individual = mapper.readValue(previous, StatementAIndividualsSubmissionDataResource.class);
     assertEquals("Existing name", individual.getParticipantName());
-    assertEquals(-100.0, individual.getBusinessUseOfHomeAdjustment());
-    assertEquals(25.0, individual.getGstHstRebateForPartners());
     StatementASubmissionDataResource corporate = mapper.readValue(previous, StatementASubmissionDataResource.class);
     assertEquals("Existing name", corporate.getCorporationName());
-    assertEquals(-100.0, corporate.getBusinessUseOfHomeAdjustment());
-    assertEquals(25.0, corporate.getGstHstRebateForPartners());
     assertFalse(mapper.valueToTree(corporate).has("participantName"));
   }
 
@@ -85,11 +89,45 @@ public class StatementAIndividualsFormTest {
   }
 
   @Test
+  void bothFormsRetainAdditionalPdfFields() throws Exception {
+    ObjectMapper mapper = new ObjectMapper();
+    String payload = "{\"shouldBeCombinedCurrentYear\":\"yes\",\"wasCombinedLast3Years\":\"no\",\"total\":100,"
+        + "\"farmingOperationPercentage\":60,\"unableToCompleteBecauseOfDisaster\":\"yes\",\"decreasedParticipant\":\"no\","
+        + "\"authorizeThirdParty\":\"yes\",\"thirdPartyFirstName\":\"CONTACT-FIRST\",\"thirdPartyLastName\":\"CONTACT-LAST\","
+        + "\"thirdPartyBusinessName\":\"SAMPLE BUSINESS\",\"thirdPartyAddress\":\"456 Proxy Road\",\"thirdPartyTownCity\":\"Contact Town\","
+        + "\"thirdPartyProvince\":\"BC\",\"thirdPartyPostalCode\":\"V1V 1V1\",\"thirdPartyTelephone\":\"250-555-0222\","
+        + "\"thirdPartyFax\":\"250-555-0333\",\"thirdPartyEmail\":\"contact.sample@example.com\",\"copyOfCOB\":\"yes\","
+        + "\"totalAllowableIncome\":1100,\"totalNonAllowableIncome\":220,\"totalAllowableExpenses\":300,\"totalNonAllowableExpenses\":40,"
+        + "\"receivablesGrid\":[{\"specify\":\"RECEIVABLE-DETAIL\",\"incomeReceivedAfterYearEnd\":50}]}";
+    JsonNode expected = mapper.readTree(payload);
+    for (Class<? extends StatementASubmissionDataResource> resource : java.util.Arrays.asList(
+        StatementASubmissionDataResource.class, StatementAIndividualsSubmissionDataResource.class)) {
+      StatementASubmissionDataResource data = mapper.readValue(payload, resource);
+      data.setFiscalYearStart(new java.util.Date(1704067200000L));
+      data.setFiscalYearEnd(new java.util.Date(1735603200000L));
+      assertEquals("yes", data.getShouldBeCombinedCurrentYear());
+      assertEquals("no", data.getWasCombinedLast3Years());
+      assertEquals(100.0, data.getTotal());
+      JsonNode actual = mapper.valueToTree(data);
+      java.util.Iterator<String> fields = expected.fieldNames();
+      while (fields.hasNext()) {
+        String field = fields.next();
+        if (!expected.get(field).isContainerNode()) {
+          // Compare numbers by value: Double properties serialize integer inputs as decimals.
+          if (expected.get(field).isNumber()) assertEquals(expected.get(field).asDouble(), actual.path(field).asDouble(), resource.getSimpleName() + ": " + field);
+          else assertEquals(expected.get(field), actual.get(field), resource.getSimpleName() + ": " + field);
+        }
+      }
+      assertEquals("RECEIVABLE-DETAIL", actual.at("/receivablesGrid/0/specify").asText());
+    }
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   void preservesSubmittedCattleAndVegetableQuantitiesInTheOperation() throws Exception {
     ObjectMapper mapper = new ObjectMapper();
     StatementAIndividualsSubmissionDataResource data;
-    try (InputStream input = getClass().getResourceAsStream("/chefs/statement-a-individuals-michelle.json")) {
+    try (InputStream input = getClass().getResourceAsStream("/chefs/statement-a-individuals-test-1.json")) {
       assertNotNull(input);
       data = mapper.readValue(input, StatementAIndividualsSubmissionDataResource.class);
     }

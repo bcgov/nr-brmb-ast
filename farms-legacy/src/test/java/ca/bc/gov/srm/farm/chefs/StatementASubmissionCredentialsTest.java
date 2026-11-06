@@ -134,12 +134,11 @@ public class StatementASubmissionCredentialsTest {
         requests.add(exchange.getRequestHeaders().getFirst("Authorization"));
         body = "{\"submission\":{\"confirmationId\":\"TEST\",\"createdAt\":1704067200000,\"submission\":{\"data\":"
             + "{\"agriStabilityAgriInvestPin\":1234567,\"fiscalYearStart\":1704067200000,\"fiscalYearEnd\":1735603200000,"
-            + "\"businessUseOfHomeAdjustment\":100,\"gstHstRebateForPartners\":25,\"netFarmingIncome\":125}}}}";
+            + "\"netFarmingIncome\":125}}}}";
         String authorization = exchange.getRequestHeaders().getFirst("Authorization");
         if (authentication("individual-idir").equals(authorization)
             || authentication("individual-bceid").equals(authorization)) {
-          body = body.replace("\"businessUseOfHomeAdjustment\"", "\"adjustmentToBusinessUseOfHomeExpenses\"")
-              .replace("\"gstHstRebateForPartners\"", "\"gsthstRebateForPartnersReceivedInTheYear\"")
+          body = body.replace("\"netFarmingIncome\":125", "\"netIncomeAfterAdjustments\":125,\"netFarmingIncome\":125")
               .replace("\"agriStabilityAgriInvestPin\":", "\"participantName\":\"SAMPLE ONLY - Alex Farmer\",\"agriStabilityAgriInvestPin\":");
         }
       } else {
@@ -185,12 +184,12 @@ public class StatementASubmissionCredentialsTest {
     requests.clear();
     StatementASubmissionDataResource data = (StatementASubmissionDataResource) service
         .getSubmissionWrapperResource("sample", type, identity).getSubmissionMetaData().getSubmission().getData();
-    assertEquals(Double.valueOf(100), data.getBusinessUseOfHomeAdjustment());
-    assertEquals(Double.valueOf(25), data.getGstHstRebateForPartners());
     if (ChefsFormTypeCodes.STA_IND.equals(type)) {
+      assertEquals(Double.valueOf(125), data.getNetFarmingIncome());
       assertTrue(data instanceof StatementAIndividualsSubmissionDataResource);
       assertEquals("SAMPLE ONLY - Alex Farmer", ((StatementAIndividualsSubmissionDataResource)data).getParticipantName());
     } else {
+      assertEquals(Double.valueOf(125), data.getNetFarmingIncome());
       assertEquals(StatementASubmissionDataResource.class, data.getClass());
     }
     assertEquals(Collections.singletonList(authentication(owner(type, identity))), requests);
@@ -234,10 +233,10 @@ public class StatementASubmissionCredentialsTest {
     Method processJson = StatementASubmissionProcessor.class.getDeclaredMethod("processSubmission", String.class, String.class);
     processJson.setAccessible(true);
     processJson.invoke(parser, "sample", "{\"submission\":{\"draft\":false,\"submission\":{\"data\":{"
-        + "\"participantName\":\"SAMPLE ONLY - Alex Farmer\",\"adjustmentToBusinessUseOfHomeExpenses\":-100}}}}");
+        + "\"participantName\":\"SAMPLE ONLY - Alex Farmer\",\"netIncomeAfterAdjustments\":1000,\"netFarmingIncome\":1000}}}}");
     assertTrue(parsed[0] instanceof StatementAIndividualsSubmissionDataResource);
     assertEquals(data.getParticipantName(), ((StatementAIndividualsSubmissionDataResource)parsed[0]).getParticipantName());
-    assertEquals(-100.0, parsed[0].getBusinessUseOfHomeAdjustment());
+    assertEquals(1000.0, parsed[0].getNetFarmingIncome());
     Method dataClass = StatementASubmissionProcessor.class.getDeclaredMethod("getSubmissionDataClass");
     dataClass.setAccessible(true);
     assertEquals(StatementAIndividualsSubmissionDataResource.class, dataClass.invoke(individual));
@@ -326,8 +325,7 @@ public class StatementASubmissionCredentialsTest {
       assertEquals(Collections.singletonList(authentication(owner(type, identity))), requests);
       assertEquals("/api/v1/template/" + template(type) + "/render", lastTemplate);
       JsonNode renderData = new ObjectMapper().readTree(renderedBody).get("data");
-      assertEquals(100.0, renderData.get("businessUseOfHomeAdjustment").asDouble());
-      assertEquals(25.0, renderData.get("gstHstRebateForPartners").asDouble());
+      assertEquals(125.0, renderData.get("netFarmingIncome").asDouble());
       if (ChefsFormTypeCodes.STA_IND.equals(type)) {
         assertEquals("SAMPLE ONLY - Alex Farmer", renderData.get("participantName").asText());
       }

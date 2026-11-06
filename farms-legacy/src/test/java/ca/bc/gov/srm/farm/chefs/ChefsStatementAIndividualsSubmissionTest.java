@@ -106,8 +106,6 @@ public class ChefsStatementAIndividualsSubmissionTest extends ChefsSubmissionTes
       assertNull(data.getCorporationName());
       assertNull(data.getBusinessTaxNumber());
       assertNull(data.getTrustNumber());
-      assertEquals(-100.0, data.getBusinessUseOfHomeAdjustment());
-      assertEquals(25.0, data.getGstHstRebateForPartners());
       assertTrue(processor.checkEnvironment(metadata));
       assertNull(processor.processSubmission(metadata), "Valid Individual must not create a validation task");
       if (ChefsConstants.USER_TYPE_BASIC_BCEID.equals(identity)) {
@@ -146,8 +144,7 @@ public class ChefsStatementAIndividualsSubmissionTest extends ChefsSubmissionTes
       assertEquals("2", operation.getAccountingCode());
       assertEquals("2024-01-01", formatter.format(operation.getFiscalYearStart()));
       assertEquals("2024-12-31", formatter.format(operation.getFiscalYearEnd()));
-      assertEquals(-100.0, operation.getBusinessUseHomeExpense());
-      assertEquals(925.0, operation.getNetFarmIncome());
+      assertEquals(1000.0, operation.getNetFarmIncome());
       assertEquals(1000.0, amount(operation, 92));
       assertEquals(200.0, amount(operation, 9662));
       assertEquals(10.0, buildProductiveUnitsMap(operation.getProductiveUnitCapacities()).get("5392"));
@@ -252,7 +249,7 @@ public class ChefsStatementAIndividualsSubmissionTest extends ChefsSubmissionTes
 
   private String submissionJson(String guid, String sin, String identity) throws Exception {
     ObjectNode data;
-    try (InputStream input = getClass().getResourceAsStream("/chefs/statement-a-individuals-michelle.json")) {
+    try (InputStream input = getClass().getResourceAsStream("/chefs/statement-a-individuals-test-1.json")) {
       assertNotNull(input);
       data = (ObjectNode) mapper.readTree(input);
     }
@@ -281,7 +278,7 @@ public class ChefsStatementAIndividualsSubmissionTest extends ChefsSubmissionTes
     data.put("totalExpenses", 200);
     data.put("netIncomeBeforeAdjustments", 800);
     data.put("totalAdjustments", 200);
-    data.put("netFarmingIncome", 925);
+    data.put("netFarmingIncome", 1000);
     ((ObjectNode) data.withArray("allowableIncomeGrid").get(0)).with("category").put("label", "Cherries").put("value", "92");
     ((ObjectNode) data.withArray("allowableExpensesGrid").get(0)).with("category").put("label", "Fertilizers").put("value", "9662");
     ObjectNode grain = (ObjectNode) data.withArray("grainGrid").get(0);
