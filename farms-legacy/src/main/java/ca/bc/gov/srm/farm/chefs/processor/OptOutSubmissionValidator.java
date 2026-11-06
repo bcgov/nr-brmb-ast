@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import ca.bc.gov.srm.farm.chefs.resource.optOut.OptOutSubmissionDataResource;
 import ca.bc.gov.srm.farm.domain.Client;
 
@@ -63,8 +65,17 @@ public final class OptOutSubmissionValidator {
         required(errors, "Representative Signature Date", data.getSignatureDate1());
         required(errors, "Relation to the client", data.getHowDoYouKnowTheParticipant());
       }
+      if (!hasUploadedFile(data.getSimplefile())) errors.add("A copy of the death certificate is required.");
     }
     return errors;
+  }
+
+  private static boolean hasUploadedFile(JsonNode files) {
+    if (files == null || !files.isArray()) return false;
+    for (JsonNode file : files) {
+      if (file != null && file.isObject() && file.size() > 0) return true;
+    }
+    return false;
   }
 
   private static void required(List<String> errors, String name, String value) {

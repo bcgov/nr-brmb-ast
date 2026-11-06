@@ -24,10 +24,8 @@ public class StatementAIndividualsMappingTest {
   @Test
   public void deserializesNewAmounts() throws Exception {
     StatementASubmissionDataResource data = new ObjectMapper().readValue(
-        "{\"businessUseOfHomeAdjustment\":-100,\"gstHstRebateForPartners\":25,\"netFarmingIncome\":925}",
+        "{\"netFarmingIncome\":925}",
         StatementASubmissionDataResource.class);
-    assertEquals(-100.0, data.getBusinessUseOfHomeAdjustment());
-    assertEquals(25.0, data.getGstHstRebateForPartners());
     assertEquals(925.0, data.getNetFarmingIncome());
   }
 
@@ -36,8 +34,6 @@ public class StatementAIndividualsMappingTest {
     StatementASubmissionDataResource data = new ObjectMapper().readValue(
         "{\"doYouHaveMultipleOperations\":\"yes\"}", StatementASubmissionDataResource.class);
     assertEquals("yes", data.getDoYouHaveMultipleOperations());
-    assertNull(data.getBusinessUseOfHomeAdjustment());
-    assertNull(data.getGstHstRebateForPartners());
     assertNull(data.getNetFarmingIncome());
   }
 
@@ -45,45 +41,38 @@ public class StatementAIndividualsMappingTest {
   public void mapsAmountsAndRecalculatesNetIncome() {
     StatementASubmissionDataResource first = new StatementASubmissionDataResource();
     first.setNetIncomeAfterAdjustments(1000.0);
-    first.setBusinessUseOfHomeAdjustment(-100.0);
-    first.setGstHstRebateForPartners(25.0);
     first.setNetFarmingIncome(999999.0); // Ignore a stale or edited client-side total.
     first.setAccountingMethod("cash");
     FarmingOperation op1 = new FarmingOperation();
     StatementAOperationMapper.populate(first, op1);
-    assertEquals(925.0, op1.getNetFarmIncome());
-    assertEquals(-100.0, op1.getBusinessUseHomeExpense());
+    assertEquals(1000.0, op1.getNetFarmIncome());
     assertEquals(1000.0, op1.getNetIncomeAfterAdj());
     assertEquals("2", op1.getAccountingCode());
 
     StatementASubmissionDataResource second = new StatementASubmissionDataResource();
     second.setNetIncomeAfterAdjustments(-500.0);
-    second.setBusinessUseOfHomeAdjustment(-50.0);
-    second.setGstHstRebateForPartners(10.0);
+    second.setNetFarmingIncome(-500.0);
     second.setBusinessStructure("partnership");
     second.setFarmingOperationPercentage(40.0);
     FarmingOperation op2 = new FarmingOperation();
     StatementAOperationMapper.populate(second, op2);
-    assertEquals(-540.0, op2.getNetFarmIncome());
+    assertEquals(-500.0, op2.getNetFarmIncome());
     assertEquals(0.4, op2.getPartnershipPercent());
-    assertEquals(925.0, op1.getNetFarmIncome());
+    assertEquals(1000.0, op1.getNetFarmIncome());
   }
 
   @Test
   public void roundsAmountsAndPreservesLegacyDefaults() {
     StatementASubmissionDataResource data = new StatementASubmissionDataResource();
-    data.setNetIncomeAfterAdjustments(100.10);
-    data.setBusinessUseOfHomeAdjustment(-0.20);
-    data.setGstHstRebateForPartners(0.30);
+    data.setNetIncomeAfterAdjustments(100.105);
+    data.setNetFarmingIncome(100.105);
     FarmingOperation operation = new FarmingOperation();
     StatementAOperationMapper.populate(data, operation);
-    assertEquals(100.20, operation.getNetFarmIncome());
+    assertEquals(100.11, operation.getNetFarmIncome());
     data = new StatementASubmissionDataResource();
     operation.setNetFarmIncome(0.0);
-    operation.setBusinessUseHomeExpense(0.0);
     StatementAOperationMapper.populate(data, operation);
     assertEquals(0.0, operation.getNetFarmIncome());
-    assertEquals(0.0, operation.getBusinessUseHomeExpense());
   }
 
   @Test

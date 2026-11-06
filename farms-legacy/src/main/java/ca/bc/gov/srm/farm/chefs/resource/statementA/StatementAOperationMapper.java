@@ -26,13 +26,9 @@ public final class StatementAOperationMapper {
       operation.setPartnershipPercent(data.getFarmingOperationPercentage() / 100.0);
     }
 
-    // Older Corporations submissions have none of these fields. Preserve their existing defaults.
-    if (data.getBusinessUseOfHomeAdjustment() != null || data.getGstHstRebateForPartners() != null
-        || data.getNetFarmingIncome() != null) {
-      operation.setBusinessUseHomeExpense(amount(data.getBusinessUseOfHomeAdjustment()).doubleValue());
+    // Older submissions have no netFarmingIncome field. For those, keep the 0.0 set when the operation was created.
+    if (data.getNetFarmingIncome() != null) {
       operation.setNetFarmIncome(amount(data.getNetIncomeAfterAdjustments())
-          .add(amount(data.getBusinessUseOfHomeAdjustment()))
-          .add(amount(data.getGstHstRebateForPartners()))
           .setScale(2, RoundingMode.HALF_UP).doubleValue());
     }
   }

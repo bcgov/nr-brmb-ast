@@ -1226,14 +1226,6 @@
       <forward name="failure" path="page.farm830" />
     </action>
 
-    <action path="/createNewScenario"
-            type="ca.bc.gov.srm.farm.ui.struts.calculator.scenarios.CreateNewScenarioAction"
-            name="scenariosForm" scope="request" validate="false">
-      <set-property property="secureAction" value="editScenario" />
-      <forward name="success" path="page.farm830" />
-      <forward name="failure" path="page.farm830" />
-    </action>
-
     <action path="/saveAsNewScenario"
             type="ca.bc.gov.srm.farm.ui.struts.calculator.scenarios.SaveAsNewScenarioAction"
             name="scenariosForm" scope="request" validate="false">

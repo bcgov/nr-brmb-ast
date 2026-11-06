@@ -195,6 +195,23 @@ public class OptOutSubmissionTest {
     data.setSignatureLastName("Executor");
     data.setSignatureDate1("2026/10/29");
     data.setHowDoYouKnowTheParticipant("Executor");
+    data.setSimplefile(new ObjectMapper().readTree("[{\"name\":\"certificate.pdf\",\"url\":\"SAMPLE\"}]"));
+    assertTrue(OptOutSubmissionValidator.validate(data, client()).isEmpty());
+  }
+
+  @Test void requiresTheDeathCertificateOnlyForTheDeathReason() throws Exception {
+    OptOutSubmissionDataResource data = validData();
+    data.setReasonForCancelling("deathOfParticipant");
+    data.setOnBehalfOfParticipant("no");
+    for (String files : new String[] { null, "null", "[]", "[{}]", "{\"name\":\"certificate.pdf\"}" }) {
+      data.setSimplefile(files == null ? null : new ObjectMapper().readTree(files));
+      List<String> errors = OptOutSubmissionValidator.validate(data, client());
+      assertTrue(errors.contains("A copy of the death certificate is required."), "files=" + files);
+    }
+    data.setSimplefile(new ObjectMapper().readTree("[{\"name\":\"certificate.pdf\",\"url\":\"SAMPLE\"}]"));
+    assertTrue(OptOutSubmissionValidator.validate(data, client()).isEmpty());
+    data.setReasonForCancelling("noLongerFarming");
+    data.setSimplefile(null);
     assertTrue(OptOutSubmissionValidator.validate(data, client()).isEmpty());
   }
 

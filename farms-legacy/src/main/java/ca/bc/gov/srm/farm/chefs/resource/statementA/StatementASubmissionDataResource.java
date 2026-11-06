@@ -35,6 +35,9 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   private List<StatementAPartner> partnershipGrid;
   private List<StatementANonParticipantPartner> nonParticipantPartnershipGrid;
   private List<StatementACombined> combinedGrid;
+  private String shouldBeCombinedCurrentYear;
+  private String wasCombinedLast3Years;
+  private Double total;
   private String address;
   private String townCity;
   private String province;
@@ -87,8 +90,6 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   private Double mandatoryAdjustments;
   private Double totalAdjustments;
   private Double netIncomeAfterAdjustments;
-  private Double businessUseOfHomeAdjustment;
-  private Double gstHstRebateForPartners;
   private Double netFarmingIncome;
 
   private SupplementalAccruals checkAllThatApply;
@@ -117,22 +118,6 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
   private static final String pattern = "yyyy-MM-dd";
   @JsonIgnore
   private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-  public Double getBusinessUseOfHomeAdjustment() {
-    return businessUseOfHomeAdjustment;
-  }
-
-  public void setBusinessUseOfHomeAdjustment(Double businessUseOfHomeAdjustment) {
-    this.businessUseOfHomeAdjustment = businessUseOfHomeAdjustment;
-  }
-
-  public Double getGstHstRebateForPartners() {
-    return gstHstRebateForPartners;
-  }
-
-  public void setGstHstRebateForPartners(Double gstHstRebateForPartners) {
-    this.gstHstRebateForPartners = gstHstRebateForPartners;
-  }
 
   public Double getNetFarmingIncome() {
     return netFarmingIncome;
@@ -220,6 +205,32 @@ public class StatementASubmissionDataResource extends SupplementalBaseDataResour
 
   public void setCombinedGrid(List<StatementACombined> combinedGrid) {
     this.combinedGrid = combinedGrid;
+  }
+
+  // Corporate and Individuals share combining history and the partnership total.
+  // Preserve these answers for management/PDF output without changing import rules.
+  public String getShouldBeCombinedCurrentYear() {
+    return shouldBeCombinedCurrentYear;
+  }
+
+  public void setShouldBeCombinedCurrentYear(String shouldBeCombinedCurrentYear) {
+    this.shouldBeCombinedCurrentYear = shouldBeCombinedCurrentYear;
+  }
+
+  public String getWasCombinedLast3Years() {
+    return wasCombinedLast3Years;
+  }
+
+  public void setWasCombinedLast3Years(String wasCombinedLast3Years) {
+    this.wasCombinedLast3Years = wasCombinedLast3Years;
+  }
+
+  public Double getTotal() {
+    return total;
+  }
+
+  public void setTotal(Double total) {
+    this.total = total;
   }
 
   public String getAddress() {
