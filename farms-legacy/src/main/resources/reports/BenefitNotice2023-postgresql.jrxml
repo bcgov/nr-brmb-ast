@@ -322,25 +322,25 @@ new java.beans.Expression($V{VISUAL_THRESHOLD_MARKER},"setLabelBackgroundColor",
 new java.beans.Expression($V{VISUAL_THRESHOLD_MARKER},"setLabelAnchor",new Object[]{org.jfree.ui.RectangleAnchor.RIGHT}).getValue(),
 new java.beans.Expression($V{VISUAL_THRESHOLD_MARKER},"setLabelTextAnchor",new Object[]{org.jfree.ui.TextAnchor.CENTER_RIGHT}).getValue(),
 new java.beans.Expression($V{VISUAL_THRESHOLD_MARKER},"setLabelOffset",new Object[]{new org.jfree.ui.RectangleInsets(2,0,2,2)}).getValue(),
-$P{P_TIER3_TRIGGER} == null ? null : new java.beans.Expression($V{VISUAL_THRESHOLD_CHART}.getCategoryPlot(),"addRangeMarker",new Object[]{$V{VISUAL_THRESHOLD_MARKER}}).getValue(),new java.beans.Expression($V{VISUAL_THRESHOLD_CHART}.getCategoryPlot().getDomainAxis(),"setMaximumCategoryLabelWidthRatio",new Object[]{Float.valueOf(2.5f)}).getValue(),new net.sf.jasperreports.charts.util.DrawChartRendererImpl($V{VISUAL_THRESHOLD_CHART},null)}[33]]]></variableExpression>
-		</variable>
-		<variable name="VISUAL_PAYMENT_RATE_PCT" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[new java.math.BigDecimal("80")]]></variableExpression>
+$P{P_TIER3_TRIGGER} == null ? null : new java.beans.Expression($V{VISUAL_THRESHOLD_CHART}.getCategoryPlot(),"addRangeMarker",new Object[]{$V{VISUAL_THRESHOLD_MARKER}}).getValue(),new java.beans.Expression($V{VISUAL_THRESHOLD_CHART}.getCategoryPlot().getDomainAxis(),"setMaximumCategoryLabelWidthRatio",new Object[]{Float.valueOf(0.9f)}).getValue(),new java.beans.Expression($V{VISUAL_THRESHOLD_CHART}.getCategoryPlot().getDomainAxis(),"setMaximumCategoryLabelLines",new Object[]{Integer.valueOf(2)}).getValue(),new net.sf.jasperreports.charts.util.DrawChartRendererImpl($V{VISUAL_THRESHOLD_CHART},null)}[34]]]></variableExpression>
 		</variable>
 		<variable name="VISUAL_GROSS_POSITIVE_RATE" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[$V{VISUAL_PAYMENT_RATE_PCT}]]></variableExpression>
+			<variableExpression><![CDATA[$P{P_AGRI_POSITIVE_MARGIN_COMP_RATE} != null && $P{P_AGRI_POSITIVE_MARGIN_COMP_RATE}.trim().matches("[0-9]+(\\.[0-9]+)?") ? new java.math.BigDecimal($P{P_AGRI_POSITIVE_MARGIN_COMP_RATE}.trim()) : null]]></variableExpression>
 		</variable>
 		<variable name="VISUAL_GROSS_NEGATIVE_RATE" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[$V{VISUAL_PAYMENT_RATE_PCT}]]></variableExpression>
+			<variableExpression><![CDATA[$P{P_AGRI_NEGATIVE_MARGIN_COMP_RATE} != null && $P{P_AGRI_NEGATIVE_MARGIN_COMP_RATE}.trim().matches("[0-9]+(\\.[0-9]+)?") ? new java.math.BigDecimal($P{P_AGRI_NEGATIVE_MARGIN_COMP_RATE}.trim()) : null]]></variableExpression>
 		</variable>
 		<variable name="VISUAL_GROSS_RECONCILES" class="java.lang.Boolean">
 			<variableExpression><![CDATA[$P{P_BENEFIT_BEFORE_DEDUCTIONS} != null && ($P{P_TIER3_MARGIN_DECLINE} == null || $P{P_TIER3_MARGIN_DECLINE}.signum()==0 ? java.math.BigDecimal.ZERO : ($V{VISUAL_GROSS_POSITIVE_RATE} == null ? null : $P{P_TIER3_MARGIN_DECLINE}.multiply($V{VISUAL_GROSS_POSITIVE_RATE}).movePointLeft(2))) != null && ($P{P_NEGATIVE_MARGIN_DECLINE} == null || $P{P_NEGATIVE_MARGIN_DECLINE}.signum()==0 ? java.math.BigDecimal.ZERO : ($V{VISUAL_GROSS_NEGATIVE_RATE} == null ? null : $P{P_NEGATIVE_MARGIN_DECLINE}.multiply($V{VISUAL_GROSS_NEGATIVE_RATE}).movePointLeft(2))) != null && ($P{P_TIER3_MARGIN_DECLINE} == null || $P{P_TIER3_MARGIN_DECLINE}.signum()==0 ? java.math.BigDecimal.ZERO : ($V{VISUAL_GROSS_POSITIVE_RATE} == null ? null : $P{P_TIER3_MARGIN_DECLINE}.multiply($V{VISUAL_GROSS_POSITIVE_RATE}).movePointLeft(2))).add(($P{P_NEGATIVE_MARGIN_DECLINE} == null || $P{P_NEGATIVE_MARGIN_DECLINE}.signum()==0 ? java.math.BigDecimal.ZERO : ($V{VISUAL_GROSS_NEGATIVE_RATE} == null ? null : $P{P_NEGATIVE_MARGIN_DECLINE}.multiply($V{VISUAL_GROSS_NEGATIVE_RATE}).movePointLeft(2)))).subtract($P{P_SUPPLY_MANAGED_COMMODITIES_ADJ} == null ? java.math.BigDecimal.ZERO : $P{P_SUPPLY_MANAGED_COMMODITIES_ADJ}).subtract($P{P_BENEFIT_BEFORE_DEDUCTIONS}).abs().compareTo(new java.math.BigDecimal("0.02"))<=0]]></variableExpression>
 		</variable>
+		<variable name="VISUAL_GROSS_RATE_MISSING" class="java.lang.Boolean">
+			<variableExpression><![CDATA[(($P{P_TIER3_MARGIN_DECLINE} != null && $P{P_TIER3_MARGIN_DECLINE}.signum()!=0) && $V{VISUAL_GROSS_POSITIVE_RATE} == null) || (($P{P_NEGATIVE_MARGIN_DECLINE} != null && $P{P_NEGATIVE_MARGIN_DECLINE}.signum()!=0) && $V{VISUAL_GROSS_NEGATIVE_RATE} == null) || (!($P{P_TIER3_MARGIN_DECLINE} != null && $P{P_TIER3_MARGIN_DECLINE}.signum()!=0) && !($P{P_NEGATIVE_MARGIN_DECLINE} != null && $P{P_NEGATIVE_MARGIN_DECLINE}.signum()!=0) && $V{VISUAL_GROSS_POSITIVE_RATE} == null)]]></variableExpression>
+		</variable>
 		<variable name="VISUAL_GROSS_COMMON_RATE" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[$V{VISUAL_PAYMENT_RATE_PCT}]]></variableExpression>
+			<variableExpression><![CDATA[!($P{P_NEGATIVE_MARGIN_DECLINE} != null && $P{P_NEGATIVE_MARGIN_DECLINE}.signum()!=0) ? $V{VISUAL_GROSS_POSITIVE_RATE} : (!($P{P_TIER3_MARGIN_DECLINE} != null && $P{P_TIER3_MARGIN_DECLINE}.signum()!=0) ? $V{VISUAL_GROSS_NEGATIVE_RATE} : ($V{VISUAL_GROSS_POSITIVE_RATE} != null && $V{VISUAL_GROSS_NEGATIVE_RATE} != null && $V{VISUAL_GROSS_POSITIVE_RATE}.compareTo($V{VISUAL_GROSS_NEGATIVE_RATE})==0 ? $V{VISUAL_GROSS_POSITIVE_RATE} : null))]]></variableExpression>
 		</variable>
 		<variable name="VISUAL_GROSS_RATE_LABEL" class="java.lang.String">
-			<variableExpression><![CDATA[!Boolean.TRUE.equals($V{VISUAL_GROSS_RECONCILES}) ? new java.text.DecimalFormat("0.##").format($V{VISUAL_PAYMENT_RATE_PCT}) + "%*" : "x " + new java.text.DecimalFormat("0.##").format($V{VISUAL_PAYMENT_RATE_PCT}) + "%" + ($P{P_SUPPLY_MANAGED_COMMODITIES_ADJ} != null && $P{P_SUPPLY_MANAGED_COMMODITIES_ADJ}.signum()!=0 ? "\n- adj." : "")]]></variableExpression>
+			<variableExpression><![CDATA[Boolean.TRUE.equals($V{VISUAL_GROSS_RATE_MISSING}) ? "<style size=\"6.5\">Rate\nmissing*</style>" : ($V{VISUAL_GROSS_COMMON_RATE} != null ? (Boolean.TRUE.equals($V{VISUAL_GROSS_RECONCILES}) ? "x " : "") + new java.text.DecimalFormat("0.##").format($V{VISUAL_GROSS_COMMON_RATE}) + "%" + (Boolean.TRUE.equals($V{VISUAL_GROSS_RECONCILES}) ? "" : "*") : "<style size=\"6.5\">Pos. " + new java.text.DecimalFormat("0.##").format($V{VISUAL_GROSS_POSITIVE_RATE}) + "%\nNeg. " + new java.text.DecimalFormat("0.##").format($V{VISUAL_GROSS_NEGATIVE_RATE}) + "%" + (Boolean.TRUE.equals($V{VISUAL_GROSS_RECONCILES}) ? "" : "*") + "</style>") + (Boolean.TRUE.equals($V{VISUAL_GROSS_RECONCILES}) && $P{P_SUPPLY_MANAGED_COMMODITIES_ADJ} != null && $P{P_SUPPLY_MANAGED_COMMODITIES_ADJ}.signum()!=0 ? "\n- adj." : "")]]></variableExpression>
 		</variable>
 		<variable name="VISUAL_GROSS_CHART_DATA" class="org.jfree.data.xy.DefaultIntervalXYDataset">
 			<variableExpression><![CDATA[(org.jfree.data.xy.DefaultIntervalXYDataset)new Object[]{org.jfree.data.xy.DefaultIntervalXYDataset.class.getMethod("addSeries",new Class[]{Comparable.class,double[][].class}).invoke($V{VISUAL_GROSS_CHART_DATA},new Object[]{"Payment trigger",new double[][]{new double[]{0.8},new double[]{0.4},new double[]{1.2000000000000002},new double[]{($P{P_TIER3_TRIGGER} == null ? 0.0 : $P{P_TIER3_TRIGGER}.doubleValue())},new double[]{0.0},new double[]{($P{P_TIER3_TRIGGER} == null ? 0.0 : $P{P_TIER3_TRIGGER}.abs().doubleValue())}}}),
@@ -3531,13 +3531,13 @@ FROM (
 								<textFieldExpression><![CDATA["Benefit\nrate"]]></textFieldExpression>
 							</textField>
 							<textField isBlankWhenNull="true">
-								<reportElement key="step4-rate" x="184" y="130" width="33" height="37" forecolor="#0F3D70" uuid="eb835068-2c5d-4cdb-b058-c8d4260aa796"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement key="step4-rate" x="182" y="130" width="33" height="37" forecolor="#0F3D70" uuid="eb835068-2c5d-4cdb-b058-c8d4260aa796"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
 									<font fontName="Arial" size="9" isBold="true"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$V{VISUAL_GROSS_RATE_LABEL}]]></textFieldExpression>
 							</textField>
-<textField><reportElement key="step4-result-equals" x="214" y="136" width="11" height="24" forecolor="#0F3D70"><printWhenExpression><![CDATA[Boolean.TRUE.equals($V{VISUAL_GROSS_RECONCILES})]]></printWhenExpression></reportElement><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Arial" size="13" isBold="true"/></textElement><textFieldExpression><![CDATA["="]]></textFieldExpression></textField>
+<textField><reportElement key="step4-result-equals" x="215" y="136" width="11" height="24" forecolor="#0F3D70"><printWhenExpression><![CDATA[Boolean.TRUE.equals($V{VISUAL_GROSS_RECONCILES})]]></printWhenExpression></reportElement><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Arial" size="13" isBold="true"/></textElement><textFieldExpression><![CDATA["="]]></textFieldExpression></textField>
 
 							<textField isBlankWhenNull="true">
 								<reportElement key="step4-rate-warning" x="119" y="188" width="96" height="22" forecolor="#BD4C4A" uuid="64ed168d-d779-404b-8f27-45fd8f65e4da">
@@ -3546,7 +3546,7 @@ FROM (
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Arial" size="5.2" isBold="false"/>
 								</textElement>
-								<textFieldExpression><![CDATA["* Saved gross does not reconcile\nwith the " + new java.text.DecimalFormat("0.##").format($V{VISUAL_PAYMENT_RATE_PCT}) + "% rate."]]></textFieldExpression>
+								<textFieldExpression><![CDATA[Boolean.TRUE.equals($V{VISUAL_GROSS_RATE_MISSING}) ? "* Program-year compensation\nrate configuration is missing." : "* Saved gross does not reconcile\nwith the configured rates."]]></textFieldExpression>
 							</textField>
 							<textField isBlankWhenNull="true">
 								<reportElement x="116" y="211" width="102" height="18" forecolor="#586A7E" uuid="9d8f05c9-6784-48d1-9d83-31c6abdcfb8e">
@@ -3845,26 +3845,28 @@ Farm Size]]></text>
 				<textFieldExpression><![CDATA[$F{PAGE2_INCLUDED_YEAR_COUNT} == null ? "(Average of the historical margins used)" : ($F{PAGE2_INCLUDED_YEAR_COUNT}.signum() == 0 ? "(No historical margins marked for use)" : "(Average of the " + $F{PAGE2_INCLUDED_YEAR_COUNT}.intValue() + " historical margins used)")]]></textFieldExpression>
 			</textField>
 			<textField pattern="$#,##0;- $#,##0" isBlankWhenNull="true">
-				<reportElement key="page2-final-value" x="226" y="408" width="58" height="14" uuid="0fdbcf07-630f-4407-b12e-82c1e21e0909"/>
+				<reportElement key="page2-final-value" x="226" y="414" width="58" height="14" uuid="0fdbcf07-630f-4407-b12e-82c1e21e0909"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font fontName="Arial" size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ADJUSTED_REFERENCE_MARGIN}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement key="page2-final-underline-1" x="230" y="422" width="50" height="1" uuid="ccfdf1bd-247a-4e8a-826e-596b2840aba5"/>
+				<reportElement key="page2-final-underline-1" x="230" y="428" width="50" height="1" uuid="ccfdf1bd-247a-4e8a-826e-596b2840aba5"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="page2-final-underline-2" x="230" y="424" width="50" height="1" uuid="03bd70af-bafc-4552-80df-cf725aa7f1f4"/>
+				<reportElement key="page2-final-underline-2" x="230" y="430" width="50" height="1" uuid="03bd70af-bafc-4552-80df-cf725aa7f1f4"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement key="page2-structural-explanation" x="46" y="460" width="480" height="145" forecolor="#4D4D4D" uuid="284be50c-6fb8-4543-90fd-acb1693fc819"/>
+				<reportElement key="page2-structural-explanation" x="46" y="460" width="480" height="145" forecolor="#4D4D4D" uuid="284be50c-6fb8-4543-90fd-acb1693fc819">
+					<printWhenExpression><![CDATA["Y".equals($F{PAGE2_STRUCTURAL_APPLIED_IND})]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
 					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Single"/>
