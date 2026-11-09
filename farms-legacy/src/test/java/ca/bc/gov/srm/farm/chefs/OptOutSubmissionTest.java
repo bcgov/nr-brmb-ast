@@ -72,8 +72,8 @@ public class OptOutSubmissionTest {
         + "\"farmType\":{\"label\":\"Individual\",\"value\":\"individual\"},\"sinNumber\":\"123456789\","
         + "\"provinceTerritoryOfMainFarmstead\":\"BC\",\"reasonForCancelling\":\"noLongerFarming\","
         + "\"iWouldLikeToOptOutOfAgriStabilityForFollowingProgramYear\":\"2027\","
-        + "\"signature\":\"data:image/png;base64,SAMPLE\",\"signatureFullName\":\"SAMPLE Farmer\","
-        + "\"signatureDate\":\"2026-10-29T00:00:00-07:00\"}", OptOutSubmissionDataResource.class);
+        + "\"authorizationSignature\":\"data:image/png;base64,SAMPLE\",\"signatureFullName\":\"SAMPLE Farmer\","
+        + "\"authorizationSignatureDate\":\"2026-10-29T00:00:00-07:00\"}", OptOutSubmissionDataResource.class);
   }
 
   private static Client client() {
@@ -177,7 +177,7 @@ public class OptOutSubmissionTest {
   @Test void rejectsMissingClientFarmTypeSignatureAndReason() throws Exception {
     OptOutSubmissionDataResource data = validData();
     data.setFarmType(null);
-    data.setSignature(null);
+    data.setAuthorizationSignature(null);
     data.setSignatureFullName("");
     data.setReasonForCancelling("unknown");
     List<String> errors = OptOutSubmissionValidator.validate(data, null);
@@ -190,10 +190,10 @@ public class OptOutSubmissionTest {
     data.setReasonForCancelling("deathOfParticipant");
     data.setOnBehalfOfParticipant("yes");
     assertFalse(OptOutSubmissionValidator.validate(data, client()).isEmpty());
-    data.setSignature1("SAMPLE");
+    data.setRepresentativeSignature("SAMPLE");
     data.setSignatureFirstName("Sample");
     data.setSignatureLastName("Executor");
-    data.setSignatureDate1("2026/10/29");
+    data.setRepresentativeSignatureDate("2026/10/29");
     data.setHowDoYouKnowTheParticipant("Executor");
     data.setSimplefile(new ObjectMapper().readTree("[{\"name\":\"certificate.pdf\",\"url\":\"SAMPLE\"}]"));
     assertTrue(OptOutSubmissionValidator.validate(data, client()).isEmpty());
@@ -202,7 +202,12 @@ public class OptOutSubmissionTest {
   @Test void requiresTheDeathCertificateOnlyForTheDeathReason() throws Exception {
     OptOutSubmissionDataResource data = validData();
     data.setReasonForCancelling("deathOfParticipant");
-    data.setOnBehalfOfParticipant("no");
+    data.setOnBehalfOfParticipant("yes");
+    data.setRepresentativeSignature("SAMPLE");
+    data.setSignatureFirstName("Sample");
+    data.setSignatureLastName("Executor");
+    data.setRepresentativeSignatureDate("2026/10/29");
+    data.setHowDoYouKnowTheParticipant("Executor");
     for (String files : new String[] { null, "null", "[]", "[{}]", "{\"name\":\"certificate.pdf\"}" }) {
       data.setSimplefile(files == null ? null : new ObjectMapper().readTree(files));
       List<String> errors = OptOutSubmissionValidator.validate(data, client());
@@ -213,6 +218,27 @@ public class OptOutSubmissionTest {
     data.setReasonForCancelling("noLongerFarming");
     data.setSimplefile(null);
     assertTrue(OptOutSubmissionValidator.validate(data, client()).isEmpty());
+  }
+
+  @Test void rejectsDeathWhenTheFormWasNotCompletedOnTheParticipantsBehalf() throws Exception {
+    String error = "Reason for cancelling is Death of participant, but the form was not completed on the participant's behalf.";
+    OptOutSubmissionDataResource data = validData();
+    data.setReasonForCancelling("deathOfParticipant");
+    data.setOnBehalfOfParticipant("no");
+    data.setSimplefile(new ObjectMapper().readTree("[{\"name\":\"certificate.pdf\",\"url\":\"SAMPLE\"}]"));
+    assertEquals(java.util.Collections.singletonList(error), OptOutSubmissionValidator.validate(data, client()));
+    data.setReasonForCancelling("noLongerFarming");
+    assertTrue(OptOutSubmissionValidator.validate(data, client()).isEmpty());
+  }
+
+  @Test void readsTheSignatureKeys() throws Exception {
+    String json = "{\"authorizationSignature\":\"P\",\"authorizationSignatureDate\":\"PD\","
+        + "\"representativeSignature\":\"R\",\"representativeSignatureDate\":\"RD\"}";
+    OptOutSubmissionDataResource data = new ObjectMapper().readValue(json, OptOutSubmissionDataResource.class);
+    assertEquals("P", data.getAuthorizationSignature());
+    assertEquals("PD", data.getAuthorizationSignatureDate());
+    assertEquals("R", data.getRepresentativeSignature());
+    assertEquals("RD", data.getRepresentativeSignatureDate());
   }
 
   @Test void corePatchContainsOnlyTheEnrolmentStatus() {

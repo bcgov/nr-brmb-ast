@@ -88,6 +88,7 @@ public final class ChefsAgent implements NotificationListener {
    */
   @Override
   public void handleNotification(Notification notification, Object data) {
+    Thread.currentThread().setName("ChefsAgent");
     logMethodStart(logger);
 
     processSubmissions();
