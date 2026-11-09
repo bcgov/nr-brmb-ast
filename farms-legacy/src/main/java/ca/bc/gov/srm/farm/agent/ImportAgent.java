@@ -101,6 +101,7 @@ public final class ImportAgent implements NotificationListener {
    */
   @Override
   public void handleNotification(Notification notification, Object data) {
+    Thread.currentThread().setName("ImportAgent");
     logMethodStart(logger);
 
     checkForScheduledImport();

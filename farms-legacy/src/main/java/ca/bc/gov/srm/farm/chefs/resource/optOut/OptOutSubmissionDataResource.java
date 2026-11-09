@@ -32,15 +32,15 @@ public class OptOutSubmissionDataResource extends ChefsSubmissionDataResource {
   private JsonNode simplefile;
   private String pleaseDescribeTheSpecificReasonForCancelling;
   private String onBehalfOfParticipant;
-  private String signature1;
+  private String representativeSignature;
   private String signatureFirstName;
   private String signatureLastName;
-  private String signatureDate1;
+  private String representativeSignatureDate;
   private String howDoYouKnowTheParticipant;
   private String iWouldLikeToOptOutOfAgriStabilityForFollowingProgramYear;
-  private String signature;
+  private String authorizationSignature;
   private String signatureFullName;
-  private String signatureDate;
+  private String authorizationSignatureDate;
 
   public String getParticipantName() {
     return participantName;
@@ -146,12 +146,12 @@ public class OptOutSubmissionDataResource extends ChefsSubmissionDataResource {
     onBehalfOfParticipant = value;
   }
 
-  public String getSignature1() {
-    return signature1;
+  public String getRepresentativeSignature() {
+    return representativeSignature;
   }
 
-  public void setSignature1(String value) {
-    signature1 = value;
+  public void setRepresentativeSignature(String value) {
+    representativeSignature = value;
   }
 
   public String getSignatureFirstName() {
@@ -170,12 +170,12 @@ public class OptOutSubmissionDataResource extends ChefsSubmissionDataResource {
     signatureLastName = value;
   }
 
-  public String getSignatureDate1() {
-    return signatureDate1;
+  public String getRepresentativeSignatureDate() {
+    return representativeSignatureDate;
   }
 
-  public void setSignatureDate1(String value) {
-    signatureDate1 = value;
+  public void setRepresentativeSignatureDate(String value) {
+    representativeSignatureDate = value;
   }
 
   public String getHowDoYouKnowTheParticipant() {
@@ -196,12 +196,12 @@ public class OptOutSubmissionDataResource extends ChefsSubmissionDataResource {
     iWouldLikeToOptOutOfAgriStabilityForFollowingProgramYear = value;
   }
 
-  public String getSignature() {
-    return signature;
+  public String getAuthorizationSignature() {
+    return authorizationSignature;
   }
 
-  public void setSignature(String value) {
-    signature = value;
+  public void setAuthorizationSignature(String value) {
+    authorizationSignature = value;
   }
 
   public String getSignatureFullName() {
@@ -212,12 +212,12 @@ public class OptOutSubmissionDataResource extends ChefsSubmissionDataResource {
     signatureFullName = value;
   }
 
-  public String getSignatureDate() {
-    return signatureDate;
+  public String getAuthorizationSignatureDate() {
+    return authorizationSignatureDate;
   }
 
-  public void setSignatureDate(String value) {
-    signatureDate = value;
+  public void setAuthorizationSignatureDate(String value) {
+    authorizationSignatureDate = value;
   }
 
   @Override

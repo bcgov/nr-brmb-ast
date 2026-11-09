@@ -52,20 +52,21 @@ public final class OptOutSubmissionValidator {
 
     if (!Arrays.asList("noLongerFarming", "agriStabilityIsDifficultToUnderstand", "deathOfParticipant", "otherSpecify")
         .contains(data.getReasonForCancelling())) errors.add("A valid Reason for cancelling is required.");
-    required(errors, "Signature", data.getSignature());
+    required(errors, "Signature", data.getAuthorizationSignature());
     required(errors, "Signature Full Name", data.getSignatureFullName());
-    required(errors, "Signature Date", data.getSignatureDate());
+    required(errors, "Signature Date", data.getAuthorizationSignatureDate());
     if ("deathOfParticipant".equals(data.getReasonForCancelling())) {
       String onBehalf = data.getOnBehalfOfParticipant();
       if (!"yes".equals(onBehalf) && !"no".equals(onBehalf)) errors.add("On behalf of participant must be Yes or No.");
       if ("yes".equals(onBehalf)) {
-        required(errors, "Representative Signature", data.getSignature1());
+        required(errors, "Representative Signature", data.getRepresentativeSignature());
         required(errors, "Representative First Name", data.getSignatureFirstName());
         required(errors, "Representative Last Name", data.getSignatureLastName());
-        required(errors, "Representative Signature Date", data.getSignatureDate1());
+        required(errors, "Representative Signature Date", data.getRepresentativeSignatureDate());
         required(errors, "Relation to the client", data.getHowDoYouKnowTheParticipant());
       }
       if (!hasUploadedFile(data.getSimplefile())) errors.add("A copy of the death certificate is required.");
+      if ("no".equals(onBehalf)) errors.add("Reason for cancelling is Death of participant, but the form was not completed on the participant's behalf.");
     }
     return errors;
   }

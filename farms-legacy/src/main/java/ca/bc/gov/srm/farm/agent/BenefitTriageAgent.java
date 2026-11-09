@@ -89,6 +89,7 @@ public final class BenefitTriageAgent implements NotificationListener {
    */
   @Override
   public void handleNotification(Notification notification, Object data) {
+    Thread.currentThread().setName("BenefitTriageAgent");
     logMethodStart(logger);
 
     runBenefitTriage();
