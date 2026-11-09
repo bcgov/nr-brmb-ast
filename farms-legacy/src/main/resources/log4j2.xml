@@ -18,7 +18,7 @@
 
   <Properties>
     <Property name="logDir">${sys:catalina.base:-.}/logs</Property>
-    <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+    <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36}:%L - %msg%n</Property>
   </Properties>
 
   <Appenders>
