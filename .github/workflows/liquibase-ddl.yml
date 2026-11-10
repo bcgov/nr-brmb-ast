@@ -91,6 +91,9 @@ jobs:
     needs: ddl_dockerbuild 
     uses: ./.github/workflows/openshift-deploy.yml
     secrets: inherit
+    permissions:
+      contents: read
+      packages: write
     with:
       MICROSERVICE_NAME: farms-liquibase
       ENVIRONMENT_NAME: ${{ inputs.ENVIRONMENT_NAME }}

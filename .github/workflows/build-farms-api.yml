@@ -15,6 +15,9 @@ jobs:
   build-farms-api:
     uses: ./.github/workflows/build-package.yml
     secrets: inherit
+    permissions:
+      contents: read
+      packages: write
     with:
       TAG: ${{ inputs.tag }}
       ENVIRONMENT: DEV
