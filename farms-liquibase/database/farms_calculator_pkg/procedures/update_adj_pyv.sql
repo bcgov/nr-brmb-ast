@@ -59,7 +59,7 @@ begin
             for inv_rec in inv_curs(v_old_op_id)
             loop
 
-                update farms.farm_reported_inventories
+                update farms.farm_reported_inventories ri
                 set farming_operation_id = v_new_op_id,
                     who_updated = in_user,
                     when_updated = current_timestamp,
@@ -67,7 +67,7 @@ begin
                         select max(new_cra.reported_inventory_id)
                         from farms.farm_reported_inventories old_cra
                         join farms.farm_reported_inventories new_cra on old_cra.agristabilty_cmmdty_xref_id = new_cra.agristabilty_cmmdty_xref_id
-                                                                     and ((old_cra.crop_unit_code = null and new_cra.crop_unit_code = null) or (old_cra.crop_unit_code = new_cra.crop_unit_code))
+                                                                     and ((old_cra.crop_unit_code is null and new_cra.crop_unit_code is null) or (old_cra.crop_unit_code = new_cra.crop_unit_code))
                                                                      and coalesce(old_cra.price_start, 0) = coalesce(new_cra.price_start, 0)
                                                                      and coalesce(old_cra.price_end, 0) = coalesce(new_cra.price_end, 0)
                                                                      and coalesce(old_cra.start_of_year_amount, 0) = coalesce(new_cra.start_of_year_amount, 0)
@@ -85,7 +85,7 @@ begin
                             and ri2.cra_reported_inventory_id = new_cra.reported_inventory_id
                         )
                     )
-                where reported_inventory_id = inv_rec.reported_inventory_id;
+                where ri.reported_inventory_id = inv_rec.reported_inventory_id;
 
             end loop;
 
