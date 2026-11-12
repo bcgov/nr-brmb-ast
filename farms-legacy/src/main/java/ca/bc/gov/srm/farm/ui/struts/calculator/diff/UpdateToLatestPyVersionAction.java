@@ -66,6 +66,7 @@ public class UpdateToLatestPyVersionAction extends DiffReportViewAction {
       if (errors != null && !errors.isEmpty()) {
         saveErrors(request, errors);
         forward = mapping.findForward(ActionConstants.FAILURE);
+        setReadOnlyFlag(request, form, scenario);
         generateDiffReport(form, scenario);
       } else {
         List<Integer> opNumsKeepOldData = new ArrayList<>();
@@ -107,6 +108,7 @@ public class UpdateToLatestPyVersionAction extends DiffReportViewAction {
       forward = mapping.findForward(ActionConstants.FAILURE);
 
       scenario = refreshScenario(form);
+      setReadOnlyFlag(request, form, scenario);
       generateDiffReport(form, scenario);
     }
 
