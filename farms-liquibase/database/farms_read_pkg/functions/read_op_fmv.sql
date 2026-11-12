@@ -1,5 +1,10 @@
+drop function if exists farms_read_pkg.read_op_fmv(
+    bigint
+);
+
 create or replace function farms_read_pkg.read_op_fmv(
-    in op_id farms.farm_farming_operations.farming_operation_id%type
+    in op_id farms.farm_farming_operations.farming_operation_id%type,
+    in in_scenario_id farms.farm_agristability_scenarios.agristability_scenario_id%type
 )
 returns table(
     inventory_item_code     farms.farm_agristabilty_cmmdty_xref.inventory_item_code%type,
@@ -33,18 +38,25 @@ as $$
                fmv.expiry_date
         from farms.farm_farming_operations op
         join farms.farm_program_year_versions pyv on op.program_year_version_id = pyv.program_year_version_id
-        join farms.farm_reported_inventories inv on op.farming_operation_id = inv.farming_operation_id
-        join farms.farm_agristabilty_cmmdty_xref x on inv.agristabilty_cmmdty_xref_id = x.agristabilty_cmmdty_xref_id
+        join (
+            select distinct inv.crop_unit_code,
+                   x.inventory_item_code,
+                   x.inventory_class_code
+            from farms.farm_reported_inventories inv
+            join farms.farm_agristabilty_cmmdty_xref x on inv.agristabilty_cmmdty_xref_id = x.agristabilty_cmmdty_xref_id
+            where inv.farming_operation_id = op_id
+            and (inv.agristability_scenario_id is null or inv.agristability_scenario_id = in_scenario_id)
+        ) x on true
         join farms.farm_fair_market_values fmv on fmv.inventory_item_code = x.inventory_item_code
                                             -- either the crop code matches, or it's livestock
                                             and (
-                                                (x.inventory_class_code = '1' and fmv.crop_unit_code = inv.crop_unit_code)
+                                                (x.inventory_class_code = '1' and fmv.crop_unit_code = x.crop_unit_code)
                                                 or x.inventory_class_code = '2'
                                             )
                                             and fmv.municipality_code in ('0', pyv.municipality_code)
                                             and coalesce(fmv.expiry_date, '9999-12-31') > current_date
-                                            -- check fiscal year window
-                                            and fmv.program_year between extract(year from op.fiscal_year_start) and extract(year from op.fiscal_year_end)
+                                            -- check fiscal year window (smallint so the program_year index can be used)
+                                            and fmv.program_year between extract(year from op.fiscal_year_start)::smallint and extract(year from op.fiscal_year_end)::smallint
         where op.farming_operation_id = op_id
     ), g as (
         select f1.fair_market_value_id,
