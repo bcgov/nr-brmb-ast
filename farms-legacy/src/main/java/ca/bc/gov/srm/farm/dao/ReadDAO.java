@@ -1657,11 +1657,12 @@ public class ReadDAO {
 
   /**
    * @param opId Integer
+   * @param scenarioId Integer the scenario whose inventory adjustments are included
    * @return HashMap <incCode,List<FmvFullResult>> set of
    *         [cropUnit,start,end,variance,yearlyAvg,prevYearEndPrice]
    * @throws SQLException SQLException
    */
-  public HashMap<String, List<FmvFullResult>> readFairMarketValue(Integer opId) throws SQLException {
+  public HashMap<String, List<FmvFullResult>> readFairMarketValue(Integer opId, Integer scenarioId) throws SQLException {
     long startTime = 0;
     String prcName = PACKAGE_NAME + "." + READ_OP_FMV_PROC;
     PreparedStatement ps = null;
@@ -1671,11 +1672,12 @@ public class ReadDAO {
 
     try {
       startTime = System.currentTimeMillis();
-      String sql = "SELECT * FROM " + prcName + "(?)";
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
       ps = conn.prepareStatement(sql);
 
       int c = 1;
       DAOUtils.setLong(ps, c++, opId);
+      DAOUtils.setLong(ps, c++, scenarioId);
 
       rs = ps.executeQuery();
       
@@ -1686,7 +1688,7 @@ public class ReadDAO {
       logger.debug("{} took {} ms", prcName, duration);
     }
     
-    readFairMarketValuePreviousYear(opId, r);
+    readFairMarketValuePreviousYear(opId, scenarioId, r);
 
     if (r.size() > 0) {
       return r;
@@ -1697,11 +1699,13 @@ public class ReadDAO {
   
   /**
    * @param opId Integer
+   * @param scenarioId Integer the scenario whose inventory adjustments are included
    * @return HashMap <incCode,List<FmvFullResult>> set of
    *         [cropUnit,start,end,variance,yearlyAvg,prevYearEndPrice]
    * @throws SQLException SQLException
    */
   public HashMap<String, List<FmvFullResult>> readFairMarketValue(Integer opId,
+      Integer scenarioId,
       String inventoryItemCode,
       String cropUnitCode) throws SQLException {
     long startTime = 0;
@@ -1730,7 +1734,7 @@ public class ReadDAO {
       logger.debug("{} took {} ms", prcName, duration);
     }
     
-    readFairMarketValuePreviousYear(opId, r);
+    readFairMarketValuePreviousYear(opId, scenarioId, r);
     
     if (r.size() > 0) {
       return r;
@@ -1825,11 +1829,12 @@ public class ReadDAO {
   
   /**
    * @param opId Integer
+   * @param scenarioId Integer the scenario whose inventory adjustments are included
    * @param r HashMap
    * @throws SQLException SQLException
    */
   @SuppressWarnings("resource")
-  private void readFairMarketValuePreviousYear(Integer opId, HashMap<String, List<FmvFullResult>> r) throws SQLException {
+  private void readFairMarketValuePreviousYear(Integer opId, Integer scenarioId, HashMap<String, List<FmvFullResult>> r) throws SQLException {
     long startTime = 0;
     String prcName = PACKAGE_NAME + "." + READ_OP_FMV_PREV_YEAR_PROC;
     PreparedStatement ps = null;
@@ -1837,11 +1842,12 @@ public class ReadDAO {
     
     try {
       startTime = System.currentTimeMillis();
-      String sql = "SELECT * FROM " + prcName + "(?)";
+      String sql = "SELECT * FROM " + prcName + "(?,?)";
       ps = conn.prepareStatement(sql);
       
       int c = 1;
       DAOUtils.setLong(ps, c++, opId);
+      DAOUtils.setLong(ps, c++, scenarioId);
       
       rs = ps.executeQuery();
       

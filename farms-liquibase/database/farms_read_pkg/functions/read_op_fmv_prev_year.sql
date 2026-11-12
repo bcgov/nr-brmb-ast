@@ -1,5 +1,10 @@
+drop function if exists farms_read_pkg.read_op_fmv_prev_year(
+    bigint
+);
+
 create or replace function farms_read_pkg.read_op_fmv_prev_year(
-    in op_id farms.farm_farming_operations.farming_operation_id%type
+    in op_id farms.farm_farming_operations.farming_operation_id%type,
+    in in_scenario_id farms.farm_agristability_scenarios.agristability_scenario_id%type
 )
 returns table(
     inventory_item_code         farms.farm_agristabilty_cmmdty_xref.inventory_item_code%type,
@@ -31,6 +36,7 @@ as $$
             join farms.farm_reported_inventories inv on op.farming_operation_id = inv.farming_operation_id
             join farms.farm_agristabilty_cmmdty_xref x on inv.agristabilty_cmmdty_xref_id = x.agristabilty_cmmdty_xref_id
             where op.farming_operation_id = op_id
+            and (inv.agristability_scenario_id is null or inv.agristability_scenario_id = in_scenario_id)
         ) t
         join farms.farm_fair_market_values prev_fy_mv on prev_fy_mv.inventory_item_code = t.inventory_item_code
                                                     -- either the crop code matches, or it's livestock

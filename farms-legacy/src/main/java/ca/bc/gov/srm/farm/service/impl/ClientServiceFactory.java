@@ -395,7 +395,7 @@ public final class ClientServiceFactory implements ClientService {
         for(FarmingOperation op : ref.getFarmingYear().getFarmingOperations()){
           if(op!=null && ((op.getCropItems() != null && op.getCropItems().size()>0) || (op.getLivestockItems() != null && op.getLivestockItems().size()>0))) {
             // There is at least one return value possible, so do the query
-            HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId());
+            HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(), ref.getScenarioId());
             if(fmvs != null){
               for(ProducedItem ci : op.getProducedItems()){
                 List<FmvFullResult> fmv = fmvs.get(ci.getInventoryItemCode());
@@ -426,7 +426,7 @@ public final class ClientServiceFactory implements ClientService {
     if(hasAppleInventory) {
       final String inventoryCode = InventoryItemCodes.APPLES;
       for(FarmingOperation op : sc.getFarmingYear().getFarmingOperations()){
-        HashMap<String,List<FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(),
+        HashMap<String,List<FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(), sc.getScenarioId(),
             inventoryCode, CropUnitCodes.POUNDS);
         
         if(fmvs != null){
@@ -452,7 +452,7 @@ public final class ClientServiceFactory implements ClientService {
     if(hasCherryInventory) {
       final String inventoryCode = InventoryItemCodes.CHERRIES;
       for(FarmingOperation op : sc.getFarmingYear().getFarmingOperations()){
-        HashMap<String,List<FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(),
+        HashMap<String,List<FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(), sc.getScenarioId(),
             inventoryCode, CropUnitCodes.POUNDS);
         
         if(fmvs != null){
@@ -476,7 +476,7 @@ public final class ClientServiceFactory implements ClientService {
     
     if(ScenarioUtils.hasProductiveUnitsWithStructureGroupCode(sc, StructureGroupCodes.CHICKEN_BROILERS)) {
       for(FarmingOperation op : sc.getFarmingYear().getFarmingOperations()){
-        HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(),
+        HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(), sc.getScenarioId(),
             InventoryItemCodes.POU_BR_CHICKEN, CropUnitCodes.getLivestockUnitCode(InventoryItemCodes.POU_BR_CHICKEN));
         Double chickenBroilerFMVPrice = getFMVForInvCode(fmvs, InventoryItemCodes.POU_BR_CHICKEN);
         op.setChickenBroilerFMVPrice(chickenBroilerFMVPrice);
@@ -485,7 +485,7 @@ public final class ClientServiceFactory implements ClientService {
     
     if(ScenarioUtils.hasProductiveUnitsWithStructureGroupCode(sc, StructureGroupCodes.TURKEY_BROILERS)) {
       for(FarmingOperation op : sc.getFarmingYear().getFarmingOperations()){
-        HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(),
+        HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(), sc.getScenarioId(),
             InventoryItemCodes.TURKEYS_6KG_TO_8KG, CropUnitCodes.getLivestockUnitCode(InventoryItemCodes.TURKEYS_6KG_TO_8KG));
         Double turkeyBroilerFMVPrice = getFMVForInvCode(fmvs, InventoryItemCodes.TURKEYS_6KG_TO_8KG);
         op.setTurkeyBroilerFMVPrice(turkeyBroilerFMVPrice);
@@ -494,7 +494,7 @@ public final class ClientServiceFactory implements ClientService {
     
     if(ScenarioUtils.hasProductiveUnitsWithStructureGroupCode(sc, StructureGroupCodes.CHICKEN_EGGS_HATCH)) {
       for(FarmingOperation op : sc.getFarmingYear().getFarmingOperations()){
-        HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(),
+        HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(), sc.getScenarioId(),
             InventoryItemCodes.CHICKEN_EGGS_HATCH, CropUnitCodes.getLivestockUnitCode(InventoryItemCodes.CHICKEN_EGGS_HATCH));
         Double chickenEggsHatchFMVPrice = getFMVForInvCode(fmvs, InventoryItemCodes.CHICKEN_EGGS_HATCH);
         op.setChickenEggsHatchFMVPrice(chickenEggsHatchFMVPrice);
@@ -503,7 +503,7 @@ public final class ClientServiceFactory implements ClientService {
     
     if(ScenarioUtils.hasProductiveUnitsWithStructureGroupCode(sc, StructureGroupCodes.CHICKEN_EGGS_CONSUMPTION)) {
       for(FarmingOperation op : sc.getFarmingYear().getFarmingOperations()){
-        HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(),
+        HashMap<String, List<ReadDAO.FmvFullResult>> fmvs = dao.readFairMarketValue(op.getFarmingOperationId(), sc.getScenarioId(),
             InventoryItemCodes.CHICKEN_EGGS_CONSUMP, CropUnitCodes.getLivestockUnitCode(InventoryItemCodes.CHICKEN_EGGS_HATCH));
         Double chickenEggsConsumpFMVPrice = getFMVForInvCode(fmvs, InventoryItemCodes.CHICKEN_EGGS_CONSUMP);
         op.setChickenEggsConsumpFMVPrice(chickenEggsConsumpFMVPrice);

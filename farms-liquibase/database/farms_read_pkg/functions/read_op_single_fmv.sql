@@ -38,8 +38,8 @@ as $$
                                             and fmv.crop_unit_code = in_crop_unit_code
                                             and fmv.municipality_code in ('0', pyv.municipality_code)
                                             and coalesce(fmv.expiry_date, '9999-12-31') > current_date
-                                            -- check fiscal year window
-                                            and fmv.program_year between extract(year from op.fiscal_year_start) and extract(year from op.fiscal_year_end)
+                                            -- check fiscal year window (smallint so the program_year index can be used)
+                                            and fmv.program_year between extract(year from op.fiscal_year_start)::smallint and extract(year from op.fiscal_year_end)::smallint
         where op.farming_operation_id = in_farming_operation_id
     ), g as (
         select f1.fair_market_value_id,
