@@ -1,3 +1,9 @@
+drop procedure if exists farms_import_pkg.contact_transfer(
+    numeric,
+    numeric[],
+    varchar
+);
+
 create or replace procedure farms_import_pkg.contact_transfer(
    in in_cra_version_id farms.farm_import_versions.import_version_id%type,
    in in_changed_contact_client_ids numeric[],

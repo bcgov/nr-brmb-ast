@@ -1,3 +1,7 @@
+drop function if exists farms_enrolment_read_pkg.read_transfer_partners(
+    bigint[]
+);
+
 create or replace function farms_enrolment_read_pkg.read_transfer_partners(
     in in_enrolment_ids bigint[]
 )
