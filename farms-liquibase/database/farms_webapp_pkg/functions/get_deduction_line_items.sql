@@ -18,19 +18,13 @@ begin
                 select li2.line_item
                 from farms.farm_line_items li2
                 where li2.program_year between p_program_year - 5 and p_program_year
-                and li2.yardage_ind = 'y'
+                and li2.yardage_ind = 'Y'
                 and li2.expiry_date >= current_timestamp
                 and li2.established_date < current_timestamp
                 group by li2.line_item
             )
             select li.line_item,
-                   (
-                       select li1.description
-                       from farms.line_items li1
-                       where li1.line_item = li.line_item
-                       order by li1.program_year desc
-                       limit 1
-                   ) description,
+                   (array_agg(li.description order by li.program_year desc, li.description))[1] description,
                    max(case when li.program_year = p_program_year - 5 and li.yardage_ind = 'Y' then 'Y' end) py_minus_5_ind,
                    max(case when li.program_year = p_program_year - 4 and li.yardage_ind = 'Y' then 'Y' end) py_minus_4_ind,
                    max(case when li.program_year = p_program_year - 3 and li.yardage_ind = 'Y' then 'Y' end) py_minus_3_ind,
@@ -67,13 +61,7 @@ begin
                 group by li2.line_item
             )
             select li.line_item,
-                   (
-                       select li1.description
-                       from farms.line_items li1
-                       where li1.line_item = li.line_item
-                       order by li1.program_year desc
-                       limit 1
-                   ) description,
+                   (array_agg(li.description order by li.program_year desc, li.description))[1] description,
                    max(case when li.program_year = p_program_year - 5 and li.program_payment_ind = 'Y' and li.eligibility_ind = 'Y' and (coalesce(pyli.eligibility_for_ref_years_ind::text, '') = '' or pyli.eligibility_for_ref_years_ind = 'N') then 'Y' end) py_minus_5_ind,
                    max(case when li.program_year = p_program_year - 4 and li.program_payment_ind = 'Y' and li.eligibility_ind = 'Y' and (coalesce(pyli.eligibility_for_ref_years_ind::text, '') = '' or pyli.eligibility_for_ref_years_ind = 'N') then 'Y' end) py_minus_4_ind,
                    max(case when li.program_year = p_program_year - 3 and li.program_payment_ind = 'Y' and li.eligibility_ind = 'Y' and (coalesce(pyli.eligibility_for_ref_years_ind::text, '') = '' or pyli.eligibility_for_ref_years_ind = 'N') then 'Y' end) py_minus_3_ind,
@@ -109,13 +97,7 @@ begin
                 group by li2.line_item
             )
             select li.line_item,
-                   (
-                       select li1.description
-                       from farms.line_items li1
-                       where li1.line_item = li.line_item
-                       order by li1.program_year desc
-                       limit 1
-                   ) description,
+                   (array_agg(li.description order by li.program_year desc, li.description))[1] description,
                    max(case when li.program_year = p_program_year - 5 and li.eligibility_ind = 'N' and li.contract_work_ind = 'Y' then 'Y' end) py_minus_5_ind,
                    max(case when li.program_year = p_program_year - 4 and li.eligibility_ind = 'N' and li.contract_work_ind = 'Y' then 'Y' end) py_minus_4_ind,
                    max(case when li.program_year = p_program_year - 3 and li.eligibility_ind = 'N' and li.contract_work_ind = 'Y' then 'Y' end) py_minus_3_ind,

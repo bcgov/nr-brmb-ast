@@ -28,7 +28,7 @@ begin
             select sv.agristability_scenario_id,
                    sv.participant_pin,
                    first_value(sv.agristability_scenario_id) over (partition by sv.program_year_id order by case when s2.scenario_class_code != 'REF' then 0 else 1 end, sv.scenario_number desc) sc_m_id_ready,
-                   first_value(sv.agristability_scenario_id) over (partition by sv.program_year_id order by case when s2.scenario_class_code != 'REF' then 0 else 1 end, case when(s2.default_ind = 'y') then 0 else 1 end, case when s2.scenario_class_code = 'USER' then 0 else 1 end, sv.scenario_number desc) sc_m_id_user,
+                   first_value(sv.agristability_scenario_id) over (partition by sv.program_year_id order by case when s2.scenario_class_code != 'REF' then 0 else 1 end, case when(s2.default_ind = 'Y') then 0 else 1 end, case when s2.scenario_class_code = 'USER' then 0 else 1 end, sv.scenario_number desc) sc_m_id_user,
                    sv.program_year_id,
                    sv.agristability_client_id,
                    sv.program_year_version_id
