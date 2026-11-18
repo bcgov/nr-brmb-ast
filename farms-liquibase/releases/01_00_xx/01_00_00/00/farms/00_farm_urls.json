@@ -1,0 +1,24 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "hwang",
+                "id": "01_00_00/00/farms/farm_urls",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms/sequences/farm_url_seq.sql"
+                        }
+                    },
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms/tables/farm_urls.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
