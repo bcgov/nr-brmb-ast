@@ -8,6 +8,7 @@
                     {
                         "sqlFile": {
                             "relativeToChangeLogFile": "true",
+                            "splitStatements": "false",
                             "path": "../../../../../database/roles/proxy_farms_rest.sql"
                         }
                     }
