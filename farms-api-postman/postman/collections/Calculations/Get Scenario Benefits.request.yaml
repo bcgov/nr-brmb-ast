@@ -1,0 +1,32 @@
+$kind: http-request
+name: Get Scenario Benefits
+url: "{{baseUrl}}/calculations/scenario-benefits?participantPin={{participantPin}}&programYear={{programYear}}&scenarioNumber={{scenarioNumber}}"
+method: GET
+queryParams:
+  participantPin: "{{participantPin}}"
+  programYear: "{{programYear}}"
+  scenarioNumber: "{{scenarioNumber}}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+scripts:
+  - type: afterResponse
+    code: |
+      pm.test("Scenario benefits match the requested PIN and year", function () {
+        pm.response.to.have.status(200);
+        const result = pm.response.json();
+        pm.expect(result["@type"]).to.equal("ScenarioBenefitListRsrc");
+        pm.expect(result.scenarioBenefitList).to.be.an("array");
+        for (const row of result.scenarioBenefitList) {
+          pm.expect(row["@type"]).to.equal("ScenarioBenefitRsrc");
+          for (const [field, parameter] of [["pin", "participantPin"], ["programYear", "programYear"]]) {
+            const value = pm.variables.replaceIn(pm.request.url.query.get(parameter));
+            pm.expect(row[field]).to.equal(Number(value));
+          }
+          pm.expect(row).to.have.property("programYearMargin");
+          pm.expect(row).to.have.property("referenceMargin");
+        }
+      });
+    language: text/javascript
+order: 2000

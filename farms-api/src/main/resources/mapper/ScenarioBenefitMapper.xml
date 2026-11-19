@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ca.bc.gov.farms.data.mappers.ScenarioBenefitMapper">
+    <select id="fetchScenarioBenefits" resultType="ca.bc.gov.farms.data.entities.ScenarioBenefitEntity">
+        SELECT ac.participant_pin AS pin,
+               py.year AS program_year,
+               cl.program_year_margin,
+               cl.adjusted_reference_margin AS reference_margin,
+               sc.scenario_category_code,
+               scat.description AS scenario_category,
+               COALESCE(cl.bnft_after_late_enrol_penalty,
+                        cl.benefit_after_payment_cap,
+                        cl.benefit_after_interim_ded,
+                        cl.benefit_after_prod_insur_ded,
+                        cl.benefit_before_deductions) AS whole_farm_benefit,
+               cl.benefit_after_prod_insur_ded - cl.benefit_before_deductions AS deemed_pi_deduction,
+               cl.applied_benefit_percent AS combined_percent,
+               cl.benefit_after_appl_benefit_pct AS benefit_after_combined_percent,
+               cl.enh_additional_benefit AS bc_enhancement,
+               cl.interim_benefit_percent AS interim_payment_percentage,
+               cl.late_enrolment_penalty,
+               CASE WHEN COALESCE(cl.benefit_after_interim_ded,
+                                  cl.benefit_after_prod_insur_ded,
+                                  cl.benefit_before_deductions) > cl.payment_cap
+                    THEN cl.benefit_after_payment_cap
+               END AS payment_limitation_amount
+          FROM farms.farm_agristability_clients ac
+          JOIN farms.farm_program_years py ON py.agristability_client_id = ac.agristability_client_id
+          JOIN farms.farm_program_year_versions pyv ON pyv.program_year_id = py.program_year_id
+          JOIN farms.farm_agristability_scenarios sc ON sc.program_year_version_id = pyv.program_year_version_id
+          JOIN farms.farm_agristability_claims cl ON cl.agristability_scenario_id = sc.agristability_scenario_id
+          JOIN farms.farm_scenario_category_codes scat ON scat.scenario_category_code = sc.scenario_category_code
+         WHERE ac.participant_pin = #{participantPin}
+           AND py.year = #{programYear}
+           AND sc.scenario_number = #{scenarioNumber}
+         ORDER BY pyv.program_year_version_id
+    </select>
+</mapper>
