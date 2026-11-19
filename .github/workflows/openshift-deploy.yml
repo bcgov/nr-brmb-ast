@@ -105,7 +105,7 @@ jobs:
       - name: update IMAGE NAME variable if needed
         id: updateImageName
         run: |
-          export IMAGE_NAME="$([ "${{inputs.MICROSERVICE_NAME}}" == "farms-api" ] && echo 'farms-api' || echo 'farms-legacy')"
+          export IMAGE_NAME="$(case "${{inputs.MICROSERVICE_NAME}}" in farms-api|farms-liquibase) echo '${{inputs.MICROSERVICE_NAME}}';; *) echo 'farms-legacy';; esac)"
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
       - name: Get digest of docker image
