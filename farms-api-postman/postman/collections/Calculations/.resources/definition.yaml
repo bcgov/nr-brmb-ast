@@ -1,0 +1,9 @@
+$kind: collection
+name: Calculations
+variables:
+  tenantId: "{{vault:{{vaultPrefix}}-tenantId}}"
+  clientId: "{{vault:{{vaultPrefix}}-clientId}}"
+  clientSecret: "{{vault:{{vaultPrefix}}-clientSecret}}"
+  participantPin: "1234567"
+  programYear: "2024"
+  scenarioNumber: "3"

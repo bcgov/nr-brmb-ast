@@ -1,0 +1,22 @@
+$kind: http-request
+name: Get Access Token
+url: "{{loginUrl}}/{{tenantId}}/oauth2/v2.0/token"
+method: POST
+body:
+  type: urlencoded
+  content:
+    grant_type: client_credentials
+    client_id: "{{clientId}}"
+    client_secret: "{{clientSecret}}"
+    scope: api://{{clientId}}/.default
+scripts:
+  - type: afterResponse
+    code: |
+      pm.test("Access token issued", function () {
+        pm.response.to.have.status(200);
+        const token = pm.response.json().access_token;
+        pm.expect(token).to.be.a("string").and.not.empty;
+        pm.environment.set("access_token", token);
+      });
+    language: text/javascript
+order: 1000
