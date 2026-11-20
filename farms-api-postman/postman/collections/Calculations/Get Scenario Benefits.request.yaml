@@ -26,6 +26,9 @@ scripts:
           }
           pm.expect(row).to.have.property("programYearMargin");
           pm.expect(row).to.have.property("referenceMargin");
+          pm.expect(row).to.have.property("benefitBeforeDeductions");
+          pm.expect(row).to.have.property("benefitAfterProdInsDeduction");
+          pm.expect(row).to.have.property("benefitAfterInterimDeduction");
         }
       });
     language: text/javascript

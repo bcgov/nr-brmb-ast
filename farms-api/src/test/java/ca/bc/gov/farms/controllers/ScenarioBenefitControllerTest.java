@@ -51,6 +51,10 @@ class ScenarioBenefitControllerTest {
         entity.setScenarioCategoryCode("INT");
         entity.setProgramYearMargin(new BigDecimal("-45000.75"));
         entity.setReferenceMargin(new BigDecimal("125000.25"));
+        entity.setBenefitBeforeDeductions(new BigDecimal("212701.73"));
+        entity.setDeemedPiDeduction(new BigDecimal("-700.00"));
+        entity.setBenefitAfterProdInsDeduction(new BigDecimal("212001.73"));
+        entity.setBenefitAfterInterimDeduction(new BigDecimal("106350.87"));
         entity.setLateEnrolmentPenalty(new BigDecimal("250.50"));
         when(mapper.fetchScenarioBenefits(1234567, 2024, 3)).thenReturn(List.of(entity));
 
@@ -65,6 +69,10 @@ class ScenarioBenefitControllerTest {
         assertEquals("INT", row.required("scenarioCategoryCode").textValue());
         assertEquals(-45000.75, row.required("programYearMargin").doubleValue());
         assertEquals(125000.25, row.required("referenceMargin").doubleValue());
+        assertEquals(212701.73, row.required("benefitBeforeDeductions").doubleValue());
+        assertEquals(-700.00, row.required("deemedPiDeduction").doubleValue());
+        assertEquals(212001.73, row.required("benefitAfterProdInsDeduction").doubleValue());
+        assertEquals(106350.87, row.required("benefitAfterInterimDeduction").doubleValue());
         assertEquals(250.50, row.required("lateEnrolmentPenalty").doubleValue());
         assertTrue(row.required("paymentLimitationAmount").isNull());
         assertEquals("self", response.required("links").get(0).required("rel").textValue());
