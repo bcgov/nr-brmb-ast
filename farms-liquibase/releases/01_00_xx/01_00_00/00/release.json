@@ -8,6 +8,12 @@
         },
         {
             "includeAll": {
+                "path": "farms_aarm_pkg",
+                "relativeToChangeLogFile": "true"
+            }
+        },
+        {
+            "includeAll": {
                 "path": "farms_adjustment_pkg",
                 "relativeToChangeLogFile": "true"
             }
