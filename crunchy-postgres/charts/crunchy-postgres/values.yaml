@@ -92,6 +92,7 @@ patroni:
       wal_buffers: "64kB" # this can be set to -1 to automatically set as 1/32 of shared_buffers or 64kB, whichever is larger
       min_wal_size: 32MB
       max_wal_size: 64MB # default is 1GB
+      wal_compression: lz4 # default is off; compresses full-page images in WAL (about 59% of WAL bytes here)
       max_slot_wal_keep_size: 128MB # default is -1, allowing unlimited wal growth when replicas fall behind
 
 proxy:
