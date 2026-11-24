@@ -1,0 +1,19 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "awilkinson",
+                "id": "01_00_00/00/farms/farm_sga_seq_correct",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms/sequences/farm_sga_seq_correct.sql",
+                            "splitStatements": "false"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

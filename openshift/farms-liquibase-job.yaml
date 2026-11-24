@@ -48,10 +48,10 @@ spec:
         resources:
             requests:
               cpu: 50m
-              memory: 100Mi
+              memory: 512Mi
             limits:
               cpu: 100m
-              memory: 200Mi
+              memory: 1Gi
         env:
           - name: LIQUIBASE_COMMAND_URL
             valueFrom:
