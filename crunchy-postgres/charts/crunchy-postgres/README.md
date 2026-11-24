@@ -72,6 +72,7 @@ A chart to provision a [Crunchy Postgres](https://www.crunchydata.com/) cluster.
 | `patroni.parameters.min_wal_size`           | The minimum size to shrink the WAL to                               | `32MB`                            |
 | `patroni.parameters.max_wal_size`           | Sets the WAL size that triggers a checkpoint                        | `64MB`                            |
 | `patroni.parameters.max_slot_wal_keep_size` | Sets the maximum WAL size that can be reserved by replication slots | `128MB`                           |
+| `patroni.parameters.wal_compression`        | Compression method for full-page images written to the WAL          | `lz4`                             |
 
 ---
 
