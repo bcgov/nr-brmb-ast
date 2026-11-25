@@ -53,7 +53,7 @@ A chart to provision a [Crunchy Postgres](https://www.crunchydata.com/) cluster.
 | `pgBackRest.repoHost.limits.memory`                  | Memory limits                                                 | `512Mi`                |
 | `pgBackRest.sidecars.requests.cpu`                   | sidecars CPU requests                                         | `1m`                   |
 | `pgBackRest.sidecars.requests.memory`                | sidecars Memory requests                                      | `32Mi`                 |
-| `pgBackRest.sidecars.limits.cpu`                     | sidecars CPU limits                                           | `50m`                  |
+| `pgBackRest.sidecars.limits.cpu`                     | sidecars CPU limits                                           | `250m`                 |
 | `pgBackRest.sidecars.limits.memory`                  | sidecars Memory limits                                        | `64Mi`                 |
 
 ---
