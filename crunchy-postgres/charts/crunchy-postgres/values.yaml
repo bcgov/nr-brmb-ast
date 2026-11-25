@@ -43,8 +43,10 @@ pgBackRest:
   retentionFullType: count
 
   #How many backups worth of WAL files to keep, and what type of backup to count for expiring WAL files
-  retentionArchiveType: diff
-  retentionArchiveCount: "7"
+  # Keep WAL only from the newest full on. With retentionFull "1" there is no older full to restore older WAL
+  # onto, so keeping it just fills the repo. Raise retentionArchiveCount if retentionFull is ever raised.
+  retentionArchiveType: full
+  retentionArchiveCount: "1"
   timeout: "600"
   s3UriStyle: path
 
