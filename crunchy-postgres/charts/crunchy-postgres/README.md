@@ -42,6 +42,8 @@ A chart to provision a [Crunchy Postgres](https://www.crunchydata.com/) cluster.
 | `pgBackRest.image`                                   | Crunchy pgBackRest                                            |                        |
 | `pgBackRest.retention`                               | Number of backups/days to keep depending on retentionFullType | `2`                    |
 | `pgBackRest.retentionFullType`                       | Either 'count' or 'time'                                      | `count`                |
+| `pgBackRest.retentionArchiveType`                    | Type of backup counted when expiring WAL files                | `full`                 |
+| `pgBackRest.retentionArchiveCount`                   | Number of those backups to keep WAL files for                 | `1`                    |
 | `pgBackRest.repos.schedules.full`                    | Full backup schedule                                          | `0 8 * * *`            |
 | `pgBackRest.repos.schedules.incremental`             | Incremental backup schedule                                   | `0 0,4,12,16,20 * * *` |
 | `pgBackRest.repos.schedules.volume.addessModes`      | Access modes                                                  | `ReadWriteOnce`        |
