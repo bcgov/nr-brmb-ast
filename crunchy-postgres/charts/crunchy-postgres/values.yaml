@@ -76,7 +76,7 @@ pgBackRest:
       cpu: 1m
       memory: 64Mi
     limits:
-      cpu: 50m
+      cpu: 250m # receives repo1's WAL and writes the backups; often throttled at 50m
       memory: 128Mi
   sidecars:
     requests:

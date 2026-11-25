@@ -51,7 +51,7 @@ A chart to provision a [Crunchy Postgres](https://www.crunchydata.com/) cluster.
 | `pgBackRest.repos.schedules.volume.storageClassName` | Storage class name modes                                      | `netapp-file-backup`   |
 | `instances.requests.cpu`                             | CPU requests                                                  | `1m`                   |
 | `pgBackRest.repoHost.requests.memory`                | Memory requests                                               | `256Mi`                |
-| `pgBackRest.repoHost.limits.cpu`                     | CPU limits                                                    | `100m`                 |
+| `pgBackRest.repoHost.limits.cpu`                     | CPU limits                                                    | `250m`                 |
 | `pgBackRest.repoHost.limits.memory`                  | Memory limits                                                 | `512Mi`                |
 | `pgBackRest.sidecars.requests.cpu`                   | sidecars CPU requests                                         | `1m`                   |
 | `pgBackRest.sidecars.requests.memory`                | sidecars Memory requests                                      | `32Mi`                 |
