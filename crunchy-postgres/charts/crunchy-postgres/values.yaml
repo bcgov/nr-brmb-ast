@@ -81,7 +81,7 @@ pgBackRest:
       cpu: 1m
       memory: 64Mi
     limits:
-      cpu: 50m
+      cpu: 250m # backups read and compress here; throttled at 50m, a full of the 21GB database took about 4 hours
       memory: 128Mi
 
 patroni:
