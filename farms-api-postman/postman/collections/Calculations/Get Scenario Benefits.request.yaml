@@ -29,6 +29,7 @@ scripts:
           pm.expect(row).to.have.property("benefitBeforeDeductions");
           pm.expect(row).to.have.property("benefitAfterProdInsDeduction");
           pm.expect(row).to.have.property("benefitAfterInterimDeduction");
+          pm.expect(row).to.have.property("combinedFarmBcEnhancedBenefit");
         }
       });
     language: text/javascript
