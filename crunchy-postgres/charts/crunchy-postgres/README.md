@@ -42,6 +42,8 @@ A chart to provision a [Crunchy Postgres](https://www.crunchydata.com/) cluster.
 | `pgBackRest.image`                                   | Crunchy pgBackRest                                            |                        |
 | `pgBackRest.retention`                               | Number of backups/days to keep depending on retentionFullType | `2`                    |
 | `pgBackRest.retentionFullType`                       | Either 'count' or 'time'                                      | `count`                |
+| `pgBackRest.retentionArchiveType`                    | Type of backup counted when expiring WAL files                | `full`                 |
+| `pgBackRest.retentionArchiveCount`                   | Number of those backups to keep WAL files for                 | `1`                    |
 | `pgBackRest.repos.schedules.full`                    | Full backup schedule                                          | `0 8 * * *`            |
 | `pgBackRest.repos.schedules.incremental`             | Incremental backup schedule                                   | `0 0,4,12,16,20 * * *` |
 | `pgBackRest.repos.schedules.volume.addessModes`      | Access modes                                                  | `ReadWriteOnce`        |
@@ -49,11 +51,11 @@ A chart to provision a [Crunchy Postgres](https://www.crunchydata.com/) cluster.
 | `pgBackRest.repos.schedules.volume.storageClassName` | Storage class name modes                                      | `netapp-file-backup`   |
 | `instances.requests.cpu`                             | CPU requests                                                  | `1m`                   |
 | `pgBackRest.repoHost.requests.memory`                | Memory requests                                               | `256Mi`                |
-| `pgBackRest.repoHost.limits.cpu`                     | CPU limits                                                    | `100m`                 |
+| `pgBackRest.repoHost.limits.cpu`                     | CPU limits                                                    | `250m`                 |
 | `pgBackRest.repoHost.limits.memory`                  | Memory limits                                                 | `512Mi`                |
 | `pgBackRest.sidecars.requests.cpu`                   | sidecars CPU requests                                         | `1m`                   |
 | `pgBackRest.sidecars.requests.memory`                | sidecars Memory requests                                      | `32Mi`                 |
-| `pgBackRest.sidecars.limits.cpu`                     | sidecars CPU limits                                           | `50m`                  |
+| `pgBackRest.sidecars.limits.cpu`                     | sidecars CPU limits                                           | `250m`                 |
 | `pgBackRest.sidecars.limits.memory`                  | sidecars Memory limits                                        | `64Mi`                 |
 
 ---
@@ -72,6 +74,7 @@ A chart to provision a [Crunchy Postgres](https://www.crunchydata.com/) cluster.
 | `patroni.parameters.min_wal_size`           | The minimum size to shrink the WAL to                               | `32MB`                            |
 | `patroni.parameters.max_wal_size`           | Sets the WAL size that triggers a checkpoint                        | `64MB`                            |
 | `patroni.parameters.max_slot_wal_keep_size` | Sets the maximum WAL size that can be reserved by replication slots | `128MB`                           |
+| `patroni.parameters.wal_compression`        | Compression method for full-page images written to the WAL          | `lz4`                             |
 
 ---
 

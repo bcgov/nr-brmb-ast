@@ -43,8 +43,10 @@ pgBackRest:
   retentionFullType: count
 
   #How many backups worth of WAL files to keep, and what type of backup to count for expiring WAL files
-  retentionArchiveType: diff
-  retentionArchiveCount: "7"
+  # Keep WAL only from the newest full on. With retentionFull "1" there is no older full to restore older WAL
+  # onto, so keeping it just fills the repo. Raise retentionArchiveCount if retentionFull is ever raised.
+  retentionArchiveType: full
+  retentionArchiveCount: "1"
   timeout: "600"
   s3UriStyle: path
 
@@ -74,14 +76,14 @@ pgBackRest:
       cpu: 1m
       memory: 64Mi
     limits:
-      cpu: 50m
+      cpu: 250m # receives repo1's WAL and writes the backups; often throttled at 50m
       memory: 128Mi
   sidecars:
     requests:
       cpu: 1m
       memory: 64Mi
     limits:
-      cpu: 50m
+      cpu: 250m # backups read and compress here; throttled at 50m, a full of the 21GB database took about 4 hours
       memory: 128Mi
 
 patroni:
@@ -92,6 +94,7 @@ patroni:
       wal_buffers: "64kB" # this can be set to -1 to automatically set as 1/32 of shared_buffers or 64kB, whichever is larger
       min_wal_size: 32MB
       max_wal_size: 64MB # default is 1GB
+      wal_compression: lz4 # default is off; compresses full-page images in WAL (about 59% of WAL bytes here)
       max_slot_wal_keep_size: 128MB # default is -1, allowing unlimited wal growth when replicas fall behind
 
 proxy:

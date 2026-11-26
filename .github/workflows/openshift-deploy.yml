@@ -105,7 +105,7 @@ jobs:
       - name: update IMAGE NAME variable if needed
         id: updateImageName
         run: |
-          export IMAGE_NAME="$([ "${{inputs.MICROSERVICE_NAME}}" == "farms-api" ] && echo 'farms-api' || echo 'farms-legacy')"
+          export IMAGE_NAME="$(case "${{inputs.MICROSERVICE_NAME}}" in farms-api|farms-liquibase) echo '${{inputs.MICROSERVICE_NAME}}';; *) echo 'farms-legacy';; esac)"
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
       - name: Get digest of docker image
@@ -217,7 +217,31 @@ jobs:
             oc apply -f "$file"
           done
 
+      - name: Wait for migration job to finish
+        if: inputs.MICROSERVICE_NAME == 'farms-liquibase'
+        run: |
+          # farms-liquibase is a Job, not a Deployment: pass only when the Job succeeds, and fail
+          # as soon as a pod fails (the Job's retries would only repeat the same migration error).
+          JOB='${{ inputs.MICROSERVICE_NAME }}-${{ inputs.ENVIRONMENT_NAME }}-${{ github.run_id }}'
+          NS='${{ needs.validate-inputs.outputs.NAMESPACE }}'
+          # The Job's activeDeadlineSeconds is 1800 (30m); the loop below runs about 35m as a backstop.
+          for i in $(seq 1 140); do
+            OK=$(oc get job "$JOB" -n "$NS" -o jsonpath='{.status.succeeded}')
+            BAD=$(oc get job "$JOB" -n "$NS" -o jsonpath='{.status.failed}')
+            COND=$(oc get job "$JOB" -n "$NS" -o jsonpath='{.status.conditions[?(@.type=="Failed")].reason}')
+            if [ "${OK:-0}" -ge 1 ]; then echo "Job $JOB succeeded."; oc logs "job/$JOB" -n "$NS" --tail=50; exit 0; fi
+            if [ "${BAD:-0}" -ge 1 ] || [ -n "$COND" ]; then
+              echo "::error::Job $JOB failed (${COND:-pod failed}). Delete it to stop retries: oc delete job $JOB -n $NS"
+              oc logs "job/$JOB" -n "$NS" --tail=100 || true
+              exit 1
+            fi
+            sleep 15
+          done
+          echo "::error::Job $JOB did not finish within 35m."
+          exit 1
+
       - name: Wait for rollout to complete
+        if: inputs.MICROSERVICE_NAME != 'farms-liquibase'
         run: |
           set -o pipefail
           DEPLOYMENT='${{ inputs.MICROSERVICE_NAME }}-deployment-${{ inputs.ENVIRONMENT_NAME }}'

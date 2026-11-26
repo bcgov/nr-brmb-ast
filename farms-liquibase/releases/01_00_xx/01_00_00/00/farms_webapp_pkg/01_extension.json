@@ -1,0 +1,18 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "author": "awilkinson",
+                "id": "01_00_00/00/farms_webapp_pkg/extension",
+                "changes": [
+                    {
+                        "sqlFile": {
+                            "relativeToChangeLogFile": "true",
+                            "path": "../../../../../database/farms_webapp_pkg/extension.sql"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
