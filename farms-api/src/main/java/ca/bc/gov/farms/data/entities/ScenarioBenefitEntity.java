@@ -19,6 +19,7 @@ public class ScenarioBenefitEntity {
     private BigDecimal combinedPercent;
     private BigDecimal benefitAfterCombinedPercent;
     private BigDecimal bcEnhancement;
+    private BigDecimal combinedFarmBcEnhancedBenefit;
     private BigDecimal interimPaymentPercentage;
     private BigDecimal benefitAfterInterimDeduction;
     private BigDecimal lateEnrolmentPenalty;

@@ -20,6 +20,12 @@
                cl.applied_benefit_percent AS combined_percent,
                cl.benefit_after_appl_benefit_pct AS benefit_after_combined_percent,
                cl.enh_additional_benefit AS bc_enhancement,
+               (SELECT SUM(member_claim.enh_additional_benefit)
+                  FROM farms.farm_agristability_scenarios member_sc
+                  JOIN farms.farm_agristability_claims member_claim
+                    ON member_claim.agristability_scenario_id = member_sc.agristability_scenario_id
+                 WHERE member_sc.combined_farm_number = sc.combined_farm_number
+               ) AS combined_farm_bc_enhanced_benefit,
                cl.interim_benefit_percent AS interim_payment_percentage,
                cl.benefit_after_interim_ded AS benefit_after_interim_deduction,
                cl.late_enrolment_penalty,

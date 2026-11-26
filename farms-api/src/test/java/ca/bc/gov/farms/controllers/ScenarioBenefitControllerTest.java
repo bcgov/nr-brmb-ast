@@ -52,6 +52,8 @@ class ScenarioBenefitControllerTest {
         entity.setProgramYearMargin(new BigDecimal("-45000.75"));
         entity.setReferenceMargin(new BigDecimal("125000.25"));
         entity.setBenefitBeforeDeductions(new BigDecimal("212701.73"));
+        entity.setBcEnhancement(new BigDecimal("178047.00"));
+        entity.setCombinedFarmBcEnhancedBenefit(new BigDecimal("533075.00"));
         entity.setDeemedPiDeduction(new BigDecimal("-700.00"));
         entity.setBenefitAfterProdInsDeduction(new BigDecimal("212001.73"));
         entity.setBenefitAfterInterimDeduction(new BigDecimal("106350.87"));
@@ -70,6 +72,8 @@ class ScenarioBenefitControllerTest {
         assertEquals(-45000.75, row.required("programYearMargin").doubleValue());
         assertEquals(125000.25, row.required("referenceMargin").doubleValue());
         assertEquals(212701.73, row.required("benefitBeforeDeductions").doubleValue());
+        assertEquals(178047.00, row.required("bcEnhancement").doubleValue());
+        assertEquals(533075.00, row.required("combinedFarmBcEnhancedBenefit").doubleValue());
         assertEquals(-700.00, row.required("deemedPiDeduction").doubleValue());
         assertEquals(212001.73, row.required("benefitAfterProdInsDeduction").doubleValue());
         assertEquals(106350.87, row.required("benefitAfterInterimDeduction").doubleValue());
