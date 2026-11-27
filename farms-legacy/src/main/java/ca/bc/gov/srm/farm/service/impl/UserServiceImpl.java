@@ -204,6 +204,7 @@ public class UserServiceImpl extends BaseService implements UserService {
           switch (teamName) {
             case "Customer Service Team":
             case "Enrolment Admin Team":
+            case "System Administrator Team":
             case "Verification Specialist Team Member":
             case "Verifier Team Member":
               break;
