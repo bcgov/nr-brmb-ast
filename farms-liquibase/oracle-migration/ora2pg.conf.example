@@ -1,0 +1,24 @@
+# ora2pg 25.0 settings used for the PROD data load.
+# Copy to <ora2pg project>/config/ora2pg.conf and fill in the <placeholders>.
+# The filled-in file holds passwords: never commit it or print it whole.
+
+ORACLE_DSN      dbi:Oracle:host=<temporary-oracle-server>;sid=<oracle-sid>;port=1521
+ORACLE_USER     system
+ORACLE_PWD      <password>
+
+SCHEMA FARM
+
+# localhost:5436 is the port-forward to pgbouncer
+PG_DSN          dbi:Pg:dbname=farmsprod;host=localhost;port=5436
+PG_USER         app_farms
+PG_PWD          <password>
+
+KEEP_PKEY_NAMES 1
+FKEY_DEFERRABLE 1
+DROP_FKEY       0
+PG_VERSION      17
+
+# load indexes, constraints and FKs after the data (import_all.sh -x)
+FILE_PER_INDEX      1
+FILE_PER_CONSTRAINT 1
+FILE_PER_FKEYS      1

@@ -1,5 +1,9 @@
 # Instructions For Setting Up PostgresCluster
 
+> **Migrating PROD data from Oracle?** Follow [oracle-migration/README.md](oracle-migration/README.md) instead of
+> the `ora2pg` steps below. Those were used to set up other environments, and their sample configuration
+> (`DROP_FKEY 1`) aborted a full PROD-style data load.
+
 ## 1. Postgres Database Setup
 
 ### 1.1. Start PSQL
