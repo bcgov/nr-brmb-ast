@@ -42,7 +42,7 @@ public class CrmQueueItemTest {
   
 
   @Test
-  public void createTaskAndAddToQueue() {
+  public void createTaskAndAddToQueue() throws ServiceException {
     
     int participantPin = 4248530;
     String queueName = "<Andrew Wilkinson>";
@@ -76,6 +76,7 @@ public class CrmQueueItemTest {
     }
     
     assertNotNull(task);
+    assertNotNull(crmDao.getQueueItemByTaskId(task.getActivityId()));
     assertEquals("Queue Test Subject", task.getSubject());
     assertEquals(accountId, task.getAccountId());
     assertEquals("Queue Test Description", task.getDescription());

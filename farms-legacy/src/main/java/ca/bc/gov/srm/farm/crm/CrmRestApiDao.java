@@ -268,7 +268,18 @@ public class CrmRestApiDao extends RestApiDao {
     
     CrmTaskResource createdTask = post(task, crmConfig.getTaskUrl(), CrmConstants.HEADER_ENTITY_URL);
     
-    routeToQueue(queueId, createdTask.getActivityId());
+    if (queueId != null) {
+      String taskId = createdTask.getActivityId();
+      CrmQueueItemResource queueItem = getQueueItemByTaskId(taskId);
+      if (queueItem == null) {
+        queueItem = new CrmQueueItemResource();
+        queueItem.setActivityIdParameter(taskId);
+        queueItem.setQueueIdParameter(queueId);
+        post(queueItem, crmConfig.getQueueItemUrl());
+      } else {
+        routeQueueItem(queueId, queueItem);
+      }
+    }
     
     return createdTask;
   }
@@ -510,15 +521,15 @@ public class CrmRestApiDao extends RestApiDao {
   
   private void routeToQueue(String queueId, String activityId) throws ServiceException {
 
-    CrmQueueItemResource crmQueueItemResource = getQueueItemByTaskId(activityId);
-    
     if (queueId != null) {
-      CrmRouteToTargetResource target = new CrmRouteToTargetResource(queueId);
-      CrmRouteToQueueItemResource queueItem = new CrmRouteToQueueItemResource(crmQueueItemResource.getQueueItemId());
-      CrmRouteToQueueResource routeToQueueResource = new CrmRouteToQueueResource(target, queueItem);
-
-      post(routeToQueueResource, crmConfig.getRouteToUrl());
+      routeQueueItem(queueId, getQueueItemByTaskId(activityId));
     }
+  }
+
+  private void routeQueueItem(String queueId, CrmQueueItemResource existingItem) throws ServiceException {
+    CrmRouteToTargetResource target = new CrmRouteToTargetResource(queueId);
+    CrmRouteToQueueItemResource queueItem = new CrmRouteToQueueItemResource(existingItem.getQueueItemId());
+    post(new CrmRouteToQueueResource(target, queueItem), crmConfig.getRouteToUrl());
   }
 
   public CrmCoreConfigurationResource getCoreConfiguration() throws ServiceException {

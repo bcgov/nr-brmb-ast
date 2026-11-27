@@ -238,7 +238,7 @@ public class CrmBenefitTransferTest {
     assertEquals(Double.valueOf(30856.78), resource.getVsi_negativemarginbenefitamount());
     assertEquals(Boolean.FALSE, resource.getVsi_fullyprovinciallyfunded());
     assertEquals(Double.valueOf(7908.0), resource.getVsi_provinciallyfundedamount());
-    assertEquals(Double.valueOf(63261.0), resource.getVsi_combinedfarmstotal());
+    assertNull(resource.getVsi_combinedfarmstotal());
     assertNull(resource.getVsi_deemedproductioninsurancemargindeclineamo());
     assertNull(resource.getVsi_lateparticipationpenaltyamount());
     assertTrue(resource.getVsi_provincialsupplementalreceiveddate().startsWith("2020-09-01"));
