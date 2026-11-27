@@ -579,6 +579,9 @@ public abstract class WebADEDatabaseDatastore implements WebADEDatastore, Serial
                         case "Enrolment Admin Team":
                             rolesNonSecured.add(roleMap.get("ADMIN"));
                             break;
+                        case "System Administrator Team":
+                            rolesNonSecured.add(roleMap.get("ADMIN"));
+                            break;
                         case "Verification Specialist Team Member":
                             rolesNonSecured.add(roleMap.get("SENIOR_VERIFIER"));
                             break;
