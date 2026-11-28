@@ -389,11 +389,15 @@ Applies to every load into farmsprod, dry run or real. Figures are as of 2026-11
 - **After every load, dry run or real, run manual fulls, repo1 first and then repo2,** instead of waiting for
   Saturday. For repo1, each differential taken before the next full is another copy of about 10 GB. For repo2
   (object storage), the full gives a second full copy of the loaded data. In WSL, logged in with `oc`:
+
+  1. repo1:
   ```bash
-  # 1. repo1
   oc exec -n e980f4-prod -c pgbackrest crunchy-postgres-prod-repo-host-0 -- sh -c \
     'setsid nohup pgbackrest backup --stanza=db --repo=1 --type=full --log-level-console=info > /tmp/full_repo1.out 2>&1 < /dev/null & sleep 10; tail -4 /tmp/full_repo1.out | cut -c1-200'
-  # 2. repo2, after repo1 has finished
+  ```
+
+  2. repo2, **after repo1 has finished**:
+  ```bash
   oc exec -n e980f4-prod -c pgbackrest crunchy-postgres-prod-repo-host-0 -- sh -c \
     'setsid nohup pgbackrest backup --stanza=db --repo=2 --type=full --log-level-console=info > /tmp/full_repo2.out 2>&1 < /dev/null & sleep 10; tail -4 /tmp/full_repo2.out | cut -c1-200'
   ```
