@@ -166,24 +166,39 @@ select all the objects, right-click and drop them:
 
 ### 2. Scale the PROD apps to 0
 This can be done before the dump arrives. In WSL, logged in with `oc`:
-
 ```bash
 oc scale deployment farms-api-deployment-prod farms-legacy-deployment-prod --replicas=0 -n e980f4-prod
+```
+
+```bash
 oc get deploy farms-api-deployment-prod farms-legacy-deployment-prod -n e980f4-prod   # both 0/0
 ```
 Do this before every wipe or load, dry runs included.
 
 ### 3. Wipe farmsprod, then check it
 This can also be done before the dump arrives.
-In a PowerShell window, from `<repo>\farms-liquibase\oracle-migration\pre-work`:
+Run these three blocks one at a time in PowerShell, from any folder inside `<repo>`: each one starts by going to the repository root.
+
+Generate the drop script. Do this right before using it: it reflects the catalog at generation time.
 
 ```powershell
-# Regenerate the script right before use: it reflects the catalog at generation time.
-python gen_drop_script.py 5436 farmsprod drop_farmsprod.sql
-# Review the diff against the last version, then run it (single transaction, guarded, rolls back unless clean):
-& "$env:LOCALAPPDATA\Programs\pgAdmin 4\runtime\psql.exe" -X "host=localhost port=5436 dbname=farmsprod user=app_farms" -f drop_farmsprod.sql
-cd ..\validate
-python check_empty.py 5436 farmsprod
+cd (git rev-parse --show-toplevel)
+python farms-liquibase\oracle-migration\pre-work\gen_drop_script.py 5436 farmsprod farms-liquibase\oracle-migration\pre-work\drop_farmsprod.sql
+```
+
+Review `pre-work\drop_farmsprod.sql` (compare it with the last version, if you kept one). Then run it. It runs in
+a single transaction, is guarded, and rolls back unless clean.
+
+```powershell
+cd (git rev-parse --show-toplevel)
+& "$env:LOCALAPPDATA\Programs\pgAdmin 4\runtime\psql.exe" -X "host=localhost port=5436 dbname=farmsprod user=app_farms" -f farms-liquibase\oracle-migration\pre-work\drop_farmsprod.sql
+```
+
+Check the result:
+
+```powershell
+cd (git rev-parse --show-toplevel)
+python farms-liquibase\oracle-migration\validate\check_empty.py 5436 farmsprod
 ```
 `check_empty.py` must say `RESULT: PASS` (only the bootstrap state is left). The wipe also drops
 `databasechangelog*`, so Liquibase starts from nothing. Roles are cluster-wide and survive the wipe, which the
@@ -241,12 +256,12 @@ Time: allow 10m (the scripts run in seconds).
 ### 8. Export the ora2pg schema from Oracle, and diff it
 **Run this after `impdp` and the data scripts.** The export holds the sequence values as well as
 the table definitions, so one made before `impdp` would load the old sequence values into farmsprod. The diff
-shows whether anything else changed. In WSL, from `~/farmsprod/ora2pg/migprod`:
+shows whether anything else changed. In WSL:
 
 ```bash
-cp -r schema schema_prev_$(date +%Y%m%d)     # keep a copy to diff against; delete it when done
-./export_schema.sh
-diff -r schema_prev_<date> schema
+cd ~/farmsprod/ora2pg/migprod
+prev=schema_prev_$(date +%Y%m%d_%H%M)     # copy to diff against; delete it when done
+cp -r schema "$prev" && ./export_schema.sh && diff -r "$prev" schema
 ```
 `export_schema.sh` exports `SEQUENCE SEQUENCE_VALUES TABLE TYPE` and writes `tables/table.sql`,
 `INDEXES_table.sql`, `CONSTRAINTS_table.sql`, `FKEYS_table.sql`, `sequences/sequence.sql`,
@@ -254,9 +269,10 @@ diff -r schema_prev_<date> schema
 `schema/packages/`: `import_all.sh` never reads them. Do not rename any of them to `package.sql`.
 
 ### 9. ora2pg load: data, indexes, constraints, FKs
-In the WSL tmux session, from `~/farmsprod/ora2pg/migprod`:
+In the WSL tmux session:
 
 ```bash
+cd ~/farmsprod/ora2pg/migprod
 export PGPASSWORD=$(awk '/^PG_PWD/{print $2}' config/ora2pg.conf)
 time ./import_all.sh -y -f -h localhost -U app_farms -d farmsprod -p 5436 -o app_farms -x -j 4 -P 4 2>&1 | tee import_$(date +%Y%m%d_%H%M).log
 ```
@@ -287,14 +303,20 @@ Run 3 (2026-11-25, 18:18 to 18:51 Vancouver) was the first after the prod CPU li
 1m, data copy 25m49s, indexes 2m20s, constraints 2m29s, FKs 56s. Use these for the real run.
 
 ### 10. Validate (before Liquibase)
-From `<repo>\farms-liquibase\oracle-migration\validate` in PowerShell (the schema path is the WSL folder `\\wsl$\Ubuntu\home\<user>\farmsprod\ora2pg\migprod\schema`):
+In PowerShell, from any folder inside `<repo>`. The second line finds the ora2pg `schema` folder in WSL.
 
 ```powershell
-python validate_structure.py 5436 farmsprod "<schema>\tables\table.sql"
-python validate_sequences.py 5436 farmsprod "<schema>\sequences\sequence.sql"
+cd (git rev-parse --show-toplevel)
+$schema = wsl bash -c 'wslpath -w ~/farmsprod/ora2pg/migprod/schema'
+python farms-liquibase\oracle-migration\validate\validate_structure.py 5436 farmsprod "$schema\tables\table.sql"
+python farms-liquibase\oracle-migration\validate\validate_sequences.py 5436 farmsprod "$schema\sequences\sequence.sql"
 ```
-and in WSL: `bash <repo>/farms-liquibase/oracle-migration/validate/validate_counts.sh` (about 1m10s; `<repo>` as
-WSL sees it, under `/mnt/c/`).
+and in WSL (about 1m10s; change `/mnt/c/source/git/nr-brmb-ast` if your clone is somewhere else):
+
+```bash
+bash /mnt/c/source/git/nr-brmb-ast/farms-liquibase/oracle-migration/validate/validate_counts.sh
+```
+
 - `validate_structure.py`: PASS (135 tables, 183 indexes, 527 constraints, all validated).
 - `validate_sequences.py`: **`farm_sga_seq` is expected to FAIL here** (next value 1, max key about 2076). Liquibase fixes it.
 - `validate_counts.sh`: every table must match Oracle exactly.
@@ -324,8 +346,10 @@ still match (the 02_dml scripts change nothing on PROD data).
 1. **Run manual full backups, repo1 and then repo2** (required). Start repo1, carry on with the next steps,
    and start repo2 once repo1 has finished. Check later that both completed and that repo1 usage dropped. The
    commands and the reasons are in [Backups and WAL after a load](#backups-and-wal-after-a-load).
-2. Scale the apps back up:
-   `oc scale deployment farms-api-deployment-prod farms-legacy-deployment-prod --replicas=1 -n e980f4-prod`
+2. Scale the apps back up. In WSL, logged in with `oc`:
+   ```bash
+   oc scale deployment farms-api-deployment-prod farms-legacy-deployment-prod --replicas=1 -n e980f4-prod
+   ```
 3. Set the `pgpass.conf` password for `localhost:5436` back to `not_set`.
 4. Smoke test both apps.
 5. **After the final load, set `max_wal_size` back to 64MB.** It was set to 1GB directly on the cluster for
