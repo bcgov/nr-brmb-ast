@@ -402,8 +402,15 @@ Applies to every load into farmsprod, dry run or real. Figures are as of 2026-11
     'setsid nohup pgbackrest backup --stanza=db --repo=2 --type=full --log-level-console=info > /tmp/full_repo2.out 2>&1 < /dev/null & sleep 10; tail -4 /tmp/full_repo2.out | cut -c1-200'
   ```
   Each runs in the background on the repo host, so closing the terminal doesn't stop it. A restart of that pod
-  would. First check that no other backup is running. Both commands were run on 2026-11-26. Start early enough
-  for repo1 to finish before the 17:00 Vancouver differential, and repo2 before its 19:00 differential.
+  would. First check that no other backup is running. Scheduled backups run in their own job pods, so check for
+  those too (no output means none is running):
+  ```bash
+  oc get job -n e980f4-prod | grep -E 'repo[12]-.*Running'
+  ```
+  Both commands were run on 2026-11-26. Start early enough for repo1 to finish before the 17:00 Vancouver
+  differential, and repo2 before its 19:00 differential. The first scheduled differential after a load takes
+  about as long as a full (39 minutes for repo2 on 2026-11-27), so after 17:00 (repo1) or 19:00 (repo2), check
+  that it has finished before starting a manual full.
 - **Other scheduled backups** (Vancouver time): repo1 incrementals run at 01:00, 05:00, 09:00 and 13:00, and
   repo2 incrementals at 03:00, 07:00, 11:00 and 15:00. The 11:00 repo2 incremental succeeded on 2026-11-26
   while a manual repo1 full was running.
